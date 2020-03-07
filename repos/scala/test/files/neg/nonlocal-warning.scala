@@ -1,7 +1,6 @@
 class Foo {
   def foo(l: List[Int]): Int = {
-    try l foreach { _ => return 5 }
-    catch { case x => 11 }
+    try l foreach { _ => return 5 } catch { case x => 11 }
     22
   }
 
@@ -10,8 +9,7 @@ class Foo {
   }
 
   def bar(l: List[Int]): Int = {
-    try l foreach { _ => return 5 }
-    catch pf
+    try l foreach { _ => return 5 } catch pf
     finally println()
     22
   }

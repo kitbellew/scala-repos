@@ -33,29 +33,33 @@ import java.io._
   *  @see [[scala.sys.process.ProcessBuilder]]
   */
 trait ProcessLogger {
+
   /** Will be called with each line read from the process output stream.
-   */
+    */
   def out(s: => String): Unit
 
   /** Will be called with each line read from the process error stream.
-   */
+    */
   def err(s: => String): Unit
 
   /** If a process is begun with one of these `ProcessBuilder` methods:
-   *  {{{
-   *    def !(log: ProcessLogger): Int
-   *    def !<(log: ProcessLogger): Int
-   *  }}}
-   *  The run will be wrapped in a call to buffer.  This gives the logger
-   *  an opportunity to set up and tear down buffering.  At present the
-   *  library implementations of `ProcessLogger` simply execute the body
-   *  unbuffered.
-   */
+    *  {{{
+    *    def !(log: ProcessLogger): Int
+    *    def !<(log: ProcessLogger): Int
+    *  }}}
+    *  The run will be wrapped in a call to buffer.  This gives the logger
+    *  an opportunity to set up and tear down buffering.  At present the
+    *  library implementations of `ProcessLogger` simply execute the body
+    *  unbuffered.
+    */
   def buffer[T](f: => T): T
 }
 
 /** A [[scala.sys.process.ProcessLogger]] that writes output to a file. */
-class FileProcessLogger(file: File) extends ProcessLogger with Closeable with Flushable {
+class FileProcessLogger(file: File)
+    extends ProcessLogger
+    with Closeable
+    with Flushable {
   private val writer = (
     new PrintWriter(
       new BufferedWriter(
@@ -73,25 +77,26 @@ class FileProcessLogger(file: File) extends ProcessLogger with Closeable with Fl
 }
 
 /** Provides factories to create [[scala.sys.process.ProcessLogger]], which
- *  are used to capture output of [[scala.sys.process.ProcessBuilder]] commands
- *  when run.
- */
+  *  are used to capture output of [[scala.sys.process.ProcessBuilder]] commands
+  *  when run.
+  */
 object ProcessLogger {
+
   /** Creates a [[scala.sys.process.ProcessLogger]] that redirects output to a `java.io.File`. */
   def apply(file: File): FileProcessLogger = new FileProcessLogger(file)
 
   /** Creates a [[scala.sys.process.ProcessLogger]] that sends all output, standard and error,
-   *  to the passed function.
-   */
+    *  to the passed function.
+    */
   def apply(fn: String => Unit): ProcessLogger = apply(fn, fn)
 
   /** Creates a [[scala.sys.process.ProcessLogger]] that sends all output to the corresponding
-   *  function.
-   *
-   *  @param fout  This function will receive standard output.
-   *
-   *  @param ferr  This function will receive standard error.
-   */
+    *  function.
+    *
+    *  @param fout  This function will receive standard output.
+    *
+    *  @param ferr  This function will receive standard error.
+    */
   def apply(fout: String => Unit, ferr: String => Unit): ProcessLogger =
     new ProcessLogger {
       def out(s: => String): Unit = fout(s)

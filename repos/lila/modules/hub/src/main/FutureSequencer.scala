@@ -13,7 +13,8 @@ final class FutureSequencer(
   import FutureSequencer._
 
   private val sequencer =
-    system.actorOf(Props(classOf[FSequencer], receiveTimeout, executionTimeout, logger))
+    system.actorOf(
+      Props(classOf[FSequencer], receiveTimeout, executionTimeout, logger))
 
   def apply[A: Manifest](op: => Fu[A]): Fu[A] = {
     val promise = Promise[A]()
@@ -28,14 +29,16 @@ object FutureSequencer {
 
   import scala.util.Try
 
-  case class Timeout(duration: FiniteDuration) extends lila.common.LilaException {
+  case class Timeout(duration: FiniteDuration)
+      extends lila.common.LilaException {
     val message = s"FutureSequencer timed out after $duration"
   }
 
   private final class FSequencer(
       receiveTimeout: Option[FiniteDuration],
       executionTimeout: Option[FiniteDuration] = None,
-      logger: lila.log.Logger) extends Actor {
+      logger: lila.log.Logger)
+      extends Actor {
 
     receiveTimeout.foreach(context.setReceiveTimeout)
 
@@ -48,10 +51,11 @@ object FutureSequencer {
 
     private def busy: Receive = {
 
-      case Done => dequeue match {
-        case None       => context become idle
-        case Some(work) => processThenDone(work)
-      }
+      case Done =>
+        dequeue match {
+          case None       => context become idle
+          case Some(work) => processThenDone(work)
+        }
 
       case msg => queue enqueue msg
     }
@@ -67,14 +71,17 @@ object FutureSequencer {
       work match {
         case ReceiveTimeout => self ! PoisonPill
         case FSequencer.Work(run, promise, timeoutOption) =>
-          promise completeWith timeoutOption.orElse(executionTimeout).fold(run()) { timeout =>
-            run().withTimeout(
-              duration = timeout,
-              error = Timeout(timeout)
-            )(context.system)
-          }.andThenAnyway {
-            self ! Done
-          }
+          promise completeWith timeoutOption
+            .orElse(executionTimeout)
+            .fold(run()) { timeout =>
+              run().withTimeout(
+                duration = timeout,
+                error = Timeout(timeout)
+              )(context.system)
+            }
+            .andThenAnyway {
+              self ! Done
+            }
         case FSequencer.WithQueueSize(f) =>
           f(queue.size)
           self ! Done
@@ -88,14 +95,15 @@ object FutureSequencer {
   private object FSequencer {
 
     case class Work[A](
-      run: () => Fu[A],
-      promise: Promise[A],
-      timeout: Option[FiniteDuration] = None)
+        run: () => Fu[A],
+        promise: Promise[A],
+        timeout: Option[FiniteDuration] = None)
 
     def work[A](
-      run: => Fu[A],
-      promise: Promise[A],
-      timeout: Option[FiniteDuration] = None): Work[A] = Work(() => run, promise, timeout)
+        run: => Fu[A],
+        promise: Promise[A],
+        timeout: Option[FiniteDuration] = None): Work[A] =
+      Work(() => run, promise, timeout)
 
     case class WithQueueSize(f: Int => Unit)
   }

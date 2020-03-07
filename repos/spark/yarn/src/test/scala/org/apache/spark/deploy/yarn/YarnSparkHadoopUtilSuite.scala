@@ -32,17 +32,26 @@ import org.apache.hadoop.yarn.api.records.ApplicationAccessType
 import org.apache.hadoop.yarn.conf.YarnConfiguration
 import org.scalatest.Matchers
 
-import org.apache.spark.{SecurityManager, SparkConf, SparkException, SparkFunSuite}
+import org.apache.spark.{
+  SecurityManager,
+  SparkConf,
+  SparkException,
+  SparkFunSuite
+}
 import org.apache.spark.deploy.SparkHadoopUtil
 import org.apache.spark.internal.Logging
 import org.apache.spark.util.{ResetSystemProperties, Utils}
 
-class YarnSparkHadoopUtilSuite extends SparkFunSuite with Matchers with Logging
-  with ResetSystemProperties {
+class YarnSparkHadoopUtilSuite
+    extends SparkFunSuite
+    with Matchers
+    with Logging
+    with ResetSystemProperties {
 
   val hasBash =
     try {
-      val exitCode = Runtime.getRuntime().exec(Array("bash", "--version")).waitFor()
+      val exitCode =
+        Runtime.getRuntime().exec(Array("bash", "--version")).waitFor()
       exitCode == 0
     } catch {
       case e: IOException =>
@@ -57,19 +66,25 @@ class YarnSparkHadoopUtilSuite extends SparkFunSuite with Matchers with Logging
     if (hasBash) test(name)(fn) else ignore(name)(fn)
 
   bashTest("shell script escaping") {
-    val scriptFile = File.createTempFile("script.", ".sh", Utils.createTempDir())
-    val args = Array("arg1", "${arg.2}", "\"arg3\"", "'arg4'", "$arg5", "\\arg6")
+    val scriptFile =
+      File.createTempFile("script.", ".sh", Utils.createTempDir())
+    val args =
+      Array("arg1", "${arg.2}", "\"arg3\"", "'arg4'", "$arg5", "\\arg6")
     try {
-      val argLine = args.map(a => YarnSparkHadoopUtil.escapeForShell(a)).mkString(" ")
-      Files.write(("bash -c \"echo " + argLine + "\"").getBytes(StandardCharsets.UTF_8), scriptFile)
+      val argLine =
+        args.map(a => YarnSparkHadoopUtil.escapeForShell(a)).mkString(" ")
+      Files.write(
+        ("bash -c \"echo " + argLine + "\"").getBytes(StandardCharsets.UTF_8),
+        scriptFile)
       scriptFile.setExecutable(true)
 
       val proc = Runtime.getRuntime().exec(Array(scriptFile.getAbsolutePath()))
-      val out = new String(ByteStreams.toByteArray(proc.getInputStream())).trim()
+      val out =
+        new String(ByteStreams.toByteArray(proc.getInputStream())).trim()
       val err = new String(ByteStreams.toByteArray(proc.getErrorStream()))
       val exitCode = proc.waitFor()
-      exitCode should be (0)
-      out should be (args.mkString(" "))
+      exitCode should be(0)
+      out should be(args.mkString(" "))
     } finally {
       scriptFile.delete()
     }
@@ -83,10 +98,9 @@ class YarnSparkHadoopUtilSuite extends SparkFunSuite with Matchers with Logging
       .set("spark.hadoop." + key, "someHostName")
     val yarnConf = new YarnSparkHadoopUtil().newConfiguration(sparkConf)
 
-    yarnConf.getClass() should be (classOf[YarnConfiguration])
+    yarnConf.getClass() should be(classOf[YarnConfiguration])
     yarnConf.get(key) should not be default.get(key)
   }
-
 
   test("test getApplicationAclsForYarn acls on") {
 
@@ -162,22 +176,26 @@ class YarnSparkHadoopUtilSuite extends SparkFunSuite with Matchers with Logging
   test("test expandEnvironment result") {
     val target = Environment.PWD
     if (classOf[Environment].getMethods().exists(_.getName == "$$")) {
-      YarnSparkHadoopUtil.expandEnvironment(target) should be ("{{" + target + "}}")
+      YarnSparkHadoopUtil.expandEnvironment(target) should be(
+        "{{" + target + "}}")
     } else if (Utils.isWindows) {
-      YarnSparkHadoopUtil.expandEnvironment(target) should be ("%" + target + "%")
+      YarnSparkHadoopUtil.expandEnvironment(target) should be(
+        "%" + target + "%")
     } else {
-      YarnSparkHadoopUtil.expandEnvironment(target) should be ("$" + target)
+      YarnSparkHadoopUtil.expandEnvironment(target) should be("$" + target)
     }
 
   }
 
   test("test getClassPathSeparator result") {
-    if (classOf[ApplicationConstants].getFields().exists(_.getName == "CLASS_PATH_SEPARATOR")) {
-      YarnSparkHadoopUtil.getClassPathSeparator() should be ("<CPS>")
+    if (classOf[ApplicationConstants]
+          .getFields()
+          .exists(_.getName == "CLASS_PATH_SEPARATOR")) {
+      YarnSparkHadoopUtil.getClassPathSeparator() should be("<CPS>")
     } else if (Utils.isWindows) {
-      YarnSparkHadoopUtil.getClassPathSeparator() should be (";")
+      YarnSparkHadoopUtil.getClassPathSeparator() should be(";")
     } else {
-      YarnSparkHadoopUtil.getClassPathSeparator() should be (":")
+      YarnSparkHadoopUtil.getClassPathSeparator() should be(":")
     }
   }
 
@@ -214,7 +232,9 @@ class YarnSparkHadoopUtilSuite extends SparkFunSuite with Matchers with Logging
 
   test("check access two nns") {
     val sparkConf = new SparkConf()
-    sparkConf.set("spark.yarn.access.namenodes", "hdfs://nn1:8032,hdfs://nn2:8032")
+    sparkConf.set(
+      "spark.yarn.access.namenodes",
+      "hdfs://nn1:8032,hdfs://nn2:8032")
     val util = new YarnSparkHadoopUtil
     val nns = util.getNameNodesToAccess(sparkConf)
     nns should be(Set(new Path("hdfs://nn1:8032"), new Path("hdfs://nn2:8032")))
@@ -223,10 +243,12 @@ class YarnSparkHadoopUtilSuite extends SparkFunSuite with Matchers with Logging
   test("check token renewer") {
     val hadoopConf = new Configuration()
     hadoopConf.set("yarn.resourcemanager.address", "myrm:8033")
-    hadoopConf.set("yarn.resourcemanager.principal", "yarn/myrm:8032@SPARKTEST.COM")
+    hadoopConf.set(
+      "yarn.resourcemanager.principal",
+      "yarn/myrm:8032@SPARKTEST.COM")
     val util = new YarnSparkHadoopUtil
     val renewer = util.getTokenRenewer(hadoopConf)
-    renewer should be ("yarn/myrm:8032@SPARKTEST.COM")
+    renewer should be("yarn/myrm:8032@SPARKTEST.COM")
   }
 
   test("check token renewer default") {
@@ -236,7 +258,8 @@ class YarnSparkHadoopUtilSuite extends SparkFunSuite with Matchers with Logging
       intercept[SparkException] {
         util.getTokenRenewer(hadoopConf)
       }
-    assert(caught.getMessage === "Can't get Master Kerberos principal for use as renewer")
+    assert(
+      caught.getMessage === "Can't get Master Kerberos principal for use as renewer")
   }
 
   test("check different hadoop utils based on env variable") {
@@ -264,7 +287,8 @@ class YarnSparkHadoopUtilSuite extends SparkFunSuite with Matchers with Logging
     })
   }
 
-  private def assertNestedHiveException(e: InvocationTargetException): Throwable = {
+  private def assertNestedHiveException(
+      e: InvocationTargetException): Throwable = {
     val inner = e.getCause
     if (inner == null) {
       fail("No inner cause", e)
@@ -282,7 +306,7 @@ class YarnSparkHadoopUtilSuite extends SparkFunSuite with Matchers with Logging
     intercept[ClassNotFoundException] {
       util.obtainTokenForHBaseInner(hadoopConf)
     }
-    util.obtainTokenForHBase(hadoopConf) should be (None)
+    util.obtainTokenForHBase(hadoopConf) should be(None)
   }
 
   // This test needs to live here because it depends on isYarnMode returning true, which can only
@@ -308,7 +332,8 @@ class YarnSparkHadoopUtilSuite extends SparkFunSuite with Matchers with Logging
     } finally {
       // removeSecretKey() was only added in Hadoop 2.6, so instead we just set the secret
       // to an empty string.
-      SparkHadoopUtil.get.addSecretKeyToUserCredentials(SecurityManager.SECRET_LOOKUP_KEY, "")
+      SparkHadoopUtil.get
+        .addSecretKeyToUserCredentials(SecurityManager.SECRET_LOOKUP_KEY, "")
       System.clearProperty("SPARK_YARN_MODE")
     }
   }

@@ -8,7 +8,12 @@ import scala.io.Source
 import scala.util.Random
 
 // for Java Serialization:
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectOutputStream, ObjectInputStream}
+import java.io.{
+  ByteArrayInputStream,
+  ByteArrayOutputStream,
+  ObjectOutputStream,
+  ObjectInputStream
+}
 
 import scala.pickling._
 import scala.pickling.Defaults._
@@ -18,7 +23,8 @@ import scala.pickling.binary._
 import java.nio.charset.CodingErrorAction
 import scala.io.Codec
 
-final class Vertex(val label: String, var neighbors: List[Vertex]) extends Serializable {
+final class Vertex(val label: String, var neighbors: List[Vertex])
+    extends Serializable {
 
   //var graph: Graph = null
 
@@ -76,7 +82,10 @@ object GraphReader extends RegexParsers {
       case NoSuccess(msg, rest) => onError(msg); List()
     }
 
-  def readChunk(lines: Iterator[String], names: Map[String, String], size: Int): Graph = {
+  def readChunk(
+      lines: Iterator[String],
+      names: Map[String, String],
+      size: Int): Graph = {
     val graph = new Graph
 
     for (line <- lines) {
@@ -86,7 +95,8 @@ object GraphReader extends RegexParsers {
       val firstLabel = labels.head.substring(0, labels.head.length - 1)
       val firstVertexOpt = vertices.get(firstLabel)
       val firstVertex =
-        if (firstVertexOpt.isEmpty) graph.addVertex(new Vertex(names(firstLabel), List()))
+        if (firstVertexOpt.isEmpty)
+          graph.addVertex(new Vertex(names(firstLabel), List()))
         else firstVertexOpt.get
       vertices.put(firstLabel, firstVertex)
 
@@ -94,7 +104,8 @@ object GraphReader extends RegexParsers {
         val vertexOpt = vertices.get(targetLabel)
 
         if (vertexOpt.isEmpty) {
-          val newVertex = graph.addVertex(new Vertex(names(targetLabel), List()))
+          val newVertex =
+            graph.addVertex(new Vertex(names(targetLabel), List()))
           vertices.put(targetLabel, newVertex)
           newVertex
         } else {
@@ -122,12 +133,12 @@ object GraphReader extends RegexParsers {
 
 object WikiGraph {
   val titlesPath = "benchmark/data/titles-sorted.txt"
-  val linksPath  = "benchmark/data/links-sorted.txt"
+  val linksPath = "benchmark/data/links-sorted.txt"
 
   implicit val codec = Codec("UTF-8")
   codec.onMalformedInput(CodingErrorAction.REPLACE)
   codec.onUnmappableCharacter(CodingErrorAction.REPLACE)
-  
+
   val names: Map[String, String] = new HashMap[String, String] {
     override def default(label: String) = {
       "no_title[" + label + "]"
@@ -160,10 +171,13 @@ object WikiGraphPicklingBench extends WikiGraphBenchmark {
   implicit val VertexTag = FastTypeTag.materializeFastTypeTag[Vertex]
   implicit val GraphTag = FastTypeTag.materializeFastTypeTag[Graph]
   implicit val StringTag = FastTypeTag.materializeFastTypeTag[String]
-  implicit val ColonColonVertexTag = FastTypeTag.materializeFastTypeTag[::[Vertex]]
+  implicit val ColonColonVertexTag =
+    FastTypeTag.materializeFastTypeTag[::[Vertex]]
   import scala.reflect.runtime.{universe => ru}
-  implicit val myLittlePony: ru.Mirror = ru.runtimeMirror(getClass.getClassLoader)
-  implicit val VectorVertexTag = FastTypeTag.materializeFastTypeTag[Vector[Vertex]]
+  implicit val myLittlePony: ru.Mirror =
+    ru.runtimeMirror(getClass.getClassLoader)
+  implicit val VectorVertexTag =
+    FastTypeTag.materializeFastTypeTag[Vector[Vertex]]
   implicit val ListVertexTag = FastTypeTag.materializeFastTypeTag[List[Vertex]]
   implicit val NilTag = FastTypeTag.materializeFastTypeTag[Nil.type]
   // TODO - why does this no longer compile?
@@ -222,8 +236,11 @@ object WikiGraphPicklingBench extends WikiGraphBenchmark {
   //     }
   //   }
   // }
-  implicit lazy val picklerUnpicklerColonColonVertex: Pickler[::[Vertex]] with Unpickler[::[Vertex]] = implicitly
-  implicit lazy val picklerUnpicklerVectorVertex: Pickler[Vector[Vertex]] with Unpickler[Vector[Vertex]] = Defaults.vectorPickler[Vertex]
+  implicit lazy val picklerUnpicklerColonColonVertex
+      : Pickler[::[Vertex]] with Unpickler[::[Vertex]] = implicitly
+  implicit lazy val picklerUnpicklerVectorVertex
+      : Pickler[Vector[Vertex]] with Unpickler[Vector[Vertex]] =
+    Defaults.vectorPickler[Vertex]
   implicit val picklerGraph = implicitly[Pickler[Graph]]
   implicit val unpicklerGraph = implicitly[Unpickler[Graph]]
 

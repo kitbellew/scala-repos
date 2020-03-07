@@ -1,7 +1,3 @@
-
-
-
-
 // ticket #3496
 object Test {
 

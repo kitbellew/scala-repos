@@ -3,22 +3,22 @@ package lila.round
 import scala.concurrent.duration._
 
 import akka.actor._
-import akka.pattern.{ ask, pipe }
-import chess.{ Color, White, Black }
+import akka.pattern.{ask, pipe}
+import chess.{Color, White, Black}
 import play.api.libs.iteratee._
 import play.api.libs.json._
 
 import actorApi._
 import lila.common.LightUser
-import lila.game.actorApi.{ StartGame, UserStartGame }
+import lila.game.actorApi.{StartGame, UserStartGame}
 import lila.game.Event
 import lila.hub.actorApi.Deploy
 import lila.hub.actorApi.game.ChangeFeatured
-import lila.hub.actorApi.round.{ IsOnGame, AnalysisAvailable }
-import lila.hub.actorApi.tv.{ Select => TvSelect }
+import lila.hub.actorApi.round.{IsOnGame, AnalysisAvailable}
+import lila.hub.actorApi.tv.{Select => TvSelect}
 import lila.hub.TimeBomb
 import lila.socket._
-import lila.socket.actorApi.{ Connected => _, _ }
+import lila.socket.actorApi.{Connected => _, _}
 import makeTimeout.short
 
 private[round] final class Socket(
@@ -29,7 +29,8 @@ private[round] final class Socket(
     socketTimeout: Duration,
     disconnectTimeout: Duration,
     ragequitTimeout: Duration,
-    simulActor: ActorSelection) extends SocketActor[Member](uidTimeout) {
+    simulActor: ActorSelection)
+    extends SocketActor[Member](uidTimeout) {
 
   private var hasAi = false
 
@@ -57,11 +58,14 @@ private[round] final class Socket(
     private def isBye = bye > 0
 
     private def isHostingSimul: Fu[Boolean] = userId ?? { u =>
-      simulActor ? lila.hub.actorApi.simul.GetHostIds mapTo manifest[Set[String]] map (_ contains u)
+      simulActor ? lila.hub.actorApi.simul.GetHostIds mapTo manifest[
+        Set[String]] map (_ contains u)
     }
 
     def isGone =
-      if (time < (nowMillis - isBye.fold(ragequitTimeout, disconnectTimeout).toMillis))
+      if (time < (nowMillis - isBye
+            .fold(ragequitTimeout, disconnectTimeout)
+            .toMillis))
         isHostingSimul map (!_)
       else fuccess(false)
   }
@@ -78,7 +82,9 @@ private[round] final class Socket(
   override def postStop() {
     super.postStop()
     lilaBus.unsubscribe(self)
-    lilaBus.publish(lila.hub.actorApi.round.SocketEvent.Stop(gameId), 'roundDoor)
+    lilaBus.publish(
+      lila.hub.actorApi.round.SocketEvent.Stop(gameId),
+      'roundDoor)
   }
 
   private def refreshSubscriptions {
@@ -107,9 +113,7 @@ private[round] final class Socket(
     case PingVersion(uid, v) =>
       timeBomb.delay
       ping(uid)
-      ownerOf(uid) foreach { o =>
-        playerDo(o.color, _.ping)
-      }
+      ownerOf(uid) foreach { o => playerDo(o.color, _.ping) }
       withMember(uid) { member =>
         (history getEventsSince v).fold(resyncNow(member))(batch(member, _))
       }
@@ -123,20 +127,21 @@ private[round] final class Socket(
         playerGet(c, _.isGone) foreach { _ ?? notifyGone(c, true) }
       }
 
-    case GetVersion      => sender ! history.getVersion
+    case GetVersion => sender ! history.getVersion
 
-    case IsGone(color)   => playerGet(color, _.isGone) pipeTo sender
+    case IsGone(color) => playerGet(color, _.isGone) pipeTo sender
 
     case IsOnGame(color) => sender ! ownerOf(color).isDefined
 
     case GetSocketStatus =>
       playerGet(White, _.isGone) zip playerGet(Black, _.isGone) map {
-        case (whiteIsGone, blackIsGone) => SocketStatus(
-          version = history.getVersion,
-          whiteOnGame = ownerOf(White).isDefined,
-          whiteIsGone = whiteIsGone,
-          blackOnGame = ownerOf(Black).isDefined,
-          blackIsGone = blackIsGone)
+        case (whiteIsGone, blackIsGone) =>
+          SocketStatus(
+            version = history.getVersion,
+            whiteOnGame = ownerOf(White).isDefined,
+            whiteIsGone = whiteIsGone,
+            blackOnGame = ownerOf(Black).isDefined,
+            blackIsGone = blackIsGone)
       } pipeTo sender
 
     case Join(uid, user, color, playerId, ip, userTv) =>
@@ -147,17 +152,19 @@ private[round] final class Socket(
       playerDo(color, _.ping)
       sender ! Connected(enumerator, member)
       if (member.userTv.isDefined) refreshSubscriptions
-      if (member.owner) lilaBus.publish(
-        lila.hub.actorApi.round.SocketEvent.OwnerJoin(gameId, color, ip),
-        'roundDoor)
+      if (member.owner)
+        lilaBus.publish(
+          lila.hub.actorApi.round.SocketEvent.OwnerJoin(gameId, color, ip),
+          'roundDoor)
 
     case Nil                  =>
     case eventList: EventList => notify(eventList.events)
 
-    case lila.chat.actorApi.ChatLine(chatId, line) => notify(List(line match {
-      case l: lila.chat.UserLine   => Event.UserMessage(l, chatId endsWith "/w")
-      case l: lila.chat.PlayerLine => Event.PlayerMessage(l)
-    }))
+    case lila.chat.actorApi.ChatLine(chatId, line) =>
+      notify(List(line match {
+        case l: lila.chat.UserLine   => Event.UserMessage(l, chatId endsWith "/w")
+        case l: lila.chat.PlayerLine => Event.PlayerMessage(l)
+      }))
 
     case AnalysisAvailable => notifyAll("analysisAvailable")
 
@@ -170,15 +177,17 @@ private[round] final class Socket(
 
     case ChangeFeatured(_, msg) => watchers.foreach(_ push msg)
 
-    case TvSelect(msg)          => watchers.foreach(_ push msg)
+    case TvSelect(msg) => watchers.foreach(_ push msg)
 
-    case UserStartGame(userId, game) => watchers filter (_ onUserTv userId) foreach {
-      _ push makeMessage("resync")
-    }
+    case UserStartGame(userId, game) =>
+      watchers filter (_ onUserTv userId) foreach {
+        _ push makeMessage("resync")
+      }
 
-    case round.TournamentStanding(id) => owners.foreach {
-      _ push makeMessage("tournamentStanding", id)
-    }
+    case round.TournamentStanding(id) =>
+      owners.foreach {
+        _ push makeMessage("tournamentStanding", id)
+      }
 
     case NotifyCrowd =>
       delayedCrowdNotification = false
@@ -210,9 +219,7 @@ private[round] final class Socket(
   }
 
   def notifyOwner[A: Writes](color: Color, t: String, data: A) {
-    ownerOf(color) foreach { m =>
-      m push makeMessage(t, data)
-    }
+    ownerOf(color) foreach { m => m push makeMessage(t, data) }
   }
 
   def notifyGone(color: Color, gone: Boolean) {

@@ -62,11 +62,14 @@ private[sql] class MyDenseVectorUDT extends UserDefinedType[MyDenseVector] {
 
   override def equals(other: Any): Boolean = other match {
     case _: MyDenseVectorUDT => true
-    case _ => false
+    case _                   => false
   }
 }
 
-class UserDefinedTypeSuite extends QueryTest with SharedSQLContext with ParquetTest {
+class UserDefinedTypeSuite
+    extends QueryTest
+    with SharedSQLContext
+    with ParquetTest {
   import testImplicits._
 
   private lazy val pointsRDD = Seq(
@@ -74,7 +77,8 @@ class UserDefinedTypeSuite extends QueryTest with SharedSQLContext with ParquetT
     MyLabeledPoint(0.0, new MyDenseVector(Array(0.2, 2.0)))).toDF()
 
   test("register user type: MyDenseVector for MyLabeledPoint") {
-    val labels: RDD[Double] = pointsRDD.select('label).rdd.map { case Row(v: Double) => v }
+    val labels: RDD[Double] =
+      pointsRDD.select('label).rdd.map { case Row(v: Double) => v }
     val labelsArrays: Array[Double] = labels.collect()
     assert(labelsArrays.size === 2)
     assert(labelsArrays.contains(1.0))
@@ -89,7 +93,8 @@ class UserDefinedTypeSuite extends QueryTest with SharedSQLContext with ParquetT
   }
 
   test("UDTs and UDFs") {
-    sqlContext.udf.register("testType", (d: MyDenseVector) => d.isInstanceOf[MyDenseVector])
+    sqlContext.udf
+      .register("testType", (d: MyDenseVector) => d.isInstanceOf[MyDenseVector])
     pointsRDD.registerTempTable("points")
     checkAnswer(
       sql("SELECT testType(features) from points"),
@@ -125,8 +130,17 @@ class UserDefinedTypeSuite extends QueryTest with SharedSQLContext with ParquetT
     val df = Seq((1, new MyDenseVector(Array(0.1, 1.0)))).toDF("int", "vec")
     df.collect()(0).getAs[MyDenseVector](1)
     df.take(1)(0).getAs[MyDenseVector](1)
-    df.limit(1).groupBy('int).agg(first('vec)).collect()(0).getAs[MyDenseVector](0)
-    df.orderBy('int).limit(1).groupBy('int).agg(first('vec)).collect()(0).getAs[MyDenseVector](0)
+    df.limit(1)
+      .groupBy('int)
+      .agg(first('vec))
+      .collect()(0)
+      .getAs[MyDenseVector](0)
+    df.orderBy('int)
+      .limit(1)
+      .groupBy('int)
+      .agg(first('vec))
+      .collect()(0)
+      .getAs[MyDenseVector](0)
   }
 
   test("UDTs with JSON") {
@@ -134,10 +148,11 @@ class UserDefinedTypeSuite extends QueryTest with SharedSQLContext with ParquetT
       "{\"id\":1,\"vec\":[1.1,2.2,3.3,4.4]}",
       "{\"id\":2,\"vec\":[2.25,4.5,8.75]}"
     )
-    val schema = StructType(Seq(
-      StructField("id", IntegerType, false),
-      StructField("vec", new MyDenseVectorUDT, false)
-    ))
+    val schema = StructType(
+      Seq(
+        StructField("id", IntegerType, false),
+        StructField("vec", new MyDenseVectorUDT, false)
+      ))
 
     val stringRDD = sparkContext.parallelize(data)
     val jsonRDD = sqlContext.read.schema(schema).json(stringRDD)
@@ -159,7 +174,8 @@ class UserDefinedTypeSuite extends QueryTest with SharedSQLContext with ParquetT
     val toScalaConverter = CatalystTypeConverters.createToScalaConverter(udt)
     assert(toScalaConverter(null) === null)
 
-    val toCatalystConverter = CatalystTypeConverters.createToCatalystConverter(udt)
+    val toCatalystConverter =
+      CatalystTypeConverters.createToCatalystConverter(udt)
     assert(toCatalystConverter(null) === null)
 
   }

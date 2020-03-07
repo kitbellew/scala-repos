@@ -12,4 +12,3 @@ object Test {
     println(runtime.BoxesRunTime.integerBoxCount)
   }
 }
-

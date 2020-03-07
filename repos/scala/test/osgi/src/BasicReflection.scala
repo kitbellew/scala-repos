@@ -12,10 +12,9 @@ import org.junit.runner.RunWith
 import org.ops4j.pax.exam
 import org.ops4j.pax.exam.Configuration
 import org.ops4j.pax.exam.junit.PaxExam
-import org.ops4j.pax.exam.spi.reactors.{ ExamReactorStrategy, PerMethod }
+import org.ops4j.pax.exam.spi.reactors.{ExamReactorStrategy, PerMethod}
 import org.ops4j.pax.swissbox.tracker.ServiceLookup
 import org.osgi.framework.BundleContext
-
 
 class C {
   val f1 = 2
@@ -33,8 +32,6 @@ class C {
   override def toString = "an instance of C"
 }
 object M
-
-
 @RunWith(classOf[PaxExam])
 @ExamReactorStrategy(Array(classOf[PerMethod]))
 class BasicReflectionTest extends ScalaOsgiHelper {
@@ -55,11 +52,13 @@ class BasicReflectionTest extends ScalaOsgiHelper {
     import scala.reflect.runtime.universe._
     val cm = runtimeMirror(classOf[C].getClassLoader)
     val im = cm.reflect(new C)
-    assertEquals("Unable to reflect field name!",
-                 "value f1",
-                 im.reflectField(typeOf[C].member(TermName("f1")).asTerm).symbol.toString)
-    assertEquals("Unable to reflect value!",
-                 2,
-                 im.reflectField(typeOf[C].member(TermName("f1")).asTerm).get)
- }
+    assertEquals(
+      "Unable to reflect field name!",
+      "value f1",
+      im.reflectField(typeOf[C].member(TermName("f1")).asTerm).symbol.toString)
+    assertEquals(
+      "Unable to reflect value!",
+      2,
+      im.reflectField(typeOf[C].member(TermName("f1")).asTerm).get)
+  }
 }

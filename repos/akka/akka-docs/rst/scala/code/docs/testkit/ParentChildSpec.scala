@@ -13,9 +13,8 @@ import akka.testkit.TestActorRef
 import akka.actor.ActorRefFactory
 
 /**
- * Parent-Child examples
- */
-
+  * Parent-Child examples
+  */
 //#test-example
 class Parent extends Actor {
   val child = context.actorOf(Props[Child], "child")
@@ -53,7 +52,8 @@ class DependentParent(childProps: Props) extends Actor {
   }
 }
 
-class GenericDependentParent(childMaker: ActorRefFactory => ActorRef) extends Actor {
+class GenericDependentParent(childMaker: ActorRefFactory => ActorRef)
+    extends Actor {
   val child = childMaker(context)
   var ponged = false
 
@@ -65,9 +65,8 @@ class GenericDependentParent(childMaker: ActorRefFactory => ActorRef) extends Ac
 //#test-dependentparent
 
 /**
- * Test specification
- */
-
+  * Test specification
+  */
 class MockedChild extends Actor {
   def receive = {
     case "ping" => sender ! "pong"

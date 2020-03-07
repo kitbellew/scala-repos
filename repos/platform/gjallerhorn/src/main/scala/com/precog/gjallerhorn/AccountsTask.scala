@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -26,8 +26,11 @@ import org.specs2.mutable._
 import scalaz._
 import specs2._
 
-class AccountsTask(settings: Settings) extends Task(settings: Settings) with Specification {
-  private val DateTimePattern = """[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z""".r
+class AccountsTask(settings: Settings)
+    extends Task(settings: Settings)
+    with Specification {
+  private val DateTimePattern =
+    """[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z""".r
 
   "accounts web service" should {
     "create account" in {
@@ -42,7 +45,8 @@ class AccountsTask(settings: Settings) extends Task(settings: Settings) with Spe
     "not create the same account twice" in {
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
 
-      val body = """{ "email": "%s", "password": "%s" }""".format(user, pass + "xyz")
+      val body =
+        """{ "email": "%s", "password": "%s" }""".format(user, pass + "xyz")
       val post = (accounts / "") << body
       val result = Http(post OK as.String)
 
@@ -54,7 +58,9 @@ class AccountsTask(settings: Settings) extends Task(settings: Settings) with Spe
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
 
       val json = getjson((accounts / accountId).as(user, pass))
-      (json \ "accountCreationDate") must beLike { case JString(DateTimePattern()) => ok }
+      (json \ "accountCreationDate") must beLike {
+        case JString(DateTimePattern()) => ok
+      }
       (json \ "email") must_== JString(user)
       (json \ "accountId") must_== JString(accountId)
       (json \ "apiKey") must_== JString(apiKey)
@@ -85,9 +91,11 @@ class AccountsTask(settings: Settings) extends Task(settings: Settings) with Spe
       val grantId = (g \ "grantId").deserialize[String]
 
       val body = JObject("grantId" -> JString(grantId)).renderCompact
-      val req = (accounts / accountId2 / "grants" / "").POST.as(user1, pass1) << body
+      val req =
+        (accounts / accountId2 / "grants" / "").POST.as(user1, pass1) << body
       val r = http(req)().complete()
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(g)
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(
+        g)
     }
 
     // "describe account's plan" in {}

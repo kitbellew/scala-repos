@@ -29,12 +29,13 @@ import org.apache.spark.sql.catalyst.analysis.NoSuchItemException
 import org.apache.spark.sql.catalyst.catalog._
 import org.apache.spark.sql.hive.client.HiveClient
 
-
 /**
- * A persistent implementation of the system catalog using Hive.
- * All public methods must be synchronized for thread-safety.
- */
-private[spark] class HiveCatalog(client: HiveClient) extends ExternalCatalog with Logging {
+  * A persistent implementation of the system catalog using Hive.
+  * All public methods must be synchronized for thread-safety.
+  */
+private[spark] class HiveCatalog(client: HiveClient)
+    extends ExternalCatalog
+    with Logging {
   import ExternalCatalog._
 
   // Exceptions thrown by the hive client that we would like to wrap
@@ -43,11 +44,11 @@ private[spark] class HiveCatalog(client: HiveClient) extends ExternalCatalog wit
     classOf[TException].getCanonicalName)
 
   /**
-   * Whether this is an exception thrown by the hive client that should be wrapped.
-   *
-   * Due to classloader isolation issues, pattern matching won't work here so we need
-   * to compare the canonical names of the exceptions, which we assume to be stable.
-   */
+    * Whether this is an exception thrown by the hive client that should be wrapped.
+    *
+    * Due to classloader isolation issues, pattern matching won't work here so we need
+    * to compare the canonical names of the exceptions, which we assume to be stable.
+    */
   private def isClientException(e: Throwable): Boolean = {
     var temp: Class[_] = e.getClass
     var found = false
@@ -59,9 +60,9 @@ private[spark] class HiveCatalog(client: HiveClient) extends ExternalCatalog wit
   }
 
   /**
-   * Run some code involving `client` in a [[synchronized]] block and wrap certain
-   * exceptions thrown in the process in [[AnalysisException]].
-   */
+    * Run some code involving `client` in a [[synchronized]] block and wrap certain
+    * exceptions thrown in the process in [[AnalysisException]].
+    */
   private def withClient[T](body: => T): T = synchronized {
     try {
       body
@@ -69,7 +70,8 @@ private[spark] class HiveCatalog(client: HiveClient) extends ExternalCatalog wit
       case e: NoSuchItemException =>
         throw new AnalysisException(e.getMessage)
       case NonFatal(e) if isClientException(e) =>
-        throw new AnalysisException(e.getClass.getCanonicalName + ": " + e.getMessage)
+        throw new AnalysisException(
+          e.getClass.getCanonicalName + ": " + e.getMessage)
     }
   }
 
@@ -77,14 +79,13 @@ private[spark] class HiveCatalog(client: HiveClient) extends ExternalCatalog wit
     if (table.name.database != Some(db)) {
       throw new AnalysisException(
         s"Provided database $db does not much the one specified in the " +
-        s"table definition (${table.name.database.getOrElse("n/a")})")
+          s"table definition (${table.name.database.getOrElse("n/a")})")
     }
   }
 
   private def requireTableExists(db: String, table: String): Unit = {
     withClient { getTable(db, table) }
   }
-
 
   // --------------------------------------------------------------------------
   // Databases
@@ -104,17 +105,18 @@ private[spark] class HiveCatalog(client: HiveClient) extends ExternalCatalog wit
   }
 
   /**
-   * Alter a database whose name matches the one specified in `dbDefinition`,
-   * assuming the database exists.
-   *
-   * Note: As of now, this only supports altering database properties!
-   */
+    * Alter a database whose name matches the one specified in `dbDefinition`,
+    * assuming the database exists.
+    *
+    * Note: As of now, this only supports altering database properties!
+    */
   override def alterDatabase(dbDefinition: CatalogDatabase): Unit = withClient {
     val existingDb = getDatabase(dbDefinition.name)
     if (existingDb.properties == dbDefinition.properties) {
-      logWarning(s"Request to alter database ${dbDefinition.name} is a no-op because " +
-        s"the provided database properties are the same as the old ones. Hive does not " +
-        s"currently support altering other database fields.")
+      logWarning(
+        s"Request to alter database ${dbDefinition.name} is a no-op because " +
+          s"the provided database properties are the same as the old ones. Hive does not " +
+          s"currently support altering other database fields.")
     }
     client.alterDatabase(dbDefinition)
   }
@@ -160,23 +162,27 @@ private[spark] class HiveCatalog(client: HiveClient) extends ExternalCatalog wit
     client.dropTable(db, table, ignoreIfNotExists)
   }
 
-  override def renameTable(db: String, oldName: String, newName: String): Unit = withClient {
-    val newTable = client.getTable(db, oldName).copy(name = TableIdentifier(newName, Some(db)))
-    client.alterTable(oldName, newTable)
-  }
+  override def renameTable(db: String, oldName: String, newName: String): Unit =
+    withClient {
+      val newTable = client
+        .getTable(db, oldName)
+        .copy(name = TableIdentifier(newName, Some(db)))
+      client.alterTable(oldName, newTable)
+    }
 
   /**
-   * Alter a table whose name that matches the one specified in `tableDefinition`,
-   * assuming the table exists.
-   *
-   * Note: As of now, this only supports altering table properties, serde properties,
-   * and num buckets!
-   */
-  override def alterTable(db: String, tableDefinition: CatalogTable): Unit = withClient {
-    requireDbMatches(db, tableDefinition)
-    requireTableExists(db, tableDefinition.name.table)
-    client.alterTable(tableDefinition)
-  }
+    * Alter a table whose name that matches the one specified in `tableDefinition`,
+    * assuming the table exists.
+    *
+    * Note: As of now, this only supports altering table properties, serde properties,
+    * and num buckets!
+    */
+  override def alterTable(db: String, tableDefinition: CatalogTable): Unit =
+    withClient {
+      requireDbMatches(db, tableDefinition)
+      requireTableExists(db, tableDefinition.name.table)
+      client.alterTable(tableDefinition)
+    }
 
   override def getTable(db: String, table: String): CatalogTable = withClient {
     client.getTable(db, table)
@@ -187,10 +193,11 @@ private[spark] class HiveCatalog(client: HiveClient) extends ExternalCatalog wit
     client.listTables(db)
   }
 
-  override def listTables(db: String, pattern: String): Seq[String] = withClient {
-    requireDbExists(db)
-    client.listTables(db, pattern)
-  }
+  override def listTables(db: String, pattern: String): Seq[String] =
+    withClient {
+      requireDbExists(db)
+      client.listTables(db, pattern)
+    }
 
   // --------------------------------------------------------------------------
   // Partitions
@@ -275,20 +282,27 @@ private[spark] class HiveCatalog(client: HiveClient) extends ExternalCatalog wit
     client.dropFunction(db, name)
   }
 
-  override def renameFunction(db: String, oldName: String, newName: String): Unit = withClient {
+  override def renameFunction(
+      db: String,
+      oldName: String,
+      newName: String): Unit = withClient {
     client.renameFunction(db, oldName, newName)
   }
 
-  override def alterFunction(db: String, funcDefinition: CatalogFunction): Unit = withClient {
+  override def alterFunction(
+      db: String,
+      funcDefinition: CatalogFunction): Unit = withClient {
     client.alterFunction(db, funcDefinition)
   }
 
-  override def getFunction(db: String, funcName: String): CatalogFunction = withClient {
-    client.getFunction(db, funcName)
-  }
+  override def getFunction(db: String, funcName: String): CatalogFunction =
+    withClient {
+      client.getFunction(db, funcName)
+    }
 
-  override def listFunctions(db: String, pattern: String): Seq[String] = withClient {
-    client.listFunctions(db, pattern)
-  }
+  override def listFunctions(db: String, pattern: String): Seq[String] =
+    withClient {
+      client.listFunctions(db, pattern)
+    }
 
 }

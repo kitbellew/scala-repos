@@ -6,22 +6,20 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 
 /** Buffered iterators are iterators which provide a method `head`
- *  that inspects the next element without discarding it.
- *
- *  @author  Martin Odersky
- *  @version 2.8
- *  @since   2.8
- */
+  *  that inspects the next element without discarding it.
+  *
+  *  @author  Martin Odersky
+  *  @version 2.8
+  *  @since   2.8
+  */
 trait BufferedIterator[+A] extends Iterator[A] {
 
   /** Returns next element of iterator without advancing beyond it.
-   */
+    */
   def head: A
 
   override def buffered: this.type = this

@@ -9,12 +9,10 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 import org.jetbrains.plugins.scala.lang.parser.parsing.types.TypeArgs
 
-
 /**
- * @author AlexanderPodkhalyuzin
-* Date: 03.03.2008
- */
-
+  * @author AlexanderPodkhalyuzin
+  * Date: 03.03.2008
+  */
 /*
  * InfixExpr ::= PrefixExpr
  *             | InfixExpr id [TypeArgs] [nl] InfixExpr
@@ -48,14 +46,12 @@ object InfixExpr {
           val newMarker = backupMarker.precede
           markerStack push newMarker
           exit = true
-        }
-        else if (!compar(s, opStack.top, builder)) {
+        } else if (!compar(s, opStack.top, builder)) {
           opStack.pop()
           backupMarker.drop()
           backupMarker = markerStack.top.precede
           markerStack.pop().done(ScalaElementTypes.INFIX_EXPR)
-        }
-        else {
+        } else {
           opStack push s
           val newMarker = backupMarker.precede
           markerStack push newMarker
@@ -79,8 +75,7 @@ object InfixExpr {
           setMarker.rollbackTo()
           count = 0
           exitOf = false
-        }
-        else {
+        } else {
           setMarker.drop()
           count = count + 1
         }
@@ -104,8 +99,11 @@ object InfixExpr {
 
   //compares two operators a id2 b id1 c
   private def compar(id1: String, id2: String, builder: PsiBuilder): Boolean = {
-    if (priority(id1, assignments = true) < priority(id2, assignments = true)) true //  a * b + c  =((a * b) + c)
-    else if (priority(id1, assignments = true) > priority(id2, assignments = true)) false //  a + b * c = (a + (b * c))
+    if (priority(id1, assignments = true) < priority(id2, assignments = true))
+      true //  a * b + c  =((a * b) + c)
+    else if (priority(id1, assignments = true) > priority(
+               id2,
+               assignments = true)) false //  a + b * c = (a + (b * c))
     else if (associate(id1) == associate(id2))
       if (associate(id1) == -1) true
       else false

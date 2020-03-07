@@ -9,20 +9,21 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 06.02.2008
-*/
-
+  * @author Alexander Podkhalyuzin
+  * Date: 06.02.2008
+  */
 /*
   QualId ::= id {. id}
-*/
+ */
 
 object Qual_Id {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val qualMarker = builder.mark
-    return parse(builder,qualMarker)
+    return parse(builder, qualMarker)
   }
-  def parse(builder: ScalaPsiBuilder, qualMarker: PsiBuilder.Marker): Boolean = {
+  def parse(
+      builder: ScalaPsiBuilder,
+      qualMarker: PsiBuilder.Marker): Boolean = {
     //parsing td identifier
     builder.getTokenType match {
       case ScalaTokenTypes.tIDENTIFIER =>
@@ -34,7 +35,7 @@ object Qual_Id {
             qualMarker.done(ScalaElementTypes.REFERENCE)
             builder.advanceLexer //Ate dot
             //recursively parse qualified identifier
-            Qual_Id parse(builder, newMarker)
+            Qual_Id parse (builder, newMarker)
             return true
           }
           case _ => {

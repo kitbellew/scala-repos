@@ -4,9 +4,9 @@ package codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * Nikolay.Tropin
- * 2014-05-07
- */
+  * Nikolay.Tropin
+  * 2014-05-07
+  */
 class FilterIsEmptyCheckTest extends OperationsOnCollectionInspectionTest {
   override val inspectionClass = classOf[FilterEmptyCheckInspection]
   override val hint = InspectionBundle.message("filter.empty.check.hint")

@@ -22,18 +22,22 @@ import org.apache.log4j.{Level, Logger}
 import scopt.OptionParser
 
 import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.mllib.optimization.{L1Updater, SimpleUpdater, SquaredL2Updater}
+import org.apache.spark.mllib.optimization.{
+  L1Updater,
+  SimpleUpdater,
+  SquaredL2Updater
+}
 import org.apache.spark.mllib.regression.LinearRegressionWithSGD
 import org.apache.spark.mllib.util.MLUtils
 
 /**
- * An example app for linear regression. Run with
- * {{{
- * bin/run-example org.apache.spark.examples.mllib.LinearRegression
- * }}}
- * A synthetic dataset can be found at `data/mllib/sample_linear_regression_data.txt`.
- * If you use it as a template to create your own app, please use `spark-submit` to submit your app.
- */
+  * An example app for linear regression. Run with
+  * {{{
+  * bin/run-example org.apache.spark.examples.mllib.LinearRegression
+  * }}}
+  * A synthetic dataset can be found at `data/mllib/sample_linear_regression_data.txt`.
+  * If you use it as a template to create your own app, please use `spark-submit` to submit your app.
+  */
 object LinearRegression {
 
   object RegType extends Enumeration {
@@ -48,7 +52,8 @@ object LinearRegression {
       numIterations: Int = 100,
       stepSize: Double = 1.0,
       regType: RegType = L2,
-      regParam: Double = 0.01) extends AbstractParams[Params]
+      regParam: Double = 0.01)
+      extends AbstractParams[Params]
 
   def main(args: Array[String]) {
     val defaultParams = Params()
@@ -63,7 +68,7 @@ object LinearRegression {
         .action((x, c) => c.copy(stepSize = x))
       opt[String]("regType")
         .text(s"regularization type (${RegType.values.mkString(",")}), " +
-        s"default: ${defaultParams.regType}")
+          s"default: ${defaultParams.regType}")
         .action((x, c) => c.copy(regType = RegType.withName(x)))
       opt[Double]("regParam")
         .text(s"regularization parameter, default: ${defaultParams.regParam}")
@@ -81,9 +86,7 @@ object LinearRegression {
         """.stripMargin)
     }
 
-    parser.parse(args, defaultParams).map { params =>
-      run(params)
-    } getOrElse {
+    parser.parse(args, defaultParams).map { params => run(params) } getOrElse {
       sys.exit(1)
     }
   }
@@ -108,8 +111,8 @@ object LinearRegression {
 
     val updater = params.regType match {
       case NONE => new SimpleUpdater()
-      case L1 => new L1Updater()
-      case L2 => new SquaredL2Updater()
+      case L1   => new L1Updater()
+      case L2   => new SquaredL2Updater()
     }
 
     val algorithm = new LinearRegressionWithSGD()
@@ -124,10 +127,13 @@ object LinearRegression {
     val prediction = model.predict(test.map(_.features))
     val predictionAndLabel = prediction.zip(test.map(_.label))
 
-    val loss = predictionAndLabel.map { case (p, l) =>
-      val err = p - l
-      err * err
-    }.reduce(_ + _)
+    val loss = predictionAndLabel
+      .map {
+        case (p, l) =>
+          val err = p - l
+          err * err
+      }
+      .reduce(_ + _)
     val rmse = math.sqrt(loss / numTest)
 
     println(s"Test RMSE = $rmse.")

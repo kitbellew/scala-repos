@@ -20,17 +20,25 @@ package org.apache.spark.sql.execution.aggregate
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.catalyst.{CatalystTypeConverters, InternalRow}
-import org.apache.spark.sql.catalyst.expressions.{AttributeReference, Expression, MutableRow, _}
+import org.apache.spark.sql.catalyst.expressions.{
+  AttributeReference,
+  Expression,
+  MutableRow,
+  _
+}
 import org.apache.spark.sql.catalyst.expressions.aggregate.ImperativeAggregate
 import org.apache.spark.sql.catalyst.expressions.codegen.GenerateMutableProjection
-import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction}
+import org.apache.spark.sql.expressions.{
+  MutableAggregationBuffer,
+  UserDefinedAggregateFunction
+}
 import org.apache.spark.sql.types._
 
 /**
- * A helper trait used to create specialized setter and getter for types supported by
- * [[org.apache.spark.sql.execution.UnsafeFixedWidthAggregationMap]]'s buffer.
- * (see UnsafeFixedWidthAggregationMap.supportsAggregationBufferSchema).
- */
+  * A helper trait used to create specialized setter and getter for types supported by
+  * [[org.apache.spark.sql.execution.UnsafeFixedWidthAggregationMap]]'s buffer.
+  * (see UnsafeFixedWidthAggregationMap.supportsAggregationBufferSchema).
+  */
 sealed trait BufferSetterGetterUtils {
 
   def createGetters(schema: StructType): Array[(InternalRow, Int) => Any] = {
@@ -75,7 +83,8 @@ sealed trait BufferSetterGetterUtils {
           val precision = dt.precision
           val scale = dt.scale
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null else row.getDecimal(ordinal, precision, scale)
+            if (row.isNullAt(ordinal)) null
+            else row.getDecimal(ordinal, precision, scale)
 
         case DateType =>
           (row: InternalRow, ordinal: Int) =>
@@ -96,7 +105,8 @@ sealed trait BufferSetterGetterUtils {
     getters
   }
 
-  def createSetters(schema: StructType): Array[((MutableRow, Int, Any) => Unit)] = {
+  def createSetters(
+      schema: StructType): Array[((MutableRow, Int, Any) => Unit)] = {
     val dataTypes = schema.fields.map(_.dataType)
     val setters = new Array[(MutableRow, Int, Any) => Unit](dataTypes.length)
 
@@ -202,15 +212,16 @@ sealed trait BufferSetterGetterUtils {
 }
 
 /**
- * A Mutable [[Row]] representing an mutable aggregation buffer.
- */
-private[sql] class MutableAggregationBufferImpl (
+  * A Mutable [[Row]] representing an mutable aggregation buffer.
+  */
+private[sql] class MutableAggregationBufferImpl(
     schema: StructType,
     toCatalystConverters: Array[Any => Any],
     toScalaConverters: Array[Any => Any],
     bufferOffset: Int,
     var underlyingBuffer: MutableRow)
-  extends MutableAggregationBuffer with BufferSetterGetterUtils {
+    extends MutableAggregationBuffer
+    with BufferSetterGetterUtils {
 
   private[this] val offsets: Array[Int] = {
     val newOffsets = new Array[Int](length)
@@ -243,7 +254,10 @@ private[sql] class MutableAggregationBufferImpl (
         s"Could not update ${i}th value in this buffer because it only has $length values.")
     }
 
-    bufferValueSetters(i)(underlyingBuffer, offsets(i), toCatalystConverters(i)(value))
+    bufferValueSetters(i)(
+      underlyingBuffer,
+      offsets(i),
+      toCatalystConverters(i)(value))
   }
 
   // Because get method call specialized getter based on the schema, we cannot use the
@@ -264,15 +278,16 @@ private[sql] class MutableAggregationBufferImpl (
 }
 
 /**
- * A [[Row]] representing an immutable aggregation buffer.
- */
+  * A [[Row]] representing an immutable aggregation buffer.
+  */
 private[sql] class InputAggregationBuffer private[sql] (
     schema: StructType,
     toCatalystConverters: Array[Any => Any],
     toScalaConverters: Array[Any => Any],
     bufferOffset: Int,
     var underlyingInputBuffer: InternalRow)
-  extends Row with BufferSetterGetterUtils {
+    extends Row
+    with BufferSetterGetterUtils {
 
   private[this] val offsets: Array[Int] = {
     val newOffsets = new Array[Int](length)
@@ -295,7 +310,8 @@ private[sql] class InputAggregationBuffer private[sql] (
       throw new IllegalArgumentException(
         s"Could not access ${i}th value in this buffer because it only has $length values.")
     }
-    toScalaConverters(i)(bufferValueGetters(i)(underlyingInputBuffer, offsets(i)))
+    toScalaConverters(i)(
+      bufferValueGetters(i)(underlyingInputBuffer, offsets(i)))
   }
 
   // Because get method call specialized getter based on the schema, we cannot use the
@@ -316,20 +332,24 @@ private[sql] class InputAggregationBuffer private[sql] (
 }
 
 /**
- * The internal wrapper used to hook a [[UserDefinedAggregateFunction]] `udaf` in the
- * internal aggregation code path.
- */
+  * The internal wrapper used to hook a [[UserDefinedAggregateFunction]] `udaf` in the
+  * internal aggregation code path.
+  */
 private[sql] case class ScalaUDAF(
     children: Seq[Expression],
     udaf: UserDefinedAggregateFunction,
     mutableAggBufferOffset: Int = 0,
     inputAggBufferOffset: Int = 0)
-  extends ImperativeAggregate with NonSQLExpression with Logging {
+    extends ImperativeAggregate
+    with NonSQLExpression
+    with Logging {
 
-  override def withNewMutableAggBufferOffset(newMutableAggBufferOffset: Int): ImperativeAggregate =
+  override def withNewMutableAggBufferOffset(
+      newMutableAggBufferOffset: Int): ImperativeAggregate =
     copy(mutableAggBufferOffset = newMutableAggBufferOffset)
 
-  override def withNewInputAggBufferOffset(newInputAggBufferOffset: Int): ImperativeAggregate =
+  override def withNewInputAggBufferOffset(
+      newInputAggBufferOffset: Int): ImperativeAggregate =
     copy(inputAggBufferOffset = newInputAggBufferOffset)
 
   override def nullable: Boolean = true
@@ -342,7 +362,8 @@ private[sql] case class ScalaUDAF(
 
   override val aggBufferSchema: StructType = udaf.bufferSchema
 
-  override val aggBufferAttributes: Seq[AttributeReference] = aggBufferSchema.toAttributes
+  override val aggBufferAttributes: Seq[AttributeReference] =
+    aggBufferSchema.toAttributes
 
   // Note: although this simply copies aggBufferAttributes, this common code can not be placed
   // in the superclass because that will lead to initialization ordering issues.
@@ -352,7 +373,11 @@ private[sql] case class ScalaUDAF(
   private[this] lazy val childrenSchema: StructType = {
     val inputFields = children.zipWithIndex.map {
       case (child, index) =>
-        StructField(s"input$index", child.dataType, child.nullable, Metadata.empty)
+        StructField(
+          s"input$index",
+          child.dataType,
+          child.nullable,
+          Metadata.empty)
     }
     StructType(inputFields)
   }
@@ -394,7 +419,8 @@ private[sql] case class ScalaUDAF(
   }
 
   // This buffer is only used at executor side.
-  private[this] lazy val mutableAggregateBuffer: MutableAggregationBufferImpl = {
+  private[this] lazy val mutableAggregateBuffer
+      : MutableAggregationBufferImpl = {
     new MutableAggregationBufferImpl(
       aggBufferSchema,
       bufferValuesToCatalystConverters,

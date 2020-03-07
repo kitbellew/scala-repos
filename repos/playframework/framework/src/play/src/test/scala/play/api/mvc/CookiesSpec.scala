@@ -95,9 +95,7 @@ object CookiesSpec extends Specification {
       val c: Cookies = Cookies.fromCookieHeader(Some(headerString))
 
       var myCookie: Cookie = null
-      c.foreach { cookie =>
-        myCookie = cookie
-      }
+      c.foreach { cookie => myCookie = cookie }
       myCookie must beEqualTo(cookie1)
     }
   }
@@ -111,8 +109,11 @@ object CookiesSpec extends Specification {
 
   "merging cookies" should {
     "replace old cookies with new cookies of the same name" in {
-      val originalRequest = FakeRequest().withCookies(Cookie("foo", "fooValue1"), Cookie("bar", "barValue2"))
-      val requestWithMoreCookies = originalRequest.withCookies(Cookie("foo", "fooValue2"), Cookie("baz", "bazValue"))
+      val originalRequest = FakeRequest()
+        .withCookies(Cookie("foo", "fooValue1"), Cookie("bar", "barValue2"))
+      val requestWithMoreCookies = originalRequest.withCookies(
+        Cookie("foo", "fooValue2"),
+        Cookie("baz", "bazValue"))
       val cookies = requestWithMoreCookies.cookies
       cookies.toSet must_== Set(
         Cookie("foo", "fooValue2"),
@@ -121,9 +122,14 @@ object CookiesSpec extends Specification {
       )
     }
     "return one cookie for each name" in {
-      val cookies = FakeRequest().withCookies(
-        Cookie("foo", "foo1"), Cookie("foo", "foo2"), Cookie("bar", "bar"), Cookie("baz", "baz")
-      ).cookies
+      val cookies = FakeRequest()
+        .withCookies(
+          Cookie("foo", "foo1"),
+          Cookie("foo", "foo2"),
+          Cookie("bar", "bar"),
+          Cookie("baz", "baz")
+        )
+        .cookies
       cookies.toSet must_== Set(
         Cookie("foo", "foo2"),
         Cookie("bar", "bar"),

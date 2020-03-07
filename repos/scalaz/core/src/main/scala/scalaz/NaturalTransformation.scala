@@ -24,13 +24,14 @@ trait NaturalTransformation[-F[_], +G[_]] {
 }
 
 trait NaturalTransformations {
+
   /** A function type encoded as a natural transformation by adding a
     * phantom parameter.
     */
   type ->[A, B] = λ[α => A] ~> λ[α => B]
 
   /** `refl` specialized to [[scalaz.Id.Id]]. */
-  def id = 
+  def id =
     new (Id ~> Id) {
       def apply[A](a: A) = a
     }
@@ -64,12 +65,12 @@ trait ConstrainedNaturalTransformation[F[_], G[_], E[_]] {
 }
 
 /** A constrained transformation natural in both sides of a bifunctor */
-trait BiConstrainedNaturalTransformation[F[_,_], G[_,_], C[_], E[_]] {
-  def apply[A: C, B: E](f: F[A,B]): G[A,B]
+trait BiConstrainedNaturalTransformation[F[_, _], G[_, _], C[_], E[_]] {
+  def apply[A: C, B: E](f: F[A, B]): G[A, B]
 }
 
-trait DiNaturalTransformation[F[_,_], G[_,_]] {
-  def apply[A](f: F[A,A]): G[A,A]
+trait DiNaturalTransformation[F[_, _], G[_, _]] {
+  def apply[A](f: F[A, A]): G[A, A]
 }
 
 // TODO needed, or just use type lambdas?

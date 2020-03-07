@@ -27,7 +27,10 @@ import org.apache.spark.sql.test.SharedSQLContext
 import org.apache.spark.sql.types._
 import org.apache.spark.util.Utils
 
-class SaveLoadSuite extends DataSourceTest with SharedSQLContext with BeforeAndAfter {
+class SaveLoadSuite
+    extends DataSourceTest
+    with SharedSQLContext
+    with BeforeAndAfter {
   protected override lazy val sql = caseInsensitiveContext.sql _
   private var originalDefaultSource: String = null
   private var path: File = null
@@ -40,14 +43,16 @@ class SaveLoadSuite extends DataSourceTest with SharedSQLContext with BeforeAndA
     path = Utils.createTempDir()
     path.delete()
 
-    val rdd = sparkContext.parallelize((1 to 10).map(i => s"""{"a":$i, "b":"str${i}"}"""))
+    val rdd = sparkContext.parallelize(
+      (1 to 10).map(i => s"""{"a":$i, "b":"str${i}"}"""))
     df = caseInsensitiveContext.read.json(rdd)
     df.registerTempTable("jsonTable")
   }
 
   override def afterAll(): Unit = {
     try {
-      caseInsensitiveContext.conf.setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, originalDefaultSource)
+      caseInsensitiveContext.conf
+        .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, originalDefaultSource)
     } finally {
       super.afterAll()
     }
@@ -58,45 +63,55 @@ class SaveLoadSuite extends DataSourceTest with SharedSQLContext with BeforeAndA
   }
 
   def checkLoad(expectedDF: DataFrame = df, tbl: String = "jsonTable"): Unit = {
-    caseInsensitiveContext.conf.setConf(
-      SQLConf.DEFAULT_DATA_SOURCE_NAME, "org.apache.spark.sql.json")
-    checkAnswer(caseInsensitiveContext.read.load(path.toString), expectedDF.collect())
+    caseInsensitiveContext.conf
+      .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "org.apache.spark.sql.json")
+    checkAnswer(
+      caseInsensitiveContext.read.load(path.toString),
+      expectedDF.collect())
 
     // Test if we can pick up the data source name passed in load.
-    caseInsensitiveContext.conf.setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "not a source name")
-    checkAnswer(caseInsensitiveContext.read.format("json").load(path.toString),
+    caseInsensitiveContext.conf
+      .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "not a source name")
+    checkAnswer(
+      caseInsensitiveContext.read.format("json").load(path.toString),
       expectedDF.collect())
-    checkAnswer(caseInsensitiveContext.read.format("json").load(path.toString),
+    checkAnswer(
+      caseInsensitiveContext.read.format("json").load(path.toString),
       expectedDF.collect())
     val schema = StructType(StructField("b", StringType, true) :: Nil)
     checkAnswer(
-      caseInsensitiveContext.read.format("json").schema(schema).load(path.toString),
+      caseInsensitiveContext.read
+        .format("json")
+        .schema(schema)
+        .load(path.toString),
       sql(s"SELECT b FROM $tbl").collect())
   }
 
   test("save with path and load") {
-    caseInsensitiveContext.conf.setConf(
-      SQLConf.DEFAULT_DATA_SOURCE_NAME, "org.apache.spark.sql.json")
+    caseInsensitiveContext.conf
+      .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "org.apache.spark.sql.json")
     df.write.save(path.toString)
     checkLoad()
   }
 
   test("save with string mode and path, and load") {
-    caseInsensitiveContext.conf.setConf(
-      SQLConf.DEFAULT_DATA_SOURCE_NAME, "org.apache.spark.sql.json")
+    caseInsensitiveContext.conf
+      .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "org.apache.spark.sql.json")
     path.createNewFile()
     df.write.mode("overwrite").save(path.toString)
     checkLoad()
   }
 
   test("save with path and datasource, and load") {
-    caseInsensitiveContext.conf.setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "not a source name")
+    caseInsensitiveContext.conf
+      .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "not a source name")
     df.write.json(path.toString)
     checkLoad()
   }
 
   test("save with data source and options, and load") {
-    caseInsensitiveContext.conf.setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "not a source name")
+    caseInsensitiveContext.conf
+      .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "not a source name")
     df.write.mode(SaveMode.ErrorIfExists).json(path.toString)
     checkLoad()
   }

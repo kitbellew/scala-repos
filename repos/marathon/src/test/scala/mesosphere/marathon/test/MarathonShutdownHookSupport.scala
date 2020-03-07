@@ -1,7 +1,7 @@
 package mesosphere.marathon.test
 
 import mesosphere.marathon.core.base.ShutdownHooks
-import org.scalatest.{ Suite, BeforeAndAfterEach }
+import org.scalatest.{Suite, BeforeAndAfterEach}
 
 /**
   * Creates shutdown hooks before each test and shuts it down after each test.

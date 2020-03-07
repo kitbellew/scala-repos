@@ -27,8 +27,8 @@ import org.apache.spark.sql.types._
 import org.apache.spark.unsafe.types.UTF8String
 
 /**
- * A test suite for generated projections
- */
+  * A test suite for generated projections
+  */
 class GeneratedProjectionSuite extends SparkFunSuite {
 
   test("generated projections on wider table") {
@@ -42,7 +42,9 @@ class GeneratedProjectionSuite extends SparkFunSuite {
     val joinedSchema = StructType(schema1 ++ schema2)
     val nested = new JoinedRow(InternalRow(joined, joined), joined)
     val nestedSchema = StructType(
-      Seq(StructField("", joinedSchema), StructField("", joinedSchema)) ++ joinedSchema)
+      Seq(
+        StructField("", joinedSchema),
+        StructField("", joinedSchema)) ++ joinedSchema)
 
     // test generated UnsafeProjection
     val unsafeProj = UnsafeProjection.create(nestedSchema)
@@ -73,8 +75,9 @@ class GeneratedProjectionSuite extends SparkFunSuite {
     }
 
     // test generated MutableProjection
-    val exprs = nestedSchema.fields.zipWithIndex.map { case (f, i) =>
-      BoundReference(i, f.dataType, true)
+    val exprs = nestedSchema.fields.zipWithIndex.map {
+      case (f, i) =>
+        BoundReference(i, f.dataType, true)
     }
     val mutableProj = GenerateMutableProjection.generate(exprs)()
     val row1 = mutableProj(result)
@@ -92,10 +95,14 @@ class GeneratedProjectionSuite extends SparkFunSuite {
     val unsafeProj = UnsafeProjection.create(fields)
     val unsafeRow: UnsafeRow = unsafeProj(row)
     assert(java.util.Arrays.equals(unsafeRow.getBinary(0), Array[Byte](1, 2)))
-    assert(java.util.Arrays.equals(unsafeRow.getArray(1).getBinary(0), Array[Byte](1, 2)))
+    assert(
+      java.util.Arrays
+        .equals(unsafeRow.getArray(1).getBinary(0), Array[Byte](1, 2)))
     assert(unsafeRow.getArray(1).isNullAt(1))
     assert(unsafeRow.getArray(1).getBinary(1) === null)
-    assert(java.util.Arrays.equals(unsafeRow.getArray(1).getBinary(2), Array[Byte](3, 4)))
+    assert(
+      java.util.Arrays
+        .equals(unsafeRow.getArray(1).getBinary(2), Array[Byte](3, 4)))
 
     val safeProj = FromUnsafeProjection(fields)
     val row2 = safeProj(unsafeRow)
@@ -103,19 +110,31 @@ class GeneratedProjectionSuite extends SparkFunSuite {
   }
 
   test("padding bytes should be zeroed out") {
-    val types = Seq(BooleanType, ByteType, ShortType, IntegerType, FloatType, BinaryType,
+    val types = Seq(
+      BooleanType,
+      ByteType,
+      ShortType,
+      IntegerType,
+      FloatType,
+      BinaryType,
       StringType)
     val struct = StructType(types.map(StructField("", _, true)))
     val fields = Array[DataType](StringType, struct)
     val unsafeProj = UnsafeProjection.create(fields)
 
-    val innerRow = InternalRow(false, 1.toByte, 2.toShort, 3, 4.0f,
+    val innerRow = InternalRow(
+      false,
+      1.toByte,
+      2.toShort,
+      3,
+      4.0f,
       "".getBytes(StandardCharsets.UTF_8),
       UTF8String.fromString(""))
     val row1 = InternalRow(UTF8String.fromString(""), innerRow)
     val unsafe1 = unsafeProj(row1).copy()
     // create a Row with long String before the inner struct
-    val row2 = InternalRow(UTF8String.fromString("a_long_string").repeat(10), innerRow)
+    val row2 =
+      InternalRow(UTF8String.fromString("a_long_string").repeat(10), innerRow)
     val unsafe2 = unsafeProj(row2).copy()
     assert(unsafe1.getStruct(1, 7) === unsafe2.getStruct(1, 7))
     val unsafe3 = unsafeProj(row1).copy()

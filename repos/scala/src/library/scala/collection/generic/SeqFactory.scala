@@ -6,26 +6,25 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package generic
 import scala.language.higherKinds
 
 /** A template for companion objects of Seq and subclasses thereof.
- *
- *  @since 2.8
- */
-abstract class SeqFactory[CC[X] <: Seq[X] with GenericTraversableTemplate[X, CC]]
-extends GenSeqFactory[CC] with TraversableFactory[CC] {
+  *
+  *  @since 2.8
+  */
+abstract class SeqFactory[
+    CC[X] <: Seq[X] with GenericTraversableTemplate[X, CC]]
+    extends GenSeqFactory[CC]
+    with TraversableFactory[CC] {
 
   /** This method is called in a pattern match { case Seq(...) => }.
-   *
-   *  @param x the selector value
-   *  @return  sequence wrapped in an option, if this is a Seq, otherwise none
-   */
+    *
+    *  @param x the selector value
+    *  @return  sequence wrapped in an option, if this is a Seq, otherwise none
+    */
   def unapplySeq[A](x: CC[A]): Some[CC[A]] = Some(x)
 
 }
-

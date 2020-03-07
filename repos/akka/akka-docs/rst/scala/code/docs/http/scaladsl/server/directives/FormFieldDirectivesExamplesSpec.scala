@@ -12,7 +12,8 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
   "formFields" in {
     val route =
       formFields('color, 'age.as[Int]) { (color, age) =>
-        complete(s"The color is '$color' and the age ten years ago was ${age - 10}")
+        complete(
+          s"The color is '$color' and the age ten years ago was ${age - 10}")
       }
 
     // tests:
@@ -22,17 +23,14 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
 
     Get("/") ~> Route.seal(route) ~> check {
       status shouldEqual StatusCodes.BadRequest
-      responseAs[String] shouldEqual "Request is missing required form field 'color'"
+      responseAs[
+        String] shouldEqual "Request is missing required form field 'color'"
     }
   }
   "formField" in {
     val route =
-      formField('color) { color =>
-        complete(s"The color is '$color'")
-      } ~
-        formField('id.as[Int]) { id =>
-          complete(s"The id is '$id'")
-        }
+      formField('color) { color => complete(s"The color is '$color'") } ~
+        formField('id.as[Int]) { id => complete(s"The id is '$id'") }
 
     // tests:
     Post("/", FormData("color" -> "blue")) ~> route ~> check {
@@ -41,7 +39,8 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
 
     Get("/") ~> Route.seal(route) ~> check {
       status shouldEqual StatusCodes.BadRequest
-      responseAs[String] shouldEqual "Request is missing required form field 'color'"
+      responseAs[
+        String] shouldEqual "Request is missing required form field 'color'"
     }
   }
   "formFieldMap" in {
@@ -49,12 +48,14 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
       formFieldMap { fields =>
         def formFieldString(formField: (String, String)): String =
           s"""${formField._1} = '${formField._2}'"""
-        complete(s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
+        complete(
+          s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
       }
 
     // tests:
     Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~> check {
-      responseAs[String] shouldEqual "The form fields are color = 'blue', count = '42'"
+      responseAs[
+        String] shouldEqual "The form fields are color = 'blue', count = '42'"
     }
     Post("/", FormData("x" -> "1", "x" -> "5")) ~> route ~> check {
       responseAs[String] shouldEqual "The form fields are x = '5'"
@@ -69,9 +70,12 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~> check {
-      responseAs[String] shouldEqual "There are form fields color -> 1, count -> 1"
+      responseAs[
+        String] shouldEqual "There are form fields color -> 1, count -> 1"
     }
-    Post("/", FormData("x" -> "23", "x" -> "4", "x" -> "89")) ~> route ~> check {
+    Post(
+      "/",
+      FormData("x" -> "23", "x" -> "4", "x" -> "89")) ~> route ~> check {
       responseAs[String] shouldEqual "There are form fields x -> 3"
     }
   }
@@ -80,15 +84,20 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
       formFieldSeq { fields =>
         def formFieldString(formField: (String, String)): String =
           s"""${formField._1} = '${formField._2}'"""
-        complete(s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
+        complete(
+          s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
       }
 
     // tests:
     Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~> check {
-      responseAs[String] shouldEqual "The form fields are color = 'blue', count = '42'"
+      responseAs[
+        String] shouldEqual "The form fields are color = 'blue', count = '42'"
     }
-    Post("/", FormData("x" -> "23", "x" -> "4", "x" -> "89")) ~> route ~> check {
-      responseAs[String] shouldEqual "The form fields are x = '23', x = '4', x = '89'"
+    Post(
+      "/",
+      FormData("x" -> "23", "x" -> "4", "x" -> "89")) ~> route ~> check {
+      responseAs[
+        String] shouldEqual "The form fields are x = '23', x = '4', x = '89'"
     }
   }
 

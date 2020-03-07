@@ -1,13 +1,13 @@
-object t4202_1 {
-  () => {
+object t4202_1 { () =>
+  {
     trait T {
       def t = ()
     }
   }
 }
 
-object t4202_2 {
-  () => {
+object t4202_2 { () =>
+  {
     trait T {
       def t = ()
     }

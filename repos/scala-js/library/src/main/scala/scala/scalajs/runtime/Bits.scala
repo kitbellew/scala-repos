@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.runtime
 
 import scala.scalajs.js
@@ -21,7 +20,7 @@ object Bits {
   private[this] val _areTypedArraysSupported = {
     // Here we use `assumingES6` to dce the 4 subsequent tests
     assumingES6 || js.DynamicImplicits.truthValue(
-        global.ArrayBuffer && global.Int32Array &&
+      global.ArrayBuffer && global.Int32Array &&
         global.Float32Array && global.Float64Array)
   }
 
@@ -64,24 +63,24 @@ object Bits {
   }
 
   private val highOffset = if (areTypedArraysBigEndian) 0 else 1
-  private val lowOffset  = if (areTypedArraysBigEndian) 1 else 0
+  private val lowOffset = if (areTypedArraysBigEndian) 1 else 0
 
   /** Hash code of a number (excluding Longs).
-   *
-   *  Because of the common encoding for integer and floating point values,
-   *  the hashCode of Floats and Doubles must align with that of Ints for the
-   *  common values.
-   *
-   *  For other values, we use the hashCode specified by the JavaDoc for
-   *  *Doubles*, even for values which are valid Float values. Because of the
-   *  previous point, we cannot align completely with the Java specification,
-   *  so there is no point trying to be a bit more aligned here. Always using
-   *  the Double version should typically be faster on VMs without fround
-   *  support because we avoid several fround operations.
-   */
+    *
+    *  Because of the common encoding for integer and floating point values,
+    *  the hashCode of Floats and Doubles must align with that of Ints for the
+    *  common values.
+    *
+    *  For other values, we use the hashCode specified by the JavaDoc for
+    *  *Doubles*, even for values which are valid Float values. Because of the
+    *  previous point, we cannot align completely with the Java specification,
+    *  so there is no point trying to be a bit more aligned here. Always using
+    *  the Double version should typically be faster on VMs without fround
+    *  support because we avoid several fround operations.
+    */
   def numberHashCode(value: Double): Int = {
     val iv = rawToInt(value)
-    if (iv == value && 1.0/value != Double.NegativeInfinity) iv
+    if (iv == value && 1.0 / value != Double.NegativeInfinity) iv
     else doubleToLongBits(value).hashCode()
   }
 
@@ -117,7 +116,7 @@ object Bits {
     if (areTypedArraysSupported) {
       float64Array(0) = value
       ((int32Array(highOffset).toLong << 32) |
-          (int32Array(lowOffset).toLong & 0xffffffffL))
+        (int32Array(lowOffset).toLong & 0xFFFFFFFFL))
     } else {
       doubleToLongBitsPolyfill(value)
     }
@@ -156,7 +155,7 @@ object Bits {
 
     val ebits = 11
     val fbits = 52
-    val hifbits = fbits-32
+    val hifbits = fbits - 32
     val hi = (bits >>> 32).toInt
     val lo = bits.toInt.toUint
     val s = hi < 0
@@ -168,20 +167,24 @@ object Bits {
   private def doubleToLongBitsPolyfill(value: Double): Long = {
     val ebits = 11
     val fbits = 52
-    val hifbits = fbits-32
+    val hifbits = fbits - 32
     val (s, e, f) = encodeIEEE754(ebits, fbits, value)
     val hif = rawToInt(f / 0x100000000L.toDouble)
     val hi = (if (s) 0x80000000 else 0) | (e << hifbits) | hif
     val lo = rawToInt(f)
-    (hi.toLong << 32) | (lo.toLong & 0xffffffffL)
+    (hi.toLong << 32) | (lo.toLong & 0xFFFFFFFFL)
   }
 
-  @inline private def decodeIEEE754(ebits: Int, fbits: Int,
-      s: Boolean, e: Int, f: Double): Double = {
+  @inline private def decodeIEEE754(
+      ebits: Int,
+      fbits: Int,
+      s: Boolean,
+      e: Int,
+      f: Double): Double = {
 
     import Math.pow
 
-    val bias = (1 << (ebits-1)) - 1 // constant
+    val bias = (1 << (ebits - 1)) - 1 // constant
 
     if (e == (1 << ebits) - 1) {
       // Special
@@ -190,11 +193,11 @@ object Bits {
       else Double.PositiveInfinity
     } else if (e > 0) {
       // Normalized
-      val x = pow(2, e-bias) * (1 + f / pow(2, fbits))
+      val x = pow(2, e - bias) * (1 + f / pow(2, fbits))
       if (s) -x else x
     } else if (f != 0.0) {
       // Subnormal
-      val x = pow(2, -(bias-1)) * (f / pow(2, fbits))
+      val x = pow(2, -(bias - 1)) * (f / pow(2, fbits))
       if (s) -x else x
     } else {
       // Zero
@@ -202,16 +205,18 @@ object Bits {
     }
   }
 
-  @inline private def encodeIEEE754(ebits: Int, fbits: Int,
+  @inline private def encodeIEEE754(
+      ebits: Int,
+      fbits: Int,
       v: Double): (Boolean, Int, Double) = {
 
     import Math._
 
-    val bias = (1 << (ebits-1)) - 1 // constant
+    val bias = (1 << (ebits - 1)) - 1 // constant
 
     if (v.isNaN) {
       // http://dev.w3.org/2006/webapi/WebIDL/#es-type-mapping
-      (false, (1 << ebits) - 1, pow(2, fbits-1))
+      (false, (1 << ebits) - 1, pow(2, fbits - 1))
     } else if (v.isInfinite) {
       (v < 0, (1 << ebits) - 1, 0.0)
     } else if (v == 0.0) {
@@ -222,7 +227,7 @@ object Bits {
       val s = v < 0
       val av = if (s) -v else v
 
-      if (av >= pow(2, 1-bias)) {
+      if (av >= pow(2, 1 - bias)) {
         val twoPowFbits = pow(2, fbits)
 
         var e = min(rawToInt(floor(log(av) / LN2)), 1023)
@@ -243,7 +248,7 @@ object Bits {
         (s, e, f)
       } else {
         // Subnormal
-        (s, 0, roundToEven(av / pow(2, 1-bias-fbits)))
+        (s, 0, roundToEven(av / pow(2, 1 - bias - fbits)))
       }
     }
   }

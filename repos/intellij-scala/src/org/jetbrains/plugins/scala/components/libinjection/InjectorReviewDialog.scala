@@ -18,27 +18,32 @@ import org.jetbrains.plugins.scala.ScalaFileType
 /**
   * Created by mucianm on 01.03.16.
   */
-class InjectorReviewDialog(project: Project, manifest: LibraryInjectorLoader#AttributedManifest, LOG: Logger) extends DialogWrapper(project, false) {
+class InjectorReviewDialog(
+    project: Project,
+    manifest: LibraryInjectorLoader#AttributedManifest,
+    LOG: Logger)
+    extends DialogWrapper(project, false) {
 
   val layout = new CardLayout()
   var editorsPanel: JPanel = null
   val editors: Seq[Editor] = {
     val containingJar = manifest._1.jarPath
     val files = manifest._2
-      .flatMap {
-        injectorDescriptor =>
-          injectorDescriptor.sources
-            .flatMap {
-              source =>
-                val file = VirtualFileManager.getInstance().findFileByUrl(s"jar://$containingJar!/$source")
-                if (file.isValid) {
-                  if (file.isDirectory) file.getChildren
-                  else Seq(file)
-                } else {
-                  LOG.warn(s"Source root '$source' is broken, check your library - $containingJar")
-                  Seq.empty
-                }
+      .flatMap { injectorDescriptor =>
+        injectorDescriptor.sources
+          .flatMap { source =>
+            val file = VirtualFileManager
+              .getInstance()
+              .findFileByUrl(s"jar://$containingJar!/$source")
+            if (file.isValid) {
+              if (file.isDirectory) file.getChildren
+              else Seq(file)
+            } else {
+              LOG.warn(
+                s"Source root '$source' is broken, check your library - $containingJar")
+              Seq.empty
             }
+          }
       }
     val psiManager = PsiManager.getInstance(project)
     val psiDocumentManager = PsiDocumentManager.getInstance(project)
@@ -49,9 +54,9 @@ class InjectorReviewDialog(project: Project, manifest: LibraryInjectorLoader#Att
 
   private val highlighterFactory = EditorHighlighterFactory.getInstance
   editors
-    .foreach(_.asInstanceOf[EditorEx].setHighlighter(
-      highlighterFactory.createEditorHighlighter(project, ScalaFileType.SCALA_FILE_TYPE))
-    )
+    .foreach(
+      _.asInstanceOf[EditorEx].setHighlighter(highlighterFactory
+        .createEditorHighlighter(project, ScalaFileType.SCALA_FILE_TYPE)))
   setTitle(s"Library '${manifest._1.jarPath}' Injectors Source Review")
   setOKButtonText("Accept")
   setCancelButtonText("Reject")
@@ -72,13 +77,15 @@ class InjectorReviewDialog(project: Project, manifest: LibraryInjectorLoader#Att
     }
     val prev = new DialogWrapperAction("Prev") {
       putValue(Action.SMALL_ICON, AllIcons.Actions.Left)
-      override def doAction(e: ActionEvent): Unit = layout.previous(editorsPanel)
+      override def doAction(e: ActionEvent): Unit =
+        layout.previous(editorsPanel)
     }
     Array(prev, next)
   }
 
   override def dispose(): Unit = {
-    editors.foreach(e => if (!e.isDisposed) EditorFactory.getInstance().releaseEditor(e))
+    editors.foreach(e =>
+      if (!e.isDisposed) EditorFactory.getInstance().releaseEditor(e))
     super.dispose()
   }
 }

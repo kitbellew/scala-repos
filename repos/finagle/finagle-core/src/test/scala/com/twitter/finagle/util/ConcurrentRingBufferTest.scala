@@ -36,7 +36,8 @@ class ConcurrentRingBufferTest extends FunSuite {
     }
   }
 
-  test("ConcurrentRingBuffer should make slots available for writing immediately") {
+  test(
+    "ConcurrentRingBuffer should make slots available for writing immediately") {
     val N = 128
     val b = new ConcurrentRingBuffer[Int](N)
 
@@ -86,7 +87,7 @@ class ConcurrentRingBufferTest extends FunSuite {
     assert(b.tryGet() == None)
     assert(b.size == 0)
 
-    for (i <- N/2 until N) b.tryGet() // fully drain
+    for (i <- N / 2 until N) b.tryGet() // fully drain
 
     assert(b.tryPeek == None)
   }

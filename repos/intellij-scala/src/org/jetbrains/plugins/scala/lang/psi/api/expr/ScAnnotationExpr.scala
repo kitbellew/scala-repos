@@ -9,17 +9,20 @@ import org.jetbrains.plugins.scala.lang.parser.ScalaElementTypes
 import org.jetbrains.plugins.scala.lang.psi.api.base.ScConstructor
 import org.jetbrains.plugins.scala.lang.psi.impl.expr.ScNameValuePairImpl
 
-/** 
-* @author Alexander Podkhalyuzin
-* Date: 07.03.2008
-*/
-
+/**
+  * @author Alexander Podkhalyuzin
+  * Date: 07.03.2008
+  */
 trait ScAnnotationExpr extends ScalaPsiElement {
   def constr = findChildByClassScala(classOf[ScConstructor])
-  def getAttributes: Seq[ScNameValuePair] = findArgExprs.map(_.findChildrenByType(ScalaElementTypes.ASSIGN_STMT)).getOrElse(Seq.empty).map {
-    case stmt: ScAssignStmt => new ScNameValueAssignment(stmt)
-  }
-  
+  def getAttributes: Seq[ScNameValuePair] =
+    findArgExprs
+      .map(_.findChildrenByType(ScalaElementTypes.ASSIGN_STMT))
+      .getOrElse(Seq.empty)
+      .map {
+        case stmt: ScAssignStmt => new ScNameValueAssignment(stmt)
+      }
+
   def getAnnotationParameters = findArgExprs.map(_.exprs).getOrElse(Seq.empty)
 
   private def findArgExprs: Option[ScArgumentExprList] = {
@@ -29,16 +32,18 @@ trait ScAnnotationExpr extends ScalaPsiElement {
     val args = constr.findFirstChildByType(ScalaElementTypes.ARG_EXPRS)
     args match {
       case scArgExpr: ScArgumentExprList => Some(scArgExpr)
-      case _ => None
+      case _                             => None
     }
   }
-  
-  private class ScNameValueAssignment(assign: ScAssignStmt) extends ScNameValuePairImpl(assign.getNode) {
+
+  private class ScNameValueAssignment(assign: ScAssignStmt)
+      extends ScNameValuePairImpl(assign.getNode) {
     override def nameId: PsiElement = assign.getLExpression
 
-    override def getValue: PsiAnnotationMemberValue = (assign.getRExpression map {
-      case annotationMember: PsiAnnotationMemberValue => annotationMember
-      case _ => null
-    }).orNull
+    override def getValue: PsiAnnotationMemberValue =
+      (assign.getRExpression map {
+        case annotationMember: PsiAnnotationMemberValue => annotationMember
+        case _                                          => null
+      }).orNull
   }
 }

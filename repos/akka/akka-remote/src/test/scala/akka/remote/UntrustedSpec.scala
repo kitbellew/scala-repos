@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.remote
 
 import scala.concurrent.duration._
@@ -35,9 +34,10 @@ object UntrustedSpec {
     context.actorOf(Props(classOf[FakeUser], testActor), "user")
 
     def receive = {
-      case IdentifyReq(path) ⇒ context.actorSelection(path).tell(Identify(None), sender())
-      case StopChild(name)   ⇒ context.child(name) foreach context.stop
-      case msg               ⇒ testActor forward msg
+      case IdentifyReq(path) ⇒
+        context.actorSelection(path).tell(Identify(None), sender())
+      case StopChild(name) ⇒ context.child(name) foreach context.stop
+      case msg ⇒ testActor forward msg
     }
   }
 
@@ -59,36 +59,47 @@ object UntrustedSpec {
 
 }
 
-class UntrustedSpec extends AkkaSpec("""
+class UntrustedSpec
+    extends AkkaSpec(
+      """
 akka.actor.provider = akka.remote.RemoteActorRefProvider
 akka.remote.untrusted-mode = on
 akka.remote.trusted-selection-paths = ["/user/receptionist", ]    
 akka.remote.netty.tcp.port = 0
 akka.loglevel = DEBUG
-""") with ImplicitSender {
+""")
+    with ImplicitSender {
 
   import UntrustedSpec._
 
-  val client = ActorSystem("UntrustedSpec-client", ConfigFactory.parseString("""
+  val client = ActorSystem(
+    "UntrustedSpec-client",
+    ConfigFactory.parseString(
+      """
       akka.actor.provider = akka.remote.RemoteActorRefProvider
       akka.remote.netty.tcp.port = 0
-  """))
+  """)
+  )
   val addr = system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
 
-  val receptionist = system.actorOf(Props(classOf[Receptionist], testActor), "receptionist")
+  val receptionist =
+    system.actorOf(Props(classOf[Receptionist], testActor), "receptionist")
 
   lazy val remoteDaemon = {
     {
       val p = TestProbe()(client)
-      client.actorSelection(RootActorPath(addr) / receptionist.path.elements).tell(IdentifyReq("/remote"), p.ref)
+      client
+        .actorSelection(RootActorPath(addr) / receptionist.path.elements)
+        .tell(IdentifyReq("/remote"), p.ref)
       p.expectMsgType[ActorIdentity].ref.get
     }
   }
 
   lazy val target2 = {
     val p = TestProbe()(client)
-    client.actorSelection(RootActorPath(addr) / receptionist.path.elements).tell(
-      IdentifyReq("child2"), p.ref)
+    client
+      .actorSelection(RootActorPath(addr) / receptionist.path.elements)
+      .tell(IdentifyReq("child2"), p.ref)
     p.expectMsgType[ActorIdentity].ref.get
   }
 
@@ -102,7 +113,8 @@ akka.loglevel = DEBUG
   "UntrustedMode" must {
 
     "allow actor selection to configured white list" in {
-      val sel = client.actorSelection(RootActorPath(addr) / receptionist.path.elements)
+      val sel =
+        client.actorSelection(RootActorPath(addr) / receptionist.path.elements)
       sel ! "hello"
       expectMsg("hello")
     }
@@ -110,20 +122,29 @@ akka.loglevel = DEBUG
     "discard harmful messages to /remote" in {
       val logProbe = TestProbe()
       // but instead install our own listener
-      system.eventStream.subscribe(system.actorOf(Props(new Actor {
-        import Logging._
-        def receive = {
-          case d @ Debug(_, _, msg: String) if msg contains "dropping" ⇒ logProbe.ref ! d
-          case _ ⇒
-        }
-      }).withDeploy(Deploy.local), "debugSniffer"), classOf[Logging.Debug])
+      system.eventStream.subscribe(
+        system.actorOf(
+          Props(new Actor {
+            import Logging._
+            def receive = {
+              case d @ Debug(_, _, msg: String) if msg contains "dropping" ⇒
+                logProbe.ref ! d
+              case _ ⇒
+            }
+          }).withDeploy(Deploy.local),
+          "debugSniffer"
+        ),
+        classOf[Logging.Debug]
+      )
 
       remoteDaemon ! "hello"
       logProbe.expectMsgType[Logging.Debug]
     }
 
     "discard harmful messages to testActor" in {
-      target2 ! Terminated(remoteDaemon)(existenceConfirmed = true, addressTerminated = false)
+      target2 ! Terminated(remoteDaemon)(
+        existenceConfirmed = true,
+        addressTerminated = false)
       target2 ! PoisonPill
       client.stop(target2)
       target2 ! "blech"
@@ -144,36 +165,43 @@ akka.loglevel = DEBUG
     }
 
     "discard actor selection" in {
-      val sel = client.actorSelection(RootActorPath(addr) / testActor.path.elements)
+      val sel =
+        client.actorSelection(RootActorPath(addr) / testActor.path.elements)
       sel ! "hello"
       expectNoMsg(1.second)
     }
 
     "discard actor selection with non root anchor" in {
       val p = TestProbe()(client)
-      client.actorSelection(RootActorPath(addr) / receptionist.path.elements).tell(
-        Identify(None), p.ref)
+      client
+        .actorSelection(RootActorPath(addr) / receptionist.path.elements)
+        .tell(Identify(None), p.ref)
       val clientReceptionistRef = p.expectMsgType[ActorIdentity].ref.get
 
-      val sel = ActorSelection(clientReceptionistRef, receptionist.path.toStringWithoutAddress)
+      val sel = ActorSelection(
+        clientReceptionistRef,
+        receptionist.path.toStringWithoutAddress)
       sel ! "hello"
       expectNoMsg(1.second)
     }
 
     "discard actor selection to child of matching white list" in {
-      val sel = client.actorSelection(RootActorPath(addr) / receptionist.path.elements / "child1")
+      val sel = client.actorSelection(
+        RootActorPath(addr) / receptionist.path.elements / "child1")
       sel ! "hello"
       expectNoMsg(1.second)
     }
 
     "discard actor selection with wildcard" in {
-      val sel = client.actorSelection(RootActorPath(addr) / receptionist.path.elements / "*")
+      val sel = client.actorSelection(
+        RootActorPath(addr) / receptionist.path.elements / "*")
       sel ! "hello"
       expectNoMsg(1.second)
     }
 
     "discard actor selection containing harmful message" in {
-      val sel = client.actorSelection(RootActorPath(addr) / receptionist.path.elements)
+      val sel =
+        client.actorSelection(RootActorPath(addr) / receptionist.path.elements)
       sel ! PoisonPill
       expectNoMsg(1.second)
     }

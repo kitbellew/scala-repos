@@ -20,7 +20,11 @@ package org.apache.spark.sql.execution.datasources.jdbc
 import java.util.Properties
 
 import org.apache.spark.sql.SQLContext
-import org.apache.spark.sql.sources.{BaseRelation, DataSourceRegister, RelationProvider}
+import org.apache.spark.sql.sources.{
+  BaseRelation,
+  DataSourceRegister,
+  RelationProvider
+}
 
 class DefaultSource extends RelationProvider with DataSourceRegister {
 
@@ -30,15 +34,18 @@ class DefaultSource extends RelationProvider with DataSourceRegister {
   override def createRelation(
       sqlContext: SQLContext,
       parameters: Map[String, String]): BaseRelation = {
-    val url = parameters.getOrElse("url", sys.error("Option 'url' not specified"))
-    val table = parameters.getOrElse("dbtable", sys.error("Option 'dbtable' not specified"))
+    val url =
+      parameters.getOrElse("url", sys.error("Option 'url' not specified"))
+    val table = parameters.getOrElse(
+      "dbtable",
+      sys.error("Option 'dbtable' not specified"))
     val partitionColumn = parameters.getOrElse("partitionColumn", null)
     val lowerBound = parameters.getOrElse("lowerBound", null)
     val upperBound = parameters.getOrElse("upperBound", null)
     val numPartitions = parameters.getOrElse("numPartitions", null)
 
     if (partitionColumn != null
-      && (lowerBound == null || upperBound == null || numPartitions == null)) {
+        && (lowerBound == null || upperBound == null || numPartitions == null)) {
       sys.error("Partitioning incompletely specified")
     }
 
@@ -52,7 +59,8 @@ class DefaultSource extends RelationProvider with DataSourceRegister {
         numPartitions.toInt)
     }
     val parts = JDBCRelation.columnPartition(partitionInfo)
-    val properties = new Properties() // Additional properties that we will pass to getConnection
+    val properties =
+      new Properties() // Additional properties that we will pass to getConnection
     parameters.foreach(kv => properties.setProperty(kv._1, kv._2))
     JDBCRelation(url, table, parts, properties)(sqlContext)
   }

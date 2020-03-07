@@ -1,7 +1,11 @@
 package org.jetbrains.plugins.scala
 package codeInspection.parameters
 
-import com.intellij.codeInspection.{LocalInspectionTool, ProblemHighlightType, ProblemsHolder}
+import com.intellij.codeInspection.{
+  LocalInspectionTool,
+  ProblemHighlightType,
+  ProblemsHolder
+}
 import com.intellij.psi.PsiElementVisitor
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 import org.jetbrains.plugins.scala.extensions._
@@ -16,13 +20,14 @@ import org.jetbrains.plugins.scala.util.IntentionUtils
 import scala.collection.Seq
 
 /**
- * @author Ksenia.Sautina
- * @since 5/10/12
- */
-
+  * @author Ksenia.Sautina
+  * @since 5/10/12
+  */
 abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
 
-  override def buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = {
+  override def buildVisitor(
+      holder: ProblemsHolder,
+      isOnTheFly: Boolean): PsiElementVisitor = {
     new ScalaElementVisitor {
       override def visitMethodCallExpression(mc: ScMethodCall) {
         if (mc == null || mc.args == null || mc.args.exprs.isEmpty) return
@@ -30,17 +35,26 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
         val argList = mc.args
         for (expr <- argList.exprs) {
           expr match {
-            case lit @ ScBooleanLiteral(_) if isArgForBooleanParam(expr, argList) &&
-                    IntentionUtils.addNameToArgumentsFix(expr, onlyBoolean = true).isDefined =>
-              val descriptor = holder.getManager.createProblemDescriptor(expr, InspectionBundle.message("name.boolean"),
-                new NameBooleanParametersQuickFix(lit), ProblemHighlightType.GENERIC_ERROR_OR_WARNING, isOnTheFly)
+            case lit @ ScBooleanLiteral(_)
+                if isArgForBooleanParam(expr, argList) &&
+                  IntentionUtils
+                    .addNameToArgumentsFix(expr, onlyBoolean = true)
+                    .isDefined =>
+              val descriptor = holder.getManager.createProblemDescriptor(
+                expr,
+                InspectionBundle.message("name.boolean"),
+                new NameBooleanParametersQuickFix(lit),
+                ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+                isOnTheFly)
               holder.registerProblem(descriptor)
             case _ =>
           }
         }
       }
 
-      def isArgForBooleanParam(expr: ScExpression, argList: ScArgumentExprList): Boolean = {
+      def isArgForBooleanParam(
+          expr: ScExpression,
+          argList: ScArgumentExprList): Boolean = {
         argList.parameterOf(expr).exists(isBooleanParam)
       }
 
@@ -56,7 +70,9 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
         mc.getInvokedExpr match {
           case ref: ScReferenceExpression =>
             ref.bind().exists { srr =>
-              val targets = (Seq(srr.element) ++ srr.innerResolveResult.map(_.getElement)).filterBy(classOf[ScFunction])
+              val targets =
+                (Seq(srr.element) ++ srr.innerResolveResult.map(_.getElement))
+                  .filterBy(classOf[ScFunction])
               targets.exists(_.parameters.size == 1)
             }
           case _ => false

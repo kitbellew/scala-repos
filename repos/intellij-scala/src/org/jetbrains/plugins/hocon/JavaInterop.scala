@@ -28,4 +28,3 @@ object JavaInterop extends DecorateAsJava with DecorateAsScala {
   }
 
 }
-

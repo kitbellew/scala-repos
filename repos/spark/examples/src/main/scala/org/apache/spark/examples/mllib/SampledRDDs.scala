@@ -24,24 +24,27 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.mllib.util.MLUtils
 
 /**
- * An example app for randomly generated and sampled RDDs. Run with
- * {{{
- * bin/run-example org.apache.spark.examples.mllib.SampledRDDs
- * }}}
- * If you use it as a template to create your own app, please use `spark-submit` to submit your app.
- */
+  * An example app for randomly generated and sampled RDDs. Run with
+  * {{{
+  * bin/run-example org.apache.spark.examples.mllib.SampledRDDs
+  * }}}
+  * If you use it as a template to create your own app, please use `spark-submit` to submit your app.
+  */
 object SampledRDDs {
 
-  case class Params(input: String = "data/mllib/sample_binary_classification_data.txt")
-    extends AbstractParams[Params]
+  case class Params(
+      input: String = "data/mllib/sample_binary_classification_data.txt")
+      extends AbstractParams[Params]
 
   def main(args: Array[String]) {
     val defaultParams = Params()
 
     val parser = new OptionParser[Params]("SampledRDDs") {
-      head("SampledRDDs: an example app for randomly generated and sampled RDDs.")
+      head(
+        "SampledRDDs: an example app for randomly generated and sampled RDDs.")
       opt[String]("input")
-        .text(s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
+        .text(
+          s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
         .action((x, c) => c.copy(input = x))
       note(
         """
@@ -52,9 +55,7 @@ object SampledRDDs {
         """.stripMargin)
     }
 
-    parser.parse(args, defaultParams).map { params =>
-      run(params)
-    } getOrElse {
+    parser.parse(args, defaultParams).map { params => run(params) } getOrElse {
       sys.exit(1)
     }
   }
@@ -70,14 +71,18 @@ object SampledRDDs {
     if (numExamples == 0) {
       throw new RuntimeException("Error: Data file had no samples to load.")
     }
-    println(s"Loaded data with $numExamples examples from file: ${params.input}")
+    println(
+      s"Loaded data with $numExamples examples from file: ${params.input}")
 
     // Example: RDD.sample() and RDD.takeSample()
     val expectedSampleSize = (numExamples * fraction).toInt
-    println(s"Sampling RDD using fraction $fraction.  Expected sample size = $expectedSampleSize.")
-    val sampledRDD = examples.sample(withReplacement = true, fraction = fraction)
+    println(
+      s"Sampling RDD using fraction $fraction.  Expected sample size = $expectedSampleSize.")
+    val sampledRDD =
+      examples.sample(withReplacement = true, fraction = fraction)
     println(s"  RDD.sample(): sample has ${sampledRDD.count()} examples")
-    val sampledArray = examples.takeSample(withReplacement = true, num = expectedSampleSize)
+    val sampledArray =
+      examples.takeSample(withReplacement = true, num = expectedSampleSize)
     println(s"  RDD.takeSample(): sample has ${sampledArray.length} examples")
 
     println()
@@ -90,19 +95,22 @@ object SampledRDDs {
 
     //  Subsample, and count examples per label in sampled data. (approximate)
     val fractions = keyCounts.keys.map((_, fraction)).toMap
-    val sampledByKeyRDD = keyedRDD.sampleByKey(withReplacement = true, fractions = fractions)
+    val sampledByKeyRDD =
+      keyedRDD.sampleByKey(withReplacement = true, fractions = fractions)
     val keyCountsB = sampledByKeyRDD.countByKey()
     val sizeB = keyCountsB.values.sum
-    println(s"  Sampled $sizeB examples using approximate stratified sampling (by label)." +
-      " ==> Approx Sample")
+    println(
+      s"  Sampled $sizeB examples using approximate stratified sampling (by label)." +
+        " ==> Approx Sample")
 
     //  Subsample, and count examples per label in sampled data. (approximate)
     val sampledByKeyRDDExact =
       keyedRDD.sampleByKeyExact(withReplacement = true, fractions = fractions)
     val keyCountsBExact = sampledByKeyRDDExact.countByKey()
     val sizeBExact = keyCountsBExact.values.sum
-    println(s"  Sampled $sizeBExact examples using exact stratified sampling (by label)." +
-      " ==> Exact Sample")
+    println(
+      s"  Sampled $sizeBExact examples using exact stratified sampling (by label)." +
+        " ==> Exact Sample")
 
     //  Compare samples
     println(s"   \tFractions of examples with key")

@@ -13,9 +13,8 @@ package generic
 import scala.collection.parallel.Combiner
 
 /**
- *  @since 2.8
- */
+  *  @since 2.8
+  */
 trait HasNewCombiner[+T, +Repr] {
   protected[this] def newCombiner: Combiner[T, Repr]
 }
-

@@ -14,7 +14,8 @@ class StackTraceElementJSTest {
 
   import scala.scalajs.runtime.StackTrace.Implicits._
 
-  @Test def should_use_the_additional_columnNumber_field_in_its_toString(): Unit = {
+  @Test def should_use_the_additional_columnNumber_field_in_its_toString()
+      : Unit = {
     val st = new StackTraceElement("MyClass", "myMethod", "myFile.scala", 1)
     st.setColumnNumber(5)
     assertEquals("MyClass.myMethod(myFile.scala:1:5)", st.toString)

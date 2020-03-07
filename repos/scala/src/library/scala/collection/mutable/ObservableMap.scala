@@ -6,32 +6,32 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package mutable
 
 import script._
 
-
 /** This class is typically used as a mixin. It adds a subscription
- *  mechanism to the `Map` class into which this abstract
- *  class is mixed in. Class `ObservableMap` publishes
- *  events of the type `Message`.
- *
- *  @author  Matthias Zenger
- *  @author  Martin Odersky
- *  @version 2.0, 31/12/2006
- *  @since   1
- */
-@deprecated("Observables are deprecated because scripting is deprecated.", "2.11.0")
-trait ObservableMap[A, B] extends Map[A, B] with Publisher[Message[(A, B)] with Undoable]
-{
+  *  mechanism to the `Map` class into which this abstract
+  *  class is mixed in. Class `ObservableMap` publishes
+  *  events of the type `Message`.
+  *
+  *  @author  Matthias Zenger
+  *  @author  Martin Odersky
+  *  @version 2.0, 31/12/2006
+  *  @since   1
+  */
+@deprecated(
+  "Observables are deprecated because scripting is deprecated.",
+  "2.11.0")
+trait ObservableMap[A, B]
+    extends Map[A, B]
+    with Publisher[Message[(A, B)] with Undoable] {
 
   type Pub <: ObservableMap[A, B]
 
-  abstract override def += (kv: (A, B)): this.type = {
+  abstract override def +=(kv: (A, B)): this.type = {
     val (key, value) = kv
 
     get(key) match {
@@ -49,7 +49,7 @@ trait ObservableMap[A, B] extends Map[A, B] with Publisher[Message[(A, B)] with 
     this
   }
 
-  abstract override def -= (key: A): this.type = {
+  abstract override def -=(key: A): this.type = {
     get(key) match {
       case None =>
       case Some(old) =>

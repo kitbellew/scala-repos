@@ -5,7 +5,7 @@ import play.api.libs.iteratee._
 
 import lila.db.api._
 import lila.db.Implicits._
-import lila.game.{ Game, Pov, Query }
+import lila.game.{Game, Pov, Query}
 import lila.hub.Sequencer
 import lila.rating.PerfType
 import lila.user.User
@@ -39,17 +39,18 @@ final class PerfStatIndexer(storage: PerfStatStorage, sequencer: ActorRef) {
       }
   } flatMap storage.insert
 
-  def addGame(game: Game): Funit = game.players.flatMap { player =>
-    player.userId.map { userId =>
-      addPov(Pov(game, player), userId)
-    }
-  }.sequenceFu.void
-
-  private def addPov(pov: Pov, userId: String): Funit = pov.game.perfType ?? { perfType =>
-    storage.find(userId, perfType) flatMap {
-      _ ?? { perfStat =>
-        storage.update(perfStat agg pov)
+  def addGame(game: Game): Funit =
+    game.players
+      .flatMap { player =>
+        player.userId.map { userId => addPov(Pov(game, player), userId) }
       }
-    }
+      .sequenceFu
+      .void
+
+  private def addPov(pov: Pov, userId: String): Funit = pov.game.perfType ?? {
+    perfType =>
+      storage.find(userId, perfType) flatMap {
+        _ ?? { perfStat => storage.update(perfStat agg pov) }
+      }
   }
 }

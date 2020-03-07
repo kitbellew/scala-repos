@@ -38,7 +38,8 @@ class ResponseTest extends FunSuite {
 
   test("decodeBytes") {
     val response = Response.decodeBytes(
-      "HTTP/1.1 200 OK\r\nServer: macaw\r\nContent-Length: 0\r\n\r\n".getBytes(Charsets.Utf8))
+      "HTTP/1.1 200 OK\r\nServer: macaw\r\nContent-Length: 0\r\n\r\n".getBytes(
+        Charsets.Utf8))
 
     assert(response.status == Status.Ok)
     assert(response.headerMap(Fields.Server) == "macaw")

@@ -10,18 +10,18 @@ trait MonadReaderTests[F[_], R] extends MonadTests[F] {
   def laws: MonadReaderLaws[F, R]
 
   def monadReader[A: Arbitrary: Eq, B: Arbitrary: Eq, C: Arbitrary: Eq](implicit
-    ArbFA: Arbitrary[F[A]],
-    ArbFB: Arbitrary[F[B]],
-    ArbFC: Arbitrary[F[C]],
-    ArbFAtoB: Arbitrary[F[A => B]],
-    ArbFBtoC: Arbitrary[F[B => C]],
-    ArbR: Arbitrary[R],
-    EqFA: Eq[F[A]],
-    EqFB: Eq[F[B]],
-    EqFC: Eq[F[C]],
-    EqFR: Eq[F[R]],
-    EqFABC: Eq[F[(A, B, C)]],
-    iso: Isomorphisms[F]
+      ArbFA: Arbitrary[F[A]],
+      ArbFB: Arbitrary[F[B]],
+      ArbFC: Arbitrary[F[C]],
+      ArbFAtoB: Arbitrary[F[A => B]],
+      ArbFBtoC: Arbitrary[F[B => C]],
+      ArbR: Arbitrary[R],
+      EqFA: Eq[F[A]],
+      EqFB: Eq[F[B]],
+      EqFC: Eq[F[C]],
+      EqFR: Eq[F[R]],
+      EqFABC: Eq[F[(A, B, C)]],
+      iso: Isomorphisms[F]
   ): RuleSet = {
     new RuleSet {
       def name: String = "monadReader"
@@ -31,7 +31,8 @@ trait MonadReaderTests[F[_], R] extends MonadTests[F] {
         "monadReader ask idempotent" -> laws.monadReaderAskIdempotent,
         "monadReader local ask" -> forAll(laws.monadReaderLocalAsk _),
         "monadReader local pure" -> forAll(laws.monadReaderLocalPure[A] _),
-        "monadReader local flatMap" -> forAll(laws.monadReaderLocalFlatMap[A, B] _)
+        "monadReader local flatMap" -> forAll(
+          laws.monadReaderLocalFlatMap[A, B] _)
       )
     }
   }

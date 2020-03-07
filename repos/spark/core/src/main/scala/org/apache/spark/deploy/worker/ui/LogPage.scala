@@ -27,7 +27,9 @@ import org.apache.spark.ui.{UIUtils, WebUIPage}
 import org.apache.spark.util.Utils
 import org.apache.spark.util.logging.RollingFileAppender
 
-private[ui] class LogPage(parent: WorkerWebUI) extends WebUIPage("logPage") with Logging {
+private[ui] class LogPage(parent: WorkerWebUI)
+    extends WebUIPage("logPage")
+    with Logging {
   private val worker = parent.worker
   private val workDir = new File(parent.workDir.toURI.normalize().getPath)
   private val supportedLogTypes = Set("stderr", "stdout")
@@ -40,7 +42,9 @@ private[ui] class LogPage(parent: WorkerWebUI) extends WebUIPage("logPage") with
     val driverId = Option(request.getParameter("driverId"))
     val logType = request.getParameter("logType")
     val offset = Option(request.getParameter("offset")).map(_.toLong)
-    val byteLength = Option(request.getParameter("byteLength")).map(_.toInt).getOrElse(defaultBytes)
+    val byteLength = Option(request.getParameter("byteLength"))
+      .map(_.toInt)
+      .getOrElse(defaultBytes)
 
     val logDir = (appId, executorId, driverId) match {
       case (Some(a), Some(e), None) =>
@@ -48,11 +52,14 @@ private[ui] class LogPage(parent: WorkerWebUI) extends WebUIPage("logPage") with
       case (None, None, Some(d)) =>
         s"${workDir.getPath}/$driverId/"
       case _ =>
-        throw new Exception("Request must specify either application or driver identifiers")
+        throw new Exception(
+          "Request must specify either application or driver identifiers")
     }
 
-    val (logText, startByte, endByte, logLength) = getLog(logDir, logType, offset, byteLength)
-    val pre = s"==== Bytes $startByte-$endByte of $logLength of $logDir$logType ====\n"
+    val (logText, startByte, endByte, logLength) =
+      getLog(logDir, logType, offset, byteLength)
+    val pre =
+      s"==== Bytes $startByte-$endByte of $logLength of $logDir$logType ====\n"
     pre + logText
   }
 
@@ -63,7 +70,9 @@ private[ui] class LogPage(parent: WorkerWebUI) extends WebUIPage("logPage") with
     val driverId = Option(request.getParameter("driverId"))
     val logType = request.getParameter("logType")
     val offset = Option(request.getParameter("offset")).map(_.toLong)
-    val byteLength = Option(request.getParameter("byteLength")).map(_.toInt).getOrElse(defaultBytes)
+    val byteLength = Option(request.getParameter("byteLength"))
+      .map(_.toInt)
+      .getOrElse(defaultBytes)
 
     val (logDir, params, pageName) = (appId, executorId, driverId) match {
       case (Some(a), Some(e), None) =>
@@ -71,17 +80,29 @@ private[ui] class LogPage(parent: WorkerWebUI) extends WebUIPage("logPage") with
       case (None, None, Some(d)) =>
         (s"${workDir.getPath}/$d/", s"driverId=$d", d)
       case _ =>
-        throw new Exception("Request must specify either application or driver identifiers")
+        throw new Exception(
+          "Request must specify either application or driver identifiers")
     }
 
-    val (logText, startByte, endByte, logLength) = getLog(logDir, logType, offset, byteLength)
-    val linkToMaster = <p><a href={worker.activeMasterWebUiUrl}>Back to Master</a></p>
-    val range = <span>Bytes {startByte.toString} - {endByte.toString} of {logLength}</span>
+    val (logText, startByte, endByte, logLength) =
+      getLog(logDir, logType, offset, byteLength)
+    val linkToMaster = <p><a href={
+      worker.activeMasterWebUiUrl
+    }>Back to Master</a></p>
+    val range = <span>Bytes {startByte.toString} - {endByte.toString} of {
+      logLength
+    }</span>
 
     val backButton =
       if (startByte > 0) {
-        <a href={"?%s&logType=%s&offset=%s&byteLength=%s"
-          .format(params, logType, math.max(startByte - byteLength, 0), byteLength)}>
+        <a href={
+          "?%s&logType=%s&offset=%s&byteLength=%s"
+            .format(
+              params,
+              logType,
+              math.max(startByte - byteLength, 0),
+              byteLength)
+        }>
           <button type="button" class="btn btn-default">
             Previous {Utils.bytesToString(math.min(byteLength, startByte))}
           </button>
@@ -94,10 +115,17 @@ private[ui] class LogPage(parent: WorkerWebUI) extends WebUIPage("logPage") with
 
     val nextButton =
       if (endByte < logLength) {
-        <a href={"?%s&logType=%s&offset=%s&byteLength=%s".
-          format(params, logType, endByte, byteLength)}>
+        <a href={
+          "?%s&logType=%s&offset=%s&byteLength=%s".format(
+            params,
+            logType,
+            endByte,
+            byteLength)
+        }>
           <button type="button" class="btn btn-default">
-            Next {Utils.bytesToString(math.min(byteLength, logLength - endByte))}
+            Next {
+          Utils.bytesToString(math.min(byteLength, logLength - endByte))
+        }
           </button>
         </a>
       } else {
@@ -130,10 +158,14 @@ private[ui] class LogPage(parent: WorkerWebUI) extends WebUIPage("logPage") with
       logType: String,
       offsetOption: Option[Long],
       byteLength: Int
-    ): (String, Long, Long, Long) = {
+  ): (String, Long, Long, Long) = {
 
     if (!supportedLogTypes.contains(logType)) {
-      return ("Error: Log type must be one of " + supportedLogTypes.mkString(", "), 0, 0, 0)
+      return (
+        "Error: Log type must be one of " + supportedLogTypes.mkString(", "),
+        0,
+        0,
+        0)
     }
 
     // Verify that the normalized path of the log directory is in the working directory
@@ -144,8 +176,10 @@ private[ui] class LogPage(parent: WorkerWebUI) extends WebUIPage("logPage") with
     }
 
     try {
-      val files = RollingFileAppender.getSortedRolledOverFiles(logDirectory, logType)
-      logDebug(s"Sorted log files of type $logType in $logDirectory:\n${files.mkString("\n")}")
+      val files =
+        RollingFileAppender.getSortedRolledOverFiles(logDirectory, logType)
+      logDebug(
+        s"Sorted log files of type $logType in $logDirectory:\n${files.mkString("\n")}")
 
       val totalLength = files.map { _.length }.sum
       val offset = offsetOption.getOrElse(totalLength - byteLength)

@@ -41,7 +41,8 @@ class BloomFilterSuite extends FunSuite { // scalastyle:ignore funsuite
     assert(filter == deserialized)
   }
 
-  def testAccuracy[T: ClassTag](typeName: String, numItems: Int)(itemGen: Random => T): Unit = {
+  def testAccuracy[T: ClassTag](typeName: String, numItems: Int)(
+      itemGen: Random => T): Unit = {
     test(s"accuracy - $typeName") {
       // use a fixed seed to make the test predictable.
       val r = new Random(37)
@@ -72,7 +73,8 @@ class BloomFilterSuite extends FunSuite { // scalastyle:ignore funsuite
     }
   }
 
-  def testMergeInPlace[T: ClassTag](typeName: String, numItems: Int)(itemGen: Random => T): Unit = {
+  def testMergeInPlace[T: ClassTag](typeName: String, numItems: Int)(
+      itemGen: Random => T): Unit = {
     test(s"mergeInPlace - $typeName") {
       // use a fixed seed to make the test predictable.
       val r = new Random(37)
@@ -99,7 +101,8 @@ class BloomFilterSuite extends FunSuite { // scalastyle:ignore funsuite
     }
   }
 
-  def testItemType[T: ClassTag](typeName: String, numItems: Int)(itemGen: Random => T): Unit = {
+  def testItemType[T: ClassTag](typeName: String, numItems: Int)(
+      itemGen: Random => T): Unit = {
     testAccuracy[T](typeName, numItems)(itemGen)
     testMergeInPlace[T](typeName, numItems)(itemGen)
   }

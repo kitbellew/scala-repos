@@ -29,7 +29,8 @@ import org.apache.spark.ui.jobs.UIData.JobUIData
 private[v1] class AllJobsResource(ui: SparkUI) {
 
   @GET
-  def jobsList(@QueryParam("status") statuses: JList[JobExecutionStatus]): Seq[JobData] = {
+  def jobsList(@QueryParam("status") statuses: JList[JobExecutionStatus])
+      : Seq[JobData] = {
     val statusToJobs: Seq[(JobExecutionStatus, Seq[JobUIData])] =
       AllJobsResource.getStatusToJobs(ui)
     val adjStatuses: JList[JobExecutionStatus] = {
@@ -45,14 +46,15 @@ private[v1] class AllJobsResource(ui: SparkUI) {
     } yield {
       AllJobsResource.convertJobData(job, ui.jobProgressListener, false)
     }
-    jobInfos.sortBy{- _.jobId}
+    jobInfos.sortBy { -_.jobId }
   }
 
 }
 
 private[v1] object AllJobsResource {
 
-  def getStatusToJobs(ui: SparkUI): Seq[(JobExecutionStatus, Seq[JobUIData])] = {
+  def getStatusToJobs(
+      ui: SparkUI): Seq[(JobExecutionStatus, Seq[JobUIData])] = {
     val statusToJobs = ui.jobProgressListener.synchronized {
       Seq(
         JobExecutionStatus.RUNNING -> ui.jobProgressListener.activeJobs.values.toSeq,
@@ -72,14 +74,15 @@ private[v1] object AllJobsResource {
       val lastStageData = lastStageInfo.flatMap { s =>
         listener.stageIdToData.get((s.stageId, s.attemptId))
       }
-      val lastStageName = lastStageInfo.map { _.name }.getOrElse("(Unknown Stage Name)")
+      val lastStageName =
+        lastStageInfo.map { _.name }.getOrElse("(Unknown Stage Name)")
       val lastStageDescription = lastStageData.flatMap { _.description }
       new JobData(
         jobId = job.jobId,
         name = lastStageName,
         description = lastStageDescription,
-        submissionTime = job.submissionTime.map{new Date(_)},
-        completionTime = job.completionTime.map{new Date(_)},
+        submissionTime = job.submissionTime.map { new Date(_) },
+        completionTime = job.completionTime.map { new Date(_) },
         stageIds = job.stageIds,
         jobGroup = job.jobGroup,
         status = job.status,

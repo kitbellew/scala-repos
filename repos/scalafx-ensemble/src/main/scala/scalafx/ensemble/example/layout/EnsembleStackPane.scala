@@ -36,11 +36,11 @@ import scalafx.scene.paint.Color
 import scalafx.scene.shape.Rectangle
 
 /**
- * An example of a StackPane layout.
- *
- * @see scalafx.scene.layout.FlowPane
- * @resource /scalafx/ensemble/images/icon-48x48.png
- */
+  * An example of a StackPane layout.
+  *
+  * @see scalafx.scene.layout.FlowPane
+  * @resource /scalafx/ensemble/images/icon-48x48.png
+  */
 class EnsembleStackPane extends EnsembleExample {
 
   def getContent = {
@@ -57,7 +57,9 @@ class EnsembleStackPane extends EnsembleExample {
           text = "I am in a stack pane"
           contentDisplay = ContentDisplay.Left
           graphic = new ImageView {
-            image = new Image(this.getClass.getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+            image = new Image(
+              this.getClass
+                .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
           }
         }
       )

@@ -25,16 +25,15 @@ import org.apache.spark.sql.catalyst.plans.PlanTest
 import org.apache.spark.sql.catalyst.plans.logical.{LocalRelation, LogicalPlan}
 import org.apache.spark.sql.catalyst.rules.RuleExecutor
 
-
 class ConvertToLocalRelationSuite extends PlanTest {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
     val batches =
-      Batch("LocalRelation", FixedPoint(100),
-        ConvertToLocalRelation) :: Nil
+      Batch("LocalRelation", FixedPoint(100), ConvertToLocalRelation) :: Nil
   }
 
-  test("Project on LocalRelation should be turned into a single LocalRelation") {
+  test(
+    "Project on LocalRelation should be turned into a single LocalRelation") {
     val testRelation = LocalRelation(
       LocalRelation('a.int, 'b.int).output,
       InternalRow(1, 2) :: InternalRow(4, 5) :: Nil)

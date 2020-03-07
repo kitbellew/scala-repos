@@ -8,9 +8,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunctionDefinition
 
 /**
- * Pavel.Fatin, 18.05.2010
- */
-
+  * Pavel.Fatin, 18.05.2010
+  */
 class FunctionAnnotatorTest extends SimpleTestCase {
   final val Header = "class A; class B\n"
 
@@ -99,8 +98,9 @@ class FunctionAnnotatorTest extends SimpleTestCase {
   }
 
   def testTry(): Unit = {
-    assertMatches(messages(
-      """
+    assertMatches(
+      messages(
+        """
         |def myFunc(): Int = {
         |  try {
         |    val something = "some string"
@@ -110,7 +110,7 @@ class FunctionAnnotatorTest extends SimpleTestCase {
         |  }
         |}
       """.stripMargin
-    )) {
+      )) {
       case Error("}", TypeMismatch()) :: Nil =>
     }
   }
@@ -141,7 +141,9 @@ class FunctionAnnotatorTest extends SimpleTestCase {
 
   def testTypeWrongExpressionMultiple() {
     assertMatches(messages("def f: A = { if(1 > 2) new B else new B }")) {
-      case Error("new B", TypeMismatch()) :: Error("new B", TypeMismatch()) :: Nil =>
+      case Error("new B", TypeMismatch()) :: Error(
+            "new B",
+            TypeMismatch()) :: Nil =>
     }
   }
 
@@ -194,7 +196,8 @@ class FunctionAnnotatorTest extends SimpleTestCase {
   }
 
   def testInheritedTypeReturnType() {
-    assertMatches(messages("trait T { def f: T }; new T { def f = { return new T }}")) {
+    assertMatches(
+      messages("trait T { def f: T }; new T { def f = { return new T }}")) {
       case Error("return", NeedsResultType()) :: Nil =>
     }
   }
@@ -212,14 +215,19 @@ class FunctionAnnotatorTest extends SimpleTestCase {
   }
 
   def testTypeReturnWrongTypeMultiple() {
-    assertMatches(messages("def f: A = { if(1 > 2) return new B else return new B }")) {
-      case Error("new B", TypeMismatch()) :: Error("new B", TypeMismatch()) :: Nil =>
+    assertMatches(
+      messages("def f: A = { if(1 > 2) return new B else return new B }")) {
+      case Error("new B", TypeMismatch()) :: Error(
+            "new B",
+            TypeMismatch()) :: Nil =>
     }
   }
 
-  def testTypeReturnAndExpressionWrongType(){
+  def testTypeReturnAndExpressionWrongType() {
     assertMatches(messages("def f: A = { if(1 > 2) return new B; new B }")) {
-      case Error("new B", TypeMismatch()) :: Error("new B", TypeMismatch()) :: Nil =>
+      case Error("new B", TypeMismatch()) :: Error(
+            "new B",
+            TypeMismatch()) :: Nil =>
     }
   }
 
@@ -262,10 +270,10 @@ class FunctionAnnotatorTest extends SimpleTestCase {
   }
 
   def testUnresolvedExpression() {
-     assertMatches(messages("def f: A = { new C }")) {
-       case Nil =>
-     }
-   }
+    assertMatches(messages("def f: A = { new C }")) {
+      case Nil =>
+    }
+  }
 
   def testReturnUnresolvedExpression() {
     assertMatches(messages("def f: A = { return new C }")) {
@@ -338,7 +346,7 @@ class FunctionAnnotatorTest extends SimpleTestCase {
     }
   }
 
-   def testRecursiveUnit() {
+  def testRecursiveUnit() {
     assertMatches(messages("def f { f }")) {
       case Nil =>
     }
@@ -388,7 +396,9 @@ class FunctionAnnotatorTest extends SimpleTestCase {
 
   def testRecursiveAndNeedsResultType() {
     assertMatches(messages("def f = { f; return new A }")) {
-      case Error("f", Recursive()) :: Error("return", NeedsResultType()) :: Nil =>
+      case Error("f", Recursive()) :: Error(
+            "return",
+            NeedsResultType()) :: Nil =>
     }
   }
 
@@ -404,7 +414,8 @@ class FunctionAnnotatorTest extends SimpleTestCase {
     }
   }
 
-  def messages(@Language(value = "Scala", prefix = Header) code: String): List[Message] = {
+  def messages(@Language(value = "Scala", prefix = Header) code: String)
+      : List[Message] = {
     val annotator = new FunctionAnnotator() {}
     val mock = new AnnotatorHolderMock
 

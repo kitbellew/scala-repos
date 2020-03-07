@@ -28,15 +28,16 @@ object StagedTypeClassExample extends App {
 
   object TupleConsumer {
     implicit val intString = new TupleConsumer[Int, String] {
-      def apply(t: (Int, String)) = t._1+t._2
+      def apply(t: (Int, String)) = t._1 + t._2
     }
 
     implicit val booleanDouble = new TupleConsumer[Boolean, Double] {
-      def apply(t: (Boolean, Double)) = (if(t._1) "+" else "-")+t._2
+      def apply(t: (Boolean, Double)) = (if (t._1) "+" else "-") + t._2
     }
   }
 
-  def consumeTuple[A, B](t: (A, B))(implicit tc: TupleConsumer[A, B]): String = tc(t)
+  def consumeTuple[A, B](t: (A, B))(implicit tc: TupleConsumer[A, B]): String =
+    tc(t)
 
   def stagedConsumeTuple(rawTuple: (Any, Any)): String = {
     val tpt1 = mkTypeTree(rawTuple._1)
@@ -48,7 +49,7 @@ object StagedTypeClassExample extends App {
           shapeless.examples.StagedTypeClassExample.consumeTuple(t.asInstanceOf[($tpt1, $tpt2)])
        """
 
-       val fn = evalTree[((Any, Any)) => String](fnTree)
+    val fn = evalTree[((Any, Any)) => String](fnTree)
 
     fn(rawTuple)
   }
@@ -66,7 +67,7 @@ object StagedTypeClassExample extends App {
 }
 
 object ReflectionUtils {
-  import scala.reflect.api.{ Mirror, TreeCreator, Universe }
+  import scala.reflect.api.{Mirror, TreeCreator, Universe}
   import scala.reflect.runtime.currentMirror
   import scala.reflect.runtime.universe._
   import scala.tools.reflect.Eval
@@ -81,15 +82,20 @@ object ReflectionUtils {
     case _: Double  => tq"_root_.scala.Double"
     case _: Boolean => tq"_root_.scala.Boolean"
     case _: Unit    => tq"_root_.scala.Unit"
-    case other       => tq"${other.getClass.getName}"
+    case other      => tq"${other.getClass.getName}"
   }
 
   def mkExpr[T: TypeTag](tree: Tree): Expr[T] =
-    Expr[T](currentMirror, new TreeCreator {
-      def apply[U <: Universe with Singleton](m: Mirror[U]): U#Tree =
-        if (m eq currentMirror) tree.asInstanceOf[U#Tree]
-        else throw new IllegalArgumentException(s"Expr defined in $currentMirror cannot be migrated to other mirrors.")
-    })
+    Expr[T](
+      currentMirror,
+      new TreeCreator {
+        def apply[U <: Universe with Singleton](m: Mirror[U]): U#Tree =
+          if (m eq currentMirror) tree.asInstanceOf[U#Tree]
+          else
+            throw new IllegalArgumentException(
+              s"Expr defined in $currentMirror cannot be migrated to other mirrors.")
+      }
+    )
 
   def evalTree[T: TypeTag](tree: Tree) = mkExpr[T](tree).eval
 }

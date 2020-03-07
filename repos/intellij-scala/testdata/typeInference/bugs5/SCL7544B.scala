@@ -9,7 +9,7 @@ object SCL7544B {
     def foo[DT <: Relationsz {}](dt: DT): Unit = {
       import dt._
 
-      val z: dt.ZeroMany[Int] = /*start*/dt.ZeroMany()/*end*/
+      val z: dt.ZeroMany[Int] = /*start*/ dt.ZeroMany() /*end*/
     }
   }
 }

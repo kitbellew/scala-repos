@@ -5,7 +5,7 @@ import java.util.UUID
 
 import mesosphere.marathon.CanceledActionException
 import mesosphere.marathon.io.storage.StorageProvider
-import mesosphere.util.{ Logging, ThreadPoolContext }
+import mesosphere.util.{Logging, ThreadPoolContext}
 
 import scala.concurrent.Future
 
@@ -17,7 +17,11 @@ import scala.concurrent.Future
   * @param provider the storage provider
   * @param path the path inside the storage, to store the content of the url stream.
   */
-final class CancelableDownload(val url: URL, val provider: StorageProvider, val path: String) extends Logging {
+final class CancelableDownload(
+    val url: URL,
+    val provider: StorageProvider,
+    val path: String)
+    extends Logging {
 
   val tempItem = provider.item(path + UUID.randomUUID().toString)
   var canceled = false
@@ -31,11 +35,12 @@ final class CancelableDownload(val url: URL, val provider: StorageProvider, val 
     if (!canceled) {
       log.info(s"Download finished from $url to path $path")
       tempItem.moveTo(path)
-    }
-    else {
-      log.info(s"Cancel download of $url. Remove temporary storage item $tempItem")
+    } else {
+      log.info(
+        s"Cancel download of $url. Remove temporary storage item $tempItem")
       tempItem.delete()
-      throw new CanceledActionException(s"Download of $path from $url has been canceled")
+      throw new CanceledActionException(
+        s"Download of $path from $url has been canceled")
     }
     this
   }(ThreadPoolContext.ioContext)
@@ -46,4 +51,3 @@ final class CancelableDownload(val url: URL, val provider: StorageProvider, val 
     case _                     => false
   }
 }
-

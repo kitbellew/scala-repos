@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -73,12 +73,25 @@ class JDBCQueryExecutorConfig(val config: Configuration)
 }
 
 object JDBCQueryExecutor {
-  def apply(config: Configuration, jobManager: JobManager[Future], jobActorSystem: ActorSystem)(implicit ec: ExecutionContext, M: Monad[Future]): ManagedPlatform = {
-    new JDBCQueryExecutor(new JDBCQueryExecutorConfig(config), jobManager, jobActorSystem)
+  def apply(
+      config: Configuration,
+      jobManager: JobManager[Future],
+      jobActorSystem: ActorSystem)(implicit
+      ec: ExecutionContext,
+      M: Monad[Future]): ManagedPlatform = {
+    new JDBCQueryExecutor(
+      new JDBCQueryExecutorConfig(config),
+      jobManager,
+      jobActorSystem)
   }
 }
 
-class JDBCQueryExecutor(val yggConfig: JDBCQueryExecutorConfig, val jobManager: JobManager[Future], val jobActorSystem: ActorSystem)(implicit val executionContext: ExecutionContext, val M: Monad[Future])
+class JDBCQueryExecutor(
+    val yggConfig: JDBCQueryExecutorConfig,
+    val jobManager: JobManager[Future],
+    val jobActorSystem: ActorSystem)(implicit
+    val executionContext: ExecutionContext,
+    val M: Monad[Future])
     extends StandaloneQueryExecutor
     with JDBCColumnarTableModule
     with Logging { platform =>
@@ -99,88 +112,124 @@ class JDBCQueryExecutor(val yggConfig: JDBCQueryExecutorConfig, val jobManager: 
   def shutdown() = Promise.successful(true)
 
   val metadataClient = new MetadataClient[Future] {
-    def size(userUID: String, path: Path): Future[Validation[String, JNum]] = Future {
-      path.elements.toList match {
-        case dbName :: tableName :: Nil =>
-          yggConfig.dbMap.get(dbName).toSuccess("DB %s is not configured".format(dbName)) flatMap { url =>
-            Validation.fromTryCatch {
-              val conn = DriverManager.getConnection(url)
+    def size(userUID: String, path: Path): Future[Validation[String, JNum]] =
+      Future {
+        path.elements.toList match {
+          case dbName :: tableName :: Nil =>
+            yggConfig.dbMap
+              .get(dbName)
+              .toSuccess("DB %s is not configured".format(dbName)) flatMap {
+              url =>
+                Validation
+                  .fromTryCatch {
+                    val conn = DriverManager.getConnection(url)
 
-              try {
-                // May need refinement to get meaningful results
-                val stmt = conn.createStatement
+                    try {
+                      // May need refinement to get meaningful results
+                      val stmt = conn.createStatement
 
-                val query = "SELECT count(*) as count FROM " + tableName.filterNot(_ == ';')
-                logger.debug("Querying with " + query)
+                      val query =
+                        "SELECT count(*) as count FROM " + tableName.filterNot(
+                          _ == ';')
+                      logger.debug("Querying with " + query)
 
-                val result = stmt.executeQuery(query)
+                      val result = stmt.executeQuery(query)
 
-                if (result.next) {
-                  JNum(result.getLong("count"))
-                } else {
-                  JNum(0)
-                }
-              } finally {
-                conn.close()
-              }
-            }.bimap({ t => logger.error("Error enumerating tables", t); t.getMessage }, x => x)
-          }
+                      if (result.next) {
+                        JNum(result.getLong("count"))
+                      } else {
+                        JNum(0)
+                      }
+                    } finally {
+                      conn.close()
+                    }
+                  }
+                  .bimap(
+                    { t =>
+                      logger.error("Error enumerating tables", t); t.getMessage
+                    },
+                    x => x)
+            }
 
-        case _ =>
-          Success(JNum(0))
+          case _ =>
+            Success(JNum(0))
+        }
+      }.onFailure {
+        case t => logger.error("Failure during size", t)
       }
-    }.onFailure {
-      case t => logger.error("Failure during size", t)
-    }
 
-    def browse(userUID: String, path: Path): Future[Validation[String, JArray]] = {
+    def browse(
+        userUID: String,
+        path: Path): Future[Validation[String, JArray]] = {
       Future {
         path.elements.toList match {
           case Nil =>
-            Success(yggConfig.dbMap.keys.toList.map { d => d + "/" }.serialize.asInstanceOf[JArray])
+            Success(
+              yggConfig.dbMap.keys.toList
+                .map { d => d + "/" }
+                .serialize
+                .asInstanceOf[JArray])
 
           case dbName :: Nil =>
             // A little more complicated. Need to use metadata interface to enumerate table names
-            yggConfig.dbMap.get(dbName).toSuccess("DB %s is not configured".format(dbName)) flatMap { url =>
-              Validation.fromTryCatch {
-                val conn = DriverManager.getConnection(url)
+            yggConfig.dbMap
+              .get(dbName)
+              .toSuccess("DB %s is not configured".format(dbName)) flatMap {
+              url =>
+                Validation
+                  .fromTryCatch {
+                    val conn = DriverManager.getConnection(url)
 
-                try {
-                  // May need refinement to get meaningful results
-                  val results = conn.getMetaData.getTables(null, null, "%", Array("TABLE"))
+                    try {
+                      // May need refinement to get meaningful results
+                      val results = conn.getMetaData.getTables(
+                        null,
+                        null,
+                        "%",
+                        Array("TABLE"))
 
-                  var tables = List.empty[String]
+                      var tables = List.empty[String]
 
-                  while (results.next) {
-                    tables ::= results.getString("TABLE_NAME") + "/"
+                      while (results.next) {
+                        tables ::= results.getString("TABLE_NAME") + "/"
+                      }
+
+                      tables.serialize.asInstanceOf[JArray]
+                    } finally {
+                      conn.close()
+                    }
                   }
-
-                  tables.serialize.asInstanceOf[JArray]
-                } finally {
-                  conn.close()
-                }
-              }.bimap({ t => logger.error("Error enumerating tables", t); t.getMessage }, x => x)
+                  .bimap(
+                    { t =>
+                      logger.error("Error enumerating tables", t); t.getMessage
+                    },
+                    x => x)
             }
 
           case dbName :: collectionName :: Nil =>
             Success(JArray(Nil))
 
           case _ =>
-            Failure("JDBC paths have the form /databaseName/tableName; longer paths are not supported.")
+            Failure(
+              "JDBC paths have the form /databaseName/tableName; longer paths are not supported.")
         }
       }.onFailure {
         case t => logger.error("Failure during size", t)
       }
     }
 
-    def structure(userUID: String, path: Path, cpath: CPath): Future[Validation[String, JObject]] = Promise.successful (
-      Success(JObject(Map("children" -> JArray.empty, "types" -> JObject.empty))) // TODO: Implement from table metadata
+    def structure(
+        userUID: String,
+        path: Path,
+        cpath: CPath): Future[Validation[String, JObject]] = Promise.successful(
+      Success(
+        JObject(Map("children" -> JArray.empty, "types" -> JObject.empty))
+      ) // TODO: Implement from table metadata
     )
 
     def currentVersion(apiKey: APIKey, path: Path) = Promise.successful(None)
-    def currentAuthorities(apiKey: APIKey, path: Path) = Promise.successful(None)
+    def currentAuthorities(apiKey: APIKey, path: Path) =
+      Promise.successful(None)
   }
 }
-
-
 // vim: set ts=4 sw=4 et:

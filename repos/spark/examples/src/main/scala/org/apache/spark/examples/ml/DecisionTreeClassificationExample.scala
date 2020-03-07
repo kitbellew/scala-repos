@@ -35,7 +35,8 @@ object DecisionTreeClassificationExample {
     val sqlContext = new SQLContext(sc)
     // $example on$
     // Load the data stored in LIBSVM format as a DataFrame.
-    val data = sqlContext.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
+    val data =
+      sqlContext.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
 
     // Index labels, adding metadata to the label column.
     // Fit on whole dataset to include all labels in index.
@@ -47,7 +48,9 @@ object DecisionTreeClassificationExample {
     val featureIndexer = new VectorIndexer()
       .setInputCol("features")
       .setOutputCol("indexedFeatures")
-      .setMaxCategories(4) // features with > 4 distinct values are treated as continuous
+      .setMaxCategories(
+        4
+      ) // features with > 4 distinct values are treated as continuous
       .fit(data)
 
     // Split the data into training and test sets (30% held out for testing)
@@ -85,7 +88,8 @@ object DecisionTreeClassificationExample {
     val accuracy = evaluator.evaluate(predictions)
     println("Test Error = " + (1.0 - accuracy))
 
-    val treeModel = model.stages(2).asInstanceOf[DecisionTreeClassificationModel]
+    val treeModel =
+      model.stages(2).asInstanceOf[DecisionTreeClassificationModel]
     println("Learned classification tree model:\n" + treeModel.toDebugString)
     // $example off$
   }

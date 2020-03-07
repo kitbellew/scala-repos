@@ -8,14 +8,16 @@ import org.scalatest.junit.JUnitRunner
 import scala.util.Random
 
 @RunWith(classOf[JUnitRunner])
-class LatencyHistogramTest extends FunSuite
-  with Matchers
-{
+class LatencyHistogramTest extends FunSuite with Matchers {
   val range = 10 * 1000 // 10 seconds
 
   def testRandom(rng: Random, N: Int, err: Double): Unit = {
     val histo = new LatencyHistogram(
-      range, err, Duration.Top.inMilliseconds, LatencyHistogram.DefaultSlices, Stopwatch.timeMillis)
+      range,
+      err,
+      Duration.Top.inMilliseconds,
+      LatencyHistogram.DefaultSlices,
+      Stopwatch.timeMillis)
     val input = Array.fill(N) {
       (rng.nextDouble() * range).toLong
     }
@@ -52,13 +54,28 @@ class LatencyHistogramTest extends FunSuite
 
   test("constructor checks inputs") {
     intercept[IllegalArgumentException] {
-      new LatencyHistogram(-1L, 0.0, 1L, LatencyHistogram.DefaultSlices, Stopwatch.systemMillis)
+      new LatencyHistogram(
+        -1L,
+        0.0,
+        1L,
+        LatencyHistogram.DefaultSlices,
+        Stopwatch.systemMillis)
     }
     intercept[IllegalArgumentException] {
-      new LatencyHistogram(1L, -0.1, 1L, LatencyHistogram.DefaultSlices, Stopwatch.systemMillis)
+      new LatencyHistogram(
+        1L,
+        -0.1,
+        1L,
+        LatencyHistogram.DefaultSlices,
+        Stopwatch.systemMillis)
     }
     intercept[IllegalArgumentException] {
-      new LatencyHistogram(1L, 1.1, 1L, LatencyHistogram.DefaultSlices, Stopwatch.systemMillis)
+      new LatencyHistogram(
+        1L,
+        1.1,
+        1L,
+        LatencyHistogram.DefaultSlices,
+        Stopwatch.systemMillis)
     }
   }
 

@@ -1,13 +1,10 @@
-
-
-
 trait T1 {
   def f: String
 }
 
 trait T2 extends T1 {
   abstract override def f: String = "goo"
-  def something = super.f  // So the "abstract override" is needed
+  def something = super.f // So the "abstract override" is needed
 }
 
 trait Q1 {

@@ -12,29 +12,44 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * @author Roman.Shein
- * @since 24.09.2015.
- */
+  * @author Roman.Shein
+  * @since 24.09.2015.
+  */
 class ScalaIterableVariableMacro extends ScalaVariableOfTypeMacro {
 
   override def getName: String = MacroUtil.scalaIdPrefix + "iterableVariable"
 
-  override def getPresentableName: String = MacroUtil.scalaPresentablePrefix + CodeInsightBundle.message("macro.iterable.variable")
+  override def getPresentableName: String =
+    MacroUtil.scalaPresentablePrefix + CodeInsightBundle.message(
+      "macro.iterable.variable")
 
-  override def addLookupItems(exprs: Array[String],
-                              context: ExpressionContext,
-                              variant: ScalaResolveResult,
-                              scType: ScType,
-                              project: Project,
-                              array: ArrayBuffer[LookupElement]) =
-    super.addLookupItems(Array(ScalaVariableOfTypeMacro.iterableId), context, variant, scType, project, array)
+  override def addLookupItems(
+      exprs: Array[String],
+      context: ExpressionContext,
+      variant: ScalaResolveResult,
+      scType: ScType,
+      project: Project,
+      array: ArrayBuffer[LookupElement]) =
+    super.addLookupItems(
+      Array(ScalaVariableOfTypeMacro.iterableId),
+      context,
+      variant,
+      scType,
+      project,
+      array)
 
-  override def getResult(exprs: Array[Expression],
-                         context: ExpressionContext,
-                         variant: ScalaResolveResult,
-                         scType: ScType,
-                         project: Project): Option[Result] =
-    super.getResult(Array(new TextExpression(ScalaVariableOfTypeMacro.iterableId)), context, variant, scType, project)
+  override def getResult(
+      exprs: Array[Expression],
+      context: ExpressionContext,
+      variant: ScalaResolveResult,
+      scType: ScType,
+      project: Project): Option[Result] =
+    super.getResult(
+      Array(new TextExpression(ScalaVariableOfTypeMacro.iterableId)),
+      context,
+      variant,
+      scType,
+      project)
 
   override def validExprsCount(exprsCount: Int): Boolean = exprsCount == 0
 }

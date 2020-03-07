@@ -6,9 +6,8 @@ import lila.db.api._
 import lila.user.UserRepo
 import tube.gameTube
 
-private[game] final class Cli(
-    db: lila.db.Env,
-    system: akka.actor.ActorSystem) extends lila.common.Cli {
+private[game] final class Cli(db: lila.db.Env, system: akka.actor.ActorSystem)
+    extends lila.common.Cli {
 
   def process = {
 

@@ -1,32 +1,37 @@
 package org.jetbrains.plugins.scala
 package performance.highlighting
 
-
 import com.intellij.psi.PsiFileFactory
 import org.jetbrains.plugins.scala.base.ScalaFixtureTestCase
 import org.jetbrains.plugins.scala.util.TestUtils
 
 /**
- * User: Alexander Podkhalyuzin
- * Date: 03.08.2009
- */
-
+  * User: Alexander Podkhalyuzin
+  * Date: 03.08.2009
+  */
 class HighlightingPerformanceTest extends ScalaFixtureTestCase {
   def doTest(text: String, TIMEOUT: Int) {
-    val file = PsiFileFactory.getInstance(myFixture.getProject).
-      createFileFromText("dummy." + ScalaFileType.SCALA_FILE_TYPE.getDefaultExtension,
-      ScalaFileType.SCALA_LANGUAGE, text, true, false)
-    TestUtils.assertTiming("Failed highlighting performance test", TIMEOUT,
+    val file = PsiFileFactory
+      .getInstance(myFixture.getProject)
+      .createFileFromText(
+        "dummy." + ScalaFileType.SCALA_FILE_TYPE.getDefaultExtension,
+        ScalaFileType.SCALA_LANGUAGE,
+        text,
+        true,
+        false)
+    TestUtils.assertTiming(
+      "Failed highlighting performance test",
+      TIMEOUT,
       new Runnable {
         def run() {
           try {
             myFixture.testHighlighting(false, false, false, file.getVirtualFile)
-          }
-          catch {
+          } catch {
             case e: RuntimeException =>
           }
         }
-      })
+      }
+    )
   }
 
   def testPerformance() {

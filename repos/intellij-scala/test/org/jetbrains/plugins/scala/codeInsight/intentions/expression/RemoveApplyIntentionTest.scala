@@ -5,10 +5,9 @@ import org.jetbrains.plugins.scala.codeInsight.intention.expression.RemoveApplyI
 import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 
 /**
- * @author Ksenia.Sautina
- * @since 4/12/12
- */
-
+  * @author Ksenia.Sautina
+  * @since 4/12/12
+  */
 class RemoveApplyIntentionTest extends ScalaIntentionTestBase {
   val familyName = RemoveApplyIntention.familyName
 

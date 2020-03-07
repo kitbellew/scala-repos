@@ -5,29 +5,32 @@ import scala.annotation.tailrec
 import java.nio._
 import java.nio.charset._
 
-class OutputStreamWriter(private[this] var out: OutputStream,
-    private[this] var enc: CharsetEncoder) extends Writer {
+class OutputStreamWriter(
+    private[this] var out: OutputStream,
+    private[this] var enc: CharsetEncoder)
+    extends Writer {
 
   private[this] var closed: Boolean = false
 
   /** Incoming buffer: pending Chars that have been written to this instance
-   *  of OutputStreamWriter, but not yet encoded.
-   *  Normally, this should always be at most 1 Char, if it is a high surrogate
-   *  which ended up alone at the end of the input of a write().
-   */
+    *  of OutputStreamWriter, but not yet encoded.
+    *  Normally, this should always be at most 1 Char, if it is a high surrogate
+    *  which ended up alone at the end of the input of a write().
+    */
   private[this] var inBuf: String = ""
 
   /** Outgoing buffer: Bytes that have been decoded (from `inBuf`), but not
-   *  yet written to the underlying output stream.
-   *  The valid bytes are between 0 and outBuf.position.
-   */
+    *  yet written to the underlying output stream.
+    *  The valid bytes are between 0 and outBuf.position.
+    */
   private[this] var outBuf: ByteBuffer = ByteBuffer.allocate(4096)
 
   def this(out: OutputStream, cs: Charset) =
-    this(out,
-        cs.newEncoder
-          .onMalformedInput(CodingErrorAction.REPLACE)
-          .onUnmappableCharacter(CodingErrorAction.REPLACE))
+    this(
+      out,
+      cs.newEncoder
+        .onMalformedInput(CodingErrorAction.REPLACE)
+        .onUnmappableCharacter(CodingErrorAction.REPLACE))
 
   def this(out: OutputStream) =
     this(out, Charset.defaultCharset)
@@ -89,10 +92,12 @@ class OutputStreamWriter(private[this] var out: OutputStream,
       val cbuf = CharBuffer.wrap(inBuf)
       val result = enc.encode(cbuf, outBuf, true)
       if (result.isUnderflow) {
-        assert(!cbuf.hasRemaining,
-            "CharsetEncoder.encode() should not have returned UNDERFLOW when "+
-            "both endOfInput and inBuf.hasRemaining are true. It should have "+
-            "returned a MalformedInput error instead.")
+        assert(
+          !cbuf.hasRemaining,
+          "CharsetEncoder.encode() should not have returned UNDERFLOW when " +
+            "both endOfInput and inBuf.hasRemaining are true. It should have " +
+            "returned a MalformedInput error instead."
+        )
       } else if (result.isOverflow) {
         makeRoomInOutBuf()
         loopEncode()
@@ -146,8 +151,8 @@ class OutputStreamWriter(private[this] var out: OutputStream,
   }
 
   /** Flushes the internal buffer of this writer, but not the underlying
-   *  output stream.
-   */
+    *  output stream.
+    */
   private[io] def flushBuffer(): Unit = {
     ensureOpen()
 

@@ -1,12 +1,12 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.pattern
 
 import akka.testkit._
 import scala.collection.immutable
 import scala.concurrent.duration._
-import scala.concurrent.{ Future, Await }
+import scala.concurrent.{Future, Await}
 
 class CircuitBreakerMTSpec extends AkkaSpec {
   implicit val ec = system.dispatcher
@@ -14,16 +14,23 @@ class CircuitBreakerMTSpec extends AkkaSpec {
     val callTimeout = 2.second.dilated
     val resetTimeout = 3.seconds.dilated
     val maxFailures = 5
-    val breaker = new CircuitBreaker(system.scheduler, maxFailures, callTimeout, resetTimeout)
+    val breaker = new CircuitBreaker(
+      system.scheduler,
+      maxFailures,
+      callTimeout,
+      resetTimeout)
     val numberOfTestCalls = 100
 
     def openBreaker(): Unit = {
       // returns true if the breaker is open
       def failingCall(): Boolean =
-        Await.result(breaker.withCircuitBreaker(Future(throw new RuntimeException("FAIL"))) recover {
-          case _: CircuitBreakerOpenException ⇒ true
-          case _                              ⇒ false
-        }, remainingOrDefault)
+        Await.result(
+          breaker.withCircuitBreaker(
+            Future(throw new RuntimeException("FAIL"))) recover {
+            case _: CircuitBreakerOpenException ⇒ true
+            case _ ⇒ false
+          },
+          remainingOrDefault)
 
       // fire some failing calls
       1 to (maxFailures + 1) foreach { _ ⇒ failingCall() }

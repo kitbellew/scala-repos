@@ -9,7 +9,7 @@ import com.twitter.util.{NonFatal, Time}
 private[http] object HttpContext {
 
   private[this] val Prefix = "Finagle-Ctx-"
-  private[this] val DeadlineHeaderKey = Prefix+Deadline.id
+  private[this] val DeadlineHeaderKey = Prefix + Deadline.id
 
   private val log = Logger(getClass.getName)
 
@@ -21,7 +21,10 @@ private[http] object HttpContext {
       val values = header.split(' ')
       val timestamp = values(0).toLong
       val deadline = values(1).toLong
-      Some(Deadline(Time.fromNanoseconds(timestamp), Time.fromNanoseconds(deadline)))
+      Some(
+        Deadline(
+          Time.fromNanoseconds(timestamp),
+          Time.fromNanoseconds(deadline)))
     } catch {
       case NonFatal(exc) =>
         log.debug(s"Could not unmarshall Deadline from header value: ${header}")
@@ -29,25 +32,25 @@ private[http] object HttpContext {
     }
 
   /**
-   * Read Finagle-Ctx header pairs from the given message for Contexts:
-   *     - Deadline
-   * and run `fn`.
-   */
+    * Read Finagle-Ctx header pairs from the given message for Contexts:
+    *     - Deadline
+    * and run `fn`.
+    */
   def read[R](msg: Message)(fn: => R): R =
     msg.headerMap.get(DeadlineHeaderKey) match {
       case Some(str) =>
         unmarshalDeadline(str) match {
           case Some(deadline) => Contexts.broadcast.let(Deadline, deadline)(fn)
-          case None => fn
+          case None           => fn
         }
       case None =>
         fn
     }
 
   /**
-   * Write Finagle-Ctx header pairs into the given message for Contexts:
-   *     - Deadline
-   */
+    * Write Finagle-Ctx header pairs into the given message for Contexts:
+    *     - Deadline
+    */
   def write(msg: Message): Unit =
     Deadline.current match {
       case Some(deadline) =>

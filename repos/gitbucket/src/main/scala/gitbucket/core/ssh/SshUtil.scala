@@ -8,7 +8,6 @@ import org.apache.sshd.common.util.buffer.ByteArrayBuffer
 import org.eclipse.jgit.lib.Constants
 import org.slf4j.LoggerFactory
 
-
 object SshUtil {
 
   private val logger = LoggerFactory.getLogger(SshUtil.getClass)
@@ -33,7 +32,7 @@ object SshUtil {
 
   def fingerPrint(key: String): Option[String] = str2PublicKey(key) match {
     case Some(publicKey) => Some(KeyUtils.getFingerPrint(publicKey))
-    case None => None
+    case None            => None
   }
 
 }

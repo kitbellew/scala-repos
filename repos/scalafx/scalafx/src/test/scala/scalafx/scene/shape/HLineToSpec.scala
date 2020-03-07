@@ -36,13 +36,15 @@ import scalafx.Includes._
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
- * HLineTo Spec tests.
- *
- *
- */
+  * HLineTo Spec tests.
+  *
+  *
+  */
 @RunWith(classOf[JUnitRunner])
 class HLineToSpec
-  extends SimpleSFXDelegateSpec[jfxss.HLineTo, HLineTo](classOf[jfxss.HLineTo], classOf[HLineTo]) {
+    extends SimpleSFXDelegateSpec[jfxss.HLineTo, HLineTo](
+      classOf[jfxss.HLineTo],
+      classOf[HLineTo]) {
 
   val positionDelegate = getScalaClassInstance
 

@@ -3,7 +3,7 @@ package commands
 
 import java.util.Date
 
-import org.joda.time.{ DateTime, DateTimeZone }
+import org.joda.time.{DateTime, DateTimeZone}
 import org.json4s._
 import org.scalatra.util.conversion.Conversions._
 import org.scalatra.util.conversion._
@@ -43,20 +43,29 @@ class BindingSpec extends Specification {
   "A Binding" should {
     import org.scalatra.commands.TypeConverterFactories._
     "construct containers by name" in {
-      val cont = Binding("login", implicitly[TypeConverter[String, String]], implicitly[TypeConverterFactory[String]])
+      val cont = Binding(
+        "login",
+        implicitly[TypeConverter[String, String]],
+        implicitly[TypeConverterFactory[String]])
       cont.name must_== "login"
       cont.original must beAnInstanceOf[Option[String]]
     }
 
     "construct containers by binding" in {
       val binding = newBinding[String]
-      val cont = Binding(binding, implicitly[TypeConverter[Seq[String], String]], implicitly[TypeConverterFactory[Seq[String]]])
+      val cont = Binding(
+        binding,
+        implicitly[TypeConverter[Seq[String], String]],
+        implicitly[TypeConverterFactory[Seq[String]]])
       cont.name must_== binding.name
       cont.original must beAnInstanceOf[Option[Seq[String]]]
     }
 
     "bind to the data" in {
-      val cont = Binding("login", implicitly[TypeConverter[String, String]], implicitly[TypeConverterFactory[String]])
+      val cont = Binding(
+        "login",
+        implicitly[TypeConverter[String, String]],
+        implicitly[TypeConverterFactory[String]])
       cont.name must_== "login"
       cont.original must beAnInstanceOf[Option[String]]
       val bound = cont(Right(Option("joske".asInstanceOf[cont.S])))
@@ -80,9 +89,15 @@ class BindingSpec extends Specification {
     "build a Binding with Map[String, String]" in {
 
       val builder = Binding(FieldDescriptor[String]("login"))
-      val conv = implicitly[TypeConverter[String, String]].asInstanceOf[TypeConverter[String, builder.T]]
-      val container = Binding(builder.field, conv, implicitly[TypeConverterFactory[String]])(manifest[String], builder.valueManifest)
-      container(Right(Some("joske".asInstanceOf[container.S]))).validation must_== "joske".success
+      val conv = implicitly[TypeConverter[String, String]]
+        .asInstanceOf[TypeConverter[String, builder.T]]
+      val container =
+        Binding(builder.field, conv, implicitly[TypeConverterFactory[String]])(
+          manifest[String],
+          builder.valueManifest)
+      container(
+        Right(Some("joske"
+          .asInstanceOf[container.S]))).validation must_== "joske".success
     }
 
   }
@@ -263,7 +278,9 @@ class BindingSpec extends Specification {
     }
 
     "provide FieldDescriptor[DateTime] for a ISO8601 date without millis" in {
-      testLiftJsonDateTimeBinding(JodaDateFormats.Iso8601NoMillis, _.withMillis(0))
+      testLiftJsonDateTimeBinding(
+        JodaDateFormats.Iso8601NoMillis,
+        _.withMillis(0))
     }
 
     "provide FieldDescriptor[DateTime] for a HTTP date" in {
@@ -291,7 +308,9 @@ class BindingSpec extends Specification {
       field.validator must not(beEmpty)
       field.validator.get.apply("hello".success).isSuccess must beTrue
       field.validator.get.apply("".success).isSuccess must beFalse
-      field.validator.get.apply(null.asInstanceOf[String].success).isSuccess must beFalse
+      field.validator.get
+        .apply(null.asInstanceOf[String].success)
+        .isSuccess must beFalse
     }
 
     "have a validation for greater than" in {
@@ -306,7 +325,9 @@ class BindingSpec extends Specification {
       val field = newBinding[Seq[String]].notEmpty
       field.validator must not(beEmpty)
       field.validator.get.apply(Success(Seq("hello"))).isSuccess must beTrue
-      field.validator.get.apply(Success(Seq.empty[String])).isSuccess must beFalse
+      field.validator.get
+        .apply(Success(Seq.empty[String]))
+        .isSuccess must beFalse
     }
 
     "allow chaining validations" in {
@@ -317,23 +338,39 @@ class BindingSpec extends Specification {
     }
   }
 
-  def testDateTimeBinding(format: JodaDateFormats.DateFormat, transform: DateTime => DateTime = identity)(implicit mf: Manifest[DateTime], converter: TypeConverter[String, DateTime]) = {
+  def testDateTimeBinding(
+      format: JodaDateFormats.DateFormat,
+      transform: DateTime => DateTime = identity)(implicit
+      mf: Manifest[DateTime],
+      converter: TypeConverter[String, DateTime]) = {
     val field = newBinding[DateTime](mf)
-    field.value must_== ValidationError(field.requiredError.format(field.name), FieldName(field.name)).failure
+    field.value must_== ValidationError(
+      field.requiredError.format(field.name),
+      FieldName(field.name)).failure
     val v = transform(new DateTime(DateTimeZone.UTC))
     val s = v.toString(format.dateTimeFormat)
     field(Right(Some(s))).value must_== v.success[ValidationError]
   }
-  def testDateBinding(format: JodaDateFormats.DateFormat, transform: DateTime => DateTime = identity)(implicit mf: Manifest[Date], converter: TypeConverter[String, Date]) = {
+  def testDateBinding(
+      format: JodaDateFormats.DateFormat,
+      transform: DateTime => DateTime = identity)(implicit
+      mf: Manifest[Date],
+      converter: TypeConverter[String, Date]) = {
     val field = newBinding[Date](mf)
-    field.value must_== ValidationError(field.requiredError.format(field.name), FieldName(field.name)).failure
+    field.value must_== ValidationError(
+      field.requiredError.format(field.name),
+      FieldName(field.name)).failure
     val v = transform(new DateTime(DateTimeZone.UTC))
     val s = v.toString(format.dateTimeFormat)
     field(Right(Some(s))).value must_== v.toDate.success[ValidationError]
   }
-  def testBinding[T](value: => T)(implicit mf: Manifest[T], converter: TypeConverter[String, T]) = {
+  def testBinding[T](value: => T)(implicit
+      mf: Manifest[T],
+      converter: TypeConverter[String, T]) = {
     val field = newBinding[T]
-    field.value must_== ValidationError(field.requiredError.format(field.name), FieldName(field.name)).failure
+    field.value must_== ValidationError(
+      field.requiredError.format(field.name),
+      FieldName(field.name)).failure
     val v = value
     field(Right(Some(v.toString))).value must_== v.success[ValidationError]
   }
@@ -364,31 +401,48 @@ class BindingSpec extends Specification {
   //    field(Some(new TextNode(s).asInstanceOf[JsonNode])).value must_== v.toDate.success
   //  }
 
-  def testLiftJsonBinding[T](value: => T)(implicit mf: Manifest[T], converter: TypeConverter[JValue, T]) = {
+  def testLiftJsonBinding[T](value: => T)(implicit
+      mf: Manifest[T],
+      converter: TypeConverter[JValue, T]) = {
     val field = newBinding[T]
-    field.value must_== ValidationError(field.requiredError.format(field.name), FieldName(field.name)).failure
+    field.value must_== ValidationError(
+      field.requiredError.format(field.name),
+      FieldName(field.name)).failure
     val v = value
 
     field(Right(Some(Extraction.decompose(v)))).value must_== v.success
   }
 
-  def testLiftJsonDateTimeBinding(format: JodaDateFormats.DateFormat, transform: DateTime => DateTime = identity)(implicit mf: Manifest[DateTime], converter: TypeConverter[JValue, DateTime]) = {
+  def testLiftJsonDateTimeBinding(
+      format: JodaDateFormats.DateFormat,
+      transform: DateTime => DateTime = identity)(implicit
+      mf: Manifest[DateTime],
+      converter: TypeConverter[JValue, DateTime]) = {
     val field = newBinding[DateTime](mf)
-    field.value must_== ValidationError(field.requiredError.format(field.name), FieldName(field.name)).failure
+    field.value must_== ValidationError(
+      field.requiredError.format(field.name),
+      FieldName(field.name)).failure
     val v = transform(new DateTime(DateTimeZone.UTC))
     val s = v.toString(format.dateTimeFormat)
     field(Right(Some(Extraction.decompose(s)))).value must_== v.success
   }
 
-  def testLiftJsonDateBinding(format: JodaDateFormats.DateFormat, transform: DateTime => DateTime = identity)(implicit mf: Manifest[Date], converter: TypeConverter[JValue, Date]) = {
+  def testLiftJsonDateBinding(
+      format: JodaDateFormats.DateFormat,
+      transform: DateTime => DateTime = identity)(implicit
+      mf: Manifest[Date],
+      converter: TypeConverter[JValue, Date]) = {
     val field = newBinding[Date](mf)
-    field.value must_== ValidationError(field.requiredError.format(field.name), FieldName(field.name)).failure
+    field.value must_== ValidationError(
+      field.requiredError.format(field.name),
+      FieldName(field.name)).failure
     val v = transform(new DateTime(DateTimeZone.UTC))
     val s = v.toString(format.dateTimeFormat)
     field(Right(Some(Extraction.decompose(s)))).value must_== v.toDate.success
   }
 
-  def newBinding[T: Manifest]: FieldDescriptor[T] = FieldDescriptor[T](randomFieldName)
+  def newBinding[T: Manifest]: FieldDescriptor[T] =
+    FieldDescriptor[T](randomFieldName)
 
   def randomFieldName = "field_" + random
 }

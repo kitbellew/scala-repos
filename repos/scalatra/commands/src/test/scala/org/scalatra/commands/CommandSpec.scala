@@ -13,9 +13,11 @@ import scalaz.Scalaz._
 
 trait BindingTemplate { self: Command with TypeConverterFactories =>
 
-  val upperCaseName: Field[String] = bind[String]("name").transform(_.toUpperCase).optional("")
+  val upperCaseName: Field[String] =
+    bind[String]("name").transform(_.toUpperCase).optional("")
 
-  val lowerCaseSurname: Field[String] = asString("surname").transform(_.toLowerCase).optional("")
+  val lowerCaseSurname: Field[String] =
+    asString("surname").transform(_.toLowerCase).optional("")
 
   val age: Field[Int] = asType[Int]("age").optional(-1) // explicit
 
@@ -23,7 +25,10 @@ trait BindingTemplate { self: Command with TypeConverterFactories =>
 
 }
 
-trait WithBinding extends Command with TypeConverterFactories with BindingTemplate {
+trait WithBinding
+    extends Command
+    with TypeConverterFactories
+    with BindingTemplate {
 
   val a = upperCaseName
 
@@ -37,20 +42,26 @@ class MixAndMatchCommand extends ParamsOnlyCommand {
   import org.scalatra.commands.ValueSource._
   val name: Field[String] = asString("name").notBlank
   val age: Field[Int] = "age"
-  val token: Field[String] = (
-    asString("API-TOKEN").notBlank
+  val token: Field[String] = (asString("API-TOKEN").notBlank
     sourcedFrom Header
     description "The API token for this request"
     notes "Invalid data kills kittens"
     allowableValues "123")
-  val skip: Field[Int] = asInt("skip").sourcedFrom(Query).description("The offset for this collection index")
-  val limit: Field[Int] = asType[Int]("limit").sourcedFrom(Query).withDefaultValue(20).description("the max number of items to return")
+  val skip: Field[Int] = asInt("skip")
+    .sourcedFrom(Query)
+    .description("The offset for this collection index")
+  val limit: Field[Int] = asType[Int]("limit")
+    .sourcedFrom(Query)
+    .withDefaultValue(20)
+    .description("the max number of items to return")
 }
 
 class CommandWithConfirmationValidation extends ParamsOnlyCommand {
   val name: Field[String] = asString("name").notBlank
-  val passwordConfirmation: Field[String] = asString("passwordConfirmation").notBlank
-  val password: Field[String] = asString("password").notBlank.validForConfirmation(passwordConfirmation)
+  val passwordConfirmation: Field[String] = asString(
+    "passwordConfirmation").notBlank
+  val password: Field[String] =
+    asString("password").notBlank.validForConfirmation(passwordConfirmation)
 }
 
 class CommandWithRequiredValuesValidation extends ParamsOnlyCommand {
@@ -88,7 +99,8 @@ class CommandSpec extends Specification {
 
     "bindTo with values from all kinds of different sources and bind matching values to specific keys" in {
       val form = new MixAndMatchCommand
-      val params = Map("name" -> "John", "age" -> "45", "limit" -> "30", "skip" -> "20")
+      val params =
+        Map("name" -> "John", "age" -> "45", "limit" -> "30", "skip" -> "20")
       val multi = MultiMap(params map { case (k, v) => k -> Seq(v) })
       val hdrs = Map("API-TOKEN" -> "123")
       form.bindTo(params, multi, hdrs)
@@ -101,7 +113,11 @@ class CommandSpec extends Specification {
 
     "bindTo 'params' with a confirmation" in {
       val form = new CommandWithConfirmationValidation
-      form.bindTo(Map("name" -> "blah", "password" -> "blah123", "passwordConfirmation" -> "blah123"))
+      form.bindTo(
+        Map(
+          "name" -> "blah",
+          "password" -> "blah123",
+          "passwordConfirmation" -> "blah123"))
       form.isValid must beTrue
     }
 
@@ -153,7 +169,8 @@ class CommandSpec extends Specification {
         }
 
         afterBinding {
-          _fullname = a.validation.toOption.get + " " + lower.validation.toOption.get
+          _fullname =
+            a.validation.toOption.get + " " + lower.validation.toOption.get
         }
       }
 
@@ -165,7 +182,8 @@ class CommandSpec extends Specification {
       form.bindTo(params)
 
       form.fullName must beSome[String]
-      form.fullName.get must_== params("name").toUpperCase + " " + params("surname").toLowerCase
+      form.fullName.get must_== params("name").toUpperCase + " " + params(
+        "surname").toLowerCase
     }
   }
 }
@@ -187,7 +205,8 @@ class CommandSupportSpec extends Specification with Mockito {
     "provide a convention for request keys with commandRequestKey[T]" in {
 
       val page = new ScalatraPage
-      implicit val mockRequest: HttpServletRequest = smartMock[HttpServletRequest]
+      implicit val mockRequest: HttpServletRequest =
+        smartMock[HttpServletRequest]
       val key = page.commandRequestKey[CommandSample]
       key must_== "_command_" + classOf[CommandSample].getName
 
@@ -208,7 +227,8 @@ class CommandSupportSpec extends Specification with Mockito {
 
       implicit val req = mock[HttpServletRequest].smart
       val page = new ScalatraPage {
-        override def multiParams(implicit request: HttpServletRequest): MultiParams = MultiMap()
+        override def multiParams(implicit
+            request: HttpServletRequest): MultiParams = MultiMap()
         override implicit def request = req
       }
       val key = page.commandRequestKey[CommandSample]
@@ -235,4 +255,3 @@ class CommandSupportSpec extends Specification with Mockito {
     matcher must not(beNull[RouteMatcher])
   }
 }
-

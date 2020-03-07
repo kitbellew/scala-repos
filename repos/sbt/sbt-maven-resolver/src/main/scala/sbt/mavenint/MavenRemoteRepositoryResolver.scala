@@ -4,9 +4,9 @@ package mavenint
 import org.apache.ivy.core.IvyContext
 import org.apache.ivy.core.module.id.ModuleRevisionId
 import org.apache.ivy.core.settings.IvySettings
-import org.eclipse.aether.artifact.{ DefaultArtifact => AetherArtifact }
-import org.eclipse.aether.deployment.{ DeployRequest => AetherDeployRequest }
-import org.eclipse.aether.metadata.{ DefaultMetadata, Metadata }
+import org.eclipse.aether.artifact.{DefaultArtifact => AetherArtifact}
+import org.eclipse.aether.deployment.{DeployRequest => AetherDeployRequest}
+import org.eclipse.aether.metadata.{DefaultMetadata, Metadata}
 import org.eclipse.aether.resolution.{
   ArtifactDescriptorRequest => AetherDescriptorRequest,
   ArtifactDescriptorResult => AetherDescriptorResult,
@@ -22,35 +22,51 @@ import sbt.librarymanagement.MavenRepository
 import scala.collection.JavaConverters._
 
 /**
- * A resolver instance which can resolve from a REMOTE maven repository.
- *
- * Note: This creates its *own* local cache directory for cache metadata. using its name.
- *
- */
-class MavenRemoteRepositoryResolver(val repo: MavenRepository, settings: IvySettings)
-    extends MavenRepositoryResolver(settings) with CustomRemoteMavenResolver {
+  * A resolver instance which can resolve from a REMOTE maven repository.
+  *
+  * Note: This creates its *own* local cache directory for cache metadata. using its name.
+  *
+  */
+class MavenRemoteRepositoryResolver(
+    val repo: MavenRepository,
+    settings: IvySettings)
+    extends MavenRepositoryResolver(settings)
+    with CustomRemoteMavenResolver {
   setName(repo.name)
   override def toString = s"${repo.name}: ${repo.root}"
   protected val system = MavenRepositorySystemFactory.newRepositorySystemImpl
   // Note:  All maven repository resolvers will use the SAME maven cache.
   //        We're not sure if we care whether or not this means that the wrong resolver may report finding an artifact.
   //        The key is not to duplicate files repeatedly across many caches.
-  private val localRepo = new java.io.File(settings.getDefaultIvyUserDir, s"maven-cache")
+  private val localRepo =
+    new java.io.File(settings.getDefaultIvyUserDir, s"maven-cache")
   sbt.io.IO.createDirectory(localRepo)
-  protected val session = MavenRepositorySystemFactory.newSessionImpl(system, localRepo)
+  protected val session =
+    MavenRepositorySystemFactory.newSessionImpl(system, localRepo)
   private val aetherRepository = {
-    new org.eclipse.aether.repository.RemoteRepository.Builder(repo.name, SbtRepositoryLayout.LAYOUT_NAME, repo.root).build()
+    new org.eclipse.aether.repository.RemoteRepository.Builder(
+      repo.name,
+      SbtRepositoryLayout.LAYOUT_NAME,
+      repo.root).build()
   }
   // TODO - Check if isUseCacheOnly is used correctly.
   private def isUseCacheOnly: Boolean =
-    Option(IvyContext.getContext).flatMap(x => Option(x.getResolveData)).flatMap(x => Option(x.getOptions)).map(_.isUseCacheOnly).getOrElse(false)
-  protected def addRepositories(request: AetherDescriptorRequest): AetherDescriptorRequest =
+    Option(IvyContext.getContext)
+      .flatMap(x => Option(x.getResolveData))
+      .flatMap(x => Option(x.getOptions))
+      .map(_.isUseCacheOnly)
+      .getOrElse(false)
+  protected def addRepositories(
+      request: AetherDescriptorRequest): AetherDescriptorRequest =
     if (isUseCacheOnly) request else request.addRepository(aetherRepository)
-  protected def addRepositories(request: AetherArtifactRequest): AetherArtifactRequest =
+  protected def addRepositories(
+      request: AetherArtifactRequest): AetherArtifactRequest =
     if (isUseCacheOnly) request else request.addRepository(aetherRepository)
-  protected def addRepositories(request: AetherVersionRequest): AetherVersionRequest =
+  protected def addRepositories(
+      request: AetherVersionRequest): AetherVersionRequest =
     if (isUseCacheOnly) request else request.addRepository(aetherRepository)
-  protected def addRepositories(request: AetherVersionRangeRequest): AetherVersionRangeRequest =
+  protected def addRepositories(
+      request: AetherVersionRangeRequest): AetherVersionRangeRequest =
     if (isUseCacheOnly) request else request.addRepository(aetherRepository)
 
   /** Actually publishes aether artifacts. */
@@ -71,9 +87,13 @@ class MavenRemoteRepositoryResolver(val repo: MavenRepository, settings: IvySett
         Metadata.Nature.RELEASE_OR_SNAPSHOT))
     if (!isUseCacheOnly) metadataRequest.setRepository(aetherRepository)
     val metadataResultOpt =
-      try system.resolveMetadata(session, java.util.Arrays.asList(metadataRequest)).asScala.headOption
+      try system
+        .resolveMetadata(session, java.util.Arrays.asList(metadataRequest))
+        .asScala
+        .headOption
       catch {
-        case e: org.eclipse.aether.resolution.ArtifactResolutionException => None
+        case e: org.eclipse.aether.resolution.ArtifactResolutionException =>
+          None
       }
     try metadataResultOpt match {
       case Some(md) if md.isResolved =>

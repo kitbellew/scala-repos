@@ -1,7 +1,6 @@
 package spire
 package benchmark
 
-
 import spire.implicits._
 
 import com.google.caliper.Runner
@@ -11,12 +10,12 @@ import com.google.caliper.Param
 object RandomBenchmarks extends MyRunner(classOf[RandomBenchmarks])
 
 class RandomBenchmarks extends MyBenchmark with BenchmarkData {
-  def intsToLong(x: Int, y: Int): Long = ((x & 0xffffffffL) << 32) | (y & 0xffffffffL)
+  def intsToLong(x: Int, y: Int): Long =
+    ((x & 0xFFFFFFFFL) << 32) | (y & 0xFFFFFFFFL)
 
   val ints16: Array[Int] = Array(
-    -269317507, 81307275, 584521692, 2079271747,
-    -1808083612, 1064281324, -1151709564, -1703051719,
-    977240891, -1623897167, 368815549, 358018285,
+    -269317507, 81307275, 584521692, 2079271747, -1808083612, 1064281324,
+    -1151709564, -1703051719, 977240891, -1623897167, 368815549, 358018285,
     1735909162, 1296698489, -957499524, 1879467842
   )
 

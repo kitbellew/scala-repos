@@ -1,7 +1,10 @@
 package org.jetbrains.plugins.scala
 package project.notification.source
 
-import com.intellij.openapi.fileEditor.impl.{EditorFileSwapper, EditorWithProviderComposite}
+import com.intellij.openapi.fileEditor.impl.{
+  EditorFileSwapper,
+  EditorWithProviderComposite
+}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
@@ -15,17 +18,20 @@ object ScalaEditorFileSwapper {
     val psiFile: PsiFile = PsiManager.getInstance(project).findFile(eachFile)
     psiFile match {
       case file: ScalaFile if file.isCompiled =>
-      case _ => return null
+      case _                                  => return null
     }
     val fqn: String = getFQN(psiFile)
     if (fqn == null) return null
-    val classes = ScalaPsiManager.instance(project).getCachedClasses(psiFile.getResolveScope, fqn)
+    val classes = ScalaPsiManager
+      .instance(project)
+      .getCachedClasses(psiFile.getResolveScope, fqn)
     var clazz: PsiClass = null
     for (cl <- classes if clazz == null) {
       if (cl.getContainingFile == psiFile) clazz = cl
     }
     if (!clazz.isInstanceOf[ScTypeDefinition]) return null
-    val sourceClass: PsiClass = clazz.asInstanceOf[ScTypeDefinition].getSourceMirrorClass
+    val sourceClass: PsiClass =
+      clazz.asInstanceOf[ScTypeDefinition].getSourceMirrorClass
     if (sourceClass == null || (sourceClass eq clazz)) return null
     val result: VirtualFile = sourceClass.getContainingFile.getVirtualFile
     assert(result != null)
@@ -43,8 +49,13 @@ object ScalaEditorFileSwapper {
 }
 
 class ScalaEditorFileSwapper extends EditorFileSwapper {
-  def getFileToSwapTo(project: Project,
-                      editorWithProviderComposite: EditorWithProviderComposite): Pair[VirtualFile, Integer] = {
-    Pair.create(ScalaEditorFileSwapper.findSourceFile(project, editorWithProviderComposite.getFile), null)
+  def getFileToSwapTo(
+      project: Project,
+      editorWithProviderComposite: EditorWithProviderComposite)
+      : Pair[VirtualFile, Integer] = {
+    Pair.create(
+      ScalaEditorFileSwapper
+        .findSourceFile(project, editorWithProviderComposite.getFile),
+      null)
   }
 }

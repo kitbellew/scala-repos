@@ -4,12 +4,14 @@ import com.intellij.codeInspection.LocalInspectionTool
 import org.jetbrains.plugins.scala.codeInspection.ScalaLightInspectionFixtureTestAdapter
 
 /**
- * @author Sergey Tolmachev (tolsi.ru@gmail.com)
- * @since 29.09.15
- */
-class NestedStatefulMonadsInspectionTest extends ScalaLightInspectionFixtureTestAdapter {
+  * @author Sergey Tolmachev (tolsi.ru@gmail.com)
+  * @since 29.09.15
+  */
+class NestedStatefulMonadsInspectionTest
+    extends ScalaLightInspectionFixtureTestAdapter {
   val annotation = NestedStatefulMonadsInspection.Annotation
-  protected def classOfInspection: Class[_ <: LocalInspectionTool] = classOf[NestedStatefulMonadsInspection]
+  protected def classOfInspection: Class[_ <: LocalInspectionTool] =
+    classOf[NestedStatefulMonadsInspection]
 
   def test_1(): Unit = {
     val text =

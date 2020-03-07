@@ -1,14 +1,13 @@
 package com.twitter.scalding
 
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 
 /**
- * Simple Example: First group data by gender and then sort by height reverse order.
- * Then add another column for each group which is the rank order of the height.
- */
+  * Simple Example: First group data by gender and then sort by height reverse order.
+  * Then add another column for each group which is the rank order of the height.
+  */
 class AddRankingWithScanLeft(args: Args) extends Job(args) {
-  Tsv("input1", ('gender, 'height))
-    .read
+  Tsv("input1", ('gender, 'height)).read
     .groupBy('gender) { group =>
       group.sortBy('height).reverse
       group.scanLeft(('height) -> ('rank))((0L)) {

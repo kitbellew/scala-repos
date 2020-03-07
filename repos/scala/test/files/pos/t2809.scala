@@ -17,4 +17,3 @@ package p2 { // all being in the same package compiles fine
     }
   }
 }
-

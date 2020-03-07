@@ -13,7 +13,6 @@ final class Simple(x: Int) {
   var y: String = ""
 }
 
-
 class ShareBinaryTest extends FunSuite {
   val c1 = new C("c1", "desc", null, Array(1))
   val c2 = new C("c2", "desc", c1, Array(1))

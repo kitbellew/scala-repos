@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.stream
 
 import akka.NotUsed
@@ -28,7 +28,8 @@ import akka.stream.scaladsl.Flow
 object IntegrationDocSpec {
   import TwitterStreamQuickstartDocSpec._
 
-  val config = ConfigFactory.parseString("""
+  val config = ConfigFactory.parseString(
+    """
     #//#blocking-dispatcher-config
     blocking-dispatcher {
       executor = "thread-pool-executor"
@@ -179,7 +180,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
     val emailAddresses: Source[String, NotUsed] =
       authors.via(
-        Flow[Author].mapAsync(4)(author => addressSystem.lookupEmail(author.handle))
+        Flow[Author]
+          .mapAsync(4)(author => addressSystem.lookupEmail(author.handle))
           .withAttributes(supervisionStrategy(resumingDecider)))
     //#email-addresses-mapAsync-supervision
   }
@@ -195,7 +197,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
     val emailAddresses: Source[String, NotUsed] =
       authors
-        .mapAsyncUnordered(4)(author => addressSystem.lookupEmail(author.handle))
+        .mapAsyncUnordered(4)(author =>
+          addressSystem.lookupEmail(author.handle))
         .collect { case Some(emailAddress) => emailAddress }
 
     val sendEmails: RunnableGraph[NotUsed] =
@@ -209,14 +212,16 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     sendEmails.run()
     //#external-service-mapAsyncUnordered
 
-    probe.receiveN(7).toSet should be(Set(
-      "rolandkuhn@somewhere.com",
-      "patriknw@somewhere.com",
-      "bantonsson@somewhere.com",
-      "drewhk@somewhere.com",
-      "ktosopl@somewhere.com",
-      "mmartynas@somewhere.com",
-      "akkateam@somewhere.com"))
+    probe.receiveN(7).toSet should be(
+      Set(
+        "rolandkuhn@somewhere.com",
+        "patriknw@somewhere.com",
+        "bantonsson@somewhere.com",
+        "drewhk@somewhere.com",
+        "ktosopl@somewhere.com",
+        "mmartynas@somewhere.com",
+        "akkateam@somewhere.com"
+      ))
   }
 
   "careful managed blocking with mapAsync" in {
@@ -227,11 +232,13 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val authors = tweets.filter(_.hashtags.contains(akka)).map(_.author)
 
     val phoneNumbers =
-      authors.mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
+      authors
+        .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
         .collect { case Some(phoneNo) => phoneNo }
 
     //#blocking-mapAsync
-    val blockingExecutionContext = system.dispatchers.lookup("blocking-dispatcher")
+    val blockingExecutionContext =
+      system.dispatchers.lookup("blocking-dispatcher")
 
     val sendTextMessages: RunnableGraph[NotUsed] =
       phoneNumbers
@@ -246,14 +253,16 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     sendTextMessages.run()
     //#blocking-mapAsync
 
-    probe.receiveN(7).toSet should be(Set(
-      "rolandkuhn".hashCode.toString,
-      "patriknw".hashCode.toString,
-      "bantonsson".hashCode.toString,
-      "drewhk".hashCode.toString,
-      "ktosopl".hashCode.toString,
-      "mmartynas".hashCode.toString,
-      "akkateam".hashCode.toString))
+    probe.receiveN(7).toSet should be(
+      Set(
+        "rolandkuhn".hashCode.toString,
+        "patriknw".hashCode.toString,
+        "bantonsson".hashCode.toString,
+        "drewhk".hashCode.toString,
+        "ktosopl".hashCode.toString,
+        "mmartynas".hashCode.toString,
+        "akkateam".hashCode.toString
+      ))
   }
 
   "careful managed blocking with map" in {
@@ -264,7 +273,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val authors = tweets.filter(_.hashtags.contains(akka)).map(_.author)
 
     val phoneNumbers =
-      authors.mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
+      authors
+        .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
         .collect { case Some(phoneNo) => phoneNo }
 
     //#blocking-map
@@ -290,10 +300,12 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
   "calling actor service with mapAsync" in {
     val probe = TestProbe()
-    val database = system.actorOf(Props(classOf[DatabaseService], probe.ref), "db")
+    val database =
+      system.actorOf(Props(classOf[DatabaseService], probe.ref), "db")
 
     //#save-tweets
-    val akkaTweets: Source[Tweet, NotUsed] = tweets.filter(_.hashtags.contains(akka))
+    val akkaTweets: Source[Tweet, NotUsed] =
+      tweets.filter(_.hashtags.contains(akka))
 
     implicit val timeout = Timeout(3.seconds)
     val saveTweets: RunnableGraph[NotUsed] =
@@ -321,11 +333,13 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     }
 
     //#sometimes-slow-mapAsync
-    implicit val blockingExecutionContext = system.dispatchers.lookup("blocking-dispatcher")
+    implicit val blockingExecutionContext =
+      system.dispatchers.lookup("blocking-dispatcher")
     val service = new SometimesSlowService
 
     implicit val materializer = ActorMaterializer(
-      ActorMaterializerSettings(system).withInputBuffer(initialSize = 4, maxSize = 4))
+      ActorMaterializerSettings(system)
+        .withInputBuffer(initialSize = 4, maxSize = 4))
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
       .map(elem => { println(s"before: $elem"); elem })
@@ -353,11 +367,13 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     }
 
     //#sometimes-slow-mapAsyncUnordered
-    implicit val blockingExecutionContext = system.dispatchers.lookup("blocking-dispatcher")
+    implicit val blockingExecutionContext =
+      system.dispatchers.lookup("blocking-dispatcher")
     val service = new SometimesSlowService
 
     implicit val materializer = ActorMaterializer(
-      ActorMaterializerSettings(system).withInputBuffer(initialSize = 4, maxSize = 4))
+      ActorMaterializerSettings(system)
+        .withInputBuffer(initialSize = 4, maxSize = 4))
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
       .map(elem => { println(s"before: $elem"); elem })
@@ -365,17 +381,18 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
       .runForeach(elem => println(s"after: $elem"))
     //#sometimes-slow-mapAsyncUnordered
 
-    probe.receiveN(10).toSet should be(Set(
-      "after: A",
-      "after: B",
-      "after: C",
-      "after: D",
-      "after: E",
-      "after: F",
-      "after: G",
-      "after: H",
-      "after: I",
-      "after: J"))
+    probe.receiveN(10).toSet should be(
+      Set(
+        "after: A",
+        "after: B",
+        "after: C",
+        "after: D",
+        "after: E",
+        "after: F",
+        "after: G",
+        "after: H",
+        "after: I",
+        "after: J"))
   }
 
 }

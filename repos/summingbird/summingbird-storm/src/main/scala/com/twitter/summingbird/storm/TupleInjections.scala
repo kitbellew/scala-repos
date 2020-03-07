@@ -12,12 +12,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.summingbird.storm
 
-import com.twitter.bijection.{ Injection, Inversion, AbstractInjection }
-import java.util.{ List => JList, ArrayList => JAList }
+import com.twitter.bijection.{Injection, Inversion, AbstractInjection}
+import java.util.{List => JList, ArrayList => JAList}
 import scala.util.Try
 
 class SingleItemInjection[T] extends Injection[T, JList[AnyRef]] {
@@ -33,8 +33,7 @@ class SingleItemInjection[T] extends Injection[T, JList[AnyRef]] {
   }
 }
 
-class KeyValueInjection[K, V]
-    extends Injection[(K, V), JList[AnyRef]] {
+class KeyValueInjection[K, V] extends Injection[(K, V), JList[AnyRef]] {
 
   override def apply(item: (K, V)) = {
     val (key, v) = item

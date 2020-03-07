@@ -59,7 +59,9 @@ class EnsembleAdvLineCategoryChart extends EnsembleExample {
     }
 
     // setup chart
-    new LineChart[String, Number](CategoryAxis("X Axis"), NumberAxis("Y Axis")) {
+    new LineChart[String, Number](
+      CategoryAxis("X Axis"),
+      NumberAxis("Y Axis")) {
       title = "LineChart with Category Axis"
       data() += series
     }

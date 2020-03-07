@@ -14,8 +14,8 @@ object EvaluationSuite {
 
   class Metric0 extends Metric[EvalInfo, Query, Prediction, Actual, Int] {
     def calculate(
-      sc: SparkContext,
-      evalDataSet: Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])]): Int = 1
+        sc: SparkContext,
+        evalDataSet: Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])]): Int = 1
   }
 
   object Evaluation0 extends Evaluation {
@@ -23,16 +23,14 @@ object EvaluationSuite {
   }
 }
 
-
-class EvaluationSuite
-extends FunSuite with Inside with SharedSparkContext {
+class EvaluationSuite extends FunSuite with Inside with SharedSparkContext {
   import io.prediction.controller.EvaluationSuite._
 
   test("Evaluation makes MetricEvaluator") {
     // MetricEvaluator is typed [EvalInfo, Query, Prediction, Actual, Int],
     // however this information is erased on JVM. scalatest doc recommends to
     // use wildcards.
-    Evaluation0.evaluator shouldBe a [MetricEvaluator[_, _, _, _, _]]
+    Evaluation0.evaluator shouldBe a[MetricEvaluator[_, _, _, _, _]]
   }
 
   test("Load from class path") {

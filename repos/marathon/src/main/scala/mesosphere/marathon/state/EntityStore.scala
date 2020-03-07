@@ -10,13 +10,15 @@ import scala.concurrent.Future
 trait EntityStore[T] {
 
   type Deserialize = () => T //returns deserialized T value.
-  type Update = Deserialize => T //Update function Gets an Read and returns the (modified) T
+  type Update =
+    Deserialize => T //Update function Gets an Read and returns the (modified) T
 
   def fetch(key: String): Future[Option[T]]
 
   def store(key: String, value: T): Future[T] = modify(key)(_ => value)
 
-  def modify(key: String, onSuccess: (T) => Unit = _ => ())(update: Update): Future[T]
+  def modify(key: String, onSuccess: (T) => Unit = _ => ())(
+      update: Update): Future[T]
 
   /**
     * Delete entity with given id.

@@ -27,7 +27,8 @@ object Hashers {
       val hash = hasher.finalizeHash()
 
       MethodDef(static, name, args, resultType, body)(
-          methodDef.optimizerHints, Some(hash))(methodDef.pos)
+        methodDef.optimizerHints,
+        Some(hash))(methodDef.pos)
     }
   }
 
@@ -39,13 +40,13 @@ object Hashers {
 
   /** Hash the definitions in a ClassDef (where applicable) */
   def hashClassDef(classDef: ClassDef): ClassDef = {
-    classDef.copy(defs = hashDefs(classDef.defs))(
-        classDef.optimizerHints)(classDef.pos)
+    classDef.copy(defs = hashDefs(classDef.defs))(classDef.optimizerHints)(
+      classDef.pos)
   }
 
   def hashesEqual(x: TreeHash, y: TreeHash, considerPos: Boolean): Boolean = {
     Arrays.equals(x.treeHash, y.treeHash) &&
-      (!considerPos || Arrays.equals(x.posHash, y.posHash))
+    (!considerPos || Arrays.equals(x.posHash, y.posHash))
   }
 
   def hashAsVersion(hash: TreeHash, considerPos: Boolean): String = {
@@ -173,9 +174,10 @@ object Hashers {
         case Match(selector, cases, default) =>
           mixTag(TagMatch)
           mixTree(selector)
-          cases foreach { case (patterns, body) =>
-            mixTrees(patterns)
-            mixTree(body)
+          cases foreach {
+            case (patterns, body) =>
+              mixTrees(patterns)
+              mixTree(body)
           }
           mixTree(default)
           mixType(tree.tpe)
@@ -369,9 +371,10 @@ object Hashers {
 
         case JSObjectConstr(fields) =>
           mixTag(TagJSObjectConstr)
-          fields foreach { case (pn, value) =>
-            mixPropertyName(pn)
-            mixTree(value)
+          fields foreach {
+            case (pn, value) =>
+              mixPropertyName(pn)
+              mixTree(value)
           }
 
         case JSLinkingInfo() =>

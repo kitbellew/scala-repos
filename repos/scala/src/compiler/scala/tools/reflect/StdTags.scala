@@ -16,19 +16,25 @@ trait StdTags {
     u.TypeTag[List[String]](
       m,
       new TypeCreator {
-        def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U # Type = {
+        def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type = {
           val u = m.universe
-          u.appliedType(u.definitions.ListClass.toType, List(u.definitions.StringClass.toType))
+          u.appliedType(
+            u.definitions.ListClass.toType,
+            List(u.definitions.StringClass.toType))
         }
-      })
+      }
+    )
 
   protected def tagOfStaticClass[T: ClassTag]: u.TypeTag[T] =
     u.TypeTag[T](
       m,
       new TypeCreator {
-        def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U # Type =
-          m.staticClass(classTag[T].runtimeClass.getName).toTypeConstructor.asInstanceOf[U # Type]
-      })
+        def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type =
+          m.staticClass(classTag[T].runtimeClass.getName)
+            .toTypeConstructor
+            .asInstanceOf[U#Type]
+      }
+    )
   lazy val tagOfInt = u.TypeTag.Int
   lazy val tagOfString = tagOfStaticClass[String]
   lazy val tagOfFile = tagOfStaticClass[scala.tools.nsc.io.File]

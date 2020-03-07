@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage
 
 import org.joda.time.DateTime
@@ -20,9 +19,10 @@ import org.joda.time.format.ISODateTimeFormat
 
 /** Backend-agnostic storage utilities. */
 private[prediction] object Utils {
+
   /**
-   * Add prefix to custom attribute keys.
-   */
+    * Add prefix to custom attribute keys.
+    */
   def addPrefixToAttributeKeys[T](
       attributes: Map[String, T],
       prefix: String = "ca_"): Map[String, T] = {
@@ -37,9 +37,9 @@ private[prediction] object Utils {
   }
 
   /**
-   * Appends App ID to any ID.
-   * Used for distinguishing different app's data within a single collection.
-   */
+    * Appends App ID to any ID.
+    * Used for distinguishing different app's data within a single collection.
+    */
   def idWithAppid(appid: Int, id: String): String = appid + "_" + id
 
   def stringToDateTime(dt: String): DateTime =

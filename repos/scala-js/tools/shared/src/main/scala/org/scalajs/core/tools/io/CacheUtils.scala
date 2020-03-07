@@ -26,14 +26,16 @@ object CacheUtils {
 
   private def mangleVersionString(str: String) = s"${str.length}:$str"
 
-  def cached(version: Option[String], output: VirtualFile,
+  def cached(
+      version: Option[String],
+      output: VirtualFile,
       cache: Option[WritableVirtualTextFile])(action: => Unit): Unit = {
 
     val upToDate = output.exists && (
-        for {
-          v <- version
-          c <- cache if c.exists
-        } yield c.content == v
+      for {
+        v <- version
+        c <- cache if c.exists
+      } yield c.content == v
     ).getOrElse(false)
 
     // Are we outdated?

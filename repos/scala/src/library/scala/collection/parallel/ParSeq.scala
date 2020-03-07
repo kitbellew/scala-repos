@@ -18,21 +18,22 @@ import scala.collection.GenSeq
 import scala.collection.parallel.mutable.ParArrayCombiner
 
 /** A template trait for parallel sequences.
- *
- *  $parallelseqinfo
- *
- *  $sideeffects
- *
- *  @tparam T      the type of the elements in this parallel sequence
- *
- *  @author Aleksandar Prokopec
- */
-trait ParSeq[+T] extends GenSeq[T]
-                    with ParIterable[T]
-                    with GenericParTemplate[T, ParSeq]
-                    with ParSeqLike[T, ParSeq[T], Seq[T]]
-{
-  override def companion: GenericCompanion[ParSeq] with GenericParCompanion[ParSeq] = ParSeq
+  *
+  *  $parallelseqinfo
+  *
+  *  $sideeffects
+  *
+  *  @tparam T      the type of the elements in this parallel sequence
+  *
+  *  @author Aleksandar Prokopec
+  */
+trait ParSeq[+T]
+    extends GenSeq[T]
+    with ParIterable[T]
+    with GenericParTemplate[T, ParSeq]
+    with ParSeqLike[T, ParSeq[T], Seq[T]] {
+  override def companion
+      : GenericCompanion[ParSeq] with GenericParCompanion[ParSeq] = ParSeq
   //protected[this] override def newBuilder = ParSeq.newBuilder[T]
 
   def apply(i: Int): T
@@ -43,7 +44,8 @@ trait ParSeq[+T] extends GenSeq[T]
 }
 
 object ParSeq extends ParFactory[ParSeq] {
-  implicit def canBuildFrom[T]: CanCombineFrom[Coll, T, ParSeq[T]] = new GenericCanCombineFrom[T]
+  implicit def canBuildFrom[T]: CanCombineFrom[Coll, T, ParSeq[T]] =
+    new GenericCanCombineFrom[T]
 
   def newBuilder[T]: Combiner[T, ParSeq[T]] = ParArrayCombiner[T]
   def newCombiner[T]: Combiner[T, ParSeq[T]] = ParArrayCombiner[T]

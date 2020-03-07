@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster
 
 import scala.collection.immutable.SortedSet
@@ -19,8 +19,9 @@ object NodeLeavingAndExitingMultiJvmSpec extends MultiNodeConfig {
   val second = role("second")
   val third = role("third")
 
-  commonConfig(debugConfig(on = false).
-    withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
+  commonConfig(
+    debugConfig(on = false).withFallback(
+      MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }
 
 class NodeLeavingAndExitingMultiJvmNode1 extends NodeLeavingAndExitingSpec
@@ -28,8 +29,8 @@ class NodeLeavingAndExitingMultiJvmNode2 extends NodeLeavingAndExitingSpec
 class NodeLeavingAndExitingMultiJvmNode3 extends NodeLeavingAndExitingSpec
 
 abstract class NodeLeavingAndExitingSpec
-  extends MultiNodeSpec(NodeLeavingAndExitingMultiJvmSpec)
-  with MultiNodeClusterSpec {
+    extends MultiNodeSpec(NodeLeavingAndExitingMultiJvmSpec)
+    with MultiNodeClusterSpec {
 
   import NodeLeavingAndExitingMultiJvmSpec._
   import ClusterEvent._
@@ -43,16 +44,21 @@ abstract class NodeLeavingAndExitingSpec
       runOn(first, third) {
         val secondAddess = address(second)
         val exitingLatch = TestLatch()
-        cluster.subscribe(system.actorOf(Props(new Actor {
-          def receive = {
-            case state: CurrentClusterState ⇒
-              if (state.members.exists(m ⇒ m.address == secondAddess && m.status == Exiting))
+        cluster.subscribe(
+          system.actorOf(Props(new Actor {
+            def receive = {
+              case state: CurrentClusterState ⇒
+                if (state.members.exists(m ⇒
+                      m.address == secondAddess && m.status == Exiting))
+                  exitingLatch.countDown()
+              case MemberExited(m) if m.address == secondAddess ⇒
                 exitingLatch.countDown()
-            case MemberExited(m) if m.address == secondAddess ⇒ exitingLatch.countDown()
-            case _: MemberRemoved                             ⇒ // not tested here
+              case _: MemberRemoved ⇒ // not tested here
 
-          }
-        }).withDeploy(Deploy.local)), classOf[MemberEvent])
+            }
+          }).withDeploy(Deploy.local)),
+          classOf[MemberEvent]
+        )
         enterBarrier("registered-listener")
 
         runOn(third) {

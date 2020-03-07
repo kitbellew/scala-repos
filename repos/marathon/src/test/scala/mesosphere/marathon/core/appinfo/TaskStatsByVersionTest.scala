@@ -3,13 +3,16 @@ package mesosphere.marathon.core.appinfo
 import mesosphere.marathon.core.base.ConstantClock
 import mesosphere.marathon.core.task.Task
 import mesosphere.marathon.health.Health
-import mesosphere.marathon.state.{ AppDefinition, Timestamp }
-import mesosphere.marathon.{ MarathonTestHelper, MarathonSpec }
-import org.scalatest.{ Matchers, GivenWhenThen }
+import mesosphere.marathon.state.{AppDefinition, Timestamp}
+import mesosphere.marathon.{MarathonTestHelper, MarathonSpec}
+import org.scalatest.{Matchers, GivenWhenThen}
 import play.api.libs.json.Json
 import scala.concurrent.duration._
 
-class TaskStatsByVersionTest extends MarathonSpec with GivenWhenThen with Matchers {
+class TaskStatsByVersionTest
+    extends MarathonSpec
+    with GivenWhenThen
+    with Matchers {
 
   test("no tasks") {
     Given("no tasks")
@@ -21,7 +24,7 @@ class TaskStatsByVersionTest extends MarathonSpec with GivenWhenThen with Matche
       statuses = Map.empty[Task.Id, Seq[Health]]
     )
     Then("we get none")
-    stats should be (
+    stats should be(
       TaskStatsByVersion(
         maybeStartedAfterLastScaling = None,
         maybeWithLatestConfig = None,
@@ -65,16 +68,23 @@ class TaskStatsByVersionTest extends MarathonSpec with GivenWhenThen with Matche
       stats.maybeStartedAfterLastScaling should not be empty
       stats.maybeTotalSummary should not be empty
 
-      stats.maybeWithOutdatedConfig should be (TaskStats.forSomeTasks(now, outdatedTasks, statuses))
-      stats.maybeWithLatestConfig should be (TaskStats.forSomeTasks(now, afterLastConfigChangeTasks, statuses))
-      stats.maybeStartedAfterLastScaling should be (TaskStats.forSomeTasks(now, afterLastScalingTasks, statuses))
-      stats.maybeTotalSummary should be (TaskStats.forSomeTasks(now, tasks, statuses))
+      stats.maybeWithOutdatedConfig should be(
+        TaskStats.forSomeTasks(now, outdatedTasks, statuses))
+      stats.maybeWithLatestConfig should be(
+        TaskStats.forSomeTasks(now, afterLastConfigChangeTasks, statuses))
+      stats.maybeStartedAfterLastScaling should be(
+        TaskStats.forSomeTasks(now, afterLastScalingTasks, statuses))
+      stats.maybeTotalSummary should be(
+        TaskStats.forSomeTasks(now, tasks, statuses))
 
-      stats should be (
+      stats should be(
         TaskStatsByVersion(
-          maybeStartedAfterLastScaling = TaskStats.forSomeTasks(now, afterLastScalingTasks, statuses),
-          maybeWithLatestConfig = TaskStats.forSomeTasks(now, afterLastConfigChangeTasks, statuses),
-          maybeWithOutdatedConfig = TaskStats.forSomeTasks(now, outdatedTasks, statuses),
+          maybeStartedAfterLastScaling =
+            TaskStats.forSomeTasks(now, afterLastScalingTasks, statuses),
+          maybeWithLatestConfig =
+            TaskStats.forSomeTasks(now, afterLastConfigChangeTasks, statuses),
+          maybeWithOutdatedConfig =
+            TaskStats.forSomeTasks(now, outdatedTasks, statuses),
           maybeTotalSummary = TaskStats.forSomeTasks(now, tasks, statuses)
         )
       )
@@ -97,7 +107,9 @@ class TaskStatsByVersionTest extends MarathonSpec with GivenWhenThen with Matche
     taskIdCounter += 1
     s"task$taskIdCounter"
   }
-  private[this] def runningTaskStartedAt(version: Timestamp, startingDelay: FiniteDuration): Task = {
+  private[this] def runningTaskStartedAt(
+      version: Timestamp,
+      startingDelay: FiniteDuration): Task = {
     val startedAt = (version + startingDelay).toDateTime.getMillis
     MarathonTestHelper
       .runningTask(newTaskId(), appVersion = version, startedAt = startedAt)

@@ -11,9 +11,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 import org.jetbrains.plugins.scala.util.IntentionAvailabilityChecker
 
 /**
- * Pavel Fatin
- */
-
+  * Pavel Fatin
+  */
 class ConvertToCurlyBracesIntention extends PsiElementBaseIntentionAction {
   def getFamilyName = "Convert to curly braces"
 
@@ -22,7 +21,8 @@ class ConvertToCurlyBracesIntention extends PsiElementBaseIntentionAction {
   def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
     element match {
       case e @ Parent(_: ScForStatement) =>
-        List(ScalaTokenTypes.tLPARENTHESIS, ScalaTokenTypes.tRPARENTHESIS).contains(e.getNode.getElementType) &&
+        List(ScalaTokenTypes.tLPARENTHESIS, ScalaTokenTypes.tRPARENTHESIS)
+          .contains(e.getNode.getElementType) &&
           IntentionAvailabilityChecker.checkIntention(this, element)
       case _ => false
     }
@@ -33,12 +33,14 @@ class ConvertToCurlyBracesIntention extends PsiElementBaseIntentionAction {
     val manager = statement.getManager
     val block = ScalaPsiElementFactory.parseElement("{}", manager)
 
-    for (lParen <- Option(statement.findFirstChildByType(ScalaTokenTypes.tLPARENTHESIS))) {
+    for (lParen <- Option(
+           statement.findFirstChildByType(ScalaTokenTypes.tLPARENTHESIS))) {
       val lBrace = lParen.replace(block.getFirstChild)
       statement.addAfter(ScalaPsiElementFactory.createNewLine(manager), lBrace)
     }
 
-    for (rParen <- Option(statement.findFirstChildByType(ScalaTokenTypes.tRPARENTHESIS))) {
+    for (rParen <- Option(
+           statement.findFirstChildByType(ScalaTokenTypes.tRPARENTHESIS))) {
       val rBrace = rParen.replace(block.getLastChild)
       statement.addBefore(ScalaPsiElementFactory.createNewLine(manager), rBrace)
     }

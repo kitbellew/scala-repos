@@ -6,15 +6,15 @@ import com.twitter.finagle.stats.{NullStatsReceiver, StatsReceiver}
 import com.twitter.finagle.{RefusedByRateLimiter, Service, SimpleFilter}
 
 /**
- * Strategy responsible for tracking requests and computing rate per client.
- */
+  * Strategy responsible for tracking requests and computing rate per client.
+  */
 class LocalRateLimitingStrategy[Req](
-  categorizer: Req => String,
-  windowSize: Duration,
-  rate: Int
+    categorizer: Req => String,
+    windowSize: Duration,
+    rate: Int
 ) extends (Req => Future[Boolean]) {
 
-  private[this] val rates = mutable.HashMap.empty[String, (Int,Time)]
+  private[this] val rates = mutable.HashMap.empty[String, (Int, Time)]
 
   def apply(req: Req) = synchronized {
     val now = Time.now
@@ -36,14 +36,13 @@ class LocalRateLimitingStrategy[Req](
   }
 }
 
-
 /**
- * A [[com.twitter.finagle.Filter]] that accepts or refuses requests based on a
- * rate limiting strategy.
- */
+  * A [[com.twitter.finagle.Filter]] that accepts or refuses requests based on a
+  * rate limiting strategy.
+  */
 class RateLimitingFilter[Req, Rep](
-  strategy: Req => Future[Boolean],
-  statsReceiver: StatsReceiver = NullStatsReceiver
+    strategy: Req => Future[Boolean],
+    statsReceiver: StatsReceiver = NullStatsReceiver
 ) extends SimpleFilter[Req, Rep] {
 
   private[this] val refused = statsReceiver.counter("refused")

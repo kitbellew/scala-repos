@@ -25,7 +25,8 @@ class SymbolTest {
     expectEqual('-, Symbol("-"))
 
     val `42` = Symbol("42")
-    val map = Map[Symbol, Any](Symbol("ScalaJS") -> "Scala.js", '$ -> 1.2, `42` -> 42)
+    val map =
+      Map[Symbol, Any](Symbol("ScalaJS") -> "Scala.js", '$ -> 1.2, `42` -> 42)
     assertEquals("Scala.js", map('ScalaJS))
     assertEquals(1.2, map(Symbol("$")))
     assertEquals(42, map(Symbol("42")))

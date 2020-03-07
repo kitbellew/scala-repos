@@ -12,13 +12,14 @@ class ZkNodeDataCacheTest extends FunSuite {
   def nilZkSession = () => ZkSession.nil
 
   class ZkTestCache(
-    clusterPath: String
+      clusterPath: String
   ) extends ZkNodeDataCache[String](clusterPath, "Test", NullStatsReceiver) {
     var parseNodeCalledCount = 0
     var shouldThrow = false
     override def loadEntity(path: String) = {
       parseNodeCalledCount += 1
-      if (shouldThrow) Future.exception(new Exception) else Future.value(Seq("a", "b"))
+      if (shouldThrow) Future.exception(new Exception)
+      else Future.value(Seq("a", "b"))
     }
     override def parseNode(path: String, data: String) = Seq.empty
   }
@@ -60,4 +61,3 @@ class ZkNodeDataCacheTest extends FunSuite {
     assert(cache.parseNodeCalledCount == 2)
   }
 }
-

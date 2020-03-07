@@ -21,7 +21,10 @@ package org.apache.spark.examples.ml
 import org.apache.spark.{SparkConf, SparkContext}
 // $example on$
 import org.apache.spark.ml.Pipeline
-import org.apache.spark.ml.classification.{RandomForestClassificationModel, RandomForestClassifier}
+import org.apache.spark.ml.classification.{
+  RandomForestClassificationModel,
+  RandomForestClassifier
+}
 import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator
 import org.apache.spark.ml.feature.{IndexToString, StringIndexer, VectorIndexer}
 // $example off$
@@ -35,7 +38,8 @@ object RandomForestClassifierExample {
 
     // $example on$
     // Load and parse the data file, converting it to a DataFrame.
-    val data = sqlContext.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
+    val data =
+      sqlContext.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
 
     // Index labels, adding metadata to the label column.
     // Fit on whole dataset to include all labels in index.

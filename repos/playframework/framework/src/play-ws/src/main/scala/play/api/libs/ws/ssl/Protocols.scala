@@ -8,8 +8,8 @@ package play.api.libs.ws.ssl
 object Protocols {
 
   /**
-   * Protocols which are known to be insecure.
-   */
+    * Protocols which are known to be insecure.
+    */
   val deprecatedProtocols = Set("SSL", "SSLv2Hello", "SSLv3")
 
   val recommendedProtocols = Array("TLSv1.2", "TLSv1.1", "TLSv1")

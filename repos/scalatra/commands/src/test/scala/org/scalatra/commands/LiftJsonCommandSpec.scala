@@ -10,7 +10,10 @@ class NativeJsonTestForm extends JsonCommand {
   val quantity: Field[Int] = asInt("quantity").greaterThan(3)
 }
 
-class NativeJsonCommandSpecServlet extends ScalatraServlet with NativeJsonSupport with NativeJsonParsing {
+class NativeJsonCommandSpecServlet
+    extends ScalatraServlet
+    with NativeJsonSupport
+    with NativeJsonParsing {
 
   implicit val jsonFormats: Formats = DefaultFormats
 
@@ -33,4 +36,5 @@ class NativeJsonCommandSpecServlet extends ScalatraServlet with NativeJsonSuppor
 
 }
 
-class NativeJsonCommandSpec extends JsonCommandSpec("NativeJson", new NativeJsonCommandSpecServlet)
+class NativeJsonCommandSpec
+    extends JsonCommandSpec("NativeJson", new NativeJsonCommandSpecServlet)

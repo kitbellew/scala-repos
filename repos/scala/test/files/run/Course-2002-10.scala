@@ -6,7 +6,7 @@ import math.{Pi, log}
 
 object M0 {
 
-  def addStream (s1: Stream[Int], s2: Stream[Int]): Stream[Int] =
+  def addStream(s1: Stream[Int], s2: Stream[Int]): Stream[Int] =
     Stream.cons(s1.head + s2.head, addStream(s1.tail, s2.tail));
 
   val fib: Stream[Int] =
@@ -14,7 +14,9 @@ object M0 {
 
   def test = {
     var i = 0;
-    fib.take(20).foreach(n => {Console.println("fib("+i+") = "+n); i=i+1});
+    fib
+      .take(20)
+      .foreach(n => { Console.println("fib(" + i + ") = " + n); i = i + 1 });
     Console.println;
   }
 }
@@ -24,24 +26,28 @@ object M0 {
 object M1 {
 
   def scale(x: Double, s: Stream[Double]): Stream[Double] =
-    s map { e: Double => e*x }
+    s map { e: Double => e * x }
 
   def partialSums(s: Stream[Double]): Stream[Double] =
     Stream.cons(s.head, partialSums(s.tail) map (x => x + s.head));
 
   def euler(s: Stream[Double]): Stream[Double] = {
     val nm1 = s apply 0;
-    val n   = s apply 1;
+    val n = s apply 1;
     val np1 = s apply 2;
-    Stream.cons(np1 - ((np1 - n)*(np1 - n) / (nm1 - 2*n + np1)),euler(s.tail))
+    Stream.cons(
+      np1 - ((np1 - n) * (np1 - n) / (nm1 - 2 * n + np1)),
+      euler(s.tail))
   };
 
-  def better(s: Stream[Double], transform: Stream[Double] => Stream[Double])
-    : Stream[Stream[Double]] =
+  def better(
+      s: Stream[Double],
+      transform: Stream[Double] => Stream[Double]): Stream[Stream[Double]] =
     Stream.cons(s, better(transform(s), transform));
 
-  def veryGood(s: Stream[Double], transform: Stream[Double] => Stream[Double])
-    : Stream[Double] =
+  def veryGood(
+      s: Stream[Double],
+      transform: Stream[Double] => Stream[Double]): Stream[Double] =
     better(s, transform) map (x => x.head);
 
   def lnSummands(n: Double): Stream[Double] =
@@ -66,7 +72,7 @@ object M1 {
   def test = {
     var i = 0;
     while (i < 10) {
-      Console.print("pi("+i+") = ");
+      Console.print("pi(" + i + ") = ");
       Console.print(str(pi0.apply(i)) + ", ");
       Console.print(str(pi1.apply(i)) + ", ");
       Console.print(str(pi2.apply(i)) + "\n");
@@ -79,7 +85,7 @@ object M1 {
     Console.println;
     i = 0;
     while (i < 10) {
-      Console.print("ln("+i+") = ");
+      Console.print("ln(" + i + ") = ");
       Console.print(str(ln0.apply(i)) + ", ");
       Console.print(str(ln1.apply(i)) + ", ");
       Console.print(str(ln2.apply(i)) + "\n");

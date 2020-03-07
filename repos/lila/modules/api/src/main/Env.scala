@@ -57,14 +57,16 @@ final class Env(
       },
       timeToLive = 30.seconds,
       default = Net.AssetVersion,
-      logger = lila.log("assetVersion"))
+      logger = lila.log("assetVersion")
+    )
     def get = cache get true
   }
 
   object Accessibility {
     val blindCookieName = config getString "accessibility.blind.cookie.name"
     val blindCookieMaxAge = config getInt "accessibility.blind.cookie.max_age"
-    private val blindCookieSalt = config getString "accessibility.blind.cookie.salt"
+    private val blindCookieSalt =
+      config getString "accessibility.blind.cookie.salt"
     def hash(implicit ctx: lila.user.UserContext) = {
       import com.roundeights.hasher.Implicits._
       (ctx.userId | "anon").salt(blindCookieSalt).md5.hex
@@ -92,8 +94,7 @@ final class Env(
     pgnDump = pgnDump,
     analysisApi = analysisApi)
 
-  val userGameApi = new UserGameApi(
-    bookmarkApi = bookmarkApi)
+  val userGameApi = new UserGameApi(bookmarkApi = bookmarkApi)
 
   val roundApi = new RoundApiBalancer(
     api = new RoundApi(
@@ -119,9 +120,11 @@ final class Env(
 
   lazy val cli = new Cli(system.lilaBus, renderer)
 
-  system.actorOf(Props(new KamonPusher(
-    countUsers = () => userEnv.onlineUserIdMemo.count
-  )))
+  system.actorOf(
+    Props(
+      new KamonPusher(
+        countUsers = () => userEnv.onlineUserIdMemo.count
+      )))
 }
 
 object Env {

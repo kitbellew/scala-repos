@@ -1,7 +1,11 @@
 package com.twitter.finagle.service
 
 import com.twitter.finagle.Status
-import com.twitter.finagle.{NotShardableException, ShardNotAvailableException, Service}
+import com.twitter.finagle.{
+  NotShardableException,
+  ShardNotAvailableException,
+  Service
+}
 import com.twitter.hashing.Distributor
 import com.twitter.util.{Await, Future}
 import org.junit.runner.RunWith
@@ -21,13 +25,14 @@ class ShardingServiceTest extends FunSuite with MockitoSugar {
 
   class ShardingServiceHelper {
     val distributor = mock[Distributor[Service[MockRequest, String]]]
-    val service = new ShardingService(distributor, {
-      request: MockRequest =>
+    val service = new ShardingService(
+      distributor,
+      { request: MockRequest =>
         request match {
           case req: ShardingRequest => Some(req.shardingKey)
-          case _ => None
+          case _                    => None
         }
-    })
+      })
 
     val reqA = new ShardingRequest(1L)
     val serviceForA = mock[Service[MockRequest, String]]
@@ -58,7 +63,8 @@ class ShardingServiceTest extends FunSuite with MockitoSugar {
     verify(serviceForB).apply(reqB)
   }
 
-  test("ShardingService should thenReturn an exception if the shard picked is unavailable") {
+  test(
+    "ShardingService should thenReturn an exception if the shard picked is unavailable") {
     val h = new ShardingServiceHelper
     import h._
 
@@ -70,7 +76,8 @@ class ShardingServiceTest extends FunSuite with MockitoSugar {
     verify(serviceForA, times(0)).apply(reqA)
   }
 
-  test("ShardingService should thenReturn an unshardable if the request is not shardable") {
+  test(
+    "ShardingService should thenReturn an unshardable if the request is not shardable") {
     val h = new ShardingServiceHelper
     import h._
 

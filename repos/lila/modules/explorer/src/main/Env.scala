@@ -3,9 +3,7 @@ package lila.explorer
 import akka.actor._
 import com.typesafe.config.Config
 
-final class Env(
-    config: Config,
-    system: ActorSystem) {
+final class Env(config: Config, system: ActorSystem) {
 
   private val Endpoint = config getString "endpoint"
   private val MassImportEndpoint = config getString "mass_import.endpoint"

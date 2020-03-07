@@ -20,18 +20,18 @@ package org.apache.spark.util.collection
 import scala.reflect._
 
 /**
- * A fast hash map implementation for primitive, non-null keys. This hash map supports
- * insertions and updates, but not deletions. This map is about an order of magnitude
- * faster than java.util.HashMap, while using much less space overhead.
- *
- * Under the hood, it uses our OpenHashSet implementation.
- */
-private[spark]
-class PrimitiveKeyOpenHashMap[@specialized(Long, Int) K: ClassTag,
-                              @specialized(Long, Int, Double) V: ClassTag](
+  * A fast hash map implementation for primitive, non-null keys. This hash map supports
+  * insertions and updates, but not deletions. This map is about an order of magnitude
+  * faster than java.util.HashMap, while using much less space overhead.
+  *
+  * Under the hood, it uses our OpenHashSet implementation.
+  */
+private[spark] class PrimitiveKeyOpenHashMap[@specialized(
+  Long,
+  Int) K: ClassTag, @specialized(Long, Int, Double) V: ClassTag](
     initialCapacity: Int)
-  extends Iterable[(K, V)]
-  with Serializable {
+    extends Iterable[(K, V)]
+    with Serializable {
 
   def this() = this(64)
 
@@ -74,11 +74,11 @@ class PrimitiveKeyOpenHashMap[@specialized(Long, Int) K: ClassTag,
   }
 
   /**
-   * If the key doesn't exist yet in the hash map, set its value to defaultValue; otherwise,
-   * set its value to mergeValue(oldValue).
-   *
-   * @return the newly updated value.
-   */
+    * If the key doesn't exist yet in the hash map, set its value to defaultValue; otherwise,
+    * set its value to mergeValue(oldValue).
+    *
+    * @return the newly updated value.
+    */
   def changeValue(k: K, defaultValue: => V, mergeValue: (V) => V): V = {
     val pos = _keySet.addWithoutResize(k)
     if ((pos & OpenHashSet.NONEXISTENCE_MASK) != 0) {

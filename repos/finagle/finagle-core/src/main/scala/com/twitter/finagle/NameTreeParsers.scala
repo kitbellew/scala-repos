@@ -5,8 +5,10 @@ import scala.collection.mutable.{ArrayBuffer, Buffer}
 
 private[finagle] object NameTreeParsers {
   def parsePath(str: String): Path = new NameTreeParsers(str).parseAllPath()
-  def parseNameTree(str: String): NameTree[Path] = new NameTreeParsers(str).parseAllNameTree()
-  def parseDentry(str: String): Dentry = new NameTreeParsers(str).parseAllDentry()
+  def parseNameTree(str: String): NameTree[Path] =
+    new NameTreeParsers(str).parseAllNameTree()
+  def parseDentry(str: String): Dentry =
+    new NameTreeParsers(str).parseAllDentry()
   def parseDtab(str: String): Dtab = new NameTreeParsers(str).parseAllDtab()
 }
 
@@ -23,8 +25,9 @@ private class NameTreeParsers private (str: String) {
   private[this] def illegal(expected: String, found: String): Nothing = {
     val displayStr =
       if (atEnd) s"$str[]"
-      else s"${str.take(idx)}[${str(idx)}]${str.drop(idx+1)}"
-    throw new IllegalArgumentException(s"$expected expected but $found found at '$displayStr'")
+      else s"${str.take(idx)}[${str(idx)}]${str.drop(idx + 1)}"
+    throw new IllegalArgumentException(
+      s"$expected expected but $found found at '$displayStr'")
   }
 
   private[this] def illegal(expected: Char, found: String): Nothing =
@@ -67,8 +70,9 @@ private class NameTreeParsers private (str: String) {
 
   private[this] def parseHexChar(): Char =
     peek match {
-      case c@('0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'
-         |'A'|'B'|'C'|'D'|'E'|'F'|'a'|'b'|'c'|'d'|'e'|'f') =>
+      case c @ ('0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' |
+          'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'a' | 'b' | 'c' | 'd' | 'e' |
+          'f') =>
         next()
         c
 
@@ -78,7 +82,8 @@ private class NameTreeParsers private (str: String) {
   private[this] def isLabelChar(c: Char) = Path.isShowable(c) || c == '\\'
 
   // extract the underlying buf to avoid a copy in toByteArray
-  private[this] class Baos(size: Int) extends java.io.ByteArrayOutputStream(size) {
+  private[this] class Baos(size: Int)
+      extends java.io.ByteArrayOutputStream(size) {
     def getBuf() = buf
   }
 
@@ -131,7 +136,6 @@ private class NameTreeParsers private (str: String) {
 
     if (!isLabelChar(peek))
       Path.empty
-
     else {
       val labels = Buffer[Buf]()
 
@@ -139,7 +143,7 @@ private class NameTreeParsers private (str: String) {
         labels += parseLabel()
       } while (maybeEat('/'))
 
-      Path(labels:_*)
+      Path(labels: _*)
     }
   }
 
@@ -152,7 +156,7 @@ private class NameTreeParsers private (str: String) {
     } while (maybeEat('|'))
 
     if (trees.size > 1)
-      NameTree.Alt(trees:_*)
+      NameTree.Alt(trees: _*)
     else
       trees(0)
   }
@@ -166,7 +170,7 @@ private class NameTreeParsers private (str: String) {
     } while (maybeEat('&'))
 
     if (trees.size > 1)
-      NameTree.Union(trees:_*)
+      NameTree.Union(trees: _*)
     else
       trees(0).tree
   }

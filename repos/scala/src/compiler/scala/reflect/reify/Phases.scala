@@ -2,10 +2,7 @@ package scala.reflect.reify
 
 import phases._
 
-trait Phases extends Reshape
-                with Calculate
-                with Metalevels
-                with Reify {
+trait Phases extends Reshape with Calculate with Metalevels with Reify {
 
   self: Reifier =>
 
@@ -25,7 +22,11 @@ trait Phases extends Reshape
     if (reifyDebug) println("[reshape phase]")
     tree = reshape.transform(tree)
     if (reifyDebug) println("[interlude]")
-    if (reifyDebug) println("reifee = " + (if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified) "\n" + nodePrinters.nodeToString(tree).trim else tree.toString))
+    if (reifyDebug)
+      println(
+        "reifee = " + (if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified)
+                         "\n" + nodePrinters.nodeToString(tree).trim
+                       else tree.toString))
 
     if (reifyDebug) println("[calculate phase]")
     calculate.traverse(tree)

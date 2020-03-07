@@ -21,9 +21,10 @@ object SCL9426 {
 
     object F2 extends F1[Either[A, B]]
 
-    val asd : F2.Instance = ???
+    val asd: F2.Instance = ???
 
-    /*start*/asd/*end*/
+    /*start*/
+    asd /*end*/
   }
 }
 //Demo.F2.Instance

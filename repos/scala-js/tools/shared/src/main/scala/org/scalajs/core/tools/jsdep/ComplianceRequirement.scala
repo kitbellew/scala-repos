@@ -4,18 +4,20 @@ import org.scalajs.core.tools.sem.Semantics
 
 /** Expresses a requirement for a given semantic to be compliant */
 final class ComplianceRequirement(
-    val semantics: String, val origins: List[Origin])
+    val semantics: String,
+    val origins: List[Origin])
 
 object ComplianceRequirement {
 
   /** Checks whether the given semantics are compliant with the given
-   *  requirements.
-   *  @throws BadComplianceException if the semantics are not compliant.
-   */
-  final def checkCompliance(requirements: Traversable[ComplianceRequirement],
+    *  requirements.
+    *  @throws BadComplianceException if the semantics are not compliant.
+    */
+  final def checkCompliance(
+      requirements: Traversable[ComplianceRequirement],
       semantics: Semantics): Unit = {
     val unmet = requirements.filterNot(compliance =>
-        semantics.isCompliant(compliance.semantics))
+      semantics.isCompliant(compliance.semantics))
 
     if (unmet.nonEmpty)
       throw new BadComplianceException(unmet.toList)

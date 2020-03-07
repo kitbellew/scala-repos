@@ -48,21 +48,26 @@ import org.apache.spark.util.{ShutdownHookManager, Utils}
 private[mesos] class MesosClusterDispatcher(
     args: MesosClusterDispatcherArguments,
     conf: SparkConf)
-  extends Logging {
+    extends Logging {
 
-  private val publicAddress = Option(conf.getenv("SPARK_PUBLIC_DNS")).getOrElse(args.host)
-  private val recoveryMode = conf.get("spark.deploy.recoveryMode", "NONE").toUpperCase()
+  private val publicAddress =
+    Option(conf.getenv("SPARK_PUBLIC_DNS")).getOrElse(args.host)
+  private val recoveryMode =
+    conf.get("spark.deploy.recoveryMode", "NONE").toUpperCase()
   logInfo("Recovery mode in Mesos dispatcher set to: " + recoveryMode)
 
   private val engineFactory = recoveryMode match {
-    case "NONE" => new BlackHoleMesosClusterPersistenceEngineFactory
+    case "NONE"      => new BlackHoleMesosClusterPersistenceEngineFactory
     case "ZOOKEEPER" => new ZookeeperMesosClusterPersistenceEngineFactory(conf)
-    case _ => throw new IllegalArgumentException("Unsupported recovery mode: " + recoveryMode)
+    case _ =>
+      throw new IllegalArgumentException(
+        "Unsupported recovery mode: " + recoveryMode)
   }
 
   private val scheduler = new MesosClusterScheduler(engineFactory, conf)
 
-  private val server = new MesosRestServer(args.host, args.port, conf, scheduler)
+  private val server =
+    new MesosRestServer(args.host, args.port, conf, scheduler)
   private val webUi = new MesosClusterUI(
     new SecurityManager(conf),
     args.webUiPort,
@@ -74,7 +79,8 @@ private[mesos] class MesosClusterDispatcher(
 
   def start(): Unit = {
     webUi.bind()
-    scheduler.frameworkUrl = conf.get("spark.mesos.dispatcher.webui.url", webUi.activeWebUiUrl)
+    scheduler.frameworkUrl =
+      conf.get("spark.mesos.dispatcher.webui.url", webUi.activeWebUiUrl)
     scheduler.start()
     server.start()
   }

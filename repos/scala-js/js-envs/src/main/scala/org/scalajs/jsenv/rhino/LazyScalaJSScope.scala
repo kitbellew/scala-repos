@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jsenv.rhino
 
 import scala.collection.mutable
@@ -14,22 +13,23 @@ import scala.collection.mutable
 import org.mozilla.javascript.{Scriptable, Context}
 
 /** A proxy for a ScalaJS "scope" field that loads scripts lazily
- *
- *  E.g., ScalaJS.c, which is a scope with the Scala.js classes, can be
- *  turned to a LazyScalaJSScope. Upon first access to a field of ScalaJS.c,
- *  say ScalaJS.c.scala_Option, the script defining that particular
- *  field will be loaded.
- *  This is possible because the relative path to the script can be derived
- *  from the name of the property being accessed.
- *
- *  It is immensely useful, because it allows to load lazily only the scripts
- *  that are actually needed.
- */
+  *
+  *  E.g., ScalaJS.c, which is a scope with the Scala.js classes, can be
+  *  turned to a LazyScalaJSScope. Upon first access to a field of ScalaJS.c,
+  *  say ScalaJS.c.scala_Option, the script defining that particular
+  *  field will be loaded.
+  *  This is possible because the relative path to the script can be derived
+  *  from the name of the property being accessed.
+  *
+  *  It is immensely useful, because it allows to load lazily only the scripts
+  *  that are actually needed.
+  */
 private[rhino] class LazyScalaJSScope(
     coreLib: ScalaJSCoreLib,
     globalScope: Scriptable,
     base: Scriptable,
-    isStatics: Boolean) extends Scriptable {
+    isStatics: Boolean)
+    extends Scriptable {
 
   private val fields = mutable.HashMap.empty[String, Any]
   private var prototype: Scriptable = _
@@ -40,7 +40,7 @@ private[rhino] class LazyScalaJSScope(
     for (id <- base.getIds()) {
       (id.asInstanceOf[Any]: @unchecked) match {
         case name: String => put(name, this, base.get(name, base))
-        case index: Int => put(index, this, base.get(index, base))
+        case index: Int   => put(index, this, base.get(index, base))
       }
     }
   }
@@ -65,17 +65,21 @@ private[rhino] class LazyScalaJSScope(
        */
       Scriptable.NOT_FOUND
     } else {
-      fields.getOrElse(name, {
-        try {
-          load(name)
-          fields.getOrElse(name, Scriptable.NOT_FOUND)
-        } catch {
-          // We need to re-throw the exception if `load` fails, otherwise the
-          // JavaScript runtime will not catch it.
-          case t: RhinoJSEnv.ClassNotFoundException =>
-            throw Context.throwAsScriptRuntimeEx(t)
-        }
-      }).asInstanceOf[AnyRef]
+      fields
+        .getOrElse(
+          name, {
+            try {
+              load(name)
+              fields.getOrElse(name, Scriptable.NOT_FOUND)
+            } catch {
+              // We need to re-throw the exception if `load` fails, otherwise the
+              // JavaScript runtime will not catch it.
+              case t: RhinoJSEnv.ClassNotFoundException =>
+                throw Context.throwAsScriptRuntimeEx(t)
+            }
+          }
+        )
+        .asInstanceOf[AnyRef]
     }
   }
 

@@ -5,9 +5,9 @@ import org.jetbrains.plugins.scala.codeInsight.intention.booleans.SimplifyBoolea
 import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 
 /**
- * Nikolay.Tropin
- * 4/29/13
- */
+  * Nikolay.Tropin
+  * 4/29/13
+  */
 class SimplifyBooleanExprWithLiteralTest extends ScalaIntentionTestBase {
   def familyName: String = SimplifyBooleanExprWithLiteralIntention.familyName
 

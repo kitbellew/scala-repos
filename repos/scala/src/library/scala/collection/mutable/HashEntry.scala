@@ -10,9 +10,9 @@ package collection
 package mutable
 
 /** Class used internally.
- *  @since 2.8
- */
-trait HashEntry [A, E] {
+  *  @since 2.8
+  */
+trait HashEntry[A, E] {
   val key: A
   var next: E = _
 }

@@ -1,6 +1,5 @@
 package com.twitter.util
 
-
 import org.junit.runner.RunWith
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.junit.JUnitRunner
@@ -23,7 +22,9 @@ class ConfigTest extends WordSpec with MockitoSugar with Matchers {
 
       val foo = new Foo
       assert(foo.didIt == false)
-      assert((foo.y: Int) == 25) // use type annotation to force implicit conversion
+      assert(
+        (foo.y: Int) == 25
+      ) // use type annotation to force implicit conversion
       assert(foo.didIt == true)
     }
 
@@ -35,7 +36,9 @@ class ConfigTest extends WordSpec with MockitoSugar with Matchers {
       val bar = new Foo {
         x = 20
       }
-      assert((bar.y: Int) == 45) // use type annotation to force implicit conversion
+      assert(
+        (bar.y: Int) == 45
+      ) // use type annotation to force implicit conversion
     }
 
     "missingValues" should {

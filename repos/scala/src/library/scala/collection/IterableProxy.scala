@@ -10,11 +10,15 @@ package scala
 package collection
 
 /** This trait implements a proxy for iterable objects. It forwards all calls
- *  to a different iterable object.
- *
- *  @author  Martin Odersky
- *  @version 2.8
- *  @since   2.8
- */
-@deprecated("Proxying is deprecated due to lack of use and compiler-level support.", "2.11.3")
-trait IterableProxy[+A] extends Iterable[A] with IterableProxyLike[A, Iterable[A]]
+  *  to a different iterable object.
+  *
+  *  @author  Martin Odersky
+  *  @version 2.8
+  *  @since   2.8
+  */
+@deprecated(
+  "Proxying is deprecated due to lack of use and compiler-level support.",
+  "2.11.3")
+trait IterableProxy[+A]
+    extends Iterable[A]
+    with IterableProxyLike[A, Iterable[A]]

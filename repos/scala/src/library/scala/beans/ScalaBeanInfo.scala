@@ -6,19 +6,20 @@
 **                          |/                                          **
 \*                                                                      */
 
-
 package scala.beans
 
 /** Provides some simple runtime processing necessary to create
- *  JavaBean descriptors for Scala entities. The compiler creates
- *  subclasses of this class automatically when the BeanInfo annotation is
- *  attached to a class.
- *
- *  @author Ross Judson (rjudson@managedobjects.com)
- */
-abstract class ScalaBeanInfo(clazz: java.lang.Class[_],
-                             props: Array[String],
-                             methods: Array[String]) extends java.beans.SimpleBeanInfo {
+  *  JavaBean descriptors for Scala entities. The compiler creates
+  *  subclasses of this class automatically when the BeanInfo annotation is
+  *  attached to a class.
+  *
+  *  @author Ross Judson (rjudson@managedobjects.com)
+  */
+abstract class ScalaBeanInfo(
+    clazz: java.lang.Class[_],
+    props: Array[String],
+    methods: Array[String])
+    extends java.beans.SimpleBeanInfo {
 
   import java.beans._
 
@@ -37,10 +38,10 @@ abstract class ScalaBeanInfo(clazz: java.lang.Class[_],
   private def init() {
     var i = 0
     while (i < props.length) {
-      pd(i/3) = new PropertyDescriptor(props(i), clazz, props(i+1), props(i+2))
+      pd(i / 3) =
+        new PropertyDescriptor(props(i), clazz, props(i + 1), props(i + 2))
       i = i + 3
     }
   }
 
 }
-

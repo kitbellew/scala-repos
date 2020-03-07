@@ -6,7 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
 package scala.tools.ant.sabbus
 
 import java.io.File
@@ -33,8 +32,7 @@ class ForeignCompiler {
     try {
       val command = new CompilerCommand(args.toList, settings)
       new Global(command.settings, reporter)
-    }
-    catch {
+    } catch {
       case ex @ FatalError(msg) =>
         throw new Exception(msg, ex)
     }

@@ -58,7 +58,8 @@ class ChunkedByteBufferSuite extends SparkFunSuite {
 
   test("writeFully() does not affect original buffer's position") {
     val chunkedByteBuffer = new ChunkedByteBuffer(Array(ByteBuffer.allocate(8)))
-    chunkedByteBuffer.writeFully(new ByteArrayWritableChannel(chunkedByteBuffer.size.toInt))
+    chunkedByteBuffer.writeFully(
+      new ByteArrayWritableChannel(chunkedByteBuffer.size.toInt))
     assert(chunkedByteBuffer.getChunks().head.position() === 0)
   }
 
@@ -71,7 +72,8 @@ class ChunkedByteBufferSuite extends SparkFunSuite {
   test("toArray() throws UnsupportedOperationException if size exceeds 2GB") {
     val fourMegabyteBuffer = ByteBuffer.allocate(1024 * 1024 * 4)
     fourMegabyteBuffer.limit(fourMegabyteBuffer.capacity())
-    val chunkedByteBuffer = new ChunkedByteBuffer(Array.fill(1024)(fourMegabyteBuffer))
+    val chunkedByteBuffer =
+      new ChunkedByteBuffer(Array.fill(1024)(fourMegabyteBuffer))
     assert(chunkedByteBuffer.size === (1024L * 1024L * 1024L * 4L))
     intercept[UnsupportedOperationException] {
       chunkedByteBuffer.toArray

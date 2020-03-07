@@ -26,21 +26,20 @@ import org.scalatest.{FunSuite, Matchers}
 import org.apache.spark.unsafe.types.UTF8String.{fromString => toUTF8}
 
 /**
- * This TestSuite utilize ScalaCheck to generate randomized inputs for UTF8String testing.
- */
-class UTF8StringPropertyCheckSuite extends FunSuite with GeneratorDrivenPropertyChecks with Matchers {
+  * This TestSuite utilize ScalaCheck to generate randomized inputs for UTF8String testing.
+  */
+class UTF8StringPropertyCheckSuite
+    extends FunSuite
+    with GeneratorDrivenPropertyChecks
+    with Matchers {
 // scalastyle:on
 
   test("toString") {
-    forAll { (s: String) =>
-      assert(toUTF8(s).toString() === s)
-    }
+    forAll { (s: String) => assert(toUTF8(s).toString() === s) }
   }
 
   test("numChars") {
-    forAll { (s: String) =>
-      assert(toUTF8(s).numChars() === s.length)
-    }
+    forAll { (s: String) => assert(toUTF8(s).numChars() === s.length) }
   }
 
   test("startsWith") {
@@ -77,14 +76,17 @@ class UTF8StringPropertyCheckSuite extends FunSuite with GeneratorDrivenProperty
 
   test("compare") {
     forAll { (s1: String, s2: String) =>
-      assert(Math.signum(toUTF8(s1).compareTo(toUTF8(s2))) === Math.signum(s1.compareTo(s2)))
+      assert(
+        Math.signum(toUTF8(s1).compareTo(toUTF8(s2))) === Math.signum(
+          s1.compareTo(s2)))
     }
   }
 
   test("substring") {
     forAll { (s: String) =>
       for (start <- 0 to s.length; end <- 0 to s.length; if start <= end) {
-        assert(toUTF8(s).substring(start, end).toString === s.substring(start, end))
+        assert(
+          toUTF8(s).substring(start, end).toString === s.substring(start, end))
       }
     }
   }
@@ -122,9 +124,9 @@ class UTF8StringPropertyCheckSuite extends FunSuite with GeneratorDrivenProperty
     }
 
     forAll(
-        whitespaceString,
-        randomString,
-        whitespaceString
+      whitespaceString,
+      randomString,
+      whitespaceString
     ) { (start: String, middle: String, end: String) =>
       val s = start + middle + end
       assert(toUTF8(s).trim() === toUTF8(s.trim()))
@@ -134,9 +136,7 @@ class UTF8StringPropertyCheckSuite extends FunSuite with GeneratorDrivenProperty
   }
 
   test("reverse") {
-    forAll { (s: String) =>
-      assert(toUTF8(s).reverse === toUTF8(s.reverse))
-    }
+    forAll { (s: String) => assert(toUTF8(s).reverse === toUTF8(s.reverse)) }
   }
 
   test("indexOf") {
@@ -161,14 +161,20 @@ class UTF8StringPropertyCheckSuite extends FunSuite with GeneratorDrivenProperty
   }
 
   test("lpad, rpad") {
-    def padding(origin: String, pad: String, length: Int, isLPad: Boolean): String = {
+    def padding(
+        origin: String,
+        pad: String,
+        length: Int,
+        isLPad: Boolean): String = {
       if (length <= 0) return ""
       if (length <= origin.length) {
         if (length <= 0) "" else origin.substring(0, length)
       } else {
         if (pad.length == 0) return origin
         val toPad = length - origin.length
-        val partPad = if (toPad % pad.length == 0) "" else pad.substring(0, toPad % pad.length)
+        val partPad =
+          if (toPad % pad.length == 0) ""
+          else pad.substring(0, toPad % pad.length)
         if (isLPad) {
           pad * (toPad / pad.length) + partPad + origin
         } else {
@@ -177,15 +183,17 @@ class UTF8StringPropertyCheckSuite extends FunSuite with GeneratorDrivenProperty
       }
     }
 
-    forAll (
+    forAll(
       randomString,
       randomString,
       randomInt
     ) { (s: String, pad: String, length: Int) =>
-      assert(toUTF8(s).lpad(length, toUTF8(pad)) ===
-        toUTF8(padding(s, pad, length, true)))
-      assert(toUTF8(s).rpad(length, toUTF8(pad)) ===
-        toUTF8(padding(s, pad, length, false)))
+      assert(
+        toUTF8(s).lpad(length, toUTF8(pad)) ===
+          toUTF8(padding(s, pad, length, true)))
+      assert(
+        toUTF8(s).rpad(length, toUTF8(pad)) ===
+          toUTF8(padding(s, pad, length, false)))
     }
   }
 
@@ -196,10 +204,12 @@ class UTF8StringPropertyCheckSuite extends FunSuite with GeneratorDrivenProperty
       if (orgin.contains(null)) null else orgin.mkString
 
     forAll { (inputs: Seq[String]) =>
-      assert(UTF8String.concat(inputs.map(toUTF8): _*) === toUTF8(inputs.mkString))
+      assert(
+        UTF8String.concat(inputs.map(toUTF8): _*) === toUTF8(inputs.mkString))
     }
-    forAll (nullalbeSeq) { (inputs: Seq[String]) =>
-      assert(UTF8String.concat(inputs.map(toUTF8): _*) === toUTF8(concat(inputs)))
+    forAll(nullalbeSeq) { (inputs: Seq[String]) =>
+      assert(
+        UTF8String.concat(inputs.map(toUTF8): _*) === toUTF8(concat(inputs)))
     }
   }
 
@@ -210,27 +220,31 @@ class UTF8StringPropertyCheckSuite extends FunSuite with GeneratorDrivenProperty
     }
 
     forAll { (sep: String, inputs: Seq[String]) =>
-      assert(UTF8String.concatWs(toUTF8(sep), inputs.map(toUTF8): _*) ===
-        toUTF8(inputs.mkString(sep)))
+      assert(
+        UTF8String.concatWs(toUTF8(sep), inputs.map(toUTF8): _*) ===
+          toUTF8(inputs.mkString(sep)))
     }
-    forAll(randomString, nullalbeSeq) {(sep: String, inputs: Seq[String]) =>
-      assert(UTF8String.concatWs(toUTF8(sep), inputs.map(toUTF8): _*) ===
-        toUTF8(concatWs(sep, inputs)))
+    forAll(randomString, nullalbeSeq) { (sep: String, inputs: Seq[String]) =>
+      assert(
+        UTF8String.concatWs(toUTF8(sep), inputs.map(toUTF8): _*) ===
+          toUTF8(concatWs(sep, inputs)))
     }
   }
 
   // TODO: enable this when we find a proper way to generate valid patterns
   ignore("split") {
     forAll { (s: String, pattern: String, limit: Int) =>
-      assert(toUTF8(s).split(toUTF8(pattern), limit) ===
-        s.split(pattern, limit).map(toUTF8(_)))
+      assert(
+        toUTF8(s).split(toUTF8(pattern), limit) ===
+          s.split(pattern, limit).map(toUTF8(_)))
     }
   }
 
   test("levenshteinDistance") {
     forAll { (one: String, another: String) =>
-      assert(toUTF8(one).levenshteinDistance(toUTF8(another)) ===
-        StringUtils.getLevenshteinDistance(one, another))
+      assert(
+        toUTF8(one).levenshteinDistance(toUTF8(another)) ===
+          StringUtils.getLevenshteinDistance(one, another))
     }
   }
 

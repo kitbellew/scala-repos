@@ -41,11 +41,11 @@ class EnsembleStyledToolBar extends EnsembleExample {
       content = List(
         new Button {
           text = "Button 1"
-        }, new Button {
+        },
+        new Button {
           text = "Button 2"
-        }, new Slider {
-
-        })
+        },
+        new Slider {})
     }
     //ToolBar Blue
     val blueToolBar = new ToolBar {
@@ -54,11 +54,11 @@ class EnsembleStyledToolBar extends EnsembleExample {
       content = List(
         new Button {
           text = "Button 1"
-        }, new Button {
+        },
+        new Button {
           text = "Button 2"
-        }, new Slider {
-
-        })
+        },
+        new Slider {})
     }
     //ToolBar Dark
     val darkToolBar = new ToolBar {
@@ -67,11 +67,11 @@ class EnsembleStyledToolBar extends EnsembleExample {
       content = List(
         new Button {
           text = "Button 1"
-        }, new Button {
+        },
+        new Button {
           text = "Button 2"
-        }, new Slider {
-
-        })
+        },
+        new Slider {})
     }
 
     new VBox {

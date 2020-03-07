@@ -20,7 +20,7 @@ object Test {
     buf.toByteArray
   }
 
-  def unserialize(buf:Array[Byte]) = {
+  def unserialize(buf: Array[Byte]) = {
     val in = new ObjectInputStream(new ByteArrayInputStream(buf))
     in.readObject.asInstanceOf[MyMessage]
   }

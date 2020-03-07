@@ -4,10 +4,9 @@ import org.jetbrains.plugins.scala.codeInsight.intention.controlflow.RemoveRedun
 import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 
 /**
- * @author Ksenia.Sautina
- * @since 6/8/12
- */
-
+  * @author Ksenia.Sautina
+  * @since 6/8/12
+  */
 class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
   val familyName = RemoveRedundantElseIntention.familyName
 

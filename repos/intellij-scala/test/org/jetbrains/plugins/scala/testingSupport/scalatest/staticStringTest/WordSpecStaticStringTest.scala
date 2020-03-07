@@ -11,7 +11,8 @@ trait WordSpecStaticStringTest extends ScalaTestTestCase {
   val wordSpecFileName = wordSpecClassName + ".scala"
 
   def addWordSpec() = {
-    addFileToProject(wordSpecFileName,
+    addFileToProject(
+      wordSpecFileName,
       """
         |import org.scalatest._
         |
@@ -37,31 +38,51 @@ trait WordSpecStaticStringTest extends ScalaTestTestCase {
         |  }
         |}
         |
-      """.stripMargin.trim())
+      """.stripMargin.trim()
+    )
   }
 
   def testWordSpecSum() = {
     addWordSpec()
 
-    assert(checkConfigAndSettings(createTestFromLocation(17, 10, wordSpecFileName), wordSpecClassName, "sum name should test"))
+    assert(
+      checkConfigAndSettings(
+        createTestFromLocation(17, 10, wordSpecFileName),
+        wordSpecClassName,
+        "sum name should test"))
   }
 
   def testWordSpecVal() = {
     addWordSpec()
 
-    assert(checkConfigAndSettings(createTestFromLocation(6, 10, wordSpecFileName), wordSpecClassName, "const should const"))
+    assert(
+      checkConfigAndSettings(
+        createTestFromLocation(6, 10, wordSpecFileName),
+        wordSpecClassName,
+        "const should const"))
   }
 
   def testWordSpecValSum() = {
     addWordSpec()
 
-    assert(checkConfigAndSettings(createTestFromLocation(14, 10, wordSpecFileName), wordSpecClassName, "sum name should constconst"))
-    assert(checkConfigAndSettings(createTestFromLocation(9, 10, wordSpecFileName), wordSpecClassName, "const should const sum"))
+    assert(
+      checkConfigAndSettings(
+        createTestFromLocation(14, 10, wordSpecFileName),
+        wordSpecClassName,
+        "sum name should constconst"))
+    assert(
+      checkConfigAndSettings(
+        createTestFromLocation(9, 10, wordSpecFileName),
+        wordSpecClassName,
+        "const should const sum"))
   }
 
   def testWordSpecNonConst() = {
     addWordSpec()
 
-    assert(checkConfigAndSettings(createTestFromLocation(19, 10, wordSpecFileName), wordSpecClassName))
+    assert(
+      checkConfigAndSettings(
+        createTestFromLocation(19, 10, wordSpecFileName),
+        wordSpecClassName))
   }
 }

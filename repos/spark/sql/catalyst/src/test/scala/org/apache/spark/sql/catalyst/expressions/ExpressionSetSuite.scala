@@ -52,12 +52,14 @@ class ExpressionSetSuite extends SparkFunSuite {
 
   setTest(1, aUpper + aLower, aLower + aUpper)
   setTest(1, aUpper + bUpper, bUpper + aUpper)
-  setTest(1,
+  setTest(
+    1,
     aUpper + bUpper + 3,
     bUpper + 3 + aUpper,
     bUpper + aUpper + 3,
     Literal(3) + aUpper + bUpper)
-  setTest(1,
+  setTest(
+    1,
     aUpper * bUpper * 3,
     bUpper * 3 * aUpper,
     bUpper * aUpper * 3,
@@ -65,7 +67,6 @@ class ExpressionSetSuite extends SparkFunSuite {
   setTest(1, aUpper === bUpper, bUpper === aUpper)
 
   setTest(1, aUpper + 1 === bUpper, bUpper === Literal(1) + aUpper)
-
 
   // Not commutative
   setTest(2, aUpper - bUpper, bUpper - aUpper)

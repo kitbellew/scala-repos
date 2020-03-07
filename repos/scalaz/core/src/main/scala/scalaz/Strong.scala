@@ -2,8 +2,8 @@ package scalaz
 
 ////
 /**
- * Strength on a product.
- */
+  * Strength on a product.
+  */
 ////
 trait Strong[=>:[_, _]] extends Profunctor[=>:] { self =>
   ////

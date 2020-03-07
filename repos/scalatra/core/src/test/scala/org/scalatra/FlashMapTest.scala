@@ -1,10 +1,10 @@
 package org.scalatra
 
-import java.io.{ ByteArrayOutputStream, ObjectOutputStream }
+import java.io.{ByteArrayOutputStream, ObjectOutputStream}
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{ BeforeAndAfterEach, FunSuite, Matchers }
+import org.scalatest.{BeforeAndAfterEach, FunSuite, Matchers}
 
 @RunWith(classOf[JUnitRunner])
 class FlashMapTest extends FunSuite with Matchers with BeforeAndAfterEach {

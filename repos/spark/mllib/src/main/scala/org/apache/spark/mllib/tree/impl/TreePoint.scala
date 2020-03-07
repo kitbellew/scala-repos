@@ -21,36 +21,36 @@ import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.tree.model.Bin
 import org.apache.spark.rdd.RDD
 
-
 /**
- * Internal representation of LabeledPoint for DecisionTree.
- * This bins feature values based on a subsampled of data as follows:
- *  (a) Continuous features are binned into ranges.
- *  (b) Unordered categorical features are binned based on subsets of feature values.
- *      "Unordered categorical features" are categorical features with low arity used in
- *      multiclass classification.
- *  (c) Ordered categorical features are binned based on feature values.
- *      "Ordered categorical features" are categorical features with high arity,
- *      or any categorical feature used in regression or binary classification.
- *
- * @param label  Label from LabeledPoint
- * @param binnedFeatures  Binned feature values.
- *                        Same length as LabeledPoint.features, but values are bin indices.
- */
-private[spark] class TreePoint(val label: Double, val binnedFeatures: Array[Int])
-  extends Serializable {
-}
+  * Internal representation of LabeledPoint for DecisionTree.
+  * This bins feature values based on a subsampled of data as follows:
+  *  (a) Continuous features are binned into ranges.
+  *  (b) Unordered categorical features are binned based on subsets of feature values.
+  *      "Unordered categorical features" are categorical features with low arity used in
+  *      multiclass classification.
+  *  (c) Ordered categorical features are binned based on feature values.
+  *      "Ordered categorical features" are categorical features with high arity,
+  *      or any categorical feature used in regression or binary classification.
+  *
+  * @param label  Label from LabeledPoint
+  * @param binnedFeatures  Binned feature values.
+  *                        Same length as LabeledPoint.features, but values are bin indices.
+  */
+private[spark] class TreePoint(
+    val label: Double,
+    val binnedFeatures: Array[Int])
+    extends Serializable {}
 
 private[spark] object TreePoint {
 
   /**
-   * Convert an input dataset into its TreePoint representation,
-   * binning feature values in preparation for DecisionTree training.
-   * @param input     Input dataset.
-   * @param bins      Bins for features, of size (numFeatures, numBins).
-   * @param metadata  Learning and dataset metadata
-   * @return  TreePoint dataset representation
-   */
+    * Convert an input dataset into its TreePoint representation,
+    * binning feature values in preparation for DecisionTree training.
+    * @param input     Input dataset.
+    * @param bins      Bins for features, of size (numFeatures, numBins).
+    * @param metadata  Learning and dataset metadata
+    * @return  TreePoint dataset representation
+    */
   def convertToTreeRDD(
       input: RDD[LabeledPoint],
       bins: Array[Array[Bin]],
@@ -59,20 +59,19 @@ private[spark] object TreePoint {
     val featureArity: Array[Int] = new Array[Int](metadata.numFeatures)
     var featureIndex = 0
     while (featureIndex < metadata.numFeatures) {
-      featureArity(featureIndex) = metadata.featureArity.getOrElse(featureIndex, 0)
+      featureArity(featureIndex) =
+        metadata.featureArity.getOrElse(featureIndex, 0)
       featureIndex += 1
     }
-    input.map { x =>
-      TreePoint.labeledPointToTreePoint(x, bins, featureArity)
-    }
+    input.map { x => TreePoint.labeledPointToTreePoint(x, bins, featureArity) }
   }
 
   /**
-   * Convert one LabeledPoint into its TreePoint representation.
-   * @param bins      Bins for features, of size (numFeatures, numBins).
-   * @param featureArity  Array indexed by feature, with value 0 for continuous and numCategories
-   *                      for categorical features.
-   */
+    * Convert one LabeledPoint into its TreePoint representation.
+    * @param bins      Bins for features, of size (numFeatures, numBins).
+    * @param featureArity  Array indexed by feature, with value 0 for continuous and numCategories
+    *                      for categorical features.
+    */
   private def labeledPointToTreePoint(
       labeledPoint: LabeledPoint,
       bins: Array[Array[Bin]],
@@ -81,19 +80,19 @@ private[spark] object TreePoint {
     val arr = new Array[Int](numFeatures)
     var featureIndex = 0
     while (featureIndex < numFeatures) {
-      arr(featureIndex) = findBin(featureIndex, labeledPoint, featureArity(featureIndex),
-        bins)
+      arr(featureIndex) =
+        findBin(featureIndex, labeledPoint, featureArity(featureIndex), bins)
       featureIndex += 1
     }
     new TreePoint(labeledPoint.label, arr)
   }
 
   /**
-   * Find bin for one (labeledPoint, feature).
-   *
-   * @param featureArity  0 for continuous features; number of categories for categorical features.
-   * @param bins   Bins for features, of size (numFeatures, numBins).
-   */
+    * Find bin for one (labeledPoint, feature).
+    *
+    * @param featureArity  0 for continuous features; number of categories for categorical features.
+    * @param bins   Bins for features, of size (numFeatures, numBins).
+    */
   private def findBin(
       featureIndex: Int,
       labeledPoint: LabeledPoint,
@@ -101,8 +100,8 @@ private[spark] object TreePoint {
       bins: Array[Array[Bin]]): Int = {
 
     /**
-     * Binary search helper method for continuous feature.
-     */
+      * Binary search helper method for continuous feature.
+      */
     def binarySearchForBins(): Int = {
       val binForFeatures = bins(featureIndex)
       val feature = labeledPoint.features(featureIndex)

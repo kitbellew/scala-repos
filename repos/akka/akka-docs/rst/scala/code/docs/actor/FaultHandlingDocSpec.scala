@@ -1,16 +1,16 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.actor
 
 import language.postfixOps
-import akka.actor.{ ActorSystem, ActorRef, Props, Terminated }
+import akka.actor.{ActorSystem, ActorRef, Props, Terminated}
 import FaultHandlingDocSpec._
 
 //#testkit
-import com.typesafe.config.{ Config, ConfigFactory }
-import org.scalatest.{ FlatSpecLike, Matchers, BeforeAndAfterAll }
-import akka.testkit.{ TestActors, TestKit, ImplicitSender, EventFilter }
+import com.typesafe.config.{Config, ConfigFactory}
+import org.scalatest.{FlatSpecLike, Matchers, BeforeAndAfterAll}
+import akka.testkit.{TestActors, TestKit, ImplicitSender, EventFilter}
 
 //#testkit
 object FaultHandlingDocSpec {
@@ -92,23 +92,32 @@ object FaultHandlingDocSpec {
   }
   //#child
 
-  val testConf: Config = ConfigFactory.parseString("""
+  val testConf: Config =
+    ConfigFactory.parseString("""
       akka {
         loggers = ["akka.testkit.TestEventListener"]
       }
   """)
 }
 //#testkit
-class FaultHandlingDocSpec(_system: ActorSystem) extends TestKit(_system)
-  with ImplicitSender with FlatSpecLike with Matchers with BeforeAndAfterAll {
+class FaultHandlingDocSpec(_system: ActorSystem)
+    extends TestKit(_system)
+    with ImplicitSender
+    with FlatSpecLike
+    with Matchers
+    with BeforeAndAfterAll {
 
-  def this() = this(ActorSystem("FaultHandlingDocSpec",
-    ConfigFactory.parseString("""
+  def this() =
+    this(
+      ActorSystem(
+        "FaultHandlingDocSpec",
+        ConfigFactory.parseString("""
       akka {
         loggers = ["akka.testkit.TestEventListener"]
         loglevel = "WARNING"
       }
-      """)))
+      """)
+      ))
 
   override def afterAll {
     TestKit.shutdownActorSystem(system)
@@ -121,7 +130,8 @@ class FaultHandlingDocSpec(_system: ActorSystem) extends TestKit(_system)
     val supervisor = system.actorOf(Props[Supervisor], "supervisor")
 
     supervisor ! Props[Child]
-    val child = expectMsgType[ActorRef] // retrieve answer from TestKit’s testActor
+    val child =
+      expectMsgType[ActorRef] // retrieve answer from TestKit’s testActor
     //#create
     EventFilter.warning(occurrences = 1) intercept {
       //#resume

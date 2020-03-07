@@ -34,7 +34,6 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{Button, ButtonBar, Label}
 import scalafx.scene.layout.VBox
 
-
 object ButtonBarDemo extends JFXApp {
 
   stage = new PrimaryStage {
@@ -44,7 +43,8 @@ object ButtonBarDemo extends JFXApp {
         children = Seq(
           new Label("Three buttons are placed on a button bar below."),
           new ButtonBar {
-            buttons = Seq(new Button("One"), new Button("Two"), new Button("Three"))
+            buttons =
+              Seq(new Button("One"), new Button("Two"), new Button("Three"))
           }
         )
         spacing = 10

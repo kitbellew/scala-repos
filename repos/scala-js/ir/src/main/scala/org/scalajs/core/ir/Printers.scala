@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.ir
 
 import scala.annotation.switch
@@ -50,7 +49,7 @@ object Printers {
     def printTopLevelTree(tree: Tree): Unit = {
       tree match {
         case Skip() =>
-          // do not print anything
+        // do not print anything
         case Block(stats) =>
           for (stat <- stats)
             printTopLevelTree(stat)
@@ -60,7 +59,10 @@ object Printers {
       }
     }
 
-    protected final def printColumn(ts: List[Tree], start: String, sep: String,
+    protected final def printColumn(
+        ts: List[Tree],
+        start: String,
+        sep: String,
         end: String): Unit = {
       print(start); indent(); println()
       var rest = ts
@@ -75,7 +77,10 @@ object Printers {
       undent(); println(); print(end)
     }
 
-    protected final def printRow(ts: List[Tree], start: String, sep: String,
+    protected final def printRow(
+        ts: List[Tree],
+        start: String,
+        sep: String,
         end: String): Unit = {
       print(start)
       var rest = ts
@@ -321,11 +326,11 @@ object Printers {
           import UnaryOp._
           print('(')
           print((op: @switch) match {
-            case Boolean_!                 => "!"
-            case IntToLong | DoubleToLong  => "(long)"
-            case DoubleToInt | LongToInt   => "(int)"
-            case DoubleToFloat             => "(float)"
-            case LongToDouble              => "(double)"
+            case Boolean_!                => "!"
+            case IntToLong | DoubleToLong => "(long)"
+            case DoubleToInt | LongToInt  => "(int)"
+            case DoubleToFloat            => "(float)"
+            case LongToDouble             => "(double)"
           })
           print(lhs)
           print(')')
@@ -355,8 +360,10 @@ object Printers {
           print(rhs)
           print(')')
 
-        case BinaryOp(BinaryOp.Double_-,
-            IntLiteral(0) | FloatLiteral(0.0f) | DoubleLiteral(0.0), rhs) =>
+        case BinaryOp(
+            BinaryOp.Double_-,
+            IntLiteral(0) | FloatLiteral(0.0f) | DoubleLiteral(0.0),
+            rhs) =>
           print("(-")
           print(rhs)
           print(')')
@@ -529,7 +536,7 @@ object Printers {
 
         case JSFunctionApply(fun, args) =>
           fun match {
-            case _:JSDotSelect | _:JSBracketSelect | _:Select =>
+            case _: JSDotSelect | _: JSBracketSelect | _: Select =>
               print("protect(")
               print(fun)
               print(')')
@@ -1013,7 +1020,10 @@ object Printers {
       undent(); println()
     }
 
-    protected def printRow(ts: List[String], start: String, sep: String,
+    protected def printRow(
+        ts: List[String],
+        start: String,
+        sep: String,
         end: String): Unit = {
       print(start)
       var rest = ts

@@ -31,17 +31,22 @@ import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.StructType
 
 /**
- * Params for [[IDF]] and [[IDFModel]].
- */
-private[feature] trait IDFBase extends Params with HasInputCol with HasOutputCol {
+  * Params for [[IDF]] and [[IDFModel]].
+  */
+private[feature] trait IDFBase
+    extends Params
+    with HasInputCol
+    with HasOutputCol {
 
   /**
-   * The minimum of documents in which a term should appear.
-   * Default: 0
-   * @group param
-   */
+    * The minimum of documents in which a term should appear.
+    * Default: 0
+    * @group param
+    */
   final val minDocFreq = new IntParam(
-    this, "minDocFreq", "minimum of documents in which a term should appear for filtering")
+    this,
+    "minDocFreq",
+    "minimum of documents in which a term should appear for filtering")
 
   setDefault(minDocFreq -> 0)
 
@@ -49,8 +54,8 @@ private[feature] trait IDFBase extends Params with HasInputCol with HasOutputCol
   def getMinDocFreq: Int = $(minDocFreq)
 
   /**
-   * Validate and transform the input schema.
-   */
+    * Validate and transform the input schema.
+    */
   protected def validateAndTransformSchema(schema: StructType): StructType = {
     SchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
     SchemaUtils.appendColumn(schema, $(outputCol), new VectorUDT)
@@ -58,12 +63,14 @@ private[feature] trait IDFBase extends Params with HasInputCol with HasOutputCol
 }
 
 /**
- * :: Experimental ::
- * Compute the Inverse Document Frequency (IDF) given a collection of documents.
- */
+  * :: Experimental ::
+  * Compute the Inverse Document Frequency (IDF) given a collection of documents.
+  */
 @Experimental
-final class IDF(override val uid: String) extends Estimator[IDFModel] with IDFBase
-  with DefaultParamsWritable {
+final class IDF(override val uid: String)
+    extends Estimator[IDFModel]
+    with IDFBase
+    with DefaultParamsWritable {
 
   def this() = this(Identifiable.randomUID("idf"))
 
@@ -98,14 +105,16 @@ object IDF extends DefaultParamsReadable[IDF] {
 }
 
 /**
- * :: Experimental ::
- * Model fitted by [[IDF]].
- */
+  * :: Experimental ::
+  * Model fitted by [[IDF]].
+  */
 @Experimental
 class IDFModel private[ml] (
     override val uid: String,
     idfModel: feature.IDFModel)
-  extends Model[IDFModel] with IDFBase with MLWritable {
+    extends Model[IDFModel]
+    with IDFBase
+    with MLWritable {
 
   import IDFModel._
 
@@ -149,7 +158,11 @@ object IDFModel extends MLReadable[IDFModel] {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
       val data = Data(instance.idf)
       val dataPath = new Path(path, "data").toString
-      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(dataPath)
+      sqlContext
+        .createDataFrame(Seq(data))
+        .repartition(1)
+        .write
+        .parquet(dataPath)
     }
   }
 
@@ -160,7 +173,8 @@ object IDFModel extends MLReadable[IDFModel] {
     override def load(path: String): IDFModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read.parquet(dataPath)
+      val data = sqlContext.read
+        .parquet(dataPath)
         .select("idf")
         .head()
       val idf = data.getAs[Vector](0)

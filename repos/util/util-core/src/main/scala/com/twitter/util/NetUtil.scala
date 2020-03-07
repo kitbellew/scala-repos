@@ -13,12 +13,13 @@ object NetUtil {
         val addr = ip.getAddress
         if (addr(0) == 10.toByte) // 10/8
           true
-        else if (addr(0) == 172.toByte && (addr(1) & 0xf0) == 16.toByte) // 172/12
+        else if (addr(0) == 172.toByte && (addr(
+                   1) & 0xf0) == 16.toByte) // 172/12
           true
         else if (addr(0) == 192.toByte && addr(1) == 168.toByte) // 192.168/16
           true
         else
-            false
+          false
       case _ =>
         false
     }
@@ -64,9 +65,9 @@ object NetUtil {
   }
 
   /**
-   * Fast IPv4 decimal to int.  String.toInt is fast, but can throw an
-   * exception on invalid strings, which is expensive.
-   */
+    * Fast IPv4 decimal to int.  String.toInt is fast, but can throw an
+    * exception on invalid strings, which is expensive.
+    */
   private[this] def ipv4DecimalToInt(s: String): Int = {
     if (s.isEmpty || s.length > 3) {
       return -1
@@ -93,11 +94,12 @@ object NetUtil {
       case inetAddress: Inet4Address =>
         val addr = inetAddress.getAddress
         ((addr(0) & 0xff) << 24) |
-        ((addr(1) & 0xff) << 16) |
-        ((addr(2) & 0xff) <<  8) |
-         (addr(3) & 0xff)
+          ((addr(1) & 0xff) << 16) |
+          ((addr(2) & 0xff) << 8) |
+          (addr(3) & 0xff)
       case _ =>
-        throw new IllegalArgumentException("non-Inet4Address cannot be converted to an Int")
+        throw new IllegalArgumentException(
+          "non-Inet4Address cannot be converted to an Int")
     }
   }
 
@@ -109,7 +111,7 @@ object NetUtil {
     val arr = ip.split('.')
     val pLen = prefixLen match {
       case None if arr.length != 4 => arr.length * 8
-      case t => t.getOrElse(32)
+      case t                       => t.getOrElse(32)
     }
 
     val netIp = ipToInt(arr.padTo(4, "0").mkString("."))
@@ -120,14 +122,16 @@ object NetUtil {
   // Get the ip block from CIDR notation, returned as (subnet, subnetMask)
   def cidrToIpBlock(cidr: String): (Int, Int) = cidr.split('/') match {
     case Array(ip, prefixLen) => ipToIpBlock(ip, Some(prefixLen.toInt))
-    case Array(ip) => ipToIpBlock(ip, None)
+    case Array(ip)            => ipToIpBlock(ip, None)
   }
 
   def isIpInBlock(ip: Int, ipBlock: (Int, Int)): Boolean = ipBlock match {
     case (netIp, mask) => (mask & ip) == netIp
   }
 
-  def isInetAddressInBlock(inetAddress: InetAddress, ipBlock: (Int, Int)): Boolean =
+  def isInetAddressInBlock(
+      inetAddress: InetAddress,
+      ipBlock: (Int, Int)): Boolean =
     isIpInBlock(inetAddressToInt(inetAddress), ipBlock)
 
   def isIpInBlocks(ip: Int, ipBlocks: Iterable[(Int, Int)]): Boolean = {
@@ -138,7 +142,9 @@ object NetUtil {
     isIpInBlocks(ipToInt(ip), ipBlocks)
   }
 
-  def isInetAddressInBlocks(inetAddress: InetAddress, ipBlocks: Iterable[(Int, Int)]): Boolean =
+  def isInetAddressInBlocks(
+      inetAddress: InetAddress,
+      ipBlocks: Iterable[(Int, Int)]): Boolean =
     isIpInBlocks(inetAddressToInt(inetAddress), ipBlocks)
 
   def getLocalHostName(): String = {
@@ -150,7 +156,7 @@ object NetUtil {
           case Some(host) =>
             host.split(":") match {
               case Array(hostName, _) => hostName
-              case _ => "unknown_host"
+              case _                  => "unknown_host"
             }
           case None => "unknown_host"
         }

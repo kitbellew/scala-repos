@@ -19,11 +19,13 @@ import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
-private object StringServerCodec extends com.twitter.finagle.Codec[String, String] {
+private object StringServerCodec
+    extends com.twitter.finagle.Codec[String, String] {
   val pipelineFactory = StringServerPipeline
 }
 
-private object StringClientCodec extends com.twitter.finagle.Codec[String, String] {
+private object StringClientCodec
+    extends com.twitter.finagle.Codec[String, String] {
   val pipelineFactory = StringClientPipeline
 }
 
@@ -34,13 +36,15 @@ class DefaultTracingTest extends FunSuite with StringClient with StringServer {
   }
 
   def assertAnnotationsInOrder(tracer: Seq[Record], annos: Seq[Annotation]) {
-    assert(tracer.collect { case Record(_, _, ann, _) if annos.contains(ann) => ann } == annos)
+    assert(tracer.collect {
+      case Record(_, _, ann, _) if annos.contains(ann) => ann
+    } == annos)
   }
 
   /**
-   * Ensure all annotations have the same TraceId (unique to server and client though)
-   * Ensure core annotations are present and properly ordered
-   */
+    * Ensure all annotations have the same TraceId (unique to server and client though)
+    * Ensure core annotations are present and properly ordered
+    */
   def testCoreTraces(f: (Tracer, Tracer) => (Service[String, String])) {
     val combinedTracer = new BufferingTracer
     class MultiTracer extends BufferingTracer {
@@ -57,13 +61,17 @@ class DefaultTracingTest extends FunSuite with StringClient with StringServer {
     assert(serverTracer.map(_.traceId).toSet.size == 1)
     assert(clientTracer.map(_.traceId).toSet.size == 1)
 
-    assertAnnotationsInOrder(combinedTracer.toSeq, Seq(
-      Annotation.ServiceName("theClient"),
-      Annotation.ClientSend(),
-      Annotation.ServiceName("theServer"),
-      Annotation.ServerRecv(),
-      Annotation.ServerSend(),
-      Annotation.ClientRecv()))
+    assertAnnotationsInOrder(
+      combinedTracer.toSeq,
+      Seq(
+        Annotation.ServiceName("theClient"),
+        Annotation.ClientSend(),
+        Annotation.ServiceName("theServer"),
+        Annotation.ServerRecv(),
+        Annotation.ServerSend(),
+        Annotation.ClientRecv()
+      )
+    )
   }
 
   test("core events are traced in the stack client/server") {
@@ -91,8 +99,10 @@ class DefaultTracingTest extends FunSuite with StringClient with StringServer {
       val client = DefaultClient[String, String](
         name = "theClient",
         endpointer = Bridge[String, String, String, String](
-          Netty3Transporter("theClient", StringClientPipeline), new SerialClientDispatcher(_)),
-        tracer = clientTracer)
+          Netty3Transporter("theClient", StringClientPipeline),
+          new SerialClientDispatcher(_)),
+        tracer = clientTracer
+      )
 
       val svc = server.serve("localhost:*", Svc)
       client.newService(svc)

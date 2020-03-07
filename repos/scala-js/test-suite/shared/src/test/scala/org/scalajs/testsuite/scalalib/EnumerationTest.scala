@@ -15,7 +15,8 @@ import org.scalajs.testsuite.utils.Platform._
 
 class EnumerationTest {
 
-  @Test def should_use_explicit_naming_for_enumerated_values_issue_38(): Unit = {
+  @Test def should_use_explicit_naming_for_enumerated_values_issue_38()
+      : Unit = {
     object HelpLevel extends Enumeration {
       type HelpLevel = Value
       val None = Value("None")
@@ -50,12 +51,13 @@ class EnumerationTest {
         val A = Value(nullStr) // Circumvent compiler replacement and warning
       }
 
-      assertTrue(Test.A.toString.startsWith(
-        "<Unknown name for enum field #0 of class "))
+      assertTrue(
+        Test.A.toString.startsWith("<Unknown name for enum field #0 of class "))
     }
   }
 
-  @Test def should_give_a_graceful_error_message_upon_name_based_query_when_unnamed_fields_are_present(): Unit = {
+  @Test def should_give_a_graceful_error_message_upon_name_based_query_when_unnamed_fields_are_present()
+      : Unit = {
     object Test extends Enumeration {
       private val nullStr: String = null
       val A = Value(nullStr) // Circumvent compiler replacement and warning
@@ -65,7 +67,7 @@ class EnumerationTest {
       // In the JVM the exception thrown is a ClassCastException
       val ex = expectThrows(classOf[NoSuchElementException], Test.withName("A"))
       val subMsg = "Couldn't find enum field with name A.\n" +
-          "However, there were the following unnamed fields:"
+        "However, there were the following unnamed fields:"
       assertTrue(ex.getMessage.contains(subMsg))
     }
   }
@@ -75,13 +77,14 @@ class EnumerationTest {
   }
 
   @Test def should_respond_to_values(): Unit = {
-    assertEquals("FooBarEnum.ValueSet(A, B, C, D, E, F)",
-        FooBarEnum.values.toString)
+    assertEquals(
+      "FooBarEnum.ValueSet(A, B, C, D, E, F)",
+      FooBarEnum.values.toString)
   }
 
   @Test def should_allow_setting_nextName(): Unit = {
     object Test extends Enumeration {
-      nextName = Iterator("x","y","z")
+      nextName = Iterator("x", "y", "z")
       val a, b, c = Value
     }
 

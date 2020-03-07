@@ -18,5 +18,6 @@ class TaskBusModule {
   lazy val taskStatusObservables: TaskStatusObservables =
     new TaskStatusObservablesImpl(internalTaskStatusEventStream)
 
-  private[this] lazy val internalTaskStatusEventStream = new InternalTaskStatusEventStream()
+  private[this] lazy val internalTaskStatusEventStream =
+    new InternalTaskStatusEventStream()
 }

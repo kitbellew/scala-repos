@@ -1,9 +1,9 @@
 package mesosphere.marathon.integration.setup
 
-import mesosphere.marathon.api.v2.json.{ AppUpdate, AppUpdate$ }
+import mesosphere.marathon.api.v2.json.{AppUpdate, AppUpdate$}
 import mesosphere.marathon.event._
 import mesosphere.marathon.event.http.EventSubscribers
-import mesosphere.marathon.state.{ Group, Timestamp }
+import mesosphere.marathon.state.{Group, Timestamp}
 import mesosphere.marathon.upgrade.DeploymentPlan
 import play.api.libs.json._
 
@@ -18,35 +18,55 @@ object V2TestFormats {
       DeploymentPlan(
         original = (js \ "original").as[Group],
         target = (js \ "target").as[Group],
-        version = (js \ "version").as[Timestamp]).copy(id = (js \ "id").as[String]
-        )
+        version = (js \ "version").as[Timestamp]).copy(id =
+        (js \ "id").as[String])
     )
   }
 
   implicit lazy val SubscribeReads: Reads[Subscribe] = Json.reads[Subscribe]
-  implicit lazy val UnsubscribeReads: Reads[Unsubscribe] = Json.reads[Unsubscribe]
-  implicit lazy val EventStreamAttachedReads: Reads[EventStreamAttached] = Json.reads[EventStreamAttached]
-  implicit lazy val EventStreamDetachedReads: Reads[EventStreamDetached] = Json.reads[EventStreamDetached]
-  implicit lazy val AddHealthCheckReads: Reads[AddHealthCheck] = Json.reads[AddHealthCheck]
-  implicit lazy val RemoveHealthCheckReads: Reads[RemoveHealthCheck] = Json.reads[RemoveHealthCheck]
-  implicit lazy val FailedHealthCheckReads: Reads[FailedHealthCheck] = Json.reads[FailedHealthCheck]
-  implicit lazy val HealthStatusChangedReads: Reads[HealthStatusChanged] = Json.reads[HealthStatusChanged]
-  implicit lazy val GroupChangeSuccessReads: Reads[GroupChangeSuccess] = Json.reads[GroupChangeSuccess]
-  implicit lazy val GroupChangeFailedReads: Reads[GroupChangeFailed] = Json.reads[GroupChangeFailed]
-  implicit lazy val DeploymentSuccessReads: Reads[DeploymentSuccess] = Json.reads[DeploymentSuccess]
-  implicit lazy val DeploymentFailedReads: Reads[DeploymentFailed] = Json.reads[DeploymentFailed]
-  implicit lazy val MesosStatusUpdateEventReads: Reads[MesosStatusUpdateEvent] = Json.reads[MesosStatusUpdateEvent]
-  implicit lazy val MesosFrameworkMessageEventReads: Reads[MesosFrameworkMessageEvent] =
+  implicit lazy val UnsubscribeReads: Reads[Unsubscribe] =
+    Json.reads[Unsubscribe]
+  implicit lazy val EventStreamAttachedReads: Reads[EventStreamAttached] =
+    Json.reads[EventStreamAttached]
+  implicit lazy val EventStreamDetachedReads: Reads[EventStreamDetached] =
+    Json.reads[EventStreamDetached]
+  implicit lazy val AddHealthCheckReads: Reads[AddHealthCheck] =
+    Json.reads[AddHealthCheck]
+  implicit lazy val RemoveHealthCheckReads: Reads[RemoveHealthCheck] =
+    Json.reads[RemoveHealthCheck]
+  implicit lazy val FailedHealthCheckReads: Reads[FailedHealthCheck] =
+    Json.reads[FailedHealthCheck]
+  implicit lazy val HealthStatusChangedReads: Reads[HealthStatusChanged] =
+    Json.reads[HealthStatusChanged]
+  implicit lazy val GroupChangeSuccessReads: Reads[GroupChangeSuccess] =
+    Json.reads[GroupChangeSuccess]
+  implicit lazy val GroupChangeFailedReads: Reads[GroupChangeFailed] =
+    Json.reads[GroupChangeFailed]
+  implicit lazy val DeploymentSuccessReads: Reads[DeploymentSuccess] =
+    Json.reads[DeploymentSuccess]
+  implicit lazy val DeploymentFailedReads: Reads[DeploymentFailed] =
+    Json.reads[DeploymentFailed]
+  implicit lazy val MesosStatusUpdateEventReads: Reads[MesosStatusUpdateEvent] =
+    Json.reads[MesosStatusUpdateEvent]
+  implicit lazy val MesosFrameworkMessageEventReads
+      : Reads[MesosFrameworkMessageEvent] =
     Json.reads[MesosFrameworkMessageEvent]
-  implicit lazy val SchedulerDisconnectedEventReads: Reads[SchedulerDisconnectedEvent] =
+  implicit lazy val SchedulerDisconnectedEventReads
+      : Reads[SchedulerDisconnectedEvent] =
     Json.reads[SchedulerDisconnectedEvent]
-  implicit lazy val SchedulerRegisteredEventWritesReads: Reads[SchedulerRegisteredEvent] =
+  implicit lazy val SchedulerRegisteredEventWritesReads
+      : Reads[SchedulerRegisteredEvent] =
     Json.reads[SchedulerRegisteredEvent]
-  implicit lazy val SchedulerReregisteredEventWritesReads: Reads[SchedulerReregisteredEvent] =
+  implicit lazy val SchedulerReregisteredEventWritesReads
+      : Reads[SchedulerReregisteredEvent] =
     Json.reads[SchedulerReregisteredEvent]
 
-  implicit lazy val eventSubscribersReads: Reads[EventSubscribers] = Reads { subscribersJson =>
-    JsSuccess(EventSubscribers(urls = (subscribersJson \ "callbackUrls").asOpt[Set[String]].getOrElse(Set.empty)))
+  implicit lazy val eventSubscribersReads: Reads[EventSubscribers] = Reads {
+    subscribersJson =>
+      JsSuccess(
+        EventSubscribers(urls = (subscribersJson \ "callbackUrls")
+          .asOpt[Set[String]]
+          .getOrElse(Set.empty)))
   }
 
   implicit lazy val v2AppUpdateWrite: Writes[AppUpdate] = Writes { update =>

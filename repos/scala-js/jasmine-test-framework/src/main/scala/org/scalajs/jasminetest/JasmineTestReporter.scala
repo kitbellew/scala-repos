@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jasminetest
 
 import sbt.testing._
@@ -21,8 +20,11 @@ import scala.scalajs.js.annotation.JSExport
 import scala.scalajs.runtime.StackTrace
 
 /** This class is passed to the actual jasmine framework as a reporter */
-class JasmineTestReporter(taskDef: TaskDef, eventHandler: EventHandler,
-    loggers: Array[Logger], runnerDone: () => Unit) {
+class JasmineTestReporter(
+    taskDef: TaskDef,
+    eventHandler: EventHandler,
+    loggers: Array[Logger],
+    runnerDone: () => Unit) {
   private var currentSuite: Suite = _
 
   @JSExport
@@ -115,7 +117,7 @@ class JasmineTestReporter(taskDef: TaskDef, eventHandler: EventHandler,
     message match {
       case FilePattern(originalMessage) => originalMessage
       case EvalPattern(originalMessage) => originalMessage
-      case message => message
+      case message                      => message
     }
   }
 
@@ -130,7 +132,7 @@ class JasmineTestReporter(taskDef: TaskDef, eventHandler: EventHandler,
           val message = sanitizeMessage(r.message)
           val stack = StackTrace.extract(r.trace).takeWhile { stackElem =>
             (stackElem.getFileName == null ||
-                !stackElem.getFileName.endsWith("jasmine.js"))
+            !stackElem.getFileName.endsWith("jasmine.js"))
           }
 
           if (stack.isEmpty)

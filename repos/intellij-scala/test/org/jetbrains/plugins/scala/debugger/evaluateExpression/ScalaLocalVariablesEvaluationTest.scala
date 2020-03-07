@@ -1,16 +1,26 @@
 package org.jetbrains.plugins.scala.debugger.evaluateExpression
 
-import org.jetbrains.plugins.scala.debugger.{ScalaDebuggerTestCase, ScalaVersion_2_11, ScalaVersion_2_12}
+import org.jetbrains.plugins.scala.debugger.{
+  ScalaDebuggerTestCase,
+  ScalaVersion_2_11,
+  ScalaVersion_2_12
+}
 
 /**
- * User: Alefas
- * Date: 13.10.11
- */
-class ScalaLocalVariablesEvaluationTest extends ScalaLocalVariablesEvaluationTestBase with ScalaVersion_2_11
-class ScalaLocalVariablesEvaluationTest_212 extends ScalaLocalVariablesEvaluationTestBase with ScalaVersion_2_12
+  * User: Alefas
+  * Date: 13.10.11
+  */
+class ScalaLocalVariablesEvaluationTest
+    extends ScalaLocalVariablesEvaluationTestBase
+    with ScalaVersion_2_11
+class ScalaLocalVariablesEvaluationTest_212
+    extends ScalaLocalVariablesEvaluationTestBase
+    with ScalaVersion_2_12
 
-abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCase {
-  addFileWithBreakpoints("Local.scala",
+abstract class ScalaLocalVariablesEvaluationTestBase
+    extends ScalaDebuggerTestCase {
+  addFileWithBreakpoints(
+    "Local.scala",
     s"""
        |object Local {
        |  def main(args: Array[String]) {
@@ -27,7 +37,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalClassParam.scala",
+  addFileWithBreakpoints(
+    "LocalClassParam.scala",
     s"""
        |class LocalClassParam(x: Int) {
        |  val h = x
@@ -54,7 +65,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalFromForStatement.scala",
+  addFileWithBreakpoints(
+    "LocalFromForStatement.scala",
     s"""
        |object LocalFromForStatement {
        |  def main(args: Array[String]) {
@@ -74,7 +86,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalFromForStmtFromOut.scala",
+  addFileWithBreakpoints(
+    "LocalFromForStmtFromOut.scala",
     s"""
        |object LocalFromForStmtFromOut {
        |  def main(args: Array[String]) {
@@ -94,7 +107,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("Param.scala",
+  addFileWithBreakpoints(
+    "Param.scala",
     s"""
        |object Param {
        |  def foo(x: Int) {
@@ -115,7 +129,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalParam.scala",
+  addFileWithBreakpoints(
+    "LocalParam.scala",
     s"""
        |object LocalParam {
        |  def main(args: Array[String]) {
@@ -134,7 +149,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalOuter.scala",
+  addFileWithBreakpoints(
+    "LocalOuter.scala",
     s"""
        |object LocalOuter {
        |  def main(args: Array[String]) {
@@ -157,7 +173,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalOuterOuter.scala",
+  addFileWithBreakpoints(
+    "LocalOuterOuter.scala",
     s"""
        |object LocalOuterOuter {
        |  def main(args: Array[String]) {
@@ -187,7 +204,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalObjectOuter.scala",
+  addFileWithBreakpoints(
+    "LocalObjectOuter.scala",
     s"""
        |object LocalObjectOuter {
        |  def main(args: Array[String]) {
@@ -215,7 +233,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalFromClosureAndClass.scala",
+  addFileWithBreakpoints(
+    "LocalFromClosureAndClass.scala",
     s"""
        |object LocalFromClosureAndClass {
        |  def main(args: Array[String]) {
@@ -248,7 +267,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalMethodLocal.scala",
+  addFileWithBreakpoints(
+    "LocalMethodLocal.scala",
     s"""
        |object LocalMethodLocal {
        |  def main(args: Array[String]) {
@@ -271,7 +291,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalMethodLocalObject.scala",
+  addFileWithBreakpoints(
+    "LocalMethodLocalObject.scala",
     s"""
        |object LocalMethodLocalObject {
        |  def main(args: Array[String]) {
@@ -292,7 +313,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalMethodLocalMethodLocal.scala",
+  addFileWithBreakpoints(
+    "LocalMethodLocalMethodLocal.scala",
     s"""
        |object LocalMethodLocalMethodLocal {
        |  def main(args: Array[String]) {
@@ -318,7 +340,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalMethodLocalMethodLocalClass.scala",
+  addFileWithBreakpoints(
+    "LocalMethodLocalMethodLocalClass.scala",
     s"""
        |object LocalMethodLocalMethodLocalClass {
        |  def main(args: Array[String]) {
@@ -349,7 +372,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocMethLocMethLocClassLocMeth.scala",
+  addFileWithBreakpoints(
+    "LocMethLocMethLocClassLocMeth.scala",
     s"""
        |object LocMethLocMethLocClassLocMeth {
        |  def main(args: Array[String]) {
@@ -386,7 +410,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalObjectInside.scala",
+  addFileWithBreakpoints(
+    "LocalObjectInside.scala",
     s"""
        |object LocalObjectInside {
        |  def main(args: Array[String]) {
@@ -409,7 +434,8 @@ abstract class ScalaLocalVariablesEvaluationTestBase extends ScalaDebuggerTestCa
     }
   }
 
-  addFileWithBreakpoints("LocalObjectInsideClassLevel.scala",
+  addFileWithBreakpoints(
+    "LocalObjectInsideClassLevel.scala",
     s"""
        |object LocalObjectInsideClassLevel {
        |  def main(args: Array[String]) {

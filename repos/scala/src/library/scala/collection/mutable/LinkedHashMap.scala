@@ -6,8 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package mutable
@@ -15,43 +13,45 @@ package mutable
 import generic._
 
 /** $factoryInfo
- *  @define Coll `LinkedHashMap`
- *  @define coll linked hash map
- */
+  *  @define Coll `LinkedHashMap`
+  *  @define coll linked hash map
+  */
 object LinkedHashMap extends MutableMapFactory[LinkedHashMap] {
-  implicit def canBuildFrom[A, B]: CanBuildFrom[Coll, (A, B), LinkedHashMap[A, B]] = new MapCanBuildFrom[A, B]
+  implicit def canBuildFrom[A, B]
+      : CanBuildFrom[Coll, (A, B), LinkedHashMap[A, B]] =
+    new MapCanBuildFrom[A, B]
   def empty[A, B] = new LinkedHashMap[A, B]
 }
 
 /** This class implements mutable maps using a hashtable.
- *  The iterator and all traversal methods of this class visit elements in the order they were inserted.
- *
- *  @tparam A    the type of the keys contained in this hash map.
- *  @tparam B    the type of the values assigned to keys in this hash map.
- *
- *  @define Coll `LinkedHashMap`
- *  @define coll linked hash map
- *  @define thatinfo the class of the returned collection. In the standard library configuration,
- *    `That` is always `LinkedHashMap[A, B]` if the elements contained in the resulting collection are
- *    pairs of type `(A, B)`. This is because an implicit of type `CanBuildFrom[LinkedHashMap, (A, B), LinkedHashMap[A, B]]`
- *    is defined in object `LinkedHashMap`. Otherwise, `That` resolves to the most specific type that doesn't have
- *    to contain pairs of type `(A, B)`, which is `Iterable`.
- *  @define bfinfo an implicit value of class `CanBuildFrom` which determines the
- *    result class `That` from the current representation type `Repr`
- *    and the new element type `B`. This is usually the `canBuildFrom` value
- *    defined in object `LinkedHashMap`.
- *  @define mayNotTerminateInf
- *  @define willNotTerminateInf
- *  @define orderDependent
- *  @define orderDependentFold
- */
+  *  The iterator and all traversal methods of this class visit elements in the order they were inserted.
+  *
+  *  @tparam A    the type of the keys contained in this hash map.
+  *  @tparam B    the type of the values assigned to keys in this hash map.
+  *
+  *  @define Coll `LinkedHashMap`
+  *  @define coll linked hash map
+  *  @define thatinfo the class of the returned collection. In the standard library configuration,
+  *    `That` is always `LinkedHashMap[A, B]` if the elements contained in the resulting collection are
+  *    pairs of type `(A, B)`. This is because an implicit of type `CanBuildFrom[LinkedHashMap, (A, B), LinkedHashMap[A, B]]`
+  *    is defined in object `LinkedHashMap`. Otherwise, `That` resolves to the most specific type that doesn't have
+  *    to contain pairs of type `(A, B)`, which is `Iterable`.
+  *  @define bfinfo an implicit value of class `CanBuildFrom` which determines the
+  *    result class `That` from the current representation type `Repr`
+  *    and the new element type `B`. This is usually the `canBuildFrom` value
+  *    defined in object `LinkedHashMap`.
+  *  @define mayNotTerminateInf
+  *  @define willNotTerminateInf
+  *  @define orderDependent
+  *  @define orderDependentFold
+  */
 @SerialVersionUID(1L)
-class LinkedHashMap[A, B] extends AbstractMap[A, B]
-                             with Map[A, B]
-                             with MapLike[A, B, LinkedHashMap[A, B]]
-                             with HashTable[A, LinkedEntry[A, B]]
-                             with Serializable
-{
+class LinkedHashMap[A, B]
+    extends AbstractMap[A, B]
+    with Map[A, B]
+    with MapLike[A, B, LinkedHashMap[A, B]]
+    with HashTable[A, LinkedEntry[A, B]]
+    with Serializable {
 
   override def empty = LinkedHashMap.empty[A, B]
   override def size = tableSize
@@ -85,10 +85,14 @@ class LinkedHashMap[A, B] extends AbstractMap[A, B]
     }
   }
 
-  @deprecatedOverriding("+= should not be overridden so it stays consistent with put.", "2.11.0")
-  def += (kv: (A, B)): this.type = { put(kv._1, kv._2); this }
+  @deprecatedOverriding(
+    "+= should not be overridden so it stays consistent with put.",
+    "2.11.0")
+  def +=(kv: (A, B)): this.type = { put(kv._1, kv._2); this }
 
-  @deprecatedOverriding("-= should not be overridden so it stays consistent with remove.", "2.11.0")
+  @deprecatedOverriding(
+    "-= should not be overridden so it stays consistent with remove.",
+    "2.11.0")
   def -=(key: A): this.type = { remove(key); this }
 
   def iterator: Iterator[(A, B)] = new AbstractIterator[(A, B)] {
@@ -103,13 +107,15 @@ class LinkedHashMap[A, B] extends AbstractMap[A, B]
     override def empty = LinkedHashMap.empty
   }
 
-  override def filterKeys(p: A => Boolean): scala.collection.Map[A, B] = new FilteredKeys(p)
+  override def filterKeys(p: A => Boolean): scala.collection.Map[A, B] =
+    new FilteredKeys(p)
 
   protected class MappedValues[C](f: B => C) extends super.MappedValues[C](f) {
     override def empty = LinkedHashMap.empty
   }
 
-  override def mapValues[C](f: B => C): scala.collection.Map[A, C] = new MappedValues(f)
+  override def mapValues[C](f: B => C): scala.collection.Map[A, C] =
+    new MappedValues(f)
 
   protected class DefaultKeySet extends super.DefaultKeySet {
     override def empty = LinkedHashSet.empty
@@ -164,10 +170,12 @@ class LinkedHashMap[A, B] extends AbstractMap[A, B]
   }
 
   private def writeObject(out: java.io.ObjectOutputStream) {
-    serializeTo(out, { entry =>
-      out.writeObject(entry.key)
-      out.writeObject(entry.value)
-    })
+    serializeTo(
+      out,
+      { entry =>
+        out.writeObject(entry.key)
+        out.writeObject(entry.value)
+      })
   }
 
   private def readObject(in: java.io.ObjectInputStream) {

@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.summingbird.builder
 
@@ -20,7 +20,7 @@ import com.twitter.summingbird._
 import com.twitter.bijection.Injection
 import com.twitter.bijection.Conversion.asMethod
 import com.twitter.scalding._
-import com.twitter.summingbird.batch.{ BatchID, Batcher }
+import com.twitter.summingbird.batch.{BatchID, Batcher}
 import com.twitter.summingbird.storm.StormEnv
 import com.twitter.summingbird.source._
 import com.twitter.summingbird.scalding.store.VersionedStore
@@ -37,7 +37,8 @@ object TestJob {
 
   implicit val batcher: Batcher = Batcher.ofHours(1)
 
-  implicit def keyPairInjection[T](implicit toS: Injection[T, String]): Injection[(T, BatchID), Array[Byte]] =
+  implicit def keyPairInjection[T](implicit
+      toS: Injection[T, String]): Injection[(T, BatchID), Array[Byte]] =
     Injection.build[(T, BatchID), Array[Byte]] {
       case (t, batchID) =>
         (t.as[String] + ":" + batchID.as[String]).as[Array[Byte]]
@@ -49,7 +50,8 @@ object TestJob {
         batchID <- batchIDString.as[Try[BatchID]]
       } yield (t, batchID)
     }
-  implicit def valPairInjection[T](implicit toS: Injection[T, String]): Injection[(BatchID, T), Array[Byte]] =
+  implicit def valPairInjection[T](implicit
+      toS: Injection[T, String]): Injection[(BatchID, T), Array[Byte]] =
     Injection.connect[(BatchID, T), (T, BatchID), Array[Byte]]
 
   def offlineStore = VersionedStore[Long, Int]("tmp")
@@ -59,9 +61,11 @@ object TestJob {
 class TestJobWithOffline(env: Env) extends AbstractJob(env) {
   import TestJob._
 
-  EventSource.fromOnline {
-    Spout.fromTraversable(1 to 100)
-  }.withTime(new Date(_))
+  EventSource
+    .fromOnline {
+      Spout.fromTraversable(1 to 100)
+    }
+    .withTime(new Date(_))
     .map { i => (100L, i) }
     .groupAndSumTo(offlineStore)
 }
@@ -69,9 +73,11 @@ class TestJobWithOffline(env: Env) extends AbstractJob(env) {
 class TestJobWithOnline(env: Env) extends AbstractJob(env) {
   import TestJob._
 
-  EventSource.fromOnline {
-    Spout.fromTraversable(1 to 100)
-  }.withTime(new Date(_))
+  EventSource
+    .fromOnline {
+      Spout.fromTraversable(1 to 100)
+    }
+    .withTime(new Date(_))
     .map { i => (100L, i) }
     .groupAndSumTo(onlineStore)
 }

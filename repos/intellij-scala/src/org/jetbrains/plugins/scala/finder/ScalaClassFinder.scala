@@ -8,31 +8,44 @@ import com.intellij.psi._
 import com.intellij.psi.search.GlobalSearchScope
 import org.jetbrains.plugins.scala.caches.ScalaShortNamesCacheManager
 import org.jetbrains.plugins.scala.lang.psi.ScalaPsiUtil
-import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{ScTypeDefinition, ScClass, ScObject, ScTrait}
+import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
+  ScTypeDefinition,
+  ScClass,
+  ScObject,
+  ScTrait
+}
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiManager
 
 import scala.collection.mutable.ArrayBuffer
 
 class ScalaClassFinder(project: Project) extends PsiElementFinder {
-  def findClasses(qualifiedName: String, scope: GlobalSearchScope): Array[PsiClass] = {
+  def findClasses(
+      qualifiedName: String,
+      scope: GlobalSearchScope): Array[PsiClass] = {
     val res = new ArrayBuffer[PsiClass]
 
     def iterateClasses(suffix: String)(fun: PsiClass => Unit) {
       if (!qualifiedName.endsWith(suffix)) return
-      val nameWithoutDollar = qualifiedName.substring(0, qualifiedName.length() - suffix.length)
-      val classes = ScalaShortNamesCacheManager.getInstance(project).getClassesByFQName(nameWithoutDollar, scope)
+      val nameWithoutDollar =
+        qualifiedName.substring(0, qualifiedName.length() - suffix.length)
+      val classes = ScalaShortNamesCacheManager
+        .getInstance(project)
+        .getClassesByFQName(nameWithoutDollar, scope)
       (if (classes.isEmpty) {
-        val converted = ScalaPsiUtil.convertMemberName(nameWithoutDollar)
-        if (nameWithoutDollar != converted) ScalaShortNamesCacheManager.getInstance(project).getClassesByFQName(converted, scope)
-        else classes
-      } else classes).foreach(fun)
+         val converted = ScalaPsiUtil.convertMemberName(nameWithoutDollar)
+         if (nameWithoutDollar != converted)
+           ScalaShortNamesCacheManager
+             .getInstance(project)
+             .getClassesByFQName(converted, scope)
+         else classes
+       } else classes).foreach(fun)
     }
 
     iterateClasses("") {
       case o: ScObject if !o.isPackageObject =>
         o.fakeCompanionClass match {
           case Some(c) => res += c
-          case _ =>
+          case _       =>
         }
       case _ =>
     }
@@ -41,14 +54,14 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
       case c: ScTypeDefinition =>
         c.fakeCompanionModule match {
           case Some(o) => res += o
-          case _ =>
+          case _       =>
         }
       case _ =>
     }
 
     iterateClasses("$class") {
       case c: ScTrait => res += c.fakeCompanionClass
-      case _ =>
+      case _          =>
     }
 
     res.toArray
@@ -62,17 +75,25 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
 
   override def findPackage(qName: String): PsiPackage = null
 
-  override def getClassNames(psiPackage: PsiPackage, scope: GlobalSearchScope): util.Set[String] = {
-    ScalaPsiManager.instance(project).getJavaPackageClassNames(psiPackage, scope)
+  override def getClassNames(
+      psiPackage: PsiPackage,
+      scope: GlobalSearchScope): util.Set[String] = {
+    ScalaPsiManager
+      .instance(project)
+      .getJavaPackageClassNames(psiPackage, scope)
   }
 
-  override def getClasses(psiPackage: PsiPackage, scope: GlobalSearchScope): Array[PsiClass] = {
+  override def getClasses(
+      psiPackage: PsiPackage,
+      scope: GlobalSearchScope): Array[PsiClass] = {
     val otherClassNames = getClassNames(psiPackage, scope)
     val result: ArrayBuffer[PsiClass] = new ArrayBuffer[PsiClass]()
     import scala.collection.JavaConversions._
     for (clazzName <- otherClassNames) {
       val qualName = psiPackage.getQualifiedName + "." + clazzName
-      result ++= ScalaPsiManager.instance(project).getCachedClasses(scope, qualName)
+      result ++= ScalaPsiManager
+        .instance(project)
+        .getCachedClasses(scope, qualName)
       result ++= findClasses(qualName, scope)
     }
     result.toArray

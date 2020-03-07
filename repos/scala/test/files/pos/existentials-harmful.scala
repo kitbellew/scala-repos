@@ -17,7 +17,7 @@ object ExistentialsConsideredHarmful {
 
   // 1.
   def carry[A <: Animal](box: TransportBox[A]): Unit = {
-    println(box.animal.name+" got carried away")
+    println(box.animal.name + " got carried away")
   }
 
   val aBox =
@@ -37,7 +37,8 @@ object ExistentialsConsideredHarmful {
   abstract class BoxCarrier[R <: Animal](box: TransportBox[R]) {
     def speed: Int
 
-    def talkToAnimal: Unit = println("The carrier says hello to"+box.animal.name)
+    def talkToAnimal: Unit =
+      println("The carrier says hello to" + box.animal.name)
   }
 
   // 3.
@@ -47,8 +48,9 @@ object ExistentialsConsideredHarmful {
   // Type annotation on bc is required ... possible compiler bug?
   // val bc : BoxCarrier[_ <: Animal] = aBox match {
   val bc = aBox match {
-    case tb : TransportBox[a] => new BoxCarrier(tb) {
-      def speed: Int = 12
-    }
+    case tb: TransportBox[a] =>
+      new BoxCarrier(tb) {
+        def speed: Int = 12
+      }
   }
 }

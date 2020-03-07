@@ -19,13 +19,20 @@ package org.apache.spark.ml.feature
 
 import org.apache.spark.SparkFunSuite
 import org.apache.spark.ml.util.DefaultReadWriteTest
-import org.apache.spark.mllib.linalg.{DenseVector, SparseVector, Vector, Vectors}
+import org.apache.spark.mllib.linalg.{
+  DenseVector,
+  SparseVector,
+  Vector,
+  Vectors
+}
 import org.apache.spark.mllib.util.MLlibTestSparkContext
 import org.apache.spark.mllib.util.TestingUtils._
 import org.apache.spark.sql.{DataFrame, Row}
 
-
-class NormalizerSuite extends SparkFunSuite with MLlibTestSparkContext with DefaultReadWriteTest {
+class NormalizerSuite
+    extends SparkFunSuite
+    with MLlibTestSparkContext
+    with DefaultReadWriteTest {
 
   @transient var data: Array[Vector] = _
   @transient var dataFrame: DataFrame = _
@@ -61,7 +68,8 @@ class NormalizerSuite extends SparkFunSuite with MLlibTestSparkContext with Defa
       Vectors.sparse(3, Seq())
     )
 
-    dataFrame = sqlContext.createDataFrame(sc.parallelize(data, 2).map(NormalizerSuite.FeatureData))
+    dataFrame = sqlContext.createDataFrame(
+      sc.parallelize(data, 2).map(NormalizerSuite.FeatureData))
     normalizer = new Normalizer()
       .setInputCol("features")
       .setOutputCol("normalized_features")
@@ -74,17 +82,22 @@ class NormalizerSuite extends SparkFunSuite with MLlibTestSparkContext with Defa
   }
 
   def assertTypeOfVector(lhs: Array[Vector], rhs: Array[Vector]): Unit = {
-    assert((lhs, rhs).zipped.forall {
-      case (v1: DenseVector, v2: DenseVector) => true
-      case (v1: SparseVector, v2: SparseVector) => true
-      case _ => false
-    }, "The vector type should be preserved after normalization.")
+    assert(
+      (lhs, rhs).zipped.forall {
+        case (v1: DenseVector, v2: DenseVector)   => true
+        case (v1: SparseVector, v2: SparseVector) => true
+        case _                                    => false
+      },
+      "The vector type should be preserved after normalization."
+    )
   }
 
   def assertValues(lhs: Array[Vector], rhs: Array[Vector]): Unit = {
-    assert((lhs, rhs).zipped.forall { (vector1, vector2) =>
-      vector1 ~== vector2 absTol 1E-5
-    }, "The vector value is not correct after normalization.")
+    assert(
+      (lhs, rhs).zipped.forall { (vector1, vector2) =>
+        vector1 ~== vector2 absTol 1e-5
+      },
+      "The vector value is not correct after normalization.")
   }
 
   test("Normalization with default parameter") {

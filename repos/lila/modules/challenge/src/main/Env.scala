@@ -31,13 +31,16 @@ final class Env(
 
   private val socketHub = system.actorOf(
     Props(new lila.socket.SocketHubActor.Default[Socket] {
-      def mkActor(challengeId: String) = new Socket(
-        challengeId = challengeId,
-        history = new lila.socket.History(ttl = HistoryMessageTtl),
-        getChallenge = repo.byId,
-        uidTimeout = UidTimeout,
-        socketTimeout = SocketTimeout)
-    }), name = SocketName)
+      def mkActor(challengeId: String) =
+        new Socket(
+          challengeId = challengeId,
+          history = new lila.socket.History(ttl = HistoryMessageTtl),
+          getChallenge = repo.byId,
+          uidTimeout = UidTimeout,
+          socketTimeout = SocketTimeout)
+    }),
+    name = SocketName
+  )
 
   def version(challengeId: Challenge.ID): Fu[Int] =
     socketHub ? Ask(challengeId, GetVersion) mapTo manifest[Int]
@@ -55,9 +58,8 @@ final class Env(
     userRegister = hub.actor.userRegister,
     lilaBus = system.lilaBus)
 
-  private lazy val repo = new ChallengeRepo(
-    coll = db(CollectionChallenge),
-    maxPerUser = MaxPerUser)
+  private lazy val repo =
+    new ChallengeRepo(coll = db(CollectionChallenge), maxPerUser = MaxPerUser)
 
   lazy val jsonView = new JsonView(lightUser)
 

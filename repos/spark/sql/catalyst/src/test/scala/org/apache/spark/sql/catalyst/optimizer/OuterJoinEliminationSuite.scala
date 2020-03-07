@@ -27,11 +27,12 @@ import org.apache.spark.sql.catalyst.rules._
 class OuterJoinEliminationSuite extends PlanTest {
   object Optimize extends RuleExecutor[LogicalPlan] {
     val batches =
-      Batch("Subqueries", Once,
-        EliminateSubqueryAliases) ::
-      Batch("Outer Join Elimination", Once,
-        OuterJoinElimination,
-        PushPredicateThroughJoin) :: Nil
+      Batch("Subqueries", Once, EliminateSubqueryAliases) ::
+        Batch(
+          "Outer Join Elimination",
+          Once,
+          OuterJoinElimination,
+          PushPredicateThroughJoin) :: Nil
   }
 
   val testRelation = LocalRelation('a.int, 'b.int, 'c.int)
@@ -59,7 +60,8 @@ class OuterJoinEliminationSuite extends PlanTest {
     val y = testRelation1.subquery('y)
 
     val originalQuery =
-      x.join(y, FullOuter, Option("x.a".attr === "y.d".attr)).where("y.d".attr > 2)
+      x.join(y, FullOuter, Option("x.a".attr === "y.d".attr))
+        .where("y.d".attr > 2)
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val left = testRelation
@@ -75,7 +77,8 @@ class OuterJoinEliminationSuite extends PlanTest {
     val y = testRelation1.subquery('y)
 
     val originalQuery =
-      x.join(y, FullOuter, Option("x.a".attr === "y.d".attr)).where("x.a".attr <=> 2)
+      x.join(y, FullOuter, Option("x.a".attr === "y.d".attr))
+        .where("x.a".attr <=> 2)
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val left = testRelation.where('a <=> 2)
@@ -91,7 +94,8 @@ class OuterJoinEliminationSuite extends PlanTest {
     val y = testRelation1.subquery('y)
 
     val originalQuery =
-      x.join(y, RightOuter, Option("x.a".attr === "y.d".attr)).where("x.b".attr > 2)
+      x.join(y, RightOuter, Option("x.a".attr === "y.d".attr))
+        .where("x.b".attr > 2)
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val left = testRelation.where('b > 2)
@@ -166,7 +170,8 @@ class OuterJoinEliminationSuite extends PlanTest {
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val left = testRelation
-    val right = testRelation1.where((!'e.isNull || ('d.isNotNull && 'f.isNull)) && 'e.isNull)
+    val right = testRelation1.where(
+      (!'e.isNull || ('d.isNotNull && 'f.isNull)) && 'e.isNull)
     val correctAnswer =
       left.join(right, Inner, Option("a".attr === "d".attr)).analyze
 
@@ -188,7 +193,12 @@ class OuterJoinEliminationSuite extends PlanTest {
     val left = testRelation
     val right = testRelation1
     val correctAnswer =
-      left.join(right, Inner, Option("b".attr + 3 === "e".attr && "a".attr === "d".attr)).analyze
+      left
+        .join(
+          right,
+          Inner,
+          Option("b".attr + 3 === "e".attr && "a".attr === "d".attr))
+        .analyze
 
     comparePlans(optimized, correctAnswer)
   }

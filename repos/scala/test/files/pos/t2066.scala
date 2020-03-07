@@ -6,7 +6,6 @@ trait B1 extends A1 {
   override def f[T[_]] = ()
 }
 
-
 trait A2 {
   def f[T[-_]] = ()
 }
@@ -14,7 +13,6 @@ trait A2 {
 trait B2 extends A2 {
   override def f[T[_]] = ()
 }
-
 
 trait A3 {
   def f[T[X[_]]] = ()

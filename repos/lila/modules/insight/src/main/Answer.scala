@@ -1,11 +1,11 @@
 package lila.insight
 
-import lila.game.{ Game, Pov }
+import lila.game.{Game, Pov}
 
 case class Answer[X](
-  question: Question[X],
-  clusters: List[Cluster[X]],
-  povs: List[Pov])
+    question: Question[X],
+    clusters: List[Cluster[X]],
+    povs: List[Pov])
 
 // a row per dimension value
 case class Cluster[X](
@@ -20,7 +20,8 @@ case class Cluster[X](
 sealed trait Insight
 object Insight {
   case class Single(point: Point) extends Insight
-  case class Stacked(points: List[(Metric.MetricValueName, Point)]) extends Insight
+  case class Stacked(points: List[(Metric.MetricValueName, Point)])
+      extends Insight
 }
 
 case class Point(y: Double)

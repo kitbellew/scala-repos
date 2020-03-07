@@ -6,9 +6,9 @@ import com.intellij.refactoring.changeSignature._
 import org.junit.Assert._
 
 /**
- * Nikolay.Tropin
- * 2014-08-14
- */
+  * Nikolay.Tropin
+  * 2014-08-14
+  */
 class ChangeSignatureFromJavaTest extends ChangeSignatureTestBase {
 
   override def folderPath: String = baseRootPath() + "changeSignature/fromJava/"
@@ -21,15 +21,17 @@ class ChangeSignatureFromJavaTest extends ChangeSignatureTestBase {
 
   override def secondFileAfterName(testName: String) = testName + "_after.scala"
 
-  override def processor(newVisibility: String,
-                newName: String,
-                newReturnType: String,
-                newParams: => Seq[Seq[ParameterInfo]]): ChangeSignatureProcessorBase = {
+  override def processor(
+      newVisibility: String,
+      newName: String,
+      newReturnType: String,
+      newParams: => Seq[Seq[ParameterInfo]]): ChangeSignatureProcessorBase = {
     javaProcessor(newVisibility, newName, newReturnType, newParams)
   }
 
   override def findTargetElement: PsiMember = {
-    val element = new JavaChangeSignatureHandler().findTargetMember(getFileAdapter, getEditorAdapter)
+    val element = new JavaChangeSignatureHandler()
+      .findTargetMember(getFileAdapter, getEditorAdapter)
     assertTrue("<caret> is not on method name", element.isInstanceOf[PsiMethod])
     element.asInstanceOf[PsiMethod]
   }
@@ -80,7 +82,8 @@ class ChangeSignatureFromJavaTest extends ChangeSignatureTestBase {
   }
 
   def testInfixUsage2() = {
-    val params = Seq(new ParameterInfoImpl(0, "i", PsiType.INT),
+    val params = Seq(
+      new ParameterInfoImpl(0, "i", PsiType.INT),
       new ParameterInfoImpl(-1, "b", PsiType.BOOLEAN, "true"))
     doTest(null, "print", null, Seq(params))
   }
@@ -110,7 +113,10 @@ class ChangeSignatureFromJavaTest extends ChangeSignatureTestBase {
     val params = Seq(
       new ParameterInfoImpl(0, "i", PsiType.INT),
       new ParameterInfoImpl(-1, "b", PsiType.BOOLEAN, "true"),
-      new ParameterInfoImpl(1, "strs", new PsiEllipsisType(getPsiTypeFromText("String", targetMethod)))
+      new ParameterInfoImpl(
+        1,
+        "strs",
+        new PsiEllipsisType(getPsiTypeFromText("String", targetMethod)))
     )
     doTest(null, "foo", null, Seq(params))
   }
@@ -142,7 +148,9 @@ class ChangeSignatureFromJavaTest extends ChangeSignatureTestBase {
   }
 
   def testAnonymousFunction(): Unit = {
-    val params = Seq(new ParameterInfoImpl(0, "i", PsiType.INT), new ParameterInfoImpl(-1, "j", PsiType.INT, "0"))
+    val params = Seq(
+      new ParameterInfoImpl(0, "i", PsiType.INT),
+      new ParameterInfoImpl(-1, "j", PsiType.INT, "0"))
     doTest(null, "foo", null, Seq(params))
   }
 

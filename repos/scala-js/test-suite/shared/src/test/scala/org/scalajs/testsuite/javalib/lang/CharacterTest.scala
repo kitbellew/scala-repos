@@ -17,7 +17,7 @@ class CharacterTest {
 
   @Test def isISOControl(): Unit = {
     val isoControlChars = (('\u0000' to '\u001F') ++
-        ('\u007F' to '\u009F')).map(_.toInt).toSet
+      ('\u007F' to '\u009F')).map(_.toInt).toSet
     isoControlChars foreach { c =>
       assertEquals(true, Character.isISOControl(c))
     }
@@ -49,12 +49,18 @@ class CharacterTest {
 
   @Test def toChars(): Unit = {
     assertTrue(Character.toChars(0x61) sameElements Array('a'))
-    assertTrue(Character.toChars(0x10000) sameElements Array('\uD800', '\uDC00'))
-    assertTrue(Character.toChars(0x10001) sameElements Array('\uD800', '\uDC01'))
-    assertTrue(Character.toChars(0x10401) sameElements Array('\uD801', '\uDC01'))
-    assertTrue(Character.toChars(0x10FFFF) sameElements Array('\uDBFF', '\uDFFF'))
+    assertTrue(
+      Character.toChars(0x10000) sameElements Array('\uD800', '\uDC00'))
+    assertTrue(
+      Character.toChars(0x10001) sameElements Array('\uD800', '\uDC01'))
+    assertTrue(
+      Character.toChars(0x10401) sameElements Array('\uD801', '\uDC01'))
+    assertTrue(
+      Character.toChars(0x10FFFF) sameElements Array('\uDBFF', '\uDFFF'))
 
-    expectThrows(classOf[IllegalArgumentException], Character.toChars(Integer.MAX_VALUE))
+    expectThrows(
+      classOf[IllegalArgumentException],
+      Character.toChars(Integer.MAX_VALUE))
   }
 
   @Test def isDigit(): Unit = {

@@ -25,18 +25,18 @@ object CommonParams {
     starttime = "pio_starttime",
     endtime = "pio_endtime",
     inactive = "pio_inactive",
-    rating = "pio_rating")
+    rating = "pio_rating"
+  )
 
-  val PreparatorParams = new PreparatorParams(
-    actions = Map("rate" -> None),
-    conflict = "latest")
-    
+  val PreparatorParams =
+    new PreparatorParams(actions = Map("rate" -> None), conflict = "latest")
+
   val MahoutAlgoParams0 = new ItemBasedAlgoParams(
     booleanData = true,
     itemSimilarity = "LogLikelihoodSimilarity",
     weighted = false,
     nearestN = 10,
-    threshold = 4.9E-324,
+    threshold = 4.9e-324,
     numSimilarItems = 50,
     numUserActions = 50,
     freshness = 0,
@@ -47,25 +47,28 @@ object CommonParams {
     appId = 9,
     actions = Set("rate"),
     attributeNames = CommonParams.DataSourceAttributeNames,
-    slidingEval = Some(new EventsSlidingEvalParams(
-      firstTrainingUntilTime = new DateTime(1998, 2, 1, 0, 0),
-      evalDuration = Duration.standardDays(7),
-      evalCount = 12)))
+    slidingEval = Some(
+      new EventsSlidingEvalParams(
+        firstTrainingUntilTime = new DateTime(1998, 2, 1, 0, 0),
+        evalDuration = Duration.standardDays(7),
+        evalCount = 12))
+  )
 }
 
 object Evaluation1 {
   def main(args: Array[String]) {
     // Engine Settings
-    val engine = ItemRankEngine() 
+    val engine = ItemRankEngine()
 
     val dsp = EventsDataSourceParams(
       appId = 9,
       actions = Set("rate"),
       attributeNames = CommonParams.DataSourceAttributeNames,
-      slidingEval = Some(new EventsSlidingEvalParams(
-        firstTrainingUntilTime = new DateTime(1998, 2, 1, 0, 0),
-        evalDuration = Duration.standardDays(7),
-        evalCount = 3))
+      slidingEval = Some(
+        new EventsSlidingEvalParams(
+          firstTrainingUntilTime = new DateTime(1998, 2, 1, 0, 0),
+          evalDuration = Duration.standardDays(7),
+          evalCount = 3))
     )
 
     val engineParams = new EngineParams(
@@ -82,7 +85,7 @@ object Evaluation1 {
         goodThreshold = 3),
       measureType = MeasureType.PrecisionAtK,
       measureK = 10
-    ) 
+    )
 
     // Run
     Workflow.runEngine(
@@ -98,7 +101,7 @@ object Evaluation1 {
 object Evaluation2 {
   def main(args: Array[String]) {
     // Engine Settings
-    val engine = ItemRankEngine() 
+    val engine = ItemRankEngine()
 
     val engineParams = new EngineParams(
       dataSourceParams = CommonParams.CompleteDataSourceParams,
@@ -114,7 +117,7 @@ object Evaluation2 {
         goodThreshold = 3),
       measureType = MeasureType.PrecisionAtK,
       measureK = 10
-    ) 
+    )
 
     // Run
     Workflow.runEngine(

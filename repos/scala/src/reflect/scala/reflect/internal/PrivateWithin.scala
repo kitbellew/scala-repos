@@ -2,8 +2,8 @@ package scala
 package reflect
 package internal
 
-import java.lang.{ Class => jClass }
-import java.lang.reflect.{ Member => jMember }
+import java.lang.{Class => jClass}
+import java.lang.reflect.{Member => jMember}
 
 trait PrivateWithin {
   self: SymbolTable =>

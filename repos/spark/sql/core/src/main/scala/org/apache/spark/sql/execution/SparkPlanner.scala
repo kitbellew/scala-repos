@@ -20,20 +20,22 @@ package org.apache.spark.sql.execution
 import org.apache.spark.SparkContext
 import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.execution.datasources.{DataSourceStrategy, FileSourceStrategy}
+import org.apache.spark.sql.execution.datasources.{
+  DataSourceStrategy,
+  FileSourceStrategy
+}
 import org.apache.spark.sql.internal.SQLConf
 
 class SparkPlanner(
     val sparkContext: SparkContext,
     val conf: SQLConf,
     val experimentalMethods: ExperimentalMethods)
-  extends SparkStrategies {
+    extends SparkStrategies {
 
   def numPartitions: Int = conf.numShufflePartitions
 
   def strategies: Seq[Strategy] =
-    experimentalMethods.extraStrategies ++ (
-      FileSourceStrategy ::
+    experimentalMethods.extraStrategies ++ (FileSourceStrategy ::
       DataSourceStrategy ::
       DDLStrategy ::
       SpecialLimits ::
@@ -47,18 +49,18 @@ class SparkPlanner(
       DefaultJoin :: Nil)
 
   /**
-   * Used to build table scan operators where complex projection and filtering are done using
-   * separate physical operators.  This function returns the given scan operator with Project and
-   * Filter nodes added only when needed.  For example, a Project operator is only used when the
-   * final desired output requires complex expressions to be evaluated or when columns can be
-   * further eliminated out after filtering has been done.
-   *
-   * The `prunePushedDownFilters` parameter is used to remove those filters that can be optimized
-   * away by the filter pushdown optimization.
-   *
-   * The required attributes for both filtering and expression evaluation are passed to the
-   * provided `scanBuilder` function so that it can avoid unnecessary column materialization.
-   */
+    * Used to build table scan operators where complex projection and filtering are done using
+    * separate physical operators.  This function returns the given scan operator with Project and
+    * Filter nodes added only when needed.  For example, a Project operator is only used when the
+    * final desired output requires complex expressions to be evaluated or when columns can be
+    * further eliminated out after filtering has been done.
+    *
+    * The `prunePushedDownFilters` parameter is used to remove those filters that can be optimized
+    * away by the filter pushdown optimization.
+    *
+    * The required attributes for both filtering and expression evaluation are passed to the
+    * provided `scanBuilder` function so that it can avoid unnecessary column materialization.
+    */
   def pruneFilterProject(
       projectList: Seq[NamedExpression],
       filterPredicates: Seq[Expression],
@@ -68,7 +70,8 @@ class SparkPlanner(
     val projectSet = AttributeSet(projectList.flatMap(_.references))
     val filterSet = AttributeSet(filterPredicates.flatMap(_.references))
     val filterCondition: Option[Expression] =
-      prunePushedDownFilters(filterPredicates).reduceLeftOption(catalyst.expressions.And)
+      prunePushedDownFilters(filterPredicates).reduceLeftOption(
+        catalyst.expressions.And)
 
     // Right now we still use a projection even if the only evaluation is applying an alias
     // to a column.  Since this is a no-op, it could be avoided. However, using this

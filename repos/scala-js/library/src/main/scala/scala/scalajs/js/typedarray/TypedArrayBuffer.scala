@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.js.typedarray
 
 import scala.language.implicitConversions
@@ -14,11 +13,12 @@ import scala.language.implicitConversions
 import java.nio._
 
 /** Factory methods to create direct buffers from Typed Arrays.
- *
- *  All buffers created by the methods of this object are direct buffers with
- *  the native byte order of the platform.
- */
+  *
+  *  All buffers created by the methods of this object are direct buffers with
+  *  the native byte order of the platform.
+  */
 object TypedArrayBuffer {
+
   /** Wraps an [[ArrayBuffer]] in a direct [[java.nio.ByteBuffer ByteBuffer]]. */
   def wrap(array: ArrayBuffer): ByteBuffer =
     TypedArrayBufferBridge.wrap(array)

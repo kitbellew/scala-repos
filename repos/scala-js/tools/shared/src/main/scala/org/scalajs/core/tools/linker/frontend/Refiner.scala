@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker.frontend
 
 import org.scalajs.core.tools.sem._
@@ -20,11 +19,16 @@ import org.scalajs.core.ir.ClassKind
 /** Does a dead code elimination pass on [[LinkedClass]]es */
 final class Refiner {
 
-  def refine(unit: LinkingUnit, symbolRequirements: SymbolRequirement,
+  def refine(
+      unit: LinkingUnit,
+      symbolRequirements: SymbolRequirement,
       logger: Logger): LinkingUnit = {
     val analysis = logger.time("Refiner: Compute reachability") {
-      Analyzer.computeReachability(unit.semantics, symbolRequirements,
-          unit.infos.values.toList, allowAddingSyntheticMethods = false)
+      Analyzer.computeReachability(
+        unit.semantics,
+        symbolRequirements,
+        unit.infos.values.toList,
+        allowAddingSyntheticMethods = false)
     }
 
     /* There really should not be linking errors at this point. If there are,
@@ -46,9 +50,12 @@ final class Refiner {
           if (!analyzerInfo.isAnySubclassInstantiated) None
           else Some(LinkedClass.dummyParent(encodedName, Some("dummy")))
 
-        linkedClassesByName.get(encodedName).map {
-          refineClassDef(_, analyzerInfo)
-        }.orElse(optDummyParent)
+        linkedClassesByName
+          .get(encodedName)
+          .map {
+            refineClassDef(_, analyzerInfo)
+          }
+          .orElse(optDummyParent)
       }
 
       val linkedClassDefs = for {
@@ -57,12 +64,14 @@ final class Refiner {
         linkedClassDef <- optClassDef(classInfo)
       } yield linkedClassDef
 
-      unit.updated(classDefs = linkedClassDefs.toList,
-          isComplete = analysis.allAvailable)
+      unit.updated(
+        classDefs = linkedClassDefs.toList,
+        isComplete = analysis.allAvailable)
     }
   }
 
-  private def refineClassDef(classDef: LinkedClass,
+  private def refineClassDef(
+      classDef: LinkedClass,
       info: Analysis.ClassInfo): LinkedClass = {
 
     val fields =
@@ -86,14 +95,15 @@ final class Refiner {
       else classDef.kind.withoutModuleAccessor
 
     classDef.copy(
-        kind = kind,
-        fields = fields,
-        staticMethods = staticMethods,
-        memberMethods = memberMethods,
-        abstractMethods = abstractMethods,
-        hasInstances = info.isAnySubclassInstantiated,
-        hasInstanceTests = info.areInstanceTestsUsed,
-        hasRuntimeTypeInfo = info.isDataAccessed)
+      kind = kind,
+      fields = fields,
+      staticMethods = staticMethods,
+      memberMethods = memberMethods,
+      abstractMethods = abstractMethods,
+      hasInstances = info.isAnySubclassInstantiated,
+      hasInstanceTests = info.areInstanceTestsUsed,
+      hasRuntimeTypeInfo = info.isDataAccessed
+    )
   }
 
 }

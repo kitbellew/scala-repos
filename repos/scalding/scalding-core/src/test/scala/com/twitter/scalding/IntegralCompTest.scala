@@ -12,10 +12,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.scalding
 
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 
 class IntegralCompTest extends WordSpec with Matchers {
   def box[T](t: T) = t.asInstanceOf[AnyRef]
@@ -29,7 +29,8 @@ class IntegralCompTest extends WordSpec with Matchers {
       //Boxed
       intComp.isIntegral(new java.lang.Long(2)) shouldBe true
       intComp.isIntegral(new java.lang.Integer(2)) shouldBe true
-      intComp.isIntegral(new java.lang.Short(2.asInstanceOf[Short])) shouldBe true
+      intComp.isIntegral(
+        new java.lang.Short(2.asInstanceOf[Short])) shouldBe true
       intComp.isIntegral(new java.lang.Long(2)) shouldBe true
       intComp.isIntegral(new java.lang.Long(2)) shouldBe true
       //These are not integrals

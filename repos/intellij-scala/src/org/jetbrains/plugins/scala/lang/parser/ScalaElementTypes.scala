@@ -7,26 +7,44 @@ import com.intellij.lexer.Lexer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.stubs.PsiFileStub
-import com.intellij.psi.tree.{ICompositeElementType, IElementType, IErrorCounterReparseableElementType, IStubFileElementType}
+import com.intellij.psi.tree.{
+  ICompositeElementType,
+  IElementType,
+  IErrorCounterReparseableElementType,
+  IStubFileElementType
+}
 import org.jetbrains.annotations.NotNull
-import org.jetbrains.plugins.scala.lang.lexer.{ScalaElementType, ScalaLexer, ScalaTokenTypes}
-import org.jetbrains.plugins.scala.lang.psi.api.statements.{ScFunction, ScValue, ScVariable}
+import org.jetbrains.plugins.scala.lang.lexer.{
+  ScalaElementType,
+  ScalaLexer,
+  ScalaTokenTypes
+}
+import org.jetbrains.plugins.scala.lang.psi.api.statements.{
+  ScFunction,
+  ScValue,
+  ScVariable
+}
 import org.jetbrains.plugins.scala.lang.psi.impl.expr.ScBlockExprImpl
 import org.jetbrains.plugins.scala.lang.psi.stubs.elements._
-import org.jetbrains.plugins.scala.lang.psi.stubs.elements.signatures.{ScClassParameterElementType, ScParamClauseElementType, ScParamClausesElementType, ScParameterElementType}
+import org.jetbrains.plugins.scala.lang.psi.stubs.elements.signatures.{
+  ScClassParameterElementType,
+  ScParamClauseElementType,
+  ScParamClausesElementType,
+  ScParameterElementType
+}
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 02.10.2006
- *
- */
+  * User: Dmitry.Krasilschikov
+  * Date: 02.10.2006
+  *
+  */
 object ScalaElementTypes {
 
   val DUMMY_ELEMENT = new ScalaElementType("Dummy Elemnet")
 
-
   //Stub element types
-  val FILE: IStubFileElementType[_ <: PsiFileStub[_ <: PsiFile]] = new ScStubFileElementType(ScalaFileType.SCALA_LANGUAGE)
+  val FILE: IStubFileElementType[_ <: PsiFileStub[_ <: PsiFile]] =
+    new ScStubFileElementType(ScalaFileType.SCALA_LANGUAGE)
 
   val CLASS_DEF = new ScClassDefinitionElementType
   val OBJECT_DEF = new ScObjectDefinitionElementType
@@ -42,15 +60,12 @@ object ScalaElementTypes {
   val TEMPLATE = new ScalaElementType("template", true)
   val TEMPLATE_BODY = new ScTemplateBodyElementType
 
-
   val REQUIRES_BLOCK = new ScalaElementType("requires block")
   val NEW_TEMPLATE = new ScNewTemplateDefinitionStubElementType
-
 
   /** ***********************************************************************************/
   /************************* PARAMETERS OF CLASS AND FUNCTIONS *************************/
   /** ***********************************************************************************/
-
   val PARAM_TYPE = new ScalaElementType("parameter type")
   val PARAM = new ScParameterElementType
   val PARAM_CLAUSE = new ScParamClauseElementType
@@ -101,7 +116,6 @@ object ScalaElementTypes {
   /** ***********************************************************************************/
   /*********************************** IDENTIFIER **************************************/
   /** ***********************************************************************************/
-
   val UNIT_EXPR = new ScalaElementType("unit expression")
   val IDENTIFIER_LIST = new ScIdListElementType
   val FIELD_ID = new ScFieldIdElementType
@@ -110,7 +124,6 @@ object ScalaElementTypes {
   /** ***********************************************************************************/
   /********************************* IMPORT GROUP **************************************/
   /** ***********************************************************************************/
-
   val IMPORT_SELECTOR = new ScImportSelectorElementType
   val IMPORT_SELECTORS = new ScImportSelectorsElementType
   val IMPORT_EXPR = new ScImportExprElementType
@@ -126,17 +139,22 @@ object ScalaElementTypes {
   /** ***********************************************************************************/
   /************************************ DECLARATION ************************************/
   /** ***********************************************************************************/
-  val VALUE_DECLARATION : ScValueElementType[_ <: ScValue] = new ScValueDeclarationElementType
-  val VARIABLE_DECLARATION : ScVariableElementType[_ <: ScVariable] = new ScVariableDeclarationElementType
-  val FUNCTION_DECLARATION :ScFunctionElementType[_ <: ScFunction] = new ScFunctionDeclarationElementType
+  val VALUE_DECLARATION: ScValueElementType[_ <: ScValue] =
+    new ScValueDeclarationElementType
+  val VARIABLE_DECLARATION: ScVariableElementType[_ <: ScVariable] =
+    new ScVariableDeclarationElementType
+  val FUNCTION_DECLARATION: ScFunctionElementType[_ <: ScFunction] =
+    new ScFunctionDeclarationElementType
   val TYPE_DECLARATION = new ScTypeAliasDeclarationElementType
 
   /** ***********************************************************************************/
   /************************************ DEFINITION *************************************/
   /** ***********************************************************************************/
-  val PATTERN_DEFINITION : ScValueElementType[_ <: ScValue] = new ScValueDefinitionElementType
+  val PATTERN_DEFINITION: ScValueElementType[_ <: ScValue] =
+    new ScValueDefinitionElementType
   val PATTERN_LIST = new ScPatternListElementType
-  val VARIABLE_DEFINITION : ScVariableElementType[_ <: ScVariable] = new ScVariableDefinitionElementType
+  val VARIABLE_DEFINITION: ScVariableElementType[_ <: ScVariable] =
+    new ScVariableDefinitionElementType
   val TYPE_DEFINITION = new ScTypeAliasDefinitionElementType
   val EARLY_DEFINITIONS = new ScEarlyDefinitionsElementType
 
@@ -154,13 +172,11 @@ object ScalaElementTypes {
   /** ***********************************************************************************/
   /******************************* MODIFIERS AND ATTRIBUTES ****************************/
   /** ***********************************************************************************/
-
   /******************* modifiers **********************/
   val MODIFIERS = new ScModifiersElementType("moifiers")
   val ACCESS_MODIFIER = new ScAccessModifierElementType
 
   /******************* annotation *********************/
-
   val NAME_VALUE_PAIR = new ScalaElementType("name value pair")
   val ANNOTATION_EXPR = new ScalaElementType("annotation expression")
   val ANNOTATION = new ScAnnotationElementType
@@ -172,10 +188,13 @@ object ScalaElementTypes {
   val LITERAL = new ScalaElementType("Literal")
   //  String literals
   val STRING_LITERAL = new ScalaElementType("String Literal")
-  val INTERPOLATED_STRING_LITERAL = new ScalaElementType("Interpolated String Literal")
+  val INTERPOLATED_STRING_LITERAL = new ScalaElementType(
+    "Interpolated String Literal")
   //Not only String, but quasiquote too
-  val INTERPOLATED_PREFIX_PATTERN_REFERENCE = new ScalaElementType("Interpolated Prefix Pattern Reference")
-  val INTERPOLATED_PREFIX_LITERAL_REFERENCE = new ScalaElementType("Interpolated Prefix Literal Reference")
+  val INTERPOLATED_PREFIX_PATTERN_REFERENCE = new ScalaElementType(
+    "Interpolated Prefix Pattern Reference")
+  val INTERPOLATED_PREFIX_LITERAL_REFERENCE = new ScalaElementType(
+    "Interpolated Prefix Literal Reference")
   // Boolean literals
   val BOOLEAN_LITERAL = new ScalaElementType("Boolean Literal")
 
@@ -226,11 +245,9 @@ object ScalaElementTypes {
   val MATCH_STMT = new ScalaElementType("match statement")
   val TYPED_EXPR_STMT = new ScalaElementType("typed statement")
 
-
   /** ***********************************************************************************/
   /************************************** PATTERNS *************************************/
   /** ***********************************************************************************/
-
   val TUPLE_PATTERN = new ScalaElementType("Tuple Pattern")
   val SEQ_WILDCARD = new ScalaElementType("Sequence Wildcard")
   val CONSTRUCTOR_PATTERN = new ScalaElementType("Constructor Pattern")
@@ -246,17 +263,15 @@ object ScalaElementTypes {
   val LITERAL_PATTERN = new ScalaElementType("literal pattern")
   val INTERPOLATION_PATTERN = new ScalaElementType("interpolation pattern")
   val REFERENCE_PATTERN = new ScReferencePatternElementType
-  val STABLE_REFERENCE_PATTERN = new ScalaElementType("stable reference pattern")
+  val STABLE_REFERENCE_PATTERN = new ScalaElementType(
+    "stable reference pattern")
   val PATTERN_IN_PARENTHESIS = new ScalaElementType("pattern in parenthesis")
 
   /************************************** TYPE PATTERNS ********************************/
-
   val ARG_TYPE_PATTERN = new ScalaElementType("Argument type pattern")
   val ARG_TYPE_PATTERNS = new ScalaElementType("Argument type patterns")
   val TYPE_PATTERN_ARGS = new ScalaElementType("Type pattern arguments")
   val TYPE_PATTERN = new ScalaElementType("Type pattern")
-
-
 
   val STATEMENT_SEPARATOR = new ScalaElementType("statement separator")
   val IMPLICIT_END = new ScalaElementType("implicit end")
@@ -265,7 +280,6 @@ object ScalaElementTypes {
   val REFINEMENT = new ScalaElementType("refinement")
 
   /*************************************** XML *************************************/
-
   val XML_EXPR = new ScalaElementType("Xml expr")
   val XML_START_TAG = new ScalaElementType("Xml start tag")
   val XML_END_TAG = new ScalaElementType("Xml end tag")
@@ -277,8 +291,11 @@ object ScalaElementTypes {
   val XML_COMMENT = new ScalaElementType("Xml comment")
   val XML_ELEMENT = new ScalaElementType("Xml element")
 
-  class ScCodeBlockElementType() extends IErrorCounterReparseableElementType("block of expressions",
-    ScalaFileType.SCALA_LANGUAGE) with ICompositeElementType {
+  class ScCodeBlockElementType()
+      extends IErrorCounterReparseableElementType(
+        "block of expressions",
+        ScalaFileType.SCALA_LANGUAGE)
+      with ICompositeElementType {
 
     override def createNode(text: CharSequence): ASTNode = {
       new ScBlockExprImpl(text)
@@ -288,7 +305,10 @@ object ScalaElementTypes {
       new ScBlockExprImpl(null)
     }
 
-    def getErrorsCount(seq: CharSequence, fileLanguage: Language, project: Project): Int = {
+    def getErrorsCount(
+        seq: CharSequence,
+        fileLanguage: Language,
+        project: Project): Int = {
       import com.intellij.psi.tree.IErrorCounterReparseableElementType._
       val lexer: Lexer = new ScalaLexer
       lexer.start(seq)
@@ -297,7 +317,7 @@ object ScalaElementTypes {
       var balance: Int = 1
       var flag = false
       while (!flag) {
-        val tp : IElementType = lexer.getTokenType
+        val tp: IElementType = lexer.getTokenType
         if (tp == null) flag = true
         else if (balance == 0) return FATAL_ERROR
         else if (tp == ScalaTokenTypes.tLBRACE) {

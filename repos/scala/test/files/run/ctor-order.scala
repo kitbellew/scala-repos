@@ -1,4 +1,3 @@
-
 /** Test that constructor operations are reordered correctly.  */
 class Outer {
 

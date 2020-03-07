@@ -2,9 +2,9 @@ package scalaz
 
 ////
 /** The class of monads supporting the operations of
- * [[scalaz.State]].
- *
- */
+  * [[scalaz.State]].
+  *
+  */
 ////
 trait MonadState[F[_], S] extends Monad[F] { self =>
   ////

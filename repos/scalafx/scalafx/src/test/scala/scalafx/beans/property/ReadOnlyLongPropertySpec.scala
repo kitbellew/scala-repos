@@ -37,10 +37,10 @@ import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 import scalafx.Includes._
 
 /**
- * ReadOnlyLongProperty Spec tests.
- *
- *
- */
+  * ReadOnlyLongProperty Spec tests.
+  *
+  *
+  */
 @RunWith(classOf[JUnitRunner])
 class ReadOnlyLongPropertySpec extends FlatSpec with BeforeAndAfterEach {
   val bean = new Object()
@@ -50,7 +50,8 @@ class ReadOnlyLongPropertySpec extends FlatSpec with BeforeAndAfterEach {
   var booleanProperty: jfxbp.BooleanProperty = null
 
   override def beforeEach() {
-    readOnlyLongProperty = new ReadOnlyLongProperty(bean, "Test Read-only Long", 50)
+    readOnlyLongProperty =
+      new ReadOnlyLongProperty(bean, "Test Read-only Long", 50)
     longProperty1 = new LongProperty(bean, "Test Long 1")
     longProperty2 = new LongProperty(bean, "Test Long 2")
     booleanProperty = new BooleanProperty(bean, "Test Boolean")
@@ -86,7 +87,7 @@ class ReadOnlyLongPropertySpec extends FlatSpec with BeforeAndAfterEach {
   }
 
   it should "support bindable infix addition of constants" in {
-    longProperty2 <== readOnlyLongProperty + 35 + 35l + 35f + 35d
+    longProperty2 <== readOnlyLongProperty + 35 + 35L + 35f + 35d
     longProperty2() should equal(190)
     longProperty2.unbind()
   }
@@ -99,7 +100,7 @@ class ReadOnlyLongPropertySpec extends FlatSpec with BeforeAndAfterEach {
   }
 
   it should "support bindable infix subtraction of constants" in {
-    longProperty2 <== readOnlyLongProperty - 12 - 12l - 12f - 12d
+    longProperty2 <== readOnlyLongProperty - 12 - 12L - 12f - 12d
     longProperty2() should equal(2)
     longProperty2.unbind()
   }
@@ -112,7 +113,7 @@ class ReadOnlyLongPropertySpec extends FlatSpec with BeforeAndAfterEach {
   }
 
   it should "support bindable infix multiplication of constants" in {
-    longProperty2 <== readOnlyLongProperty * 2 * 2l * 2f * 2d
+    longProperty2 <== readOnlyLongProperty * 2 * 2L * 2f * 2d
     longProperty2() should equal(800)
     longProperty2.unbind()
   }
@@ -125,7 +126,7 @@ class ReadOnlyLongPropertySpec extends FlatSpec with BeforeAndAfterEach {
   }
 
   it should "support bindable infix division of constants" in {
-    longProperty2 <== readOnlyLongProperty / 2 / 2l / 5f / 5d
+    longProperty2 <== readOnlyLongProperty / 2 / 2L / 5f / 5d
     longProperty2() should equal(0)
     longProperty2.unbind()
   }

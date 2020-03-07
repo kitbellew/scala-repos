@@ -17,11 +17,11 @@ class ContextFilterTest extends FunSuite {
     val writtenDeadline = Deadline.ofTimeout(5.seconds)
     val service =
       new ClientContextFilter[Request, Response] andThen
-      new ServerContextFilter[Request, Response] andThen
-      Service.mk[Request, Response] { req =>
-        assert(Deadline.current.get == writtenDeadline)
-        Future.value(Response())
-      }
+        new ServerContextFilter[Request, Response] andThen
+        Service.mk[Request, Response] { req =>
+          assert(Deadline.current.get == writtenDeadline)
+          Future.value(Response())
+        }
 
     Contexts.broadcast.let(Deadline, writtenDeadline) {
       val req = Request()
@@ -41,11 +41,11 @@ class ContextFilterTest extends FunSuite {
   test("does not set incorrectly encoded context headers") {
     val service =
       new ClientContextFilter[Request, Response] andThen
-      new ServerContextFilter[Request, Response] andThen
-      Service.mk[Request, Response] { _ =>
-        assert(Contexts.broadcast.marshal.isEmpty)
-        Future.value(Response())
-      }
+        new ServerContextFilter[Request, Response] andThen
+        Service.mk[Request, Response] { _ =>
+          assert(Contexts.broadcast.marshal.isEmpty)
+          Future.value(Response())
+        }
 
     val req = Request()
     req.headers().add("Finagle-Ctx-com.twitter.finagle.Deadline", "foo")

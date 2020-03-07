@@ -2,11 +2,12 @@ package org.scalatra
 
 object ResponseStatus {
 
-  def apply(code: Int): ResponseStatus = ResponseStatus(code, ReasonMap.getOrElse(code, ""))
+  def apply(code: Int): ResponseStatus =
+    ResponseStatus(code, ReasonMap.getOrElse(code, ""))
 
   /**
-   * Status code list taken from http://www.iana.org/assignments/http-status-codes/http-status-codes.xml
-   */
+    * Status code list taken from http://www.iana.org/assignments/http-status-codes/http-status-codes.xml
+    */
   private[this] val ReasonMap: Map[Int, String] = Map(
     100 -> "Continue",
     101 -> "Switching Protocols",

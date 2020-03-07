@@ -1,6 +1,6 @@
 package lila.chat
 
-import akka.actor.{ ActorSystem, Props, ActorSelection }
+import akka.actor.{ActorSystem, Props, ActorSelection}
 import com.typesafe.config.Config
 
 import lila.common.PimpedConfig._

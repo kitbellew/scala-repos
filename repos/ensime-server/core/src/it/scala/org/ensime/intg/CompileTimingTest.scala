@@ -9,11 +9,12 @@ import org.ensime.util.EnsimeSpec
 import org.ensime.util.file._
 
 /**
- * Tries to simulate SBT clean/compile to stress test timing issues.
- *
- * (which also tests the file watchers).
- */
-class CompileTimingTest extends EnsimeSpec
+  * Tries to simulate SBT clean/compile to stress test timing issues.
+  *
+  * (which also tests the file watchers).
+  */
+class CompileTimingTest
+    extends EnsimeSpec
     with IsolatedEnsimeConfigFixture
     with IsolatedTestKitFixture
     with IsolatedProjectFixture {
@@ -43,7 +44,11 @@ class CompileTimingTest extends EnsimeSpec
           asyncHelper.expectMsg(FullTypeCheckCompleteEvent)
 
           // GUI usually responds to each typecheck by requesting symbols
-          project ! SymbolDesignationsReq(Right(exampleDiskInfo), 0, 70, SourceSymbol.allSymbols)
+          project ! SymbolDesignationsReq(
+            Right(exampleDiskInfo),
+            0,
+            70,
+            SourceSymbol.allSymbols)
           expectMsgType[SymbolDesignations]
 
           // typecheck an in-memory version of the file
@@ -51,7 +56,11 @@ class CompileTimingTest extends EnsimeSpec
           expectMsg(VoidResponse)
 
           asyncHelper.expectMsg(FullTypeCheckCompleteEvent)
-          project ! SymbolDesignationsReq(Right(exampleMemory), 0, 70, SourceSymbol.allSymbols)
+          project ! SymbolDesignationsReq(
+            Right(exampleMemory),
+            0,
+            70,
+            SourceSymbol.allSymbols)
           expectMsgType[SymbolDesignations]
 
           // simulate sbt clean https://github.com/sbt/sbt/issues/106
@@ -62,7 +71,11 @@ class CompileTimingTest extends EnsimeSpec
             CompilerRestartedEvent
           ))
 
-          project ! SymbolDesignationsReq(Right(exampleDiskInfo), 0, 70, SourceSymbol.allSymbols)
+          project ! SymbolDesignationsReq(
+            Right(exampleDiskInfo),
+            0,
+            70,
+            SourceSymbol.allSymbols)
           expectMsgType[SymbolDesignations]
 
           // simulate sbt compile
@@ -73,7 +86,11 @@ class CompileTimingTest extends EnsimeSpec
             CompilerRestartedEvent
           ))
 
-          project ! SymbolDesignationsReq(Right(exampleDiskInfo), 0, 70, SourceSymbol.allSymbols)
+          project ! SymbolDesignationsReq(
+            Right(exampleDiskInfo),
+            0,
+            70,
+            SourceSymbol.allSymbols)
           expectMsgType[SymbolDesignations]
         }
       }

@@ -16,7 +16,7 @@
 
 package shapeless
 
-import scala.annotation.{ Annotation => saAnnotation }
+import scala.annotation.{Annotation => saAnnotation}
 import org.junit.Test
 import shapeless.test.illTyped
 
@@ -31,9 +31,9 @@ object AnnotationTestsDefinitions {
   case class Unused() extends saAnnotation
 
   @Other case class CC(
-    @First i: Int,
-    s: String,
-    @Second(2, "b") ob: Option[Boolean]
+      @First i: Int,
+      s: String,
+      @Second(2, "b") ob: Option[Boolean]
   )
 
   @Last(true) trait Something
@@ -69,26 +69,35 @@ class AnnotationTests {
 
   @Test
   def invalidAnnotation {
-    illTyped(" Annotation[Other, Dummy] ", "could not find implicit value for parameter annotation: .*")
-    illTyped(" Annotation[Dummy, CC] ", "could not find implicit value for parameter annotation: .*")
+    illTyped(
+      " Annotation[Other, Dummy] ",
+      "could not find implicit value for parameter annotation: .*")
+    illTyped(
+      " Annotation[Dummy, CC] ",
+      "could not find implicit value for parameter annotation: .*")
   }
 
   @Test
   def simpleAnnotations {
     {
-      val first: Some[First] :: None.type :: None.type :: HNil = Annotations[First, CC].apply()
+      val first: Some[First] :: None.type :: None.type :: HNil =
+        Annotations[First, CC].apply()
       assert(first == Some(First()) :: None :: None :: HNil)
 
-      val second: None.type :: None.type :: Some[Second] :: HNil = Annotations[Second, CC].apply()
+      val second: None.type :: None.type :: Some[Second] :: HNil =
+        Annotations[Second, CC].apply()
       assert(second == None :: None :: Some(Second(2, "b")) :: HNil)
 
-      val unused: None.type :: None.type :: None.type :: HNil = Annotations[Unused, CC].apply()
+      val unused: None.type :: None.type :: None.type :: HNil =
+        Annotations[Unused, CC].apply()
       assert(unused == None :: None :: None :: HNil)
 
-      val firstSum: Some[First] :: None.type :: HNil = Annotations[First, Base].apply()
+      val firstSum: Some[First] :: None.type :: HNil =
+        Annotations[First, Base].apply()
       assert(firstSum == Some(First()) :: None :: HNil)
 
-      val secondSum: None.type :: Some[Second] :: HNil = Annotations[Second, Base].apply()
+      val secondSum: None.type :: Some[Second] :: HNil =
+        Annotations[Second, Base].apply()
       assert(secondSum == None :: Some(Second(3, "e")) :: HNil)
     }
 
@@ -112,9 +121,15 @@ class AnnotationTests {
 
   @Test
   def invalidAnnotations {
-    illTyped(" Annotations[Dummy, CC] ", "could not find implicit value for parameter annotations: .*")
-    illTyped(" Annotations[Dummy, Base] ", "could not find implicit value for parameter annotations: .*")
-    illTyped(" Annotations[Second, Dummy] ", "could not find implicit value for parameter annotations: .*")
+    illTyped(
+      " Annotations[Dummy, CC] ",
+      "could not find implicit value for parameter annotations: .*")
+    illTyped(
+      " Annotations[Dummy, Base] ",
+      "could not find implicit value for parameter annotations: .*")
+    illTyped(
+      " Annotations[Second, Dummy] ",
+      "could not find implicit value for parameter annotations: .*")
   }
 
 }

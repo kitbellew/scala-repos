@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -32,12 +32,13 @@ import com.precog.util.IdGen
 import org.joda.time._
 import org.joda.time.format._
 
-trait TimeComparisonSpecs[M[+_]] extends Specification
+trait TimeComparisonSpecs[M[+_]]
+    extends Specification
     with EvaluatorTestSupport[M]
     with LongIdMemoryDatasetConsumer[M] { self =>
-      
+
   import Function._
-  
+
   import dag._
   import instructions._
   import library._
@@ -45,38 +46,43 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
   val line = Line(1, 1, "")
 
   def parseDateTime(time: String, fmt: String) = {
-    Join(BuiltInFunction2Op(ParseDateTime), Cross(None),
+    Join(
+      BuiltInFunction2Op(ParseDateTime),
+      Cross(None),
       Const(CString(time))(line),
       Const(CString(fmt))(line))(line)
   }
 
   def parseDateTimeFuzzy(time: String) =
-    Operate(BuiltInFunction1Op(ParseDateTimeFuzzy), Const(CString(time))(line))(line)
+    Operate(BuiltInFunction1Op(ParseDateTimeFuzzy), Const(CString(time))(line))(
+      line)
 
   def doNotParse(time: String) = Const(CString(time))(line)
 
   def basicComparison(input: DepGraph, expected: Boolean) = {
     val result = testEval(input)
-    
+
     result must haveSize(1)
-    
+
     result must haveAllElementsLike {
       case (ids, SBoolean(d)) =>
         ids must haveSize(0)
-        d mustEqual(expected)
+        d mustEqual (expected)
     }
   }
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
-      case Failure(error) => throw error
+      case Failure(error)   => throw error
     }
   }
 
   "comparison of two DateTimes of value provenance" should {
     "compute lt resulting in false" in {
-      val input = Join(Lt, Cross(None),
+      val input = Join(
+        Lt,
+        Cross(None),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"),
         parseDateTime("Jul 8, 1999 3:19:33 PM", "MMM d, yyyy h:mm:ss a"))(line)
 
@@ -84,7 +90,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute lt resulting in true" in {
-      val input = Join(Lt, Cross(None),
+      val input = Join(
+        Lt,
+        Cross(None),
         parseDateTimeFuzzy("2010-06-03T04:12:33.323Z"),
         parseDateTimeFuzzy("2011-06-03T04:12:33.323Z"))(line)
 
@@ -92,7 +100,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute gt resulting in false" in {
-      val input = Join(Gt, Cross(None),
+      val input = Join(
+        Gt,
+        Cross(None),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"))(line)
 
@@ -100,7 +110,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute gt resulting in true" in {
-      val input = Join(Gt, Cross(None),
+      val input = Join(
+        Gt,
+        Cross(None),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"),
         parseDateTime("Jul 8, 1999 3:19:33 PM", "MMM d, yyyy h:mm:ss a"))(line)
 
@@ -108,7 +120,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute lteq resulting in false" in {
-      val input = Join(LtEq, Cross(None),
+      val input = Join(
+        LtEq,
+        Cross(None),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"),
         parseDateTime("Jul 8, 1999 3:19:33 PM", "MMM d, yyyy h:mm:ss a"))(line)
 
@@ -116,7 +130,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute lteq resulting in true" in {
-      val input = Join(LtEq, Cross(None),
+      val input = Join(
+        LtEq,
+        Cross(None),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"))(line)
 
@@ -124,7 +140,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute gteq resulting in false" in {
-      val input = Join(GtEq, Cross(None),
+      val input = Join(
+        GtEq,
+        Cross(None),
         parseDateTime("Jul 8, 1999 3:19:33 PM", "MMM d, yyyy h:mm:ss a"),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"))(line)
 
@@ -132,7 +150,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute gteq resulting in true" in {
-      val input = Join(GtEq, Cross(None),
+      val input = Join(
+        GtEq,
+        Cross(None),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"))(line)
 
@@ -140,7 +160,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute eq resulting in false" in {
-      val input = Join(Eq, Cross(None),
+      val input = Join(
+        Eq,
+        Cross(None),
         parseDateTime("Jul 8, 1999 3:19:33 PM", "MMM d, yyyy h:mm:ss a"),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"))(line)
 
@@ -148,7 +170,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute eq resulting in true" in {
-      val input = Join(Eq, Cross(None),
+      val input = Join(
+        Eq,
+        Cross(None),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"))(line)
 
@@ -156,7 +180,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute eq given equal times in different timezones" in {
-      val input = Join(Eq, Cross(None),
+      val input = Join(
+        Eq,
+        Cross(None),
         parseDateTimeFuzzy("2011-06-03T04:12:33.323+02:00"),
         parseDateTimeFuzzy("2011-06-03T02:12:33.323Z"))(line)
 
@@ -164,7 +190,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute eq given times `equivalent` except for timezones" in {
-      val input = Join(Eq, Cross(None),
+      val input = Join(
+        Eq,
+        Cross(None),
         parseDateTimeFuzzy("2011-06-03T04:12:33.323+02:00"),
         parseDateTimeFuzzy("2011-06-03T04:12:33.323Z"))(line)
 
@@ -172,7 +200,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute noteq resulting in false" in {
-      val input = Join(NotEq, Cross(None),
+      val input = Join(
+        NotEq,
+        Cross(None),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"))(line)
 
@@ -180,7 +210,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "compute noteq resulting in true" in {
-      val input = Join(NotEq, Cross(None),
+      val input = Join(
+        NotEq,
+        Cross(None),
         parseDateTime("Jul 8, 1999 3:19:33 PM", "MMM d, yyyy h:mm:ss a"),
         parseDateTime("Jun 3, 2020 3:12:33 AM", "MMM d, yyyy h:mm:ss a"))(line)
 
@@ -192,7 +224,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     "produce correct results using lt" in {
       DateTimeZone.setDefault(DateTimeZone.UTC)
 
-      val input = Join(Lt, Cross(None),
+      val input = Join(
+        Lt,
+        Cross(None),
         Const(CDate(new DateTime("2010-09-23T18:33:22.520")))(line),
         Const(CDate(new DateTime("2011-09-23T18:33:22.520")))(line))(line)
 
@@ -202,22 +236,24 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
 
   def extremeComparison(input: DepGraph, expected: String) = {
     val result = testEval(input)
-    
+
     result must haveSize(1)
-    
+
     result must haveAllElementsLike {
       case (ids, SString(str)) =>
         ids must haveSize(0)
-        str mustEqual(expected)
+        str mustEqual (expected)
     }
   }
 
   "comparision of two DateTimes with minTime" should {
     val smallTime = "2010-09-23T18:33:22.520-10:00"
-    val bigTime =   "2011-09-23T18:33:22.520-10:00"
+    val bigTime = "2011-09-23T18:33:22.520-10:00"
 
     "produce correct results when lhs is smaller" in {
-      val input = Join(BuiltInFunction2Op(MinTimeOf), Cross(None),
+      val input = Join(
+        BuiltInFunction2Op(MinTimeOf),
+        Cross(None),
         parseDateTimeFuzzy(smallTime),
         parseDateTimeFuzzy(bigTime))(line)
 
@@ -225,7 +261,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "produce correct results when rhs is smaller" in {
-      val input = Join(BuiltInFunction2Op(MinTimeOf), Cross(None),
+      val input = Join(
+        BuiltInFunction2Op(MinTimeOf),
+        Cross(None),
         parseDateTimeFuzzy(bigTime),
         parseDateTimeFuzzy(smallTime))(line)
 
@@ -233,7 +271,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "produce correct results when times are equal" in {
-      val input = Join(BuiltInFunction2Op(MinTimeOf), Cross(None),
+      val input = Join(
+        BuiltInFunction2Op(MinTimeOf),
+        Cross(None),
         parseDateTimeFuzzy(bigTime),
         parseDateTimeFuzzy(bigTime))(line)
 
@@ -243,10 +283,12 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
 
   "comparision of two DateTimes with maxTime" should {
     val smallTime = "2010-09-23T18:33:22.520-10:00"
-    val bigTime =   "2011-09-23T18:33:22.520-10:00"
+    val bigTime = "2011-09-23T18:33:22.520-10:00"
 
     "produce correct results when lhs is larger" in {
-      val input = Join(BuiltInFunction2Op(MaxTimeOf), Cross(None),
+      val input = Join(
+        BuiltInFunction2Op(MaxTimeOf),
+        Cross(None),
         parseDateTimeFuzzy(bigTime),
         parseDateTimeFuzzy(smallTime))(line)
 
@@ -254,7 +296,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "produce correct results when rhs is larger" in {
-      val input = Join(BuiltInFunction2Op(MaxTimeOf), Cross(None),
+      val input = Join(
+        BuiltInFunction2Op(MaxTimeOf),
+        Cross(None),
         parseDateTimeFuzzy(smallTime),
         parseDateTimeFuzzy(bigTime))(line)
 
@@ -262,7 +306,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "produce correct results when times are equal" in {
-      val input = Join(BuiltInFunction2Op(MaxTimeOf), Cross(None),
+      val input = Join(
+        BuiltInFunction2Op(MaxTimeOf),
+        Cross(None),
         parseDateTimeFuzzy(bigTime),
         parseDateTimeFuzzy(bigTime))(line)
 
@@ -272,10 +318,12 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
 
   "comparision of two DateTimes when timezones are different" should {
     val smallTime = "2011-09-23T18:33:22.520-07:00"
-    val bigTime =   "2011-09-23T18:33:22.520-10:00"
+    val bigTime = "2011-09-23T18:33:22.520-10:00"
 
     "for maxTime, both parsed" in {
-      val input = Join(BuiltInFunction2Op(MaxTimeOf), Cross(None),
+      val input = Join(
+        BuiltInFunction2Op(MaxTimeOf),
+        Cross(None),
         parseDateTimeFuzzy(bigTime),
         parseDateTimeFuzzy(smallTime))(line)
 
@@ -283,7 +331,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "for maxTime, big parsed" in {
-      val input = Join(BuiltInFunction2Op(MaxTimeOf), Cross(None),
+      val input = Join(
+        BuiltInFunction2Op(MaxTimeOf),
+        Cross(None),
         parseDateTimeFuzzy(smallTime),
         doNotParse(bigTime))(line)
 
@@ -291,7 +341,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "for minTime, small parsed" in {
-      val input = Join(BuiltInFunction2Op(MinTimeOf), Cross(None),
+      val input = Join(
+        BuiltInFunction2Op(MinTimeOf),
+        Cross(None),
         doNotParse(bigTime),
         parseDateTimeFuzzy(smallTime))(line)
 
@@ -299,7 +351,9 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
     }
 
     "for minTime, neither parsed" in {
-      val input = Join(BuiltInFunction2Op(MinTimeOf), Cross(None),
+      val input = Join(
+        BuiltInFunction2Op(MinTimeOf),
+        Cross(None),
         doNotParse(smallTime),
         doNotParse(bigTime))(line)
 
@@ -308,4 +362,6 @@ trait TimeComparisonSpecs[M[+_]] extends Specification
   }
 }
 
-object TimeComparisonSpecs extends TimeComparisonSpecs[test.YId] with test.YIdInstances
+object TimeComparisonSpecs
+    extends TimeComparisonSpecs[test.YId]
+    with test.YIdInstances

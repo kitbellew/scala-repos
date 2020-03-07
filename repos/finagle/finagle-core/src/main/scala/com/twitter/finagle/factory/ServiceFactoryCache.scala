@@ -2,18 +2,33 @@ package com.twitter.finagle.factory
 
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import java.util.concurrent.atomic.AtomicInteger
-import com.twitter.finagle.{Status, Service, ServiceFactory, ClientConnection, ServiceProxy, ServiceFactoryProxy}
-import com.twitter.util.{Closable, Future, Stopwatch, Throw, Return, Time, Duration}
+import com.twitter.finagle.{
+  Status,
+  Service,
+  ServiceFactory,
+  ClientConnection,
+  ServiceProxy,
+  ServiceFactoryProxy
+}
+import com.twitter.util.{
+  Closable,
+  Future,
+  Stopwatch,
+  Throw,
+  Return,
+  Time,
+  Duration
+}
 import com.twitter.finagle.stats.{StatsReceiver, NullStatsReceiver}
 import com.twitter.finagle.tracing.Trace
 import scala.collection.immutable
 
 /**
- * A service factory that keeps track of idling times to implement
- * cache eviction.
- */
+  * A service factory that keeps track of idling times to implement
+  * cache eviction.
+  */
 private class IdlingFactory[Req, Rep](self: ServiceFactory[Req, Rep])
-  extends ServiceFactoryProxy[Req, Rep](self) {
+    extends ServiceFactoryProxy[Req, Rep](self) {
   @volatile private[this] var watch = Stopwatch.start()
   private[this] val n = new AtomicInteger(0)
 
@@ -41,28 +56,28 @@ private class IdlingFactory[Req, Rep](self: ServiceFactory[Req, Rep])
   }
 
   /**
-   * Returns the duration of time for which this factory has been
-   * idle--i.e. has no outstanding services.
-   *
-   * @bug There is a small race here between checking n.get and
-   * reading from the watch. (I.e. the factory can become nonidle
-   * between the checks). This is fine.
-   */
+    * Returns the duration of time for which this factory has been
+    * idle--i.e. has no outstanding services.
+    *
+    * @bug There is a small race here between checking n.get and
+    * reading from the watch. (I.e. the factory can become nonidle
+    * between the checks). This is fine.
+    */
   def idleFor = if (n.get > 0) Duration.Zero else watch()
 }
 
 /**
- * A "read-through" cache of service factories. Eviction is based on
- * idle time -- when no underlying factories are idle, one-shot
- * factories are created. This doesn't necessarily guarantee good
- * performance: one-shots could be created constantly for a hot cache
- * key, but should work well when there are a few hot keys.
- */
+  * A "read-through" cache of service factories. Eviction is based on
+  * idle time -- when no underlying factories are idle, one-shot
+  * factories are created. This doesn't necessarily guarantee good
+  * performance: one-shots could be created constantly for a hot cache
+  * key, but should work well when there are a few hot keys.
+  */
 private[finagle] class ServiceFactoryCache[Key, Req, Rep](
     newFactory: Key => ServiceFactory[Req, Rep],
     statsReceiver: StatsReceiver = NullStatsReceiver,
     maxCacheSize: Int = 8)
-  extends Closable {
+    extends Closable {
   assert(maxCacheSize > 0)
 
   @volatile private[this] var cache =
@@ -100,7 +115,9 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
     miss(key, conn)
   }
 
-  private[this] def miss(key: Key, conn: ClientConnection): Future[Service[Req, Rep]] = {
+  private[this] def miss(
+      key: Key,
+      conn: ClientConnection): Future[Service[Req, Rep]] = {
     writeLock.lock()
 
     if (cache contains key) {
@@ -113,51 +130,57 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
       }
     }
 
-    val svc = try {
-      nmiss.incr()
+    val svc =
+      try {
+        nmiss.incr()
 
-      val factory = new IdlingFactory(newFactory(key))
+        val factory = new IdlingFactory(newFactory(key))
 
-      if (cache.size < maxCacheSize) {
-        cache += (key -> factory)
-        cache(key).apply(conn)
-      } else {
-        findEvictee() match {
-          case Some(evicted) =>
-            nevict.incr()
-            cache(evicted).close()
-            cache = cache - evicted + (key -> factory)
-            cache(key).apply(conn)
-          case None =>
-            noneshot.incr()
-            oneshot(factory, conn)
+        if (cache.size < maxCacheSize) {
+          cache += (key -> factory)
+          cache(key).apply(conn)
+        } else {
+          findEvictee() match {
+            case Some(evicted) =>
+              nevict.incr()
+              cache(evicted).close()
+              cache = cache - evicted + (key -> factory)
+              cache(key).apply(conn)
+            case None =>
+              noneshot.incr()
+              oneshot(factory, conn)
+          }
         }
+      } finally {
+        writeLock.unlock()
       }
-    } finally {
-      writeLock.unlock()
-    }
 
     svc
   }
 
-  private[this] def oneshot(factory: ServiceFactory[Req, Rep], conn: ClientConnection)
-  : Future[Service[Req, Rep]] =
+  private[this] def oneshot(
+      factory: ServiceFactory[Req, Rep],
+      conn: ClientConnection): Future[Service[Req, Rep]] =
     factory(conn) map { service =>
       new ServiceProxy(service) {
         override def close(deadline: Time) =
-          super.close(deadline) transform { case _ =>
-            factory.close(deadline)
+          super.close(deadline) transform {
+            case _ =>
+              factory.close(deadline)
           }
       }
     }
 
   private[this] def findEvictee(): Option[Key] = {
-    val (evictNamer, evictFactory) = cache maxBy { case (_, fac) => fac.idleFor }
+    val (evictNamer, evictFactory) = cache maxBy {
+      case (_, fac) => fac.idleFor
+    }
     if (evictFactory.idleFor > Duration.Zero) Some(evictNamer)
     else None
   }
 
-  def close(deadline: Time) = Closable.all(cache.values.toSeq:_*).close(deadline)
+  def close(deadline: Time) =
+    Closable.all(cache.values.toSeq: _*).close(deadline)
   def status = Status.bestOf[IdlingFactory[Req, Rep]](cache.values, _.status)
 
   def status(key: Key): Status = {

@@ -51,11 +51,11 @@ class SplitInfo(
   override def equals(other: Any): Boolean = other match {
     case that: SplitInfo => {
       this.hostLocation == that.hostLocation &&
-        this.inputFormatClazz == that.inputFormatClazz &&
-        this.path == that.path &&
-        this.length == that.length &&
-        // other split specific checks (like start for FileSplit)
-        this.underlyingSplit == that.underlyingSplit
+      this.inputFormatClazz == that.inputFormatClazz &&
+      this.path == that.path &&
+      this.length == that.length &&
+      // other split specific checks (like start for FileSplit)
+      this.underlyingSplit == that.underlyingSplit
     }
     case _ => false
   }
@@ -63,8 +63,10 @@ class SplitInfo(
 
 object SplitInfo {
 
-  def toSplitInfo(inputFormatClazz: Class[_], path: String,
-                  mapredSplit: org.apache.hadoop.mapred.InputSplit): Seq[SplitInfo] = {
+  def toSplitInfo(
+      inputFormatClazz: Class[_],
+      path: String,
+      mapredSplit: org.apache.hadoop.mapred.InputSplit): Seq[SplitInfo] = {
     val retval = new ArrayBuffer[SplitInfo]()
     val length = mapredSplit.getLength
     for (host <- mapredSplit.getLocations) {
@@ -73,12 +75,20 @@ object SplitInfo {
     retval
   }
 
-  def toSplitInfo(inputFormatClazz: Class[_], path: String,
-                  mapreduceSplit: org.apache.hadoop.mapreduce.InputSplit): Seq[SplitInfo] = {
+  def toSplitInfo(
+      inputFormatClazz: Class[_],
+      path: String,
+      mapreduceSplit: org.apache.hadoop.mapreduce.InputSplit)
+      : Seq[SplitInfo] = {
     val retval = new ArrayBuffer[SplitInfo]()
     val length = mapreduceSplit.getLength
     for (host <- mapreduceSplit.getLocations) {
-      retval += new SplitInfo(inputFormatClazz, host, path, length, mapreduceSplit)
+      retval += new SplitInfo(
+        inputFormatClazz,
+        host,
+        path,
+        length,
+        mapreduceSplit)
     }
     retval
   }

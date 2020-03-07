@@ -10,31 +10,31 @@ import java.util.ArrayList
 import org.apache.thrift.protocol.TProtocolFactory
 
 /**
- * TTwitterFilter implements the upnegotiated TTwitter transport, which
- * has some additional features beyond TFramed:
- *
- * - Dapper-style RPC tracing
- * - Passing client IDs
- * - Request contexts
- * - Name delegation
- *
- * @param isUpgraded Whether this connection is with a server that
- * has been upgraded to TTwitter
- */
+  * TTwitterFilter implements the upnegotiated TTwitter transport, which
+  * has some additional features beyond TFramed:
+  *
+  * - Dapper-style RPC tracing
+  * - Passing client IDs
+  * - Request contexts
+  * - Name delegation
+  *
+  * @param isUpgraded Whether this connection is with a server that
+  * has been upgraded to TTwitter
+  */
 private[thrift] class TTwitterClientFilter(
     serviceName: String,
     isUpgraded: Boolean,
     clientId: Option[ClientId],
     protocolFactory: TProtocolFactory)
-  extends SimpleFilter[ThriftClientRequest, Array[Byte]]
-{
+    extends SimpleFilter[ThriftClientRequest, Array[Byte]] {
   private[this] val clientIdBuf = clientId map { id => Buf.Utf8(id.name) }
 
   /**
-   * Produces an upgraded TTwitter ThriftClientRequest based on Trace,
-   * ClientId, and Dtab state.
-   */
-  private[this] def mkTTwitterRequest(baseRequest: ThriftClientRequest): ThriftClientRequest = {
+    * Produces an upgraded TTwitter ThriftClientRequest based on Trace,
+    * ClientId, and Dtab state.
+    */
+  private[this] def mkTTwitterRequest(
+      baseRequest: ThriftClientRequest): ThriftClientRequest = {
     val header = new thrift.RequestHeader
 
     clientId match {
@@ -51,7 +51,7 @@ private[thrift] class TTwitterClientFilter(
 
     traceId.sampled match {
       case Some(s) => header.setSampled(s)
-      case None => header.unsetSampled()
+      case None    => header.unsetSampled()
     }
 
     val contexts = Contexts.broadcast.marshal().iterator
@@ -67,7 +67,8 @@ private[thrift] class TTwitterClientFilter(
         // some reason, a pass-through context would be used instead.
         if (k != ClientId.clientIdCtx.marshalId) {
           val c = new thrift.RequestContext(
-            Buf.ByteBuffer.Owned.extract(k), Buf.ByteBuffer.Owned.extract(buf))
+            Buf.ByteBuffer.Owned.extract(k),
+            Buf.ByteBuffer.Owned.extract(buf))
           ctxs.add(c)
         }
       }
@@ -102,11 +103,13 @@ private[thrift] class TTwitterClientFilter(
     )
   }
 
-  def apply(request: ThriftClientRequest,
-    service: Service[ThriftClientRequest, Array[Byte]]
-  ): Future[Array[Byte]] = {
+  def apply(
+      request: ThriftClientRequest,
+      service: Service[ThriftClientRequest, Array[Byte]])
+      : Future[Array[Byte]] = {
     // Create a new span identifier for this request.
-    val msg = new InputBuffer(request.message, protocolFactory)().readMessageBegin()
+    val msg =
+      new InputBuffer(request.message, protocolFactory)().readMessageBegin()
     Trace.recordRpc(msg.name)
 
     val thriftRequest =
@@ -124,11 +127,13 @@ private[thrift] class TTwitterClientFilter(
       reply map { response =>
         if (isUpgraded) {
           // Peel off the ResponseHeader.
-          InputBuffer.peelMessage(response, new thrift.ResponseHeader, protocolFactory)
+          InputBuffer.peelMessage(
+            response,
+            new thrift.ResponseHeader,
+            protocolFactory)
         } else
           response
       }
     }
   }
 }
-

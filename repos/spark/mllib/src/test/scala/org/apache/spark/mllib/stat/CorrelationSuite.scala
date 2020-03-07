@@ -22,11 +22,17 @@ import breeze.linalg.{DenseMatrix => BDM, Matrix => BM}
 import org.apache.spark.SparkFunSuite
 import org.apache.spark.internal.Logging
 import org.apache.spark.mllib.linalg.Vectors
-import org.apache.spark.mllib.stat.correlation.{Correlations, PearsonCorrelation,
-  SpearmanCorrelation}
+import org.apache.spark.mllib.stat.correlation.{
+  Correlations,
+  PearsonCorrelation,
+  SpearmanCorrelation
+}
 import org.apache.spark.mllib.util.MLlibTestSparkContext
 
-class CorrelationSuite extends SparkFunSuite with MLlibTestSparkContext with Logging {
+class CorrelationSuite
+    extends SparkFunSuite
+    with MLlibTestSparkContext
+    with Logging {
 
   // test input data
   val xData = Array(1.0, 0.0, -2.0)
@@ -101,7 +107,8 @@ class CorrelationSuite extends SparkFunSuite with MLlibTestSparkContext with Log
       (1.00000000, 0.05564149, Double.NaN, 0.4004714),
       (0.05564149, 1.00000000, Double.NaN, 0.9135959),
       (Double.NaN, Double.NaN, 1.00000000, Double.NaN),
-      (0.40047142, 0.91359586, Double.NaN, 1.0000000))
+      (0.40047142, 0.91359586, Double.NaN, 1.0000000)
+    )
     // scalastyle:on
     assert(matrixApproxEqual(defaultMat.toBreeze, expected))
     assert(matrixApproxEqual(pearsonMat.toBreeze, expected))
@@ -112,10 +119,11 @@ class CorrelationSuite extends SparkFunSuite with MLlibTestSparkContext with Log
     val spearmanMat = Statistics.corr(X, "spearman")
     // scalastyle:off
     val expected = BDM(
-      (1.0000000,  0.1054093,  Double.NaN, 0.4000000),
-      (0.1054093,  1.0000000,  Double.NaN, 0.9486833),
+      (1.0000000, 0.1054093, Double.NaN, 0.4000000),
+      (0.1054093, 1.0000000, Double.NaN, 0.9486833),
       (Double.NaN, Double.NaN, 1.00000000, Double.NaN),
-      (0.4000000,  0.9486833,  Double.NaN, 1.0000000))
+      (0.4000000, 0.9486833, Double.NaN, 1.0000000)
+    )
     // scalastyle:on
     assert(matrixApproxEqual(spearmanMat.toBreeze, expected))
   }
@@ -144,10 +152,16 @@ class CorrelationSuite extends SparkFunSuite with MLlibTestSparkContext with Log
     }
   }
 
-  def matrixApproxEqual(A: BM[Double], B: BM[Double], threshold: Double = 1e-6): Boolean = {
+  def matrixApproxEqual(
+      A: BM[Double],
+      B: BM[Double],
+      threshold: Double = 1e-6): Boolean = {
     for (i <- 0 until A.rows; j <- 0 until A.cols) {
       if (!approxEqual(A(i, j), B(i, j), threshold)) {
-        logInfo("i, j = " + i + ", " + j + " actual: " + A(i, j) + " expected:" + B(i, j))
+        logInfo(
+          "i, j = " + i + ", " + j + " actual: " + A(i, j) + " expected:" + B(
+            i,
+            j))
         return false
       }
     }

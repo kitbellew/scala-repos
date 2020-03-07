@@ -9,7 +9,7 @@ object Interpreter {
           n match { case _ => return }
       }
     } catch { case e: Throwable => }
-    finally { }
+    finally {}
 }
 
 object Test extends App {

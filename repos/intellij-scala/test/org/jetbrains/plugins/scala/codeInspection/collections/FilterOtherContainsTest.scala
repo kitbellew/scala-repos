@@ -3,12 +3,14 @@ package org.jetbrains.plugins.scala.codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class FilterOtherContainsTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[FilterOtherContainsInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[FilterOtherContainsInspection]
 
-  override def hint: String = InspectionBundle.message("replace.filter.with.intersect")
+  override def hint: String =
+    InspectionBundle.message("replace.filter.with.intersect")
 
   def testFunExpr(): Unit = {
     doTest(
@@ -72,9 +74,11 @@ class FilterOtherContainsTest extends OperationsOnCollectionInspectionTest {
 }
 
 class FilterOtherNotContainsTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[FilterOtherContainsInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[FilterOtherContainsInspection]
 
-  override def hint: String = InspectionBundle.message("replace.filter.with.diff")
+  override def hint: String =
+    InspectionBundle.message("replace.filter.with.diff")
 
   def testFunExpr(): Unit = {
     doTest(
@@ -109,11 +113,13 @@ class FilterOtherNotContainsTest extends OperationsOnCollectionInspectionTest {
   }
 
   def testNotASet1(): Unit = {
-    checkTextHasNoErrors("val others = Set(1,2); Seq().filterNot(others.contains)")
+    checkTextHasNoErrors(
+      "val others = Set(1,2); Seq().filterNot(others.contains)")
   }
 
   def testNotASet2(): Unit = {
-    checkTextHasNoErrors("val others = Seq(1,2); Set().filter(x => !others.contains(x))")
+    checkTextHasNoErrors(
+      "val others = Seq(1,2); Set().filter(x => !others.contains(x))")
   }
 
   def testInnerSetDependsOnElement(): Unit = {

@@ -30,7 +30,8 @@ object QuickLinker {
   }
 
   /** Link a Scala.js application on Node.js */
-  def linkNodeInternal(semantics: Semantics,
+  def linkNodeInternal(
+      semantics: Semantics,
       irFilesAndJars: Seq[String]): String = {
     val cache = (new IRFileCache).newCache
     val linker = Linker(semantics)

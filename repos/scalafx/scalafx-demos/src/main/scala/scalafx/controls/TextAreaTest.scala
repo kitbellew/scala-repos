@@ -32,7 +32,11 @@ import javafx.beans.value.{ChangeListener, ObservableValue}
 import scalafx.Includes.{observableList2ObservableBuffer, _}
 import scalafx.application.JFXApp
 import scalafx.collections.ObservableBuffer
-import scalafx.controls.controls.{ControlControls, PropertiesNodes, TextInputControlControls}
+import scalafx.controls.controls.{
+  ControlControls,
+  PropertiesNodes,
+  TextInputControlControls
+}
 import scalafx.geometry.Pos
 import scalafx.scene.Scene
 import scalafx.scene.control.{CheckBox, ChoiceBox, Label, TextArea}
@@ -63,7 +67,10 @@ object TextAreaTest extends JFXApp {
     alignment = Pos.Center
     prefHeight <== stage.scene().height
     hgrow = Priority.Never
-    children = List(new TextAreaControls(textArea), new TextInputControlControls(textArea), new ControlControls(textArea))
+    children = List(
+      new TextAreaControls(textArea),
+      new TextInputControlControls(textArea),
+      new ControlControls(textArea))
   }
 
   lazy val mainPane = new BorderPane {
@@ -75,49 +82,67 @@ object TextAreaTest extends JFXApp {
 
 }
 
-class TextAreaControls(target: TextArea) extends PropertiesNodes[TextArea](target, "TextArea Properties") {
+class TextAreaControls(target: TextArea)
+    extends PropertiesNodes[TextArea](target, "TextArea Properties") {
   // TODO: ChoiceBoxes are not really working. In JavaFX 2.1, bind their respective values with TextArea properties.
 
   val chbPrefColumnCount = new ChoiceBox[Int] {
     items = ObservableBuffer[Int](0, 5, 10, 15, 20, 25, 30)
   }
   // In JAvaFX 2.1, bind TextArea.prefColumnCount with value
-  chbPrefColumnCount.delegate.selectionModelProperty.addListener(new ChangeListener[Any] {
-    def changed(observable: ObservableValue[_], oldValue: Any, newValue: Any) {
-      target.prefColumnCount = newValue.toString.toInt
-    }
-  })
+  chbPrefColumnCount.delegate.selectionModelProperty
+    .addListener(new ChangeListener[Any] {
+      def changed(
+          observable: ObservableValue[_],
+          oldValue: Any,
+          newValue: Any) {
+        target.prefColumnCount = newValue.toString.toInt
+      }
+    })
 
   val chbPrefRowCount = new ChoiceBox[Int] {
     items = ObservableBuffer[Int](0, 5, 10, 15, 20, 25, 30)
   }
   // In JAvaFX 2.1, bind TextArea.prefRowCount with value
-  chbPrefRowCount.delegate.selectionModelProperty.addListener(new ChangeListener[Any] {
-    def changed(observable: ObservableValue[_], oldValue: Any, newValue: Any) {
-      target.prefRowCount = newValue.toString.toInt
-    }
-  })
+  chbPrefRowCount.delegate.selectionModelProperty
+    .addListener(new ChangeListener[Any] {
+      def changed(
+          observable: ObservableValue[_],
+          oldValue: Any,
+          newValue: Any) {
+        target.prefRowCount = newValue.toString.toInt
+      }
+    })
 
   val chbScrollLeft = new ChoiceBox[Double] {
     items = ObservableBuffer[Double](-10, -5, 0, 5, 10, 15, 20)
   }
   //  chbScrollLeft.delegate.selectionModelProperty.set
   // In JAvaFX 2.1, bind TextArea.prefRowCount with value
-  chbPrefRowCount.delegate.selectionModelProperty.addListener(new ChangeListener[Any] {
-    def changed(observable: ObservableValue[_], oldValue: Any, newValue: Any) {
-      target.scrollLeft = chbScrollLeft.items.get().get(newValue.toString.toInt)
-    }
-  })
+  chbPrefRowCount.delegate.selectionModelProperty
+    .addListener(new ChangeListener[Any] {
+      def changed(
+          observable: ObservableValue[_],
+          oldValue: Any,
+          newValue: Any) {
+        target.scrollLeft =
+          chbScrollLeft.items.get().get(newValue.toString.toInt)
+      }
+    })
 
   val chbScrollTop = new ChoiceBox[Double] {
     items = ObservableBuffer[Double](-10, -5, 0, 5, 10, 15, 20)
   }
   // In JAvaFX 2.1, bind TextArea.prefRowCount with value
-  chbPrefRowCount.delegate.selectionModelProperty.addListener(new ChangeListener[Any] {
-    def changed(observable: ObservableValue[_], oldValue: Any, newValue: Any) {
-      target.scrollTop = chbScrollTop.items.get().get(newValue.toString.toInt)
-    }
-  })
+  chbPrefRowCount.delegate.selectionModelProperty
+    .addListener(new ChangeListener[Any] {
+      def changed(
+          observable: ObservableValue[_],
+          oldValue: Any,
+          newValue: Any) {
+        target.scrollTop = chbScrollTop.items.get().get(newValue.toString.toInt)
+      }
+    })
 
   val chbWrap = new CheckBox {
     selected <==> target.wrapText
@@ -125,7 +150,8 @@ class TextAreaControls(target: TextArea) extends PropertiesNodes[TextArea](targe
 
   // TODO: Add a label indicating number of Paragraphs
   val lblParagraphs = new Label
-  target.paragraphs.onChange(lblParagraphs.text = target.paragraphs.size.toString)
+  target.paragraphs
+    .onChange(lblParagraphs.text = target.paragraphs.size.toString)
 
   super.addNode("Wrapped", chbWrap)
   super.addNode("Pref Column Count", chbPrefColumnCount)

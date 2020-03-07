@@ -32,7 +32,12 @@ import javafx.collections.ObservableList
 import javafx.{collections => jfxc}
 
 import scala.collection.JavaConversions._
-import scala.collection.generic.{CanBuildFrom, GenericCompanion, GenericTraversableTemplate, SeqFactory}
+import scala.collection.generic.{
+  CanBuildFrom,
+  GenericCompanion,
+  GenericTraversableTemplate,
+  SeqFactory
+}
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.{GenTraversableOnce, TraversableOnce, mutable}
 import scala.language.implicitConversions
@@ -55,19 +60,23 @@ object ObservableBuffer extends SeqFactory[ObservableBuffer] {
     *
     * @param ob ObservableBuffer
     */
-  implicit def observableBuffer2ObservableList[T](ob: ObservableBuffer[T]): ObservableList[T] = if (ob != null) ob.delegate else null
+  implicit def observableBuffer2ObservableList[T](
+      ob: ObservableBuffer[T]): ObservableList[T] =
+    if (ob != null) ob.delegate else null
 
   /**
     * The standard `CanBuildFrom` instance for $OB objects.
     */
-  implicit def canBuildFrom[T]: CanBuildFrom[Coll, T, ObservableBuffer[T]] = new GenericCanBuildFrom[T] {
-    override def apply() = newBuilder[T]
-  }
+  implicit def canBuildFrom[T]: CanBuildFrom[Coll, T, ObservableBuffer[T]] =
+    new GenericCanBuildFrom[T] {
+      override def apply() = newBuilder[T]
+    }
 
   /**
     * The default builder for $OB objects.
     */
-  def newBuilder[T]: mutable.Builder[T, ObservableBuffer[T]] = new ObservableBuffer
+  def newBuilder[T]: mutable.Builder[T, ObservableBuffer[T]] =
+    new ObservableBuffer
 
   // CHANGING INDICATORS - BEGIN
 
@@ -129,7 +138,8 @@ object ObservableBuffer extends SeqFactory[ObservableBuffer] {
     * @see [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/ListChangeListener.Change.html#getTo() `ListChangeListener.Change.getTo()`]]
     * @see [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/ListChangeListener.Change.html#getPermutation(int) `ListChangeListener.Change.getPermutation(int)`]]
     */
-  case class Reorder[T](start: Int, end: Int, permutation: (Int => Int)) extends Change[T]
+  case class Reorder[T](start: Int, end: Int, permutation: (Int => Int))
+      extends Change[T]
 
   /**
     * Indicates an Update in an $OB.
@@ -141,7 +151,6 @@ object ObservableBuffer extends SeqFactory[ObservableBuffer] {
     * @see [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/ListChangeListener.Change.html#getTo() `ListChangeListener.Change.getTo()`]]
     */
   case class Update[T](from: Int, to: Int) extends Change[T]
-
 
   // CHANGING INDICATORS - END
 
@@ -185,7 +194,8 @@ object ObservableBuffer extends SeqFactory[ObservableBuffer] {
     * @param buffers $buf to concatenate
     */
   def concat[T](buffers: ObservableBuffer[T]*): ObservableBuffer[T] = {
-    val lists: java.util.List[jfxc.ObservableList[T]] = new java.util.ArrayList[jfxc.ObservableList[T]]
+    val lists: java.util.List[jfxc.ObservableList[T]] =
+      new java.util.ArrayList[jfxc.ObservableList[T]]
     buffers.foreach(buf => lists.add(buf.delegate))
 
     ObservableBuffer[T](jfxc.FXCollections.concat(lists: _*))
@@ -244,13 +254,15 @@ object ObservableBuffer extends SeqFactory[ObservableBuffer] {
   * @define noCL The new $OB won't have Change and Invalidation Listeners from original $buf.
   *
   */
-class ObservableBuffer[T](override val delegate: jfxc.ObservableList[T] = jfxc.FXCollections.observableArrayList[T])
-  extends mutable.Buffer[T]
+class ObservableBuffer[T](
+    override val delegate: jfxc.ObservableList[T] =
+      jfxc.FXCollections.observableArrayList[T])
+    extends mutable.Buffer[T]
     with mutable.BufferLike[T, ObservableBuffer[T]]
-  with GenericTraversableTemplate[T, ObservableBuffer]
+    with GenericTraversableTemplate[T, ObservableBuffer]
     with mutable.Builder[T, ObservableBuffer[T]]
-  with Observable
-  with SFXDelegate[jfxc.ObservableList[T]] {
+    with Observable
+    with SFXDelegate[jfxc.ObservableList[T]] {
 
   /**
     * The factory companion object that builds instances of class $OB.
@@ -515,7 +527,8 @@ class ObservableBuffer[T](override val delegate: jfxc.ObservableList[T] = jfxc.F
     * @param newVal The replacement
     * @return `true` if the list was modified
     */
-  def replaceAll(oldVal: T, newVal: T): Boolean = jfxc.FXCollections.replaceAll(this.delegate, oldVal, newVal)
+  def replaceAll(oldVal: T, newVal: T): Boolean =
+    jfxc.FXCollections.replaceAll(this.delegate, oldVal, newVal)
 
   /**
     * Sorts this $OB if its type implements ''natural ordering''. This type must be a
@@ -526,12 +539,16 @@ class ObservableBuffer[T](override val delegate: jfxc.ObservableList[T] = jfxc.F
     */
   def sort()(implicit typeTag: WeakTypeTag[T]) {
     if (typeTag.tpe <:< typeOf[Comparable[_]]) {
-      jfxc.FXCollections.sort(delegate, new ju.Comparator[T] {
-        def compare(p1: T, p2: T) = p1.asInstanceOf[Comparable[T]].compareTo(p2)
-      })
+      jfxc.FXCollections.sort(
+        delegate,
+        new ju.Comparator[T] {
+          def compare(p1: T, p2: T) =
+            p1.asInstanceOf[Comparable[T]].compareTo(p2)
+        })
     } else {
-      throw new IllegalStateException("Type of this Observable List does not implement " +
-        "java.util.Comparable. Please use a Comparator function.")
+      throw new IllegalStateException(
+        "Type of this Observable List does not implement " +
+          "java.util.Comparable. Please use a Comparator function.")
     }
   }
 
@@ -542,9 +559,12 @@ class ObservableBuffer[T](override val delegate: jfxc.ObservableList[T] = jfxc.F
     *           or `false` otherwise.
     */
   def sort(lt: (T, T) => Boolean) {
-    jfxc.FXCollections.sort(delegate, new ju.Comparator[T] {
-      def compare(p1: T, p2: T) = if (lt(p1, p2)) -1 else if (lt(p2, p1)) 1 else 0
-    })
+    jfxc.FXCollections.sort(
+      delegate,
+      new ju.Comparator[T] {
+        def compare(p1: T, p2: T) =
+          if (lt(p1, p2)) -1 else if (lt(p2, p1)) 1 else 0
+      })
   }
 
   import scalafx.collections.ObservableBuffer._
@@ -557,15 +577,14 @@ class ObservableBuffer[T](override val delegate: jfxc.ObservableList[T] = jfxc.F
     *           some change was made.
     * @return A subscription object
     */
-  def onChange[T1 >: T](op: (ObservableBuffer[T], Seq[Change[T1]]) => Unit): Subscription = {
+  def onChange[T1 >: T](
+      op: (ObservableBuffer[T], Seq[Change[T1]]) => Unit): Subscription = {
     val listener = new jfxc.ListChangeListener[T1] {
       def onChanged(c: jfxc.ListChangeListener.Change[_ <: T1]) {
         var changes = ArrayBuffer.empty[Change[T1]]
         while (c.next()) {
           if (c.wasPermutated()) {
-            changes += Reorder(c.getFrom, c.getTo, {
-              x => c.getPermutation(x)
-            })
+            changes += Reorder(c.getFrom, c.getTo, { x => c.getPermutation(x) })
           } else if (c.wasUpdated()) {
             changes += Update(c.getFrom, c.getTo)
           } else {

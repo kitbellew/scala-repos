@@ -3,14 +3,19 @@ package akka.actor
 import language.postfixOps
 
 import akka.testkit.AkkaSpec
-import akka.dispatch.{ ThreadPoolConfig }
+import akka.dispatch.{ThreadPoolConfig}
 import scala.concurrent.duration._
 
 object ConsistencySpec {
   val minThreads = 1
   val maxThreads = 2000
   val factor = 1.5d
-  val threads = ThreadPoolConfig.scaledPoolSize(minThreads, factor, maxThreads) // Make sure we have more threads than cores
+  val threads =
+    ThreadPoolConfig.scaledPoolSize(
+      minThreads,
+      factor,
+      maxThreads
+    ) // Make sure we have more threads than cores
 
   val config = s"""
       consistency-dispatcher {
@@ -23,7 +28,11 @@ object ConsistencySpec {
         }
       }
     """
-  class CacheMisaligned(var value: Long, var padding1: Long, var padding2: Long, var padding3: Int) //Vars, no final fences
+  class CacheMisaligned(
+      var value: Long,
+      var padding1: Long,
+      var padding2: Long,
+      var padding3: Int) //Vars, no final fences
 
   class ConsistencyCheckingActor extends Actor {
     var left = new CacheMisaligned(42, 0, 0, 0) //var
@@ -31,9 +40,10 @@ object ConsistencySpec {
     var lastStep = -1L
     def receive = {
       case step: Long ⇒
-
         if (lastStep != (step - 1))
-          sender() ! "Test failed: Last step %s, this step %s".format(lastStep, step)
+          sender() ! "Test failed: Last step %s, this step %s".format(
+            lastStep,
+            step)
 
         var shouldBeFortyTwo = left.value + right.value
         if (shouldBeFortyTwo != 42)
@@ -57,7 +67,8 @@ class ConsistencySpec extends AkkaSpec(ConsistencySpec.config) {
   "The Akka actor model implementation" must {
     "provide memory consistency" in {
       val noOfActors = threads + 1
-      val props = Props[ConsistencyCheckingActor].withDispatcher("consistency-dispatcher")
+      val props =
+        Props[ConsistencyCheckingActor].withDispatcher("consistency-dispatcher")
       val actors = Vector.fill(noOfActors)(system.actorOf(props))
 
       for (i ← 0L until 100000L) {

@@ -40,5 +40,7 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
   */
 @RunWith(classOf[JUnitRunner])
 class TreeTableViewSpec[T]
-  extends SimpleSFXDelegateSpec[jfxsc.TreeTableView[T], TreeTableView[T]](classOf[jfxsc.TreeTableView[T]], classOf[TreeTableView[T]])
+    extends SimpleSFXDelegateSpec[jfxsc.TreeTableView[T], TreeTableView[T]](
+      classOf[jfxsc.TreeTableView[T]],
+      classOf[TreeTableView[T]])
     with RunOnApplicationThread

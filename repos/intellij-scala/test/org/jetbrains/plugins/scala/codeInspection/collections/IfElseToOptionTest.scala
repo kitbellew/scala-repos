@@ -1,10 +1,11 @@
 package org.jetbrains.plugins.scala.codeInspection.collections
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class IfElseToOptionTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[IfElseToOptionInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[IfElseToOptionInspection]
 
   override def hint: String = "Replace with Option(x)"
 

@@ -11,8 +11,11 @@ package collection
 package mutable
 
 /** A subtrait of scala.collection.IndexedSeq which represents sequences
- *  that can be mutated.
- *
- *  @since 2.8
- */
-trait IndexedSeqOptimized[A, +Repr] extends Any with IndexedSeqLike[A, Repr] with scala.collection.IndexedSeqOptimized[A, Repr]
+  *  that can be mutated.
+  *
+  *  @since 2.8
+  */
+trait IndexedSeqOptimized[A, +Repr]
+    extends Any
+    with IndexedSeqLike[A, Repr]
+    with scala.collection.IndexedSeqOptimized[A, Repr]

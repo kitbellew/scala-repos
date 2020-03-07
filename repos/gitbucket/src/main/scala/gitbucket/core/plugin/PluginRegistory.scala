@@ -27,7 +27,8 @@ class PluginRegistry {
   private val images = mutable.Map[String, String]()
   private val renderers = mutable.Map[String, Renderer]()
   renderers ++= Seq(
-    "md" -> MarkdownRenderer, "markdown" -> MarkdownRenderer
+    "md" -> MarkdownRenderer,
+    "markdown" -> MarkdownRenderer
   )
   private val repositoryRoutings = new ListBuffer[GitRepositoryRouting]
   private val receiveHooks = new ListBuffer[ReceiveHook]
@@ -46,7 +47,7 @@ class PluginRegistry {
 
   @deprecated("Use addImage(id: String, bytes: Array[Byte]) instead", "3.4.0")
   def addImage(id: String, in: InputStream): Unit = {
-    val bytes = using(in){ in =>
+    val bytes = using(in) { in =>
       val bytes = new Array[Byte](in.available)
       in.read(bytes)
       bytes
@@ -60,7 +61,9 @@ class PluginRegistry {
     controllers += ((controller, path))
   }
 
-  @deprecated("Use addController(path: String, controller: ControllerBase) instead", "3.4.0")
+  @deprecated(
+    "Use addController(path: String, controller: ControllerBase) instead",
+    "3.4.0")
   def addController(controller: ControllerBase, path: String): Unit = {
     addController(path, controller)
   }
@@ -93,7 +96,8 @@ class PluginRegistry {
     repositoryRoutings.toSeq
   }
 
-  def getRepositoryRouting(repositoryPath: String): Option[GitRepositoryRouting] = {
+  def getRepositoryRouting(
+      repositoryPath: String): Option[GitRepositoryRouting] = {
     PluginRegistry().getRepositoryRoutings().find {
       case GitRepositoryRouting(urlPath, _, _) => {
         repositoryPath.matches("/" + urlPath + "(/.*)?")
@@ -108,22 +112,26 @@ class PluginRegistry {
   def getReceiveHooks: Seq[ReceiveHook] = receiveHooks.toSeq
 
   private case class GlobalAction(
-    method: String,
-    path: String,
-    function: (HttpServletRequest, HttpServletResponse, Context) => Any
+      method: String,
+      path: String,
+      function: (HttpServletRequest, HttpServletResponse, Context) => Any
   )
 
   private case class RepositoryAction(
-    method: String,
-    path: String,
-    function: (HttpServletRequest, HttpServletResponse, Context, RepositoryInfo) => Any
+      method: String,
+      path: String,
+      function: (
+          HttpServletRequest,
+          HttpServletResponse,
+          Context,
+          RepositoryInfo) => Any
   )
 
 }
 
 /**
- * Provides entry point to PluginRegistry.
- */
+  * Provides entry point to PluginRegistry.
+  */
 object PluginRegistry {
 
   private val logger = LoggerFactory.getLogger(classOf[PluginRegistry])
@@ -131,58 +139,81 @@ object PluginRegistry {
   private val instance = new PluginRegistry()
 
   /**
-   * Returns the PluginRegistry singleton instance.
-   */
+    * Returns the PluginRegistry singleton instance.
+    */
   def apply(): PluginRegistry = instance
 
   /**
-   * Initializes all installed plugins.
-   */
-  def initialize(context: ServletContext, settings: SystemSettings, conn: java.sql.Connection): Unit = {
+    * Initializes all installed plugins.
+    */
+  def initialize(
+      context: ServletContext,
+      settings: SystemSettings,
+      conn: java.sql.Connection): Unit = {
     val pluginDir = new File(PluginHome)
-    if(pluginDir.exists && pluginDir.isDirectory){
-      pluginDir.listFiles(new FilenameFilter {
-        override def accept(dir: File, name: String): Boolean = name.endsWith(".jar")
-      }).foreach { pluginJar =>
-        val classLoader = new URLClassLoader(Array(pluginJar.toURI.toURL), Thread.currentThread.getContextClassLoader)
-        try {
-          val plugin = classLoader.loadClass("Plugin").newInstance().asInstanceOf[Plugin]
+    if (pluginDir.exists && pluginDir.isDirectory) {
+      pluginDir
+        .listFiles(new FilenameFilter {
+          override def accept(dir: File, name: String): Boolean =
+            name.endsWith(".jar")
+        })
+        .foreach { pluginJar =>
+          val classLoader = new URLClassLoader(
+            Array(pluginJar.toURI.toURL),
+            Thread.currentThread.getContextClassLoader)
+          try {
+            val plugin =
+              classLoader.loadClass("Plugin").newInstance().asInstanceOf[Plugin]
 
-          // Migration
-          val headVersion = plugin.versions.head
-          val currentVersion = conn.find("SELECT * FROM PLUGIN WHERE PLUGIN_ID = ?", plugin.pluginId)(_.getString("VERSION")) match {
-            case Some(x) => {
-              val dim = x.split("\\.")
-              Version(dim(0).toInt, dim(1).toInt)
+            // Migration
+            val headVersion = plugin.versions.head
+            val currentVersion = conn.find(
+              "SELECT * FROM PLUGIN WHERE PLUGIN_ID = ?",
+              plugin.pluginId)(_.getString("VERSION")) match {
+              case Some(x) => {
+                val dim = x.split("\\.")
+                Version(dim(0).toInt, dim(1).toInt)
+              }
+              case None => Version(0, 0)
             }
-            case None => Version(0, 0)
-          }
 
-          Versions.update(conn, headVersion, currentVersion, plugin.versions, new URLClassLoader(Array(pluginJar.toURI.toURL))){ conn =>
-            currentVersion.versionString match {
-              case "0.0" =>
-                conn.update("INSERT INTO PLUGIN (PLUGIN_ID, VERSION) VALUES (?, ?)", plugin.pluginId, headVersion.versionString)
-              case _ =>
-                conn.update("UPDATE PLUGIN SET VERSION = ? WHERE PLUGIN_ID = ?", headVersion.versionString, plugin.pluginId)
+            Versions.update(
+              conn,
+              headVersion,
+              currentVersion,
+              plugin.versions,
+              new URLClassLoader(Array(pluginJar.toURI.toURL))) { conn =>
+              currentVersion.versionString match {
+                case "0.0" =>
+                  conn.update(
+                    "INSERT INTO PLUGIN (PLUGIN_ID, VERSION) VALUES (?, ?)",
+                    plugin.pluginId,
+                    headVersion.versionString)
+                case _ =>
+                  conn.update(
+                    "UPDATE PLUGIN SET VERSION = ? WHERE PLUGIN_ID = ?",
+                    headVersion.versionString,
+                    plugin.pluginId)
+              }
             }
-          }
 
-          // Initialize
-          plugin.initialize(instance, context, settings)
-          instance.addPlugin(PluginInfo(
-            pluginId    = plugin.pluginId,
-            pluginName  = plugin.pluginName,
-            version     = plugin.versions.head.versionString,
-            description = plugin.description,
-            pluginClass = plugin
-          ))
+            // Initialize
+            plugin.initialize(instance, context, settings)
+            instance.addPlugin(
+              PluginInfo(
+                pluginId = plugin.pluginId,
+                pluginName = plugin.pluginName,
+                version = plugin.versions.head.versionString,
+                description = plugin.description,
+                pluginClass = plugin
+              ))
 
-        } catch {
-          case e: Throwable => {
-            logger.error(s"Error during plugin initialization", e)
+          } catch {
+            case e: Throwable => {
+              logger.error(s"Error during plugin initialization", e)
+            }
           }
         }
-      }
     }
   }
 
@@ -198,13 +229,12 @@ object PluginRegistry {
     }
   }
 
-
 }
 
 case class PluginInfo(
-  pluginId: String,
-  pluginName: String,
-  version: String,
-  description: String,
-  pluginClass: Plugin
+    pluginId: String,
+    pluginName: String,
+    version: String,
+    description: String,
+    pluginClass: Plugin
 )

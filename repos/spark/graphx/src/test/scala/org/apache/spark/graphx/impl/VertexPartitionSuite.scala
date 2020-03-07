@@ -25,7 +25,9 @@ import org.apache.spark.serializer.KryoSerializer
 class VertexPartitionSuite extends SparkFunSuite {
 
   test("isDefined, filter") {
-    val vp = VertexPartition(Iterator((0L, 1), (1L, 1))).filter { (vid, attr) => vid == 0 }
+    val vp = VertexPartition(Iterator((0L, 1), (1L, 1))).filter { (vid, attr) =>
+      vid == 0
+    }
     assert(vp.isDefined(0))
     assert(!vp.isDefined(1))
     assert(!vp.isDefined(2))
@@ -33,7 +35,9 @@ class VertexPartitionSuite extends SparkFunSuite {
   }
 
   test("map") {
-    val vp = VertexPartition(Iterator((0L, 1), (1L, 1))).map { (vid, attr) => 2 }
+    val vp = VertexPartition(Iterator((0L, 1), (1L, 1))).map { (vid, attr) =>
+      2
+    }
     assert(vp(0) === 2)
   }
 
@@ -67,7 +71,9 @@ class VertexPartitionSuite extends SparkFunSuite {
     val join2 = vp.leftJoin(vp2b) { (vid, a, bOpt) => bOpt.getOrElse(a) }
     assert(join2.iterator.toSet === Set((0L, 2), (1L, 2), (2L, 1)))
     // leftJoin an iterator
-    val join3 = vp.leftJoin(vp2a.iterator) { (vid, a, bOpt) => bOpt.getOrElse(a) }
+    val join3 = vp.leftJoin(vp2a.iterator) { (vid, a, bOpt) =>
+      bOpt.getOrElse(a)
+    }
     assert(join3.iterator.toSet === Set((0L, 2), (1L, 2), (2L, 1)))
   }
 

@@ -29,10 +29,22 @@ sealed trait ThemeObject {
 object Theme extends ThemeObject {
 
   val all = NonEmptyList(
-    "blue", "blue2", "blue3", "canvas",
-    "wood", "wood2", "wood3", "maple",
-    "green", "marble", "brown", "leather",
-    "grey", "metal", "olive", "purple"
+    "blue",
+    "blue2",
+    "blue3",
+    "canvas",
+    "wood",
+    "wood2",
+    "wood3",
+    "maple",
+    "green",
+    "marble",
+    "brown",
+    "leather",
+    "grey",
+    "metal",
+    "olive",
+    "purple"
   ) map { name => new Theme(name) }
 
   lazy val default = allByName get "brown" err "Can't find default theme D:"
