@@ -665,8 +665,8 @@ object Compatibility {
 
         val res = checkConformanceExt(
           checkNames = true,
-          parameters = parameters.map { param: ScParameter =>
-            toParameter(param, substitutor)
+          parameters = parameters.map {
+            param: ScParameter => toParameter(param, substitutor)
           },
           exprs = exprs,
           checkWithImplicits = checkWithImplicits,

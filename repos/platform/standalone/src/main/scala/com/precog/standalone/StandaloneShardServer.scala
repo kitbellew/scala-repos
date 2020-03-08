@@ -177,8 +177,9 @@ trait StandaloneShardServer extends BlueEyesServer with ShardService {
       Future(server)(executionContext)
     } ->
       request { (server: Server) =>
-        get { (req: HttpRequest[ByteChunk]) =>
-          Promise.successful(HttpResponse[ByteChunk]())(executionContext)
+        get {
+          (req: HttpRequest[ByteChunk]) =>
+            Promise.successful(HttpResponse[ByteChunk]())(executionContext)
         }
       } ->
       shutdown { (server: Server) => Future(server.stop())(executionContext) }

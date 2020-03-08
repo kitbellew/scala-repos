@@ -46,12 +46,13 @@ class PackCheck
   }
 
   property("ints <=> bytes") {
-    forAll { (ns: Array[Int]) =>
-      val bs = Pack.intsToBytes(ns)
-      val ns1 = Pack.intsFromBytes(bs, ns.length)
-      val ns2 = Pack.intsFromByteBuffer(ByteBuffer.wrap(bs), ns.length)
-      ns shouldBe ns1
-      ns shouldBe ns2
+    forAll {
+      (ns: Array[Int]) =>
+        val bs = Pack.intsToBytes(ns)
+        val ns1 = Pack.intsFromBytes(bs, ns.length)
+        val ns2 = Pack.intsFromByteBuffer(ByteBuffer.wrap(bs), ns.length)
+        ns shouldBe ns1
+        ns shouldBe ns2
     }
   }
 
@@ -96,12 +97,13 @@ class PackCheck
   }
 
   property("longs <=> bytes") {
-    forAll { (ns: Array[Long]) =>
-      val bs = Pack.longsToBytes(ns)
-      val ns1 = Pack.longsFromBytes(bs, ns.length)
-      val ns2 = Pack.longsFromByteBuffer(ByteBuffer.wrap(bs), ns.length)
-      ns shouldBe ns1
-      ns shouldBe ns2
+    forAll {
+      (ns: Array[Long]) =>
+        val bs = Pack.longsToBytes(ns)
+        val ns1 = Pack.longsFromBytes(bs, ns.length)
+        val ns2 = Pack.longsFromByteBuffer(ByteBuffer.wrap(bs), ns.length)
+        ns shouldBe ns1
+        ns shouldBe ns2
     }
   }
 }

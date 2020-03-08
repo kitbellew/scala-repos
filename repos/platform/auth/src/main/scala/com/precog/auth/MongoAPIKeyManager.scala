@@ -202,7 +202,9 @@ class MongoAPIKeyManager(
       false)
     database(
       insert(apiKey.serialize.asInstanceOf[JObject])
-        .into(settings.apiKeys)) map { _ => apiKey }
+        .into(settings.apiKeys)) map {
+      _ => apiKey
+    }
   }
 
   def createGrant(

@@ -223,23 +223,25 @@ object Schemifier extends Loggable {
       logFunc: (=> AnyRef) => Unit,
       stables: List[BaseMetaMapper]) {
     val th = new HashMap[String, String]()
-    (DB.use(dbId) { conn =>
-      val sConn = conn // SuperConnection(conn)
-      val tables = stables.toList.filter(t => hasTable_?(t, sConn, th))
+    (DB.use(dbId) {
+      conn =>
+        val sConn = conn // SuperConnection(conn)
+        val tables = stables.toList.filter(t => hasTable_?(t, sConn, th))
 
-      tables.foreach { table =>
-        try {
-          val ct = "DROP TABLE " + table._dbTableNameLC
-          val st = conn.createStatement
-          st.execute(ct)
-          logFunc(ct)
-          st.close
-        } catch {
-          case e: Exception => // dispose... probably just an SQL Exception
+        tables.foreach {
+          table =>
+            try {
+              val ct = "DROP TABLE " + table._dbTableNameLC
+              val st = conn.createStatement
+              st.execute(ct)
+              logFunc(ct)
+              st.close
+            } catch {
+              case e: Exception => // dispose... probably just an SQL Exception
+            }
         }
-      }
 
-      tables
+        tables
     }) match {
       case t if t.length > 0 && cnt < 1000 =>
         destroyTables_!!(dbId, cnt + 1, logFunc, t)
@@ -311,21 +313,24 @@ object Schemifier extends Loggable {
     val cmds = new ListBuffer[String]()
 
     if (!hasTable) {
-      cmds += maybeWrite(performWrite, logFunc, connection) { () =>
-        "CREATE TABLE " + table._dbTableNameLC + " (" + createColumns(
-          table,
-          connection).mkString(" , ") + ") " + connection.createTablePostpend
+      cmds += maybeWrite(performWrite, logFunc, connection) {
+        () =>
+          "CREATE TABLE " + table._dbTableNameLC + " (" + createColumns(
+            table,
+            connection).mkString(" , ") + ") " + connection.createTablePostpend
       }
       if (!connection.driverType.pkDefinedByIndexColumn_?) {
         // Add primary key only when it has not been created by the index field itself.
-        table.mappedFields.filter { f => f.dbPrimaryKey_? }.foreach { pkField =>
-          connection.driverType.primaryKeySetup(
-            table._dbTableNameLC,
-            pkField._dbColumnNameLC) foreach { command =>
-            cmds += maybeWrite(performWrite, logFunc, connection) { () =>
-              command
+        table.mappedFields.filter { f => f.dbPrimaryKey_? }.foreach {
+          pkField =>
+            connection.driverType.primaryKeySetup(
+              table._dbTableNameLC,
+              pkField._dbColumnNameLC) foreach { command =>
+              cmds += maybeWrite(performWrite, logFunc, connection) {
+                () =>
+                  command
+              }
             }
-          }
         }
       }
       hasTable_?(table, connection, actualTableNames)
@@ -346,55 +351,59 @@ object Schemifier extends Loggable {
       connection: SuperConnection,
       actualTableNames: HashMap[String, String]): Collector = {
     val cmds = new ListBuffer[String]()
-    val rc = table.mappedFields.toList.flatMap { field =>
-      var hasColumn = 0
-      var cols: List[String] = Nil
-      val totalColCnt = field.dbColumnCount
-      val md = connection.getMetaData
+    val rc = table.mappedFields.toList.flatMap {
+      field =>
+        var hasColumn = 0
+        var cols: List[String] = Nil
+        val totalColCnt = field.dbColumnCount
+        val md = connection.getMetaData
 
-      using(
-        md.getColumns(
-          null,
-          getDefaultSchemaName(connection),
-          actualTableNames(table._dbTableNameLC),
-          null))(rs =>
-        while (hasColumn < totalColCnt && rs.next) {
-          val tableName = rs.getString(3).toLowerCase
-          val columnName = rs.getString(4).toLowerCase
+        using(
+          md.getColumns(
+            null,
+            getDefaultSchemaName(connection),
+            actualTableNames(table._dbTableNameLC),
+            null))(rs =>
+          while (hasColumn < totalColCnt && rs.next) {
+            val tableName = rs.getString(3).toLowerCase
+            val columnName = rs.getString(4).toLowerCase
 
-          if (tableName == table._dbTableNameLC.toLowerCase && field
-                .dbColumnNames(field.name)
-                .map(_.toLowerCase)
-                .contains(columnName)) {
-            cols = columnName :: cols
-            hasColumn = hasColumn + 1
+            if (tableName == table._dbTableNameLC.toLowerCase && field
+                  .dbColumnNames(field.name)
+                  .map(_.toLowerCase)
+                  .contains(columnName)) {
+              cols = columnName :: cols
+              hasColumn = hasColumn + 1
+              logger.trace(
+                "Column exists: %s.%s ".format(table.dbTableName, columnName))
+
+            }
+          })
+        // FIXME deal with column types
+        (
+          field
+            .dbColumnNames(field.name)
+            .filter(f => !cols.map(_.toLowerCase).contains(f.toLowerCase)))
+          .foreach { colName =>
             logger.trace(
-              "Column exists: %s.%s ".format(table.dbTableName, columnName))
+              "Column does not exist: %s.%s "
+                .format(table.dbTableName, colName))
 
-          }
-        })
-      // FIXME deal with column types
-      (
-        field
-          .dbColumnNames(field.name)
-          .filter(f => !cols.map(_.toLowerCase).contains(f.toLowerCase)))
-        .foreach { colName =>
-          logger.trace(
-            "Column does not exist: %s.%s ".format(table.dbTableName, colName))
-
-          cmds += maybeWrite(performWrite, logFunc, connection) { () =>
-            "ALTER TABLE " + table._dbTableNameLC + " " + connection.driverType.alterAddColumn + " " + field
-              .fieldCreatorString(connection.driverType, colName)
-          }
-          if ((!connection.driverType.pkDefinedByIndexColumn_?) && field.dbPrimaryKey_?) {
-            // Add primary key only when it has not been created by the index field itself.
-            cmds += maybeWrite(performWrite, logFunc, connection) { () =>
-              "ALTER TABLE " + table._dbTableNameLC + " ADD CONSTRAINT " + table._dbTableNameLC + "_PK PRIMARY KEY(" + field._dbColumnNameLC + ")"
+            cmds += maybeWrite(performWrite, logFunc, connection) {
+              () =>
+                "ALTER TABLE " + table._dbTableNameLC + " " + connection.driverType.alterAddColumn + " " + field
+                  .fieldCreatorString(connection.driverType, colName)
+            }
+            if ((!connection.driverType.pkDefinedByIndexColumn_?) && field.dbPrimaryKey_?) {
+              // Add primary key only when it has not been created by the index field itself.
+              cmds += maybeWrite(performWrite, logFunc, connection) {
+                () =>
+                  "ALTER TABLE " + table._dbTableNameLC + " ADD CONSTRAINT " + table._dbTableNameLC + "_PK PRIMARY KEY(" + field._dbColumnNameLC + ")"
+              }
             }
           }
-        }
 
-      field.dbAddedColumn.toList
+        field.dbAddedColumn.toList
 
     }
 
@@ -451,40 +460,47 @@ object Schemifier extends Loggable {
     //rs.close
 
     val single =
-      table.mappedFields.filter { f => f.dbIndexed_? }.toList.flatMap { field =>
-        if (!indexedFields.contains(List(field._dbColumnNameLC.toLowerCase))) {
-          cmds += maybeWrite(performWrite, logFunc, connection) { () =>
-            "CREATE INDEX " + (table._dbTableNameLC + "_" + field._dbColumnNameLC) + " ON " + table._dbTableNameLC + " ( " + field._dbColumnNameLC + " )"
-          }
-          field.dbAddedIndex.toList
-        } else Nil
+      table.mappedFields.filter { f => f.dbIndexed_? }.toList.flatMap {
+        field =>
+          if (!indexedFields.contains(
+                List(field._dbColumnNameLC.toLowerCase))) {
+            cmds += maybeWrite(performWrite, logFunc, connection) {
+              () =>
+                "CREATE INDEX " + (table._dbTableNameLC + "_" + field._dbColumnNameLC) + " ON " + table._dbTableNameLC + " ( " + field._dbColumnNameLC + " )"
+            }
+            field.dbAddedIndex.toList
+          } else Nil
       }
 
-    table.dbIndexes.foreach { index =>
-      val columns = index.columns.toList
+    table.dbIndexes.foreach {
+      index =>
+        val columns = index.columns.toList
 
-      val standardCreationStatement = (table._dbTableNameLC + "_" + columns
-        .map(_.field._dbColumnNameLC)
-        .mkString("_")) + " ON " + table._dbTableNameLC + " ( " + columns
-        .map(_.indexDesc)
-        .comma + " )"
+        val standardCreationStatement = (table._dbTableNameLC + "_" + columns
+          .map(_.field._dbColumnNameLC)
+          .mkString("_")) + " ON " + table._dbTableNameLC + " ( " + columns
+          .map(_.indexDesc)
+          .comma + " )"
 
-      val createStatement = index match {
-        case i: net.liftweb.mapper.Index[_] =>
-          "CREATE INDEX " + standardCreationStatement
-        case i: UniqueIndex[_] =>
-          "CREATE UNIQUE INDEX " + standardCreationStatement
-        case GenericIndex(createFunc, _, _) =>
-          createFunc(table._dbTableNameLC, columns.map(_.field._dbColumnNameLC))
-        case _ => logger.error("Invalid index: " + index); ""
-      }
-
-      val fn = columns.map(_.field._dbColumnNameLC.toLowerCase).sortWith(_ < _)
-      if (!indexedFields.contains(fn)) {
-        cmds += maybeWrite(performWrite, logFunc, connection) { () =>
-          createStatement
+        val createStatement = index match {
+          case i: net.liftweb.mapper.Index[_] =>
+            "CREATE INDEX " + standardCreationStatement
+          case i: UniqueIndex[_] =>
+            "CREATE UNIQUE INDEX " + standardCreationStatement
+          case GenericIndex(createFunc, _, _) =>
+            createFunc(
+              table._dbTableNameLC,
+              columns.map(_.field._dbColumnNameLC))
+          case _ => logger.error("Invalid index: " + index); ""
         }
-      }
+
+        val fn =
+          columns.map(_.field._dbColumnNameLC.toLowerCase).sortWith(_ < _)
+        if (!indexedFields.contains(fn)) {
+          cmds += maybeWrite(performWrite, logFunc, connection) {
+            () => createStatement
+          }
+        }
     }
 
     Collector(single, cmds.toList)
@@ -509,35 +525,37 @@ object Schemifier extends Loggable {
             }
           }
           .toList
-          .flatMap { field =>
-            val other = field.dbKeyToTable
-            val otherTable = actualTableNames(other._dbTableNameLC)
-            val myTable = actualTableNames(table._dbTableNameLC)
+          .flatMap {
+            field =>
+              val other = field.dbKeyToTable
+              val otherTable = actualTableNames(other._dbTableNameLC)
+              val myTable = actualTableNames(table._dbTableNameLC)
 
-            val md = connection.getMetaData
-            // val rs = md.getCrossReference(null, null,otherTable , null, null, myTable)
-            var foundIt = false
-            using(
-              md.getImportedKeys(
-                null,
-                getDefaultSchemaName(connection),
-                myTable))(rs =>
-              //val rs = md.getCrossReference(null, null,myTable , null, null, otherTable)
-              while (!foundIt && rs.next) {
-                val pkName = rs.getString(4)
-                val fkName = rs.getString(8)
-                foundIt =
-                  (field._dbColumnNameLC.toLowerCase == fkName.toLowerCase && field.dbKeyToColumn._dbColumnNameLC.toLowerCase == pkName.toLowerCase)
-              })
+              val md = connection.getMetaData
+              // val rs = md.getCrossReference(null, null,otherTable , null, null, myTable)
+              var foundIt = false
+              using(
+                md.getImportedKeys(
+                  null,
+                  getDefaultSchemaName(connection),
+                  myTable))(rs =>
+                //val rs = md.getCrossReference(null, null,myTable , null, null, otherTable)
+                while (!foundIt && rs.next) {
+                  val pkName = rs.getString(4)
+                  val fkName = rs.getString(8)
+                  foundIt =
+                    (field._dbColumnNameLC.toLowerCase == fkName.toLowerCase && field.dbKeyToColumn._dbColumnNameLC.toLowerCase == pkName.toLowerCase)
+                })
 
-            if (!foundIt) {
-              cmds += maybeWrite(performWrite, logFunc, connection) { () =>
-                "ALTER TABLE " + table._dbTableNameLC + " ADD FOREIGN KEY ( " + field._dbColumnNameLC + " ) REFERENCES " + other._dbTableNameLC + " ( " + field.dbKeyToColumn._dbColumnNameLC + " ) "
+              if (!foundIt) {
+                cmds += maybeWrite(performWrite, logFunc, connection) {
+                  () =>
+                    "ALTER TABLE " + table._dbTableNameLC + " ADD FOREIGN KEY ( " + field._dbColumnNameLC + " ) REFERENCES " + other._dbTableNameLC + " ( " + field.dbKeyToColumn._dbColumnNameLC + " ) "
+                }
+                field.dbAddedForeignKey.toList
+              } else {
+                Nil
               }
-              field.dbAddedForeignKey.toList
-            } else {
-              Nil
-            }
           }
       } else {
         Nil

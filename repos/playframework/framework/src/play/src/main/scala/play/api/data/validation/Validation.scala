@@ -249,7 +249,10 @@ object ParameterValidator {
         }
       }
     }.flatten match {
-      case Nil      => Valid
-      case invalids => invalids.reduceLeft { (a, b) => a ++ b }
+      case Nil => Valid
+      case invalids =>
+        invalids.reduceLeft {
+          (a, b) => a ++ b
+        }
     }
 }

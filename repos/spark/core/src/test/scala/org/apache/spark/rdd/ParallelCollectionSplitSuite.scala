@@ -152,16 +152,17 @@ class ParallelCollectionSplitSuite extends SparkFunSuite with Checkers {
       d <- arbitrary[List[Int]]
       n <- Gen.choose(1, 100)
     } yield (d, n)
-    val prop = forAll(gen) { (tuple: (List[Int], Int)) =>
-      val d = tuple._1
-      val n = tuple._2
-      val slices = ParallelCollectionRDD.slice(d, n)
-      ("n slices" |: slices.size == n) &&
-      ("concat to d" |: Seq.concat(slices: _*).mkString(",") == d.mkString(
-        ",")) &&
-      ("equal sizes" |: slices
-        .map(_.size)
-        .forall(x => x == d.size / n || x == d.size / n + 1))
+    val prop = forAll(gen) {
+      (tuple: (List[Int], Int)) =>
+        val d = tuple._1
+        val n = tuple._2
+        val slices = ParallelCollectionRDD.slice(d, n)
+        ("n slices" |: slices.size == n) &&
+        ("concat to d" |: Seq.concat(slices: _*).mkString(",") == d.mkString(
+          ",")) &&
+        ("equal sizes" |: slices
+          .map(_.size)
+          .forall(x => x == d.size / n || x == d.size / n + 1))
     }
     check(prop)
   }

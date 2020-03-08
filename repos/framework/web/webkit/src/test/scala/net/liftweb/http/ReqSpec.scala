@@ -74,28 +74,30 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
     }
 
     "Do the right thing with iPhone" in {
-      iPhoneUserAgents map { agent =>
-        {
-          val uac = new UserAgentCalculator {
-            def userAgent = Full(agent)
+      iPhoneUserAgents map {
+        agent =>
+          {
+            val uac = new UserAgentCalculator {
+              def userAgent = Full(agent)
+            }
+            uac.isIPhone must_== true
+            uac.isIPad must_== false
           }
-          uac.isIPhone must_== true
-          uac.isIPad must_== false
-        }
       }
 
       success
     }
 
     "Do the right thing with iPad" in {
-      iPadUserAgents map { agent =>
-        {
-          val uac = new UserAgentCalculator {
-            def userAgent = Full(agent)
+      iPadUserAgents map {
+        agent =>
+          {
+            val uac = new UserAgentCalculator {
+              def userAgent = Full(agent)
+            }
+            uac.isIPhone must_== false
+            uac.isIPad must_== true
           }
-          uac.isIPhone must_== false
-          uac.isIPad must_== true
-        }
       }
 
       success

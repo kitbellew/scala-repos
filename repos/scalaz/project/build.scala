@@ -169,18 +169,21 @@ object build extends Build {
             .toString)
     },
     typeClasses := Seq(),
-    genToSyntax <<= typeClasses map { (tcs: Seq[TypeClass]) =>
-      val objects = tcs
-        .map(tc =>
-          "object %s extends To%sSyntax"
-            .format(Util.initLower(tc.name), tc.name))
-        .mkString("\n")
-      val all = "object all extends " + tcs
-        .map(tc => "To%sSyntax".format(tc.name))
-        .mkString(" with ")
-      objects + "\n\n" + all
+    genToSyntax <<= typeClasses map {
+      (tcs: Seq[TypeClass]) =>
+        val objects = tcs
+          .map(tc =>
+            "object %s extends To%sSyntax"
+              .format(Util.initLower(tc.name), tc.name))
+          .mkString("\n")
+        val all = "object all extends " + tcs
+          .map(tc => "To%sSyntax".format(tc.name))
+          .mkString(" with ")
+        objects + "\n\n" + all
     },
-    typeClassTree <<= typeClasses map { tcs => tcs.map(_.doc).mkString("\n") },
+    typeClassTree <<= typeClasses map {
+      tcs => tcs.map(_.doc).mkString("\n")
+    },
     showDoc in Compile <<= (doc in Compile, target in doc in Compile) map {
       (_, out) =>
         val index = out / "index.html"
@@ -204,7 +207,9 @@ object build extends Build {
       pushChanges
     ),
     releaseTagName := tagName.value,
-    pomIncludeRepository := { x => false },
+    pomIncludeRepository := {
+      x => false
+    },
     pomExtra := (
       <url>http://scalaz.org</url>
         <licenses>
@@ -307,8 +312,8 @@ object build extends Build {
     .settings(standardSettings: _*)
     .settings(
       name := "scalaz-core",
-      sourceGenerators in Compile <+= (sourceManaged in Compile) map { dir =>
-        Seq(GenerateTupleW(dir), TupleNInstances(dir))
+      sourceGenerators in Compile <+= (sourceManaged in Compile) map {
+        dir => Seq(GenerateTupleW(dir), TupleNInstances(dir))
       },
       buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion),
       buildInfoPackage := "scalaz",
@@ -419,12 +424,13 @@ object build extends Build {
   lazy val testsJVM = tests.jvm
   lazy val testsJS = tests.js
 
-  lazy val publishSetting = publishTo <<= (version).apply { v =>
-    val nexus = "https://oss.sonatype.org/"
-    if (v.trim.endsWith("SNAPSHOT"))
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases" at nexus + "service/local/staging/deploy/maven2")
+  lazy val publishSetting = publishTo <<= (version).apply {
+    v =>
+      val nexus = "https://oss.sonatype.org/"
+      if (v.trim.endsWith("SNAPSHOT"))
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
   }
 
   lazy val credentialsSetting = credentials += {

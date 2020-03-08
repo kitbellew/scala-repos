@@ -125,22 +125,23 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                 StdKinds.refExprLastRef,
                 place,
                 false,
-                postProcess = { r =>
-                  {
-                    r match {
-                      case r: ScalaResolveResult if !r.isNamedParameter =>
-                        import org.jetbrains.plugins.scala.lang.psi.types.Nothing
-                        val qualifier = r.fromType.getOrElse(Nothing)
-                        val newElem = LookupElementManager
-                          .getLookupElement(
-                            r,
-                            qualifierType = qualifier,
-                            isInStableCodeReference = false)
-                          .head
-                        applyVariant(new ScalaChainLookupElement(el, newElem))
-                      case _ =>
+                postProcess = {
+                  r =>
+                    {
+                      r match {
+                        case r: ScalaResolveResult if !r.isNamedParameter =>
+                          import org.jetbrains.plugins.scala.lang.psi.types.Nothing
+                          val qualifier = r.fromType.getOrElse(Nothing)
+                          val newElem = LookupElementManager
+                            .getLookupElement(
+                              r,
+                              qualifierType = qualifier,
+                              isInStableCodeReference = false)
+                            .head
+                          applyVariant(new ScalaChainLookupElement(el, newElem))
+                        case _ =>
+                      }
                     }
-                  }
                 })
               processor.processType(subst.subst(_tp), place)
               processor.candidatesS

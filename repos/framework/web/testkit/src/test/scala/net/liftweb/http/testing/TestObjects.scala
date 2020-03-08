@@ -32,9 +32,10 @@ object MyCode extends TestKit {
   val baseUrl = ""
 
   val l2: TestResponse = post("/foo")
-  l2.foreach { x: HttpResponse =>
-    val l3: TestResponse = x.get("ddd")
-    println("Hello")
+  l2.foreach {
+    x: HttpResponse =>
+      val l3: TestResponse = x.get("ddd")
+      println("Hello")
   }
 
   for {
@@ -47,9 +48,10 @@ object MyBoxCode extends RequestKit {
   def baseUrl = ""
 
   val l2: Box[TheResponse] = post("/foo")
-  l2.foreach { x: TheResponse =>
-    val l3: Box[TheResponse] = x.get("ddd")
-    println("Hello")
+  l2.foreach {
+    x: TheResponse =>
+      val l3: Box[TheResponse] = x.get("ddd")
+      println("Hello")
   }
 
   for {

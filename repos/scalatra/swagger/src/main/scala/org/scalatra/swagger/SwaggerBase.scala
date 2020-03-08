@@ -84,14 +84,15 @@ trait SwaggerBaseBase extends Initializable with ScalatraBase {
     ("apiVersion" -> swagger.apiVersion) ~
       ("swaggerVersion" -> swagger.swaggerVersion) ~
       ("apis" ->
-        (docs.filter(_.apis.nonEmpty).toList map { doc =>
-          ("path" -> (url(
-            doc.resourcePath,
-            includeServletPath = false,
-            includeContextPath = false) + (if (includeFormatParameter)
-                                             ".{format}"
-                                           else ""))) ~
-            ("description" -> doc.description)
+        (docs.filter(_.apis.nonEmpty).toList map {
+          doc =>
+            ("path" -> (url(
+              doc.resourcePath,
+              includeServletPath = false,
+              includeContextPath = false) + (if (includeFormatParameter)
+                                               ".{format}"
+                                             else ""))) ~
+              ("description" -> doc.description)
         })) ~
       ("authorizations" -> swagger.authorizations.foldLeft(JObject(Nil)) {
         (acc, auth) =>

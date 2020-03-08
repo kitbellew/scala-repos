@@ -30,10 +30,11 @@ package object openid {
   }
 
   def parseQueryString(url: String): Params = {
-    catching(classOf[MalformedURLException]) opt new URL(url) map { url =>
-      new QueryStringDecoder(url.toURI.getRawQuery, false).getParameters.asScala
-        .mapValues(_.asScala.toSeq)
-        .toMap
+    catching(classOf[MalformedURLException]) opt new URL(url) map {
+      url =>
+        new QueryStringDecoder(
+          url.toURI.getRawQuery,
+          false).getParameters.asScala.mapValues(_.asScala.toSeq).toMap
     } getOrElse Map()
   }
 

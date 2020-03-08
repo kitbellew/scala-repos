@@ -167,18 +167,19 @@ object JDBCPlatformSpecEngine extends Logging {
 
                   stmt.executeUpdate(ddlCreate)
 
-                  rows.foreach { properties =>
-                    val columns = properties.map(_._1).mkString(", ")
-                    val values = properties.map(_._2._2).mkString(", ")
+                  rows.foreach {
+                    properties =>
+                      val columns = properties.map(_._1).mkString(", ")
+                      val values = properties.map(_._2._2).mkString(", ")
 
-                    val insert = "INSERT INTO %s (%s) VALUES (%s);".format(
-                      tableName,
-                      columns,
-                      values)
+                      val insert = "INSERT INTO %s (%s) VALUES (%s);".format(
+                        tableName,
+                        columns,
+                        values)
 
-                    logger.debug("Inserting with " + insert)
+                      logger.debug("Inserting with " + insert)
 
-                    stmt.executeUpdate(insert)
+                      stmt.executeUpdate(insert)
                   }
 
                   stmt.close()

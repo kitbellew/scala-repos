@@ -24,7 +24,9 @@ trait StreamInstances {
         implicit G: Applicative[G]): G[Stream[B]] = {
       val seed: G[Stream[B]] = G.point(Stream[B]())
 
-      foldRight(fa, seed) { (x, ys) => G.apply2(f(x), ys)((b, bs) => b #:: bs) }
+      foldRight(fa, seed) {
+        (x, ys) => G.apply2(f(x), ys)((b, bs) => b #:: bs)
+      }
     }
 
     override def length[A](fa: Stream[A]) = fa.length

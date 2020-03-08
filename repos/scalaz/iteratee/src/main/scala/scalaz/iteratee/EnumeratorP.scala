@@ -114,8 +114,9 @@ trait EnumeratorPFunctions {
             lazy val enum1 = e1[IterateeT[K, G, ?]]
             lazy val enum2 = e2[G]
 
-            def apply[A] = { (step: StepT[I, G, A]) =>
-              iterateeT(((e2t[G].apply(step) &= enum1).run &= enum2).run)
+            def apply[A] = {
+              (step: StepT[I, G, A]) =>
+                iterateeT(((e2t[G].apply(step) &= enum1).run &= enum2).run)
             }
           }
       }

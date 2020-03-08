@@ -125,10 +125,11 @@ class JsonLineTest extends WordSpec {
 
     JobTest(new JsonLineInputJob(_))
       .source(JsonLine("input0", ('foo, 'bar)), List((0, json)))
-      .sink[(Int, String)](Tsv("output0")) { outBuf =>
-        "read json line input" in {
-          assert(outBuf.toList === List((3, "baz")))
-        }
+      .sink[(Int, String)](Tsv("output0")) {
+        outBuf =>
+          "read json line input" in {
+            assert(outBuf.toList === List((3, "baz")))
+          }
       }
       .run
       .finish
@@ -137,10 +138,11 @@ class JsonLineTest extends WordSpec {
 
     JobTest(new JsonLineInputJob(_))
       .source(JsonLine("input0", ('foo, 'bar)), List((0, json), (1, json2)))
-      .sink[(Int, String)](Tsv("output0")) { outBuf =>
-        "handle missing fields" in {
-          assert(outBuf.toList === List((3, "baz"), (7, null)))
-        }
+      .sink[(Int, String)](Tsv("output0")) {
+        outBuf =>
+          "handle missing fields" in {
+            assert(outBuf.toList === List((3, "baz"), (7, null)))
+          }
       }
       .run
       .finish
@@ -151,10 +153,11 @@ class JsonLineTest extends WordSpec {
       .source(
         JsonLine("input0", (Symbol("foo.too"), 'bar)),
         List((0, json), (1, json3)))
-      .sink[(Int, String)](Tsv("output0")) { outBuf =>
-        "handle nested fields" in {
-          assert(outBuf.toList === List((0, "baz"), (9, null)))
-        }
+      .sink[(Int, String)](Tsv("output0")) {
+        outBuf =>
+          "handle nested fields" in {
+            assert(outBuf.toList === List((0, "baz"), (9, null)))
+          }
       }
       .run
       .finish
@@ -165,7 +168,10 @@ class JsonLineTest extends WordSpec {
           .source(
             JsonLine("input0", ('foo, 'bar)),
             List((0, json), (1, json2), (2, ""), (3, "   ")))
-          .sink[(Int, String)](Tsv("output0")) { outBuf => outBuf.toList }
+          .sink[(Int, String)](Tsv("output0")) {
+            outBuf => outBuf.toList
+
+          }
           .run
           .finish
       }
@@ -175,10 +181,11 @@ class JsonLineTest extends WordSpec {
       .source(
         JsonLine("input0", ('foo, 'bar)),
         List((0, json), (1, json2), (2, ""), (3, "   ")))
-      .sink[(Int, String)](Tsv("output0")) { outBuf =>
-        "handle empty lines when `failOnEmptyLines` is set to false" in {
-          assert(outBuf.toList.size === 2)
-        }
+      .sink[(Int, String)](Tsv("output0")) {
+        outBuf =>
+          "handle empty lines when `failOnEmptyLines` is set to false" in {
+            assert(outBuf.toList.size === 2)
+          }
       }
       .run
       .finish

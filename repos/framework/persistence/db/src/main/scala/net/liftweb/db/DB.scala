@@ -445,7 +445,9 @@ trait DB extends Loggable {
   }
 
   def exec[T](db: SuperConnection, query: String)(f: (ResultSet) => T): T =
-    statement(db) { st => f(st.executeQuery(query)) }
+    statement(db) {
+      st => f(st.executeQuery(query))
+    }
 
   private def asString(
       pos: Int,
@@ -596,8 +598,8 @@ trait DB extends Loggable {
       connectionIdentifier: ConnectionIdentifier)
       : (List[String], List[List[String]]) = {
     use(connectionIdentifier)(conn =>
-      prepareStatement(query, conn) { ps =>
-        resultSetTo(setPreparedParams(ps, params).executeQuery)
+      prepareStatement(query, conn) {
+        ps => resultSetTo(setPreparedParams(ps, params).executeQuery)
       })
   }
 
@@ -624,8 +626,8 @@ trait DB extends Loggable {
       connectionIdentifier: ConnectionIdentifier)
       : (List[String], List[List[Any]]) = {
     use(connectionIdentifier)(conn =>
-      prepareStatement(query, conn) { ps =>
-        resultSetToAny(setPreparedParams(ps, params).executeQuery)
+      prepareStatement(query, conn) {
+        ps => resultSetToAny(setPreparedParams(ps, params).executeQuery)
       })
   }
 
@@ -649,8 +651,8 @@ trait DB extends Loggable {
       params: List[Any],
       connectionIdentifier: ConnectionIdentifier): Int = {
     use(connectionIdentifier)(conn =>
-      prepareStatement(query, conn) { ps =>
-        setPreparedParams(ps, params).executeUpdate
+      prepareStatement(query, conn) {
+        ps => setPreparedParams(ps, params).executeUpdate
       })
   }
 

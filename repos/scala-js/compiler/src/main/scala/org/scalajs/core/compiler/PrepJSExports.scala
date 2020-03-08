@@ -445,8 +445,8 @@ trait PrepJSExports { this: PrepJSInterop =>
 
     // Create a call to the forwarded method with ??? as args
     val sel: Tree = Select(This(clsSym), defSym)
-    val call = (sel /: defSym.paramss) { (fun, params) =>
-      Apply(fun, List.fill(params.size)(ph))
+    val call = (sel /: defSym.paramss) {
+      (fun, params) => Apply(fun, List.fill(params.size)(ph))
     }
 
     // rhs is a block to prevent boxing of result
@@ -498,8 +498,8 @@ trait PrepJSExports { this: PrepJSInterop =>
 
     // Construct proxied function call
     val sel: Tree = Select(This(clsSym), trgSym)
-    val rhs = (sel /: proxySym.paramss) { (fun, params) =>
-      Apply(fun, params map spliceParam)
+    val rhs = (sel /: proxySym.paramss) {
+      (fun, params) => Apply(fun, params map spliceParam)
     }
 
     typer.typedDefDef(DefDef(proxySym, rhs))

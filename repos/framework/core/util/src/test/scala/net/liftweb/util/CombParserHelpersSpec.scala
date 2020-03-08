@@ -102,10 +102,11 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       colon("x") must beLike { case Failure(_, _) => 1 must_== 1 }
     }
     "provide a EOL parser which parses the any and discards any end of line character" in {
-      List("\n", "\r") map { s =>
-        val result = EOL(s)
-        result.get.toString must_== "()"
-        result.next.atEnd must beTrue
+      List("\n", "\r") map {
+        s =>
+          val result = EOL(s)
+          result.get.toString must_== "()"
+          result.next.atEnd must beTrue
       }
 
       success

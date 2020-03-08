@@ -223,13 +223,14 @@ private[simul] final class SimulApi(
       Props(
         new Debouncer(
           2 seconds,
-          { (_: Debouncer.Nothing) =>
-            site ! siteMessage
-            repo.allCreated foreach { simuls =>
-              renderer ? actorApi.SimulTable(simuls) map {
-                case view: play.twirl.api.Html => ReloadSimuls(view.body)
-              } pipeToSelection lobby
-            }
+          {
+            (_: Debouncer.Nothing) =>
+              site ! siteMessage
+              repo.allCreated foreach { simuls =>
+                renderer ? actorApi.SimulTable(simuls) map {
+                  case view: play.twirl.api.Html => ReloadSimuls(view.body)
+                } pipeToSelection lobby
+              }
           })))
     def apply() { debouncer ! Debouncer.Nothing }
   }

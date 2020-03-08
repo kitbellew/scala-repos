@@ -40,13 +40,16 @@ class FriendRecommendationDataSource(
     // A map from external id to internal id
     var itemIdMap = new HashMap[Int, Int]()
     var internalId = 0
-    lines.foreach { line =>
-      val data = line.split("\\s")
-      itemIdMap += (data(0).toInt -> internalId)
-      var keywordMap = new HashMap[Int, Double]()
-      data(2).split(";").foreach { term => keywordMap += (term.toInt -> 1.0) }
-      itemKeyword(internalId) = keywordMap
-      internalId += 1
+    lines.foreach {
+      line =>
+        val data = line.split("\\s")
+        itemIdMap += (data(0).toInt -> internalId)
+        var keywordMap = new HashMap[Int, Double]()
+        data(2).split(";").foreach {
+          term => keywordMap += (term.toInt -> 1.0)
+        }
+        itemKeyword(internalId) = keywordMap
+        internalId += 1
     }
     (itemIdMap, itemKeyword)
   }
@@ -60,16 +63,19 @@ class FriendRecommendationDataSource(
     // A map from external id to internal id
     var userIdMap = new HashMap[Int, Int]()
     var internalId = 0
-    lines.foreach { line =>
-      val data = line.split("\\s")
-      userIdMap += (data(0).toInt -> internalId)
-      var keywordMap = new HashMap[Int, Double]()
-      data(1).split(";").foreach { termWeight =>
-        val termWeightPair = termWeight.split(":")
-        keywordMap += (termWeightPair(0).toInt -> termWeightPair(1).toDouble)
-      }
-      userKeyword(internalId) = keywordMap
-      internalId += 1
+    lines.foreach {
+      line =>
+        val data = line.split("\\s")
+        userIdMap += (data(0).toInt -> internalId)
+        var keywordMap = new HashMap[Int, Double]()
+        data(1).split(";").foreach {
+          termWeight =>
+            val termWeightPair = termWeight.split(":")
+            keywordMap += (termWeightPair(0).toInt -> termWeightPair(
+              1).toDouble)
+        }
+        userKeyword(internalId) = keywordMap
+        internalId += 1
     }
     (userIdMap, userKeyword)
   }
@@ -80,19 +86,20 @@ class FriendRecommendationDataSource(
       userIdMap: HashMap[Int, Int]): Array[List[(Int, Int)]] = {
     val adjArray = new Array[List[(Int, Int)]](userSize)
     val lines = Source.fromFile(file).getLines()
-    lines.foreach { line =>
-      val data = line.split("\\s").map(s => s.toInt)
-      if (userIdMap.contains(data(0)) && userIdMap.contains(data(1))) {
-        val srcInternalId = userIdMap(data(0))
-        val destInternalId = userIdMap(data(1))
-        if (adjArray(srcInternalId) == null) {
-          adjArray(srcInternalId) = (destInternalId, data.slice(2, 5).sum) ::
-            List()
-        } else {
-          adjArray(srcInternalId) = (destInternalId, data.slice(2, 5).sum) ::
-            adjArray(srcInternalId)
+    lines.foreach {
+      line =>
+        val data = line.split("\\s").map(s => s.toInt)
+        if (userIdMap.contains(data(0)) && userIdMap.contains(data(1))) {
+          val srcInternalId = userIdMap(data(0))
+          val destInternalId = userIdMap(data(1))
+          if (adjArray(srcInternalId) == null) {
+            adjArray(srcInternalId) = (destInternalId, data.slice(2, 5).sum) ::
+              List()
+          } else {
+            adjArray(srcInternalId) = (destInternalId, data.slice(2, 5).sum) ::
+              adjArray(srcInternalId)
+          }
         }
-      }
     }
     adjArray
   }
@@ -103,12 +110,13 @@ class FriendRecommendationDataSource(
       itemIdMap: HashMap[Int, Int]): Stream[(Int, Int, Boolean)] = {
     val lines = Source.fromFile(file).getLines()
     var trainingRecord: Stream[(Int, Int, Boolean)] = Stream()
-    lines.foreach { line =>
-      val data = line.split("\\s")
-      val userId = userIdMap(data(0).toInt)
-      val itemId = itemIdMap(data(1).toInt)
-      val result = (data(2).toInt == 1)
-      trainingRecord = (userId, itemId, result) #:: trainingRecord
+    lines.foreach {
+      line =>
+        val data = line.split("\\s")
+        val userId = userIdMap(data(0).toInt)
+        val itemId = itemIdMap(data(1).toInt)
+        val result = (data(2).toInt == 1)
+        trainingRecord = (userId, itemId, result) #:: trainingRecord
     }
     trainingRecord
   }

@@ -56,8 +56,8 @@ trait LinearRegressionTestSupport[M[+_]]
       actualThetas: Array[Double]): Seq[(Array[Double], Double)] = {
     val testSeqX = {
       def createXs: Array[Double] = {
-        Seq.fill(length - 1)(Random.nextDouble) map { x =>
-          x * 2.0 - 1.0
+        Seq.fill(length - 1)(Random.nextDouble) map {
+          x => x * 2.0 - 1.0
         } toArray
       }
 

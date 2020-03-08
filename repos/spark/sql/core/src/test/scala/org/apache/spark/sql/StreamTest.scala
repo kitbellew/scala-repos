@@ -420,8 +420,8 @@ trait StreamTest extends QueryTest with Timeouts {
                   failTest("Exception while getting data from sink", e)
               }
 
-            QueryTest.sameRows(expectedAnswer, allData).foreach { error =>
-              failTest(error)
+            QueryTest.sameRows(expectedAnswer, allData).foreach {
+              error => failTest(error)
             }
         }
         pos += 1

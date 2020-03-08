@@ -122,13 +122,14 @@ private class SelectorMap(binds: List[CssBind])
     var elemMap: Map[String, List[CssBind]] = Map()
     var starFunc: Box[List[CssBind]] = Empty
 
-    val selThis: Box[CssBind] = binds.flatMap { b =>
-      b.css
-        .openOrThrowException("Guarded with test before calling this method")
-        .subNodes match {
-        case Full(SelectThisNode(_)) => List(b)
-        case _                       => Nil
-      }
+    val selThis: Box[CssBind] = binds.flatMap {
+      b =>
+        b.css
+          .openOrThrowException("Guarded with test before calling this method")
+          .subNodes match {
+          case Full(SelectThisNode(_)) => List(b)
+          case _                       => Nil
+        }
     }.headOption
 
     binds.foreach {
@@ -326,11 +327,12 @@ private class SelectorMap(binds: List[CssBind])
         import scala.collection.mutable._
         val hs: HashSet[String] = new HashSet()
         val ret: ListBuffer[String] = new ListBuffer()
-        ls.foreach { v =>
-          if (!hs.contains(v)) {
-            hs += v
-            ret += v
-          }
+        ls.foreach {
+          v =>
+            if (!hs.contains(v)) {
+              hs += v
+              ret += v
+            }
         }
         ret.mkString(" ")
       }
@@ -499,8 +501,8 @@ private class SelectorMap(binds: List[CssBind])
                         val targetId =
                           e.attribute("id").map(_.toString) orElse (attrs.get(
                             "id"))
-                        val keepId = targetId map { id =>
-                          ids.contains(id)
+                        val keepId = targetId map {
+                          id => ids.contains(id)
                         } getOrElse (false)
                         val newIds = targetId filter (_ => keepId) map (i =>
                           ids - i) getOrElse (ids)

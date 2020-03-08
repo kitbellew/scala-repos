@@ -490,8 +490,9 @@ class MatricesSuite extends SparkFunSuite {
     val sm2 = dm2.toSparse
     val sm3 = dm3.toSparse
     val mUDT = new MatrixUDT()
-    Seq(dm1, dm2, dm3, sm1, sm2, sm3).foreach { mat =>
-      assert(mat.toArray === mUDT.deserialize(mUDT.serialize(mat)).toArray)
+    Seq(dm1, dm2, dm3, sm1, sm2, sm3).foreach {
+      mat =>
+        assert(mat.toArray === mUDT.deserialize(mUDT.serialize(mat)).toArray)
     }
     assert(mUDT.typeName == "matrix")
     assert(mUDT.simpleString == "matrix")

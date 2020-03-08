@@ -66,7 +66,9 @@ class ScalaControlFlowBuilder(
   }
 
   def emptyNode() {
-    startNode(None) { _ => }
+    startNode(None) {
+      _ =>
+    }
   }
 
   def startNode(element: Option[ScalaPsiElement])(
@@ -414,13 +416,14 @@ class ScalaControlFlowBuilder(
     val matchedParams = infix.matchedParameters
     val byNameParam = matchedParams.exists(_._2.isByName)
     if (byNameParam) {
-      startNode(Some(infix)) { infixInstr =>
-        checkPendingEdges(infixInstr)
-        addPendingEdge(infix, infixInstr)
-        infix.getBaseExpr.accept(this)
-        infix.operation.accept(this)
-        infix.getArgExpr.accept(this)
-        if (myHead == null) moveHead(infixInstr)
+      startNode(Some(infix)) {
+        infixInstr =>
+          checkPendingEdges(infixInstr)
+          addPendingEdge(infix, infixInstr)
+          infix.getBaseExpr.accept(this)
+          infix.operation.accept(this)
+          infix.getArgExpr.accept(this)
+          if (myHead == null) moveHead(infixInstr)
       }
     } else {
       infix.getBaseExpr.accept(this)
@@ -529,8 +532,8 @@ class ScalaControlFlowBuilder(
         advancePendingEdges(tb, tryStmt)
         tryStmt.finallyBlock.fold {
           addPendingEdge(tryStmt, head)
-        } { fblock =>
-          myTransitionInstructions += ((head, FinallyInfo(fblock)))
+        } {
+          fblock => myTransitionInstructions += ((head, FinallyInfo(fblock)))
         }
       }
 

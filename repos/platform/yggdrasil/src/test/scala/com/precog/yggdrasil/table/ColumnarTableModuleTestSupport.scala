@@ -132,8 +132,8 @@ trait ColumnarTableModuleTestSupport[M[+_]]
             case _                                                => false
           }
 
-          val mask = BitSetUtil.filteredRange(range.start, range.end) { i =>
-            prioritized exists { _ isDefinedAt i }
+          val mask = BitSetUtil.filteredRange(range.start, range.end) {
+            i => prioritized exists { _ isDefinedAt i }
           }
 
           val (a2, arr) =

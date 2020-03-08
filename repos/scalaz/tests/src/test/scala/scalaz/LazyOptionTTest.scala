@@ -19,9 +19,10 @@ object LazyOptionTTest extends SpecLite {
     val times = 10000
 
     val result =
-      BindRec[LazyOptionId].tailrecM[Int, Int] { i =>
-        LazyOptionT[Id, Int \/ Int](
-          LazyOption.lazySome(if (i < 10000) \/.left(i + 1) else \/.right(i)))
+      BindRec[LazyOptionId].tailrecM[Int, Int] {
+        i =>
+          LazyOptionT[Id, Int \/ Int](
+            LazyOption.lazySome(if (i < 10000) \/.left(i + 1) else \/.right(i)))
       }(0)
     result.getOrElse(0) must_=== times
   }

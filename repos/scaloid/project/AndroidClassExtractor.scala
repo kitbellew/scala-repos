@@ -12,21 +12,23 @@ import scala.collection.JavaConversions._
 object AndroidClassExtractor extends JavaConversionHelpers {
 
   private val sourceJars: List[JarFile] =
-    getClass.getClassLoader.getResources("android").toList.map { binUrl =>
-      val binFile = new File(
-        binUrl.toString.split("/|!").tail.dropRight(2).mkString("/", "/", ""))
-      val basePath = binFile.getParentFile.getParentFile
-      new JarFile(basePath / "srcs" / (binFile.base + "-sources.jar"))
+    getClass.getClassLoader.getResources("android").toList.map {
+      binUrl =>
+        val binFile = new File(
+          binUrl.toString.split("/|!").tail.dropRight(2).mkString("/", "/", ""))
+        val basePath = binFile.getParentFile.getParentFile
+        new JarFile(basePath / "srcs" / (binFile.base + "-sources.jar"))
     }
 
   private def sourceInputStream(cls: Class[_]): Option[java.io.InputStream] = {
     val filename = cls.getName.split('$').head.replace(".", "/") + ".java"
     sourceJars
-      .map { sourceJar =>
-        sourceJar.getJarEntry(filename) match {
-          case null  => Nil
-          case entry => List(sourceJar.getInputStream(entry))
-        }
+      .map {
+        sourceJar =>
+          sourceJar.getJarEntry(filename) match {
+            case null  => Nil
+            case entry => List(sourceJar.getInputStream(entry))
+          }
       }
       .flatten
       .headOption
@@ -42,10 +44,11 @@ object AndroidClassExtractor extends JavaConversionHelpers {
   }
 
   private def fixClassParamedType(tpe: ScalaType) =
-    tpe.copy(params = tpe.params.map { t =>
-      if (t.isVar && t.bounds.head.name == "Any") {
-        t.copy(bounds = List(ScalaType("AnyRef")))
-      } else t
+    tpe.copy(params = tpe.params.map {
+      t =>
+        if (t.isVar && t.bounds.head.name == "Any") {
+          t.copy(bounds = List(ScalaType("AnyRef")))
+        } else t
     })
 
   private def toAndroidClass(cls: Class[_]) = {
@@ -135,21 +138,23 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     val props: List[AndroidProperty] = {
       val clsMethods = cls.getMethods
       val accessors = clsMethods
-        .filter { m =>
-          val name = m.getName
-          val arity = m.getParameterTypes.length
-          !superMethods(methodSignature(m)) && (
-            (arity == 0 && isGetter(name)) || (arity == 1 && isSetter(name))
-          )
+        .filter {
+          m =>
+            val name = m.getName
+            val arity = m.getParameterTypes.length
+            !superMethods(methodSignature(m)) && (
+              (arity == 0 && isGetter(name)) || (arity == 1 && isSetter(name))
+            )
         }
-        .filter { m =>
-          (!cls.getName.endsWith("Service") || !m.getName.equals(
-            "setForeground")) && // Android 2.1.1 has a weird undocumented method. manually ignore this.
-          (!cls.getName.endsWith("WebView") || !m.getName.equals(
-            "getZoomControls")) && //https://github.com/pocorall/scaloid/issues/56
-          (!cls.getName.endsWith("View") || !m.getName.equals(
-            "setBackground"
-          )) // manually specifies this method
+        .filter {
+          m =>
+            (!cls.getName.endsWith("Service") || !m.getName.equals(
+              "setForeground")) && // Android 2.1.1 has a weird undocumented method. manually ignore this.
+            (!cls.getName.endsWith("WebView") || !m.getName.equals(
+              "getZoomControls")) && //https://github.com/pocorall/scaloid/issues/56
+            (!cls.getName.endsWith("View") || !m.getName.equals(
+              "setBackground"
+            )) // manually specifies this method
         }
 
       val allMethodNames = clsMethods.map(_.getName).toSet
@@ -223,14 +228,15 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       }
       val callbackMethods = extractMethodsFromListener(listenerCls)
       val androidCallbackMethods =
-        callbackMethods.map { cm =>
-          AndroidCallbackMethod(
-            cm.name,
-            cm.retType,
-            cm.argTypes,
-            false,
-            cm.isDeprecated
-          )
+        callbackMethods.map {
+          cm =>
+            AndroidCallbackMethod(
+              cm.name,
+              cm.retType,
+              cm.argTypes,
+              false,
+              cm.isDeprecated
+            )
         }
 
       def listenerName(
@@ -258,33 +264,36 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       }
 
       callbackMethods
-        .map { cm =>
-          AndroidListener(
-            listenerName(cm, androidCallbackMethods, setter),
-            callbackMethods.find(_.name == cm.name).get.retType,
-            cm.argTypes,
-            cm.argTypes.nonEmpty,
-            setter,
-            setterArgTypes.map(toScalaType),
-            toScalaType(listenerCls).name,
-            androidCallbackMethods.map { icm =>
-              if (icm.name == cm.name) icm.copy(hasBody = true) else icm
-            },
-            cm.isDeprecated
-          )
+        .map {
+          cm =>
+            AndroidListener(
+              listenerName(cm, androidCallbackMethods, setter),
+              callbackMethods.find(_.name == cm.name).get.retType,
+              cm.argTypes,
+              cm.argTypes.nonEmpty,
+              setter,
+              setterArgTypes.map(toScalaType),
+              toScalaType(listenerCls).name,
+              androidCallbackMethods.map {
+                icm =>
+                  if (icm.name == cm.name) icm.copy(hasBody = true) else icm
+              },
+              cm.isDeprecated
+            )
         }
         .filter(_.isSafe)
     }
 
     def resolveListenerDuplication(listeners: List[AndroidListener]) =
-      listeners map { l =>
-        if (listeners
-              .filter(l2 =>
-                l.name == l2.name && l.setterArgTypes == l2.setterArgTypes)
-              .length > 1) {
-          val t = "(^set|^add|Listener$)".r.replaceAllIn(l.setter, "")
-          l.copy(name = t.head.toLower + t.tail)
-        } else l
+      listeners map {
+        l =>
+          if (listeners
+                .filter(l2 =>
+                  l.name == l2.name && l.setterArgTypes == l2.setterArgTypes)
+                .length > 1) {
+            val t = "(^set|^add|Listener$)".r.replaceAllIn(l.setter, "")
+            l.copy(name = t.head.toLower + t.tail)
+          } else l
       }
 
     val constructorNames: Map[List[String], List[String]] = {
@@ -297,16 +306,18 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         .matchData
         .map(_.group(1))
         .filter(_.nonEmpty)
-        .map { cGroup =>
-          argRegex
-            .findAllIn(cGroup)
-            .matchData
-            .map { pMatch =>
-              val List(tpe, name) = List(1, 2).map(pMatch.group(_).trim)
-              (tpe, name)
-            }
-            .toList
-            .unzip
+        .map {
+          cGroup =>
+            argRegex
+              .findAllIn(cGroup)
+              .matchData
+              .map {
+                pMatch =>
+                  val List(tpe, name) = List(1, 2).map(pMatch.group(_).trim)
+                  (tpe, name)
+              }
+              .toList
+              .unzip
         }
         .toMap
     }

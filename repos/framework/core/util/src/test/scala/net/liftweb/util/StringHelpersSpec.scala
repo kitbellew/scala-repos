@@ -102,10 +102,11 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
 
   "The camelifyMethod function" should {
     "camelCase a name with the first letter being lower cased" in {
-      forAll(underscoredStrings) { (name: String) =>
-        camelify(name).isEmpty && camelifyMethod(name).isEmpty ||
-        camelifyMethod(name).toList.head.isLower && camelify(
-          name) == camelifyMethod(name).capitalize
+      forAll(underscoredStrings) {
+        (name: String) =>
+          camelify(name).isEmpty && camelifyMethod(name).isEmpty ||
+          camelifyMethod(name).toList.head.isLower && camelify(
+            name) == camelifyMethod(name).capitalize
       }
     }
   }

@@ -684,9 +684,10 @@ trait ClusteringLibModule[M[+_]]
               trans.WrapObject(TransSpec1.Id, "cluster" + (idx + 1)))
         }
 
-        val table = wrappedTables reduce { (t1, t2) =>
-          t1.cross(t2)(
-            trans.InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
+        val table = wrappedTables reduce {
+          (t1, t2) =>
+            t1.cross(t2)(
+              trans.InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
         }
 
         val result =

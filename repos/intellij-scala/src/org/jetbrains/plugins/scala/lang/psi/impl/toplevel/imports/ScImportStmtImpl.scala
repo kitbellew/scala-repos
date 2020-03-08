@@ -292,32 +292,33 @@ class ScImportStmtImpl private (
             case Some(set) =>
               val shadowed: mutable.HashSet[(ScImportSelector, PsiElement)] =
                 mutable.HashSet.empty
-              set.selectors foreach { selector =>
-                ProgressManager.checkCanceled()
-                val selectorResolve: Array[ResolveResult] =
-                  selector.reference.multiResolve(false)
-                selectorResolve foreach { result =>
-                  if (selector.isAliasedImport && selector.importedName != selector.reference.refName) {
-                    //Resolve the name imported by selector
-                    //Collect shadowed elements
-                    shadowed += ((selector, result.getElement))
-                    var newState: ResolveState = state
-                    newState =
-                      state.put(ResolverEnv.nameKey, selector.importedName)
-                    newState = newState
-                      .put(
-                        ImportUsed.key,
-                        Set(importsUsed.toSeq: _*) + ImportSelectorUsed(
-                          selector))
-                      .put(ScSubstitutor.key, subst)
-                    calculateRefType(checkResolve(result)).foreach { tp =>
-                      newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
-                    }
-                    if (!processor.execute(result.getElement, newState)) {
-                      return false
+              set.selectors foreach {
+                selector =>
+                  ProgressManager.checkCanceled()
+                  val selectorResolve: Array[ResolveResult] =
+                    selector.reference.multiResolve(false)
+                  selectorResolve foreach { result =>
+                    if (selector.isAliasedImport && selector.importedName != selector.reference.refName) {
+                      //Resolve the name imported by selector
+                      //Collect shadowed elements
+                      shadowed += ((selector, result.getElement))
+                      var newState: ResolveState = state
+                      newState =
+                        state.put(ResolverEnv.nameKey, selector.importedName)
+                      newState = newState
+                        .put(
+                          ImportUsed.key,
+                          Set(importsUsed.toSeq: _*) + ImportSelectorUsed(
+                            selector))
+                        .put(ScSubstitutor.key, subst)
+                      calculateRefType(checkResolve(result)).foreach { tp =>
+                        newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
+                      }
+                      if (!processor.execute(result.getElement, newState)) {
+                        return false
+                      }
                     }
                   }
-                }
               }
 
               // There is total import from stable id
@@ -404,31 +405,32 @@ class ScImportStmtImpl private (
               }
 
               //wildcard import first, to show that this imports are unused if they really are
-              set.selectors foreach { selector =>
-                ProgressManager.checkCanceled()
-                val selectorResolve: Array[ResolveResult] =
-                  selector.reference.multiResolve(false)
-                selectorResolve foreach { result =>
-                  var newState: ResolveState = state
-                  if (!selector.isAliasedImport || selector.importedName == selector.reference.refName) {
-                    val rSubst = result match {
-                      case result: ScalaResolveResult => result.substitutor
-                      case _                          => ScSubstitutor.empty
-                    }
-                    newState = newState
-                      .put(
-                        ImportUsed.key,
-                        Set(importsUsed.toSeq: _*) + ImportSelectorUsed(
-                          selector))
-                      .put(ScSubstitutor.key, subst.followed(rSubst))
-                    calculateRefType(checkResolve(result)).foreach { tp =>
-                      newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
-                    }
-                    if (!processor.execute(result.getElement, newState)) {
-                      return false
+              set.selectors foreach {
+                selector =>
+                  ProgressManager.checkCanceled()
+                  val selectorResolve: Array[ResolveResult] =
+                    selector.reference.multiResolve(false)
+                  selectorResolve foreach { result =>
+                    var newState: ResolveState = state
+                    if (!selector.isAliasedImport || selector.importedName == selector.reference.refName) {
+                      val rSubst = result match {
+                        case result: ScalaResolveResult => result.substitutor
+                        case _                          => ScSubstitutor.empty
+                      }
+                      newState = newState
+                        .put(
+                          ImportUsed.key,
+                          Set(importsUsed.toSeq: _*) + ImportSelectorUsed(
+                            selector))
+                        .put(ScSubstitutor.key, subst.followed(rSubst))
+                      calculateRefType(checkResolve(result)).foreach { tp =>
+                        newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
+                      }
+                      if (!processor.execute(result.getElement, newState)) {
+                        return false
+                      }
                     }
                   }
-                }
               }
           }
         }

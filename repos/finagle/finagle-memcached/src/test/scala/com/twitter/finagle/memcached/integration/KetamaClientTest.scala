@@ -123,7 +123,9 @@ class KetamaClientTest extends FunSuite with BeforeAndAfter {
         "localhost:%d,localhost:%d".format(address1.getPort, address2.getPort))
       .build()
 
-    val futureResult = Future.value(true) flatMap { _ => client.get("foo") }
+    val futureResult = Future.value(true) flatMap {
+      _ => client.get("foo")
+    }
 
     assert(Await.result(futureResult) == None)
   }

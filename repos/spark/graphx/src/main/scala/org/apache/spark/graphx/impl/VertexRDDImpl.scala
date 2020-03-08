@@ -125,8 +125,8 @@ class VertexRDDImpl[VD] private[graphx] (
         this.withPartitionsRDD[VD](
           partitionsRDD.zipPartitions(
             other.partitionBy(this.partitioner.get),
-            preservesPartitioning = true) { (partIter, msgs) =>
-            partIter.map(_.minus(msgs))
+            preservesPartitioning = true) {
+            (partIter, msgs) => partIter.map(_.minus(msgs))
           }
         )
     }
@@ -179,8 +179,8 @@ class VertexRDDImpl[VD] private[graphx] (
         this.withPartitionsRDD[VD3](
           partitionsRDD.zipPartitions(
             other.partitionBy(this.partitioner.get),
-            preservesPartitioning = true) { (partIter, msgs) =>
-            partIter.map(_.leftJoin(msgs)(f))
+            preservesPartitioning = true) {
+            (partIter, msgs) => partIter.map(_.leftJoin(msgs)(f))
           }
         )
     }
@@ -210,8 +210,8 @@ class VertexRDDImpl[VD] private[graphx] (
         this.withPartitionsRDD(
           partitionsRDD.zipPartitions(
             other.partitionBy(this.partitioner.get),
-            preservesPartitioning = true) { (partIter, msgs) =>
-            partIter.map(_.innerJoin(msgs)(f))
+            preservesPartitioning = true) {
+            (partIter, msgs) => partIter.map(_.innerJoin(msgs)(f))
           }
         )
     }

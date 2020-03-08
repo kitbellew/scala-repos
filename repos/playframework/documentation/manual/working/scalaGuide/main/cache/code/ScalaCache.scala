@@ -129,7 +129,9 @@ package scalaguide.cache {
         action: EssentialAction,
         request: => Request[A] = FakeRequest(),
         expectedResponse: Int = OK) = {
-      assertAction(action, request, expectedResponse) { result => success }
+      assertAction(action, request, expectedResponse) {
+        result => success
+      }
     }
 
     def assertAction[A, T: AsResult](
@@ -198,12 +200,13 @@ package scalaguide.cache {
       import play.api.mvc.Security.Authenticated
 
       //#composition-cached-action
-      def userProfile = Authenticated { user =>
-        cached(req => "profile." + user) {
-          Action {
-            Ok(views.html.profile(User.find(user)))
+      def userProfile = Authenticated {
+        user =>
+          cached(req => "profile." + user) {
+            Action {
+              Ok(views.html.profile(User.find(user)))
+            }
           }
-        }
       }
       //#composition-cached-action
       //#cached-action-control

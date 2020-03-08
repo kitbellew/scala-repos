@@ -69,8 +69,11 @@ class BundleDelegatingClassLoader(
   }
 
   override def findResources(name: String): Enumeration[URL] = {
-    val resources = bundles.flatMap { bundle ⇒
-      Option(bundle.getResources(name)).map { _.asScala.toList }.getOrElse(Nil)
+    val resources = bundles.flatMap {
+      bundle ⇒
+        Option(bundle.getResources(name))
+          .map { _.asScala.toList }
+          .getOrElse(Nil)
     }
     java.util.Collections.enumeration(resources.asJava)
   }
@@ -95,8 +98,8 @@ class BundleDelegatingClassLoader(
                   .getRequiredWires(BundleRevision.PACKAGE_NAMESPACE)
                   .asScala
                   .toList
-              requiredWires.flatMap { wire ⇒
-                Option(wire.getProviderWiring) map { _.getBundle }
+              requiredWires.flatMap {
+                wire ⇒ Option(wire.getProviderWiring) map { _.getBundle }
               }.toSet
             }
           process(processed + b, rest ++ (direct -- processed))

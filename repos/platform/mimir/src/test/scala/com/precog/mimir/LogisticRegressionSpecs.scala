@@ -65,8 +65,8 @@ trait LogisticRegressionTestSupport[M[+_]]
 
     val testSeqX = {
       def createXs: Array[Double] = {
-        val seq = Seq.fill(length - 1)(Random.nextDouble) map { x =>
-          x * 2.0 - 1.0
+        val seq = Seq.fill(length - 1)(Random.nextDouble) map {
+          x => x * 2.0 - 1.0
         } toArray
 
         arraySum(seq, direction)

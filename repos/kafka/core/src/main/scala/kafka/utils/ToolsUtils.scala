@@ -26,8 +26,9 @@ object ToolsUtils {
         hostPort.split(",")
       else
         Array(hostPort)
-    val validHostPort = hostPorts.filter { hostPortData =>
-      org.apache.kafka.common.utils.Utils.getPort(hostPortData) != null
+    val validHostPort = hostPorts.filter {
+      hostPortData =>
+        org.apache.kafka.common.utils.Utils.getPort(hostPortData) != null
     }
     val isValid =
       !(validHostPort.isEmpty) && validHostPort.size == hostPorts.length

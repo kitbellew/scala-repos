@@ -167,7 +167,9 @@ trait IsolatedEnsimeConfigFixture extends Suite with EnsimeConfigFixture {
   import EnsimeConfigFixture._
 
   override def withEnsimeConfig(testCode: EnsimeConfig => Any): Any =
-    withTempDir { dir => testCode(cloneForTesting(original, dir, copyTargets)) }
+    withTempDir {
+      dir => testCode(cloneForTesting(original, dir, copyTargets))
+    }
 }
 
 /**

@@ -49,10 +49,11 @@ trait ScopeAnnotator {
 
       val clashes = (complexClashes.distinct diff clashesOf(parameters))
 
-      clashes.foreach { e =>
-        holder.createErrorAnnotation(
-          e.getNameIdentifier,
-          ScalaBundle.message("id.is.already.defined", nameOf(e)))
+      clashes.foreach {
+        e =>
+          holder.createErrorAnnotation(
+            e.getNameIdentifier,
+            ScalaBundle.message("id.is.already.defined", nameOf(e)))
       }
     }
     element match {

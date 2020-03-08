@@ -281,9 +281,10 @@ final case class SimpleVector[T](underlying: Vector[T]) extends JavaList[T] {
       .asInstanceOf[Array[Object]]
 
     var pos = 0
-    underlying.foreach { e =>
-      ret(pos) = e.asInstanceOf[Object]
-      pos += 1
+    underlying.foreach {
+      e =>
+        ret(pos) = e.asInstanceOf[Object]
+        pos += 1
     }
 
     ret
@@ -297,9 +298,10 @@ final case class SimpleVector[T](underlying: Vector[T]) extends JavaList[T] {
       .asInstanceOf[Array[X with Object]]
 
     var pos = 0
-    underlying.foreach { e =>
-      ret(pos) = clz.cast(e).asInstanceOf[X with Object]
-      pos += 1
+    underlying.foreach {
+      e =>
+        ret(pos) = clz.cast(e).asInstanceOf[X with Object]
+        pos += 1
     }
 
     ret

@@ -105,15 +105,16 @@ object VideoCubeDemo extends JFXApp {
     "THE HOBBIT Trailer - 2012 Movie - Official [HD].mp4"
   )
 
-  val mediaPlayers = vidFiles.map { filename =>
-    {
-      val file = new File(folder, filename)
-      val media = new Media(file.toURI.toURL.toExternalForm)
-      new MediaPlayer(media) {
-        volume = 0.5
-        cycleCount = MediaPlayer.Indefinite
+  val mediaPlayers = vidFiles.map {
+    filename =>
+      {
+        val file = new File(folder, filename)
+        val media = new Media(file.toURI.toURL.toExternalForm)
+        new MediaPlayer(media) {
+          volume = 0.5
+          cycleCount = MediaPlayer.Indefinite
+        }
       }
-    }
   }
 
   val cubeSystem = create3dContent()

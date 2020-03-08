@@ -499,7 +499,9 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         } filter (StdLib.doubleIsDefined)
 
       def extract(res: Result): Table =
-        perform(res) map { v => Table.constDouble(Set(v)) } getOrElse {
+        perform(res) map {
+          v => Table.constDouble(Set(v))
+        } getOrElse {
           Table.empty
         }
 

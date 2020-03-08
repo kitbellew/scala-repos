@@ -319,11 +319,12 @@ object M7 {
 
 object M8 {
 
-  def heads[a](xss: List[List[a]]): List[a] = xss.flatMap { y =>
-    y match {
-      case x :: xs => List(x)
-      case List()  => List()
-    }
+  def heads[a](xss: List[List[a]]): List[a] = xss.flatMap {
+    y =>
+      y match {
+        case x :: xs => List(x)
+        case List()  => List()
+      }
   }
 
   def test_heads[a](xss: List[List[a]]) = {

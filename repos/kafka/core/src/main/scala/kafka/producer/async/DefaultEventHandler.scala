@@ -67,13 +67,14 @@ class DefaultEventHandler[K, V](
 
   def handle(events: Seq[KeyedMessage[K, V]]) {
     val serializedData = serialize(events)
-    serializedData.foreach { keyed =>
-      val dataSize = keyed.message.payloadSize
-      producerTopicStats
-        .getProducerTopicStats(keyed.topic)
-        .byteRate
-        .mark(dataSize)
-      producerTopicStats.getProducerAllTopicsStats.byteRate.mark(dataSize)
+    serializedData.foreach {
+      keyed =>
+        val dataSize = keyed.message.payloadSize
+        producerTopicStats
+          .getProducerTopicStats(keyed.topic)
+          .byteRate
+          .mark(dataSize)
+        producerTopicStats.getProducerAllTopicsStats.byteRate.mark(dataSize)
     }
     var outstandingProduceRequests = serializedData
     var remainingRetries = config.messageSendMaxRetries + 1

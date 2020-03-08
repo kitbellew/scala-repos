@@ -218,13 +218,14 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
                 case _ =>
               }
 
-              seriesPath.foreach { p =>
-                val yAverage = yAxis.displayPosition(dayValues.average)
-                if (p.elements.isEmpty) {
-                  p.elements += MoveTo(x, yAverage)
-                } else {
-                  p.elements += LineTo(x, yAverage)
-                }
+              seriesPath.foreach {
+                p =>
+                  val yAverage = yAxis.displayPosition(dayValues.average)
+                  if (p.elements.isEmpty) {
+                    p.elements += MoveTo(x, yAverage)
+                  } else {
+                    p.elements += LineTo(x, yAverage)
+                  }
               }
             case _ =>
           }

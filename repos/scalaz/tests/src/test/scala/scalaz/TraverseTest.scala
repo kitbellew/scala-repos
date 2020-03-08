@@ -118,9 +118,10 @@ object TraverseTest extends SpecLite {
       }
     }
 
-    "double reverse" ! forAll { (is: List[Int]) =>
-      import syntax.monoid._
-      Endo(Traverse[List].reverse[Int]).multiply(2).apply(is) must_=== (is)
+    "double reverse" ! forAll {
+      (is: List[Int]) =>
+        import syntax.monoid._
+        Endo(Traverse[List].reverse[Int]).multiply(2).apply(is) must_=== (is)
     }
   }
 }

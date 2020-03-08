@@ -71,8 +71,8 @@ class FlowOnCompleteSpec extends AkkaSpec with ScriptedTest {
       val onCompleteProbe = TestProbe()
       val p = TestPublisher.manualProbe[Int]()
       import system.dispatcher // for the Future.onComplete
-      val foreachSink = Sink.foreach[Int] { x ⇒
-        onCompleteProbe.ref ! ("foreach-" + x)
+      val foreachSink = Sink.foreach[Int] {
+        x ⇒ onCompleteProbe.ref ! ("foreach-" + x)
       }
       val future = Source
         .fromPublisher(p)

@@ -325,11 +325,13 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     file.close()
 
     val inRdd = sc.binaryFiles(outFileName).cache()
-    inRdd.foreach { curData: (String, PortableDataStream) =>
-      curData._2.toArray() // force the file to read
+    inRdd.foreach {
+      curData: (String, PortableDataStream) =>
+        curData._2.toArray() // force the file to read
     }
-    val mappedRdd = inRdd.map { curData: (String, PortableDataStream) =>
-      (curData._2.getPath(), curData._2)
+    val mappedRdd = inRdd.map {
+      curData: (String, PortableDataStream) =>
+        (curData._2.getPath(), curData._2)
     }
     val (infile: String, indata: PortableDataStream) = mappedRdd.collect.head
 
@@ -354,11 +356,13 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     file.close()
 
     val inRdd = sc.binaryFiles(outFileName).persist(StorageLevel.DISK_ONLY)
-    inRdd.foreach { curData: (String, PortableDataStream) =>
-      curData._2.toArray() // force the file to read
+    inRdd.foreach {
+      curData: (String, PortableDataStream) =>
+        curData._2.toArray() // force the file to read
     }
-    val mappedRdd = inRdd.map { curData: (String, PortableDataStream) =>
-      (curData._2.getPath(), curData._2)
+    val mappedRdd = inRdd.map {
+      curData: (String, PortableDataStream) =>
+        (curData._2.getPath(), curData._2)
     }
     val (infile: String, indata: PortableDataStream) = mappedRdd.collect.head
 
@@ -384,19 +388,22 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     file.close()
 
     val inRdd = sc.binaryFiles(outFileName)
-    val mappedRdd = inRdd.map { curData: (String, PortableDataStream) =>
-      (curData._2.getPath(), curData._2)
+    val mappedRdd = inRdd.map {
+      curData: (String, PortableDataStream) =>
+        (curData._2.getPath(), curData._2)
     }
-    val copyRdd = mappedRdd.flatMap { curData: (String, PortableDataStream) =>
-      for (i <- 1 to numOfCopies) yield (i, curData._2)
+    val copyRdd = mappedRdd.flatMap {
+      curData: (String, PortableDataStream) =>
+        for (i <- 1 to numOfCopies) yield (i, curData._2)
     }
 
     val copyArr: Array[(Int, PortableDataStream)] = copyRdd.collect()
 
     // Try reading the output back as an object file
     assert(copyArr.length == numOfCopies)
-    copyArr.foreach { cEntry: (Int, PortableDataStream) =>
-      assert(cEntry._2.toArray === testOutput)
+    copyArr.foreach {
+      cEntry: (Int, PortableDataStream) =>
+        assert(cEntry._2.toArray === testOutput)
     }
 
   }

@@ -477,21 +477,23 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
     }
 
     def encodedSize(xs: List[CValue]) =
-      xs.foldLeft(rawBitSetCodec.encodedSize(undefineds(xs))) { (acc, x) =>
-        acc + (x match {
-          case x: CWrappedValue[_] =>
-            codecForCValueType(x.cType).encodedSize(x.value)
-          case _ => 0
-        })
+      xs.foldLeft(rawBitSetCodec.encodedSize(undefineds(xs))) {
+        (acc, x) =>
+          acc + (x match {
+            case x: CWrappedValue[_] =>
+              codecForCValueType(x.cType).encodedSize(x.value)
+            case _ => 0
+          })
       }
 
     override def maxSize(xs: List[CValue]) =
-      xs.foldLeft(rawBitSetCodec.maxSize(undefineds(xs))) { (acc, x) =>
-        acc + (x match {
-          case x: CWrappedValue[_] =>
-            codecForCValueType(x.cType).maxSize(x.value)
-          case _ => 0
-        })
+      xs.foldLeft(rawBitSetCodec.maxSize(undefineds(xs))) {
+        (acc, x) =>
+          acc + (x match {
+            case x: CWrappedValue[_] =>
+              codecForCValueType(x.cType).maxSize(x.value)
+            case _ => 0
+          })
       }
 
     def writeUnsafe(xs: List[CValue], sink: ByteBuffer) {

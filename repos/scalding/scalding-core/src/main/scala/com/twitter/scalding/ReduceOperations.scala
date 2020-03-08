@@ -470,8 +470,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
 
     assert(f._2.size == 1, "output field size must be 1")
     implicit val mon = new PriorityQueueMonoid[T](k)
-    mapPlusMap(f) { (tup: T) => mon.build(tup) } { (lout: PriorityQueue[T]) =>
-      lout.iterator.asScala.toList.sorted
+    mapPlusMap(f) { (tup: T) => mon.build(tup) } {
+      (lout: PriorityQueue[T]) => lout.iterator.asScala.toList.sorted
     }
   }
 

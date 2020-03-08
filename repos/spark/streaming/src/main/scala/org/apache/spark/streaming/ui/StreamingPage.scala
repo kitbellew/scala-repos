@@ -530,9 +530,10 @@ private[ui] class StreamingPage(parent: StreamingTab)
       }
       .getOrElse(emptyCell)
     val receiverLastErrorTime = receiverInfo
-      .map { r =>
-        if (r.lastErrorTime < 0) "-"
-        else SparkUIUtils.formatDate(r.lastErrorTime)
+      .map {
+        r =>
+          if (r.lastErrorTime < 0) "-"
+          else SparkUIUtils.formatDate(r.lastErrorTime)
       }
       .getOrElse(emptyCell)
     val receivedRecords = new EventRateUIData(eventRates)

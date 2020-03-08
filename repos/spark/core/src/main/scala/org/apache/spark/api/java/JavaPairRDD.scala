@@ -1150,8 +1150,8 @@ object JavaPairRDD {
   implicit def toRDD[K, V](rdd: JavaPairRDD[K, V]): RDD[(K, V)] = rdd.rdd
 
   private[spark] implicit def toScalaFunction2[T1, T2, R](
-      fun: JFunction2[T1, T2, R]): Function2[T1, T2, R] = { (x: T1, x1: T2) =>
-    fun.call(x, x1)
+      fun: JFunction2[T1, T2, R]): Function2[T1, T2, R] = {
+    (x: T1, x1: T2) => fun.call(x, x1)
   }
 
   private[spark] implicit def toScalaFunction[T, R](

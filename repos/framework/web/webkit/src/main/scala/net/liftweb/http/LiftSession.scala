@@ -123,22 +123,24 @@ object LiftSession {
       pp match {
         case Full(ParamPair(value, clz)) =>
           const
-            .find { cp =>
-              {
-                cp.getParameterTypes.length == 2 &&
-                cp.getParameterTypes().apply(0).isAssignableFrom(clz) &&
-                cp.getParameterTypes()
-                  .apply(1)
-                  .isAssignableFrom(classOf[LiftSession])
-              }
+            .find {
+              cp =>
+                {
+                  cp.getParameterTypes.length == 2 &&
+                  cp.getParameterTypes().apply(0).isAssignableFrom(clz) &&
+                  cp.getParameterTypes()
+                    .apply(1)
+                    .isAssignableFrom(classOf[LiftSession])
+                }
             }
             .map(const => PAndSessionConstructor(const)) orElse
             const
-              .find { cp =>
-                {
-                  cp.getParameterTypes.length == 1 &&
-                  cp.getParameterTypes().apply(0).isAssignableFrom(clz)
-                }
+              .find {
+                cp =>
+                  {
+                    cp.getParameterTypes.length == 1 &&
+                    cp.getParameterTypes().apply(0).isAssignableFrom(clz)
+                  }
               }
               .map(const => PConstructor(const)) orElse nullConstructor()
 
@@ -607,18 +609,19 @@ class LiftSession(
               state.uploadedFiles.filter(_.name == i.name).map(_.fileName)))
     }
 
-    val ret = toRun.map(_.owner).distinct.flatMap { w =>
-      val f = toRun.filter(_.owner == w)
-      w match {
-        // if it's going to a CometActor, batch up the commands
-        case Full(id) if nasyncById.containsKey(id) =>
-          Option(nasyncById.get(id)).toList.flatMap(a =>
-            a.!?(ActionMessageSet(f.map(i => buildFunc(i)), state)) match {
-              case li: List[_] => li
-              case other       => Nil
-            })
-        case _ => f.map(i => buildFunc(i).apply())
-      }
+    val ret = toRun.map(_.owner).distinct.flatMap {
+      w =>
+        val f = toRun.filter(_.owner == w)
+        w match {
+          // if it's going to a CometActor, batch up the commands
+          case Full(id) if nasyncById.containsKey(id) =>
+            Option(nasyncById.get(id)).toList.flatMap(a =>
+              a.!?(ActionMessageSet(f.map(i => buildFunc(i)), state)) match {
+                case li: List[_] => li
+                case other       => Nil
+              })
+          case _ => f.map(i => buildFunc(i).apply())
+        }
     }
 
     ret
@@ -858,7 +861,9 @@ class LiftSession(
     def latestPostPageFunctions = {
       accessPostPageFuncs {
         val ret = postPageFunctions.get(rv)
-        ret.foreach { r => postPageFunctions += (rv -> r.updateLastSeen) }
+        ret.foreach {
+          r => postPageFunctions += (rv -> r.updateLastSeen)
+        }
         ret
       }
     }
@@ -996,42 +1001,43 @@ class LiftSession(
       path: ParsePath,
       code: Int): Box[LiftResponse] = {
     overrideResponseCode.doWith(Empty) {
-      (template or findVisibleTemplate(path, request)).map { xhtml =>
-        fullPageLoad.doWith(true) {
-          // allow parallel snippets
-          // Phase 1: snippets & templates processing
-          val rawXml: NodeSeq = processSurroundAndInclude(PageName.get, xhtml)
+      (template or findVisibleTemplate(path, request)).map {
+        xhtml =>
+          fullPageLoad.doWith(true) {
+            // allow parallel snippets
+            // Phase 1: snippets & templates processing
+            val rawXml: NodeSeq = processSurroundAndInclude(PageName.get, xhtml)
 
-          // Make sure that functions have the right owner. It is important for this to
-          // happen before the merge phase so that in merge to have a correct view of
-          // mapped functions and their owners.
-          updateFunctionMap(S.functionMap, RenderVersion.get, millis)
+            // Make sure that functions have the right owner. It is important for this to
+            // happen before the merge phase so that in merge to have a correct view of
+            // mapped functions and their owners.
+            updateFunctionMap(S.functionMap, RenderVersion.get, millis)
 
-          // Clear the function map after copying it... but it
-          // might get some nifty new functions during the merge phase
-          S.clearFunctionMap
+            // Clear the function map after copying it... but it
+            // might get some nifty new functions during the merge phase
+            S.clearFunctionMap
 
-          // Phase 2: Head & Tail merge, add additional elements to body & head
-          val xml = merge(rawXml, request)
+            // Phase 2: Head & Tail merge, add additional elements to body & head
+            val xml = merge(rawXml, request)
 
-          // snapshot for ajax calls
-          nmessageCallback.put(
-            S.renderVersion,
-            S.PageStateHolder(Full(S.renderVersion), this))
+            // snapshot for ajax calls
+            nmessageCallback.put(
+              S.renderVersion,
+              S.PageStateHolder(Full(S.renderVersion), this))
 
-          // But we need to update the function map because there
-          // may be addition functions created during the JsToAppend processing
-          // See issue #983
-          updateFunctionMap(S.functionMap, RenderVersion.get, millis)
+            // But we need to update the function map because there
+            // may be addition functions created during the JsToAppend processing
+            // See issue #983
+            updateFunctionMap(S.functionMap, RenderVersion.get, millis)
 
-          notices = Nil
-          // Phase 3: Response conversion including fixHtml
-          LiftRules.convertResponse(
-            (xml, overrideResponseCode.is openOr code),
-            S.getResponseHeaders(LiftRules.defaultHeaders((xml, request))),
-            S.responseCookies,
-            request)
-        }
+            notices = Nil
+            // Phase 3: Response conversion including fixHtml
+            LiftRules.convertResponse(
+              (xml, overrideResponseCode.is openOr code),
+              S.getResponseHeaders(LiftRules.defaultHeaders((xml, request))),
+              S.responseCookies,
+              request)
+          }
       }
     }
   }
@@ -1216,17 +1222,18 @@ class LiftSession(
   }
 
   private[http] def attachRedirectFunc(uri: String, f: Box[() => Unit]) = {
-    f map { fnc =>
-      val func: String = {
-        val funcName = Helpers.nextFuncName
-        nmessageCallback.put(
-          funcName,
-          S.NFuncHolder(() => {
-            fnc()
-          }))
-        funcName
-      }
-      Helpers.appendFuncToURL(uri, func + "=_")
+    f map {
+      fnc =>
+        val func: String = {
+          val funcName = Helpers.nextFuncName
+          nmessageCallback.put(
+            funcName,
+            S.NFuncHolder(() => {
+              fnc()
+            }))
+          funcName
+        }
+        Helpers.appendFuncToURL(uri, func + "=_")
     } openOr uri
 
   }
@@ -1388,9 +1395,10 @@ class LiftSession(
       path: ParsePath,
       session: Req): Box[NodeSeq] = {
     val tpath = path.partPath
-    val splits = tpath.toList.filter { a =>
-      !a.startsWith("_") && !a.startsWith(".") && a.toLowerCase.indexOf(
-        "-hidden") == -1
+    val splits = tpath.toList.filter {
+      a =>
+        !a.startsWith("_") && !a.startsWith(".") && a.toLowerCase.indexOf(
+          "-hidden") == -1
     } match {
       case s @ _ if !s.isEmpty => s
       case _                   => List("index")
@@ -1438,19 +1446,22 @@ class LiftSession(
     S.doSnippet(attrValue) {
       val (cls, method) = splitColonPair(attrValue)
 
-      first(LiftRules.snippetNamesToSearch.vend(cls)) { nameToTry =>
-        LiftSession.findSnippetClass(nameToTry) flatMap { clz =>
-          instantiateOrRedirect(clz) flatMap { inst =>
-            invokeMethod(clz, inst, method) or invokeMethod(
-              clz,
-              inst,
-              method,
-              params.toList.toArray) match {
-              case Full(md: MetaData) => Full(md.copy(rest))
-              case _                  => Empty
-            }
+      first(LiftRules.snippetNamesToSearch.vend(cls)) {
+        nameToTry =>
+          LiftSession.findSnippetClass(nameToTry) flatMap {
+            clz =>
+              instantiateOrRedirect(clz) flatMap {
+                inst =>
+                  invokeMethod(clz, inst, method) or invokeMethod(
+                    clz,
+                    inst,
+                    method,
+                    params.toList.toArray) match {
+                    case Full(md: MetaData) => Full(md.copy(rest))
+                    case _                  => Empty
+                  }
+              }
           }
-        }
       } openOr rest
     }
   }
@@ -1540,11 +1551,12 @@ class LiftSession(
     * See if there's a object singleton with the right name
     */
   private def findSnippetObject(cls: String): Box[AnyRef] =
-    LiftSession.findSnippetClass(cls + "$").flatMap { c =>
-      tryo {
-        val field = c.getField("MODULE$")
-        field.get(null)
-      }
+    LiftSession.findSnippetClass(cls + "$").flatMap {
+      c =>
+        tryo {
+          val field = c.getField("MODULE$")
+          field.get(null)
+        }
     }
 
   /*
@@ -1742,14 +1754,15 @@ class LiftSession(
 
     def locateAndCacheSnippet(tagName: String): Box[AnyRef] =
       snippetMap.is.get(tagName) orElse {
-        first(LiftRules.snippetNamesToSearch.vend(tagName)) { nameToTry =>
-          val ret = findSnippetInstance(nameToTry)
-          // Update the snippetMap so that we reuse the same instance in this request (unless the snippet is transient)
-          ret
-            .filter(TransientSnippet.notTransient(_))
-            .foreach(s => snippetMap.set(snippetMap.is.updated(tagName, s)))
+        first(LiftRules.snippetNamesToSearch.vend(tagName)) {
+          nameToTry =>
+            val ret = findSnippetInstance(nameToTry)
+            // Update the snippetMap so that we reuse the same instance in this request (unless the snippet is transient)
+            ret
+              .filter(TransientSnippet.notTransient(_))
+              .foreach(s => snippetMap.set(snippetMap.is.updated(tagName, s)))
 
-          ret
+            ret
         }
       }
 

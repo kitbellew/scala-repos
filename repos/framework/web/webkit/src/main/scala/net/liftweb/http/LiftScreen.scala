@@ -1318,17 +1318,18 @@ trait ScreenWizardRendered extends Loggable {
       val curId = theFormEarly.flatMap(Helpers.findId) or
         f.field.uniqueFieldId openOr Helpers.nextFuncName
 
-      val theForm = theFormEarly.map { fe =>
-        {
-          val f = Helpers.deepEnsureUniqueId(fe)
-          val id =
-            Helpers.findBox(f)(_.attribute("id").map(_.text).filter(_ == curId))
-          if (id.isEmpty) {
-            Helpers.ensureId(f, curId)
-          } else {
-            f
+      val theForm = theFormEarly.map {
+        fe =>
+          {
+            val f = Helpers.deepEnsureUniqueId(fe)
+            val id = Helpers.findBox(f)(
+              _.attribute("id").map(_.text).filter(_ == curId))
+            if (id.isEmpty) {
+              Helpers.ensureId(f, curId)
+            } else {
+              f
+            }
           }
-        }
       }
 
       val myNotices = notices.filter(fi => fi._3.isDefined && fi._3 == curId)

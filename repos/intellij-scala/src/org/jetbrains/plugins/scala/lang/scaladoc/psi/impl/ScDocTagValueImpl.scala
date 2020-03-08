@@ -116,8 +116,8 @@ class ScDocTagValueImpl(node: ASTNode)
     if (parameters == null) {
       return Array[AnyRef]()
     }
-    parameters.foreach { param =>
-      result += new ScalaLookupItem(param, param.name, None)
+    parameters.foreach {
+      param => result += new ScalaLookupItem(param, param.name, None)
     }
     result.result()
   }

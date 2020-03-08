@@ -233,14 +233,16 @@ object JsonValidSpec extends Specification {
       }
 
       "reject malformed UUIDs" in {
-        JsString("bogus string").validate[java.util.UUID].recoverTotal { e =>
-          "error"
+        JsString("bogus string").validate[java.util.UUID].recoverTotal {
+          e => "error"
         } must beEqualTo("error")
       }
       "reject well-formed but incorrect UUIDS in strict mode" in {
         JsString("0-0-0-0-0")
           .validate[java.util.UUID](new Reads.UUIDReader(true))
-          .recoverTotal { e => "error" } must beEqualTo("error")
+          .recoverTotal {
+            e => "error"
+          } must beEqualTo("error")
       }
     }
 
@@ -285,11 +287,13 @@ object JsonValidSpec extends Specification {
         case JsError(e) => "error"
       } must beEqualTo(JsSuccess("error"))
 
-      JsNumber(123).validate[String].recoverTotal { e =>
-        "error"
+      JsNumber(123).validate[String].recoverTotal {
+        e => "error"
       } must beEqualTo("error")
 
-      JsNumber(123).validate[Int].recoverTotal { e => 0 } must beEqualTo(123)
+      JsNumber(123).validate[Int].recoverTotal {
+        e => 0
+      } must beEqualTo(123)
     }
   }
 

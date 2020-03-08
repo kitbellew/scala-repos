@@ -364,14 +364,15 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           // window w1 as (partition by p_mfgr order by p_name
           //               range between 2 preceding and 2 following),
           //        w2 as w1
-          val resolvedCrossReference = windowDefinitions.map { windowDefMap =>
-            windowDefMap.map {
-              case (windowName, WindowSpecReference(other)) =>
-                (
-                  windowName,
-                  windowDefMap(other).asInstanceOf[WindowSpecDefinition])
-              case o => o.asInstanceOf[(String, WindowSpecDefinition)]
-            }
+          val resolvedCrossReference = windowDefinitions.map {
+            windowDefMap =>
+              windowDefMap.map {
+                case (windowName, WindowSpecReference(other)) =>
+                  (
+                    windowName,
+                    windowDefMap(other).asInstanceOf[WindowSpecDefinition])
+                case o => o.asInstanceOf[(String, WindowSpecDefinition)]
+              }
           }
 
           val withWindowDefinitions =

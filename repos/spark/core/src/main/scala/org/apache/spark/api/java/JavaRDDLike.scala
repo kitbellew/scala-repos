@@ -162,8 +162,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     */
   def mapPartitions[U](
       f: FlatMapFunction[java.util.Iterator[T], U]): JavaRDD[U] = {
-    def fn: (Iterator[T]) => Iterator[U] = { (x: Iterator[T]) =>
-      f.call(x.asJava).asScala
+    def fn: (Iterator[T]) => Iterator[U] = {
+      (x: Iterator[T]) => f.call(x.asJava).asScala
     }
     JavaRDD.fromRDD(rdd.mapPartitions(fn)(fakeClassTag[U]))(fakeClassTag[U])
   }
@@ -174,8 +174,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   def mapPartitions[U](
       f: FlatMapFunction[java.util.Iterator[T], U],
       preservesPartitioning: Boolean): JavaRDD[U] = {
-    def fn: (Iterator[T]) => Iterator[U] = { (x: Iterator[T]) =>
-      f.call(x.asJava).asScala
+    def fn: (Iterator[T]) => Iterator[U] = {
+      (x: Iterator[T]) => f.call(x.asJava).asScala
     }
     JavaRDD.fromRDD(
       rdd.mapPartitions(fn, preservesPartitioning)(fakeClassTag[U]))(
@@ -187,8 +187,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     */
   def mapPartitionsToDouble(
       f: DoubleFlatMapFunction[java.util.Iterator[T]]): JavaDoubleRDD = {
-    def fn: (Iterator[T]) => Iterator[jl.Double] = { (x: Iterator[T]) =>
-      f.call(x.asJava).asScala
+    def fn: (Iterator[T]) => Iterator[jl.Double] = {
+      (x: Iterator[T]) => f.call(x.asJava).asScala
     }
     new JavaDoubleRDD(
       rdd.mapPartitions(fn).map((x: jl.Double) => x.doubleValue()))
@@ -200,8 +200,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   def mapPartitionsToPair[K2, V2](
       f: PairFlatMapFunction[java.util.Iterator[T], K2, V2])
       : JavaPairRDD[K2, V2] = {
-    def fn: (Iterator[T]) => Iterator[(K2, V2)] = { (x: Iterator[T]) =>
-      f.call(x.asJava).asScala
+    def fn: (Iterator[T]) => Iterator[(K2, V2)] = {
+      (x: Iterator[T]) => f.call(x.asJava).asScala
     }
     JavaPairRDD
       .fromRDD(rdd.mapPartitions(fn))(fakeClassTag[K2], fakeClassTag[V2])
@@ -213,8 +213,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   def mapPartitionsToDouble(
       f: DoubleFlatMapFunction[java.util.Iterator[T]],
       preservesPartitioning: Boolean): JavaDoubleRDD = {
-    def fn: (Iterator[T]) => Iterator[jl.Double] = { (x: Iterator[T]) =>
-      f.call(x.asJava).asScala
+    def fn: (Iterator[T]) => Iterator[jl.Double] = {
+      (x: Iterator[T]) => f.call(x.asJava).asScala
     }
     new JavaDoubleRDD(
       rdd
@@ -228,8 +228,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   def mapPartitionsToPair[K2, V2](
       f: PairFlatMapFunction[java.util.Iterator[T], K2, V2],
       preservesPartitioning: Boolean): JavaPairRDD[K2, V2] = {
-    def fn: (Iterator[T]) => Iterator[(K2, V2)] = { (x: Iterator[T]) =>
-      f.call(x.asJava).asScala
+    def fn: (Iterator[T]) => Iterator[(K2, V2)] = {
+      (x: Iterator[T]) => f.call(x.asJava).asScala
     }
     JavaPairRDD.fromRDD(rdd.mapPartitions(fn, preservesPartitioning))(
       fakeClassTag[K2],

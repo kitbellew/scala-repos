@@ -229,8 +229,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     */
   def findAllByPreparedStatement(
       f: SuperConnection => PreparedStatement): List[A] = {
-    DB.use(dbDefaultConnectionIdentifier) { conn =>
-      findAllByPreparedStatement(dbDefaultConnectionIdentifier, f(conn))
+    DB.use(dbDefaultConnectionIdentifier) {
+      conn => findAllByPreparedStatement(dbDefaultConnectionIdentifier, f(conn))
     }
   }
 
@@ -242,7 +242,9 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   def findAllByPreparedStatementDb[T](
       dbId: ConnectionIdentifier,
       stmt: PreparedStatement)(f: A => Box[T]): List[T] = {
-    DB.exec(stmt) { rs => createInstances(dbId, rs, Empty, Empty, f) }
+    DB.exec(stmt) {
+      rs => createInstances(dbId, rs, Empty, Empty, f)
+    }
   }
 
   def findAllByInsecureSqlDb(
@@ -259,10 +261,14 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       dbId: ConnectionIdentifier,
       query: String,
       checkedBy: IHaveValidatedThisSQL)(f: A => Box[T]): List[T] = {
-    DB.use(dbId) { conn =>
-      DB.prepareStatement(query, conn) { st =>
-        DB.exec(st) { rs => createInstances(dbId, rs, Empty, Empty, f) }
-      }
+    DB.use(dbId) {
+      conn =>
+        DB.prepareStatement(query, conn) {
+          st =>
+            DB.exec(st) {
+              rs => createInstances(dbId, rs, Empty, Empty, f)
+            }
+        }
     }
   }
 
@@ -274,25 +280,28 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     countDb(dbDefaultConnectionIdentifier, by: _*)
 
   def countDb(dbId: ConnectionIdentifier, by: QueryParam[A]*): Long = {
-    DB.use(dbId) { conn =>
-      val bl = by.toList ::: addlQueryParams.get
-      val (query, start, max) = addEndStuffs(
-        addFields(
-          "SELECT COUNT(*) FROM " + MapperRules.quoteTableName.vend(
-            _dbTableNameLC) + "  ",
-          false,
+    DB.use(dbId) {
+      conn =>
+        val bl = by.toList ::: addlQueryParams.get
+        val (query, start, max) = addEndStuffs(
+          addFields(
+            "SELECT COUNT(*) FROM " + MapperRules.quoteTableName.vend(
+              _dbTableNameLC) + "  ",
+            false,
+            bl,
+            conn),
           bl,
-          conn),
-        bl,
-        conn)
+          conn)
 
-      DB.prepareStatement(query, conn) { st =>
-        setStatementFields(st, bl, 1, conn)
-        DB.exec(st) { rs =>
-          if (rs.next) rs.getLong(1)
-          else 0
+        DB.prepareStatement(query, conn) {
+          st =>
+            setStatementFields(st, bl, 1, conn)
+            DB.exec(st) {
+              rs =>
+                if (rs.next) rs.getLong(1)
+                else 0
+            }
         }
-      }
     }
   }
 
@@ -398,23 +407,25 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   def bulkDelete_!!(by: QueryParam[A]*): Boolean =
     bulkDelete_!!(dbDefaultConnectionIdentifier, by: _*)
   def bulkDelete_!!(dbId: ConnectionIdentifier, by: QueryParam[A]*): Boolean = {
-    DB.use(dbId) { conn =>
-      val bl = by.toList ::: addlQueryParams.get
-      val (query, start, max) = addEndStuffs(
-        addFields(
-          "DELETE FROM " + MapperRules.quoteTableName.vend(
-            _dbTableNameLC) + " ",
-          false,
+    DB.use(dbId) {
+      conn =>
+        val bl = by.toList ::: addlQueryParams.get
+        val (query, start, max) = addEndStuffs(
+          addFields(
+            "DELETE FROM " + MapperRules.quoteTableName.vend(
+              _dbTableNameLC) + " ",
+            false,
+            bl,
+            conn),
           bl,
-          conn),
-        bl,
-        conn)
+          conn)
 
-      DB.prepareStatement(query, conn) { st =>
-        setStatementFields(st, bl, 1, conn)
-        st.executeUpdate
-        true
-      }
+        DB.prepareStatement(query, conn) {
+          st =>
+            setStatementFields(st, bl, 1, conn)
+            st.executeUpdate
+            true
+        }
     }
   }
 
@@ -467,12 +478,14 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       dbId: ConnectionIdentifier,
       fields: Seq[SelectableField],
       by: QueryParam[A]*)(f: A => Box[T]): List[T] = {
-    DB.use(dbId) { conn =>
-      val (query, start, max, bl) = buildSelectString(fields, conn, by: _*)
-      DB.prepareStatement(query, conn) { st =>
-        setStatementFields(st, bl, 1, conn)
-        DB.exec(st)(createInstances(dbId, _, start, max, f))
-      }
+    DB.use(dbId) {
+      conn =>
+        val (query, start, max, bl) = buildSelectString(fields, conn, by: _*)
+        DB.prepareStatement(query, conn) {
+          st =>
+            setStatementFields(st, bl, 1, conn)
+            DB.exec(st)(createInstances(dbId, _, start, max, f))
+        }
     }
   }
 
@@ -509,19 +522,21 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
         var updatedWhat = what
         x match {
           case Cmp(field, opr, Full(_), _, dbFunc) =>
-            (1 to field.dbColumnCount).foreach { cn =>
-              updatedWhat = updatedWhat + whereOrAnd + dbFunc(
-                MapperRules.quoteColumnName.vend(
-                  field.dbColumnNames(field.name)(cn - 1))) + " " + opr + " ? "
+            (1 to field.dbColumnCount).foreach {
+              cn =>
+                updatedWhat = updatedWhat + whereOrAnd + dbFunc(
+                  MapperRules.quoteColumnName.vend(field.dbColumnNames(
+                    field.name)(cn - 1))) + " " + opr + " ? "
             }
 
           case Cmp(field, opr, _, Full(otherField), dbFunc) =>
-            (1 to field.dbColumnCount).foreach { cn =>
-              updatedWhat = updatedWhat + whereOrAnd + dbFunc(
-                MapperRules.quoteColumnName.vend(
-                  field.dbColumnNames(field.name)(cn - 1))) + " " + opr + " " +
-                MapperRules.quoteColumnName.vend(
-                  otherField.dbColumnNames(otherField.name)(cn - 1))
+            (1 to field.dbColumnCount).foreach {
+              cn =>
+                updatedWhat = updatedWhat + whereOrAnd + dbFunc(
+                  MapperRules.quoteColumnName.vend(field.dbColumnNames(
+                    field.name)(cn - 1))) + " " + opr + " " +
+                  MapperRules.quoteColumnName.vend(
+                    otherField.dbColumnNames(otherField.name)(cn - 1))
             }
 
           case Cmp(field, opr, Empty, Empty, dbFunc) =>
@@ -729,26 +744,28 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       case _ =>
         thePrimaryKeyField
           .map(im =>
-            DB.use(toDelete.connectionIdentifier) { conn =>
-              _beforeDelete(toDelete)
-              val ret = DB.prepareStatement(
-                "DELETE FROM " + MapperRules.quoteTableName.vend(
-                  _dbTableNameLC) + " WHERE " + im + " = ?",
-                conn) { st =>
-                val indVal = indexedField(toDelete)
-                indVal.map { indVal =>
-                  setPreparedStatementValue(
-                    conn,
-                    st,
-                    1,
-                    indVal,
-                    im,
-                    objectSetterFor(indVal))
-                  st.executeUpdate == 1
-                } openOr false
-              }
-              _afterDelete(toDelete)
-              ret
+            DB.use(toDelete.connectionIdentifier) {
+              conn =>
+                _beforeDelete(toDelete)
+                val ret = DB.prepareStatement(
+                  "DELETE FROM " + MapperRules.quoteTableName.vend(
+                    _dbTableNameLC) + " WHERE " + im + " = ?",
+                  conn) {
+                  st =>
+                    val indVal = indexedField(toDelete)
+                    indVal.map { indVal =>
+                      setPreparedStatementValue(
+                        conn,
+                        st,
+                        1,
+                        indVal,
+                        im,
+                        objectSetterFor(indVal))
+                      st.executeUpdate == 1
+                    } openOr false
+                }
+                _afterDelete(toDelete)
+                ret
             })
           .openOr(false)
     }
@@ -1043,104 +1060,107 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
 
         if (saved_?(toSave) && clean_?(toSave)) true
         else {
-          val ret = DB.use(toSave.connectionIdentifier) { conn =>
-            _beforeSave(toSave)
-            val ret = if (saved_?(toSave)) {
-              _beforeUpdate(toSave)
-              val ret: Boolean =
-                if (!dirty_?(toSave)) true
-                else {
-                  val ret: Boolean = DB.prepareStatement(
-                    "UPDATE " + MapperRules.quoteTableName.vend(
-                      _dbTableNameLC) + " SET " + whatToSet(
-                      toSave) + " WHERE " + thePrimaryKeyField
-                      .openOrThrowException("Cross your fingers") + " = ?",
-                    conn
-                  ) { st =>
-                    var colNum = 1
+          val ret = DB.use(toSave.connectionIdentifier) {
+            conn =>
+              _beforeSave(toSave)
+              val ret = if (saved_?(toSave)) {
+                _beforeUpdate(toSave)
+                val ret: Boolean =
+                  if (!dirty_?(toSave)) true
+                  else {
+                    val ret: Boolean = DB.prepareStatement(
+                      "UPDATE " + MapperRules.quoteTableName.vend(
+                        _dbTableNameLC) + " SET " + whatToSet(
+                        toSave) + " WHERE " + thePrimaryKeyField
+                        .openOrThrowException("Cross your fingers") + " = ?",
+                      conn
+                    ) {
+                      st =>
+                        var colNum = 1
 
-                    // Here we apply each column's value to the prepared statement
-                    for (col <- mappedColumns) {
-                      val colVal = ??(col._2, toSave)
-                      if (!columnPrimaryKey_?(col._1) && colVal.dirty_?) {
-                        setPreparedStatementValue(
-                          conn,
-                          st,
-                          colNum,
-                          colVal,
-                          col._1,
-                          objectSetterFor(colVal))
-                        colNum = colNum + 1
-                      }
+                        // Here we apply each column's value to the prepared statement
+                        for (col <- mappedColumns) {
+                          val colVal = ??(col._2, toSave)
+                          if (!columnPrimaryKey_?(col._1) && colVal.dirty_?) {
+                            setPreparedStatementValue(
+                              conn,
+                              st,
+                              colNum,
+                              colVal,
+                              col._1,
+                              objectSetterFor(colVal))
+                            colNum = colNum + 1
+                          }
+                        }
+
+                        for {
+                          indVal <- indexedField(toSave)
+                          indexColumnName <- thePrimaryKeyField
+                        } {
+                          setPreparedStatementValue(
+                            conn,
+                            st,
+                            colNum,
+                            indVal,
+                            indexColumnName,
+                            objectSetterFor(indVal))
+                        }
+
+                        st.executeUpdate
+                        true
                     }
+                    ret
+                  }
+                _afterUpdate(toSave)
+                ret
+              } else {
+                _beforeCreate(toSave)
 
-                    for {
-                      indVal <- indexedField(toSave)
-                      indexColumnName <- thePrimaryKeyField
-                    } {
+                val query = "INSERT INTO " + MapperRules.quoteTableName.vend(
+                  _dbTableNameLC) + " (" + columnNamesForInsert + ") VALUES (" + columnQueriesForInsert + ")"
+
+                def prepStat(st: PreparedStatement) {
+                  var colNum = 1
+
+                  for (col <- mappedColumns) {
+                    if (!columnPrimaryKey_?(col._1)) {
+                      val colVal = col._2
+                        .invoke(toSave)
+                        .asInstanceOf[MappedField[AnyRef, A]]
                       setPreparedStatementValue(
                         conn,
                         st,
                         colNum,
-                        indVal,
-                        indexColumnName,
-                        objectSetterFor(indVal))
+                        colVal,
+                        col._1,
+                        objectSetterFor(colVal))
+                      colNum = colNum + 1
                     }
-
-                    st.executeUpdate
-                    true
-                  }
-                  ret
-                }
-              _afterUpdate(toSave)
-              ret
-            } else {
-              _beforeCreate(toSave)
-
-              val query = "INSERT INTO " + MapperRules.quoteTableName.vend(
-                _dbTableNameLC) + " (" + columnNamesForInsert + ") VALUES (" + columnQueriesForInsert + ")"
-
-              def prepStat(st: PreparedStatement) {
-                var colNum = 1
-
-                for (col <- mappedColumns) {
-                  if (!columnPrimaryKey_?(col._1)) {
-                    val colVal =
-                      col._2.invoke(toSave).asInstanceOf[MappedField[AnyRef, A]]
-                    setPreparedStatementValue(
-                      conn,
-                      st,
-                      colNum,
-                      colVal,
-                      col._1,
-                      objectSetterFor(colVal))
-                    colNum = colNum + 1
                   }
                 }
+
+                // Figure out which columns are auto-generated
+                val generatedColumns = (mappedColumnInfo
+                  .filter(_._2.dbAutogenerated_?)
+                  .map(_._1))
+                  .toList
+
+                val ret = conn.driverType.performInsert(
+                  conn,
+                  query,
+                  prepStat,
+                  MapperRules.quoteTableName.vend(_dbTableNameLC),
+                  generatedColumns) {
+                  case Right(count) => count == 1
+                  case Left(rs)     => runAppliers(rs)
+                }
+
+                _afterCreate(toSave)
+                toSave.persisted_? = true
+                ret
               }
-
-              // Figure out which columns are auto-generated
-              val generatedColumns = (mappedColumnInfo
-                .filter(_._2.dbAutogenerated_?)
-                .map(_._1))
-                .toList
-
-              val ret = conn.driverType.performInsert(
-                conn,
-                query,
-                prepStat,
-                MapperRules.quoteTableName.vend(_dbTableNameLC),
-                generatedColumns) {
-                case Right(count) => count == 1
-                case Left(rs)     => runAppliers(rs)
-              }
-
-              _afterCreate(toSave)
-              toSave.persisted_? = true
+              _afterSave(toSave)
               ret
-            }
-            _afterSave(toSave)
-            ret
           }
 
           // clear dirty and get rid of history
@@ -1211,42 +1231,44 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
         case None =>
           val colType = meta.getColumnType(pos)
 
-          Box(mappedColumns.get(colName)).flatMap { fieldInfo =>
-            val setTo = {
-              val tField =
-                fieldInfo.invoke(this).asInstanceOf[MappedField[AnyRef, A]]
+          Box(mappedColumns.get(colName)).flatMap {
+            fieldInfo =>
+              val setTo = {
+                val tField =
+                  fieldInfo.invoke(this).asInstanceOf[MappedField[AnyRef, A]]
 
-              Some(colType match {
-                case Types.INTEGER | Types.BIGINT => {
-                  val bsl = tField.buildSetLongValue(fieldInfo, colName)
-                  (rs: ResultSet, pos: Int, objInst: A) =>
-                    bsl(objInst, rs.getLong(pos), rs.wasNull)
-                }
-                case Types.VARCHAR => {
-                  val bsl = tField.buildSetStringValue(fieldInfo, colName)
-                  (rs: ResultSet, pos: Int, objInst: A) =>
-                    bsl(objInst, rs.getString(pos))
-                }
-                case Types.DATE | Types.TIME | Types.TIMESTAMP =>
-                  val bsl = tField.buildSetDateValue(fieldInfo, colName)
-                  (rs: ResultSet, pos: Int, objInst: A) =>
-                    bsl(objInst, rs.getTimestamp(pos))
-                case Types.BOOLEAN | Types.BIT => {
-                  val bsl = tField.buildSetBooleanValue(fieldInfo, colName)
-                  (rs: ResultSet, pos: Int, objInst: A) =>
-                    bsl(objInst, rs.getBoolean(pos), rs.wasNull)
-                }
-                case _ => { (rs: ResultSet, pos: Int, objInst: A) =>
-                  {
-                    val res = rs.getObject(pos)
-                    findApplier(colName, res).foreach(f => f(objInst, res))
+                Some(colType match {
+                  case Types.INTEGER | Types.BIGINT => {
+                    val bsl = tField.buildSetLongValue(fieldInfo, colName)
+                    (rs: ResultSet, pos: Int, objInst: A) =>
+                      bsl(objInst, rs.getLong(pos), rs.wasNull)
                   }
-                }
-              })
-            }
+                  case Types.VARCHAR => {
+                    val bsl = tField.buildSetStringValue(fieldInfo, colName)
+                    (rs: ResultSet, pos: Int, objInst: A) =>
+                      bsl(objInst, rs.getString(pos))
+                  }
+                  case Types.DATE | Types.TIME | Types.TIMESTAMP =>
+                    val bsl = tField.buildSetDateValue(fieldInfo, colName)
+                    (rs: ResultSet, pos: Int, objInst: A) =>
+                      bsl(objInst, rs.getTimestamp(pos))
+                  case Types.BOOLEAN | Types.BIT => {
+                    val bsl = tField.buildSetBooleanValue(fieldInfo, colName)
+                    (rs: ResultSet, pos: Int, objInst: A) =>
+                      bsl(objInst, rs.getBoolean(pos), rs.wasNull)
+                  }
+                  case _ => {
+                    (rs: ResultSet, pos: Int, objInst: A) =>
+                      {
+                        val res = rs.getObject(pos)
+                        findApplier(colName, res).foreach(f => f(objInst, res))
+                      }
+                  }
+                })
+              }
 
-            columnNameToMappee(colName) = Box(setTo)
-            setTo
+              columnNameToMappee(colName) = Box(setTo)
+              setTo
           }
 
         case Some(of) => of
@@ -2370,20 +2392,22 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
           _dbTableNameLC) + " WHERE " + MapperRules.quoteColumnName.vend(
           field._dbColumnNameLC) + " = ?",
         conn
-      ) { st =>
-        if (field.dbIgnoreSQLType_?)
-          st.setObject(1, field.makeKeyJDBCFriendly(key))
-        else
-          st.setObject(
-            1,
-            field.makeKeyJDBCFriendly(key),
-            conn.driverType.columnTypeMap(
-              field.targetSQLType(field._dbColumnNameLC)))
-        DB.exec(st) { rs =>
-          val mi = buildMapper(rs)
-          if (rs.next) Full(createInstance(dbId, rs, mi))
-          else Empty
-        }
+      ) {
+        st =>
+          if (field.dbIgnoreSQLType_?)
+            st.setObject(1, field.makeKeyJDBCFriendly(key))
+          else
+            st.setObject(
+              1,
+              field.makeKeyJDBCFriendly(key),
+              conn.driverType.columnTypeMap(
+                field.targetSQLType(field._dbColumnNameLC)))
+          DB.exec(st) {
+            rs =>
+              val mi = buildMapper(rs)
+              if (rs.next) Full(createInstance(dbId, rs, mi))
+              else Empty
+          }
       }
     }
 
@@ -2397,17 +2421,20 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
       dbId: ConnectionIdentifier,
       fields: Seq[SelectableField],
       by: QueryParam[A]*): Box[A] = {
-    DB.use(dbId) { conn =>
-      val (query, start, max, bl) = buildSelectString(fields, conn, by: _*)
-      DB.prepareStatement(query, conn) { st =>
-        setStatementFields(st, bl, 1, conn)
-        DB.exec(st) { rs =>
-          val mi = buildMapper(rs)
-          if (rs.next) Full(createInstance(dbId, rs, mi))
-          else Empty
-        }
+    DB.use(dbId) {
+      conn =>
+        val (query, start, max, bl) = buildSelectString(fields, conn, by: _*)
+        DB.prepareStatement(query, conn) {
+          st =>
+            setStatementFields(st, bl, 1, conn)
+            DB.exec(st) {
+              rs =>
+                val mi = buildMapper(rs)
+                if (rs.next) Full(createInstance(dbId, rs, mi))
+                else Empty
+            }
 
-      }
+        }
     }
   }
 

@@ -207,36 +207,38 @@ object Reflector {
       }
 
       def constructors: Seq[ConstructorDescriptor] = {
-        tpe.erasure.getConstructors.toSeq map { ctor =>
-          val ctorParameterNames =
-            if (Modifier.isPublic(
-                  ctor.getModifiers) && ctor.getParameterTypes.length > 0)
-              allCatch opt {
-                paramNameReader.lookupParameterNames(ctor)
-              } getOrElse Nil
-            else
-              Nil
-          val genParams = Vector(ctor.getGenericParameterTypes: _*)
-          val ctorParams = ctorParameterNames.zipWithIndex map {
-            case (paramName, index) =>
-              val decoded = unmangleName(paramName)
-              val default = companion flatMap { comp =>
-                defaultValue(comp.erasure.erasure, comp.instance, index)
-              }
-              val theType = ctorParamType(
-                paramName,
-                index,
-                tpe,
-                ctorParameterNames.toList,
-                genParams(index))
-              ConstructorParamDescriptor(
-                decoded,
-                paramName,
-                index,
-                theType,
-                default)
-          }
-          ConstructorDescriptor(ctorParams.toSeq, ctor, isPrimary = false)
+        tpe.erasure.getConstructors.toSeq map {
+          ctor =>
+            val ctorParameterNames =
+              if (Modifier.isPublic(
+                    ctor.getModifiers) && ctor.getParameterTypes.length > 0)
+                allCatch opt {
+                  paramNameReader.lookupParameterNames(ctor)
+                } getOrElse Nil
+              else
+                Nil
+            val genParams = Vector(ctor.getGenericParameterTypes: _*)
+            val ctorParams = ctorParameterNames.zipWithIndex map {
+              case (paramName, index) =>
+                val decoded = unmangleName(paramName)
+                val default = companion flatMap {
+                  comp =>
+                    defaultValue(comp.erasure.erasure, comp.instance, index)
+                }
+                val theType = ctorParamType(
+                  paramName,
+                  index,
+                  tpe,
+                  ctorParameterNames.toList,
+                  genParams(index))
+                ConstructorParamDescriptor(
+                  decoded,
+                  paramName,
+                  index,
+                  theType,
+                  default)
+            }
+            ConstructorDescriptor(ctorParams.toSeq, ctor, isPrimary = false)
         }
       }
 
@@ -254,8 +256,8 @@ object Reflector {
     allCatch.withApply(_ => None) {
       Option(
         compClass.getMethod(
-          "%s$%d".format(ConstructorDefault, argIndex + 1))) map { meth => () =>
-        meth.invoke(compObj)
+          "%s$%d".format(ConstructorDefault, argIndex + 1))) map {
+        meth => () => meth.invoke(compObj)
       }
     }
   }

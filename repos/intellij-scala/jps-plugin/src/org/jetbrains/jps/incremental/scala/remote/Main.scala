@@ -73,9 +73,10 @@ object Main {
 
     try {
       val args = {
-        val strings = arguments.map { arg =>
-          val s = new String(Base64Converter.decode(arg.getBytes), "UTF-8")
-          if (s == "#STUB#") "" else s
+        val strings = arguments.map {
+          arg =>
+            val s = new String(Base64Converter.decode(arg.getBytes), "UTF-8")
+            if (s == "#STUB#") "" else s
         }
         Arguments.from(strings)
       }

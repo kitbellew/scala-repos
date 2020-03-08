@@ -339,7 +339,9 @@ trait ScalatraBase
   protected var doNotFound: Action
 
   def notFound(fun: => Any): Unit = {
-    doNotFound = { () => fun }
+    doNotFound = {
+      () => fun
+    }
   }
 
   /**
@@ -348,9 +350,10 @@ trait ScalatraBase
     * and an `Allow` header containing a comma-delimited list of the allowed
     * methods.
     */
-  protected var doMethodNotAllowed: (Set[HttpMethod] => Any) = { allow =>
-    status = 405
-    response.headers("Allow") = allow.mkString(", ")
+  protected var doMethodNotAllowed: (Set[HttpMethod] => Any) = {
+    allow =>
+      status = 405
+      response.headers("Allow") = allow.mkString(", ")
   }
 
   def methodNotAllowed(f: Set[HttpMethod] => Any): Unit = {
@@ -494,8 +497,8 @@ trait ScalatraBase
     case file: File =>
       if (contentType startsWith "text")
         response.setCharacterEncoding(FileCharset(file).name)
-      using(new FileInputStream(file)) { in =>
-        zeroCopy(in, response.outputStream)
+      using(new FileInputStream(file)) {
+        in => zeroCopy(in, response.outputStream)
       }
     // If an action returns Unit, it assumes responsibility for the response
     case _: Unit | Unit | null =>

@@ -849,8 +849,8 @@ class JDBCSuite
   test("test credentials in the properties are not in plan output") {
     val df = sql("SELECT * FROM parts")
     val explain = ExplainCommand(df.queryExecution.logical, extended = true)
-    sqlContext.executePlan(explain).executedPlan.executeCollect().foreach { r =>
-      assert(!List("testPass", "testUser").exists(r.toString.contains))
+    sqlContext.executePlan(explain).executedPlan.executeCollect().foreach {
+      r => assert(!List("testPass", "testUser").exists(r.toString.contains))
     }
     // test the JdbcRelation toString output
     df.queryExecution.analyzed.collect {
@@ -863,8 +863,8 @@ class JDBCSuite
     val df =
       sqlContext.read.jdbc(urlWithUserAndPass, "TEST.PEOPLE", new Properties)
     val explain = ExplainCommand(df.queryExecution.logical, extended = true)
-    sqlContext.executePlan(explain).executedPlan.executeCollect().foreach { r =>
-      assert(!List("testPass", "testUser").exists(r.toString.contains))
+    sqlContext.executePlan(explain).executedPlan.executeCollect().foreach {
+      r => assert(!List("testPass", "testUser").exists(r.toString.contains))
     }
   }
 

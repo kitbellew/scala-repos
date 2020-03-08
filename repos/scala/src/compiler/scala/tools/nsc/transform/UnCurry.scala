@@ -652,8 +652,8 @@ abstract class UnCurry
          */
         case Template(_, _, _) =>
           localTyper = typer.atOwner(tree, currentClass)
-          useNewMembers(currentClass) { newMembers =>
-            deriveTemplate(tree)(transformTrees(newMembers) ::: _)
+          useNewMembers(currentClass) {
+            newMembers => deriveTemplate(tree)(transformTrees(newMembers) ::: _)
           }
 
         case dd @ DefDef(_, _, _, vparamss0, _, rhs0) =>

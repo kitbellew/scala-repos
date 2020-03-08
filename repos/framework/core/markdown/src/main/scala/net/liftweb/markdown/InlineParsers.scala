@@ -194,8 +194,8 @@ trait InlineParsers extends BaseParsers {
     */
   val code: Parser[String] =
     ((("``" ~> ((not("``") ~> aChar) +) <~ "``") ^^ { _.mkString }) |
-      ('`' ~> markdownText(Set('`'), false) <~ '`')) ^^ { c =>
-      deco.decorateCode(c.mkString)
+      ('`' ~> markdownText(Set('`'), false) <~ '`')) ^^ {
+      c => deco.decorateCode(c.mkString)
     }
 
   /** Parses any xml tag and escapes attribute values.

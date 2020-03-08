@@ -47,12 +47,13 @@ object PlaySettings {
     playPlugin := false,
     externalizeResources := true,
     javacOptions in (Compile, doc) := List("-encoding", "utf8"),
-    libraryDependencies <+= (playPlugin) { isPlugin =>
-      if (isPlugin) {
-        "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided"
-      } else {
-        "com.typesafe.play" %% "play-server" % play.core.PlayVersion.current
-      }
+    libraryDependencies <+= (playPlugin) {
+      isPlugin =>
+        if (isPlugin) {
+          "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided"
+        } else {
+          "com.typesafe.play" %% "play-server" % play.core.PlayVersion.current
+        }
     },
     libraryDependencies += "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test",
     ivyConfigurations += DocsApplication,
@@ -211,15 +212,16 @@ object PlaySettings {
       val docDirectory = (doc in Compile).value
       val docDirectoryLen = docDirectory.getCanonicalPath.length
       val pathFinder = docDirectory ** "*"
-      pathFinder.get map { docFile: File =>
-        docFile -> ("share/doc/api/" + docFile.getCanonicalPath.substring(
-          docDirectoryLen))
+      pathFinder.get map {
+        docFile: File =>
+          docFile -> ("share/doc/api/" + docFile.getCanonicalPath.substring(
+            docDirectoryLen))
       }
     },
     mappings in Universal ++= {
       val pathFinder = baseDirectory.value * "README*"
-      pathFinder.get map { readmeFile: File =>
-        readmeFile -> readmeFile.getName
+      pathFinder.get map {
+        readmeFile: File => readmeFile -> readmeFile.getName
       }
     },
     // Adds the Play application directory to the command line args passed to Play

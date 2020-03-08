@@ -41,8 +41,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
 
   testWithMultipleSer(
     "spilling in local cluster with many reduce tasks",
-    loadDefaults = true) { (conf: SparkConf) =>
-    testSpillingInLocalCluster(conf, 100)
+    loadDefaults = true) {
+    (conf: SparkConf) => testSpillingInLocalCluster(conf, 100)
   }
 
   test("cleanup of intermediate files in sorter") {

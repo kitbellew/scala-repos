@@ -201,10 +201,11 @@ object DebuggerUtil {
         }
       case _ => Seq.empty
     }
-    val subst = typeParams.foldLeft(ScSubstitutor.empty) { (subst, tp) =>
-      subst.bindT(
-        (tp.name, ScalaPsiUtil.getPsiElementId(tp)),
-        tp.upperBound.getOrAny)
+    val subst = typeParams.foldLeft(ScSubstitutor.empty) {
+      (subst, tp) =>
+        subst.bindT(
+          (tp.name, ScalaPsiUtil.getPsiElementId(tp)),
+          tp.upperBound.getOrAny)
     }
     val localParameters = function match {
       case fun: ScFunctionDefinition if fun.isLocal => localParamsForFunDef(fun)

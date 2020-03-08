@@ -129,7 +129,9 @@ class ObservableMapSpec[K, V]
   it should "return changed map" in {
     // Preparation
     val map = ObservableMap((1, "one"), (2, "two"))
-    map onChange { (sourceMap, change) => sourceMap should be(map) }
+    map onChange {
+      (sourceMap, change) => sourceMap should be(map)
+    }
 
     // Execution
     map(3) = "three"
@@ -139,13 +141,14 @@ class ObservableMapSpec[K, V]
     // Preparation
     val map = ObservableMap.empty[Int, String]
     val addedEntries = Buffer.empty[(Int, String)]
-    map onChange { (sourceMap, change) =>
-      change match {
-        case Add(key, valueAdded) => {
-          addedEntries += ((key, valueAdded))
+    map onChange {
+      (sourceMap, change) =>
+        change match {
+          case Add(key, valueAdded) => {
+            addedEntries += ((key, valueAdded))
+          }
+          case _ => fail("Unexpected change: " + change)
         }
-        case _ => fail("Unexpected change: " + change)
-      }
     }
 
     // Execution
@@ -192,13 +195,14 @@ class ObservableMapSpec[K, V]
     // Preparation
     val map = ObservableMap((0 to 20).map(i => (i, i.toString)))
     val removedEntries = Buffer.empty[(Int, String)]
-    map onChange { (sourceMap, change) =>
-      change match {
-        case Remove(key, valueRemoved) => {
-          removedEntries += ((key, valueRemoved))
+    map onChange {
+      (sourceMap, change) =>
+        change match {
+          case Remove(key, valueRemoved) => {
+            removedEntries += ((key, valueRemoved))
+          }
+          case _ => fail("Unexpected change: " + change)
         }
-        case _ => fail("Unexpected change: " + change)
-      }
     }
 
     // Execution
@@ -249,13 +253,14 @@ class ObservableMapSpec[K, V]
     // Preparation
     val map = ObservableMap((0 to 20).map(i => (i, i.toString)))
     val replacedEntries = Buffer.empty[(Int, String, String)]
-    map onChange { (sourceMap, change) =>
-      change match {
-        case Replace(key, valueAdded, valueRemoved) => {
-          replacedEntries += ((key, valueAdded, valueRemoved))
+    map onChange {
+      (sourceMap, change) =>
+        change match {
+          case Replace(key, valueAdded, valueRemoved) => {
+            replacedEntries += ((key, valueAdded, valueRemoved))
+          }
+          case _ => fail("Unexpected change: " + change)
         }
-        case _ => fail("Unexpected change: " + change)
-      }
     }
     val expectedEntries = Buffer.empty[(Int, String, String)]
 
@@ -300,15 +305,16 @@ class ObservableMapSpec[K, V]
     val map = ObservableMap(new LinkedHashMap[Int, String])
     val addedValues = Buffer.empty[(Int, String)]
     val removedValues = Buffer.empty[(Int, String)]
-    map onChange { (sourceSet, change) =>
-      change match {
-        case Add(key, value)    => addedValues += ((key, value))
-        case Remove(key, value) => removedValues += ((key, value))
-        case Replace(key, added, removed) => {
-          addedValues += ((key, added))
-          removedValues += ((key, removed))
+    map onChange {
+      (sourceSet, change) =>
+        change match {
+          case Add(key, value)    => addedValues += ((key, value))
+          case Remove(key, value) => removedValues += ((key, value))
+          case Replace(key, added, removed) => {
+            addedValues += ((key, added))
+            removedValues += ((key, removed))
+          }
         }
-      }
     }
 
     // Execution

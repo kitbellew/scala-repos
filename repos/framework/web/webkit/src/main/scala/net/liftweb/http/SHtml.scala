@@ -687,13 +687,14 @@ trait SHtml extends Loggable {
       visible: Boolean,
       func: () => JsCmd,
       kids: Elem): NodeSeq = {
-    fmapFunc((func)) { funcName =>
-      val (nk, id) = findOrAddId(kids)
-      val rnk = if (visible) nk else nk % ("style" -> "display: none")
-      val nh = head %
-        ("onclick" -> (LiftRules.jsArtifacts.toggle(id).cmd & makeAjaxCall(
-          JsRaw("'" + funcName + "=true'")).cmd))
-      nh ++ rnk
+    fmapFunc((func)) {
+      funcName =>
+        val (nk, id) = findOrAddId(kids)
+        val rnk = if (visible) nk else nk % ("style" -> "display: none")
+        val nh = head %
+          ("onclick" -> (LiftRules.jsArtifacts.toggle(id).cmd & makeAjaxCall(
+            JsRaw("'" + funcName + "=true'")).cmd))
+        nh ++ rnk
     }
   }
 
@@ -797,16 +798,17 @@ trait SHtml extends Loggable {
       JsRaw("'" + funcName + "=' + encodeURIComponent(" + value + ".value)")
     val key = formFuncName
 
-    fmapFunc((func)) { funcName =>
-      (attrs.foldLeft(<input type="text" value={value}/>)(_ % _)) %
-        ("onkeypress" -> """liftUtils.lift_blurIfReturn(event)""") %
-        (if (ignoreBlur) Null
-         else
-           ("onblur" -> (jsFunc match {
-             case Full(f) =>
-               JsCrVar(key, JsRaw("this")) & deferCall(raw(funcName, key), f)
-             case _ => makeAjaxCall(raw(funcName, "this"))
-           })))
+    fmapFunc((func)) {
+      funcName =>
+        (attrs.foldLeft(<input type="text" value={value}/>)(_ % _)) %
+          ("onkeypress" -> """liftUtils.lift_blurIfReturn(event)""") %
+          (if (ignoreBlur) Null
+           else
+             ("onblur" -> (jsFunc match {
+               case Full(f) =>
+                 JsCrVar(key, JsRaw("this")) & deferCall(raw(funcName, key), f)
+               case _ => makeAjaxCall(raw(funcName, "this"))
+             })))
     }
   }
 
@@ -867,13 +869,14 @@ trait SHtml extends Loggable {
       JsRaw("'" + funcName + "=' + encodeURIComponent(" + value + ".value)")
     val key = formFuncName
 
-    fmapFunc((func)) { funcName =>
-      (attrs.foldLeft(<textarea>{value}</textarea>)(_ % _)) %
-        ("onblur" -> (jsFunc match {
-          case Full(f) =>
-            JsCrVar(key, JsRaw("this")) & deferCall(raw(funcName, key), f)
-          case _ => makeAjaxCall(raw(funcName, "this"))
-        }))
+    fmapFunc((func)) {
+      funcName =>
+        (attrs.foldLeft(<textarea>{value}</textarea>)(_ % _)) %
+          ("onblur" -> (jsFunc match {
+            case Full(f) =>
+              JsCrVar(key, JsRaw("this")) & deferCall(raw(funcName, key), f)
+            case _ => makeAjaxCall(raw(funcName, "this"))
+          }))
     }
   }
 
@@ -946,12 +949,13 @@ trait SHtml extends Loggable {
       func: () => JsCmd,
       alt: String,
       attrs: ElemAttr*): Elem = {
-    fmapFunc((func)) { funcName =>
-      area(
-        shape,
-        alt,
-        (("onclick" -> (makeAjaxCall(Str(funcName + "=true")).toJsCmd +
-          "; return false;")): ElemAttr) :: attrs.toList: _*)
+    fmapFunc((func)) {
+      funcName =>
+        area(
+          shape,
+          alt,
+          (("onclick" -> (makeAjaxCall(Str(funcName + "=true")).toJsCmd +
+            "; return false;")): ElemAttr) :: attrs.toList: _*)
     }
   }
 
@@ -1006,14 +1010,15 @@ trait SHtml extends Loggable {
       JsRaw("'" + funcName + "=' + " + value + ".checked")
     val key = formFuncName
 
-    fmapFunc((func)) { funcName =>
-      (attrs.foldLeft(<input type="checkbox"/>)(_ % _)) %
-        checked(value) %
-        ("onclick" -> (jsFunc match {
-          case Full(f) =>
-            JsCrVar(key, JsRaw("this")) & deferCall(raw(funcName, key), f)
-          case _ => makeAjaxCall(raw(funcName, "this"))
-        }))
+    fmapFunc((func)) {
+      funcName =>
+        (attrs.foldLeft(<input type="checkbox"/>)(_ % _)) %
+          checked(value) %
+          ("onclick" -> (jsFunc match {
+            case Full(f) =>
+              JsCrVar(key, JsRaw("this")) & deferCall(raw(funcName, key), f)
+            case _ => makeAjaxCall(raw(funcName, "this"))
+          }))
     }
   }
 
@@ -1031,16 +1036,17 @@ trait SHtml extends Loggable {
       ajaxFunc: T => JsCmd,
       attrs: ElemAttr*): ChoiceHolder[T] = {
     val groupName = Helpers.nextFuncName
-    val itemList = opts.map { v =>
-      {
-        ChoiceItem(
-          v,
-          attrs.foldLeft(<input type="radio" name={groupName}
+    val itemList = opts.map {
+      v =>
+        {
+          ChoiceItem(
+            v,
+            attrs.foldLeft(<input type="radio" name={groupName}
                                      value={Helpers.nextFuncName}/>)(_ % _) %
-            checked(deflt == Full(v)) %
-            ("onclick" -> ajaxCall(Str(""), ignore => ajaxFunc(v))._2.toJsCmd)
-        )
-      }
+              checked(deflt == Full(v)) %
+              ("onclick" -> ajaxCall(Str(""), ignore => ajaxFunc(v))._2.toJsCmd)
+          )
+        }
     }
     ChoiceHolder(itemList)
   }
@@ -1424,16 +1430,17 @@ trait SHtml extends Loggable {
               case _                       => true
             }
 
-            fmapFunc(func) { funcName =>
-              e.copy(attributes = allEvent.foldLeft(newAttr) {
-                case (meta, attr) =>
-                  new UnprefixedAttribute(
-                    attr,
-                    Helpers.appendFuncToURL(
-                      oldAttr.getOrElse(attr, ""),
-                      funcName + "=_"),
-                    meta)
-              })
+            fmapFunc(func) {
+              funcName =>
+                e.copy(attributes = allEvent.foldLeft(newAttr) {
+                  case (meta, attr) =>
+                    new UnprefixedAttribute(
+                      attr,
+                      Helpers.appendFuncToURL(
+                        oldAttr.getOrElse(attr, ""),
+                        funcName + "=_"),
+                      meta)
+                })
             }
           }
 
@@ -1592,11 +1599,12 @@ trait SHtml extends Loggable {
               radioName match {
                 case Full(name) => dupWithName(e, name)
                 case _ =>
-                  fmapFunc(func) { name =>
-                    {
-                      radioName = Full(name)
-                      dupWithName(e, name)
-                    }
+                  fmapFunc(func) {
+                    name =>
+                      {
+                        radioName = Full(name)
+                        dupWithName(e, name)
+                      }
                   }
               }
 
@@ -1607,12 +1615,13 @@ trait SHtml extends Loggable {
                   checkBoxCnt += 1
                   dupWithName(e, name)
                 case _ =>
-                  fmapFunc(func) { name =>
-                    {
-                      checkBoxName = Full(name)
-                      checkBoxCnt += 1
-                      dupWithName(e, name)
-                    }
+                  fmapFunc(func) {
+                    name =>
+                      {
+                        checkBoxName = Full(name)
+                        checkBoxCnt += 1
+                        dupWithName(e, name)
+                      }
                   }
               }
 
@@ -2341,18 +2350,19 @@ trait SHtml extends Loggable {
       lf: AFuncHolder,
       attrs: ElemAttr*): NodeSeq = {
     val hiddenId = Helpers.nextFuncName
-    fmapFunc(LFuncHolder(l => lf(l.filter(_ != hiddenId)))) { funcName =>
-      NodeSeq.fromSeq(
-        List(
-          attrs.foldLeft(<select multiple="true" name={funcName}>{
-            opts.flatMap {
-              case option =>
-                optionToElem(option) % selected(deflt.contains(option.value))
-            }
-          }</select>)(_ % _),
-          <input type="hidden" value={hiddenId} name={funcName}/>
+    fmapFunc(LFuncHolder(l => lf(l.filter(_ != hiddenId)))) {
+      funcName =>
+        NodeSeq.fromSeq(
+          List(
+            attrs.foldLeft(<select multiple="true" name={funcName}>{
+              opts.flatMap {
+                case option =>
+                  optionToElem(option) % selected(deflt.contains(option.value))
+              }
+            }</select>)(_ % _),
+            <input type="hidden" value={hiddenId} name={funcName}/>
+          )
         )
-      )
     }
   }
 
@@ -2574,27 +2584,28 @@ trait SHtml extends Loggable {
       lst.filter(_ != hiddenId) match {
         case Nil    => onSubmit(Empty)
         case x :: _ => onSubmit(possible.filter(_._1 == x).headOption.map(_._2))
-      })) { name =>
-      {
-        val items = possible.zipWithIndex.map {
-          case ((id, value), idx) => {
-            val radio =
-              attrs.foldLeft(<input type="radio"
+      })) {
+      name =>
+        {
+          val items = possible.zipWithIndex.map {
+            case ((id, value), idx) => {
+              val radio =
+                attrs.foldLeft(<input type="radio"
                              name={name} value={id}/>)(_ % _) %
-                checked(deflt.filter(_ == value).isDefined)
+                  checked(deflt.filter(_ == value).isDefined)
 
-            val elem = if (idx == 0) {
-              radio ++ <input type="hidden" value={hiddenId} name={name}/>
-            } else {
-              radio
+              val elem = if (idx == 0) {
+                radio ++ <input type="hidden" value={hiddenId} name={name}/>
+              } else {
+                radio
+              }
+
+              ChoiceItem(value, elem)
             }
-
-            ChoiceItem(value, elem)
           }
-        }
 
-        ChoiceHolder(items)
-      }
+          ChoiceHolder(items)
+        }
     }
   }
 
@@ -2603,13 +2614,14 @@ trait SHtml extends Loggable {
       deflt: Box[String],
       func: AFuncHolder,
       attrs: ElemAttr*): ChoiceHolder[String] = {
-    fmapFunc(func) { name =>
-      val itemList = opts.map(v =>
-        ChoiceItem(
-          v,
-          attrs.foldLeft(<input type="radio" name={name} value={v}/>)(_ % _) %
-            checked(deflt.filter((s: String) => s == v).isDefined)))
-      ChoiceHolder(itemList)
+    fmapFunc(func) {
+      name =>
+        val itemList = opts.map(v =>
+          ChoiceItem(
+            v,
+            attrs.foldLeft(<input type="radio" name={name} value={v}/>)(_ % _) %
+              checked(deflt.filter((s: String) => s == v).isDefined)))
+        ChoiceHolder(itemList)
     }
   }
 

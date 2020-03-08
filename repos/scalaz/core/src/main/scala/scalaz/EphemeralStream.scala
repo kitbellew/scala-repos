@@ -216,8 +216,8 @@ sealed abstract class EphemeralStreamInstances {
         implicit G: Applicative[G]): G[EphemeralStream[B]] = {
       val seed: G[EphemeralStream[B]] = G.point(EphemeralStream[B]())
 
-      fa.foldRight(seed) { x => ys =>
-        G.apply2(f(x), ys)((b, bs) => EphemeralStream.cons(b, bs))
+      fa.foldRight(seed) {
+        x => ys => G.apply2(f(x), ys)((b, bs) => EphemeralStream.cons(b, bs))
       }
     }
     override def index[A](fa: EphemeralStream[A], i: Int): Option[A] = {

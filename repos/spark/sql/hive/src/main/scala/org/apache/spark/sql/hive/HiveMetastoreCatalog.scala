@@ -175,14 +175,16 @@ private[hive] class HiveMetastoreCatalog(
         def getColumnNames(colType: String): Seq[String] = {
           table.properties
             .get(s"spark.sql.sources.schema.num${colType.capitalize}Cols")
-            .map { numCols =>
-              (0 until numCols.toInt).map { index =>
-                table.properties.getOrElse(
-                  s"spark.sql.sources.schema.${colType}Col.$index",
-                  throw new AnalysisException(s"Could not read $colType columns from the metastore because it is corrupted " +
-                    s"(missing part $index of it, $numCols parts are expected).")
-                )
-              }
+            .map {
+              numCols =>
+                (0 until numCols.toInt).map { index =>
+                  table.properties.getOrElse(
+                    s"spark.sql.sources.schema.${colType}Col.$index",
+                    throw new AnalysisException(
+                      s"Could not read $colType columns from the metastore because it is corrupted " +
+                        s"(missing part $index of it, $numCols parts are expected).")
+                  )
+                }
             }
             .getOrElse(Nil)
         }

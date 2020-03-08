@@ -242,12 +242,13 @@ private[spark] object JettyUtils extends Logging {
             .split(',')
             .map(_.trim())
             .toSet
-            .foreach { param: String =>
-              if (!param.isEmpty) {
-                val parts = param.split("=")
-                if (parts.length == 2)
-                  holder.setInitParameter(parts(0), parts(1))
-              }
+            .foreach {
+              param: String =>
+                if (!param.isEmpty) {
+                  val parts = param.split("=")
+                  if (parts.length == 2)
+                    holder.setInitParameter(parts(0), parts(1))
+                }
             }
 
           val prefix = s"spark.$filter.param."

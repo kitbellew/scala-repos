@@ -185,35 +185,37 @@ object ScSyntheticPackage {
 
           def getSubPackages = {
             val buff = new HashSet[PsiPackage]
-            pkgs.foreach { p =>
-              def addPackage(tail: String) {
-                val p = ScPackageImpl.findPackage(project, fqn + "." + tail)
-                if (p != null) buff += p
-              }
+            pkgs.foreach {
+              p =>
+                def addPackage(tail: String) {
+                  val p = ScPackageImpl.findPackage(project, fqn + "." + tail)
+                  if (p != null) buff += p
+                }
 
-              val fqn1 = p.fqn
-              val tail =
-                if (fqn1.length > fqn.length) fqn1.substring(fqn.length + 1)
-                else ""
-              if (tail.length == 0) {
-                p.packagings.foreach { pack =>
-                  {
-                    val own = pack.ownNamePart
-                    val i = own.indexOf(".")
-                    addPackage(if (i > 0) own.substring(0, i) else own)
+                val fqn1 = p.fqn
+                val tail =
+                  if (fqn1.length > fqn.length) fqn1.substring(fqn.length + 1)
+                  else ""
+                if (tail.length == 0) {
+                  p.packagings.foreach {
+                    pack =>
+                      {
+                        val own = pack.ownNamePart
+                        val i = own.indexOf(".")
+                        addPackage(if (i > 0) own.substring(0, i) else own)
+                      }
                   }
+                  p.typeDefs.foreach {
+                    case o: ScObject
+                        if o.isPackageObject && o.getName != "`package`" =>
+                      addPackage(o.name)
+                    case _ =>
+                  }
+                } else {
+                  val i = tail.indexOf(".")
+                  val next = if (i > 0) tail.substring(0, i) else tail
+                  addPackage(next)
                 }
-                p.typeDefs.foreach {
-                  case o: ScObject
-                      if o.isPackageObject && o.getName != "`package`" =>
-                    addPackage(o.name)
-                  case _ =>
-                }
-              } else {
-                val i = tail.indexOf(".")
-                val next = if (i > 0) tail.substring(0, i) else tail
-                addPackage(next)
-              }
             }
             buff.toArray
           }

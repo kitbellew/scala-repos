@@ -340,20 +340,22 @@ object ScalaPsiUtil {
 
     fun match {
       case fun: ScFunction =>
-        fun.typeParameters.foldLeft(ScSubstitutor.empty) { (subst, tp) =>
-          subst.bindT(
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp)),
-            new ScUndefinedType(
-              new ScTypeParameterType(tp: ScTypeParam, classSubst),
-              1))
+        fun.typeParameters.foldLeft(ScSubstitutor.empty) {
+          (subst, tp) =>
+            subst.bindT(
+              (tp.name, ScalaPsiUtil.getPsiElementId(tp)),
+              new ScUndefinedType(
+                new ScTypeParameterType(tp: ScTypeParam, classSubst),
+                1))
         }
       case fun: PsiMethod =>
-        fun.getTypeParameters.foldLeft(ScSubstitutor.empty) { (subst, tp) =>
-          subst.bindT(
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp)),
-            new ScUndefinedType(
-              new ScTypeParameterType(tp: PsiTypeParameter, classSubst),
-              1))
+        fun.getTypeParameters.foldLeft(ScSubstitutor.empty) {
+          (subst, tp) =>
+            subst.bindT(
+              (tp.name, ScalaPsiUtil.getPsiElementId(tp)),
+              new ScUndefinedType(
+                new ScTypeParameterType(tp: PsiTypeParameter, classSubst),
+                1))
         }
     }
   }
@@ -876,11 +878,14 @@ object ScalaPsiUtil {
       def collectSupers(clazz: PsiClass, subst: ScSubstitutor) {
         clazz match {
           case td: ScTemplateDefinition =>
-            td.superTypes.foreach { tp => collectParts(subst.subst(tp)) }
+            td.superTypes.foreach {
+              tp => collectParts(subst.subst(tp))
+            }
           case clazz: PsiClass =>
-            clazz.getSuperTypes.foreach { tp =>
-              val stp = ScType.create(tp, project, scope)
-              collectParts(subst.subst(stp))
+            clazz.getSuperTypes.foreach {
+              tp =>
+                val stp = ScType.create(tp, project, scope)
+                collectParts(subst.subst(stp))
             }
         }
       }
@@ -2158,20 +2163,21 @@ object ScalaPsiUtil {
     }
     def synthParams(
         typeParam: ScTypeParam): Seq[(String, ScTypeElement => Unit)] = {
-      val views = typeParam.viewTypeElement.map { vte =>
-        val needParenths = vte match {
-          case _: ScCompoundTypeElement | _: ScInfixTypeElement |
-              _: ScFunctionalTypeElement | _: ScExistentialTypeElement =>
-            true
-          case _ => false
-        }
-        val vteText = if (needParenths) s"(${vte.getText})" else vte.getText
-        val arrow = ScalaPsiUtil.functionArrow(vte.getProject)
-        val code = s"${nextName()}: ${typeParam.name} $arrow $vteText"
-        def updateAnalog(typeElement: ScTypeElement) {
-          vte.analog = typeElement
-        }
-        (code, updateAnalog _)
+      val views = typeParam.viewTypeElement.map {
+        vte =>
+          val needParenths = vte match {
+            case _: ScCompoundTypeElement | _: ScInfixTypeElement |
+                _: ScFunctionalTypeElement | _: ScExistentialTypeElement =>
+              true
+            case _ => false
+          }
+          val vteText = if (needParenths) s"(${vte.getText})" else vte.getText
+          val arrow = ScalaPsiUtil.functionArrow(vte.getProject)
+          val code = s"${nextName()}: ${typeParam.name} $arrow $vteText"
+          def updateAnalog(typeElement: ScTypeElement) {
+            vte.analog = typeElement
+          }
+          (code, updateAnalog _)
       }
       val bounds = typeParam.contextBoundTypeElement.map {
         (cbte: ScTypeElement) =>
@@ -2205,10 +2211,11 @@ object ScalaPsiUtil {
             paramOwner.getManager,
             paramClauses)
       }
-      paramClause.parameters.foreachWithIndex { (param, index) =>
-        val updateAnalog: (ScTypeElement) => Unit = params(index)._2
-        updateAnalog(param.typeElement.get)
-        ()
+      paramClause.parameters.foreachWithIndex {
+        (param, index) =>
+          val updateAnalog: (ScTypeElement) => Unit = params(index)._2
+          updateAnalog(param.typeElement.get)
+          ()
       }
       Some(paramClause)
     }

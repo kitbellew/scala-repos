@@ -783,10 +783,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       S.idMessages((S.notices))).map(_._1).distinct
 
     // Merge each Id's messages and effects into the JsCmd chain
-    idSet.foldLeft(groupMessages) { (chain, id) =>
-      chain &
-        LiftRules.jsArtifacts.setHtml(id, Msg.renderIdMsgs(id)) &
-        idEffects(id)
+    idSet.foldLeft(groupMessages) {
+      (chain, id) =>
+        chain &
+          LiftRules.jsArtifacts.setHtml(id, Msg.renderIdMsgs(id)) &
+          idEffects(id)
     }
   }
 
@@ -1195,20 +1196,21 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   private def resolveSitemap(): Box[SiteMap] = {
     this.synchronized {
       runAsSafe {
-        sitemapFunc.flatMap { smf =>
-          LiftRules.statefulRewrite.remove {
-            case PerRequestPF(_) => true
-            case _               => false
-          }
+        sitemapFunc.flatMap {
+          smf =>
+            LiftRules.statefulRewrite.remove {
+              case PerRequestPF(_) => true
+              case _               => false
+            }
 
-          val sm = smf()
-          _sitemap = Full(sm)
-          for (menu <- sm.menus;
-               loc = menu.loc;
-               rewrite <- loc.rewritePF)
-            LiftRules.statefulRewrite.append(PerRequestPF(rewrite))
+            val sm = smf()
+            _sitemap = Full(sm)
+            for (menu <- sm.menus;
+                 loc = menu.loc;
+                 rewrite <- loc.rewritePF)
+              LiftRules.statefulRewrite.append(PerRequestPF(rewrite))
 
-          _sitemap
+            _sitemap
         }
       }
     }

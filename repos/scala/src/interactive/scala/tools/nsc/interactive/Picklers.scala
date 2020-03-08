@@ -66,7 +66,9 @@ trait Picklers { self: Global =>
     (pkl[AbstractFile] ~ pkl[Diff])
       .wrapped[SourceFile] {
         case f ~ d => new BatchSourceFile(f, patch(f, d))
-      } { f => f.file ~ delta(f.file, f.content) }
+      } {
+        f => f.file ~ delta(f.file, f.content)
+      }
       .asClass(classOf[BatchSourceFile])
 
   lazy val offsetPosition: CondPickler[Position] =
@@ -98,10 +100,13 @@ trait Picklers { self: Global =>
     transparentPosition | rangePosition | offsetPosition | noPosition
 
   implicit lazy val namePickler: Pickler[Name] =
-    pkl[String].wrapped[Name] { str =>
-      if ((str.length > 1) && (str endsWith "!")) newTypeName(str.init)
-      else newTermName(str)
-    } { name => if (name.isTypeName) name.toString + "!" else name.toString }
+    pkl[String].wrapped[Name] {
+      str =>
+        if ((str.length > 1) && (str endsWith "!")) newTypeName(str.init)
+        else newTermName(str)
+    } {
+      name => if (name.isTypeName) name.toString + "!" else name.toString
+    }
 
   implicit lazy val symPickler: Pickler[Symbol] = {
     def ownerNames(sym: Symbol, buf: ListBuffer[Name]): ListBuffer[Name] = {

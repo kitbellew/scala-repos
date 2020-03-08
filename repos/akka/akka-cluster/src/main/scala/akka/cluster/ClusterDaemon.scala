@@ -834,9 +834,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       assertLatestGossip()
 
       // for all new joining nodes we remove them from the failure detector
-      latestGossip.members foreach { node ⇒
-        if (node.status == Joining && !localGossip.members(node))
-          failureDetector.remove(node.address)
+      latestGossip.members foreach {
+        node ⇒
+          if (node.status == Joining && !localGossip.members(node))
+            failureDetector.remove(node.address)
       }
 
       log.debug(

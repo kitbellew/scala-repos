@@ -823,8 +823,8 @@ trait ReallyRichPresentationCompilerFixture {
       testCode: (OffsetPosition, RichPresentationCompiler) => Any): Any =
     withPresCompiler { (config, cc) =>
       import ReallyRichPresentationCompilerFixture._
-      runForPositionInCompiledSource(config, cc, lines: _*) { (p, _, cc) =>
-        testCode(p, cc)
+      runForPositionInCompiledSource(config, cc, lines: _*) {
+        (p, _, cc) => testCode(p, cc)
       }
     }
 

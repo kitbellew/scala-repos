@@ -39,8 +39,11 @@ class FutureTests extends MinimalScalaTest {
     "shouldHandleThrowables" in {
       val ms = new mutable.HashSet[Throwable]
         with mutable.SynchronizedSet[Throwable]
-      implicit val ec = scala.concurrent.ExecutionContext
-        .fromExecutor(new java.util.concurrent.ForkJoinPool(), { t => ms += t })
+      implicit val ec = scala.concurrent.ExecutionContext.fromExecutor(
+        new java.util.concurrent.ForkJoinPool(),
+        {
+          t => ms += t
+        })
 
       class ThrowableTest(m: String) extends Throwable(m)
 
@@ -646,11 +649,15 @@ class FutureTests extends MinimalScalaTest {
         add
       }
 
-      val futures = (0 to 9) map { idx => async(idx, idx * 20) }
+      val futures = (0 to 9) map {
+        idx => async(idx, idx * 20)
+      }
       val folded = Future.fold(futures)(0)(_ + _)
       Await.result(folded, timeout) mustBe (45)
 
-      val futuresit = (0 to 9) map { idx => async(idx, idx * 20) }
+      val futuresit = (0 to 9) map {
+        idx => async(idx, idx * 20)
+      }
       val foldedit = Future.fold(futures)(0)(_ + _)
       Await.result(foldedit, timeout) mustBe (45)
     }
@@ -661,7 +668,9 @@ class FutureTests extends MinimalScalaTest {
         Thread.sleep(wait)
         add
       }
-      def futures = (0 to 9) map { idx => async(idx, idx * 20) }
+      def futures = (0 to 9) map {
+        idx => async(idx, idx * 20)
+      }
       val folded = futures.foldLeft(Future(0)) {
         case (fr, fa) => for (r <- fr; a <- fa) yield (r + a)
       }
@@ -677,7 +686,9 @@ class FutureTests extends MinimalScalaTest {
             "shouldFoldResultsWithException: expected")
         add
       }
-      def futures = (0 to 9) map { idx => async(idx, idx * 10) }
+      def futures = (0 to 9) map {
+        idx => async(idx, idx * 10)
+      }
       val folded = Future.fold(futures)(0)(_ + _)
       intercept[IllegalArgumentException] {
         Await.result(folded, timeout)
@@ -730,7 +741,9 @@ class FutureTests extends MinimalScalaTest {
         else add
       }
       val timeout = 10000 millis
-      def futures = (1 to 10) map { idx => async(idx, idx * 10) }
+      def futures = (1 to 10) map {
+        idx => async(idx, idx * 10)
+      }
       val failed = Future.reduce(futures)(_ + _)
       intercept[IllegalArgumentException] {
         Await.result(failed, timeout)
@@ -804,10 +817,11 @@ class FutureTests extends MinimalScalaTest {
         Await.ready(latch(1), TestLatch.DefaultTimeout)
         "Hello"
       }
-      val f2 = f1 map { s =>
-        latch(2).open()
-        Await.ready(latch(3), TestLatch.DefaultTimeout)
-        s.length
+      val f2 = f1 map {
+        s =>
+          latch(2).open()
+          Await.ready(latch(3), TestLatch.DefaultTimeout)
+          s.length
       }
       for (_ <- f2) latch(4).open()
 
@@ -822,10 +836,11 @@ class FutureTests extends MinimalScalaTest {
       f1.isCompleted mustBe (true)
       f2.isCompleted mustBe (false)
 
-      val f3 = f1 map { s =>
-        latch(5).open()
-        Await.ready(latch(6), TestLatch.DefaultTimeout)
-        s.length * 2
+      val f3 = f1 map {
+        s =>
+          latch(5).open()
+          Await.ready(latch(6), TestLatch.DefaultTimeout)
+          s.length * 2
       }
       for (_ <- f3) latch(3).open()
 
@@ -840,10 +855,11 @@ class FutureTests extends MinimalScalaTest {
       f3.isCompleted mustBe (true)
 
       val p1 = Promise[String]()
-      val f4 = p1.future map { s =>
-        latch(7).open()
-        Await.ready(latch(8), TestLatch.DefaultTimeout)
-        s.length
+      val f4 = p1.future map {
+        s =>
+          latch(7).open()
+          Await.ready(latch(8), TestLatch.DefaultTimeout)
+          s.length
       }
       for (_ <- f4) latch(9).open()
 
@@ -864,25 +880,27 @@ class FutureTests extends MinimalScalaTest {
     }
 
     "should not deadlock with nested await (ticket 1313)" in {
-      val simple = Future(()) map { _ =>
-        val unit = Future(())
-        val umap = unit map { _ => () }
-        Await.result(umap, Inf)
+      val simple = Future(()) map {
+        _ =>
+          val unit = Future(())
+          val umap = unit map { _ => () }
+          Await.result(umap, Inf)
       }
       Await.ready(simple, Inf).isCompleted mustBe (true)
 
       val l1, l2 = new TestLatch
-      val complex = Future(()) map { _ =>
-        blocking {
-          val nested = Future(())
-          for (_ <- nested) l1.open()
-          Await.ready(
-            l1,
-            TestLatch.DefaultTimeout
-          ) // make sure nested is completed
-          for (_ <- nested) l2.open()
-          Await.ready(l2, TestLatch.DefaultTimeout)
-        }
+      val complex = Future(()) map {
+        _ =>
+          blocking {
+            val nested = Future(())
+            for (_ <- nested) l1.open()
+            Await.ready(
+              l1,
+              TestLatch.DefaultTimeout
+            ) // make sure nested is completed
+            for (_ <- nested) l2.open()
+            Await.ready(l2, TestLatch.DefaultTimeout)
+          }
       }
       Await.ready(complex, defaultTimeout).isCompleted mustBe (true)
     }

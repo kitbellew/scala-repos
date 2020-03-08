@@ -104,29 +104,31 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
             error("Can't process templates list", io);
             Map.empty[String, ActivatorRepoProcessor.DocData]
         },
-        { case io: IOException => }) { extracted =>
-        ZipUtil.extract(location, extracted, null)
+        { case io: IOException => }) {
+        extracted =>
+          ZipUtil.extract(location, extracted, null)
 
-        import org.apache.lucene
-        import org.apache.lucene.search.IndexSearcher
+          import org.apache.lucene
+          import org.apache.lucene.search.IndexSearcher
 
-        val loader =
-          getClass.getClassLoader match { //hack to avoid lucene 2.4.1 from bundled maven plugin
-            case urlLoader: URLClassLoader =>
-              new URLClassLoader(urlLoader.getURLs, null)
-            case other => other
-          }
-        loader.loadClass("org.apache.lucene.store.FSDirectory")
+          val loader =
+            getClass.getClassLoader match { //hack to avoid lucene 2.4.1 from bundled maven plugin
+              case urlLoader: URLClassLoader =>
+                new URLClassLoader(urlLoader.getURLs, null)
+              case other => other
+            }
+          loader.loadClass("org.apache.lucene.store.FSDirectory")
 
-        reader = DirectoryReader.open(FSDirectory.open(extracted))
-        val searcher = new IndexSearcher(reader)
-        val docs =
-          searcher.search(new lucene.search.MatchAllDocsQuery, reader.maxDoc())
-        val data = docs.scoreDocs.map { case doc => reader document doc.doc }
+          reader = DirectoryReader.open(FSDirectory.open(extracted))
+          val searcher = new IndexSearcher(reader)
+          val docs = searcher.search(
+            new lucene.search.MatchAllDocsQuery,
+            reader.maxDoc())
+          val data = docs.scoreDocs.map { case doc => reader document doc.doc }
 
-        data.map {
-          case docData => Keys.from(docData)
-        }.toMap
+          data.map {
+            case docData => Keys.from(docData)
+          }.toMap
       }
     } catch {
       case io: IOException =>

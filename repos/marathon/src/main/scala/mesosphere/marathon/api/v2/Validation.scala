@@ -81,16 +81,17 @@ object Validation {
 
     violation match {
       case r: RuleViolation =>
-        Set(parentDesc.map { p =>
-          r.description.map {
-            // Error is on object level, having a parent description. Omit 'value', prepend '/' as root.
-            case "value" => r.withDescription("/" + p)
-            // Error is on property level, having a parent description. Prepend '/' as root.
-            case s: String =>
-              r.withDescription(
-                concatPath("/" + p, r.description, prependSlash))
-            // Error is on unknown level, having a parent description. Prepend '/' as root.
-          } getOrElse r.withDescription("/" + p)
+        Set(parentDesc.map {
+          p =>
+            r.description.map {
+              // Error is on object level, having a parent description. Omit 'value', prepend '/' as root.
+              case "value" => r.withDescription("/" + p)
+              // Error is on property level, having a parent description. Prepend '/' as root.
+              case s: String =>
+                r.withDescription(
+                  concatPath("/" + p, r.description, prependSlash))
+              // Error is on unknown level, having a parent description. Prepend '/' as root.
+            } getOrElse r.withDescription("/" + p)
         } getOrElse {
           r.withDescription(r.description.map {
             // Error is on object level, having no parent description, being a root error.
@@ -106,8 +107,8 @@ object Validation {
             case _              => true
           }
 
-          val desc = parentDesc.map { p =>
-            Some(concatPath(p, g.description, prependSlash))
+          val desc = parentDesc.map {
+            p => Some(concatPath(p, g.description, prependSlash))
           } getOrElse {
             g.description.map(d => concatPath("", Some(d), prependSlash))
           }

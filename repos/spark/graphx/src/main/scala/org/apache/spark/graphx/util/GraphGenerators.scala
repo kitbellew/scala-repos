@@ -69,8 +69,9 @@ object GraphGenerators extends Logging {
     val seed2 = seedRand.nextInt()
 
     val vertices: RDD[(VertexId, Long)] =
-      sc.parallelize(0 until numVertices, evalNumEParts).map { src =>
-        (src, sampleLogNormal(mu, sigma, numVertices, seed = (seed1 ^ src)))
+      sc.parallelize(0 until numVertices, evalNumEParts).map {
+        src =>
+          (src, sampleLogNormal(mu, sigma, numVertices, seed = (seed1 ^ src)))
       }
 
     val edges = vertices.flatMap {

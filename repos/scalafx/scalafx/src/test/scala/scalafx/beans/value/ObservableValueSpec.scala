@@ -65,9 +65,10 @@ class ObservableValueSpec extends FlatSpec with BeforeAndAfterEach {
 
   it should "support anonymous change listeners with parameters" in {
     var invalidateCalled = false
-    property onChange { (obs, oldV, newV) =>
-      invalidateCalled = true
-      obs should equal(property)
+    property onChange {
+      (obs, oldV, newV) =>
+        invalidateCalled = true
+        obs should equal(property)
     }
     invalidateCalled should be(false)
     property() = 100

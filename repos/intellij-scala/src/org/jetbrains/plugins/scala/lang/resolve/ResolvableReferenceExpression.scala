@@ -287,15 +287,16 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
               args.getContext match {
                 case methodCall: ScMethodCall
                     if methodCall.isNamedParametersEnabledEverywhere =>
-                  method.getParameterList.getParameters foreach { p =>
-                    processor.execute(
-                      p,
-                      ResolveState
-                        .initial()
-                        .put(ScSubstitutor.key, subst)
-                        .put(
-                          CachesUtil.NAMED_PARAM_KEY,
-                          java.lang.Boolean.TRUE))
+                  method.getParameterList.getParameters foreach {
+                    p =>
+                      processor.execute(
+                        p,
+                        ResolveState
+                          .initial()
+                          .put(ScSubstitutor.key, subst)
+                          .put(
+                            CachesUtil.NAMED_PARAM_KEY,
+                            java.lang.Boolean.TRUE))
                   }
                 case _ =>
               }

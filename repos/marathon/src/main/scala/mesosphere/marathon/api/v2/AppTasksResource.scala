@@ -111,8 +111,8 @@ class AppTasksResource @Inject() (
         val deploymentF = taskKiller.killAndScale(pathId, findToKill, force)
         deploymentResult(result(deploymentF))
       } else {
-        reqToResponse(taskKiller.kill(pathId, findToKill)) { tasks =>
-          ok(jsonObjString("tasks" -> tasks))
+        reqToResponse(taskKiller.kill(pathId, findToKill)) {
+          tasks => ok(jsonObjString("tasks" -> tasks))
         }
       }
   }
@@ -135,9 +135,10 @@ class AppTasksResource @Inject() (
         val deploymentF = taskKiller.killAndScale(pathId, findToKill, force)
         deploymentResult(result(deploymentF))
       } else {
-        reqToResponse(taskKiller.kill(pathId, findToKill)) { tasks =>
-          tasks.headOption.fold(unknownTask(id))(task =>
-            ok(jsonObjString("task" -> task)))
+        reqToResponse(taskKiller.kill(pathId, findToKill)) {
+          tasks =>
+            tasks.headOption.fold(unknownTask(id))(task =>
+              ok(jsonObjString("task" -> task)))
         }
       }
   }

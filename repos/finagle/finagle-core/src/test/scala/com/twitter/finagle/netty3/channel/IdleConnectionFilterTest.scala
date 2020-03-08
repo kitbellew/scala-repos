@@ -157,7 +157,9 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
       }
 
       // Simulate response from the server
-      responses foreach { f => f.setValue("toto") }
+      responses foreach {
+        f => f.setValue("toto")
+      }
 
       // wait a long time
       t += threshold.idleTimeout * 3

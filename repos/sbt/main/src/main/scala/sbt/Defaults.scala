@@ -726,38 +726,39 @@ object Defaults extends BuildCommon {
     }
 
   def testQuickFilter: Initialize[Task[Seq[String] => Seq[String => Boolean]]] =
-    (fullClasspath in test, streams in test) map { (cp, s) =>
-      val ans: Seq[Analysis] = cp.flatMap(_.metadata get Keys.analysis) map {
-        case a0: Analysis => a0
-      }
-      val succeeded = TestStatus.read(succeededFile(s.cacheDirectory))
-      val stamps = collection.mutable.Map.empty[File, Long]
-      def stamp(dep: String): Long = {
-        val stamps =
-          for (a <- ans; f <- a.relations.definesClass(dep))
-            yield intlStamp(f, a, Set.empty)
-        if (stamps.isEmpty) Long.MinValue else stamps.max
-      }
-      def intlStamp(f: File, analysis: Analysis, s: Set[File]): Long = {
-        if (s contains f) Long.MinValue
-        else
-          stamps.getOrElseUpdate(
-            f, {
-              import analysis.{relations => rel, apis}
-              rel.internalSrcDeps(f).map(intlStamp(_, analysis, s + f)) ++
-                rel.externalDeps(f).map(stamp) +
-                apis.internal(f).compilation.startTime
-            }.max
-          )
-      }
-      def noSuccessYet(test: String) = succeeded.get(test) match {
-        case None     => true
-        case Some(ts) => stamp(test) > ts
-      }
+    (fullClasspath in test, streams in test) map {
+      (cp, s) =>
+        val ans: Seq[Analysis] = cp.flatMap(_.metadata get Keys.analysis) map {
+          case a0: Analysis => a0
+        }
+        val succeeded = TestStatus.read(succeededFile(s.cacheDirectory))
+        val stamps = collection.mutable.Map.empty[File, Long]
+        def stamp(dep: String): Long = {
+          val stamps =
+            for (a <- ans; f <- a.relations.definesClass(dep))
+              yield intlStamp(f, a, Set.empty)
+          if (stamps.isEmpty) Long.MinValue else stamps.max
+        }
+        def intlStamp(f: File, analysis: Analysis, s: Set[File]): Long = {
+          if (s contains f) Long.MinValue
+          else
+            stamps.getOrElseUpdate(
+              f, {
+                import analysis.{relations => rel, apis}
+                rel.internalSrcDeps(f).map(intlStamp(_, analysis, s + f)) ++
+                  rel.externalDeps(f).map(stamp) +
+                  apis.internal(f).compilation.startTime
+              }.max
+            )
+        }
+        def noSuccessYet(test: String) = succeeded.get(test) match {
+          case None     => true
+          case Some(ts) => stamp(test) > ts
+        }
 
-      args =>
-        for (filter <- selectedFilter(args))
-          yield (test: String) => filter(test) && noSuccessYet(test)
+        args =>
+          for (filter <- selectedFilter(args))
+            yield (test: String) => filter(test) && noSuccessYet(test)
     }
   def succeededFile(dir: File) = dir / "succeeded_tests"
 
@@ -1007,8 +1008,9 @@ object Defaults extends BuildCommon {
       art,
       scalaVersion in artifactName,
       scalaBinaryVersion in artifactName,
-      artifactName) { (t, module, a, sv, sbv, toString) =>
-      t / toString(ScalaVersion(sv, sbv), module, a) asFile
+      artifactName) {
+      (t, module, a, sv, sbv, toString) =>
+        t / toString(ScalaVersion(sv, sbv), module, a) asFile
     }
   def artifactSetting =
     ((artifact, artifactClassifier).identity zipWith configuration.?) {
@@ -2058,8 +2060,9 @@ object Classpaths {
       sbtBinaryVersion in update,
       scalaBinaryVersion in update,
       projectID,
-      sbtPlugin) { (sbtBV, scalaBV, pid, isPlugin) =>
-      if (isPlugin) sbtPluginExtra(pid, sbtBV, scalaBV) else pid
+      sbtPlugin) {
+      (sbtBV, scalaBV, pid, isPlugin) =>
+        if (isPlugin) sbtPluginExtra(pid, sbtBV, scalaBV) else pid
     }
   def ivySbt0: Initialize[Task[IvySbt]] =
     (ivyConfiguration, credentials, streams) map { (conf, creds, s) =>

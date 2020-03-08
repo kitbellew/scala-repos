@@ -60,8 +60,9 @@ object StronglyConnectedComponents {
             (vid, data, degreeOpt) =>
               if (degreeOpt.isDefined) data else (vid, true)
           }
-          .outerJoinVertices(sccWorkGraph.inDegrees) { (vid, data, degreeOpt) =>
-            if (degreeOpt.isDefined) data else (vid, true)
+          .outerJoinVertices(sccWorkGraph.inDegrees) {
+            (vid, data, degreeOpt) =>
+              if (degreeOpt.isDefined) data else (vid, true)
           }
           .cache()
 

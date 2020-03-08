@@ -89,8 +89,9 @@ class KindProjectorSimplifyTypeProjectionInspection
                   _,
                   paramType,
                   isInsideParam = false)) &&
-              typeParam.forall { tpt =>
-                paramType.typeArgs.count(tpt.name == _.presentableText) == 1
+              typeParam.forall {
+                tpt =>
+                  paramType.typeArgs.count(tpt.name == _.presentableText) == 1
               }
 
           if (valid) {

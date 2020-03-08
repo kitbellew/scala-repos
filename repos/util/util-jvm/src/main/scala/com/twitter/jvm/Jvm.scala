@@ -225,8 +225,9 @@ trait Jvm {
       (_, stack) <- Thread.getAllStackTraces().asScala.find {
         case (t, s) => t.getName == "main"
       }
-      frame <- stack.reverse.find { elem =>
-        !(elem.getClassName.startsWith("scala.tools.nsc.MainGenericRunner"))
+      frame <- stack.reverse.find {
+        elem =>
+          !(elem.getClassName.startsWith("scala.tools.nsc.MainGenericRunner"))
       }
     } yield frame.getClassName
 

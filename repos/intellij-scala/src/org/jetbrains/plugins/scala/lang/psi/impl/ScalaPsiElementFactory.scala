@@ -1147,8 +1147,8 @@ object ScalaPsiElementFactory {
               case psi.types.Any => ""
               case x             => " <: " + ScType.canonicalText(substitutor.subst(x))
             }
-            val viewBoundText = typeParam.viewBound map { x =>
-              " <% " + ScType.canonicalText(substitutor.subst(x))
+            val viewBoundText = typeParam.viewBound map {
+              x => " <% " + ScType.canonicalText(substitutor.subst(x))
             }
             val contextBoundText = typeParam.contextBound collect {
               case tp: ScType =>

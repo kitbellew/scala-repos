@@ -1592,8 +1592,8 @@ class Dataset[T] private[sql] (
       f: Row => TraversableOnce[A]): DataFrame = {
     val schema = ScalaReflection.schemaFor[A].dataType.asInstanceOf[StructType]
 
-    val elementTypes = schema.toAttributes.map { attr =>
-      (attr.dataType, attr.nullable, attr.name)
+    val elementTypes = schema.toAttributes.map {
+      attr => (attr.dataType, attr.nullable, attr.name)
     }
     val names = schema.toAttributes.map(_.name)
     val convert = CatalystTypeConverters.createToCatalystConverter(schema)

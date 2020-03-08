@@ -195,8 +195,8 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
   }
 
   override def hashCode(): Int = {
-    iterator().foldLeft(1) { (prev, elem) =>
-      31 * prev + (if (elem == null) 0 else elem.hashCode)
+    iterator().foldLeft(1) {
+      (prev, elem) => 31 * prev + (if (elem == null) 0 else elem.hashCode)
     }
   }
 

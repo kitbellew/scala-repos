@@ -68,8 +68,10 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
       if (settings.color) findTestFileName(trace, testClassName)
       else null
     }
-    val i = trace.indexWhere { p =>
-      p.getFileName != null && p.getFileName.contains("JUnitExecuteTest.scala")
+    val i = trace.indexWhere {
+      p =>
+        p.getFileName != null && p.getFileName.contains(
+          "JUnitExecuteTest.scala")
     } - 1
     val m = if (i > 0) i else trace.length - 1
     logStackTracePart(

@@ -90,9 +90,10 @@ abstract class DriverType(val name: String) {
       genKeyNames: List[String])(handler: Either[ResultSet, Int] => T): T =
     genKeyNames match {
       case Nil =>
-        DB.prepareStatement(query, conn) { stmt =>
-          setter(stmt)
-          handler(Right(stmt.executeUpdate))
+        DB.prepareStatement(query, conn) {
+          stmt =>
+            setter(stmt)
+            handler(Right(stmt.executeUpdate))
         }
       case pk =>
         performInsertWithGenKeys(conn, query, setter, tableName, pk, handler)
@@ -108,10 +109,11 @@ abstract class DriverType(val name: String) {
       tableName: String,
       genKeyNames: List[String],
       handler: Either[ResultSet, Int] => T): T =
-    DB.prepareStatement(query, Statement.RETURN_GENERATED_KEYS, conn) { stmt =>
-      setter(stmt)
-      stmt.executeUpdate
-      handler(Left(stmt.getGeneratedKeys))
+    DB.prepareStatement(query, Statement.RETURN_GENERATED_KEYS, conn) {
+      stmt =>
+        setter(stmt)
+        stmt.executeUpdate
+        handler(Left(stmt.getGeneratedKeys))
     }
 
   /**
@@ -329,9 +331,10 @@ object PostgreSqlDriver extends BasePostgreSQLDriver {
       handler: Either[ResultSet, Int] => T): T =
     DB.prepareStatement(
       query + " RETURNING " + genKeyNames.mkString(","),
-      conn) { stmt =>
-      setter(stmt)
-      handler(Left(stmt.executeQuery))
+      conn) {
+      stmt =>
+        setter(stmt)
+        handler(Left(stmt.executeQuery))
     }
 
   override def supportsForeignKeys_? = true
@@ -359,15 +362,16 @@ object PostgreSqlOldDriver extends BasePostgreSQLDriver {
       tableName: String,
       genKeyNames: List[String],
       handler: Either[ResultSet, Int] => T): T = {
-    DB.prepareStatement(query, conn) { stmt =>
-      setter(stmt)
-      stmt.executeUpdate
+    DB.prepareStatement(query, conn) {
+      stmt =>
+        setter(stmt)
+        stmt.executeUpdate
     }
     val pkValueQuery = genKeyNames
       .map(String.format("currval('%s_%s_seq')", tableName, _))
       .mkString(", ")
-    DB.statement(conn) { stmt =>
-      handler(Left(stmt.executeQuery("SELECT " + pkValueQuery)))
+    DB.statement(conn) {
+      stmt => handler(Left(stmt.executeQuery("SELECT " + pkValueQuery)))
     }
   }
 }
@@ -500,10 +504,11 @@ object OracleDriver extends DriverType("Oracle") {
       tableName: String,
       genKeyNames: List[String],
       handler: Either[ResultSet, Int] => T): T =
-    DB.prepareStatement(query, genKeyNames.toArray, conn) { stmt =>
-      setter(stmt)
-      stmt.executeUpdate
-      handler(Left(stmt.getGeneratedKeys))
+    DB.prepareStatement(query, genKeyNames.toArray, conn) {
+      stmt =>
+        setter(stmt)
+        stmt.executeUpdate
+        handler(Left(stmt.getGeneratedKeys))
     }
 
   // Oracle doesn't use "COLUMN" syntax when adding a column to a table

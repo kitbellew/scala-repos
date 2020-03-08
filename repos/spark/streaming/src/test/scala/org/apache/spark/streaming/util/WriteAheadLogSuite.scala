@@ -696,7 +696,9 @@ object WriteAheadLogSuite {
       filePath: String,
       data: Seq[String]): Seq[FileBasedWriteAheadLogSegment] = {
     val writer = new FileBasedWriteAheadLogWriter(filePath, hadoopConf)
-    val segments = data.map { item => writer.write(item) }
+    val segments = data.map {
+      item => writer.write(item)
+    }
     writer.close()
     segments
   }

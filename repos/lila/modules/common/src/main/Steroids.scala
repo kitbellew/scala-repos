@@ -49,8 +49,8 @@ trait ListSteroids {
 
   implicit final class LilaPimpedTryList[A](list: List[Try[A]]) {
     def sequence: Try[List[A]] =
-      (Try(List[A]()) /: list) { (a, b) =>
-        a flatMap (c => b map (d => d :: c))
+      (Try(List[A]()) /: list) {
+        (a, b) => a flatMap (c => b map (d => d :: c))
       } map (_.reverse)
   }
   implicit final class LilaPimpedList[A](list: List[A]) {

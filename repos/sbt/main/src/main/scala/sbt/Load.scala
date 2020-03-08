@@ -1384,8 +1384,8 @@ object Load {
     val units = structure.units
     val getRoot = getRootProject(units)
     def project(uri: URI) = {
-      current get uri filter { p =>
-        structure allProjects uri map (_.id) contains p
+      current get uri filter {
+        p => structure allProjects uri map (_.id) contains p
       } getOrElse getRoot(uri)
     }
     units.keys.map(uri => (uri, project(uri))).toMap

@@ -140,9 +140,10 @@ trait BaseMappedField
 
     val conn = DB.currentConnection
     conn
-      .map { c =>
-        if (c.metaData.storesMixedCaseIdentifiers) name
-        else name.toLowerCase
+      .map {
+        c =>
+          if (c.metaData.storesMixedCaseIdentifiers) name
+          else name.toLowerCase
       }
       .openOr(name)
   }

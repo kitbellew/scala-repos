@@ -1201,8 +1201,8 @@ abstract class RDD[T: ClassTag](
         numPartitions /= scale
         val curNumPartitions = numPartitions
         partiallyAggregated = partiallyAggregated
-          .mapPartitionsWithIndex { (i, iter) =>
-            iter.map((i % curNumPartitions, _))
+          .mapPartitionsWithIndex {
+            (i, iter) => iter.map((i % curNumPartitions, _))
           }
           .reduceByKey(new HashPartitioner(curNumPartitions), cleanCombOp)
           .values
@@ -1260,7 +1260,9 @@ abstract class RDD[T: ClassTag](
       val countPartition: (TaskContext, Iterator[T]) => OpenHashMap[T, Long] = {
         (ctx, iter) =>
           val map = new OpenHashMap[T, Long]
-          iter.foreach { t => map.changeValue(t, 1L, _ + 1L) }
+          iter.foreach {
+            t => map.changeValue(t, 1L, _ + 1L)
+          }
           map
       }
       val evaluator =

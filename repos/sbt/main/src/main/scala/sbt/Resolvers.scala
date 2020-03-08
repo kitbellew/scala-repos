@@ -48,16 +48,18 @@ object Resolvers {
 
     if (uri.hasFragment) {
       val revision = uri.getFragment
-      Some { () =>
-        creates(localCopy) {
-          run("svn", "checkout", "-q", "-r", revision, from, to)
-        }
+      Some {
+        () =>
+          creates(localCopy) {
+            run("svn", "checkout", "-q", "-r", revision, from, to)
+          }
       }
     } else
-      Some { () =>
-        creates(localCopy) {
-          run("svn", "checkout", "-q", from, to)
-        }
+      Some {
+        () =>
+          creates(localCopy) {
+            run("svn", "checkout", "-q", from, to)
+          }
       }
   }
 
@@ -109,11 +111,12 @@ object Resolvers {
 
       if (uri.hasFragment) {
         val branch = uri.getFragment
-        Some { () =>
-          creates(localCopy) {
-            clone(from, to = localCopy)
-            checkout(branch, in = localCopy)
-          }
+        Some {
+          () =>
+            creates(localCopy) {
+              clone(from, to = localCopy)
+              checkout(branch, in = localCopy)
+            }
         }
       } else Some { () => creates(localCopy) { clone(from, to = localCopy) } }
     }

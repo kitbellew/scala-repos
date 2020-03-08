@@ -118,8 +118,8 @@ trait ReductionFinderModule[M[+_]]
 
       def buildMembers(
           ancestor: DepGraph): List[(TransSpec1, List[Reduction])] = {
-        parentsByAncestor(ancestor) map { p =>
-          (specByParent(p), reducesByParent(p) map { _.red })
+        parentsByAncestor(ancestor) map {
+          p => (specByParent(p), reducesByParent(p) map { _.red })
         }
       }
     }

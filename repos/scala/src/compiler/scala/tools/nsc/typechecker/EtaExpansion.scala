@@ -117,19 +117,20 @@ trait EtaExpansion { self: Analyzer =>
     /* Eta-expand lifted tree. */
     def expand(tree: Tree, tpe: Type): Tree = tpe match {
       case mt @ MethodType(paramSyms, restpe) if !mt.isImplicit =>
-        val params: List[(ValDef, Boolean)] = paramSyms.map { sym =>
-          val origTpe = sym.tpe
-          val isRepeated = definitions.isRepeatedParamType(origTpe)
-          // SI-4176 Don't leak A* in eta-expanded function types. See t4176b.scala
-          val droppedStarTpe =
-            if (settings.etaExpandKeepsStar) origTpe
-            else dropIllegalStarTypes(origTpe)
-          val valDef = ValDef(
-            Modifiers(SYNTHETIC | PARAM),
-            sym.name.toTermName,
-            TypeTree(droppedStarTpe),
-            EmptyTree)
-          (valDef, isRepeated)
+        val params: List[(ValDef, Boolean)] = paramSyms.map {
+          sym =>
+            val origTpe = sym.tpe
+            val isRepeated = definitions.isRepeatedParamType(origTpe)
+            // SI-4176 Don't leak A* in eta-expanded function types. See t4176b.scala
+            val droppedStarTpe =
+              if (settings.etaExpandKeepsStar) origTpe
+              else dropIllegalStarTypes(origTpe)
+            val valDef = ValDef(
+              Modifiers(SYNTHETIC | PARAM),
+              sym.name.toTermName,
+              TypeTree(droppedStarTpe),
+              EmptyTree)
+            (valDef, isRepeated)
         }
         atPos(tree.pos.makeTransparent) {
           val args = params.map {

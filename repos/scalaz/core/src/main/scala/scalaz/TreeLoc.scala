@@ -182,21 +182,23 @@ final case class TreeLoc[A](
     val rgt = (_: TreeLoc[A]).right
     def dwn[A](tz: TreeLoc[A]): (TreeLoc[A], () => Stream[TreeLoc[A]]) = {
       val f = () =>
-        std.stream.unfold(tz.firstChild) { (o: Option[TreeLoc[A]]) =>
-          for (c <- o) yield (c, c.right)
+        std.stream.unfold(tz.firstChild) {
+          (o: Option[TreeLoc[A]]) => for (c <- o) yield (c, c.right)
         }
       (tz, f)
     }
     def uf[A](
         a: TreeLoc[A],
         f: TreeLoc[A] => Option[TreeLoc[A]]): Stream[Tree[TreeLoc[A]]] = {
-      std.stream.unfold(f(a)) { (o: Option[TreeLoc[A]]) =>
-        for (c <- o) yield (Tree.unfoldTree(c)(dwn[A](_: TreeLoc[A])), f(c))
+      std.stream.unfold(f(a)) {
+        (o: Option[TreeLoc[A]]) =>
+          for (c <- o) yield (Tree.unfoldTree(c)(dwn[A](_: TreeLoc[A])), f(c))
       }
     }
 
-    val p = std.stream.unfold(parent) { (o: Option[TreeLoc[A]]) =>
-      for (z <- o) yield ((uf(z, lft), z, uf(z, rgt)), z.parent)
+    val p = std.stream.unfold(parent) {
+      (o: Option[TreeLoc[A]]) =>
+        for (z <- o) yield ((uf(z, lft), z, uf(z, rgt)), z.parent)
     }
     TreeLoc.loc(
       Tree.unfoldTree(this)(dwn[A](_: TreeLoc[A])),

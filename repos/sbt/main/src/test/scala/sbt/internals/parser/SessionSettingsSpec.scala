@@ -37,18 +37,19 @@ abstract class AbstractSessionSettingsSpec(folder: String)
         def accept(dir: File, name: String) = name.endsWith(".sbt.txt")
       })
       .toList
-    foreach(allFiles) { file =>
-      val originalLines = Source.fromFile(file).getLines().toList
-      foreach(expectedResultAndMap(file)) {
-        case (expectedResultList, commands) =>
-          val resultList = SbtRefactorings.applySessionSettings(
-            (file, originalLines),
-            commands)
-          val expected = SbtParser(file, expectedResultList)
-          val result = SbtParser(file, resultList._2)
-          result.settings must_== expected.settings
+    foreach(allFiles) {
+      file =>
+        val originalLines = Source.fromFile(file).getLines().toList
+        foreach(expectedResultAndMap(file)) {
+          case (expectedResultList, commands) =>
+            val resultList = SbtRefactorings.applySessionSettings(
+              (file, originalLines),
+              commands)
+            val expected = SbtParser(file, expectedResultList)
+            val result = SbtParser(file, resultList._2)
+            result.settings must_== expected.settings
 
-      }
+        }
     }
   }
 
@@ -61,17 +62,18 @@ abstract class AbstractSessionSettingsSpec(folder: String)
         }
       })
       .toSeq
-    dirs.flatMap { dir =>
-      val files = dir.listFiles(new FilenameFilter {
-        override def accept(dir: File, name: String) = name.endsWith(".set")
-      })
-      files.map { file =>
-        val seq = Source.fromFile(file).getLines().toSeq
-        val result =
-          Source.fromFile(file.getAbsolutePath + ".result").getLines().toList
-        val sessionSettings = seq.map(line => (null, Seq(line)))
-        (result, sessionSettings)
-      }
+    dirs.flatMap {
+      dir =>
+        val files = dir.listFiles(new FilenameFilter {
+          override def accept(dir: File, name: String) = name.endsWith(".set")
+        })
+        files.map { file =>
+          val seq = Source.fromFile(file).getLines().toSeq
+          val result =
+            Source.fromFile(file.getAbsolutePath + ".result").getLines().toList
+          val sessionSettings = seq.map(line => (null, Seq(line)))
+          (result, sessionSettings)
+        }
     }
   }
 

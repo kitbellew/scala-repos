@@ -358,12 +358,12 @@ private[sql] class DynamicPartitionWriterContainer(
 
   private val bucketSpec = relation.bucketSpec
 
-  private val bucketColumns: Seq[Attribute] = bucketSpec.toSeq.flatMap { spec =>
-    spec.bucketColumnNames.map(c => inputSchema.find(_.name == c).get)
+  private val bucketColumns: Seq[Attribute] = bucketSpec.toSeq.flatMap {
+    spec => spec.bucketColumnNames.map(c => inputSchema.find(_.name == c).get)
   }
 
-  private val sortColumns: Seq[Attribute] = bucketSpec.toSeq.flatMap { spec =>
-    spec.sortColumnNames.map(c => inputSchema.find(_.name == c).get)
+  private val sortColumns: Seq[Attribute] = bucketSpec.toSeq.flatMap {
+    spec => spec.sortColumnNames.map(c => inputSchema.find(_.name == c).get)
   }
 
   private def bucketIdExpression: Option[Expression] = bucketSpec.map { spec =>

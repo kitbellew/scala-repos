@@ -187,8 +187,8 @@ private[internal] trait GlbLubs {
 
   /** The minimal symbol of a list of types (as determined by `Symbol.isLess`). */
   private def minSym(tps: List[Type]): Symbol =
-    (tps.head.typeSymbol /: tps.tail) { (sym1, tp2) =>
-      if (tp2.typeSymbol isLess sym1) tp2.typeSymbol else sym1
+    (tps.head.typeSymbol /: tps.tail) {
+      (sym1, tp2) => if (tp2.typeSymbol isLess sym1) tp2.typeSymbol else sym1
     }
 
   /** A minimal type list which has a given list of types as its base type sequence */

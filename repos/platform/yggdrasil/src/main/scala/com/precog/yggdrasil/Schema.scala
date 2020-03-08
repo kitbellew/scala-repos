@@ -321,11 +321,12 @@ object Schema {
         case ColumnRef(CPath(CPathIndex(i), _*), _) => i
       }
       .toSet
-      .flatMap { (i: Int) =>
-        mkType(ctpes.collect {
-          case ColumnRef(CPath(CPathIndex(`i`), tail @ _*), ctpe) =>
-            ColumnRef(CPath(tail: _*), ctpe)
-        }).map(i -> _)
+      .flatMap {
+        (i: Int) =>
+          mkType(ctpes.collect {
+            case ColumnRef(CPath(CPathIndex(`i`), tail @ _*), ctpe) =>
+              ColumnRef(CPath(tail: _*), ctpe)
+          }).map(i -> _)
       }
     val array =
       if (elements.isEmpty) Nil else List(JArrayFixedT(elements.toMap))

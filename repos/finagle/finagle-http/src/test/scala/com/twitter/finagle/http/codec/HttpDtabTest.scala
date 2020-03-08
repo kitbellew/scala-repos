@@ -159,9 +159,10 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
     )
     val allHeaders = dtabHeaders :+ (("Accept", "application/json"))
 
-    val message = allHeaders.foldLeft(newMsg()) { (m, h) =>
-      m.headers.set(h._1, h._2)
-      m
+    val message = allHeaders.foldLeft(newMsg()) {
+      (m, h) =>
+        m.headers.set(h._1, h._2)
+        m
     }
 
     val foundHeaders = HttpDtab.strip(message)

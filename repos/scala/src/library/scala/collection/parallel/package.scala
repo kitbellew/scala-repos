@@ -183,13 +183,14 @@ package parallel {
         )
       } else Seq(this)
     private[parallel] override def debugInformation = {
-      buildString { append =>
-        append("---------------")
-        append("Buffer iterator")
-        append("buffer: " + buffer)
-        append("index: " + index)
-        append("until: " + until)
-        append("---------------")
+      buildString {
+        append =>
+          append("---------------")
+          append("Buffer iterator")
+          append("buffer: " + buffer)
+          append("index: " + index)
+          append("until: " + until)
+          append("---------------")
       }
     }
   }

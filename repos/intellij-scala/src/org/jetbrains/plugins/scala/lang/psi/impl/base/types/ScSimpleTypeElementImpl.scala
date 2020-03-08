@@ -442,22 +442,23 @@ class ScSimpleTypeElementImpl(node: ASTNode)
             r: TypeResult[ScType],
             ss: ScSubstitutor): TypeResult[ScType] = {
           if (withUnnecessaryImplicitsUpdate) {
-            r.map { tp =>
-              ref.bind() match {
-                case Some(
-                    r @ ScalaResolveResult(
-                      method: PsiMethod,
-                      subst: ScSubstitutor)) =>
-                  val (params, lastImplicit) =
-                    getConstructorParams(method, subst.followed(ss))
-                  updateImplicits(
-                    tp,
-                    withExpected = false,
-                    params = params,
-                    lastImplicit = lastImplicit)
-                  tp
-                case _ => tp
-              }
+            r.map {
+              tp =>
+                ref.bind() match {
+                  case Some(
+                      r @ ScalaResolveResult(
+                        method: PsiMethod,
+                        subst: ScSubstitutor)) =>
+                    val (params, lastImplicit) =
+                      getConstructorParams(method, subst.followed(ss))
+                    updateImplicits(
+                      tp,
+                      withExpected = false,
+                      params = params,
+                      lastImplicit = lastImplicit)
+                    tp
+                  case _ => tp
+                }
             }
           } else r
         }

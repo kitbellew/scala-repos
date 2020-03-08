@@ -29,33 +29,38 @@ abstract class BaseJavaConvertersIntention(methodName: String)
   val alreadyConvertedPrefixes: Set[String]
 
   def isAvailable(p: Project, e: Editor, element: PsiElement): Boolean = {
-    Option(getTargetExpression(element)) exists { scExpr =>
-      def properTargetCollection =
-        isProperTargetCollection(scExpr.getTypeAfterImplicitConversion().tr)
-      def parentNonConvertedCollection = scExpr match {
-        case Parent(parent: ScExpression) =>
-          !isAlreadyConvertedCollection(
-            parent.getTypeAfterImplicitConversion().tr)
-        case _ => true
-      }
-      properTargetCollection && parentNonConvertedCollection
+    Option(getTargetExpression(element)) exists {
+      scExpr =>
+        def properTargetCollection =
+          isProperTargetCollection(scExpr.getTypeAfterImplicitConversion().tr)
+        def parentNonConvertedCollection = scExpr match {
+          case Parent(parent: ScExpression) =>
+            !isAlreadyConvertedCollection(
+              parent.getTypeAfterImplicitConversion().tr)
+          case _ => true
+        }
+        properTargetCollection && parentNonConvertedCollection
     }
   }
 
   def isProperTargetCollection(typeResult: TypeResult[ScType]): Boolean =
-    typeResult.exists { scType =>
-      ScType.extractClass(scType) exists { psiClass =>
-        val superNames: Set[String] = allSupers(psiClass)
-        superNames.exists(i => targetCollections.contains(i))
-      }
+    typeResult.exists {
+      scType =>
+        ScType.extractClass(scType) exists {
+          psiClass =>
+            val superNames: Set[String] = allSupers(psiClass)
+            superNames.exists(i => targetCollections.contains(i))
+        }
     }
 
   def isAlreadyConvertedCollection(typeResult: TypeResult[ScType]): Boolean =
-    typeResult.exists { scType =>
-      ScType.extractClass(scType) exists { psiClass =>
-        alreadyConvertedPrefixes.exists(prefix =>
-          psiClass.getQualifiedName.startsWith(prefix))
-      }
+    typeResult.exists {
+      scType =>
+        ScType.extractClass(scType) exists {
+          psiClass =>
+            alreadyConvertedPrefixes.exists(prefix =>
+              psiClass.getQualifiedName.startsWith(prefix))
+        }
     }
 
   def invoke(p: Project, e: Editor, element: PsiElement) {

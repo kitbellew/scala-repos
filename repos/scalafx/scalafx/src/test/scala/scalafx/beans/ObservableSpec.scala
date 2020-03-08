@@ -62,9 +62,10 @@ class ObservableSpec extends FlatSpec with BeforeAndAfterEach {
 
   it should "support anonymous invalidation listeners with parameters" in {
     var invalidateCalled = false
-    property onInvalidate { obs =>
-      invalidateCalled = true
-      obs should equal(property)
+    property onInvalidate {
+      obs =>
+        invalidateCalled = true
+        obs should equal(property)
     }
     invalidateCalled should be(false)
     property() = 100
@@ -73,9 +74,10 @@ class ObservableSpec extends FlatSpec with BeforeAndAfterEach {
 
   it should "support adding explicit listeners as a clojure" in {
     var invalidateCalled = false
-    property addListener { (obs: JFXObservable) =>
-      invalidateCalled = true
-      obs should equal(property.delegate)
+    property addListener {
+      (obs: JFXObservable) =>
+        invalidateCalled = true
+        obs should equal(property.delegate)
     }
     invalidateCalled should be(false)
     property() = 100

@@ -97,8 +97,8 @@ trait LocalSourceOverride extends SchemedSource {
     * @returns A tap.
     */
   def createLocalTap(sinkMode: SinkMode): Tap[JobConf, _, _] = {
-    val taps = localPaths.map { p: String =>
-      CastFileTap(new FileTap(localScheme, p, sinkMode))
+    val taps = localPaths.map {
+      p: String => CastFileTap(new FileTap(localScheme, p, sinkMode))
     }.toList
 
     taps match {

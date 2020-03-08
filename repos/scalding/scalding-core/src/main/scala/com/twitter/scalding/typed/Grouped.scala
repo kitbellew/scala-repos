@@ -176,8 +176,9 @@ object Grouped {
     }
 
   def addEmptyGuard[K, V1, V2](fn: (K, Iterator[V1]) => Iterator[V2])
-      : (K, Iterator[V1]) => Iterator[V2] = { (key: K, iter: Iterator[V1]) =>
-    if (iter.nonEmpty) fn(key, iter) else Iterator.empty
+      : (K, Iterator[V1]) => Iterator[V2] = {
+    (key: K, iter: Iterator[V1]) =>
+      if (iter.nonEmpty) fn(key, iter) else Iterator.empty
   }
 }
 

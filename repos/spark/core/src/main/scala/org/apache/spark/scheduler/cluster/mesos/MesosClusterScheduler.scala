@@ -598,8 +598,8 @@ private[spark] class MesosClusterScheduler(
     val tasks = new mutable.HashMap[OfferID, ArrayBuffer[TaskInfo]]()
     val currentTime = new Date()
 
-    val currentOffers = offers.asScala.map { o =>
-      new ResourceOffer(o.getId, o.getSlaveId, o.getResourcesList)
+    val currentOffers = offers.asScala.map {
+      o => new ResourceOffer(o.getId, o.getSlaveId, o.getResourcesList)
     }.toList
 
     stateLock.synchronized {

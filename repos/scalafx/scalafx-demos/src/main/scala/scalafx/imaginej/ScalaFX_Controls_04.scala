@@ -116,14 +116,15 @@ object ScalaFX_Controls_04 extends JFXApp {
     )
   }
 
-  theToggleGroup.selectedToggle onChange { (_, _, newToggle) =>
-    if (newToggle != null) {
-      val selectedToggle = theToggleGroup.getSelectedToggle
-      val userDataColor = selectedToggle.getUserData.asInstanceOf[Color]
-      rectangle.fill = userDataColor
-    } else {
-      rectangle.fill = Color.White
-    }
+  theToggleGroup.selectedToggle onChange {
+    (_, _, newToggle) =>
+      if (newToggle != null) {
+        val selectedToggle = theToggleGroup.getSelectedToggle
+        val userDataColor = selectedToggle.getUserData.asInstanceOf[Color]
+        rectangle.fill = userDataColor
+      } else {
+        rectangle.fill = Color.White
+      }
   }
 
   stage = new PrimaryStage {

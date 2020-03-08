@@ -399,21 +399,22 @@ trait Logic extends Debugging {
             // when sym is true, what must hold...
             implied foreach (impliedSym => addAxiom(Or(Not(sym), impliedSym)))
             // ... and what must not?
-            excluded foreach { excludedSym =>
-              val exclusive = v.groupedDomains.exists { domain =>
-                domain.contains(sym) && domain.contains(excludedSym)
-              }
+            excluded foreach {
+              excludedSym =>
+                val exclusive = v.groupedDomains.exists {
+                  domain => domain.contains(sym) && domain.contains(excludedSym)
+                }
 
-              // TODO: populate `v.exclusiveDomains` with `Set`s from the start, and optimize to:
-              // val exclusive = v.exclusiveDomains.exists { inDomain => inDomain(sym) && inDomain(excludedSym) }
-              if (!exclusive)
-                addAxiom(Or(Not(sym), Not(excludedSym)))
+                // TODO: populate `v.exclusiveDomains` with `Set`s from the start, and optimize to:
+                // val exclusive = v.exclusiveDomains.exists { inDomain => inDomain(sym) && inDomain(excludedSym) }
+                if (!exclusive)
+                  addAxiom(Or(Not(sym), Not(excludedSym)))
             }
         }
 
         // all symbols in a domain are mutually exclusive
-        v.groupedDomains.foreach { syms =>
-          if (syms.size > 1) addAxiom(AtMostOne(syms.toList))
+        v.groupedDomains.foreach {
+          syms => if (syms.size > 1) addAxiom(AtMostOne(syms.toList))
         }
       }
 
@@ -519,10 +520,12 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       lazy val groupedDomains: List[Set[Sym]] = {
         val subtypes = enumerateSubtypes(staticTp, grouped = true)
         subtypes
-          .map { subTypes =>
-            val syms =
-              subTypes.flatMap(tpe => symForEqualsTo.get(TypeConst(tpe))).toSet
-            if (mayBeNull) syms + symForEqualsTo(NullConst) else syms
+          .map {
+            subTypes =>
+              val syms = subTypes
+                .flatMap(tpe => symForEqualsTo.get(TypeConst(tpe)))
+                .toSet
+              if (mayBeNull) syms + symForEqualsTo(NullConst) else syms
           }
           .filter(_.nonEmpty)
       }

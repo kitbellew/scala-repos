@@ -96,14 +96,15 @@ trait CompactSpec[M[+_]]
             }
           }
         } else {
-          val retained = (0 until slice.size).flatMap { x =>
-            if (scala.util.Random.nextDouble < 0.75) Some(x) else None
+          val retained = (0 until slice.size).flatMap {
+            x => if (scala.util.Random.nextDouble < 0.75) Some(x) else None
           }
           new Slice {
             val size = slice.size
-            val columns = slice.columns.mapValues { col =>
-              (col |> cf.util
-                .filter(0, slice.size, BitSetUtil.create(retained))).get
+            val columns = slice.columns.mapValues {
+              col =>
+                (col |> cf.util
+                  .filter(0, slice.size, BitSetUtil.create(retained))).get
             }
           }
         }

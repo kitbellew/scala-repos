@@ -193,13 +193,14 @@ class BlockManagerReplicationSuite
         MEMORY_ONLY_SER,
         DISK_ONLY,
         MEMORY_AND_DISK,
-        MEMORY_AND_DISK_SER).map { level =>
-        StorageLevel(
-          level.useDisk,
-          level.useMemory,
-          level.useOffHeap,
-          level.deserialized,
-          3)
+        MEMORY_AND_DISK_SER).map {
+        level =>
+          StorageLevel(
+            level.useDisk,
+            level.useMemory,
+            level.useOffHeap,
+            level.deserialized,
+            3)
       }
     }
     testReplication(3, storageLevels)
@@ -234,7 +235,9 @@ class BlockManagerReplicationSuite
   test("block replication - deterministic node selection") {
     val blockSize = 1000
     val storeSize = 10000
-    val stores = (1 to 5).map { i => makeBlockManager(storeSize, s"store$i") }
+    val stores = (1 to 5).map {
+      i => makeBlockManager(storeSize, s"store$i")
+    }
     val storageLevel2x = StorageLevel.MEMORY_AND_DISK_2
     val storageLevel3x = StorageLevel(true, true, false, true, 3)
     val storageLevel4x = StorageLevel(true, true, false, true, 4)
@@ -393,15 +396,16 @@ class BlockManagerReplicationSuite
     }
 
     // Remove all but the 1st store, 2x replication should fail
-    (initialStores.tail ++ Seq(newStore1, newStore2)).foreach { store =>
-      master.removeExecutor(store.blockManagerId.executorId)
-      store.stop()
+    (initialStores.tail ++ Seq(newStore1, newStore2)).foreach {
+      store =>
+        master.removeExecutor(store.blockManagerId.executorId)
+        store.stop()
     }
     assert(replicateAndGetNumCopies("a6", 2) === 1)
 
     // Add new stores, 3x replication should work
-    val newStores = (3 to 5).map { i =>
-      makeBlockManager(storeSize, s"newstore$i")
+    val newStores = (3 to 5).map {
+      i => makeBlockManager(storeSize, s"newstore$i")
     }
     eventually(timeout(1000 milliseconds), interval(10 milliseconds)) {
       assert(replicateAndGetNumCopies("a7", 3) === 3)
@@ -430,8 +434,8 @@ class BlockManagerReplicationSuite
     val blockSize = 1000
 
     // As many stores as the replication factor
-    val stores = (1 to maxReplication).map { i =>
-      makeBlockManager(storeSize, s"store$i")
+    val stores = (1 to maxReplication).map {
+      i => makeBlockManager(storeSize, s"store$i")
     }
 
     storageLevels.foreach { storageLevel =>
@@ -448,8 +452,9 @@ class BlockManagerReplicationSuite
 
       // Test state of the stores that contain the block
       stores
-        .filter { testStore =>
-          blockLocations.contains(testStore.blockManagerId.executorId)
+        .filter {
+          testStore =>
+            blockLocations.contains(testStore.blockManagerId.executorId)
         }
         .foreach { testStore =>
           val testStoreName = testStore.blockManagerId.executorId
@@ -487,13 +492,16 @@ class BlockManagerReplicationSuite
           // this store test whether master is updated with zero memory usage this store
           if (storageLevel.useMemory) {
             // Force the block to be dropped by adding a number of dummy blocks
-            (1 to 10).foreach { i =>
-              testStore.putSingle(
-                s"dummy-block-$i",
-                new Array[Byte](1000),
-                MEMORY_ONLY_SER)
+            (1 to 10).foreach {
+              i =>
+                testStore.putSingle(
+                  s"dummy-block-$i",
+                  new Array[Byte](1000),
+                  MEMORY_ONLY_SER)
             }
-            (1 to 10).foreach { i => testStore.removeBlock(s"dummy-block-$i") }
+            (1 to 10).foreach {
+              i => testStore.removeBlock(s"dummy-block-$i")
+            }
 
             val newBlockStatusOption =
               master.getBlockStatus(blockId).get(testStore.blockManagerId)

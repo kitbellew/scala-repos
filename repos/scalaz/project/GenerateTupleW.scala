@@ -23,17 +23,26 @@ object GenerateTupleW {
         val ns = (1 to arity) map N.apply
         def mapMkString(f: N => String): String = ns.map(f).mkString(", ")
 
-        val tparams = mapMkString { n => n.alpha }
-        val params = mapMkString { n => n.element }
-
-        val ztparams = mapMkString { _ => "Z" }
-
-        val mapallTParams = mapMkString { n => n.alpha2 }
-        val mapallParams = mapMkString { n =>
-          s"${n.element}: (${n.alpha} => ${n.alpha2}) = identity[${n.alpha}] _"
+        val tparams = mapMkString {
+          n => n.alpha
         }
-        val mapallApply = mapMkString { n =>
-          s"${n.element}(value.${n.element})"
+        val params = mapMkString {
+          n => n.element
+        }
+
+        val ztparams = mapMkString {
+          _ => "Z"
+        }
+
+        val mapallTParams = mapMkString {
+          n => n.alpha2
+        }
+        val mapallParams = mapMkString {
+          n =>
+            s"${n.element}: (${n.alpha} => ${n.alpha2}) = identity[${n.alpha}] _"
+        }
+        val mapallApply = mapMkString {
+          n => s"${n.element}(value.${n.element})"
         }
 
         val pimp = s"""|

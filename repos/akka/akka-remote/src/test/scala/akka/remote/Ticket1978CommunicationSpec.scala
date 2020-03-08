@@ -87,8 +87,9 @@ object Configuration {
         NoLogging)
 
       rng.nextInt() // Has to work
-      settings.SSLRandomNumberGenerator foreach { sRng ⇒
-        rng.getAlgorithm == sRng || (throw new NoSuchAlgorithmException(sRng))
+      settings.SSLRandomNumberGenerator foreach {
+        sRng ⇒
+          rng.getAlgorithm == sRng || (throw new NoSuchAlgorithmException(sRng))
       }
 
       val engine =

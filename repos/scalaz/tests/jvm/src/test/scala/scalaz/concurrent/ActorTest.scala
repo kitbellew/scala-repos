@@ -30,12 +30,13 @@ object ActorTest extends SpecLite {
     val latch = new CountDownLatch(NumOfMessages)
     var actor1: Actor[Int] = null
     val actor2 = Actor[Int]((i: Int) => actor1 ! i - 1)
-    actor1 = Actor[Int] { (i: Int) =>
-      if (i == latch.getCount) {
-        latch.countDown()
-        latch.countDown()
-        if (i != 0) actor2 ! i - 1
-      }
+    actor1 = Actor[Int] {
+      (i: Int) =>
+        if (i == latch.getCount) {
+          latch.countDown()
+          latch.countDown()
+          if (i != 0) actor2 ! i - 1
+        }
     }
     actor1 ! NumOfMessages
     assertCountDown(latch, "Should exchange " + NumOfMessages + " messages")

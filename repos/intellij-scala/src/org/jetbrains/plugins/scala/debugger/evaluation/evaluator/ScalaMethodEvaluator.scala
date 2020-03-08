@@ -150,13 +150,14 @@ case class ScalaMethodEvaluator(
         }
         if (jdiMethod == null) {
           if (sortedMethodCandidates.length > 1) {
-            val filtered = sortedMethodCandidates.filter { m =>
-              try {
-                if (m.isVarArgs) args.length >= m.argumentTypeNames().size()
-                else args.length == m.argumentTypeNames().size()
-              } catch {
-                case a: AbsentInformationException => true
-              }
+            val filtered = sortedMethodCandidates.filter {
+              m =>
+                try {
+                  if (m.isVarArgs) args.length >= m.argumentTypeNames().size()
+                  else args.length == m.argumentTypeNames().size()
+                } catch {
+                  case a: AbsentInformationException => true
+                }
             }
             if (filtered.isEmpty) jdiMethod = sortedMethodCandidates.head
             else if (filtered.length == 1) jdiMethod = filtered.head

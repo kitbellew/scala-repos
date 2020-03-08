@@ -44,8 +44,8 @@ object Ecopening {
       case (fams, op) =>
         fams + (op.family -> fams
           .get(op.family)
-          .fold(Family(op.family, List(op.eco))) { existing =>
-            existing.copy(ecos = op.eco :: existing.ecos)
+          .fold(Family(op.family, List(op.eco))) {
+            existing => existing.copy(ecos = op.eco :: existing.ecos)
           })
     }
 

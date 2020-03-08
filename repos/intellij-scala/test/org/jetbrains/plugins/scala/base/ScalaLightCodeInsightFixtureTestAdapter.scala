@@ -142,40 +142,44 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       text: String,
       assumedText: String,
       charTyped: Char) {
-    performTest(text, assumedText) { () => myFixture.`type`(charTyped) }
+    performTest(text, assumedText) {
+      () => myFixture.`type`(charTyped)
+    }
   }
 
   protected def checkGeneratedTextAfterBackspace(
       text: String,
       assumedText: String) {
-    performTest(text, assumedText) { () =>
-      CommandProcessor.getInstance.executeCommand(
-        myFixture.getProject,
-        new Runnable {
-          def run() {
-            myFixture.performEditorAction(IdeActions.ACTION_EDITOR_BACKSPACE)
-          }
-        },
-        "",
-        null)
+    performTest(text, assumedText) {
+      () =>
+        CommandProcessor.getInstance.executeCommand(
+          myFixture.getProject,
+          new Runnable {
+            def run() {
+              myFixture.performEditorAction(IdeActions.ACTION_EDITOR_BACKSPACE)
+            }
+          },
+          "",
+          null)
     }
   }
 
   protected def checkGeneratedTextAfterEnter(
       text: String,
       assumedText: String) {
-    performTest(text, assumedText) { () =>
-      CommandProcessor
-        .getInstance()
-        .executeCommand(
-          myFixture.getProject,
-          new Runnable {
-            def run() {
-              myFixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
-            }
-          },
-          "",
-          null)
+    performTest(text, assumedText) {
+      () =>
+        CommandProcessor
+          .getInstance()
+          .executeCommand(
+            myFixture.getProject,
+            new Runnable {
+              def run() {
+                myFixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
+              }
+            },
+            "",
+            null)
     }
   }
 

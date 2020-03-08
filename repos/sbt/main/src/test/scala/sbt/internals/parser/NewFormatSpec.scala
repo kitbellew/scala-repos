@@ -19,11 +19,12 @@ class NewFormatSpec extends AbstractSpec {
         getClass.getClassLoader.getResource("").getPath + "/new-format/"
       println(s"Reading files from: $rootPath")
       val allFiles = new File(rootPath).listFiles.toList
-      foreach(allFiles) { path =>
-        println(s"$path")
-        val lines = Source.fromFile(path).getLines().toList
-        val (_, statements) = splitter(path, lines)
-        statements.nonEmpty must be_==(true).setMessage(s"""
+      foreach(allFiles) {
+        path =>
+          println(s"$path")
+          val lines = Source.fromFile(path).getLines().toList
+          val (_, statements) = splitter(path, lines)
+          statements.nonEmpty must be_==(true).setMessage(s"""
                                |***should contains statements***
                                |$lines """.stripMargin)
       }

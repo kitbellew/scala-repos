@@ -221,29 +221,30 @@ object Scalding {
     StateWithError[
       (Interval[Timestamp], Mode),
       List[FailureReason],
-      FlowToPipe[U]] { (timeMode: (Interval[Timestamp], Mode)) =>
-      {
-        val (timeSpan, mode) = timeMode
+      FlowToPipe[U]] {
+      (timeMode: (Interval[Timestamp], Mode)) =>
+        {
+          val (timeSpan, mode) = timeMode
 
-        toDateRange(timeSpan).right.flatMap { dr =>
-          minify(mode, dr)(factory).right.map { newDr =>
-            val newIntr = newDr.as[Interval[Timestamp]]
-            val mappable = factory(newDr)
-            (
-              (newIntr, mode),
-              Reader { (fdM: (FlowDef, Mode)) =>
-                TypedPipe
-                  .from(mappable)
-                  .flatMap { t =>
-                    fn(t).flatMap { mapped =>
-                      val time = Timestamp(timeOf(mapped))
-                      if (newIntr(time)) Some((time, mapped)) else None
+          toDateRange(timeSpan).right.flatMap { dr =>
+            minify(mode, dr)(factory).right.map { newDr =>
+              val newIntr = newDr.as[Interval[Timestamp]]
+              val mappable = factory(newDr)
+              (
+                (newIntr, mode),
+                Reader { (fdM: (FlowDef, Mode)) =>
+                  TypedPipe
+                    .from(mappable)
+                    .flatMap { t =>
+                      fn(t).flatMap { mapped =>
+                        val time = Timestamp(timeOf(mapped))
+                        if (newIntr(time)) Some((time, mapped)) else None
+                      }
                     }
-                  }
-              })
+                })
+            }
           }
         }
-      }
     }
 
   def pipeFactoryExact[T](factory: (DateRange) => Mappable[T])(
@@ -251,27 +252,28 @@ object Scalding {
     StateWithError[
       (Interval[Timestamp], Mode),
       List[FailureReason],
-      FlowToPipe[T]] { (timeMode: (Interval[Timestamp], Mode)) =>
-      {
-        val (timeSpan, mode) = timeMode
+      FlowToPipe[T]] {
+      (timeMode: (Interval[Timestamp], Mode)) =>
+        {
+          val (timeSpan, mode) = timeMode
 
-        toDateRange(timeSpan).right.map { dr =>
-          val mappable = factory(dr)
-          (
-            (timeSpan, mode),
-            Reader { (fdM: (FlowDef, Mode)) =>
-              mappable.validateTaps(
-                fdM._2
-              ) //This can throw, but that is what this caller wants
-              TypedPipe
-                .from(mappable)
-                .flatMap { t =>
-                  val time = Timestamp(timeOf(t))
-                  if (timeSpan(time)) Some((time, t)) else None
-                }
-            })
+          toDateRange(timeSpan).right.map { dr =>
+            val mappable = factory(dr)
+            (
+              (timeSpan, mode),
+              Reader { (fdM: (FlowDef, Mode)) =>
+                mappable.validateTaps(
+                  fdM._2
+                ) //This can throw, but that is what this caller wants
+                TypedPipe
+                  .from(mappable)
+                  .flatMap { t =>
+                    val time = Timestamp(timeOf(t))
+                    if (timeSpan(time)) Some((time, t)) else None
+                  }
+              })
+          }
         }
-      }
     }
 
   def sourceFromMappable[T: TimeExtractor: Manifest](

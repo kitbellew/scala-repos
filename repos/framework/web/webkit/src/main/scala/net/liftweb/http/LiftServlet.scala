@@ -334,9 +334,10 @@ class LiftServlet extends Loggable {
     }
 
     def sessionExists_?(idb: Box[String]): Boolean = {
-      idb.flatMap { id =>
-        registerRecentlyChecked(id)
-        SessionMaster.getSession(id, Empty)
+      idb.flatMap {
+        id =>
+          registerRecentlyChecked(id)
+          SessionMaster.getSession(id, Empty)
       }.isDefined
     }
 
@@ -976,17 +977,18 @@ class LiftServlet extends Loggable {
     val jsUpdateTime = ret2
       .map(ar => "lift.updWatch('" + ar.who.uniqueId + "', '" + ar.when + "');")
       .mkString("\n")
-    val jsUpdateStuff = ret2.map { ar =>
-      {
-        val ret = ar.response.toJavaScript(session, ar.displayAll)
+    val jsUpdateStuff = ret2.map {
+      ar =>
+        {
+          val ret = ar.response.toJavaScript(session, ar.displayAll)
 
-        if (!S.functionMap.isEmpty) {
-          session.updateFunctionMap(S.functionMap, ar.who.uniqueId, ar.when)
-          S.clearFunctionMap
+          if (!S.functionMap.isEmpty) {
+            session.updateFunctionMap(S.functionMap, ar.who.uniqueId, ar.when)
+            S.clearFunctionMap
+          }
+
+          ret
         }
-
-        ret
-      }
     }
 
     actors foreach (_._1 ! ClearNotices)

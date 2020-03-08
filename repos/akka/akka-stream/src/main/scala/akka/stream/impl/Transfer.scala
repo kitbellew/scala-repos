@@ -203,9 +203,10 @@ private[akka] trait Pump {
 
   final def isPumpFinished: Boolean = transferState.isCompleted
 
-  protected final val completedPhase = TransferPhase(Completed) { () ⇒
-    throw new IllegalStateException(
-      "The action of completed phase must be never executed")
+  protected final val completedPhase = TransferPhase(Completed) {
+    () ⇒
+      throw new IllegalStateException(
+        "The action of completed phase must be never executed")
   }
 
   // Exchange input buffer elements and output buffer "requests" until one of them becomes empty.

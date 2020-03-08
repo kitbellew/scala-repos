@@ -365,11 +365,12 @@ object ProducerFeatureTest {
 
     override def transformOutgoingMessage(msg: Any) = msg match {
       case msg: CamelMessage ⇒
-        if (upper) msg.mapBody { body: String ⇒
-          if (body == "err") throw new Exception("Crash!")
-          val upperMsg = body.toUpperCase
-          lastSender = Some(sender())
-          lastMessage = Some(upperMsg)
+        if (upper) msg.mapBody {
+          body: String ⇒
+            if (body == "err") throw new Exception("Crash!")
+            val upperMsg = body.toUpperCase
+            lastSender = Some(sender())
+            lastMessage = Some(upperMsg)
         }
         else msg
     }
@@ -392,7 +393,9 @@ object ProducerFeatureTest {
 
     override protected def transformOutgoingMessage(msg: Any) = msg match {
       case msg: CamelMessage ⇒
-        if (upper) msg.mapBody { body: String ⇒ body.toUpperCase }
+        if (upper) msg.mapBody {
+          body: String ⇒ body.toUpperCase
+        }
         else msg
     }
   }
@@ -415,8 +418,8 @@ object ProducerFeatureTest {
             context.sender() ! akka.actor.Status.Failure(
               new AkkaCamelException(new Exception("failure"), msg.headers))
           case _ ⇒
-            context.sender() ! (msg.mapBody { body: String ⇒
-              "received %s" format body
+            context.sender() ! (msg.mapBody {
+              body: String ⇒ "received %s" format body
             })
         }
     }

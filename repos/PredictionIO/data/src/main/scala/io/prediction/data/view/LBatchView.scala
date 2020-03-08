@@ -31,8 +31,8 @@ object ViewPredicates {
     startTimeOpt.map(getStartTimePredicate).getOrElse(_ => true)
   }
 
-  def getStartTimePredicate(startTime: DateTime): (Event => Boolean) = { e =>
-    (!(e.eventTime.isBefore(startTime) || e.eventTime.isEqual(startTime)))
+  def getStartTimePredicate(startTime: DateTime): (Event => Boolean) = {
+    e => (!(e.eventTime.isBefore(startTime) || e.eventTime.isEqual(startTime)))
   }
 
   def getUntilTimePredicate(

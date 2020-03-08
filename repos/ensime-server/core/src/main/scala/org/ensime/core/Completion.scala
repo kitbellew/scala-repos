@@ -248,13 +248,13 @@ trait CompletionControl {
       val infos = List(CompletionInfo.fromSymbolAndType(sym, tpe, score))
 
       if (context.constructing) {
-        val constructorSyns = constructorSynonyms(sym).map { c =>
-          CompletionInfo.fromSymbolAndType(sym, c.tpe, score + 50)
+        val constructorSyns = constructorSynonyms(sym).map {
+          c => CompletionInfo.fromSymbolAndType(sym, c.tpe, score + 50)
         }
         infos ++ constructorSyns
       } else {
-        val applySyns = applySynonyms(sym).map { c =>
-          CompletionInfo.fromSymbolAndType(sym, c.tpe, score)
+        val applySyns = applySynonyms(sym).map {
+          c => CompletionInfo.fromSymbolAndType(sym, c.tpe, score)
         }
         infos ++ applySyns
       }

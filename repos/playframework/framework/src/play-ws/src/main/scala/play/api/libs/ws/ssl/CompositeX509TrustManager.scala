@@ -25,8 +25,8 @@ class CompositeX509TrustManager(
   def getAcceptedIssuers: Array[X509Certificate] = {
     logger.debug("getAcceptedIssuers: ")
     val certificates = ArrayBuffer[X509Certificate]()
-    val exceptionList = withTrustManagers { trustManager =>
-      certificates.appendAll(trustManager.getAcceptedIssuers)
+    val exceptionList = withTrustManagers {
+      trustManager => certificates.appendAll(trustManager.getAcceptedIssuers)
     }
     // getAcceptedIssuers should never throw an exception.
     if (!exceptionList.isEmpty) {
@@ -54,11 +54,12 @@ class CompositeX509TrustManager(
     algorithmChecker.checkKeyAlgorithms(anchor.getTrustedCert)
 
     var trusted = false
-    val exceptionList = withTrustManagers { trustManager =>
-      trustManager.checkClientTrusted(chain, authType)
-      logger.debug(
-        s"checkClientTrusted: trustManager $trustManager found a match for ${debugChain(chain)}")
-      trusted = true
+    val exceptionList = withTrustManagers {
+      trustManager =>
+        trustManager.checkClientTrusted(chain, authType)
+        logger.debug(
+          s"checkClientTrusted: trustManager $trustManager found a match for ${debugChain(chain)}")
+        trusted = true
     }
 
     if (!trusted) {
@@ -82,13 +83,14 @@ class CompositeX509TrustManager(
     algorithmChecker.checkKeyAlgorithms(anchor.getTrustedCert)
 
     var trusted = false
-    val exceptionList = withTrustManagers { trustManager =>
-      // always run through the trust manager before making any decisions
-      trustManager.checkServerTrusted(chain, authType)
-      logger.debug(
-        s"checkServerTrusted: trustManager $trustManager using authType $authType found a match for ${debugChain(
-          chain).toSeq}")
-      trusted = true
+    val exceptionList = withTrustManagers {
+      trustManager =>
+        // always run through the trust manager before making any decisions
+        trustManager.checkServerTrusted(chain, authType)
+        logger.debug(
+          s"checkServerTrusted: trustManager $trustManager using authType $authType found a match for ${debugChain(
+            chain).toSeq}")
+        trusted = true
     }
 
     if (!trusted) {
@@ -101,22 +103,23 @@ class CompositeX509TrustManager(
   private def withTrustManagers(
       block: (X509TrustManager => Unit)): Seq[Throwable] = {
     val exceptionList = ArrayBuffer[Throwable]()
-    trustManagers.foreach { trustManager =>
-      try {
-        block(trustManager)
-      } catch {
-        case e: CertPathBuilderException =>
-          logger.debug(
-            "No path found to certificate: this usually means the CA is not in the trust store",
-            e)
-          exceptionList.append(e)
-        case e: GeneralSecurityException =>
-          logger.debug("General security exception", e)
-          exceptionList.append(e)
-        case NonFatal(e) =>
-          logger.debug("Unexpected exception!", e)
-          exceptionList.append(e)
-      }
+    trustManagers.foreach {
+      trustManager =>
+        try {
+          block(trustManager)
+        } catch {
+          case e: CertPathBuilderException =>
+            logger.debug(
+              "No path found to certificate: this usually means the CA is not in the trust store",
+              e)
+            exceptionList.append(e)
+          case e: GeneralSecurityException =>
+            logger.debug("General security exception", e)
+            exceptionList.append(e)
+          case NonFatal(e) =>
+            logger.debug("Unexpected exception!", e)
+            exceptionList.append(e)
+        }
     }
     exceptionList
   }

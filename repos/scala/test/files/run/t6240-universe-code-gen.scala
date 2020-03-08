@@ -15,12 +15,13 @@ object Test extends App {
     )
     val forceables = tp.members.sorted.filter(isLazyAccessorOrObject)
     forceables
-      .map { sym =>
-        val path = s"$prefix.${sym.name}"
-        "    " + (
-          if (sym.isPrivate || sym.isProtected) s"// inaccessible: $path"
-          else path
-        )
+      .map {
+        sym =>
+          val path = s"$prefix.${sym.name}"
+          "    " + (
+            if (sym.isPrivate || sym.isProtected) s"// inaccessible: $path"
+            else path
+          )
       }
       .mkString("\n")
   }

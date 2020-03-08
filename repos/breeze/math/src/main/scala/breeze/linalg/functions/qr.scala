@@ -329,7 +329,9 @@ object qrp extends UFunc {
       val pvt = new Array[Int](n)
       val tau = new Array[Double](scala.math.min(m, n))
 
-      cforRange2(0 until m, 0 until n) { (r, c) => AFact(r, c) = A(r, c) }
+      cforRange2(0 until m, 0 until n) {
+        (r, c) => AFact(r, c) = A(r, c)
+      }
 
       lapack.dgeqp3(
         m,
@@ -368,8 +370,8 @@ object qrp extends UFunc {
         workspace.length,
         info)
 
-      cforRange2(0 until m, 0 until min(m, maxd)) { (r, c) =>
-        Q(r, c) = AFact(r, c)
+      cforRange2(0 until m, 0 until min(m, maxd)) {
+        (r, c) => Q(r, c) = AFact(r, c)
       }
 
       //Error check

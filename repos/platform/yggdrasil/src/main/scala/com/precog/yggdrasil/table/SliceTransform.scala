@@ -152,8 +152,8 @@ trait SliceTransforms[M[+_]]
                 val definedAt = new BitSet
                 filter.columns.values.foreach {
                   case col: BoolColumn => {
-                    cf.util.isSatisfied(col).foreach { c =>
-                      definedAt.or(c.definedAt(0, s.size))
+                    cf.util.isSatisfied(col).foreach {
+                      c => definedAt.or(c.definedAt(0, s.size))
                     }
                   }
                 }

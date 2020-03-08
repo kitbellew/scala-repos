@@ -413,8 +413,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
           val snapshot = createSnapshot
           PrevSnapshot.set(Full(snapshot))
           val nextScreen = screen.nextScreen
-          CurrentScreen.is.foreach { s =>
-            VisitedScreens.set(VisitedScreens :+ s)
+          CurrentScreen.is.foreach {
+            s => VisitedScreens.set(VisitedScreens :+ s)
           }
           doTransition(CurrentScreen.get, nextScreen)
           CurrentScreen.set(nextScreen)
@@ -426,9 +426,13 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
                 in match {
                   case Nil => {
                     WizardRules.deregisterWizardSession(CurrentSession.is)
-                    VisitedScreens.foreach { s => s.finish() }
+                    VisitedScreens.foreach {
+                      s => s.finish()
+                    }
                     finish()
-                    VisitedScreens.foreach { s => s.postFinish() }
+                    VisitedScreens.foreach {
+                      s => s.postFinish()
+                    }
                   }
 
                   case x :: xs =>

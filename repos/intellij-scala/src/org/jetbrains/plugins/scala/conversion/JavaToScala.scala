@@ -658,18 +658,19 @@ object JavaToScala {
       refs
         .find(ref =>
           new TextRange(ref.startOffset, ref.endOffset) == range.getTextRange)
-        .map { ref =>
-          if (ref.staticMemberName == null) {
-            AssociationHelper(
-              DependencyKind.Reference,
-              result,
-              Path(ref.qClassName))
-          } else {
-            AssociationHelper(
-              DependencyKind.Reference,
-              result,
-              Path(ref.qClassName, ref.staticMemberName))
-          }
+        .map {
+          ref =>
+            if (ref.staticMemberName == null) {
+              AssociationHelper(
+                DependencyKind.Reference,
+                result,
+                Path(ref.qClassName))
+            } else {
+              AssociationHelper(
+                DependencyKind.Reference,
+                result,
+                Path(ref.qClassName, ref.staticMemberName))
+            }
         }
     }
   }
@@ -813,14 +814,15 @@ object JavaToScala {
           if (targetMap.isEmpty)
             classMembers
           else
-            classMembers.sortWith { (left, right) =>
-              if (isConstructor(left) && isConstructor(right)) {
-                compareAsConstructors(
-                  left.asInstanceOf[PsiMethod],
-                  right.asInstanceOf[PsiMethod])
-              } else {
-                compareByOrder(right, left)
-              }
+            classMembers.sortWith {
+              (left, right) =>
+                if (isConstructor(left) && isConstructor(right)) {
+                  compareAsConstructors(
+                    left.asInstanceOf[PsiMethod],
+                    right.asInstanceOf[PsiMethod])
+                } else {
+                  compareByOrder(right, left)
+                }
             }
         }
 
@@ -1030,15 +1032,17 @@ object JavaToScala {
 
         val superCall = getSuperCall(dropStatements)
 
-        getStatements(constructor).map { statements =>
-          PrimaryConstruction(
-            updatedParams,
-            superCall,
-            statements
-              .filter(notContains(_, dropStatements))
-              .map(convertPsiToIntermdeiate(_, WithReferenceExpression(true))),
-            handleModifierList(constructor)
-          )
+        getStatements(constructor).map {
+          statements =>
+            PrimaryConstruction(
+              updatedParams,
+              superCall,
+              statements
+                .filter(notContains(_, dropStatements))
+                .map(
+                  convertPsiToIntermdeiate(_, WithReferenceExpression(true))),
+              handleModifierList(constructor)
+            )
         }.orNull
       }
 

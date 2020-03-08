@@ -728,33 +728,36 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       val replicatedClient = new BaseReplicationClient(Seq(client1, client2))
 
       val count = 100
-      (0 until count).foreach { n =>
-        {
-          Await.result(replicatedClient.set("foo" + n, Buf.Utf8("bar" + n)))
-        }
+      (0 until count).foreach {
+        n =>
+          {
+            Await.result(replicatedClient.set("foo" + n, Buf.Utf8("bar" + n)))
+          }
       }
 
-      (0 until count).foreach { n =>
-        {
-          val ConsistentReplication(Some(Buf.Utf8(res))) =
-            Await.result(replicatedClient.getAll("foo" + n))
-          assert(res == "bar" + n)
-        }
+      (0 until count).foreach {
+        n =>
+          {
+            val ConsistentReplication(Some(Buf.Utf8(res))) =
+              Await.result(replicatedClient.getAll("foo" + n))
+            assert(res == "bar" + n)
+          }
       }
 
       // shutdown primary pool
       firstTestServerPool(0).stop()
       firstTestServerPool(1).stop()
 
-      (0 until count).foreach { n =>
-        {
-          assert(Await.result(replicatedClient.getAll("foo" + n)) match {
-            case InconsistentReplication(Seq(Throw(_), Return(Some(v)))) =>
-              val Buf.Utf8(res) = v
-              res equals "bar" + n
-            case _ => false
-          })
-        }
+      (0 until count).foreach {
+        n =>
+          {
+            assert(Await.result(replicatedClient.getAll("foo" + n)) match {
+              case InconsistentReplication(Seq(Throw(_), Return(Some(v)))) =>
+                val Buf.Utf8(res) = v
+                res equals "bar" + n
+              case _ => false
+            })
+          }
       }
     }
 
@@ -1250,34 +1253,37 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       val replicatedClient = new SimpleReplicationClient(Seq(client1, client2))
 
       val count = 100
-      (0 until count).foreach { n =>
-        {
-          Await.result(replicatedClient.set("foo" + n, Buf.Utf8("bar" + n)))
-        }
+      (0 until count).foreach {
+        n =>
+          {
+            Await.result(replicatedClient.set("foo" + n, Buf.Utf8("bar" + n)))
+          }
       }
 
-      (0 until count).foreach { n =>
-        {
-          assert(
-            Await.result(replicatedClient.get("foo" + n)) == Some(
-              Buf.Utf8("bar" + n)))
-          assert(
-            Await.result(client1.get("foo" + n)) == Some(Buf.Utf8("bar" + n)))
-          assert(
-            Await.result(client2.get("foo" + n)) == Some(Buf.Utf8("bar" + n)))
-        }
+      (0 until count).foreach {
+        n =>
+          {
+            assert(
+              Await.result(replicatedClient.get("foo" + n)) == Some(
+                Buf.Utf8("bar" + n)))
+            assert(
+              Await.result(client1.get("foo" + n)) == Some(Buf.Utf8("bar" + n)))
+            assert(
+              Await.result(client2.get("foo" + n)) == Some(Buf.Utf8("bar" + n)))
+          }
       }
 
       // shutdown primary pool
       firstTestServerPool(0).stop()
       firstTestServerPool(1).stop()
 
-      (0 until count).foreach { n =>
-        {
-          assert(
-            Await.result(replicatedClient.get("foo" + n)) == Some(
-              Buf.Utf8("bar" + n)))
-        }
+      (0 until count).foreach {
+        n =>
+          {
+            assert(
+              Await.result(replicatedClient.get("foo" + n)) == Some(
+                Buf.Utf8("bar" + n)))
+          }
       }
     }
 

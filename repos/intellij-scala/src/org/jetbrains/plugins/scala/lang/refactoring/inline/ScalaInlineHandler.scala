@@ -335,11 +335,12 @@ class ScalaInlineHandler extends InlineHandler {
           .search(named, named.getUseScope)
           .findAll
           .asScala
-          .forall { ref =>
-            member.containingClass == null || PsiTreeUtil.isAncestor(
-              member.containingClass,
-              ref.getElement,
-              true)
+          .forall {
+            ref =>
+              member.containingClass == null || PsiTreeUtil.isAncestor(
+                member.containingClass,
+                ref.getElement,
+                true)
           }
       case _ => true
     }

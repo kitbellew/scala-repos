@@ -233,8 +233,8 @@ trait Mapper[A <: Mapper[A]]
     */
   def toForm(button: Box[String], f: A => Any): NodeSeq =
     getSingleton.toForm(this) ++
-      S.fmapFunc((ignore: List[String]) => f(this)) { (name: String) =>
-        (<input type='hidden' name={name} value="n/a" />)
+      S.fmapFunc((ignore: List[String]) => f(this)) {
+        (name: String) => (<input type='hidden' name={name} value="n/a" />)
       } ++
       (button.map(b =>
         getSingleton.formatFormElement(
@@ -353,7 +353,9 @@ trait Mapper[A <: Mapper[A]]
 
 trait LongKeyedMapper[OwnerType <: LongKeyedMapper[OwnerType]]
     extends KeyedMapper[Long, OwnerType]
-    with BaseLongKeyedMapper { self: OwnerType => }
+    with BaseLongKeyedMapper {
+  self: OwnerType =>
+}
 
 trait BaseKeyedMapper extends BaseMapper {
   type TheKeyType

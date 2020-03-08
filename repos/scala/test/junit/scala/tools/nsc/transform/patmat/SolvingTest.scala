@@ -878,22 +878,23 @@ class SolvingTest {
       sym("V3=scala.collection.immutable.::[?]")
     )
 
-    formulas foreach { f =>
-      // build CNF
-      val tseitinCnf = propToSolvable(f)
-      val expansionCnf = eqFreePropToSolvableViaDistribution(f)
+    formulas foreach {
+      f =>
+        // build CNF
+        val tseitinCnf = propToSolvable(f)
+        val expansionCnf = eqFreePropToSolvableViaDistribution(f)
 
-      // ALL-SAT
-      val tseitinSolutions = findAllModelsFor(tseitinCnf)
-      val expansionSolutins = findAllModelsFor(expansionCnf)
+        // ALL-SAT
+        val tseitinSolutions = findAllModelsFor(tseitinCnf)
+        val expansionSolutins = findAllModelsFor(expansionCnf)
 
-      // expand unassigned variables
-      // (otherwise solutions can not be compared)
-      val tseitinNoUnassigned =
-        tseitinSolutions.flatMap(expandUnassigned).sorted
-      val expansionNoUnassigned =
-        expansionSolutins.flatMap(expandUnassigned).sorted
-      assertEquals(tseitinNoUnassigned, expansionNoUnassigned)
+        // expand unassigned variables
+        // (otherwise solutions can not be compared)
+        val tseitinNoUnassigned =
+          tseitinSolutions.flatMap(expandUnassigned).sorted
+        val expansionNoUnassigned =
+          expansionSolutins.flatMap(expandUnassigned).sorted
+        assertEquals(tseitinNoUnassigned, expansionNoUnassigned)
     }
   }
 

@@ -145,12 +145,13 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
     // thread safe, so we'll only parse one at a time, but given that most
     // of the selectors will be cached, it's not really a performance hit
     cache.get(toParse) or {
-      internalParse(toParse).map { sel =>
-        {
-          // cache the result
-          cache(toParse) = sel
-          sel
-        }
+      internalParse(toParse).map {
+        sel =>
+          {
+            // cache the result
+            cache(toParse) = sel
+            sel
+          }
       }
     }
   }
@@ -263,13 +264,13 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   private lazy val number: Parser[Char] = elem("number", isNumber)
 
   private lazy val subNode: Parser[SubNode] = rep(' ') ~>
-    ((opt('*') ~ '[' ~> attrName <~ '+' ~ ']' ^^ { name =>
-      AttrAppendSubNode(name)
+    ((opt('*') ~ '[' ~> attrName <~ '+' ~ ']' ^^ {
+      name => AttrAppendSubNode(name)
     }) |
-      (opt('*') ~ '[' ~> attrName <~ '!' ~ ']' ^^ { name =>
-        AttrRemoveSubNode(name)
-      }) | (opt('*') ~ '[' ~> attrName <~ ']' ^^ { name =>
-      AttrSubNode(name)
+      (opt('*') ~ '[' ~> attrName <~ '!' ~ ']' ^^ {
+        name => AttrRemoveSubNode(name)
+      }) | (opt('*') ~ '[' ~> attrName <~ ']' ^^ {
+      name => AttrSubNode(name)
     }) |
 
       ('!' ~ '!' ^^ (a => DontMergeAttributes)) |

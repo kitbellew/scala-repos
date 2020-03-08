@@ -303,9 +303,10 @@ class DebugManager(
         TrueResponse
       }
     case DebugContinueReq(threadId) =>
-      sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.resume()
-        TrueResponse
+      sender ! handleRPCWithVMAndThread(threadId) {
+        (vm, thread) =>
+          vm.resume()
+          TrueResponse
       }
     case DebugSetBreakReq(file, line: Int) =>
       if (!setBreakpoint(file, line)) {
@@ -325,38 +326,42 @@ class DebugManager(
       sender ! breaks
 
     case DebugNextReq(threadId: DebugThreadId) =>
-      sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.newStepRequest(
-          thread,
-          StepRequest.STEP_LINE,
-          StepRequest.STEP_OVER
-        )
-        TrueResponse
+      sender ! handleRPCWithVMAndThread(threadId) {
+        (vm, thread) =>
+          vm.newStepRequest(
+            thread,
+            StepRequest.STEP_LINE,
+            StepRequest.STEP_OVER
+          )
+          TrueResponse
       }
 
     case DebugStepReq(threadId: DebugThreadId) =>
-      sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.newStepRequest(
-          thread,
-          StepRequest.STEP_LINE,
-          StepRequest.STEP_INTO
-        )
-        TrueResponse
+      sender ! handleRPCWithVMAndThread(threadId) {
+        (vm, thread) =>
+          vm.newStepRequest(
+            thread,
+            StepRequest.STEP_LINE,
+            StepRequest.STEP_INTO
+          )
+          TrueResponse
       }
 
     case DebugStepOutReq(threadId: DebugThreadId) =>
-      sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.newStepRequest(
-          thread,
-          StepRequest.STEP_LINE,
-          StepRequest.STEP_OUT
-        )
-        TrueResponse
+      sender ! handleRPCWithVMAndThread(threadId) {
+        (vm, thread) =>
+          vm.newStepRequest(
+            thread,
+            StepRequest.STEP_LINE,
+            StepRequest.STEP_OUT
+          )
+          TrueResponse
       }
 
     case DebugLocateNameReq(threadId: DebugThreadId, name: String) =>
-      sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.locationForName(thread, name).getOrElse(FalseResponse)
+      sender ! handleRPCWithVMAndThread(threadId) {
+        (vm, thread) =>
+          vm.locationForName(thread, name).getOrElse(FalseResponse)
       }
     case DebugBacktraceReq(threadId: DebugThreadId, index: Int, count: Int) =>
       sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>

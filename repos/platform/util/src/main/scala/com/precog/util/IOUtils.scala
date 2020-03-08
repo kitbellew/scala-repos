@@ -79,8 +79,8 @@ object IOUtils extends Logging {
     val tmpFile =
       new File(f.getParentFile, f.getName + "-" + System.nanoTime + ".tmp")
 
-    writeToFile(s, tmpFile) flatMap { _ =>
-      IO(tmpFile.renameTo(f)) // TODO: This is only atomic on POSIX systems
+    writeToFile(s, tmpFile) flatMap {
+      _ => IO(tmpFile.renameTo(f)) // TODO: This is only atomic on POSIX systems
     }
   }
 

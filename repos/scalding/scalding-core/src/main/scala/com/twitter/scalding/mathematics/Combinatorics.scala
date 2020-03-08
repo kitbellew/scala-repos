@@ -66,9 +66,10 @@ object Combinatorics {
         val myname = Symbol("n" + num)
         val mypipe = a._1
           .crossWithSmaller(b._1)
-          .filter(prevname, myname) { foo: (Int, Int) =>
-            val (nn1, nn2) = foo
-            nn1 < nn2
+          .filter(prevname, myname) {
+            foo: (Int, Int) =>
+              val (nn1, nn2) = foo
+              nn1 < nn2
           }
         (mypipe, -1)
       })
@@ -77,7 +78,10 @@ object Combinatorics {
     (1 to k).foldLeft(res)((a, b) => {
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
-      a.map(myname -> newname) { inpc: Int => input(inpc - 1) }.discard(myname)
+      a.map(myname -> newname) {
+          inpc: Int => input(inpc - 1)
+        }
+        .discard(myname)
     })
 
   }
@@ -104,18 +108,22 @@ object Combinatorics {
     // on a given row, we cannot have duplicate columns in a permutation
     val res = pipes
       .reduceLeft((a, b) => { a.crossWithSmaller(b) })
-      .filter(allc) { x: TupleEntry =>
-        Boolean
-        val values = (0 until allc.size).map(i =>
-          x.getInteger(i.asInstanceOf[java.lang.Integer]))
-        values.size == values.distinct.size
+      .filter(allc) {
+        x: TupleEntry =>
+          Boolean
+          val values = (0 until allc.size).map(i =>
+            x.getInteger(i.asInstanceOf[java.lang.Integer]))
+          values.size == values.distinct.size
       }
 
     // map numerals to actual data
     (1 to k).foldLeft(res)((a, b) => {
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
-      a.map(myname -> newname) { inpc: Int => input(inpc - 1) }.discard(myname)
+      a.map(myname -> newname) {
+          inpc: Int => input(inpc - 1)
+        }
+        .discard(myname)
     })
 
   }
@@ -203,14 +211,16 @@ object Combinatorics {
         (
           apipe
             .crossWithSmaller(bpipe)
-            .map(allc -> 'temp) { x: TupleEntry =>
-              val values = (0 until allc.size).map(i =>
-                x.getDouble(i.asInstanceOf[java.lang.Integer]))
-              values.sum
+            .map(allc -> 'temp) {
+              x: TupleEntry =>
+                val values = (0 until allc.size).map(i =>
+                  x.getDouble(i.asInstanceOf[java.lang.Integer]))
+                values.sum
             }
-            .filter('temp) { x: Double =>
-              if (allc.size == numWeights) (math.abs(x - result) <= error)
-              else (x <= result)
+            .filter('temp) {
+              x: Double =>
+                if (allc.size == numWeights) (math.abs(x - result) <= error)
+                else (x <= result)
             }
             .discard('temp),
           allc)
@@ -236,10 +246,11 @@ object Combinatorics {
       result: Double,
       error: Double)(implicit flowDef: FlowDef, mode: Mode): Pipe = {
     val allColumns = (1 to weights.size).map(x => Symbol("k" + x))
-    weightedSum(weights, result, error).filter(allColumns) { x: TupleEntry =>
-      (0 until allColumns.size)
-        .map(i => x.getDouble(i.asInstanceOf[java.lang.Integer]) != 0.0)
-        .reduceLeft(_ && _)
+    weightedSum(weights, result, error).filter(allColumns) {
+      x: TupleEntry =>
+        (0 until allColumns.size)
+          .map(i => x.getDouble(i.asInstanceOf[java.lang.Integer]) != 0.0)
+          .reduceLeft(_ && _)
     }
   }
 

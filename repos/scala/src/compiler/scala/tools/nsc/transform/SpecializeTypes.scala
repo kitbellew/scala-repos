@@ -545,10 +545,11 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
 
   /** Type parameters that survive when specializing in the specified environment. */
   def survivingParams(params: List[Symbol], env: TypeEnv) =
-    params filter { p =>
-      !p.isSpecialized ||
-      !env.contains(p) ||
-      !isPrimitiveValueType(env(p))
+    params filter {
+      p =>
+        !p.isSpecialized ||
+        !env.contains(p) ||
+        !isPrimitiveValueType(env(p))
     }
 
   /** Produces the symbols from type parameters `syms` of the original owner,
@@ -915,18 +916,19 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     }
 
     val subclasses = specializations(clazz.info.typeParams) filter satisfiable
-    subclasses foreach { env =>
-      val spc = specializedClass(env, decls1)
-      val existing = clazz.owner.info.decl(spc.name)
+    subclasses foreach {
+      env =>
+        val spc = specializedClass(env, decls1)
+        val existing = clazz.owner.info.decl(spc.name)
 
-      // a symbol for the specialized class already exists if there's a classfile for it.
-      // keeping both crashes the compiler on test/files/pos/spec-Function1.scala
-      if (existing != NoSymbol)
-        clazz.owner.info.decls.unlink(existing)
+        // a symbol for the specialized class already exists if there's a classfile for it.
+        // keeping both crashes the compiler on test/files/pos/spec-Function1.scala
+        if (existing != NoSymbol)
+          clazz.owner.info.decls.unlink(existing)
 
-      exitingSpecialize(
-        clazz.owner.info.decls enter spc
-      ) //!!! assumes fully specialized classes
+        exitingSpecialize(
+          clazz.owner.info.decls enter spc
+        ) //!!! assumes fully specialized classes
     }
     if (subclasses.nonEmpty) clazz.resetFlag(FINAL)
     cleanAnyRefSpecCache(clazz, decls1)
@@ -1987,7 +1989,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                   debuglog("created " + t)
                   reportError {
                     localTyper.typed(t)
-                  } { _ => super.transform(tree) }
+                  } {
+                    _ => super.transform(tree)
+                  }
 
                 case fwd @ Forward(_) =>
                   debuglog("forward: " + fwd + ", " + ddef)
@@ -1999,7 +2003,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                     "-->d completed forwarder to specialized overload: " + fwd.target + ": " + rhs1)
                   reportError {
                     localTyper.typed(deriveDefDef(tree)(_ => rhs1))
-                  } { _ => super.transform(tree) }
+                  } {
+                    _ => super.transform(tree)
+                  }
 
                 case SpecializedAccessor(target) =>
                   val rhs1 =

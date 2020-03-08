@@ -151,11 +151,12 @@ trait ScTypePresentation {
         case psi.types.Any =>
         case tp: ScType    => buffer ++= s" <: ${typeText0(tp)}"
       }
-      param.viewBound foreach { (tp: ScType) =>
-        buffer ++= s" <% ${typeText0(tp)}"
+      param.viewBound foreach {
+        (tp: ScType) => buffer ++= s" <% ${typeText0(tp)}"
       }
-      param.contextBound foreach { (tp: ScType) =>
-        buffer ++= s" : ${typeText0(ScTypeUtil.stripTypeArgs(subst.subst(tp)))}"
+      param.contextBound foreach {
+        (tp: ScType) =>
+          buffer ++= s" : ${typeText0(ScTypeUtil.stripTypeArgs(subst.subst(tp)))}"
       }
       buffer.toString()
     }

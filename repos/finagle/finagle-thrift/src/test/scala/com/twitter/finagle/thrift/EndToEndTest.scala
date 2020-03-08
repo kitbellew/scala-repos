@@ -324,8 +324,8 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     def mkThriftTlsServer(sr: StatsReceiver) =
       Thrift.server
         .configured(Stats(sr))
-        .configured(Transport.TLSServerEngine(Some { () =>
-          Ssl.server(SslFile.cert, SslFile.key, null, null, null)
+        .configured(Transport.TLSServerEngine(Some {
+          () => Ssl.server(SslFile.cert, SslFile.key, null, null, null)
         }))
         .serve(
           new InetSocketAddress(InetAddress.getLoopbackAddress, 0),

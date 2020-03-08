@@ -140,11 +140,12 @@ object PlatformBuild extends Build {
       jprofilerLib,
       jprofilerConf,
       jprofilerId,
-      baseDirectory) map { (opts, lib, conf, id, d) =>
-      // download jnilib if necessary. a bit sketchy, but convenient
-      Process("./jprofiler/setup-jnilib.py").!!
-      opts ++ Seq(
-        "-agentpath:%s/jprofiler.jnilib=offline,config=%s/%s,id=%s" format (d, d, conf, id))
+      baseDirectory) map {
+      (opts, lib, conf, id, d) =>
+        // download jnilib if necessary. a bit sketchy, but convenient
+        Process("./jprofiler/setup-jnilib.py").!!
+        opts ++ Seq(
+          "-agentpath:%s/jprofiler.jnilib=offline,config=%s/%s,id=%s" format (d, d, conf, id))
     }
   )
 

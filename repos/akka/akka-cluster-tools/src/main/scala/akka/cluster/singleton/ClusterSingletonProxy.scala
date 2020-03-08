@@ -192,11 +192,12 @@ final class ClusterSingletonProxy(
   }
 
   def handleInitial(state: CurrentClusterState): Unit = {
-    trackChange { () ⇒
-      membersByAge =
-        immutable.SortedSet.empty(ageOrdering) union state.members.collect {
-          case m if m.status == MemberStatus.Up && matchingRole(m) ⇒ m
-        }
+    trackChange {
+      () ⇒
+        membersByAge =
+          immutable.SortedSet.empty(ageOrdering) union state.members.collect {
+            case m if m.status == MemberStatus.Up && matchingRole(m) ⇒ m
+          }
     }
   }
 
@@ -244,7 +245,9 @@ final class ClusterSingletonProxy(
     */
   def remove(m: Member): Unit = {
     if (matchingRole(m))
-      trackChange { () ⇒ membersByAge -= m }
+      trackChange {
+        () ⇒ membersByAge -= m
+      }
   }
 
   def receive = {
@@ -268,10 +271,11 @@ final class ClusterSingletonProxy(
     case _: ActorIdentity ⇒ // do nothing
     case ClusterSingletonProxy.TryToIdentifySingleton
         if identifyTimer.isDefined ⇒
-      membersByAge.headOption.foreach { oldest ⇒
-        val singletonAddress = RootActorPath(oldest.address) / singletonPath
-        log.debug("Trying to identify singleton at [{}]", singletonAddress)
-        context.actorSelection(singletonAddress) ! Identify(identifyId)
+      membersByAge.headOption.foreach {
+        oldest ⇒
+          val singletonAddress = RootActorPath(oldest.address) / singletonPath
+          log.debug("Trying to identify singleton at [{}]", singletonAddress)
+          context.actorSelection(singletonAddress) ! Identify(identifyId)
       }
     case Terminated(ref) ⇒
       if (singleton.exists(_ == ref)) {

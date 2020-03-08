@@ -45,8 +45,9 @@ trait StringTypedField extends TypedField[String] with StringValidators {
     case _                       => setBox(Full(s))
   }
 
-  private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
-    <input type={formInputType} maxlength={maxLength.toString}
+  private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) {
+    funcName =>
+      <input type={formInputType} maxlength={maxLength.toString}
       name={funcName}
       value={valueBox openOr ""}
       tabindex={tabIndex.toString}/>

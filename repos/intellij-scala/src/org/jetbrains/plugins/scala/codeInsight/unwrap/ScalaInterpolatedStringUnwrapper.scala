@@ -18,9 +18,10 @@ class ScalaInterpolatedStringUnwrapper extends ScalaUnwrapper {
     forInjection(e)((_, _) => true)(false)
 
   override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) =
-    forInjection(element) { (expr, lit) =>
-      context.extractBlockOrSingleStatement(expr, lit)
-      context.delete(lit)
+    forInjection(element) {
+      (expr, lit) =>
+        context.extractBlockOrSingleStatement(expr, lit)
+        context.delete(lit)
     } {}
 
   override def getDescription(e: PsiElement) =
@@ -29,9 +30,10 @@ class ScalaInterpolatedStringUnwrapper extends ScalaUnwrapper {
   override def collectAffectedElements(
       e: PsiElement,
       toExtract: util.List[PsiElement]) =
-    forInjection[PsiElement](e) { (expr, lit) =>
-      super.collectAffectedElements(expr, toExtract)
-      lit
+    forInjection[PsiElement](e) {
+      (expr, lit) =>
+        super.collectAffectedElements(expr, toExtract)
+        lit
     }(e)
 
   private def forInjection[T](e: PsiElement)(

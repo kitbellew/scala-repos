@@ -218,13 +218,14 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         sourcesCollector: collection.mutable.HashSet[String]) {
       Set(
         classesCollector -> target.classes(),
-        sourcesCollector -> target.sources()).foreach { entry =>
-        entry._1 ++= entry._2.withoutSelfModuleOutput().getRoots.map {
-          virtualFile =>
-            virtualFile.getPath.replaceAll(
-              Pattern.quote(".") + "(\\S{2,6})" + Pattern.quote("!/"),
-              ".$1/")
-        }
+        sourcesCollector -> target.sources()).foreach {
+        entry =>
+          entry._1 ++= entry._2.withoutSelfModuleOutput().getRoots.map {
+            virtualFile =>
+              virtualFile.getPath.replaceAll(
+                Pattern.quote(".") + "(\\S{2,6})" + Pattern.quote("!/"),
+                ".$1/")
+          }
       }
     }
 

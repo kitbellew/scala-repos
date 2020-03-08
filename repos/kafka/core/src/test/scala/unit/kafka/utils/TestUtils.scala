@@ -805,33 +805,34 @@ object TestUtils extends Logging {
       topic: String,
       leaderPerPartitionMap: scala.collection.immutable.Map[Int, Int],
       controllerEpoch: Int) {
-    leaderPerPartitionMap.foreach { leaderForPartition =>
-      {
-        val partition = leaderForPartition._1
-        val leader = leaderForPartition._2
-        try {
-          val currentLeaderAndIsrOpt =
-            zkUtils.getLeaderAndIsrForPartition(topic, partition)
-          var newLeaderAndIsr: LeaderAndIsr = null
-          if (currentLeaderAndIsrOpt == None)
-            newLeaderAndIsr = new LeaderAndIsr(leader, List(leader))
-          else {
-            newLeaderAndIsr = currentLeaderAndIsrOpt.get
-            newLeaderAndIsr.leader = leader
-            newLeaderAndIsr.leaderEpoch += 1
-            newLeaderAndIsr.zkVersion += 1
+    leaderPerPartitionMap.foreach {
+      leaderForPartition =>
+        {
+          val partition = leaderForPartition._1
+          val leader = leaderForPartition._2
+          try {
+            val currentLeaderAndIsrOpt =
+              zkUtils.getLeaderAndIsrForPartition(topic, partition)
+            var newLeaderAndIsr: LeaderAndIsr = null
+            if (currentLeaderAndIsrOpt == None)
+              newLeaderAndIsr = new LeaderAndIsr(leader, List(leader))
+            else {
+              newLeaderAndIsr = currentLeaderAndIsrOpt.get
+              newLeaderAndIsr.leader = leader
+              newLeaderAndIsr.leaderEpoch += 1
+              newLeaderAndIsr.zkVersion += 1
+            }
+            zkUtils.updatePersistentPath(
+              getTopicPartitionLeaderAndIsrPath(topic, partition),
+              zkUtils.leaderAndIsrZkData(newLeaderAndIsr, controllerEpoch))
+          } catch {
+            case oe: Throwable =>
+              error(
+                "Error while electing leader for partition [%s,%d]"
+                  .format(topic, partition),
+                oe)
           }
-          zkUtils.updatePersistentPath(
-            getTopicPartitionLeaderAndIsrPath(topic, partition),
-            zkUtils.leaderAndIsrZkData(newLeaderAndIsr, controllerEpoch))
-        } catch {
-          case oe: Throwable =>
-            error(
-              "Error while electing leader for partition [%s,%d]"
-                .format(topic, partition),
-              oe)
         }
-      }
     }
   }
 
@@ -988,16 +989,17 @@ object TestUtils extends Logging {
     var leader: Int = -1
     TestUtils.waitUntilTrue(
       () =>
-        servers.foldLeft(true) { (result, server) =>
-          val partitionStateOpt =
-            server.apis.metadataCache.getPartitionInfo(topic, partition)
-          partitionStateOpt match {
-            case None => false
-            case Some(partitionState) =>
-              leader =
-                partitionState.leaderIsrAndControllerEpoch.leaderAndIsr.leader
-              result && Request.isValidBrokerId(leader)
-          }
+        servers.foldLeft(true) {
+          (result, server) =>
+            val partitionStateOpt =
+              server.apis.metadataCache.getPartitionInfo(topic, partition)
+            partitionStateOpt match {
+              case None => false
+              case Some(partitionState) =>
+                leader =
+                  partitionState.leaderIsrAndControllerEpoch.leaderAndIsr.leader
+                result && Request.isValidBrokerId(leader)
+            }
         },
       "Partition [%s,%d] metadata not propagated after %d ms"
         .format(topic, partition, timeout),

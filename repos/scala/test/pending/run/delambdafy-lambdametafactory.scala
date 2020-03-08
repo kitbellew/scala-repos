@@ -6,15 +6,21 @@
 import java.lang.invoke._
 
 class C {
-  def test1: Unit = { (x: String) => x.reverse }
+  def test1: Unit = {
+    (x: String) => x.reverse
+  }
   def test2: Unit = {
     val capture1 = "capture1"
     (x: String) => capture1 + " " + x.reverse
   }
-  def test3: Unit = { (x: String) => C.this + " " + x.reverse }
+  def test3: Unit = {
+    (x: String) => C.this + " " + x.reverse
+  }
 }
 trait T {
-  def test4: Unit = { (x: String) => x.reverse }
+  def test4: Unit = {
+    (x: String) => x.reverse
+  }
 }
 
 // A functional interface. Function1 contains abstract methods that are filled in by mixin
