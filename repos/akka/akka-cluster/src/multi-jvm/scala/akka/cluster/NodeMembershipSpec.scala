@@ -33,9 +33,7 @@ abstract class NodeMembershipSpec
     "(when two nodes) start gossiping to each other so that both nodes gets the same gossip info" taggedAs LongRunningTest in {
 
       // make sure that the node-to-join is started before other join
-      runOn(first) {
-        startClusterNode()
-      }
+      runOn(first) { startClusterNode() }
       enterBarrier("first-started")
 
       runOn(first, second) {
@@ -51,9 +49,7 @@ abstract class NodeMembershipSpec
 
     "(when three nodes) start gossiping to each other so that all nodes gets the same gossip info" taggedAs LongRunningTest in {
 
-      runOn(third) {
-        cluster.join(first)
-      }
+      runOn(third) { cluster.join(first) }
 
       awaitAssert(clusterView.members.size should ===(3))
       assertMembers(clusterView.members, first, second, third)

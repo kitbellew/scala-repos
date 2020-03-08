@@ -32,9 +32,7 @@ private[tournament] case class WaitingUsers(
 
   def waiting = {
     val since = date minusSeconds waitSeconds
-    hash.collect {
-      case (u, d) if d.isBefore(since) => u
-    }.toList
+    hash.collect { case (u, d) if d.isBefore(since) => u }.toList
   }
 
   def update(us: Set[String], clock: Option[chess.Clock]) = {

@@ -211,9 +211,7 @@ class StringBuilderTest {
   }
 
   @Test def should_allow_string_interpolation_to_survive_null_and_undefined()
-      : Unit = {
-    assertEquals("null", s"${null}")
-  }
+      : Unit = { assertEquals("null", s"${null}") }
 
   @Test def deleteCharAt(): Unit = {
     assertEquals("023", initBuilder("0123").deleteCharAt(1).toString)

@@ -11,21 +11,13 @@ import org.junit.Assert._
   * Pavel Fatin
   */
 class FormattedStringFormatterTest extends SimpleTestCase {
-  def testEmpty() {
-    assertEquals(call("", ""), format())
-  }
+  def testEmpty() { assertEquals(call("", ""), format()) }
 
-  def testText() {
-    assertEquals(call("foo", ""), format(Text("foo")))
-  }
+  def testText() { assertEquals(call("foo", ""), format(Text("foo"))) }
 
-  def testEscapeChar() {
-    assertEquals(call("\\n", ""), format(Text("\n")))
-  }
+  def testEscapeChar() { assertEquals(call("\\n", ""), format(Text("\n"))) }
 
-  def testSlash() {
-    assertEquals(call("\\\\", ""), format(Text("\\")))
-  }
+  def testSlash() { assertEquals(call("\\\\", ""), format(Text("\\"))) }
 
   def testPlainExpression() {
     assertEquals(call("%s", "foo"), format(Injection(exp("foo"), None)))

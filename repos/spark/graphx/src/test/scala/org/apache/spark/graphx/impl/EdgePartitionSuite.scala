@@ -39,9 +39,7 @@ class EdgePartitionSuite extends SparkFunSuite {
     val edges = List(Edge(0, 1, 0), Edge(1, 2, 0), Edge(2, 0, 0))
     val reversedEdges = List(Edge(0, 2, 0), Edge(1, 0, 0), Edge(2, 1, 0))
     val builder = new EdgePartitionBuilder[Int, Nothing]
-    for (e <- edges) {
-      builder.add(e.srcId, e.dstId, e.attr)
-    }
+    for (e <- edges) { builder.add(e.srcId, e.dstId, e.attr) }
     val edgePartition = builder.toEdgePartition
     assert(
       edgePartition.reverse.iterator.map(_.copy()).toList === reversedEdges)
@@ -52,9 +50,7 @@ class EdgePartitionSuite extends SparkFunSuite {
   test("map") {
     val edges = List(Edge(0, 1, 0), Edge(1, 2, 0), Edge(2, 0, 0))
     val builder = new EdgePartitionBuilder[Int, Nothing]
-    for (e <- edges) {
-      builder.add(e.srcId, e.dstId, e.attr)
-    }
+    for (e <- edges) { builder.add(e.srcId, e.dstId, e.attr) }
     val edgePartition = builder.toEdgePartition
     assert(
       edgePartition
@@ -68,9 +64,7 @@ class EdgePartitionSuite extends SparkFunSuite {
   test("filter") {
     val edges = List(Edge(0, 1, 0), Edge(0, 2, 0), Edge(2, 0, 0))
     val builder = new EdgePartitionBuilder[Int, Int]
-    for (e <- edges) {
-      builder.add(e.srcId, e.dstId, e.attr)
-    }
+    for (e <- edges) { builder.add(e.srcId, e.dstId, e.attr) }
     val edgePartition = builder.toEdgePartition
     val filtered = edgePartition.filter(
       et => et.srcId == 0,
@@ -92,9 +86,7 @@ class EdgePartitionSuite extends SparkFunSuite {
       Edge(2, 0, 32))
     val groupedEdges = List(Edge(0, 1, 9), Edge(1, 2, 18), Edge(2, 0, 36))
     val builder = new EdgePartitionBuilder[Int, Nothing]
-    for (e <- edges) {
-      builder.add(e.srcId, e.dstId, e.attr)
-    }
+    for (e <- edges) { builder.add(e.srcId, e.dstId, e.attr) }
     val edgePartition = builder.toEdgePartition
     assert(
       edgePartition

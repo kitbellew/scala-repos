@@ -160,31 +160,21 @@ object DBLog {
           }
         }
         case "cancel" => {
-          logMeta("Cancelled Statement") {
-            chain(method, Array())
-          }
+          logMeta("Cancelled Statement") { chain(method, Array()) }
         }
         case "clearBatch" => {
-          logMeta("Cleared Batch") {
-            chain(method, Array())
-          }
+          logMeta("Cleared Batch") { chain(method, Array()) }
         }
         case "clearWarnings" => {
-          logMeta("Cleared Warnings") {
-            chain(method, Array())
-          }
+          logMeta("Cleared Warnings") { chain(method, Array()) }
         }
         case "close" => {
-          logMeta("Closed Statement") {
-            chain(method, Array())
-          }
+          logMeta("Closed Statement") { chain(method, Array()) }
         }
         case "execute" if args.length == 1 => {
           logStatement({ ret: Object =>
             "\"%s\" : result = %s".format(args(0), ret)
-          }) {
-            chain(method, args)
-          }
+          }) { chain(method, args) }
         }
         case "execute" if args(1).getClass == classOf[Int] => {
           logStatement({ ret: Object =>
@@ -193,9 +183,7 @@ object DBLog {
               StatementConstantDescriptions.genKeyDescriptions(
                 args(1).asInstanceOf[Int]),
               ret)
-          }) {
-            chain(method, args)
-          }
+          }) { chain(method, args) }
         }
         case "execute" => {
           logStatement({ ret: Object =>
@@ -203,32 +191,24 @@ object DBLog {
               args(0),
               args(1).asInstanceOf[Array[_]].mkString(", "),
               ret)
-          }) {
-            chain(method, args)
-          }
+          }) { chain(method, args) }
         }
         case "executeBatch" => {
           logStatement({ result: Object =>
             "Exec batch, counts = " + result
               .asInstanceOf[Array[Int]]
               .mkString("(", ", ", ")")
-          }) {
-            chain(method, Array())
-          }
+          }) { chain(method, Array()) }
         }
         case "executeQuery" => {
           logStatement({ rs: Object =>
             "Exec query \"%s\" : rs = %s".format(args(0), rs)
-          }) {
-            chain(method, args)
-          }
+          }) { chain(method, args) }
         }
         case "executeUpdate" if args.length == 1 => {
           logStatement({ count: Object =>
             "Exec update \"%s\" : count = %d".format(args(0), count)
-          }) {
-            chain(method, args)
-          }
+          }) { chain(method, args) }
         }
         case "executeUpdate" if args(1).getClass == classOf[Int] => {
           logStatement({ count: Object =>
@@ -237,9 +217,7 @@ object DBLog {
               StatementConstantDescriptions.genKeyDescriptions(
                 args(1).asInstanceOf[Int]),
               count)
-          }) {
-            chain(method, args)
-          }
+          }) { chain(method, args) }
         }
         case "executeUpdate" => {
           logStatement({ count: Object =>
@@ -247,22 +225,16 @@ object DBLog {
               args(0),
               args(1).asInstanceOf[Array[_]].mkString(", "),
               count)
-          }) {
-            chain(method, args)
-          }
+          }) { chain(method, args) }
         }
         case "getConnection" => {
-          logMeta("Get underlying Connection") {
-            chain(method, Array())
-          }
+          logMeta("Get underlying Connection") { chain(method, Array()) }
         }
         case "getFetchDirection" => {
           logMeta({ ret: Object =>
             "Get fetch direction : " + StatementConstantDescriptions
               .fetchDirDescriptions(ret.asInstanceOf[Int])
-          }) {
-            chain(method, Array())
-          }
+          }) { chain(method, Array()) }
         }
         case "getFetchSize" => {
           logMeta({ size: Object => "Get fetch size : " + size }) {
@@ -295,16 +267,12 @@ object DBLog {
               StatementConstantDescriptions.getMoreResultsDescriptions(
                 args(0).asInstanceOf[Int]),
               ret)
-          }) {
-            chain(method, args)
-          }
+          }) { chain(method, args) }
         }
         case "getQueryTimeout" => {
           logMeta({ timeout: Object =>
             "Get query timeout : %d seconds ".format(timeout)
-          }) {
-            chain(method, Array())
-          }
+          }) { chain(method, Array()) }
         }
         case "getResultSet" => {
           logMeta({ rs: Object => "Get result set : " + rs }) {
@@ -315,25 +283,19 @@ object DBLog {
           logMeta({ ret: Object =>
             "Get result set concurrency : " + StatementConstantDescriptions
               .resultSetConcurrencyDescs(ret.asInstanceOf[Int])
-          }) {
-            chain(method, Array())
-          }
+          }) { chain(method, Array()) }
         }
         case "getResultSetHoldability" => {
           logMeta({ ret: Object =>
             "Get ResultSet holdability : " + StatementConstantDescriptions
               .resultSetHoldabilityDescs(ret.asInstanceOf[Int])
-          }) {
-            chain(method, Array())
-          }
+          }) { chain(method, Array()) }
         }
         case "getResultSetType" => {
           logMeta({ ret: Object =>
             "Get ResultSet type : " + StatementConstantDescriptions
               .resultSetTypeDescs(ret.asInstanceOf[Int])
-          }) {
-            chain(method, Array())
-          }
+          }) { chain(method, Array()) }
         }
         case "getUpdateCount" => {
           logMeta({ count: Object => "Get update count : " + count }) {
@@ -343,9 +305,7 @@ object DBLog {
         case "getWarnings" => {
           logMeta({ ret: Object =>
             "Get SQL Warnings: " + Box.!!(ret).map(_.toString).openOr("None")
-          }) {
-            chain(method, Array())
-          }
+          }) { chain(method, Array()) }
         }
         case "isClosed" => {
           logMeta({ ret: Object => "Check isClosed : " + ret }) {
@@ -358,14 +318,10 @@ object DBLog {
           }
         }
         case "setCursorName" => {
-          logMeta("Set cursor name = %s" + args(0)) {
-            chain(method, args)
-          }
+          logMeta("Set cursor name = %s" + args(0)) { chain(method, args) }
         }
         case "setEscapeProcessing" => {
-          logMeta("Set escape processing = " + args(0)) {
-            chain(method, args)
-          }
+          logMeta("Set escape processing = " + args(0)) { chain(method, args) }
         }
         case "setFetchDirection" => {
           logMeta(
@@ -375,29 +331,19 @@ object DBLog {
           }
         }
         case "setFetchSize" => {
-          logMeta("Set fetch size = " + args(0)) {
-            chain(method, args)
-          }
+          logMeta("Set fetch size = " + args(0)) { chain(method, args) }
         }
         case "setMaxFieldSize" => {
-          logMeta("Set max field size = " + args(0)) {
-            chain(method, args)
-          }
+          logMeta("Set max field size = " + args(0)) { chain(method, args) }
         }
         case "setMaxRows" => {
-          logMeta("Set max rows = " + args(0)) {
-            chain(method, args)
-          }
+          logMeta("Set max rows = " + args(0)) { chain(method, args) }
         }
         case "setPoolable" => {
-          logMeta("Set poolable = " + args(0)) {
-            chain(method, args)
-          }
+          logMeta("Set poolable = " + args(0)) { chain(method, args) }
         }
         case "setQueryTimeout" => {
-          logMeta("Set query timeout = " + args(0)) {
-            chain(method, args)
-          }
+          logMeta("Set query timeout = " + args(0)) { chain(method, args) }
         }
         case "toString" => {
           // We'll call into our own representation here
@@ -500,33 +446,25 @@ object DBLog {
 
         case "clearParameters" => {
           paramMap = Map.empty[Int, Any]
-          logMeta("Clear parameters") {
-            chain(method, Array())
-          }
+          logMeta("Clear parameters") { chain(method, Array()) }
         }
 
         case "execute" => {
           logStatement({ ret: Object =>
             "Exec \"%s\" : %s".format(paramified, ret)
-          }) {
-            chain(method, Array())
-          }
+          }) { chain(method, Array()) }
         }
 
         case "executeQuery" => {
           logStatement({ rs: Object =>
             "Exec query \"%s\" : %s".format(paramified, rs)
-          }) {
-            chain(method, Array())
-          }
+          }) { chain(method, Array()) }
         }
 
         case "executeUpdate" => {
           logStatement({ ret: Object =>
             "Exec update \"%s\" : updated %d rows".format(paramified, ret)
-          }) {
-            chain(method, Array())
-          }
+          }) { chain(method, Array()) }
         }
 
         case "getMetaData" => {

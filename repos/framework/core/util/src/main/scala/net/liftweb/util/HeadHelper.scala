@@ -88,9 +88,8 @@ object HeadHelper {
             head <- findElems(body)(_.label == "head"))
         yield head.child).flatMap { e => e }
 
-    if (headInBody.isEmpty) {
-      xhtml
-    } else {
+    if (headInBody.isEmpty) { xhtml }
+    else {
       def xform(in: NodeSeq, inBody: Boolean): NodeSeq = in flatMap {
         case e: Elem if !inBody && e.label == "body" =>
           Elem(

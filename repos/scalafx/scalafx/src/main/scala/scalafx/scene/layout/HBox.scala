@@ -45,9 +45,7 @@ object HBox {
   /**
     * Removes all hbox constraints from the child node.
     */
-  def clearConstraints(child: jfxs.Node) {
-    jfxsl.HBox.clearConstraints(child)
-  }
+  def clearConstraints(child: jfxs.Node) { jfxsl.HBox.clearConstraints(child) }
 
   /**
     * Returns the child's hgrow constraint if set.
@@ -106,17 +104,13 @@ class HBox(override val delegate: jfxsl.HBox = new jfxsl.HBox)
     * The amount of horizontal space between each child in the hbox.
     */
   def spacing: DoubleProperty = delegate.spacingProperty
-  def spacing_=(v: Double) {
-    spacing() = v
-  }
+  def spacing_=(v: Double) { spacing() = v }
 
   /**
     * Whether or not resizable children will be resized to fill the full height of the hbox or be
     * kept to their preferred height and aligned according to the alignment vpos value.
     */
   def fillHeight: BooleanProperty = delegate.fillHeightProperty
-  def fillHeight_=(v: Boolean) {
-    fillHeight() = v
-  }
+  def fillHeight_=(v: Boolean) { fillHeight() = v }
 
 }

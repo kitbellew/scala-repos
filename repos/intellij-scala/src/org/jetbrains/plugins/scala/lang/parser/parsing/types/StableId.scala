@@ -119,15 +119,11 @@ object StableId extends ParserNode {
     builder.disableNewlines
     if (builder.getTokenType != tIDENTIFIER) {
       builder.error(ErrMsg("identifier.expected"))
-    } else {
-      builder.advanceLexer()
-    }
+    } else { builder.advanceLexer() }
 
     if (builder.getTokenType != tRSQBRACKET) {
       builder.error(ErrMsg("rsqbracket.expected"))
-    } else {
-      builder.advanceLexer()
-    }
+    } else { builder.advanceLexer() }
     builder.restoreNewlinesState
   }
 

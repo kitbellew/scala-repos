@@ -83,15 +83,11 @@ trait SegmentFormatSupport {
       frequency(
         6 -> basic,
         1 -> (genCValueType(maxDepth - 1) map (CArrayType(_))))
-    } else {
-      basic
-    }
+    } else { basic }
   }
 
   def genArray[A: Manifest](length: Int, g: Gen[A]): Gen[Array[A]] =
-    for {
-      values <- listOfN(length, g)
-    } yield {
+    for { values <- listOfN(length, g) } yield {
       val array = manifest[A].newArray(length)
       values.zipWithIndex foreach {
         case (v, i) =>
@@ -213,9 +209,8 @@ final class InMemoryReadableByteChannel(bytes: Array[Byte])
   var isOpen = true
   def close() { isOpen = false }
   def read(dst: ByteBuffer): Int =
-    if (buffer.remaining() == 0) {
-      -1
-    } else {
+    if (buffer.remaining() == 0) { -1 }
+    else {
       val written = math.min(dst.remaining(), buffer.remaining())
       while (dst.remaining() > 0 && buffer.remaining() > 0) {
         dst.put(buffer.get())
@@ -229,17 +224,13 @@ final class InMemoryWritableByteChannel extends WritableByteChannel {
 
   def write(buf: ByteBuffer): Int = {
     val read = buf.remaining()
-    while (buf.remaining() > 0) {
-      buffer += buf.get()
-    }
+    while (buf.remaining() > 0) { buffer += buf.get() }
     read
   }
 
   var isOpen = true
 
-  def close() {
-    isOpen = false
-  }
+  def close() { isOpen = false }
 
   def toArray: Array[Byte] = buffer.toArray
 }

@@ -109,11 +109,7 @@ class ContextTest extends FunSuite with AssertionsForJUnit {
   test("Propagates with future execution") {
     val p = new Promise[Unit]
 
-    val f = ctx.let(a, "ok") {
-      p.before {
-        Future.value(ctx(a))
-      }
-    }
+    val f = ctx.let(a, "ok") { p.before { Future.value(ctx(a)) } }
 
     assert(!f.isDefined)
     p.setDone()

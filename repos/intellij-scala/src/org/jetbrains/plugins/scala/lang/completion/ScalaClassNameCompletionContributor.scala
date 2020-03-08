@@ -280,9 +280,7 @@ object ScalaClassNameCompletionContributor {
       alias <- ScalaPsiManager
         .instance(project)
         .getStableAliasesByName(name, position.getResolveScope)
-    } {
-      addTypeForCompletion(TypeAliasToImport(alias))
-    }
+    } { addTypeForCompletion(TypeAliasToImport(alias)) }
 
     for {
       (name, elem: PsiNamedElement) <- reverseRenamesMap

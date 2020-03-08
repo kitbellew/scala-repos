@@ -130,11 +130,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
         print("[");
         printSeq(ts) { t =>
           printAnnotations(t)
-          if (t.mods.hasFlag(CONTRAVARIANT)) {
-            print("-")
-          } else if (t.mods.hasFlag(COVARIANT)) {
-            print("+")
-          }
+          if (t.mods.hasFlag(CONTRAVARIANT)) { print("-") }
+          else if (t.mods.hasFlag(COVARIANT)) { print("+") }
           printParam(t)
         } { print(", ") }; print("]")
       }
@@ -316,14 +313,10 @@ trait Printers extends api.Printers { self: SymbolTable =>
       printValueParams
       print(" => ", body, ")")
       if (printIds && tree.symbol != null)
-        comment {
-          print("#" + tree.symbol.id)
-        }
+        comment { print("#" + tree.symbol.id) }
 
       if (printOwners && tree.symbol != null)
-        comment {
-          print("@" + tree.symbol.owner.id)
-        }
+        comment { print("@" + tree.symbol.owner.id) }
     }
 
     protected def printSuper(
@@ -396,11 +389,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
           if (body.nonEmpty) {
             if (self.name != nme.WILDCARD) {
               print(" { ", self.name); printOpt(": ", self.tpt); print(" => ")
-            } else if (self.tpt.nonEmpty) {
-              print(" { _ : ", self.tpt, " => ")
-            } else {
-              print(" {")
-            }
+            } else if (self.tpt.nonEmpty) { print(" { _ : ", self.tpt, " => ") }
+            else { print(" {") }
             printColumn(body, "", ";", "}")
           }
           currentOwner = currentOwner1
@@ -506,9 +496,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
             else print("<type ?>")
           } else if ((tree.tpe.typeSymbol ne null) && tree.tpe.typeSymbol.isAnonymousClass) {
             print(tree.tpe.typeSymbol.toString)
-          } else {
-            print(tree.tpe.toString)
-          }
+          } else { print(tree.tpe.toString) }
 
         case an @ Annotated(
               Apply(Select(New(tpt), nme.CONSTRUCTOR), args),
@@ -882,9 +870,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
         case pd @ PackageDef(packaged, stats) =>
           packaged match {
             case Ident(name) if name == nme.EMPTY_PACKAGE_NAME =>
-              printSeq(stats) {
-                print(_)
-              } {
+              printSeq(stats) { print(_) } {
                 println()
                 println()
               };
@@ -915,9 +901,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
             if (tparams.isEmpty && (vparamss.isEmpty || vparamss(0).isEmpty))
               print(blankForName(name))
             printOpt(": ", tp)
-          } {
-            printOpt(" = " + (if (mods.isMacro) "macro " else ""), rhs)
-          }
+          } { printOpt(" = " + (if (mods.isMacro) "macro " else ""), rhs) }
 
         case td @ TypeDef(mods, name, tparams, rhs) =>
           printTypeDef(td, printedName(name))
@@ -964,9 +948,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
                 printColumn(earlyDefs, "", ";", "")
                 print("} " + (if (printedParents.nonEmpty) "with " else ""))
               }
-              ctBody collectFirst {
-                case apply: Apply => apply
-              }
+              ctBody collectFirst { case apply: Apply => apply }
             case _ => None
           }
 
@@ -979,9 +961,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
               case _                                   => Nil
             }
             printArgss(constrArgss)
-            if (traits.nonEmpty) {
-              printRow(traits, " with ", " with ", "")
-            }
+            if (traits.nonEmpty) { printRow(traits, " with ", " with ", "") }
           }
           /* Remove primary constr def and constr val and var defs
            * right contains all constructors
@@ -1007,11 +987,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
               print(" { ", self.name);
               printOpt(": ", self.tpt);
               print(" =>")
-            } else if (self.tpt.nonEmpty) {
-              print(" { _ : ", self.tpt, " =>")
-            } else {
-              print(" {")
-            }
+            } else if (self.tpt.nonEmpty) { print(" { _ : ", self.tpt, " =>") }
+            else { print(" {") }
             printColumn(modBody, "", ";", "}")
           }
 
@@ -1083,9 +1060,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
         // print only fun when targs are TypeTrees with empty original
         case TypeApply(fun, targs) =>
-          if (targs.exists(isEmptyTree(_))) {
-            print(fun)
-          } else super.printTree(tree)
+          if (targs.exists(isEmptyTree(_))) { print(fun) }
+          else super.printTree(tree)
 
         case Apply(fun, vargs) =>
           tree match {
@@ -1156,18 +1132,15 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
         case id @ Ident(name) =>
           if (name.nonEmpty) {
-            if (name == nme.dollarScope) {
-              print(s"scala.xml.${nme.TopScope}")
-            } else {
+            if (name == nme.dollarScope) { print(s"scala.xml.${nme.TopScope}") }
+            else {
               val str = printedName(name)
               val strIsBackquoted = str.startsWith("`") && str.endsWith("`")
               print(
                 if (id.isBackquoted && !strIsBackquoted) "`" + str + "`"
                 else str)
             }
-          } else {
-            print("")
-          }
+          } else { print("") }
 
         case l @ Literal(x) =>
           import Chars.LF
@@ -1373,9 +1346,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
                     case _ =>
                       print(tree.symbol.name)
                   }
-                } else {
-                  print(name)
-                }
+                } else { print(name) }
               case Constant(s: String) =>
                 print("Constant(\"" + s + "\")")
               case Constant(null) =>
@@ -1507,9 +1478,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
     }
   }
 
-  def show(position: Position): String = {
-    position.show
-  }
+  def show(position: Position): String = { position.show }
 
   def showDecl(sym: Symbol): String = {
     if (!isCompilerUniverse) definitions.fullyInitializeSymbol(sym)

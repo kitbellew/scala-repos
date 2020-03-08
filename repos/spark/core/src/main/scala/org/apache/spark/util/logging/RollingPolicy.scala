@@ -123,14 +123,10 @@ private[spark] class SizeBasedRollingPolicy(
   }
 
   /** Rollover has occurred, so reset the counter */
-  def rolledOver() {
-    bytesWrittenSinceRollover = 0
-  }
+  def rolledOver() { bytesWrittenSinceRollover = 0 }
 
   /** Increment the bytes that have been written in the current file */
-  def bytesWritten(bytes: Long) {
-    bytesWrittenSinceRollover += bytes
-  }
+  def bytesWritten(bytes: Long) { bytesWrittenSinceRollover += bytes }
 
   /** Get the desired name of the rollover file */
   def generateRolledOverFileSuffix(): String = {

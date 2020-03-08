@@ -19,16 +19,12 @@ final class SetCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if SINTER is called with no key", CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("SINTER\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SINTER\r\n")) }
   }
 
   test("Correctly encode SINTER for one key", CodecTest) {
     unwrap(codec(wrap("SINTER foo\r\n"))) {
-      case SInter(keys) => {
-        assert(keys(0) == foo)
-      }
+      case SInter(keys) => { assert(keys(0) == foo) }
     }
   }
 

@@ -207,15 +207,12 @@ trait BlockStoreColumnarTableModule[M[+_]]
           cellMatrix: CellMatrix,
           cells: List[Cell]
       ): List[Cell] =
-        if (queue.isEmpty) {
-          cells
-        } else if (cells.isEmpty || cellMatrix.compare(
-                     queue.head,
-                     cells.head) == EQ) {
+        if (queue.isEmpty) { cells }
+        else if (cells.isEmpty || cellMatrix.compare(
+                   queue.head,
+                   cells.head) == EQ) {
           dequeueEqual(queue, cellMatrix, queue.dequeue() :: cells)
-        } else {
-          cells
-        }
+        } else { cells }
 
       // consume as many records as possible
       @inline @tailrec def consumeToBoundary(
@@ -257,9 +254,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         val queue = mutable.PriorityQueue(cells.toSeq: _*)(ordering)
 
         val (finishedSize, expired) = consumeToBoundary(queue, cellMatrix, 0)
-        if (expired.isEmpty) {
-          M.point(None)
-        } else {
+        if (expired.isEmpty) { M.point(None) }
+        else {
           val completeSlices = expired.map(_.slice)
 
           val (prefixes, suffixes) = queue.dequeueAll.map(_.split).unzip
@@ -455,18 +451,14 @@ trait BlockStoreColumnarTableModule[M[+_]]
           rauth: Slice): RowComparator = new RowComparator {
         private val mainComparator = Slice.rowComparatorFor(
           lkey.deref(CPathIndex(0)),
-          rkey.deref(CPathIndex(0))) {
-          _.columns.keys map (_.selector)
-        }
+          rkey.deref(CPathIndex(0))) { _.columns.keys map (_.selector) }
 
         private val auxComparator =
           if (rauth == null) null
           else {
             Slice.rowComparatorFor(
               lkey.deref(CPathIndex(0)),
-              rauth.deref(CPathIndex(0))) {
-              _.columns.keys map (_.selector)
-            }
+              rauth.deref(CPathIndex(0))) { _.columns.keys map (_.selector) }
           }
 
         def compare(i1: Int, i2: Int) = {
@@ -751,9 +743,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       nextLeftWriteState,
                       rightWriteState)
                   } yield resultWriteStates
-                } getOrElse {
-                  next(leftWriteState, rightWriteState)
-                }
+                } getOrElse { next(leftWriteState, rightWriteState) }
 
               case MoreRight(span, lidx, leq, req) =>
                 def next(
@@ -837,9 +827,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       leftWriteState,
                       nextRightWriteState)
                   } yield resultWriteStates
-                } getOrElse {
-                  next(leftWriteState, rightWriteState)
-                }
+                } getOrElse { next(leftWriteState, rightWriteState) }
             }
 
           //println("state: " + state)
@@ -971,9 +959,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   }
                 }
 
-                for {
-                  writeStates <- stepResult
-                } yield {
+                for { writeStates <- stepResult } yield {
                   val (leftState, rightState) = writeStates
                   val closedLeftState = leftState.closed()
                   val closedRightState = rightState.closed()
@@ -1183,12 +1169,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
               if (insertCount % jdbmCommitInterval == 0 && insertCount > 0)
                 jdbmState.commit()
               storeRow(row + 1, insertCount + 1)
-            } else {
-              storeRow(row + 1, insertCount)
-            }
-          } else {
-            insertCount
-          }
+            } else { storeRow(row + 1, insertCount) }
+          } else { insertCount }
         }
 
         storeRow(0, insertCount)
@@ -1400,11 +1382,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
 
                   val (index0, head0) =
                     (index.remap(indexBuf), head.remap(headBuf))
-                  val advancedM = if (flip) {
-                    joinTrans.advance(head0, index0)
-                  } else {
-                    joinTrans.advance(index0, head0)
-                  }
+                  val advancedM = if (flip) { joinTrans.advance(head0, index0) }
+                  else { joinTrans.advance(index0, head0) }
                   advancedM map {
                     case (joinTrans0, slice) =>
                       StreamT.Yield(
@@ -1597,9 +1576,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
     override def paged(limit: Int): Table = this
 
     override def takeRange(startIndex0: Long, numberToTake0: Long): Table = {
-      if (startIndex0 > Int.MaxValue) {
-        new InternalTable(Slice.empty)
-      } else {
+      if (startIndex0 > Int.MaxValue) { new InternalTable(Slice.empty) }
+      else {
         val startIndex = startIndex0.toInt
         val numberToTake = numberToTake0.toInt min Int.MaxValue
         new InternalTable(slice.takeRange(startIndex, numberToTake))
@@ -1634,9 +1612,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                 case tableSize0 => tableSize0
               }
               M.point(-\/(new ExternalTable(slices0, tableSize)))
-            } else {
-              acc(tail, head :: buffer, head.size + size)
-            }
+            } else { acc(tail, head :: buffer, head.size + size) }
 
           case None =>
             M.point(\/-(new InternalTable(Slice.concat(buffer.reverse))))
@@ -1705,9 +1681,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
           },
           deepMap(valueSpec) { case Leaf(_) => TransSpec1.DerefArray0 }
         )
-      } else {
-        (Leaf(Source), groupKeys, valueSpec)
-      }
+      } else { (Leaf(Source), groupKeys, valueSpec) }
 
       writeTables(
         this.transform(sourceTrans0).slices,

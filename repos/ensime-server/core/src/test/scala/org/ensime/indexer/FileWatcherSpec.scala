@@ -43,9 +43,7 @@ abstract class FileWatcherSpec
     * file has been modified, or deleted and re-added, if it happens
     * sub-second (without looking at the contents).
     */
-  def waitForLinus(): Unit = {
-    Thread.sleep(1000)
-  }
+  def waitForLinus(): Unit = { Thread.sleep(1000) }
 
   "FileWatcher" should "detect added files" taggedAs (Retryable) in
     withVFS { implicit vfs =>

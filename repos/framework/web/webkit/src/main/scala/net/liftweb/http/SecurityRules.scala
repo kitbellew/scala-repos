@@ -51,11 +51,8 @@ final case class HttpsRules(
       val age = s"max-age=${duration.toSeconds}"
 
       val header =
-        if (includeSubDomains) {
-          s"$age ; includeSubDomains"
-        } else {
-          age
-        }
+        if (includeSubDomains) { s"$age ; includeSubDomains" }
+        else { age }
 
       ("Strict-Transport-Security" -> header)
     }
@@ -66,11 +63,8 @@ final case class HttpsRules(
     * false, returns nothing.
     */
   def headers(enforce: Boolean): List[(String, String)] = {
-    if (enforce) {
-      headers
-    } else {
-      Nil
-    }
+    if (enforce) { headers }
+    else { Nil }
   }
 }
 object HttpsRules {
@@ -307,13 +301,9 @@ final case class ContentSecurityPolicy(
   def headers(
       enforce: Boolean = true,
       logViolations: Boolean = true): List[(String, String)] = {
-    if (enforce) {
-      enforcedHeaders
-    } else if (logViolations) {
-      reportOnlyHeaders
-    } else {
-      Nil
-    }
+    if (enforce) { enforcedHeaders }
+    else if (logViolations) { reportOnlyHeaders }
+    else { Nil }
   }
 }
 object ContentSecurityPolicy {
@@ -374,9 +364,7 @@ object ContentSecurityPolicyViolation extends LazyLoggable {
           violationJson = camelCasedJson \ "csp-report"
           extractedViolation <- tryo(
             violationJson.extract[ContentSecurityPolicyViolation])
-        } yield {
-          extractedViolation
-        }
+        } yield { extractedViolation }
 
       () => {
         violation match {
@@ -411,11 +399,8 @@ sealed trait FrameRestrictions {
     * off, no headers are generated.
     */
   def headers(enforce: Boolean = false): List[(String, String)] = {
-    if (enforce) {
-      headers
-    } else {
-      Nil
-    }
+    if (enforce) { headers }
+    else { Nil }
   }
 }
 object FrameRestrictions {
@@ -465,18 +450,12 @@ final case class SecurityRules(
     logInDevMode: Boolean = true
 ) {
   private val enforce_? = {
-    if (Props.devMode) {
-      enforceInDevMode
-    } else {
-      enforceInOtherModes
-    }
+    if (Props.devMode) { enforceInDevMode }
+    else { enforceInOtherModes }
   }
   private val logViolations_? = {
-    if (Props.devMode) {
-      logInDevMode
-    } else {
-      logInOtherModes
-    }
+    if (Props.devMode) { logInDevMode }
+    else { logInOtherModes }
   }
 
   /**

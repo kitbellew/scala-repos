@@ -93,9 +93,7 @@ private[spark] class SparkDeploySchedulerBackend(
     val testingClassPath =
       if (sys.props.contains("spark.testing")) {
         sys.props("java.class.path").split(java.io.File.pathSeparator).toSeq
-      } else {
-        Nil
-      }
+      } else { Nil }
 
     // Start executors with a few necessary configs for registering with the scheduler
     val sparkJavaOpts =
@@ -113,11 +111,8 @@ private[spark] class SparkDeploySchedulerBackend(
     // If we're using dynamic allocation, set our initial executor limit to 0 for now.
     // ExecutorAllocationManager will send the real initial limit to the Master later.
     val initialExecutorLimit =
-      if (Utils.isDynamicAllocationEnabled(conf)) {
-        Some(0)
-      } else {
-        None
-      }
+      if (Utils.isDynamicAllocationEnabled(conf)) { Some(0) }
+      else { None }
     val appDesc = new ApplicationDescription(
       sc.appName,
       maxCores,
@@ -158,9 +153,8 @@ private[spark] class SparkDeploySchedulerBackend(
     if (!stopping) {
       launcherBackend.setState(SparkAppHandle.State.KILLED)
       logError("Application has been killed. Reason: " + reason)
-      try {
-        scheduler.error(reason)
-      } finally {
+      try { scheduler.error(reason) }
+      finally {
         // Ensure the application terminates, as we can no longer run jobs.
         sc.stop()
       }
@@ -231,13 +225,9 @@ private[spark] class SparkDeploySchedulerBackend(
     }
   }
 
-  private def waitForRegistration() = {
-    registrationBarrier.acquire()
-  }
+  private def waitForRegistration() = { registrationBarrier.acquire() }
 
-  private def notifyContext() = {
-    registrationBarrier.release()
-  }
+  private def notifyContext() = { registrationBarrier.release() }
 
   private def stop(finalState: SparkAppHandle.State): Unit = synchronized {
     try {
@@ -247,9 +237,7 @@ private[spark] class SparkDeploySchedulerBackend(
       client.stop()
 
       val callback = shutdownCallback
-      if (callback != null) {
-        callback(this)
-      }
+      if (callback != null) { callback(this) }
     } finally {
       launcherBackend.setState(finalState)
       launcherBackend.close()

@@ -70,23 +70,17 @@ class Menu(override val delegate: jfxsc.Menu = new jfxsc.Menu("default"))
     *
     * @param c Menu items to replace prior content.
     */
-  def items_=(c: Iterable[MenuItem]) {
-    fillSFXCollection(this.items, c)
-  }
+  def items_=(c: Iterable[MenuItem]) { fillSFXCollection(this.items, c) }
 
   /**
     * Hides the ContextMenu if it was previously showing, and any showing submenus.
     */
-  def hide() {
-    delegate.hide()
-  }
+  def hide() { delegate.hide() }
 
   /**
     * If the Menu is not disabled and the ContextMenu is not already showing, then this will cause the ContextMenu to be shown.
     */
-  def show() {
-    delegate.show()
-  }
+  def show() { delegate.show() }
 
   /**
     * Gets the value of the property showing.

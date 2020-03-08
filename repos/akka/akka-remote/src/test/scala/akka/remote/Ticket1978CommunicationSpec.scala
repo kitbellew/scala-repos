@@ -199,9 +199,7 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
       .withFallback(system.settings.config))
 
   override def afterTermination() {
-    if (cipherConfig.runTest) {
-      shutdown(other)
-    }
+    if (cipherConfig.runTest) { shutdown(other) }
   }
 
   def preCondition: Boolean = true

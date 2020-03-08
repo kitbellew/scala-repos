@@ -904,9 +904,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
       sql("DROP TABLE explodeTest")
       dropTempTable("data")
-    } finally {
-      setConf(HiveContext.CONVERT_CTAS, originalConf)
-    }
+    } finally { setConf(HiveContext.CONVERT_CTAS, originalConf) }
   }
 
   test("sanity test for SPARK-6618") {

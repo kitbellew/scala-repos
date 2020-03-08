@@ -246,9 +246,7 @@ trait PersistentView
       lastSequenceNr)
   }
 
-  private def changeState(state: State): Unit = {
-    currentState = state
-  }
+  private def changeState(state: State): Unit = { currentState = state }
 
   // TODO There are some duplication of the recovery state management here and in Eventsourced.scala,
   //      but the enhanced PersistentView will not be based on recovery infrastructure, and
@@ -333,9 +331,8 @@ trait PersistentView
         if (await)
           internalStash.stash()
         else {
-          try {
-            PersistentView.super.aroundReceive(receive, other)
-          } catch {
+          try { PersistentView.super.aroundReceive(receive, other) }
+          catch {
             case NonFatal(t) ⇒
               changeState(ignoreRemainingReplay(t))
           }

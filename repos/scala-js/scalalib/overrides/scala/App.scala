@@ -58,9 +58,7 @@ trait App extends DelayedInit {
     *  themselves define a `delayedInit` method.
     *  @param body the initialization code to be stored for later execution
     */
-  override def delayedInit(body: => Unit) {
-    initCode += (() => body)
-  }
+  override def delayedInit(body: => Unit) { initCode += (() => body) }
 
   /** The main method.
     *  This stores all argument so that they can be retrieved with `args`

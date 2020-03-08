@@ -233,9 +233,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
                caseSense,
                false,
                constructing,
-               relevance)) {
-          candidates += info
-        }
+               relevance)) { candidates += info }
       }
     }
 
@@ -264,9 +262,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
                caseSense,
                false,
                constructing,
-               relavence)) {
-          candidates += info
-        }
+               relavence)) { candidates += info }
       }
       s = s.getEnclosingScope()
       relavence -= 10

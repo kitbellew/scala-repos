@@ -78,9 +78,7 @@ private[spark] class BlockRDD[T: ClassTag](
     * Whether this BlockRDD is actually usable. This will be false if the data blocks have been
     * removed using `this.removeBlocks`.
     */
-  private[spark] def isValid: Boolean = {
-    _isValid
-  }
+  private[spark] def isValid: Boolean = { _isValid }
 
   /** Check if this BlockRDD is valid. If not valid, exception is thrown. */
   private[spark] def assertValid() {

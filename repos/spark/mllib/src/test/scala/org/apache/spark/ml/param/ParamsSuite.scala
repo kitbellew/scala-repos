@@ -76,11 +76,8 @@ class ParamsSuite extends SparkFunSuite {
              Float.PositiveInfinity)) {
         val json = param.jsonEncode(value)
         val decoded = param.jsonDecode(json)
-        if (value.isNaN) {
-          assert(decoded.isNaN)
-        } else {
-          assert(decoded === value)
-        }
+        if (value.isNaN) { assert(decoded.isNaN) }
+        else { assert(decoded === value) }
       }
     }
 
@@ -100,11 +97,8 @@ class ParamsSuite extends SparkFunSuite {
              Double.PositiveInfinity)) {
         val json = param.jsonEncode(value)
         val decoded = param.jsonDecode(json)
-        if (value.isNaN) {
-          assert(decoded.isNaN)
-        } else {
-          assert(decoded === value)
-        }
+        if (value.isNaN) { assert(decoded.isNaN) }
+        else { assert(decoded === value) }
       }
     }
 
@@ -162,11 +156,8 @@ class ParamsSuite extends SparkFunSuite {
         assert(decoded.length === value.length)
         decoded.zip(value).foreach {
           case (actual, expected) =>
-            if (expected.isNaN) {
-              assert(actual.isNaN)
-            } else {
-              assert(actual === expected)
-            }
+            if (expected.isNaN) { assert(actual.isNaN) }
+            else { assert(actual === expected) }
         }
       }
     }
@@ -205,9 +196,7 @@ class ParamsSuite extends SparkFunSuite {
       solver.getOrDefault(solver.handleInvalid)
     }
 
-    intercept[IllegalArgumentException] {
-      solver.setMaxIter(-1)
-    }
+    intercept[IllegalArgumentException] { solver.setMaxIter(-1) }
   }
 
   test("param pair") {
@@ -221,9 +210,7 @@ class ParamsSuite extends SparkFunSuite {
       assert(pair.param.eq(maxIter))
       assert(pair.value === 5)
     }
-    intercept[IllegalArgumentException] {
-      val pair = maxIter -> -1
-    }
+    intercept[IllegalArgumentException] { val pair = maxIter -> -1 }
   }
 
   test("param map") {
@@ -236,14 +223,10 @@ class ParamsSuite extends SparkFunSuite {
     map0.put(maxIter, 10)
     assert(map0.contains(maxIter))
     assert(map0(maxIter) === 10)
-    intercept[IllegalArgumentException] {
-      map0.put(maxIter, -1)
-    }
+    intercept[IllegalArgumentException] { map0.put(maxIter, -1) }
 
     assert(!map0.contains(inputCol))
-    intercept[NoSuchElementException] {
-      map0(inputCol)
-    }
+    intercept[NoSuchElementException] { map0(inputCol) }
     map0.put(inputCol -> "input")
     assert(map0.contains(inputCol))
     assert(map0(inputCol) === "input")
@@ -297,20 +280,14 @@ class ParamsSuite extends SparkFunSuite {
     assert(solver.getParam("maxIter").eq(maxIter))
     assert(solver.hasParam("inputCol"))
     assert(!solver.hasParam("abc"))
-    intercept[NoSuchElementException] {
-      solver.getParam("abc")
-    }
+    intercept[NoSuchElementException] { solver.getParam("abc") }
 
     solver.setInputCol("input")
     assert(solver.isSet(inputCol))
     assert(solver.isDefined(inputCol))
     assert(solver.getInputCol === "input")
-    intercept[IllegalArgumentException] {
-      ParamMap(maxIter -> -10)
-    }
-    intercept[IllegalArgumentException] {
-      solver.setMaxIter(-10)
-    }
+    intercept[IllegalArgumentException] { ParamMap(maxIter -> -10) }
+    intercept[IllegalArgumentException] { solver.setMaxIter(-10) }
 
     solver.clearMaxIter()
     assert(!solver.isSet(maxIter))

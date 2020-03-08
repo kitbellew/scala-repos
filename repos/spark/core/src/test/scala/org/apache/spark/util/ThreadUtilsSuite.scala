@@ -60,9 +60,7 @@ class ThreadUtilsSuite extends SparkFunSuite {
         TimeUnit.MILLISECONDS)
       latch.await(10, TimeUnit.SECONDS)
       assert(threadName === "this-is-a-thread-name")
-    } finally {
-      executor.shutdownNow()
-    }
+    } finally { executor.shutdownNow() }
   }
 
   test("newDaemonCachedThreadPool") {
@@ -89,9 +87,7 @@ class ThreadUtilsSuite extends SparkFunSuite {
       // Submit a new task and it should be put into the queue since the thread number reaches the
       // limitation
       cachedThreadPool.execute(new Runnable {
-        override def run(): Unit = {
-          latch.await(10, TimeUnit.SECONDS)
-        }
+        override def run(): Unit = { latch.await(10, TimeUnit.SECONDS) }
       })
 
       assert(cachedThreadPool.getActiveCount === maxThreadNumber)
@@ -103,16 +99,12 @@ class ThreadUtilsSuite extends SparkFunSuite {
         assert(cachedThreadPool.getActiveCount === 0)
         assert(cachedThreadPool.getPoolSize === 0)
       }
-    } finally {
-      cachedThreadPool.shutdownNow()
-    }
+    } finally { cachedThreadPool.shutdownNow() }
   }
 
   test("sameThread") {
     val callerThreadName = Thread.currentThread().getName()
-    val f = Future {
-      Thread.currentThread().getName()
-    }(ThreadUtils.sameThread)
+    val f = Future { Thread.currentThread().getName() }(ThreadUtils.sameThread)
     val futureThreadName = Await.result(f, 10.seconds)
     assert(futureThreadName === callerThreadName)
   }

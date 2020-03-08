@@ -37,9 +37,7 @@ object Main {
         val app = system.actorOf(Props(appClass), "app")
         val terminator =
           system.actorOf(Props(classOf[Terminator], app), "app-terminator")
-      } catch {
-        case NonFatal(e) ⇒ system.terminate(); throw e
-      }
+      } catch { case NonFatal(e) ⇒ system.terminate(); throw e }
     }
   }
 

@@ -36,18 +36,14 @@ object WebSpecSpecBoot {
       case RewriteRequest(
           ParsePath(List("test", "stateless"), _, _, _),
           _,
-          _) => {
-        RewriteResponse(List("stateless", "works"))
-      }
+          _) => { RewriteResponse(List("stateless", "works")) }
     }
 
     LiftRules.statefulRewrite.append {
       case RewriteRequest(
           ParsePath(List("test", "stateful"), _, _, _),
           _,
-          _) => {
-        RewriteResponse(List("stateful", "works"))
-      }
+          _) => { RewriteResponse(List("stateful", "works")) }
     }
   }
 }
@@ -77,9 +73,7 @@ class WebSpecSpec extends WebSpec(WebSpecSpecBoot.boot _) {
       new MockHttpServletRequest("http://foo.com/test/this?foo=bar", "/test")
 
     // Create a new session for use in the tests
-    val testSession = MockWeb.testS(testUrl) {
-      S.session
-    }
+    val testSession = MockWeb.testS(testUrl) { S.session }
 
     object TestVar extends SessionVar[String]("Empty")
 

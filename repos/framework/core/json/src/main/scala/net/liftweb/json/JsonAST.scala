@@ -129,9 +129,7 @@ object JsonAST {
     private def findDirectByName(xs: List[JValue], name: String): List[JValue] =
       xs.flatMap {
         case JObject(l) =>
-          l.collect {
-            case JField(n, value) if n == name => value
-          }
+          l.collect { case JField(n, value) if n == name => value }
         case JArray(l) => findDirectByName(l, name)
         case _         => Nil
       }
@@ -140,9 +138,7 @@ object JsonAST {
         xs: List[JValue],
         p: JValue => Boolean): List[JValue] = xs.flatMap {
       case JObject(l) =>
-        l.collect {
-          case JField(n, x) if p(x) => x
-        }
+        l.collect { case JField(n, x) if p(x) => x }
       case JArray(l) => findDirect(l, p)
       case x if p(x) => x :: Nil
       case _         => Nil
@@ -863,11 +859,8 @@ object JsonAST {
       }
 
       // Use Char version of append if we can, as it's cheaper.
-      if (strReplacement.isEmpty) {
-        buf.append(c)
-      } else {
-        buf.append(strReplacement)
-      }
+      if (strReplacement.isEmpty) { buf.append(c) }
+      else { buf.append(strReplacement) }
     }
   }
 
@@ -899,9 +892,9 @@ object JsonAST {
         ('\ufeff', '\ufeff'),
         ('\ufff0', '\uffff')
       ).foldLeft(Set[Char]()) {
-          case (set, (start, end)) =>
-            set ++ (start to end).toSet
-        }
+        case (set, (start, end)) =>
+          set ++ (start to end).toSet
+      }
 
     /**
       * Pretty-print JSON with 2-space indentation and escape all JS-sensitive
@@ -1011,20 +1004,15 @@ object JsonAST {
     buf.append('[') //open array
 
     if (!values.isEmpty) {
-      if (settings.lineBreaks_?) {
-        buf.append('\n')
-      }
+      if (settings.lineBreaks_?) { buf.append('\n') }
 
       values.foreach { elem =>
         if (elem != JNothing) {
-          if (firstEntry) {
-            firstEntry = false
-          } else {
+          if (firstEntry) { firstEntry = false }
+          else {
             buf.append(',')
 
-            if (settings.lineBreaks_?) {
-              buf.append('\n')
-            }
+            if (settings.lineBreaks_?) { buf.append('\n') }
           }
 
           (0 until currentIndent).foreach(_ => buf.append(' '))
@@ -1032,9 +1020,7 @@ object JsonAST {
         }
       }
 
-      if (settings.lineBreaks_?) {
-        buf.append('\n')
-      }
+      if (settings.lineBreaks_?) { buf.append('\n') }
 
       (0 until indentLevel).foreach(_ => buf.append(' '))
     }
@@ -1054,37 +1040,28 @@ object JsonAST {
     buf.append('{') //open bracket
 
     if (!fields.isEmpty) {
-      if (settings.lineBreaks_?) {
-        buf.append('\n')
-      }
+      if (settings.lineBreaks_?) { buf.append('\n') }
 
       fields.foreach {
         case JField(name, value) if value != JNothing =>
-          if (firstEntry) {
-            firstEntry = false
-          } else {
+          if (firstEntry) { firstEntry = false }
+          else {
             buf.append(',')
 
-            if (settings.lineBreaks_?) {
-              buf.append('\n')
-            }
+            if (settings.lineBreaks_?) { buf.append('\n') }
           }
 
           (0 until currentIndent).foreach(_ => buf.append(' '))
 
           bufQuote(name, buf, settings)
           buf.append(':')
-          if (settings.spaceAfterFieldName) {
-            buf.append(' ')
-          }
+          if (settings.spaceAfterFieldName) { buf.append(' ') }
           bufRender(value, buf, settings, currentIndent)
 
         case _ => // omit fields with value of JNothing
       }
 
-      if (settings.lineBreaks_?) {
-        buf.append('\n')
-      }
+      if (settings.lineBreaks_?) { buf.append('\n') }
 
       (0 until indentLevel).foreach(_ => buf.append(' '))
     }

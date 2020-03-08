@@ -1,7 +1,13 @@
-trait A { def x: Int }
-trait B { val m: A }
+trait A {
+  def x: Int
+}
+trait B {
+  val m: A
+}
 object C extends B {
-  object m extends A { def x = 5 }
+  object m extends A {
+    def x = 5
+  }
 }
 object Test {
   // The type annotation here is necessary, otherwise

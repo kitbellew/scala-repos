@@ -72,22 +72,14 @@ trait Helpers { self: Global =>
   def symbolIndexerName(sym: Symbol): String = {
     def typeIndexerName(sym: Symbol): String = {
       val owner = sym.owner
-      if (owner.isRoot || owner.isRootPackage) {
-        sym.encodedName
-      } else if (owner.hasPackageFlag) {
-        owner.fullName + "." + sym.encodedName
-      } else {
-        typeIndexerName(owner) + "$" + sym.encodedName
-      }
+      if (owner.isRoot || owner.isRootPackage) { sym.encodedName }
+      else if (owner.hasPackageFlag) { owner.fullName + "." + sym.encodedName }
+      else { typeIndexerName(owner) + "$" + sym.encodedName }
     }
 
-    val name = if (sym.isType) {
-      typeIndexerName(sym)
-    } else if (sym.isModule) {
-      typeIndexerName(sym) + "$"
-    } else {
-      symbolIndexerName(sym.owner) + "." + sym.encodedName
-    }
+    val name = if (sym.isType) { typeIndexerName(sym) }
+    else if (sym.isModule) { typeIndexerName(sym) + "$" }
+    else { symbolIndexerName(sym.owner) + "." + sym.encodedName }
     name
       .replaceAll("\\.package\\$\\$", ".")
       .replaceAll("\\.package\\$\\.", ".")
@@ -116,9 +108,7 @@ trait Helpers { self: Global =>
 
     val withoutArgs = if (typeSym.isNestedClass) {
       prefix + nestedClassName(typeSym)
-    } else {
-      prefix + typeShortName(typeSym)
-    }
+    } else { prefix + typeShortName(typeSym) }
     if (withTpeArgs) {
       withoutArgs + (if (tpe.typeArgs.size > 0) {
                        "[" +
@@ -148,9 +138,7 @@ trait Helpers { self: Global =>
       rootSymbol: Symbol = RootClass): Option[Symbol] = {
     def segments(name: String): List[Name] = {
       val len = name.length
-      if (len == 0) {
-        throw new IllegalArgumentException("Empty symbol name")
-      }
+      if (len == 0) { throw new IllegalArgumentException("Empty symbol name") }
 
       val idx = name.indexWhere(ch => ch == '.' || ch == '$')
       idx match {
@@ -196,17 +184,14 @@ trait Helpers { self: Global =>
         case sym: Symbol => Some(sym)
         case _           => None
       }
-    } catch {
-      case e: Throwable => None
-    }
+    } catch { case e: Throwable => None }
   }
 
   /* Give the outerClass of a symbol representing a nested type */
   def outerClass(typeSym: Symbol): Option[Symbol] = {
     try {
-      if (typeSym.isNestedClass) {
-        Some(typeSym.outerClass)
-      } else None
+      if (typeSym.isNestedClass) { Some(typeSym.outerClass) }
+      else None
     } catch {
       // TODO accessing outerClass sometimes throws java.lang.Error
       // Notably, when tpe = scala.Predef$Class
@@ -219,14 +204,12 @@ trait Helpers { self: Global =>
     if (sym != NoSymbol) {
       if (sym.isModule || sym.isModuleClass) {
         val comp = sym.companionClass
-        if (comp != NoSymbol && comp.tpe != tpe) {
-          Some(comp.tpe)
-        } else None
+        if (comp != NoSymbol && comp.tpe != tpe) { Some(comp.tpe) }
+        else None
       } else if (sym.isTrait || sym.isClass || sym.isPackageClass) {
         val comp = sym.companionModule
-        if (comp != NoSymbol && comp.tpe != tpe) {
-          Some(comp.tpe)
-        } else None
+        if (comp != NoSymbol && comp.tpe != tpe) { Some(comp.tpe) }
+        else None
       } else None
     } else None
   }
@@ -266,9 +249,7 @@ trait Helpers { self: Global =>
 
     if (isRoot(parent)) {
       filterAndSort(parent.info.members ++ EmptyPackage.info.members)
-    } else {
-      filterAndSort(parent.info.members)
-    }
+    } else { filterAndSort(parent.info.members) }
   }
 
   import scala.tools.nsc.symtab.Flags._

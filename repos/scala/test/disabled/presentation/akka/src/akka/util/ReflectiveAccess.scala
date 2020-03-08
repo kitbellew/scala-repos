@@ -166,9 +166,7 @@ object ReflectiveAccess {
       val ctor = clazz.getDeclaredConstructor(params: _*)
       ctor.setAccessible(true)
       Right(ctor.newInstance(args: _*).asInstanceOf[T])
-    } catch {
-      case e: Exception => Left(e)
-    }
+    } catch { case e: Exception => Left(e) }
 
   def createInstance[T](
       fqn: String,
@@ -223,11 +221,8 @@ object ReflectiveAccess {
 
       // First, use the specified CL
       val first =
-        try {
-          Right(classloader.loadClass(fqn).asInstanceOf[Class[T]])
-        } catch {
-          case c: ClassNotFoundException => Left(c)
-        }
+        try { Right(classloader.loadClass(fqn).asInstanceOf[Class[T]]) }
+        catch { case c: ClassNotFoundException => Left(c) }
 
       if (first.isRight) first
       else {
@@ -238,9 +233,7 @@ object ReflectiveAccess {
               Thread.currentThread.getContextClassLoader
                 .loadClass(fqn)
                 .asInstanceOf[Class[T]])
-          } catch {
-            case c: ClassNotFoundException => Left(c)
-          }
+          } catch { case c: ClassNotFoundException => Left(c) }
 
         if (second.isRight) second
         else {
@@ -249,9 +242,7 @@ object ReflectiveAccess {
               if (classloader ne loader)
                 Right(loader.loadClass(fqn).asInstanceOf[Class[T]])
               else Left(null) //Horrid
-            } catch {
-              case c: ClassNotFoundException => Left(c)
-            }
+            } catch { case c: ClassNotFoundException => Left(c) }
 
           if (third.isRight) third
           else {
@@ -259,13 +250,9 @@ object ReflectiveAccess {
               Right(
                 Class.forName(fqn).asInstanceOf[Class[T]]
               ) // Last option is Class.forName
-            } catch {
-              case c: ClassNotFoundException => Left(c)
-            }
+            } catch { case c: ClassNotFoundException => Left(c) }
           }
         }
       }
-    } catch {
-      case e: Exception => Left(e)
-    }
+    } catch { case e: Exception => Left(e) }
 }

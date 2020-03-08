@@ -37,11 +37,8 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
 
   // Clear all state after each test
   override def afterEach(): Unit = {
-    try {
-      resetState()
-    } finally {
-      super.afterEach()
-    }
+    try { resetState() }
+    finally { super.afterEach() }
   }
 
   // --------------------------------------------------------------------------
@@ -231,9 +228,7 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
     intercept[AnalysisException] {
       catalog.getTable("unknown_db", "unknown_table")
     }
-    intercept[AnalysisException] {
-      catalog.getTable("db2", "unknown_table")
-    }
+    intercept[AnalysisException] { catalog.getTable("db2", "unknown_table") }
   }
 
   test("list tables without pattern") {

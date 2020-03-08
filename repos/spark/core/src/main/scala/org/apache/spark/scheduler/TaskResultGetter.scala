@@ -61,9 +61,7 @@ private[spark] class TaskResultGetter(
             serializer.get().deserialize[TaskResult[_]](serializedData) match {
               case directResult: DirectTaskResult[_] =>
                 if (!taskSetManager.canFetchMoreResults(
-                      serializedData.limit())) {
-                  return
-                }
+                      serializedData.limit())) { return }
                 // deserialize "value" without holding any lock so that it won't block other threads.
                 // We should call it here, so that when it's called again in
                 // "TaskSetManager.handleSuccessfulTask", it does not need to deserialize the value.
@@ -107,9 +105,7 @@ private[spark] class TaskResultGetter(
                 a.update == Some(0L),
                 "task result size should not have been set on the executors")
               a.copy(update = Some(size.toLong))
-            } else {
-              a
-            }
+            } else { a }
           }
 
           scheduler.handleSuccessfulTask(taskSetManager, tid, result)
@@ -160,7 +156,5 @@ private[spark] class TaskResultGetter(
     }
   }
 
-  def stop() {
-    getTaskResultExecutor.shutdownNow()
-  }
+  def stop() { getTaskResultExecutor.shutdownNow() }
 }

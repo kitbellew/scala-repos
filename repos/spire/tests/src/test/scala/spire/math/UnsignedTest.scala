@@ -16,9 +16,7 @@ class ULongTest
   val zero = ULong(0L)
   val one = ULong(1L)
 
-  property("n >= 0") {
-    forAll { (n: ULong) => n >= zero shouldBe true }
-  }
+  property("n >= 0") { forAll { (n: ULong) => n >= zero shouldBe true } }
 
   property("a + b == b + a") {
     forAll { (a: ULong, b: ULong) => a + b shouldBe b + a }
@@ -65,31 +63,23 @@ class ULongTest
 
   property("n / d <= n") {
     forAll { (n: ULong, d: ULong) =>
-      whenever(d != zero) {
-        n / d <= n shouldBe true
-      }
+      whenever(d != zero) { n / d <= n shouldBe true }
     }
   }
 
   property("n % d < d") {
     forAll { (n: ULong, d: ULong) =>
-      whenever(d != zero) {
-        n % d < d shouldBe true
-      }
+      whenever(d != zero) { n % d < d shouldBe true }
     }
   }
 
   property("n + 1 > n") {
     forAll { (n: ULong) =>
-      whenever(n != ULong.MaxValue) {
-        n + one > n shouldBe true
-      }
+      whenever(n != ULong.MaxValue) { n + one > n shouldBe true }
     }
   }
 
-  property("n + (-n) == 0") {
-    forAll { (n: ULong) => n + (-n) shouldBe zero }
-  }
+  property("n + (-n) == 0") { forAll { (n: ULong) => n + (-n) shouldBe zero } }
 
   property("a < b") {
     forAll { (a: ULong, b: ULong) => a < b shouldBe a.toBigInt < b.toBigInt }
@@ -132,9 +122,7 @@ class UIntTest
   val zero = UInt(0)
   val one = UInt(1)
 
-  property("n >= 0") {
-    forAll { (n: UInt) => n >= zero shouldBe true }
-  }
+  property("n >= 0") { forAll { (n: UInt) => n >= zero shouldBe true } }
 
   property("a + b == b + a") {
     forAll { (a: UInt, b: UInt) => a + b shouldBe b + a }
@@ -197,9 +185,7 @@ class UIntTest
     }
   }
 
-  property("n + (-n) == 0") {
-    forAll { (n: UInt) => n + (-n) shouldBe zero }
-  }
+  property("n + (-n) == 0") { forAll { (n: UInt) => n + (-n) shouldBe zero } }
 
   property("a < b") {
     forAll { (a: UInt, b: UInt) => a < b shouldBe a.toLong < b.toLong }
@@ -226,9 +212,7 @@ class UShortTest
   val zero = UShort(0)
   val one = UShort(1)
 
-  property("n >= 0") {
-    forAll { (n: UShort) => n >= zero shouldBe true }
-  }
+  property("n >= 0") { forAll { (n: UShort) => n >= zero shouldBe true } }
 
   property("a + b == b + a") {
     forAll { (a: UShort, b: UShort) => a + b shouldBe b + a }
@@ -291,9 +275,7 @@ class UShortTest
     }
   }
 
-  property("n + (-n) == 0") {
-    forAll { (n: UShort) => n + (-n) shouldBe zero }
-  }
+  property("n + (-n) == 0") { forAll { (n: UShort) => n + (-n) shouldBe zero } }
 
   property("a < b") {
     forAll { (a: UShort, b: UShort) => a < b shouldBe a.toLong < b.toLong }
@@ -320,9 +302,7 @@ class UByteTest
   val zero = UByte(0)
   val one = UByte(1)
 
-  property("n >= 0") {
-    forAll { (n: UByte) => n >= zero shouldBe true }
-  }
+  property("n >= 0") { forAll { (n: UByte) => n >= zero shouldBe true } }
 
   property("a + b == b + a") {
     forAll { (a: UByte, b: UByte) => a + b shouldBe b + a }
@@ -385,9 +365,7 @@ class UByteTest
     }
   }
 
-  property("n + (-n) == 0") {
-    forAll { (n: UByte) => n + (-n) shouldBe zero }
-  }
+  property("n + (-n) == 0") { forAll { (n: UByte) => n + (-n) shouldBe zero } }
 
   property("a < b") {
     forAll { (a: UByte, b: UByte) => a < b shouldBe a.toLong < b.toLong }

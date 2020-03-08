@@ -96,9 +96,7 @@ object FileContent {
   def apply(data: Array[Byte], mimeType: MimeType): FileContent =
     if (stringTypes.contains(mimeType)) {
       FileContent(data, mimeType, RawUTF8Encoding)
-    } else {
-      FileContent(data, mimeType, Base64Encoding)
-    }
+    } else { FileContent(data, mimeType, Base64Encoding) }
 
   val DecomposerV0: Decomposer[FileContent] = new Decomposer[FileContent] {
     def decompose(v: FileContent) = JObject(

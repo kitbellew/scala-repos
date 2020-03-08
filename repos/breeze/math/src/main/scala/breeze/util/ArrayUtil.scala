@@ -138,9 +138,8 @@ object ArrayUtil {
       blength: Int): Boolean = {
     val ac = a.getClass
     val bc = b.getClass
-    if (ac != bc || alength != blength) {
-      false
-    } else {
+    if (ac != bc || alength != blength) { false }
+    else {
       a match {
         case x: Array[Double] =>
           val y = b.asInstanceOf[Array[Double]]
@@ -368,11 +367,8 @@ object ArrayUtil {
       high = fromIndex + step
     }
 
-    if (high < toIndex && objs(high) == toFind) {
-      high
-    } else {
-      Arrays.binarySearch(objs, low, math.min(high, toIndex), toFind)
-    }
+    if (high < toIndex && objs(high) == toFind) { high }
+    else { Arrays.binarySearch(objs, low, math.min(high, toIndex), toFind) }
   }
 
   def zeroSkippingHashCode[V](

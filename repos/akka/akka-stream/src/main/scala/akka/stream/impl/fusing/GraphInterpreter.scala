@@ -592,9 +592,7 @@ private[stream] final class GraphInterpreter(
         afterStageHasRun(activeStage)
         eventsRemaining -= 1
       }
-    } finally {
-      currentInterpreterHolder(0) = previousInterpreter
-    }
+    } finally { currentInterpreterHolder(0) = previousInterpreter }
     if (Debug)
       println(
         s"$Name ---------------- $queueStatus (running=$runningStages, shutdown=$shutdownCounters)")
@@ -615,9 +613,7 @@ private[stream] final class GraphInterpreter(
       try {
         activeStage = logic
         try handler(evt)
-        catch {
-          case NonFatal(ex) ⇒ logic.failStage(ex)
-        }
+        catch { case NonFatal(ex) ⇒ logic.failStage(ex) }
         afterStageHasRun(logic)
       } finally currentInterpreterHolder(0) = previousInterpreter
     }
@@ -768,9 +764,7 @@ private[stream] final class GraphInterpreter(
   private[stream] def pull(connection: Int): Unit = {
     val currentState = portStates(connection)
     portStates(connection) = currentState ^ PullStartFlip
-    if ((currentState & OutClosed) == 0) {
-      enqueue(connection)
-    }
+    if ((currentState & OutClosed) == 0) { enqueue(connection) }
   }
 
   private[stream] def complete(connection: Int): Unit = {

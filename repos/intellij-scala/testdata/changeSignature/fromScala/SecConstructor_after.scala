@@ -1,8 +1,6 @@
 class Constructor {
 
-  def this(i: Int, j: Int) {
-    this()
-  }
+  def this(i: Int, j: Int) { this() }
 
   val c = new Constructor(1, 0)
 }

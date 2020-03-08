@@ -30,9 +30,7 @@ class ScDocTagImpl(node: ASTNode)
     }
   }
 
-  override def accept(visitor: ScalaElementVisitor) {
-    visitor.visitTag(this)
-  }
+  override def accept(visitor: ScalaElementVisitor) { visitor.visitTag(this) }
 
   def getContainingComment: PsiDocComment =
     getParent match {
@@ -49,11 +47,8 @@ class ScDocTagImpl(node: ASTNode)
     findChildByClass(classOf[PsiDocTagValue])
 
   override def getName: String =
-    if (getNameElement != null) {
-      getNameElement.getText
-    } else {
-      null
-    }
+    if (getNameElement != null) { getNameElement.getText }
+    else { null }
 
   def setName(name: String): PsiElement = {
     if (findChildByType[PsiElement](ScalaDocTokenType.DOC_TAG_NAME) != null) {
@@ -76,8 +71,6 @@ class ScDocTagImpl(node: ASTNode)
         TokenSet.orSet(
           TokenSet.create(ScalaDocTokenType.DOC_COMMENT_DATA),
           ScalaDocTokenType.ALL_SCALADOC_SYNTAX_ELEMENTS))
-      .map {
-        case nd => handler(nd.getPsi)
-      }
+      .map { case nd => handler(nd.getPsi) }
       .mkString(" ")
 }

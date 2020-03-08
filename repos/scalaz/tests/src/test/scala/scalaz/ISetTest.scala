@@ -72,9 +72,7 @@ object ISetTest extends SpecLite {
     if (a member i) {
       (b.size + c.size + 1) must_=== a.size
       b.union(c).insert(i) must_=== a
-    } else {
-      (b union c) must_=== a
-    }
+    } else { (b union c) must_=== a }
   }
 
   "splitMember" ! forAll { (a: ISet[Int], i: Int) =>
@@ -87,9 +85,7 @@ object ISetTest extends SpecLite {
     if (c) {
       (b.size + d.size + 1) must_=== a.size
       b.union(d).insert(i) must_=== a
-    } else {
-      (b union d) must_=== a
-    }
+    } else { (b union d) must_=== a }
   }
 
   "splitRoot" ! forAll { a: ISet[Int] =>

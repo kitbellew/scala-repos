@@ -54,9 +54,7 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
   @transient private var _config: SimpleConsumerConfig = null
 
   def config: SimpleConsumerConfig = this.synchronized {
-    if (_config == null) {
-      _config = SimpleConsumerConfig(kafkaParams)
-    }
+    if (_config == null) { _config = SimpleConsumerConfig(kafkaParams) }
     _config
   }
 
@@ -112,15 +110,12 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
           val tp = TopicAndPartition(tm.topic, pm.partitionId)
           if (topicAndPartitions(tp)) {
             pm.leader.map { l => tp -> (l.host -> l.port) }
-          } else {
-            None
-          }
+          } else { None }
         }
       }.toMap
 
-      if (leaderMap.keys.size == topicAndPartitions.size) {
-        Right(leaderMap)
-      } else {
+      if (leaderMap.keys.size == topicAndPartitions.size) { Right(leaderMap) }
+      else {
         val missing = topicAndPartitions.diff(leaderMap.keySet)
         val err = new Err
         err.append(new SparkException(s"Couldn't find leaders for ${missing}"))
@@ -154,9 +149,8 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       val respErrs =
         resp.topicsMetadata.filter(m => m.errorCode != ErrorMapping.NoError)
 
-      if (respErrs.isEmpty) {
-        return Right(resp.topicsMetadata.toSet)
-      } else {
+      if (respErrs.isEmpty) { return Right(resp.topicsMetadata.toSet) }
+      else {
         respErrs.foreach { m =>
           val cause = ErrorMapping.exceptionFor(m.errorCode)
           val msg =
@@ -229,9 +223,7 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
                 errs.append(new SparkException(
                   s"Empty offsets for ${tp}, is ${before} before log beginning?"))
               }
-            } else {
-              errs.append(ErrorMapping.exceptionFor(por.error))
-            }
+            } else { errs.append(ErrorMapping.exceptionFor(por.error)) }
           }
         }
         if (result.keys.size == topicAndPartitions.size) {
@@ -298,16 +290,11 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       val needed = topicAndPartitions.diff(result.keySet)
       needed.foreach { tp: TopicAndPartition =>
         respMap.get(tp).foreach { ome: OffsetMetadataAndError =>
-          if (ome.error == ErrorMapping.NoError) {
-            result += tp -> ome
-          } else {
-            errs.append(ErrorMapping.exceptionFor(ome.error))
-          }
+          if (ome.error == ErrorMapping.NoError) { result += tp -> ome }
+          else { errs.append(ErrorMapping.exceptionFor(ome.error)) }
         }
       }
-      if (result.keys.size == topicAndPartitions.size) {
-        return Right(result)
-      }
+      if (result.keys.size == topicAndPartitions.size) { return Right(result) }
     }
     val missing = topicAndPartitions.diff(result.keySet)
     errs.append(
@@ -353,16 +340,11 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       val needed = topicAndPartitions.diff(result.keySet)
       needed.foreach { tp: TopicAndPartition =>
         respMap.get(tp).foreach { err: Short =>
-          if (err == ErrorMapping.NoError) {
-            result += tp -> err
-          } else {
-            errs.append(ErrorMapping.exceptionFor(err))
-          }
+          if (err == ErrorMapping.NoError) { result += tp -> err }
+          else { errs.append(ErrorMapping.exceptionFor(err)) }
         }
       }
-      if (result.keys.size == topicAndPartitions.size) {
-        return Right(result)
-      }
+      if (result.keys.size == topicAndPartitions.size) { return Right(result) }
     }
     val missing = topicAndPartitions.diff(result.keySet)
     errs.append(new SparkException(s"Couldn't set offsets for ${missing}"))
@@ -380,11 +362,7 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       } catch {
         case NonFatal(e) =>
           errs.append(e)
-      } finally {
-        if (consumer != null) {
-          consumer.close()
-        }
-      }
+      } finally { if (consumer != null) { consumer.close() } }
     }
   }
 }
@@ -446,9 +424,7 @@ object KafkaCluster {
       }
 
       Seq("zookeeper.connect", "group.id").foreach { s =>
-        if (!props.containsKey(s)) {
-          props.setProperty(s, "")
-        }
+        if (!props.containsKey(s)) { props.setProperty(s, "") }
       }
 
       new SimpleConsumerConfig(brokers, props)

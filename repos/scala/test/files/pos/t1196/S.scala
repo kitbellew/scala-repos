@@ -1,1 +1,3 @@
-object S { J.foo(null) }
+object S {
+  J.foo(null)
+}

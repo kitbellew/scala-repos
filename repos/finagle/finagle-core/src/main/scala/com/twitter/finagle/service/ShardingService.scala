@@ -64,13 +64,9 @@ case class KetamaShardingServiceBuilder[Req, Rep](
     nodesAndWeights(services map Function.tupled { (_, 1, _) })
   }
 
-  def numReps(numReps: Int) = {
-    copy(_numReps = numReps)
-  }
+  def numReps(numReps: Int) = { copy(_numReps = numReps) }
 
-  def withHash(f: Req => Option[Long]) = {
-    copy(_hash = Some(f))
-  }
+  def withHash(f: Req => Option[Long]) = { copy(_hash = Some(f)) }
 
   def buildFactory() = {
     if (_nodes.isEmpty) {

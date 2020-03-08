@@ -12,12 +12,8 @@ class RingBufferTest extends WordSpec {
       assert(buf.length == 0)
       assert(buf.size == 0)
       assert(buf.isEmpty == true)
-      intercept[IndexOutOfBoundsException] {
-        buf(0)
-      }
-      intercept[NoSuchElementException] {
-        buf.next
-      }
+      intercept[IndexOutOfBoundsException] { buf(0) }
+      intercept[NoSuchElementException] { buf.next }
       assert(buf.iterator.hasNext == false)
     }
 

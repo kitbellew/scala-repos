@@ -58,14 +58,10 @@ object PieChart {
     def chart: ReadOnlyObjectProperty[jfxsc.PieChart] = delegate.chartProperty
 
     def name: StringProperty = delegate.nameProperty
-    def name_=(v: String) {
-      name() = v
-    }
+    def name_=(v: String) { name() = v }
 
     def pieValue: DoubleProperty = delegate.pieValueProperty
-    def pieValue_=(v: Double) {
-      pieValue() = v
-    }
+    def pieValue_=(v: Double) { pieValue() = v }
 
     def node: ReadOnlyObjectProperty[jfxs.Node] = delegate.nodeProperty()
   }
@@ -83,30 +79,18 @@ class PieChart(override val delegate: jfxsc.PieChart = new jfxsc.PieChart())
   }
 
   def clockwise: BooleanProperty = delegate.clockwiseProperty
-  def clockwise_=(v: Boolean) {
-    clockwise() = v
-  }
+  def clockwise_=(v: Boolean) { clockwise() = v }
 
   def data = delegate.dataProperty
-  def data_=(v: ObservableBuffer[jfxsc.PieChart.Data]) {
-    data() = v
-  }
-  def data_=(v: Seq[jfxsc.PieChart.Data]) {
-    data() = ObservableBuffer(v)
-  }
+  def data_=(v: ObservableBuffer[jfxsc.PieChart.Data]) { data() = v }
+  def data_=(v: Seq[jfxsc.PieChart.Data]) { data() = ObservableBuffer(v) }
 
   def labelLineLength: DoubleProperty = delegate.labelLineLengthProperty
-  def labelLineLength_=(v: Double) {
-    labelLineLength() = v
-  }
+  def labelLineLength_=(v: Double) { labelLineLength() = v }
 
   def labelsVisible: BooleanProperty = delegate.labelsVisibleProperty
-  def labelsVisible_=(v: Boolean) {
-    labelsVisible() = v
-  }
+  def labelsVisible_=(v: Boolean) { labelsVisible() = v }
 
   def startAngle: DoubleProperty = delegate.startAngleProperty
-  def startAngle_=(v: Double) {
-    startAngle() = v
-  }
+  def startAngle_=(v: Double) { startAngle() = v }
 }

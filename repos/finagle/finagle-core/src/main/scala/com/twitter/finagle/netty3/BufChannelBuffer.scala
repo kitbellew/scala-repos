@@ -167,21 +167,13 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
     throw new ReadOnlyBufferException()
   }
 
-  def setShort(index: Int, value: Int) {
-    throw new ReadOnlyBufferException()
-  }
+  def setShort(index: Int, value: Int) { throw new ReadOnlyBufferException() }
 
-  def setMedium(index: Int, value: Int) {
-    throw new ReadOnlyBufferException()
-  }
+  def setMedium(index: Int, value: Int) { throw new ReadOnlyBufferException() }
 
-  def setInt(index: Int, value: Int) {
-    throw new ReadOnlyBufferException()
-  }
+  def setInt(index: Int, value: Int) { throw new ReadOnlyBufferException() }
 
-  def setLong(index: Int, value: Long) {
-    throw new ReadOnlyBufferException()
-  }
+  def setLong(index: Int, value: Long) { throw new ReadOnlyBufferException() }
 
   def setBytes(index: Int, in: InputStream, length: Int): Int = {
     throw new ReadOnlyBufferException()

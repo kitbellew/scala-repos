@@ -27,9 +27,7 @@ object Test extends App {
       println(b.size({ mutate(); b.x }))
   }
 
-  def mutate() {
-    m.bomb = new IntBomb
-  }
+  def mutate() { m.bomb = new IntBomb }
 
   val m = Mean(new StringBomb)
   foo(m) // should print 3

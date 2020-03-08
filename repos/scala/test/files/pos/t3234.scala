@@ -11,7 +11,5 @@ class Base extends Trait1 {
 }
 
 object Test extends Base with Trait2 {
-  def main(args: Array[String]) = {
-    println(foo(42) + foo2(11) + foo3(2))
-  }
+  def main(args: Array[String]) = { println(foo(42) + foo2(11) + foo3(2)) }
 }

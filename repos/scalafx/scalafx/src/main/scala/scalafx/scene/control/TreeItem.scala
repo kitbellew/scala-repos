@@ -256,17 +256,13 @@ class TreeItem[T](
     * The expanded state of this TreeItem.
     */
   def expanded: BooleanProperty = delegate.expandedProperty
-  def expanded_=(v: Boolean) {
-    expanded() = v
-  }
+  def expanded_=(v: Boolean) { expanded() = v }
 
   /**
     * The node that is generally shown to the left of the value property.
     */
   def graphic: ObjectProperty[jfxs.Node] = delegate.graphicProperty
-  def graphic_=(v: Node) {
-    graphic() = v
-  }
+  def graphic_=(v: Node) { graphic() = v }
 
   /**
     * Represents the TreeItem leaf property, which is true if the TreeItem has no children.
@@ -284,9 +280,7 @@ class TreeItem[T](
     * this TreeItem.
     */
   def value: ObjectProperty[T] = delegate.valueProperty
-  def value_=(v: T) {
-    value.set(v)
-  }
+  def value_=(v: T) { value.set(v) }
 
   /**
     * The children of this TreeItem.

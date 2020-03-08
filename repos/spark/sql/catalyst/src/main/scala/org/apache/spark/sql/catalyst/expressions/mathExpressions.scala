@@ -311,11 +311,8 @@ case class Factorial(child: Expression)
 
   protected override def nullSafeEval(input: Any): Any = {
     val value = input.asInstanceOf[jl.Integer]
-    if (value > 20 || value < 0) {
-      null
-    } else {
-      Factorial.factorial(value)
-    }
+    if (value > 20 || value < 0) { null }
+    else { Factorial.factorial(value) }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -461,26 +458,18 @@ object Hex {
     var i = 0
     if ((bytes.length & 0x01) != 0) {
       // padding with '0'
-      if (bytes(0) < 0) {
-        return null
-      }
+      if (bytes(0) < 0) { return null }
       val v = Hex.unhexDigits(bytes(0))
-      if (v == -1) {
-        return null
-      }
+      if (v == -1) { return null }
       out(0) = v
       i += 1
     }
     // two characters form the hex value.
     while (i < bytes.length) {
-      if (bytes(i) < 0 || bytes(i + 1) < 0) {
-        return null
-      }
+      if (bytes(i) < 0 || bytes(i + 1) < 0) { return null }
       val first = Hex.unhexDigits(bytes(i))
       val second = Hex.unhexDigits(bytes(i + 1))
-      if (first == -1 || second == -1) {
-        return null
-      }
+      if (first == -1 || second == -1) { return null }
       out(i / 2) = (((first << 4) | second) & 0xFF).toByte
       i += 2
     }
@@ -679,9 +668,7 @@ case class Logarithm(left: Expression, right: Expression)
   /**
     * Natural log, i.e. using e as the base.
     */
-  def this(child: Expression) = {
-    this(EulerNumber(), child)
-  }
+  def this(child: Expression) = { this(EulerNumber(), child) }
 
   override def nullable: Boolean = true
 
@@ -765,9 +752,8 @@ case class Round(child: Expression, scale: Expression)
   override def checkInputDataTypes(): TypeCheckResult = {
     super.checkInputDataTypes() match {
       case TypeCheckSuccess =>
-        if (scale.foldable) {
-          TypeCheckSuccess
-        } else {
+        if (scale.foldable) { TypeCheckSuccess }
+        else {
           TypeCheckFailure(
             "Only foldable Expression is allowed for scale arguments")
         }
@@ -786,11 +772,8 @@ case class Round(child: Expression, scale: Expression)
       null
     } else {
       val evalE = child.eval(input)
-      if (evalE == null) {
-        null
-      } else {
-        nullSafeEval(evalE)
-      }
+      if (evalE == null) { null }
+      else { nullSafeEval(evalE) }
     }
   }
 
@@ -811,18 +794,12 @@ case class Round(child: Expression, scale: Expression)
         BigDecimal(input1.asInstanceOf[Long]).setScale(_scale, HALF_UP).toLong
       case FloatType =>
         val f = input1.asInstanceOf[Float]
-        if (f.isNaN || f.isInfinite) {
-          f
-        } else {
-          BigDecimal(f).setScale(_scale, HALF_UP).toFloat
-        }
+        if (f.isNaN || f.isInfinite) { f }
+        else { BigDecimal(f).setScale(_scale, HALF_UP).toFloat }
       case DoubleType =>
         val d = input1.asInstanceOf[Double]
-        if (d.isNaN || d.isInfinite) {
-          d
-        } else {
-          BigDecimal(d).setScale(_scale, HALF_UP).toDouble
-        }
+        if (d.isNaN || d.isInfinite) { d }
+        else { BigDecimal(d).setScale(_scale, HALF_UP).toDouble }
     }
   }
 
@@ -842,33 +819,25 @@ case class Round(child: Expression, scale: Expression)
           s"""
           ${ev.value} = new java.math.BigDecimal(${ce.value}).
             setScale(${_scale}, java.math.BigDecimal.ROUND_HALF_UP).byteValue();"""
-        } else {
-          s"${ev.value} = ${ce.value};"
-        }
+        } else { s"${ev.value} = ${ce.value};" }
       case ShortType =>
         if (_scale < 0) {
           s"""
           ${ev.value} = new java.math.BigDecimal(${ce.value}).
             setScale(${_scale}, java.math.BigDecimal.ROUND_HALF_UP).shortValue();"""
-        } else {
-          s"${ev.value} = ${ce.value};"
-        }
+        } else { s"${ev.value} = ${ce.value};" }
       case IntegerType =>
         if (_scale < 0) {
           s"""
           ${ev.value} = new java.math.BigDecimal(${ce.value}).
             setScale(${_scale}, java.math.BigDecimal.ROUND_HALF_UP).intValue();"""
-        } else {
-          s"${ev.value} = ${ce.value};"
-        }
+        } else { s"${ev.value} = ${ce.value};" }
       case LongType =>
         if (_scale < 0) {
           s"""
           ${ev.value} = new java.math.BigDecimal(${ce.value}).
             setScale(${_scale}, java.math.BigDecimal.ROUND_HALF_UP).longValue();"""
-        } else {
-          s"${ev.value} = ${ce.value};"
-        }
+        } else { s"${ev.value} = ${ce.value};" }
       case FloatType => // if child eval to NaN or Infinity, just return it.
         if (_scale == 0) {
           s"""

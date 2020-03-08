@@ -237,9 +237,7 @@ class LogCleaner(
     /**
       * The main loop for the cleaner thread
       */
-    override def doWork() {
-      cleanOrSleep()
-    }
+    override def doWork() { cleanOrSleep() }
 
     override def shutdown() = {
       initiateShutdown()
@@ -603,9 +601,8 @@ private[log] class Cleaner(
       messageFormatVersion: Byte,
       messageAndOffsets: Seq[MessageAndOffset]) {
     val messages = messageAndOffsets.map(_.message)
-    if (messageAndOffsets.isEmpty) {
-      MessageSet.Empty.sizeInBytes
-    } else if (compressionCodec == NoCompressionCodec) {
+    if (messageAndOffsets.isEmpty) { MessageSet.Empty.sizeInBytes }
+    else if (compressionCodec == NoCompressionCodec) {
       for (messageOffset <- messageAndOffsets)
         ByteBufferMessageSet.writeMessage(
           buffer,
@@ -645,9 +642,7 @@ private[log] class Cleaner(
               message.buffer.arrayOffset,
               message.buffer.limit)
           }
-        } finally {
-          output.close()
-        }
+        } finally { output.close() }
       }
       ByteBufferMessageSet.writeMessage(buffer, messageWriter, offset)
       stats.recopyMessage(messageWriter.size + MessageSet.LogOverhead)
@@ -842,30 +837,20 @@ private case class CleanerStats(time: Time = SystemTime) {
     bytesRead += size
   }
 
-  def invalidMessage() {
-    invalidMessagesRead += 1
-  }
+  def invalidMessage() { invalidMessagesRead += 1 }
 
   def recopyMessage(size: Int) {
     messagesWritten += 1
     bytesWritten += size
   }
 
-  def indexMessagesRead(size: Int) {
-    mapMessagesRead += size
-  }
+  def indexMessagesRead(size: Int) { mapMessagesRead += size }
 
-  def indexBytesRead(size: Int) {
-    mapBytesRead += size
-  }
+  def indexBytesRead(size: Int) { mapBytesRead += size }
 
-  def indexDone() {
-    mapCompleteTime = time.milliseconds
-  }
+  def indexDone() { mapCompleteTime = time.milliseconds }
 
-  def allDone() {
-    endTime = time.milliseconds
-  }
+  def allDone() { endTime = time.milliseconds }
 
   def elapsedSecs = (endTime - startTime) / 1000.0
 

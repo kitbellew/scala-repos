@@ -12,18 +12,12 @@ class MessagesSpec extends WordSpec with Matchers {
       "return some option" in {
         messages.get("name") should equal(Some("Name"))
       }
-      "return the value" in {
-        messages("name") should equal("Name")
-      }
+      "return the value" in { messages("name") should equal("Name") }
     }
     "unable to find a message" should {
-      "return None" in {
-        messages.get("missing") should equal(None)
-      }
+      "return None" in { messages.get("missing") should equal(None) }
       "throw MissingResourceException" in {
-        an[MissingResourceException] should be thrownBy {
-          messages("missing")
-        }
+        an[MissingResourceException] should be thrownBy { messages("missing") }
       }
     }
   }

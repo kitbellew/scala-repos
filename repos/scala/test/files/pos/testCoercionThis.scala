@@ -15,5 +15,7 @@ object Test {
     def testCoercionThis2 = (this: Foo).baz
   }
 
-  class Bar { def baz = System.out.println("baz") }
+  class Bar {
+    def baz = System.out.println("baz")
+  }
 }

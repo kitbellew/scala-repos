@@ -179,16 +179,13 @@ class Interaction @Since("1.6.0") (override val uid: String)
               None)
           } else if (!attr.name.isDefined) {
             encodedFeatureAttrs(Seq(attr.withName(f.name)), None)
-          } else {
-            encodedFeatureAttrs(Seq(attr), None)
-          }
+          } else { encodedFeatureAttrs(Seq(attr), None) }
         case _: VectorUDT =>
           val group = AttributeGroup.fromStructField(f)
           encodedFeatureAttrs(group.attributes.get, Some(group.name))
       }
-      if (featureAttrs.isEmpty) {
-        featureAttrs = encodedAttrs
-      } else {
+      if (featureAttrs.isEmpty) { featureAttrs = encodedAttrs }
+      else {
         featureAttrs = encodedAttrs.flatMap { head =>
           featureAttrs.map { tail =>
             NumericAttribute.defaultAttr.withName(
@@ -293,9 +290,7 @@ private[ml] class FeatureEncoder(numFeatures: Array[Int]) extends Serializable {
             d >= 0.0 && d == d.toInt && d < numOutputCols,
             s"Values from column must be indices, but got $d.")
           f(d.toInt, 1.0)
-        } else {
-          f(0, d)
-        }
+        } else { f(0, d) }
       case vec: Vector =>
         assert(
           numFeatures.length == vec.size,
@@ -307,9 +302,7 @@ private[ml] class FeatureEncoder(numFeatures: Array[Int]) extends Serializable {
               v >= 0.0 && v == v.toInt && v < numOutputCols,
               s"Values from column must be indices, but got $v.")
             f(outputOffsets(i) + v.toInt, 1.0)
-          } else {
-            f(outputOffsets(i), v)
-          }
+          } else { f(outputOffsets(i), v) }
         }
       case null =>
         throw new SparkException("Values to interact cannot be null.")

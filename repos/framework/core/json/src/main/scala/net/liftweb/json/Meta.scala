@@ -224,18 +224,16 @@ private[json] object Meta {
       Arg(name, mapping, optional)
     }
 
-    if (primitive_?(clazz)) {
-      Value(rawClassOf(clazz))
-    } else {
+    if (primitive_?(clazz)) { Value(rawClassOf(clazz)) }
+    else {
       mappings.memoize(
         (clazz, typeArgs),
         {
           case (t, _) =>
             val c = rawClassOf(t)
             val (pt, typeInfo) =
-              if (typeArgs.isEmpty) {
-                (t, TypeInfo(c, None))
-              } else {
+              if (typeArgs.isEmpty) { (t, TypeInfo(c, None)) }
+              else {
                 val t = mkParameterizedType(c, typeArgs)
                 (t, TypeInfo(c, Some(t)))
               }
@@ -336,9 +334,7 @@ private[json] object Meta {
         context: Option[Context]): List[(String, Type)] = {
       def argsInfo(c: JConstructor[_], typeArgs: Map[TypeVariable[_], Type]) = {
         val Name = """^((?:[^$]|[$][^0-9]+)+)([$][0-9]+)?$""".r
-        def clean(name: String) = name match {
-          case Name(text, junk) => text
-        }
+        def clean(name: String) = name match { case Name(text, junk) => text }
         try {
           val names = nameReader.lookupParameterNames(c).map(clean)
           val types = c.getGenericParameterTypes.toList.zipWithIndex map {
@@ -357,9 +353,7 @@ private[json] object Meta {
             case (x, _) => x
           }
           names.toList.zip(types)
-        } catch {
-          case e: ParameterNamesNotFoundException => Nil
-        }
+        } catch { case e: ParameterNamesNotFoundException => Nil }
       }
 
       t match {
@@ -482,9 +476,8 @@ private[json] object Meta {
     }
 
     def findField(clazz: Class[_], name: String): Field =
-      try {
-        clazz.getDeclaredField(name)
-      } catch {
+      try { clazz.getDeclaredField(name) }
+      catch {
         case e: NoSuchFieldException =>
           if (clazz.getSuperclass == null) throw e
           else findField(clazz.getSuperclass, name)

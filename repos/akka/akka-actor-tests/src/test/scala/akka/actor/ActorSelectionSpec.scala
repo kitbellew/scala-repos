@@ -329,9 +329,7 @@ class ActorSelectionSpec
     "drop messages which cannot be delivered" in {
       implicit val sender = c2
       ActorSelection(c21, "../../*/c21") ! GetSender(testActor)
-      val actors = receiveWhile(messages = 2) {
-        case `c2` ⇒ lastSender
-      }
+      val actors = receiveWhile(messages = 2) { case `c2` ⇒ lastSender }
       actors should ===(Seq(c21))
       expectNoMsg(1 second)
     }

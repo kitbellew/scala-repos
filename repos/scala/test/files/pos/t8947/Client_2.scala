@@ -1,1 +1,3 @@
-object Test { X.extractor }
+object Test {
+  X.extractor
+}

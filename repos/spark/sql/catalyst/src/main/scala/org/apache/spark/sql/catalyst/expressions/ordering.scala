@@ -70,9 +70,7 @@ class InterpretedOrdering(ordering: Seq[SortOrder])
             throw new IllegalArgumentException(
               s"Type $other does not support ordered operations")
         }
-        if (comparison != 0) {
-          return comparison
-        }
+        if (comparison != 0) { return comparison }
       }
       i += 1
     }

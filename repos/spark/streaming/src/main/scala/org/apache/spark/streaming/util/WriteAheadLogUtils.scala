@@ -143,9 +143,7 @@ private[streaming] object WriteAheadLogUtils extends Logging {
 
     val classNameOption = if (isDriver) {
       sparkConf.getOption(DRIVER_WAL_CLASS_CONF_KEY)
-    } else {
-      sparkConf.getOption(RECEIVER_WAL_CLASS_CONF_KEY)
-    }
+    } else { sparkConf.getOption(RECEIVER_WAL_CLASS_CONF_KEY) }
     val wal = classNameOption
       .map { className =>
         try {
@@ -172,18 +170,15 @@ private[streaming] object WriteAheadLogUtils extends Logging {
       }
     if (isBatchingEnabled(sparkConf, isDriver)) {
       new BatchedWriteAheadLog(wal, sparkConf)
-    } else {
-      wal
-    }
+    } else { wal }
   }
 
   /** Instantiate the class, either using single arg constructor or zero arg constructor */
   private def instantiateClass(
       cls: Class[_ <: WriteAheadLog],
       conf: SparkConf): WriteAheadLog = {
-    try {
-      cls.getConstructor(classOf[SparkConf]).newInstance(conf)
-    } catch {
+    try { cls.getConstructor(classOf[SparkConf]).newInstance(conf) }
+    catch {
       case nsme: NoSuchMethodException =>
         cls.getConstructor().newInstance()
     }

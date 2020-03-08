@@ -65,16 +65,13 @@ class Eval(target: Option[File]) {
   /**
     * empty constructor for backwards compatibility
     */
-  def this() {
-    this(None)
-  }
+  def this() { this(None) }
 
   import Eval.jvmId
 
   private lazy val compilerPath =
-    try {
-      classPathOfClass("scala.tools.nsc.Interpreter")
-    } catch {
+    try { classPathOfClass("scala.tools.nsc.Interpreter") }
+    catch {
       case e: Throwable =>
         throw new RuntimeException(
           "Unable to load Scala interpreter from classpath (scala-compiler jar is missing?)",
@@ -82,9 +79,8 @@ class Eval(target: Option[File]) {
     }
 
   private lazy val libPath =
-    try {
-      classPathOfClass("scala.AnyVal")
-    } catch {
+    try { classPathOfClass("scala.AnyVal") }
+    catch {
       case e: Throwable =>
         throw new RuntimeException(
           "Unable to load scala base object from classpath (scala-library jar is missing?)",
@@ -163,9 +159,7 @@ class Eval(target: Option[File]) {
       val checksumFile = new File(targetDir, "checksum")
       val lastChecksum = if (checksumFile.exists) {
         Source.fromFile(checksumFile).getLines().take(1).toList.head
-      } else {
-        -1
-      }
+      } else { -1 }
 
       if (lastChecksum != sourceChecksum) {
         compiler.reset()
@@ -233,24 +227,18 @@ class Eval(target: Option[File]) {
   /**
     * converts the given file to evaluable source.
     */
-  def toSource(code: String): String = {
-    sourceForString(code)
-  }
+  def toSource(code: String): String = { sourceForString(code) }
 
   /**
     * Compile an entire source file into the virtual classloader.
     */
-  def compile(code: String) {
-    compiler(sourceForString(code))
-  }
+  def compile(code: String) { compiler(sourceForString(code)) }
 
   /**
     * Like `Eval()`, but doesn't reset the virtual classloader before evaluating. So if you've
     * loaded classes with `compile`, they can be referenced/imported in code run by `inPlace`.
     */
-  def inPlace[T](code: String) = {
-    apply[T](code, false)
-  }
+  def inPlace[T](code: String) = { apply[T](code, false) }
 
   /**
     * Check if code is Eval-able.
@@ -384,9 +372,8 @@ class Eval(target: Option[File]) {
                             val nestedClassPath =
                               new JarFile(jarFile).getManifest.getMainAttributes
                                 .getValue("Class-Path")
-                            if (nestedClassPath eq null) {
-                              Nil
-                            } else {
+                            if (nestedClassPath eq null) { Nil }
+                            else {
                               nestedClassPath
                                 .split(" ")
                                 .map { f =>
@@ -394,9 +381,7 @@ class Eval(target: Option[File]) {
                                 }
                                 .toList
                             }
-                          } else {
-                            Nil
-                          }) ::: classPath.tail.flatten
+                          } else { Nil }) ::: classPath.tail.flatten
   }
 
   trait Preprocessor {
@@ -471,9 +456,7 @@ class Eval(target: Option[File]) {
               throw new IllegalStateException(
                 "No resolver could find '%s'".format(path))
           }
-        } else {
-          line
-        }
+        } else { line }
       }
       lines.mkString("\n")
     }
@@ -524,19 +507,14 @@ class Eval(target: Option[File]) {
         }
         // the line number is not always available
         val lineMessage =
-          try {
-            "line " + (pos.line - lineOffset)
-          } catch {
-            case _: Throwable => ""
-          }
+          try { "line " + (pos.line - lineOffset) }
+          catch { case _: Throwable => "" }
         messages += (severityName + lineMessage + ": " + message) ::
           (if (pos.isDefined) {
              pos.inUltimateSource(pos.source).lineContent.stripLineEnd ::
                (" " * (pos.column - 1) + "^") ::
                Nil
-           } else {
-             Nil
-           })
+           } else { Nil })
       }
 
       def displayPrompt {
@@ -560,15 +538,11 @@ class Eval(target: Option[File]) {
 
     def reset() {
       targetDir match {
-        case None => {
-          target.asInstanceOf[VirtualDirectory].clear()
-        }
+        case None => { target.asInstanceOf[VirtualDirectory].clear() }
         case Some(t) => {
           target.foreach { abstractFile =>
             if (abstractFile.file == null || abstractFile.file.getName.endsWith(
-                  ".class")) {
-              abstractFile.delete()
-            }
+                  ".class")) { abstractFile.delete() }
           }
         }
       }
@@ -600,9 +574,7 @@ class Eval(target: Option[File]) {
             val cls = classLoader.loadClass(className)
             cache(className) = cls
             Some(cls)
-          } catch {
-            case e: ClassNotFoundException => None
-          }
+          } catch { case e: ClassNotFoundException => None }
         }
       }
     }

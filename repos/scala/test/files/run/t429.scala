@@ -9,7 +9,5 @@ object Test {
     lazy val z = 0;
     lazy val x = 4 + z
   }
-  def main(args: Array[String]): Unit = {
-    Console.print((new B).y);
-  }
+  def main(args: Array[String]): Unit = { Console.print((new B).y); }
 }

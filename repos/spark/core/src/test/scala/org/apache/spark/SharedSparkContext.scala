@@ -38,8 +38,6 @@ trait SharedSparkContext extends BeforeAndAfterAll { self: Suite =>
     try {
       LocalSparkContext.stop(_sc)
       _sc = null
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 }

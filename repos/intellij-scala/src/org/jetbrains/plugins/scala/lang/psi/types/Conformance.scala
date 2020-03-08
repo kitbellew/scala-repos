@@ -215,9 +215,7 @@ object Conformance {
         if (!a.lower.equiv(Nothing)) {
           result =
             conformsInner(left, a.lower, visited, undefinedSubst, checkWeak)
-        } else {
-          result = (true, undefinedSubst)
-        }
+        } else { result = (true, undefinedSubst) }
         if (result._1 && !a.upper.equiv(Any)) {
           val t = conformsInner(a.upper, left, visited, result._2, checkWeak)
           if (t._1) result = t //this is optionally
@@ -330,14 +328,11 @@ object Conformance {
                   ScalaPsiManager.ClassCategory.TYPE)
               if (notNullClass != null) {
                 val notNullType = ScDesignatorType(notNullClass)
-                result =
-                  (
-                    !conforms(notNullType, l),
-                    undefinedSubst
-                  ) //todo: think about undefinedSubst
-              } else {
-                result = (true, undefinedSubst)
-              }
+                result = (
+                  !conforms(notNullType, l),
+                  undefinedSubst
+                ) //todo: think about undefinedSubst
+              } else { result = (true, undefinedSubst) }
             case _ => result = (true, undefinedSubst)
           }
         }
@@ -651,9 +646,7 @@ object Conformance {
         }
       }
 
-      if (x eq Singleton) {
-        result = (false, undefinedSubst)
-      }
+      if (x eq Singleton) { result = (false, undefinedSubst) }
 
       if (x eq types.AnyVal) {
         result = (
@@ -729,10 +722,8 @@ object Conformance {
           undefinedSubst = t._2
           t._1
         }) && c.signatureMap.forall {
-          case (s: Signature, retType) => workWithSignature(s, retType)
-        } && c.typesMap.forall {
-          case (s, sign) => workWithTypeAlias(sign)
-        },
+          case (s: Signature, retType)          => workWithSignature(s, retType)
+        } && c.typesMap.forall { case (s, sign) => workWithTypeAlias(sign) },
         undefinedSubst)
     }
 
@@ -1118,9 +1109,7 @@ object Conformance {
             }
           if (!upper.equiv(Any)) {
             result = conformsInner(upper, r, visited, undefinedSubst, checkWeak)
-          } else {
-            result = (true, undefinedSubst)
-          }
+          } else { result = (true, undefinedSubst) }
           if (result._1) {
             val lower: ScType =
               subst.subst(a.lower) match {
@@ -1728,9 +1717,8 @@ object Conformance {
             ScUndefinedType(tpt))
       }
       val res = conformsInner(subst.subst(q), r, HashSet.empty, undefinedSubst)
-      if (!res._1) {
-        result = (false, undefinedSubst)
-      } else {
+      if (!res._1) { result = (false, undefinedSubst) }
+      else {
         val unSubst: ScUndefinedSubstitutor = res._2
         unSubst.getSubstitutor(notNonable = false) match {
           case Some(uSubst) =>
@@ -2047,9 +2035,7 @@ object Conformance {
           } else if (u.level > u2.level) {
             result =
               (true, undefinedSubst.addUpper((u2.tpt.name, u2.tpt.getId), u))
-          } else {
-            result = (true, undefinedSubst)
-          }
+          } else { result = (true, undefinedSubst) }
         }
       }
       r.visitType(rightVisitor)

@@ -16,9 +16,7 @@ class RailsLikeUrlGeneratorTest extends FunSuite with Matchers {
       splats: Iterable[String] = Seq()): String =
     new RailsRouteMatcher(path).reverse(params, splats.toList)
 
-  test("static string") {
-    url("/foo") should equal("/foo")
-  }
+  test("static string") { url("/foo") should equal("/foo") }
 
   test("dynamic segment") {
     url(":foo.example.com", "foo" -> "vanilla") should equal(
@@ -84,9 +82,7 @@ class RailsLikeUrlGeneratorTest extends FunSuite with Matchers {
     url("src(/*files)") should equal("src")
   }
 
-  test("optional segment") {
-    url("/foo(/bar)") should equal("/foo/bar")
-  }
+  test("optional segment") { url("/foo(/bar)") should equal("/foo/bar") }
 
   test("optional segment on first position") {
     url("(/foo)/bar") should equal("/foo/bar")

@@ -96,9 +96,7 @@ abstract class ReadHandle {
             out ! m.copy(ack = ack.send(()))
             loop(nwait + 1, closed)
           }
-        } else {
-          Offer.never
-        },
+        } else { Offer.never },
         ack.recv { _ => loop(nwait - 1, closed) },
         closeReq.recv { _ => loop(nwait, true) }
       )
@@ -441,9 +439,7 @@ ItemId](underlying: CommandExecutorFactory[CommandExecutor])
     }
   }
 
-  def close() {
-    underlying.close()
-  }
+  def close() { underlying.close() }
 }
 
 /**
@@ -563,9 +559,7 @@ protected[kestrel] class ThriftConnectedClient(
 
   private def withClient[T](f: (FinagledClient) => Future[T]) =
     underlying() flatMap { client =>
-      f(client) ensure {
-        client.service.close()
-      }
+      f(client) ensure { client.service.close() }
     }
 
   def flush(queueName: String): Future[Response] =

@@ -71,11 +71,8 @@ object ActorModelSpec {
       context.dispatcher.asInstanceOf[MessageDispatcherInterceptor]
 
     def ack(): Unit = {
-      if (!busy.switchOn(())) {
-        throw new Exception("isolation violated")
-      } else {
-        interceptor.getStats(self).msgsProcessed.incrementAndGet()
-      }
+      if (!busy.switchOn(())) { throw new Exception("isolation violated") }
+      else { interceptor.getStats(self).msgsProcessed.incrementAndGet() }
     }
 
     override def postRestart(reason: Throwable) {
@@ -187,9 +184,8 @@ object ActorModelSpec {
       stops: Long = dispatcher.stops.get())(implicit system: ActorSystem) {
     val deadline =
       System.currentTimeMillis + dispatcher.shutdownTimeout.toMillis * 5
-    try {
-      await(deadline)(stops == dispatcher.stops.get)
-    } catch {
+    try { await(deadline)(stops == dispatcher.stops.get) }
+    catch {
       case e: Throwable ⇒
         system.eventStream.publish(
           Error(
@@ -330,9 +326,7 @@ abstract class ActorModelSpec(config: String)
         msgsProcessed = 0,
         restarts = 0)
 
-      val futures = for (i ← 1 to 10) yield Future {
-        i
-      }
+      val futures = for (i ← 1 to 10) yield Future { i }
       assertDispatcher(dispatcher)(stops = 2)
 
       val a2 = newTestActor(dispatcher.id)
@@ -386,11 +380,7 @@ abstract class ActorModelSpec(config: String)
       val a = newTestActor(dispatcher.id)
 
       for (i ← 1 to 10) {
-        spawn {
-          for (i ← 1 to 20) {
-            a ! WaitAck(1, counter)
-          }
-        }
+        spawn { for (i ← 1 to 20) { a ! WaitAck(1, counter) } }
       }
       assertCountDown(
         counter,
@@ -472,12 +462,13 @@ abstract class ActorModelSpec(config: String)
           // this future is meant to keep the dispatcher alive until the end of the test run even if
           // the boss doesn't create children fast enough to keep the dispatcher from becoming empty
           // and it needs to be on a separate thread to not deadlock the calling thread dispatcher
-          new Thread(new Runnable {
-            def run() =
-              Future {
-                keepAliveLatch.await(waitTime, TimeUnit.MILLISECONDS)
-              }(dispatcher)
-          }).start()
+          new Thread(
+            new Runnable {
+              def run() =
+                Future {
+                  keepAliveLatch.await(waitTime, TimeUnit.MILLISECONDS)
+                }(dispatcher)
+            }).start()
           boss ! "run"
           try {
             assertCountDown(

@@ -39,9 +39,7 @@ class CforTest extends SpireProperties {
     var v = 0
     cfor(0)({ v += 1; _ < 3 }, { v += 10; _ + 1 })({
       v += 100
-      x => {
-        b += x
-      }
+      x => { b += x }
     })
     v shouldBe 111
     b.toList shouldBe List(0, 1, 2)
@@ -54,9 +52,7 @@ class CforTest extends SpireProperties {
     def incr: Int => Int = { v += 10; _ + 1 }
     def body: Int => Unit = {
       v += 100
-      x => {
-        b += x
-      }
+      x => { b += x }
     }
     cfor(0)(test, incr)(body)
     v shouldBe 111
@@ -69,16 +65,12 @@ class CforTest extends SpireProperties {
     def run(
         test: => (Int => Boolean),
         incr: => (Int => Int),
-        body: => (Int => Unit)): Unit = {
-      cfor(0)(test, incr)(body)
-    }
+        body: => (Int => Unit)): Unit = { cfor(0)(test, incr)(body) }
     run(
       { v += 1; _ < 3 },
       { v += 10; _ + 1 }, {
         v += 100
-        x => {
-          b += x
-        }
+        x => { b += x }
       }
     )
     v shouldBe 111
@@ -101,7 +93,9 @@ class CforTest extends SpireProperties {
     val b = collection.mutable.ArrayBuffer[Int]()
     cfor(0)(_ < 3, _ + 1) { x =>
       {
-        class A { def f = x }
+        class A {
+          def f = x
+        }
         b += (new A().f)
       }
     }

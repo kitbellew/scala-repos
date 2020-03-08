@@ -59,9 +59,7 @@ object ClusterClientSpec extends MultiNodeConfig {
   }
 
   class Service extends Actor {
-    def receive = {
-      case msg ⇒ sender() ! msg
-    }
+    def receive = { case msg ⇒ sender() ! msg }
   }
 
 }
@@ -118,9 +116,7 @@ class ClusterClientSpec
           system.actorOf(Props(classOf[TestService], testActor), "testService")
         ClusterClientReceptionist(system).registerService(service)
       }
-      runOn(first, second, third, fourth) {
-        awaitCount(1)
-      }
+      runOn(first, second, third, fourth) { awaitCount(1) }
 
       enterBarrier("after-1")
     }
@@ -138,9 +134,7 @@ class ClusterClientSpec
         expectMsgType[Reply].msg should be("hello-ack")
         system.stop(c)
       }
-      runOn(fourth) {
-        expectMsg("hello")
-      }
+      runOn(fourth) { expectMsg("hello") }
 
       enterBarrier("after-2")
     }
@@ -162,9 +156,7 @@ class ClusterClientSpec
       }
       //#server
 
-      runOn(host1, host2, host3, fourth) {
-        awaitCount(4)
-      }
+      runOn(host1, host2, host3, fourth) { awaitCount(4) }
       enterBarrier("services-replicated")
 
       //#client

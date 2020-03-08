@@ -175,8 +175,6 @@ class SbtSystemSettingsState
 
   def setLinkedExternalProjectsSettings(
       settings: util.Set[SbtProjectSettings]) {
-    if (settings != null) {
-      projectSettings.addAll(settings)
-    }
+    if (settings != null) { projectSettings.addAll(settings) }
   }
 }

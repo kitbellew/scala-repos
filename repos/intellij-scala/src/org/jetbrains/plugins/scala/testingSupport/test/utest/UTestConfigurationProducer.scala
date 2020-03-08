@@ -105,9 +105,7 @@ with AbstractTestConfigurationProducer {
     runConfiguration.setTestKind(kind)
     try {
       val module = ScalaPsiUtil.getModule(element)
-      if (module != null) {
-        runConfiguration.setModule(module)
-      }
+      if (module != null) { runConfiguration.setModule(module) }
     } catch {
       case e: Exception =>
     }

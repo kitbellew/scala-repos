@@ -50,9 +50,7 @@ object Env {
     }
   }
 
-  def main(inargs: Array[String]) {
-    Env(inargs).run()
-  }
+  def main(inargs: Array[String]) { Env(inargs).run() }
 }
 
 /**

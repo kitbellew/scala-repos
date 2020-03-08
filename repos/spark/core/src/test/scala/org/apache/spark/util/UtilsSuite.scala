@@ -71,9 +71,7 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     assert(Utils.timeStringAsMs("1d") === TimeUnit.DAYS.toMillis(1))
 
     // Test invalid strings
-    intercept[NumberFormatException] {
-      Utils.timeStringAsMs("600l")
-    }
+    intercept[NumberFormatException] { Utils.timeStringAsMs("600l") }
 
     intercept[NumberFormatException] {
       Utils.timeStringAsMs("This breaks 600s")
@@ -157,19 +155,13 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     }
 
     // Test fractional string
-    intercept[NumberFormatException] {
-      Utils.byteStringAsMb("0.064")
-    }
+    intercept[NumberFormatException] { Utils.byteStringAsMb("0.064") }
 
     // Test fractional string
-    intercept[NumberFormatException] {
-      Utils.byteStringAsMb("0.064m")
-    }
+    intercept[NumberFormatException] { Utils.byteStringAsMb("0.064m") }
 
     // Test invalid strings
-    intercept[NumberFormatException] {
-      Utils.byteStringAsBytes("500ub")
-    }
+    intercept[NumberFormatException] { Utils.byteStringAsBytes("500ub") }
 
     // Test invalid strings
     intercept[NumberFormatException] {
@@ -595,9 +587,7 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
       val sparkConf = new SparkConf
       assert(sparkConf.getBoolean("spark.test.fileNameLoadA", false) === true)
       assert(sparkConf.getInt("spark.test.fileNameLoadB", 1) === 2)
-    } finally {
-      Utils.deleteRecursively(tmpDir)
-    }
+    } finally { Utils.deleteRecursively(tmpDir) }
   }
 
   test("timeIt with prepare") {
@@ -623,9 +613,7 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     val path =
       if (Utils.isWindows) {
         new Path("file:/" + sourceDir.getAbsolutePath.replace("\\", "/"))
-      } else {
-        new Path("file://" + sourceDir.getAbsolutePath)
-      }
+      } else { new Path("file://" + sourceDir.getAbsolutePath) }
     val conf = new Configuration()
     val fs = Utils.getHadoopFileSystem(path.toString, conf)
 
@@ -648,9 +636,7 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     val filePath =
       if (Utils.isWindows) {
         new Path("file:/" + sourceFile.getAbsolutePath.replace("\\", "/"))
-      } else {
-        new Path("file://" + sourceFile.getAbsolutePath)
-      }
+      } else { new Path("file://" + sourceFile.getAbsolutePath) }
     val testFileDir = new File(tempDir, "test-filename")
     val testFileName = "testFName"
     val testFilefs = Utils.getHadoopFileSystem(filePath.toString, conf)
@@ -896,9 +882,7 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
           val duration = System.currentTimeMillis() - start
           assert(duration < 5000)
           assert(!pidExists(pid))
-        } finally {
-          signal(pid, "SIGKILL")
-        }
+        } finally { signal(pid, "SIGKILL") }
       }
     }
   }

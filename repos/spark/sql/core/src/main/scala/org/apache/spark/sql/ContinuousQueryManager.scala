@@ -88,9 +88,7 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
     */
   def awaitAnyTermination(): Unit = {
     awaitTerminationLock.synchronized {
-      while (lastTerminatedQuery == null) {
-        awaitTerminationLock.wait(10)
-      }
+      while (lastTerminatedQuery == null) { awaitTerminationLock.wait(10) }
       if (lastTerminatedQuery != null && lastTerminatedQuery.exception.nonEmpty) {
         throw lastTerminatedQuery.exception.get
       }
@@ -141,9 +139,7 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
     * @since 2.0.0
     */
   def resetTerminated(): Unit = {
-    awaitTerminationLock.synchronized {
-      lastTerminatedQuery = null
-    }
+    awaitTerminationLock.synchronized { lastTerminatedQuery = null }
   }
 
   /**
@@ -167,9 +163,7 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
 
   /** Post a listener event */
   private[sql] def postListenerEvent(
-      event: ContinuousQueryListener.Event): Unit = {
-    listenerBus.post(event)
-  }
+      event: ContinuousQueryListener.Event): Unit = { listenerBus.post(event) }
 
   /** Start a query */
   private[sql] def startQuery(
@@ -191,9 +185,7 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
   /** Notify (by the ContinuousQuery) that the query has been terminated */
   private[sql] def notifyQueryTermination(
       terminatedQuery: ContinuousQuery): Unit = {
-    activeQueriesLock.synchronized {
-      activeQueries -= terminatedQuery.name
-    }
+    activeQueriesLock.synchronized { activeQueries -= terminatedQuery.name }
     awaitTerminationLock.synchronized {
       if (lastTerminatedQuery == null || terminatedQuery.exception.nonEmpty) {
         lastTerminatedQuery = terminatedQuery

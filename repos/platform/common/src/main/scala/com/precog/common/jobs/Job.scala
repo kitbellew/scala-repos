@@ -111,9 +111,7 @@ object Status {
           unit,
           message.value \? "info")
       }
-    } flatMap {
-      _.toOption
-    }
+    } flatMap { _.toOption }
   }
 
   def toMessage(status: Status): Message = {

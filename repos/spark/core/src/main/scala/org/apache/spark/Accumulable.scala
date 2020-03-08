@@ -105,9 +105,7 @@ class Accumulable[R, T] private (
   // In many places we create internal accumulators without access to the active context cleaner,
   // so if we register them here then we may never unregister these accumulators. To avoid memory
   // leaks, we require the caller to explicitly register internal accumulators elsewhere.
-  if (!internal) {
-    Accumulators.register(this)
-  }
+  if (!internal) { Accumulators.register(this) }
 
   /**
     * If this [[Accumulable]] is internal. Internal [[Accumulable]]s will be reported to the driver
@@ -165,9 +163,8 @@ class Accumulable[R, T] private (
     * Access the accumulator's current value; only allowed on driver.
     */
   def value: R = {
-    if (!deserialized) {
-      value_
-    } else {
+    if (!deserialized) { value_ }
+    else {
       throw new UnsupportedOperationException(
         "Can't read accumulator value in task")
     }
@@ -188,9 +185,8 @@ class Accumulable[R, T] private (
     * Set the accumulator's value; only allowed on driver.
     */
   def value_=(newValue: R) {
-    if (!deserialized) {
-      value_ = newValue
-    } else {
+    if (!deserialized) { value_ = newValue }
+    else {
       throw new UnsupportedOperationException(
         "Can't assign accumulator value in task")
     }
@@ -227,9 +223,7 @@ class Accumulable[R, T] private (
     // This is for external accumulators and internal ones that do not represent task level
     // metrics, e.g. internal SQL metrics, which are per-operator.
     val taskContext = TaskContext.get()
-    if (taskContext != null) {
-      taskContext.registerAccumulator(this)
-    }
+    if (taskContext != null) { taskContext.registerAccumulator(this) }
   }
 
   override def toString: String =

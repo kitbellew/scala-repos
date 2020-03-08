@@ -269,9 +269,7 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
   }
 
   override def getAcls(): Map[Resource, Set[Acl]] = {
-    inReadLock(lock) {
-      aclCache.mapValues(_.acls).toMap
-    }
+    inReadLock(lock) { aclCache.mapValues(_.acls).toMap }
   }
 
   def close() {
@@ -418,11 +416,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
   }
 
   private def updateCache(resource: Resource, versionedAcls: VersionedAcls) {
-    if (versionedAcls.acls.nonEmpty) {
-      aclCache.put(resource, versionedAcls)
-    } else {
-      aclCache.remove(resource)
-    }
+    if (versionedAcls.acls.nonEmpty) { aclCache.put(resource, versionedAcls) }
+    else { aclCache.remove(resource) }
   }
 
   private def updateAclChangedFlag(resource: Resource) {

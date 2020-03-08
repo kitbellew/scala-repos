@@ -20,9 +20,7 @@ class ClassloadVerify extends ScalaMatchingTask {
 
   /** Sets the `classpath` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `classpath`. */
-  def setClasspath(input: Path) {
-    classpath = Some(input)
-  }
+  def setClasspath(input: Path) { classpath = Some(input) }
 
   def setClasspathref(input: Reference) {
     val p = new Path(getProject())

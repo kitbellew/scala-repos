@@ -78,9 +78,7 @@ class LRUMap[K, V](
     val oldMaxSize = _maxSize
     _maxSize = newMaxSize
 
-    if (newMaxSize < oldMaxSize) {
-      doRemoveIfTooMany()
-    }
+    if (newMaxSize < oldMaxSize) { doRemoveIfTooMany() }
   }
 
   _prev = this
@@ -150,7 +148,9 @@ class LRUMap[K, V](
   def update(key: K, value: V) {
     localMap.get(key) match {
       case null =>
-        val what = new LinkedListElem[K, V] { def value1 = key }
+        val what = new LinkedListElem[K, V] {
+          def value1 = key
+        }
         what.value2 = value
         addAtHead(what)
         localMap.put(key, what)
@@ -168,9 +168,7 @@ class LRUMap[K, V](
     * Override this method to implement a test to see if a particular
     * element can be expired from the cache.
     */
-  protected def canExpire(k: K, v: V): Boolean = {
-    true
-  }
+  protected def canExpire(k: K, v: V): Boolean = { true }
 
   /**
     * A mechanism for expiring elements from cache. This method can devolve into

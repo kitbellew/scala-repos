@@ -143,9 +143,7 @@ trait Offer[+T] { self =>
     * Synchronize (discarding the value), and then invoke the given
     * closure.  Convenient for loops.
     */
-  def andThen(f: => Unit) {
-    sync() onSuccess { _ => f }
-  }
+  def andThen(f: => Unit) { sync() onSuccess { _ => f } }
 
   /**
     * Synchronize this offer, blocking for the result. See {{sync()}}
@@ -269,9 +267,8 @@ object Offer {
             winner
           }
 
-          if (foundPos >= 0) {
-            updateLosers(foundPos, prepd)
-          } else {
+          if (foundPos >= 0) { updateLosers(foundPos, prepd) }
+          else {
             Future.selectIndex(prepd) flatMap { winPos =>
               updateLosers(winPos, prepd)
             }

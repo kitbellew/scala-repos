@@ -39,11 +39,8 @@ object AbsoluteDuration extends java.io.Serializable {
     (Millisecs, 1)).reverse
 
   def exact(fnms: TimeCons): (Long) => Option[AbsoluteDuration] = { ms: Long =>
-    if (ms % fnms._2 == 0) {
-      Some(fnms._1((ms / fnms._2).toInt))
-    } else {
-      None
-    }
+    if (ms % fnms._2 == 0) { Some(fnms._1((ms / fnms._2).toInt)) }
+    else { None }
   }
 
   def apply(count: Long, tunit: TimeUnit): AbsoluteDuration =
@@ -76,9 +73,7 @@ object AbsoluteDuration extends java.io.Serializable {
           val (newDiff, newAcc) = if (theseUnits != 0L) {
             val dur = tc0._1(theseUnits.toInt)
             (diffInMs - dur.toMillisecs, dur :: acc)
-          } else {
-            (diffInMs, acc)
-          }
+          } else { (diffInMs, acc) }
           fromMillisecs(newDiff, (tc1 :: tail), newAcc)
         }
         case (tc :: Nil) => {

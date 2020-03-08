@@ -31,14 +31,9 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
     * Blocking method to wait for and return the final value.
     */
   def getFinalValue(): R = synchronized {
-    while (finalValue.isEmpty && failure.isEmpty) {
-      this.wait()
-    }
-    if (finalValue.isDefined) {
-      return finalValue.get
-    } else {
-      throw failure.get
-    }
+    while (finalValue.isEmpty && failure.isEmpty) { this.wait() }
+    if (finalValue.isDefined) { return finalValue.get }
+    else { throw failure.get }
   }
 
   /**
@@ -88,9 +83,7 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
           PartialResult.this.onComplete(handler.compose(f)).map(f)
         }
       override def onFail(handler: Exception => Unit) {
-        synchronized {
-          PartialResult.this.onFail(handler)
-        }
+        synchronized { PartialResult.this.onFail(handler) }
       }
       override def toString: String = synchronized {
         PartialResult.this.getFinalValueInternal() match {

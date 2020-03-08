@@ -45,21 +45,15 @@ class ElseFilter extends ElementFilter {
             .compile(DUMMY_IDENTIFIER, Pattern.LITERAL)
             .matcher(text)
             .replaceAll(Matcher.quoteReplacement(" else true"))
-        } else {
-          text = ifStmt.getText + " else true"
-        }
+        } else { text = ifStmt.getText + " else true" }
         return checkElseWith(text, parent.getManager)
       }
     }
     false
   }
 
-  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = {
-    true
-  }
+  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = { true }
 
   @NonNls
-  override def toString: String = {
-    "statements keyword filter"
-  }
+  override def toString: String = { "statements keyword filter" }
 }

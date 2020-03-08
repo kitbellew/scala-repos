@@ -9,9 +9,7 @@ import syntax.invariantFunctor._
 
 object InvariantFunctorTest extends SpecLite {
 
-  "xmap" in {
-    some(1).xmap[Int](_ + 1, _ - 1) must_=== (some(2))
-  }
+  "xmap" in { some(1).xmap[Int](_ + 1, _ - 1) must_=== (some(2)) }
 
   "xmap iso" in {
     val succI: Int <=> Int = new IsoSet[Int, Int] {

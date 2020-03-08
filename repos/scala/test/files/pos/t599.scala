@@ -8,7 +8,9 @@ abstract class FooA {
 }
 trait FooB extends FooA {
   type A <: AxB;
-  trait AxB extends AxA { def xxx: Int; }
+  trait AxB extends AxA {
+    def xxx: Int;
+  }
   abstract class InnerB extends InnerA {
     // type B <: A;
     val a: A = doB;

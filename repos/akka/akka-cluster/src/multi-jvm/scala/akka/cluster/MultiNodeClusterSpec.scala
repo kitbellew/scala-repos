@@ -96,9 +96,7 @@ trait MultiNodeClusterSpec
     muteLog()
   }
 
-  override def afterTermination(): Unit = {
-    stopCoroner()
-  }
+  override def afterTermination(): Unit = { stopCoroner() }
 
   override def expectedTestDuration = 60.seconds
 
@@ -219,9 +217,7 @@ trait MultiNodeClusterSpec
       startClusterNode()
     }
     enterBarrier(roles.head.name + "-started")
-    if (roles.tail.contains(myself)) {
-      cluster.join(roles.head)
-    }
+    if (roles.tail.contains(myself)) { cluster.join(roles.head) }
     if (roles.contains(myself)) {
       awaitMembersUp(numberOfMembers = roles.length)
     }

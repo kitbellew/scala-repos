@@ -115,9 +115,8 @@ object ReplicaVerificationTool extends Logging {
     val regex = options.valueOf(topicWhiteListOpt)
     val topicWhiteListFiler = new Whitelist(regex)
 
-    try {
-      Pattern.compile(regex)
-    } catch {
+    try { Pattern.compile(regex) }
+    catch {
       case e: PatternSyntaxException =>
         throw new RuntimeException(regex + " is an invalid regex.")
     }
@@ -472,9 +471,8 @@ private class ReplicaFetcher(
     debug("Issuing fetch request " + fetchRequest)
 
     var response: FetchResponse = null
-    try {
-      response = simpleConsumer.fetch(fetchRequest)
-    } catch {
+    try { response = simpleConsumer.fetch(fetchRequest) }
+    catch {
       case t: Throwable =>
         if (!isRunning.get)
           throw t

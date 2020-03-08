@@ -72,9 +72,7 @@ trait BlockLoadSpec[M[+_]]
 
             if (compliesWithSchema(valueAtPath, ctype)) {
               obj.set(vpath, valueAtPath)
-            } else {
-              obj
-            }
+            } else { obj }
           }
         }
 
@@ -101,9 +99,7 @@ trait BlockLoadSpec[M[+_]]
 
             if (module.compliesWithSchema(valueAtPath, ctype)) {
               obj.set(vpath, valueAtPath)
-            } else {
-              obj
-            }
+            } else { obj }
           }
         }
 

@@ -2,9 +2,7 @@ object T1 {
   trait T[A]
   class C extends T[String]
   object Test {
-    def main(args: Array[String]): Unit = {
-      classOf[C].getTypeParameters
-    }
+    def main(args: Array[String]): Unit = { classOf[C].getTypeParameters }
   }
 }
 

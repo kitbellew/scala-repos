@@ -45,9 +45,7 @@ class Stats(val startTime: DateTime) {
   var statusCodeCount = MHashMap[(Int, StatusCode), Long]().withDefaultValue(0L)
   var eteCount = MHashMap[(Int, EntityTypesEvent), Long]().withDefaultValue(0L)
 
-  def cutoff(endTime: DateTime) {
-    _endTime = Some(endTime)
-  }
+  def cutoff(endTime: DateTime) { _endTime = Some(endTime) }
 
   def update(appId: Int, statusCode: StatusCode, event: Event) {
     statusCodeCount((appId, statusCode)) += 1

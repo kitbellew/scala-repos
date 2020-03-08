@@ -201,9 +201,7 @@ class TaskStatusUpdateProcessorImplTest
     MarathonTestHelper.stagedTask(task.getTaskId.getValue, appVersion = version)
   lazy val marathonTask = taskState.marathonTask
 
-  after {
-    fOpt.foreach(_.shutdown())
-  }
+  after { fOpt.foreach(_.shutdown()) }
 
   class Fixture {
     implicit lazy val actorSystem: ActorSystem = ActorSystem()

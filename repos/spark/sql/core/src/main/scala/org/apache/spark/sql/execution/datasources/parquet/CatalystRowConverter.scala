@@ -404,9 +404,7 @@ private[parquet] class CatalystRowConverter(
     }
 
     // Converts decimals stored as INT32
-    override def addInt(value: Int): Unit = {
-      addLong(value: Long)
-    }
+    override def addInt(value: Int): Unit = { addLong(value: Long) }
 
     // Converts decimals stored as INT64
     override def addLong(value: Long): Unit = {

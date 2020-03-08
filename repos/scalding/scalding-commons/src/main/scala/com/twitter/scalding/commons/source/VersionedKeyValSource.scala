@@ -154,9 +154,7 @@ class VersionedKeyValSource[K, V](
 
   def resourceExists(mode: Mode): Boolean =
     mode match {
-      case Test(buffers) => {
-        buffers(this) map { !_.isEmpty } getOrElse false
-      }
+      case Test(buffers) => { buffers(this) map { !_.isEmpty } getOrElse false }
       case HadoopTest(conf, buffers) => {
         buffers(this) map { !_.isEmpty } getOrElse false
       }
@@ -251,9 +249,7 @@ class VersionedKeyValSource[K, V](
     if (other.isInstanceOf[VersionedKeyValSource[_, _]]) {
       val otherSrc = other.asInstanceOf[VersionedKeyValSource[K, V]]
       otherSrc.path == path && otherSrc.sourceVersion == sourceVersion && otherSrc.sinkVersion == sinkVersion
-    } else {
-      false
-    }
+    } else { false }
 
   override def hashCode = toString.hashCode
 }

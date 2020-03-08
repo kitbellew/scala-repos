@@ -23,9 +23,8 @@ class OnceTest extends FunSuite {
     val t = new Thread(new Runnable {
       def run(): Unit = {
         once()
-        try {
-          assert(x == 1)
-        } catch {
+        try { assert(x == 1) }
+        catch {
           case thr: Throwable =>
             p.setException(thr)
             throw thr

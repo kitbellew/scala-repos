@@ -72,9 +72,7 @@ class RewriteJoins extends Phase {
         "Hoisting flatMapped Join from:",
         Ellipsis(n, List(0), List(1, 0)))
       val sn, sj1, sj2 = new AnonSymbol
-      val j2 = j.replace {
-        case Ref(s) :@ tpe if s == s1 => Ref(sj1) :@ tpe
-      }
+      val j2 = j.replace { case Ref(s) :@ tpe if s == s1 => Ref(sj1) :@ tpe }
       val oj = Join(sj1, sj2, f1, j2, JoinType.Inner, LiteralNode(true)).infer()
       val refSn = Ref(sn) :@ oj.nodeType.asCollectionType.elementType
       val ref1 = Select(refSn, ElementSymbol(1))
@@ -443,9 +441,7 @@ class RewriteJoins extends Phase {
                 (
                   f1,
                   n.replace(
-                    {
-                      case Select(Ref(s), f2) if s == s1 => m(f2)
-                    },
+                    { case Select(Ref(s), f2) if s == s1 => m(f2) },
                     keepType = true))
             }),
             ts2)).infer()

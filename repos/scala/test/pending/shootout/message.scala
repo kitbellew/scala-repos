@@ -21,9 +21,8 @@ object message {
           receive {
             case Message(value) =>
               val j = value + 1
-              if (null != next) {
-                next ! Message(j)
-              } else {
+              if (null != next) { next ! Message(j) }
+              else {
                 sum = sum + j
                 if (sum >= finalSum) {
                   Console.println(sum);

@@ -12,9 +12,7 @@ import com.twitter.util.Future
 class ConnectorTest extends WordSpec with MockitoSugar {
   "Connector.RoundRobin" should {
     "require underlying connections" in {
-      intercept[Exception] {
-        Connector.RoundRobin()
-      }
+      intercept[Exception] { Connector.RoundRobin() }
     }
 
     "dispatch requests across underlying connectors" should {

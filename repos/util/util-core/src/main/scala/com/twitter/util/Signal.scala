@@ -36,9 +36,7 @@ object SunSignalHandler {
     try {
       Class.forName("sun.misc.Signal")
       Some(new SunSignalHandler())
-    } catch {
-      case ex: ClassNotFoundException => None
-    }
+    } catch { case ex: ClassNotFoundException => None }
   }
 }
 
@@ -91,14 +89,10 @@ object HandleSignal {
       }
     }
 
-    handlers.synchronized {
-      handlers(posixSignal) += f
-    }
+    handlers.synchronized { handlers(posixSignal) += f }
   }
 
   def clear(posixSignal: String) {
-    handlers.synchronized {
-      handlers(posixSignal).clear()
-    }
+    handlers.synchronized { handlers(posixSignal).clear() }
   }
 }

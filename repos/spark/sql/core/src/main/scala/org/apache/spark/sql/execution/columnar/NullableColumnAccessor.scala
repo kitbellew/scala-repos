@@ -49,9 +49,7 @@ private[columnar] trait NullableColumnAccessor extends ColumnAccessor {
       }
 
       row.setNullAt(ordinal)
-    } else {
-      super.extractTo(row, ordinal)
-    }
+    } else { super.extractTo(row, ordinal) }
 
     pos += 1
   }

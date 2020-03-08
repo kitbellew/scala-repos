@@ -74,18 +74,15 @@ private[spark] class ByteArrayChunkOutputStream(chunkSize: Int)
   }
 
   def toArrays: Array[Array[Byte]] = {
-    if (lastChunkIndex == -1) {
-      new Array[Array[Byte]](0)
-    } else {
+    if (lastChunkIndex == -1) { new Array[Array[Byte]](0) }
+    else {
       // Copy the first n-1 chunks to the output, and then create an array that fits the last chunk.
       // An alternative would have been returning an array of ByteBuffers, with the last buffer
       // bounded to only the last chunk's position. However, given our use case in Spark (to put
       // the chunks in block manager), only limiting the view bound of the buffer would still
       // require the block manager to store the whole chunk.
       val ret = new Array[Array[Byte]](chunks.size)
-      for (i <- 0 until chunks.size - 1) {
-        ret(i) = chunks(i)
-      }
+      for (i <- 0 until chunks.size - 1) { ret(i) = chunks(i) }
       if (position == chunkSize) {
         ret(lastChunkIndex) = chunks(lastChunkIndex)
       } else {

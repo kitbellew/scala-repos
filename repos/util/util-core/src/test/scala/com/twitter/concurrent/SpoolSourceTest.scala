@@ -68,9 +68,7 @@ class SpoolSourceTest extends WordSpec {
       source.raise(new Exception("sad panda"))
       val futureSpool2 = source()
       source.offer(1)
-      intercept[Exception] {
-        Await.result(futureSpool1 flatMap (_.toSeq))
-      }
+      intercept[Exception] { Await.result(futureSpool1 flatMap (_.toSeq)) }
       assert(Await.result(futureSpool2).isEmpty == true)
     }
 

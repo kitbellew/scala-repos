@@ -94,9 +94,7 @@ object Util {
             // properly typing MapperField[_, T] in the context of the for
             // comprehension
             fieldBind <- fieldBindIfWanted(fieldName)
-          } yield {
-            ".field" #> fieldBind
-          }
+          } yield { ".field" #> fieldBind }
         } else {
           mapper.formFields.filter(filter).map {
             case field: MappedField[_, T] =>

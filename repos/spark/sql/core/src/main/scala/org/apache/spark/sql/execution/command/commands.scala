@@ -228,9 +228,7 @@ case class SetCommand(kv: Option[(String, Option[String])])
         val runFunc = (sqlContext: SQLContext) => {
           val value =
             try sqlContext.getConf(key)
-            catch {
-              case _: NoSuchElementException => "<undefined>"
-            }
+            catch { case _: NoSuchElementException => "<undefined>" }
           Seq(Row(key, value))
         }
         (keyValueOutput, runFunc)
@@ -423,11 +421,8 @@ case class DescribeFunction(functionName: String, isExtended: Boolean)
   private def replaceFunctionName(
       usage: String,
       functionName: String): String = {
-    if (usage == null) {
-      "To be added."
-    } else {
-      usage.replaceAll("_FUNC_", functionName)
-    }
+    if (usage == null) { "To be added." }
+    else { usage.replaceAll("_FUNC_", functionName) }
   }
 
   override def run(sqlContext: SQLContext): Seq[Row] = {
@@ -443,9 +438,7 @@ case class DescribeFunction(functionName: String, isExtended: Boolean)
         if (isExtended) {
           result :+ Row(
             s"Extended Usage:\n${replaceFunctionName(info.getExtended, info.getName)}")
-        } else {
-          result
-        }
+        } else { result }
 
       case None => Seq(Row(s"Function: $functionName not found."))
     }

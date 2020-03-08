@@ -770,9 +770,8 @@ class LocalActorRef private[akka] (
       cancelReceiveTimeout
       dispatcher.detach(this)
       _status = ActorRefInternals.SHUTDOWN
-      try {
-        actor.postStop
-      } finally {
+      try { actor.postStop }
+      finally {
         currentMessage = null
         Actor.registry.unregister(this)
         if (isRemotingEnabled) {
@@ -1112,9 +1111,7 @@ class LocalActorRef private[akka] (
                         this,
                         "Exception in restart of Actor [%s]".format(toString))
                       false // an error or exception here should trigger a retry
-                  } finally {
-                    currentMessage = null
-                  }
+                  } finally { currentMessage = null }
                 if (success) {
                   _status = ActorRefInternals.RUNNING
                   dispatcher.resume(this)
@@ -1172,9 +1169,7 @@ class LocalActorRef private[akka] (
         throw new ActorInitializationException(
           "Actor instance passed to ActorRef can not be 'null'")
       a
-    } finally {
-      Actor.actorRefInCreation.set(None)
-    }
+    } finally { Actor.actorRefInCreation.set(None) }
   }
 
   private def shutDownTemporaryActor(temporaryActor: ActorRef) {
@@ -1236,9 +1231,7 @@ class LocalActorRef private[akka] (
           selfField.set(actor, value)
           someSelfField.set(actor, if (value ne null) Some(value) else null)
           true
-        } catch {
-          case e: NoSuchFieldException => false
-        }
+        } catch { case e: NoSuchFieldException => false }
 
       if (success) true
       else {
@@ -1539,9 +1532,8 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
         if (isTypedActorEnabled)
           TypedActorModule.resolveFutureIfMessageIsJoinPoint(message, future)
         else false
-      try {
-        future.await
-      } catch {
+      try { future.await }
+      catch {
         case e: FutureTimeoutException =>
           if (isMessageJoinPoint) {
             EventHandler.error(e, this, e.getMessage)

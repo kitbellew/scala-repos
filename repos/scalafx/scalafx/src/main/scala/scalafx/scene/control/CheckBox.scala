@@ -52,24 +52,18 @@ class CheckBox(override val delegate: jfxsc.CheckBox = new jfxsc.CheckBox)
     * checked, unchecked, and undefined.
     */
   def allowIndeterminate: BooleanProperty = delegate.allowIndeterminateProperty
-  def allowIndeterminate_=(b: Boolean) {
-    allowIndeterminate() = b
-  }
+  def allowIndeterminate_=(b: Boolean) { allowIndeterminate() = b }
 
   /**
     * Determines whether the CheckBox is in the indeterminate state.
     */
   def indeterminate: BooleanProperty = delegate.indeterminateProperty
-  def indeterminate_=(b: Boolean) {
-    indeterminate() = b
-  }
+  def indeterminate_=(b: Boolean) { indeterminate() = b }
 
   /**
     * Indicates whether this CheckBox is checked.
     */
   def selected: BooleanProperty = delegate.selectedProperty
-  def selected_=(b: Boolean) {
-    selected() = b
-  }
+  def selected_=(b: Boolean) { selected() = b }
 
 }

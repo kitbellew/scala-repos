@@ -176,9 +176,7 @@ private[spark] abstract class ImpurityCalculator(val stats: Array[Double])
       case ((maxIndex, maxValue, currentIndex), currentValue) =>
         if (currentValue > maxValue) {
           (currentIndex, currentValue, currentIndex + 1)
-        } else {
-          (maxIndex, maxValue, currentIndex + 1)
-        }
+        } else { (maxIndex, maxValue, currentIndex + 1) }
     }
     if (result._1 < 0) {
       throw new RuntimeException(

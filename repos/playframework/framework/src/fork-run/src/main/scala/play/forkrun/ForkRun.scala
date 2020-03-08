@@ -54,9 +54,7 @@ object ForkRun {
       forkRun ! Close
       try system.awaitTermination(30.seconds)
       catch { case _: TimeoutException => System.exit(1) }
-    } else {
-      log.info("Play fork run already stopped ...")
-    }
+    } else { log.info("Play fork run already stopped ...") }
   }
 
   def registerShutdownHook(
@@ -225,9 +223,7 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
       val server =
         ForkRun.startServer(config, args, notifyStart, reloadCompile, log)
       context become running(server, config.reloadKey)
-    } catch {
-      case e: Exception => fail(e)
-    }
+    } catch { case e: Exception => fail(e) }
   }
 
   def running(server: PlayDevServer, reloadKey: String): Receive = {

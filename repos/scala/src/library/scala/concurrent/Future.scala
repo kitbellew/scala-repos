@@ -722,9 +722,7 @@ object Future {
             case _                  =>
           }
         } finally {
-          if (ref.decrementAndGet == 0) {
-            result tryComplete Success(None)
-          }
+          if (ref.decrementAndGet == 0) { result tryComplete Success(None) }
         }
 
       futuresBuffer.foreach(_ onComplete search)
@@ -915,4 +913,6 @@ object Future {
   * All callbacks provided to a `Future` end up going through `onComplete`, so this allows an
   * `ExecutionContext` to special-case callbacks that were executed by `Future` if desired.
   */
-trait OnCompleteRunnable { self: Runnable => }
+trait OnCompleteRunnable {
+  self: Runnable =>
+}

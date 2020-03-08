@@ -39,9 +39,8 @@ sealed trait SValue {
   def hasProperty(selector: JPath) = (this \ selector).isDefined
 
   def \(selector: JPath): Option[SValue] = {
-    if (selector == JPath.Identity) {
-      Some(this)
-    } else {
+    if (selector == JPath.Identity) { Some(this) }
+    else {
       this match {
         case SObject(obj) =>
           (selector.nodes: @unchecked) match {

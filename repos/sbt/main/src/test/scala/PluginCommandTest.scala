@@ -15,11 +15,7 @@ import sbt.internal.util.{
 
 object PluginCommandTestPlugin0 extends AutoPlugin
 
-package subpackage {
-
-  object PluginCommandTestPlugin1 extends AutoPlugin
-
-}
+package subpackage { object PluginCommandTestPlugin1 extends AutoPlugin }
 
 object PluginCommandTest extends Specification {
   sequential
@@ -70,9 +66,7 @@ object FakeState {
       val state = FakeState(enabledPlugins: _*)
       Command.process(input, state)
       new String(outBuffer.toByteArray)
-    } finally {
-      System.setOut(previousOut)
-    }
+    } finally { System.setOut(previousOut) }
   }
 
   def apply(plugins: AutoPlugin*) = {

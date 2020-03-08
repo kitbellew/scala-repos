@@ -150,7 +150,9 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
     val isDone = new CountDownLatch(1)
     processExchangeAdapter(
       exchange,
-      new AsyncCallback { def done(doneSync: Boolean) { isDone.countDown() } })
+      new AsyncCallback {
+        def done(doneSync: Boolean) { isDone.countDown() }
+      })
     isDone.await(endpoint.replyTimeout.length, endpoint.replyTimeout.unit)
   }
 

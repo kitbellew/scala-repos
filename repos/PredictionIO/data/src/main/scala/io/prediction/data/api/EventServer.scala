@@ -107,13 +107,9 @@ class EventServiceActor(
                         .toMap
                     if (channelMap.contains(ch)) {
                       Right(AuthData(k.appid, Some(channelMap(ch)), k.events))
-                    } else {
-                      Left(ChannelRejection(s"Invalid channel '$ch'."))
-                    }
+                    } else { Left(ChannelRejection(s"Invalid channel '$ch'.")) }
                   }
-                  .getOrElse {
-                    Right(AuthData(k.appid, None, k.events))
-                  }
+                  .getOrElse { Right(AuthData(k.appid, None, k.events)) }
               }
               .getOrElse(FailedAuth)
           }
@@ -215,9 +211,7 @@ class EventServiceActor(
                         appId = authData.appId,
                         channelId = authData.channelId,
                         pluginName = pluginName,
-                        pluginArgs = pluginArgs) map {
-                        _.asInstanceOf[String]
-                      }
+                        pluginArgs = pluginArgs) map { _.asInstanceOf[String] }
                   }
                 }
               }

@@ -56,9 +56,8 @@ object Multipart {
           .prefixAndTail(1)
           .map {
             case (Seq(Left(part: FilePart[_])), body) =>
-              part.copy[Source[ByteString, _]](ref = body.collect {
-                case Right(bytes) => bytes
-              })
+              part.copy[Source[ByteString, _]](ref =
+                body.collect { case Right(bytes) => bytes })
             case (Seq(Left(other)), ignored) =>
               // If we don't run the source, it takes Akka streams 5 seconds to wake up and realise the source is empty
               // before it progresses onto the next element
@@ -110,19 +109,13 @@ object Multipart {
             parseError orElse bufferExceededError getOrElse {
               Future.successful(Right(MultipartFormData(
                 parts
-                  .collect {
-                    case dp: DataPart => dp
-                  }
+                  .collect { case dp: DataPart => dp }
                   .groupBy(_.key)
                   .map {
                     case (key, partValues) => key -> partValues.map(_.value)
                   },
-                parts.collect {
-                  case fp: FilePart[A] => fp
-                },
-                parts.collect {
-                  case bad: BadPart => bad
-                }
+                parts.collect { case fp: FilePart[A] => fp },
+                parts.collect { case bad: BadPart    => bad }
               )))
             }
 
@@ -174,11 +167,8 @@ object Multipart {
             quote = !quote
           escape = false
         case ';' =>
-          if (!quote) {
-            addPart()
-          } else {
-            buffer.append(';')
-          }
+          if (!quote) { addPart() }
+          else { buffer.append(';') }
           escape = false
         case c =>
           buffer.append(c)
@@ -258,9 +248,7 @@ object Multipart {
   private object NotEnoughDataException
       extends RuntimeException(null, null, false, false)
 
-  private val crlfcrlf: ByteString = {
-    ByteString("\r\n\r\n")
-  }
+  private val crlfcrlf: ByteString = { ByteString("\r\n\r\n") }
 
   /**
     * Copied and then heavily modified to suit Play's needs from Akka HTTP akka.http.impl.engine.BodyPartParser.
@@ -448,9 +436,7 @@ object Multipart {
         } else if (doubleDash(input, needleEnd)) {
           emit(input.slice(offset, currentPartEnd))
           terminate()
-        } else {
-          fail("Unexpected boundary")
-        }
+        } else { fail("Unexpected boundary") }
       } catch {
         case NotEnoughDataException =>
           // we cannot emit all input bytes since the end of the input might be the start of the next boundary
@@ -490,9 +476,7 @@ object Multipart {
               partName,
               input.slice(partStart, currentPartEnd).utf8String))
           terminate()
-        } else {
-          fail("Unexpected boundary")
-        }
+        } else { fail("Unexpected boundary") }
       } catch {
         case NotEnoughDataException =>
           if (memoryBufferSize + (input.length - partStart - needle.length) > maxMemoryBufferSize) {
@@ -517,9 +501,7 @@ object Multipart {
         } else if (doubleDash(input, needleEnd)) {
           emit(BadPart(headers))
           terminate()
-        } else {
-          fail("Unexpected boundary")
-        }
+        } else { fail("Unexpected boundary") }
       } catch {
         case NotEnoughDataException =>
           continue(input, partStart)(
@@ -527,13 +509,10 @@ object Multipart {
       }
     }
 
-    def emit(bytes: ByteString): Unit = if (bytes.nonEmpty) {
-      output = output.enqueue(Right(bytes))
-    }
+    def emit(bytes: ByteString): Unit =
+      if (bytes.nonEmpty) { output = output.enqueue(Right(bytes)) }
 
-    def emit(part: Part[Unit]): Unit = {
-      output = output.enqueue(Left(part))
-    }
+    def emit(part: Part[Unit]): Unit = { output = output.enqueue(Left(part)) }
 
     def dequeue(): RawPart = {
       val head = output.head

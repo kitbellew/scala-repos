@@ -1,6 +1,8 @@
 class Y(val _2: Int, val _1: String)
 
-object X { def unapply(u: Unit): Option[Y] = Some(new Y(42, "!")) }
+object X {
+  def unapply(u: Unit): Option[Y] = Some(new Y(42, "!"))
+}
 
 object Test {
   def test1 = {
@@ -9,7 +11,5 @@ object Test {
     assert(yy._1 == "!")
     assert(yy._2 == 42)
   }
-  def main(args: Array[String]): Unit = {
-    test1
-  }
+  def main(args: Array[String]): Unit = { test1 }
 }

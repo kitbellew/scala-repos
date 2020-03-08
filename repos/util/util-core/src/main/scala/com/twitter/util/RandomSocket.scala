@@ -40,8 +40,6 @@ object RandomSocket {
             "Couldn't find an open port: %s".format(e.getMessage))
         else
           throw e
-    } finally {
-      s.close()
-    }
+    } finally { s.close() }
   }
 }

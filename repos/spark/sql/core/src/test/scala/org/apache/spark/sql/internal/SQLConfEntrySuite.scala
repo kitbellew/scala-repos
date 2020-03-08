@@ -131,9 +131,7 @@ class SQLConfEntrySuite extends SparkFunSuite {
     assert(conf.getConfString(key) === "c")
     assert(conf.getConf(confEntry) === "c")
 
-    val e = intercept[IllegalArgumentException] {
-      conf.setConfString(key, "d")
-    }
+    val e = intercept[IllegalArgumentException] { conf.setConfString(key, "d") }
     assert(
       e.getMessage === s"The value of $key should be one of a, b, c, but was d")
   }

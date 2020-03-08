@@ -38,11 +38,8 @@ class AccumulatorSuite
   import AccumulatorParam._
 
   override def afterEach(): Unit = {
-    try {
-      Accumulators.clear()
-    } finally {
-      super.afterEach()
-    }
+    try { Accumulators.clear() }
+    finally { super.afterEach() }
   }
 
   implicit def setAccum[A]: AccumulableParam[mutable.Set[A], A] =
@@ -55,9 +52,7 @@ class AccumulatorSuite
         t1 += t2
         t1
       }
-      def zero(t: mutable.Set[A]): mutable.Set[A] = {
-        new mutable.HashSet[A]()
-      }
+      def zero(t: mutable.Set[A]): mutable.Set[A] = { new mutable.HashSet[A]() }
     }
 
   test("basic accumulation") {
@@ -91,9 +86,7 @@ class AccumulatorSuite
       val d = sc.parallelize(1 to maxI)
       d.foreach { x => acc += x }
       val v = acc.value.asInstanceOf[mutable.Set[Int]]
-      for (i <- 1 to maxI) {
-        v should contain(i)
-      }
+      for (i <- 1 to maxI) { v should contain(i) }
       resetSparkContext()
     }
   }
@@ -190,9 +183,7 @@ class AccumulatorSuite
     assert(ref.get.isEmpty)
 
     // Getting a garbage collected accum should throw error
-    intercept[IllegalAccessError] {
-      Accumulators.get(accId)
-    }
+    intercept[IllegalAccessError] { Accumulators.get(accId) }
 
     // Getting a normal accumulator. Note: this has to be separate because referencing an
     // accumulator above in an `assert` would keep it from being garbage collected.
@@ -407,15 +398,12 @@ private class SaveInfoListener extends SparkListener {
 
   override def onJobEnd(jobEnd: SparkListenerJobEnd): Unit = {
     if (jobCompletionCallback != null) {
-      try {
-        jobCompletionCallback()
-      } catch {
+      try { jobCompletionCallback() }
+      catch {
         // Store any exception thrown here so we can throw them later in the main thread.
         // Otherwise, if `jobCompletionCallback` threw something it wouldn't fail the test.
         case NonFatal(e) => exception = e
-      } finally {
-        jobCompletionSem.release()
-      }
+      } finally { jobCompletionSem.release() }
     }
   }
 

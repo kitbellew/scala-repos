@@ -131,9 +131,7 @@ class CrossValidatorSuite
 
     val invalidParamMaps = paramMaps :+ ParamMap(est.inputCol -> "")
     cv.setEstimatorParamMaps(invalidParamMaps)
-    intercept[IllegalArgumentException] {
-      cv.transformSchema(new StructType())
-    }
+    intercept[IllegalArgumentException] { cv.transformSchema(new StructType()) }
   }
 
   test("read/write: CrossValidator with simple estimator") {
@@ -261,9 +259,7 @@ class CrossValidatorSuite
       .setEvaluator(evaluator)
       .setEstimatorParamMaps(paramMaps)
     withClue("CrossValidator.write failed to catch extraneous Param error") {
-      intercept[IllegalArgumentException] {
-        cv.write
-      }
+      intercept[IllegalArgumentException] { cv.write }
     }
   }
 

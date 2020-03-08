@@ -59,9 +59,7 @@ class EquivalentExpressions {
         equivalenceMap.put(e, mutable.MutableList(expr))
         false
       }
-    } else {
-      false
-    }
+    } else { false }
   }
 
   /**

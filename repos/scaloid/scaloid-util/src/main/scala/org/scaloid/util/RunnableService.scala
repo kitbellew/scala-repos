@@ -15,9 +15,7 @@ trait RunnableService {
     startTime = System.currentTimeMillis()
   }
 
-  def stop() {
-    running = false
-  }
+  def stop() { running = false }
 }
 
 import org.scaloid.common._
@@ -37,23 +35,17 @@ abstract class RunnableServiceConnector(activity: SActivity) {
     timer = new Timer()
     timer.schedule(
       new TimerTask {
-        def run() {
-          runOnUiThread(updateUI(ON_HEARTBEAT))
-        }
+        def run() { runOnUiThread(updateUI(ON_HEARTBEAT)) }
       },
       timerInterval,
       timerInterval)
   }
 
-  activity.onPause {
-    timer.cancel()
-  }
+  activity.onPause { timer.cancel() }
 
   def onServiceConnected() {
     runOnUiThread(updateUI(ON_CONNECTED))
-    if (runnableService.running) {
-      startTimer()
-    }
+    if (runnableService.running) { startTimer() }
   }
 
   def updateUI(event: UpdateEvent)
@@ -72,7 +64,5 @@ abstract class RunnableServiceConnector(activity: SActivity) {
     timer.cancel()
   }
 
-  def toggle() {
-    if (runnableService.running) stop() else start()
-  }
+  def toggle() { if (runnableService.running) stop() else start() }
 }

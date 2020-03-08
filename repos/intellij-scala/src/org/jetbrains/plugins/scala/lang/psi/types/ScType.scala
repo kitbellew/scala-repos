@@ -51,9 +51,7 @@ trait ScType {
   private var aliasType: Option[AliasType] = null
 
   final def isAliasType: Option[AliasType] = {
-    if (aliasType == null) {
-      aliasType = isAliasTypeInner
-    }
+    if (aliasType == null) { aliasType = isAliasTypeInner }
     aliasType
   }
 

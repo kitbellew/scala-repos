@@ -212,11 +212,8 @@ private[akka] class MsgDecoder extends OneToOneDecoder {
           val a = w.getAddr
           if (a.hasAddr) AddressReply(RoleName(a.getNode), a.getAddr)
           else GetAddress(RoleName(a.getNode))
-        } else if (w.hasDone) {
-          Done
-        } else {
-          throw new IllegalArgumentException("unknown message " + msg)
-        }
+        } else if (w.hasDone) { Done }
+        else { throw new IllegalArgumentException("unknown message " + msg) }
       case _ ⇒ throw new IllegalArgumentException("wrong message " + msg)
     }
 }

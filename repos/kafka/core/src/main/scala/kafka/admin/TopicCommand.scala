@@ -140,9 +140,7 @@ object TopicCommand extends Logging {
           rackAwareMode)
       }
       println("Created topic \"%s\".".format(topic))
-    } catch {
-      case e: TopicExistsException => if (!ifNotExists) throw e
-    }
+    } catch { case e: TopicExistsException => if (!ifNotExists) throw e }
   }
 
   def alterTopic(zkUtils: ZkUtils, opts: TopicCommandOptions) {
@@ -199,9 +197,7 @@ object TopicCommand extends Logging {
     for (topic <- topics) {
       if (zkUtils.pathExists(getDeleteTopicPath(topic))) {
         println("%s - marked for deletion".format(topic))
-      } else {
-        println(topic)
-      }
+      } else { println(topic) }
     }
   }
 

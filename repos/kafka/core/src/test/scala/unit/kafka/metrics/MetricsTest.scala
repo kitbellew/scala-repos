@@ -48,9 +48,7 @@ class MetricsTest extends KafkaServerTestHarness with Logging {
   val nMessages = 2
 
   @After
-  override def tearDown() {
-    super.tearDown()
-  }
+  override def tearDown() { super.tearDown() }
 
   @Test
   @deprecated(

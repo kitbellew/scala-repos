@@ -248,9 +248,7 @@ object ThriftCodecTest {
   class SunkChannelSink extends AbstractChannelSink {
     val events = new ListBuffer[ChannelEvent]
 
-    def eventSunk(p: ChannelPipeline, e: ChannelEvent) {
-      events += e
-    }
+    def eventSunk(p: ChannelPipeline, e: ChannelEvent) { events += e }
   }
 
   class SunkChannelFactory extends ChannelFactory {

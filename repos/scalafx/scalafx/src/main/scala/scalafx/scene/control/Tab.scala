@@ -58,50 +58,38 @@ class Tab(override val delegate: jfxsc.Tab = new jfxsc.Tab)
     * The closable state for this tab.
     */
   def closable: BooleanProperty = delegate.closableProperty
-  def closable_=(v: Boolean) {
-    closable() = v
-  }
+  def closable_=(v: Boolean) { closable() = v }
 
   /**
     * The content associated with the tab.
     */
   def content: ObjectProperty[jfxs.Node] = delegate.contentProperty
-  def content_=(v: Node) {
-    content() = v
-  }
+  def content_=(v: Node) { content() = v }
 
   /**
     * The context menu associated with the tab.
     */
   def contextMenu: ObjectProperty[jfxsc.ContextMenu] =
     delegate.contextMenuProperty
-  def contextMenu_=(v: ContextMenu) {
-    contextMenu() = v
-  }
+  def contextMenu_=(v: ContextMenu) { contextMenu() = v }
 
   /**
     * The graphic in the tab.
     */
   def graphic: ObjectProperty[jfxs.Node] = delegate.graphicProperty
-  def graphic_=(v: Node) {
-    graphic() = v
-  }
+  def graphic_=(v: Node) { graphic() = v }
 
   /**
     * The id of this tab.
     */
   def id: StringProperty = delegate.idProperty
-  def id_=(v: String) {
-    id() = v
-  }
+  def id_=(v: String) { id() = v }
 
   /**
     * The event handler that is associated with the tab when the tab is closed.
     */
   def onClosed = delegate.onClosedProperty
-  def onClosed_=(v: jfxe.EventHandler[jfxe.Event]) {
-    onClosed() = v
-  }
+  def onClosed_=(v: jfxe.EventHandler[jfxe.Event]) { onClosed() = v }
 
   /**
     * Called when there is an external request to close this Tab.
@@ -130,9 +118,7 @@ class Tab(override val delegate: jfxsc.Tab = new jfxsc.Tab)
     * The CSS style string associated to this tab.
     */
   def style: StringProperty = delegate.styleProperty
-  def style_=(v: String) {
-    style() = v
-  }
+  def style_=(v: String) { style() = v }
 
   /**
     * The TabPane that contains this tab.
@@ -143,17 +129,13 @@ class Tab(override val delegate: jfxsc.Tab = new jfxsc.Tab)
     * The text shown in the tab.
     */
   def text: StringProperty = delegate.textProperty
-  def text_=(v: String) {
-    text() = v
-  }
+  def text_=(v: String) { text() = v }
 
   /**
     * The tooltip associated with this tab.
     */
   def tooltip: ObjectProperty[jfxsc.Tooltip] = delegate.tooltipProperty
-  def tooltip_=(v: Tooltip) {
-    tooltip() = v
-  }
+  def tooltip_=(v: Tooltip) { tooltip() = v }
 
   /**
     * Sets the disabled state of this tab. A disable tab is no longer interactive or traversable,
@@ -162,9 +144,7 @@ class Tab(override val delegate: jfxsc.Tab = new jfxsc.Tab)
     * @since 2.2
     */
   def disable: BooleanProperty = delegate.disableProperty()
-  def disable_=(v: Boolean) {
-    disable() = v
-  }
+  def disable_=(v: Boolean) { disable() = v }
 
   /**
     * Indicates whether or not this Tab is disabled. A Tab will become disabled if disable is set to true
@@ -178,8 +158,6 @@ class Tab(override val delegate: jfxsc.Tab = new jfxsc.Tab)
     * @since 2.2
     */
   def userData: AnyRef = delegate.userData
-  def userData_=(v: AnyRef) {
-    delegate.setUserData(v)
-  }
+  def userData_=(v: AnyRef) { delegate.setUserData(v) }
 
 }

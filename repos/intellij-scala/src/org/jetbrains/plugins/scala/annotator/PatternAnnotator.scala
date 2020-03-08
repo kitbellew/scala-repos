@@ -40,9 +40,7 @@ trait PatternAnnotator {
       pattern: ScPattern,
       holder: AnnotationHolder,
       highlightErrors: Boolean) {
-    if (highlightErrors) {
-      PatternAnnotator.checkPattern(pattern, holder)
-    }
+    if (highlightErrors) { PatternAnnotator.checkPattern(pattern, holder) }
   }
 }
 
@@ -52,9 +50,7 @@ object PatternAnnotator {
     for {
       pType <- PatternAnnotatorUtil.patternType(pattern)
       eType <- pattern.expectedType
-    } {
-      checkPatternType(pType, eType, pattern, holder)
-    }
+    } { checkPatternType(pType, eType, pattern, holder) }
   }
 
   /**
@@ -248,9 +244,7 @@ object PatternAnnotatorUtil {
     def abstraction(
         scType: ScType,
         visited: HashSet[ScType] = HashSet.empty): ScType = {
-      if (visited.contains(scType)) {
-        return scType
-      }
+      if (visited.contains(scType)) { return scType }
       val newVisited = visited + scType
       scType.recursiveUpdate {
         case tp: ScTypeParameterType =>

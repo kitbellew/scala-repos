@@ -61,11 +61,7 @@ package net.liftweb {
       private def liftRulesEnabled =
         useLiftRulesGlobally || useLiftRules.box == Full(true)
 
-      private def withLiftRules[T](f: => T) = {
-        if (liftRulesEnabled) {
-          f
-        }
-      }
+      private def withLiftRules[T](f: => T) = { if (liftRulesEnabled) { f } }
 
       /**
         * Executes a given function against a new Req constructed
@@ -88,11 +84,7 @@ package net.liftweb {
         // TODO : Confirm that we can pass in a null provider without issue
         val req = new HTTPRequestServlet(request, null)
 
-        withLiftRules {
-          tryo {
-            LiftRules.early.toList.foreach(_(req))
-          }
-        }
+        withLiftRules { tryo { LiftRules.early.toList.foreach(_(req)) } }
 
         val r =
           if (liftRulesEnabled) {
@@ -103,9 +95,7 @@ package net.liftweb {
               Nil,
               LiftRules.statelessReqTest.toList,
               System.nanoTime)
-          } else {
-            Req(req, Nil, System.nanoTime)
-          }
+          } else { Req(req, Nil, System.nanoTime) }
 
         f(r)
       }
@@ -186,9 +176,7 @@ package net.liftweb {
       private def realTestS[T](newSession: Box[LiftSession])(f: () => T)(
           req: Req): T = {
         val session = newSession openOr LiftSession(req)
-        S.init(Box !! req, session) {
-          f()
-        }
+        S.init(Box !! req, session) { f() }
       }
 
       /**
@@ -206,9 +194,7 @@ package net.liftweb {
         *
         */
       def withSnippet[T](name: String, attrs: MetaData = Null)(f: => T): T =
-        S.withAttrs(attrs) {
-          http.httpPackageProxy.doSnippet(name)(f)
-        }
+        S.withAttrs(attrs) { http.httpPackageProxy.doSnippet(name)(f) }
     }
   }
 
@@ -216,9 +202,7 @@ package net.liftweb {
 // S.doSnippet method
   package http {
     private[liftweb] object httpPackageProxy {
-      def doSnippet[T](name: String)(f: => T): T = {
-        S.doSnippet(name)(f)
-      }
+      def doSnippet[T](name: String)(f: => T): T = { S.doSnippet(name)(f) }
     }
   }
 

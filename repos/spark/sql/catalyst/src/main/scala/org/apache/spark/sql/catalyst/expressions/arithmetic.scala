@@ -60,9 +60,7 @@ case class UnaryMinus(child: Expression)
   protected override def nullSafeEval(input: Any): Any = {
     if (dataType.isInstanceOf[CalendarIntervalType]) {
       input.asInstanceOf[CalendarInterval].negate()
-    } else {
-      numeric.negate(input)
-    }
+    } else { numeric.negate(input) }
   }
 
   override def sql: String = s"(-${child.sql})"
@@ -164,9 +162,7 @@ case class Add(left: Expression, right: Expression) extends BinaryArithmetic {
       input1
         .asInstanceOf[CalendarInterval]
         .add(input2.asInstanceOf[CalendarInterval])
-    } else {
-      numeric.plus(input1, input2)
-    }
+    } else { numeric.plus(input1, input2) }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =
@@ -200,9 +196,7 @@ case class Subtract(left: Expression, right: Expression)
       input1
         .asInstanceOf[CalendarInterval]
         .subtract(input2.asInstanceOf[CalendarInterval])
-    } else {
-      numeric.minus(input1, input2)
-    }
+    } else { numeric.minus(input1, input2) }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =
@@ -252,15 +246,11 @@ case class Divide(left: Expression, right: Expression)
 
   override def eval(input: InternalRow): Any = {
     val input2 = right.eval(input)
-    if (input2 == null || input2 == 0) {
-      null
-    } else {
+    if (input2 == null || input2 == 0) { null }
+    else {
       val input1 = left.eval(input)
-      if (input1 == null) {
-        null
-      } else {
-        div(input1, input2)
-      }
+      if (input1 == null) { null }
+      else { div(input1, input2) }
     }
   }
 
@@ -272,15 +262,11 @@ case class Divide(left: Expression, right: Expression)
     val eval2 = right.gen(ctx)
     val isZero = if (dataType.isInstanceOf[DecimalType]) {
       s"${eval2.value}.isZero()"
-    } else {
-      s"${eval2.value} == 0"
-    }
+    } else { s"${eval2.value} == 0" }
     val javaType = ctx.javaType(dataType)
     val divide = if (dataType.isInstanceOf[DecimalType]) {
       s"${eval1.value}.$decimalMethod(${eval2.value})"
-    } else {
-      s"($javaType)(${eval1.value} $symbol ${eval2.value})"
-    }
+    } else { s"($javaType)(${eval1.value} $symbol ${eval2.value})" }
     s"""
       ${eval2.code}
       boolean ${ev.isNull} = false;
@@ -315,15 +301,11 @@ case class Remainder(left: Expression, right: Expression)
 
   override def eval(input: InternalRow): Any = {
     val input2 = right.eval(input)
-    if (input2 == null || input2 == 0) {
-      null
-    } else {
+    if (input2 == null || input2 == 0) { null }
+    else {
       val input1 = left.eval(input)
-      if (input1 == null) {
-        null
-      } else {
-        integral.rem(input1, input2)
-      }
+      if (input1 == null) { null }
+      else { integral.rem(input1, input2) }
     }
   }
 
@@ -335,15 +317,11 @@ case class Remainder(left: Expression, right: Expression)
     val eval2 = right.gen(ctx)
     val isZero = if (dataType.isInstanceOf[DecimalType]) {
       s"${eval2.value}.isZero()"
-    } else {
-      s"${eval2.value} == 0"
-    }
+    } else { s"${eval2.value} == 0" }
     val javaType = ctx.javaType(dataType)
     val remainder = if (dataType.isInstanceOf[DecimalType]) {
       s"${eval1.value}.$decimalMethod(${eval2.value})"
-    } else {
-      s"($javaType)(${eval1.value} $symbol ${eval2.value})"
-    }
+    } else { s"($javaType)(${eval1.value} $symbol ${eval2.value})" }
     s"""
       ${eval2.code}
       boolean ${ev.isNull} = false;
@@ -377,16 +355,11 @@ case class MaxOf(left: Expression, right: Expression)
   override def eval(input: InternalRow): Any = {
     val input1 = left.eval(input)
     val input2 = right.eval(input)
-    if (input1 == null) {
-      input2
-    } else if (input2 == null) {
-      input1
-    } else {
-      if (ordering.compare(input1, input2) < 0) {
-        input2
-      } else {
-        input1
-      }
+    if (input1 == null) { input2 }
+    else if (input2 == null) { input1 }
+    else {
+      if (ordering.compare(input1, input2) < 0) { input2 }
+      else { input1 }
     }
   }
 
@@ -434,16 +407,11 @@ case class MinOf(left: Expression, right: Expression)
   override def eval(input: InternalRow): Any = {
     val input1 = left.eval(input)
     val input2 = right.eval(input)
-    if (input1 == null) {
-      input2
-    } else if (input2 == null) {
-      input1
-    } else {
-      if (ordering.compare(input1, input2) < 0) {
-        input1
-      } else {
-        input2
-      }
+    if (input1 == null) { input2 }
+    else if (input2 == null) { input1 }
+    else {
+      if (ordering.compare(input1, input2) < 0) { input1 }
+      else { input2 }
     }
   }
 

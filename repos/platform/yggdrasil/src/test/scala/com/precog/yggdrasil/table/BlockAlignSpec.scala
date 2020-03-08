@@ -81,9 +81,7 @@ trait BlockAlignSpec[M[+_]]
       leftResult <- results._1.toJson
       rightResult <- results._2.toJson
       leftResult2 <- results._1.toJson
-    } yield {
-      (leftResult, rightResult, leftResult2)
-    }
+    } yield { (leftResult, rightResult, leftResult2) }
 
     val (leftResult, rightResult, leftResult2) = finalResults.copoint
 
@@ -353,17 +351,13 @@ trait BlockAlignSpec[M[+_]]
         aligned <- Table.align(ltable, alignOnL, rtable, alignOnR)
         ljson <- aligned._1.toJson
         rjson <- aligned._2.toJson
-      } yield {
-        (ljson, rjson)
-      }).copoint
+      } yield { (ljson, rjson) }).copoint
 
       val (ljsonreversed, rjsonreversed) = (for {
         aligned <- Table.align(rtable, alignOnR, ltable, alignOnL)
         ljson <- aligned._1.toJson
         rjson <- aligned._2.toJson
-      } yield {
-        (ljson, rjson)
-      }).copoint
+      } yield { (ljson, rjson) }).copoint
 
       (ljsonreversed.toList must_== rjsondirect.toList) and
         (rjsonreversed.toList must_== ljsondirect.toList)

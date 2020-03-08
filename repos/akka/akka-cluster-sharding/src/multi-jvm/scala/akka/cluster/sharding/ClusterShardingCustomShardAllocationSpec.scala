@@ -28,9 +28,7 @@ import akka.pattern.ask
 
 object ClusterShardingCustomShardAllocationSpec {
   class Entity extends Actor {
-    def receive = {
-      case id: Int ⇒ sender() ! id
-    }
+    def receive = { case id: Int ⇒ sender() ! id }
   }
 
   val extractEntityId: ShardRegion.ExtractEntityId = {
@@ -38,9 +36,7 @@ object ClusterShardingCustomShardAllocationSpec {
   }
 
   val extractShardId: ShardRegion.ExtractShardId = msg ⇒
-    msg match {
-      case id: Int ⇒ id.toString
-    }
+    msg match { case id: Int ⇒ id.toString }
 
   case object AllocateReq
   case class UseRegion(region: ActorRef)
@@ -195,9 +191,7 @@ abstract class ClusterShardingCustomShardAllocationSpec(
     "setup shared journal" in {
       // start the Persistence extension
       Persistence(system)
-      runOn(first) {
-        system.actorOf(Props[SharedLeveldbStore], "store")
-      }
+      runOn(first) { system.actorOf(Props[SharedLeveldbStore], "store") }
       enterBarrier("peristence-started")
 
       runOn(first, second) {
@@ -225,9 +219,7 @@ abstract class ClusterShardingCustomShardAllocationSpec(
 
       region ! 2
       expectMsg(2)
-      runOn(first) {
-        lastSender.path should be(region.path / "2" / "2")
-      }
+      runOn(first) { lastSender.path should be(region.path / "2" / "2") }
       runOn(second) {
         lastSender.path should be(
           node(first) / "system" / "sharding" / "Entity" / "2" / "2")
@@ -245,9 +237,7 @@ abstract class ClusterShardingCustomShardAllocationSpec(
 
       region ! 3
       expectMsg(3)
-      runOn(second) {
-        lastSender.path should be(region.path / "3" / "3")
-      }
+      runOn(second) { lastSender.path should be(region.path / "3" / "3") }
       runOn(first) {
         lastSender.path should be(
           node(second) / "system" / "sharding" / "Entity" / "3" / "3")

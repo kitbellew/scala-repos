@@ -224,18 +224,13 @@ object FastByteArrayOutput {
       val p = preAlloc
       preAlloc = null
       p
-    } finally {
-      lock.unlock
-    }
+    } finally { lock.unlock }
   }
 
   def set(p: Array[Byte]) = {
     lock.lock
-    try {
-      preAlloc = p
-    } finally {
-      lock.unlock
-    }
+    try { preAlloc = p }
+    finally { lock.unlock }
   }
 
 }
@@ -277,9 +272,7 @@ class FastByteArrayOutput(initialCapacity: Int = 10 * 1024 * 1024)
       idx += size
     }
     //release resources
-    if (preA != null) {
-      FastByteArrayOutput.set(preA)
-    }
+    if (preA != null) { FastByteArrayOutput.set(preA) }
     head = null
     chunks = Nil
     //
@@ -290,9 +283,8 @@ class FastByteArrayOutput(initialCapacity: Int = 10 * 1024 * 1024)
     val avail = head.size - pos
     val need = capacity - avail
     if (need > 0) {
-      if (pos == 0) {
-        head = Array.ofDim[Byte](capacity)
-      } else if (avail > allowedWaste && head.size != chunkSize) {
+      if (pos == 0) { head = Array.ofDim[Byte](capacity) }
+      else if (avail > allowedWaste && head.size != chunkSize) {
         val newHead = Array.ofDim[Byte](math.max(chunkSize, need))
         val off = UnsafeMemory.byteArrayOffset
         UnsafeMemory.unsafe.copyMemory(head, off, newHead, off, pos)

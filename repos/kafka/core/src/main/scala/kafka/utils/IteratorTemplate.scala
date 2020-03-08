@@ -63,9 +63,8 @@ abstract class IteratorTemplate[T]
   def maybeComputeNext(): Boolean = {
     state = FAILED
     nextItem = makeNext()
-    if (state == DONE) {
-      false
-    } else {
+    if (state == DONE) { false }
+    else {
       state = READY
       true
     }
@@ -79,7 +78,5 @@ abstract class IteratorTemplate[T]
   def remove =
     throw new UnsupportedOperationException("Removal not supported")
 
-  protected def resetState() {
-    state = NOT_READY
-  }
+  protected def resetState() { state = NOT_READY }
 }

@@ -111,18 +111,12 @@ object ScalaCalleeMethodsTreeStructure {
         val methodExpression: PsiReferenceExpression =
           callExpression.getMethodExpression
         val method: PsiMethod = methodExpression.resolve.asInstanceOf[PsiMethod]
-        if (method != null) {
-          methods += method
-        }
+        if (method != null) { methods += method }
       case newExpression: PsiNewExpression =>
         val method: PsiMethod = newExpression.resolveConstructor
-        if (method != null) {
-          methods += method
-        }
+        if (method != null) { methods += method }
       case _ =>
     }
-    for (child <- element.getChildren) {
-      visitor(child, methods)
-    }
+    for (child <- element.getChildren) { visitor(child, methods) }
   }
 }

@@ -23,9 +23,7 @@ import net.liftweb.http._
 
 object SkipDocType extends DispatchSnippet {
 
-  def dispatch: DispatchIt = {
-    case _ => render _
-  }
+  def dispatch: DispatchIt = { case _ => render _ }
 
   /**
     * Useful if you need to omit the DocType from the returned html

@@ -104,9 +104,7 @@ trait DashboardService
             respondWithMediaType(`text/plain`) {
               evaluationInstances.get(instanceId).map { i =>
                 complete(i.evaluatorResults)
-              } getOrElse {
-                complete(StatusCodes.NotFound)
-              }
+              } getOrElse { complete(StatusCodes.NotFound) }
             }
           }
         } ~
@@ -115,9 +113,7 @@ trait DashboardService
               respondWithMediaType(`text/html`) {
                 evaluationInstances.get(instanceId).map { i =>
                   complete(i.evaluatorResultsHTML)
-                } getOrElse {
-                  complete(StatusCodes.NotFound)
-                }
+                } getOrElse { complete(StatusCodes.NotFound) }
               }
             }
           } ~
@@ -126,9 +122,7 @@ trait DashboardService
               respondWithMediaType(`application/json`) {
                 evaluationInstances.get(instanceId).map { i =>
                   complete(i.evaluatorResultsJSON)
-                } getOrElse {
-                  complete(StatusCodes.NotFound)
-                }
+                } getOrElse { complete(StatusCodes.NotFound) }
               }
             }
           } ~
@@ -138,15 +132,11 @@ trait DashboardService
                 respondWithMediaType(`application/json`) {
                   evaluationInstances.get(instanceId).map { i =>
                     complete(i.evaluatorResultsJSON)
-                  } getOrElse {
-                    complete(StatusCodes.NotFound)
-                  }
+                  } getOrElse { complete(StatusCodes.NotFound) }
                 }
               }
             }
           }
       } ~
-      pathPrefix("assets") {
-        getFromResourceDirectory("assets")
-      }
+      pathPrefix("assets") { getFromResourceDirectory("assets") }
 }

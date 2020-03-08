@@ -430,9 +430,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       if (batcher.batchesCoveredBy(readTimespan) == Empty()) {
         Left(List(
           "readTimespan is not convering at least one batch: " + readTimespan.toString))
-      } else {
-        Right(())
-      }
+      } else { Right(()) }
     }
 
   /**

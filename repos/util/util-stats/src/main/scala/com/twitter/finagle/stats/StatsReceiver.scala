@@ -109,9 +109,7 @@ trait StatsReceiver { self =>
     */
   def provideGauge(name: String*)(f: => Float): Unit = {
     val gauge = addGauge(name: _*)(f)
-    StatsReceiver.synchronized {
-      StatsReceiver.immortalGauges ::= gauge
-    }
+    StatsReceiver.synchronized { StatsReceiver.immortalGauges ::= gauge }
   }
 
   /**

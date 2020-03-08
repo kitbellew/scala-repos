@@ -57,9 +57,7 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(bkm.getMinDivisibleClusterSize === 2.0)
     assert(bkm.getSeed === 123)
 
-    intercept[IllegalArgumentException] {
-      new BisectingKMeans().setK(1)
-    }
+    intercept[IllegalArgumentException] { new BisectingKMeans().setK(1) }
 
     intercept[IllegalArgumentException] {
       new BisectingKMeans().setMinDivisibleClusterSize(0)

@@ -780,9 +780,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
               synthCatchAll)
 
             if (toHoist isEmpty) matchRes else Block(toHoist, matchRes)
-          } else {
-            codegen.matcher(scrut, scrutSym, pt)(Nil, matchFailGen)
-          }
+          } else { codegen.matcher(scrut, scrutSym, pt)(Nil, matchFailGen) }
         }
       }
 
@@ -793,9 +791,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
       currentOwner = origOwner
 
       override def traverse(t: Tree) {
-        if (t != EmptyTree && t.pos == NoPosition) {
-          t.setPos(pos)
-        }
+        if (t != EmptyTree && t.pos == NoPosition) { t.setPos(pos) }
         t match {
           case Function(_, _) if t.symbol == NoSymbol =>
             t.symbol = currentOwner.newAnonymousFunctionValue(t.pos)

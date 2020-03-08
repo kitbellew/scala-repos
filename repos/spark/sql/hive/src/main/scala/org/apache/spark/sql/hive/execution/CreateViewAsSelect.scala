@@ -80,12 +80,8 @@ private[hive] case class CreateViewAsSelect(
   private def prepareTable(sqlContext: SQLContext): CatalogTable = {
     val expandedText = if (sqlContext.conf.canonicalView) {
       try rebuildViewQueryString(sqlContext)
-      catch {
-        case NonFatal(e) => wrapViewTextWithSelect
-      }
-    } else {
-      wrapViewTextWithSelect
-    }
+      catch { case NonFatal(e) => wrapViewTextWithSelect }
+    } else { wrapViewTextWithSelect }
 
     val viewSchema = {
       if (tableDesc.schema.isEmpty) {
@@ -113,14 +109,11 @@ private[hive] case class CreateViewAsSelect(
     // we need, to make us more robust to top level `*`s.
     val viewOutput = {
       val columnNames = childSchema.map(f => quote(f.name))
-      if (tableDesc.schema.isEmpty) {
-        columnNames.mkString(", ")
-      } else {
+      if (tableDesc.schema.isEmpty) { columnNames.mkString(", ") }
+      else {
         columnNames
           .zip(tableDesc.schema.map(f => quote(f.name)))
-          .map {
-            case (name, alias) => s"$name AS $alias"
-          }
+          .map { case (name, alias) => s"$name AS $alias" }
           .mkString(", ")
       }
     }
@@ -131,9 +124,8 @@ private[hive] case class CreateViewAsSelect(
   }
 
   private def rebuildViewQueryString(sqlContext: SQLContext): String = {
-    val logicalPlan = if (tableDesc.schema.isEmpty) {
-      child
-    } else {
+    val logicalPlan = if (tableDesc.schema.isEmpty) { child }
+    else {
       val projectList = childSchema.zip(tableDesc.schema).map {
         case (attr, col) => Alias(attr, col.name)()
       }

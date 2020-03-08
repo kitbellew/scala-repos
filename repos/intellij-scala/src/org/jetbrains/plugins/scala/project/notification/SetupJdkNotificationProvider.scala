@@ -65,9 +65,7 @@ object SetupJdkNotificationProvider {
     panel.createActionLabel(
       "Setup JDK",
       new Runnable {
-        override def run() {
-          setupSdk(project, file)
-        }
+        override def run() { setupSdk(project, file) }
       })
     panel
   }
@@ -76,9 +74,7 @@ object SetupJdkNotificationProvider {
     Option(ProjectSettingsService.getInstance(project).chooseAndSetSdk())
       .foreach { projectSdk =>
         Option(ModuleUtilCore.findModuleForPsiElement(file)).foreach { module =>
-          inWriteAction {
-            ModuleRootModificationUtil.setSdkInherited(module)
-          }
+          inWriteAction { ModuleRootModificationUtil.setSdkInherited(module) }
         }
       }
   }

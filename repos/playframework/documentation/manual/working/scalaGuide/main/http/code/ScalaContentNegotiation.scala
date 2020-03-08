@@ -45,9 +45,7 @@ package scalaguide.http.scalacontentnegotiation {
           def ??? = Ok("ok")
           //#extract_custom_accept_type
           val AcceptsMp3 = Accepting("audio/mp3")
-          render {
-            case AcceptsMp3() => ???
-          }
+          render { case AcceptsMp3() => ??? }
         }
         //#extract_custom_accept_type
 

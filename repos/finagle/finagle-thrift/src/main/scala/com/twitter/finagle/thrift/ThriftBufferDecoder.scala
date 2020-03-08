@@ -40,10 +40,7 @@ private[thrift] class ThriftBufferDecoder(protocolFactory: TProtocolFactory)
       buffer: ChannelBuffer,
       state: VoidEnum
   ) =
-    try {
-      decode(ctx, channel, buffer, state)
-    } catch {
-      case _: TTransportException => null
-    }
+    try { decode(ctx, channel, buffer, state) }
+    catch { case _: TTransportException => null }
 
 }

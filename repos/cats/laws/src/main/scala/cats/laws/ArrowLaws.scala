@@ -52,5 +52,7 @@ trait ArrowLaws[F[_, _]]
 
 object ArrowLaws {
   def apply[F[_, _]](implicit ev: Arrow[F]): ArrowLaws[F] =
-    new ArrowLaws[F] { def F: Arrow[F] = ev }
+    new ArrowLaws[F] {
+      def F: Arrow[F] = ev
+    }
 }

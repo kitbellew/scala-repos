@@ -191,17 +191,13 @@ class Scaladoc extends ScalaMatchingTask {
     *
     *  @param input A reference to an origin path.
     */
-  def setSrcref(input: Reference) {
-    createSrc().setRefid(input)
-  }
+  def setSrcref(input: Reference) { createSrc().setRefid(input) }
 
   /** Sets the `destdir` attribute. Used by [[http://ant.apache.org Ant]].
     *
     *  @param input The value of `destination`.
     */
-  def setDestdir(input: File) {
-    destination = Some(input)
-  }
+  def setDestdir(input: File) { destination = Some(input) }
 
   /** Sets the `classpath` attribute. Used by [[http://ant.apache.org Ant]].
     *
@@ -299,25 +295,19 @@ class Scaladoc extends ScalaMatchingTask {
     *
     *  @param input A reference to an extensions path.
     */
-  def setExtdirsref(input: Reference) {
-    createExtdirs().setRefid(input)
-  }
+  def setExtdirsref(input: Reference) { createExtdirs().setRefid(input) }
 
   /** Sets the `encoding` attribute. Used by Ant.
     *
     *  @param input The value of `encoding`.
     */
-  def setEncoding(input: String) {
-    encoding = Some(input)
-  }
+  def setEncoding(input: String) { encoding = Some(input) }
 
   /** Sets the `docgenerator` attribute.
     *
     *  @param input A fully qualified class name of a doclet.
     */
-  def setDocgenerator(input: String) {
-    docgenerator = Some(input)
-  }
+  def setDocgenerator(input: String) { docgenerator = Some(input) }
 
   /**
     * Sets the `docrootcontent` attribute.
@@ -325,49 +315,37 @@ class Scaladoc extends ScalaMatchingTask {
     * @param input The file from which the documentation content of the root
     * package will be taken.
     */
-  def setDocrootcontent(input: File) {
-    docrootcontent = Some(input)
-  }
+  def setDocrootcontent(input: File) { docrootcontent = Some(input) }
 
   /** Sets the `docversion` attribute.
     *
     *  @param input The value of `docversion`.
     */
-  def setDocversion(input: String) {
-    docversion = Some(input)
-  }
+  def setDocversion(input: String) { docversion = Some(input) }
 
   /** Sets the `docsourceurl` attribute.
     *
     *  @param input The value of `docsourceurl`.
     */
-  def setDocsourceurl(input: String) {
-    docsourceurl = Some(input)
-  }
+  def setDocsourceurl(input: String) { docsourceurl = Some(input) }
 
   /** Sets the `doctitle` attribute.
     *
     *  @param input The value of `doctitle`.
     */
-  def setDoctitle(input: String) {
-    doctitle = Some(input)
-  }
+  def setDoctitle(input: String) { doctitle = Some(input) }
 
   /** Sets the `docfooter` attribute.
     *
     *  @param input The value of `docfooter`.
     */
-  def setDocfooter(input: String) {
-    docfooter = Some(input)
-  }
+  def setDocfooter(input: String) { docfooter = Some(input) }
 
   /** Set the `addparams` info attribute.
     *
     *  @param input The value for `addparams`.
     */
-  def setAddparams(input: String) {
-    addParams = input
-  }
+  def setAddparams(input: String) { addParams = input }
 
   /** Set the `deprecation` info attribute.
     *
@@ -391,9 +369,7 @@ class Scaladoc extends ScalaMatchingTask {
       buildError("Unknown unchecked flag '" + input + "'")
   }
 
-  def setDocUncompilable(input: String) {
-    docUncompilable = Some(input)
-  }
+  def setDocUncompilable(input: String) { docUncompilable = Some(input) }
 
   /** Set the `nofail` info attribute.
     *

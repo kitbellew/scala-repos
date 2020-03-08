@@ -56,9 +56,7 @@ abstract class ClusterMetricsSpec
     }
     "reflect the correct number of node metrics in cluster view" taggedAs LongRunningTest in within(
       30 seconds) {
-      runOn(second) {
-        cluster.leave(first)
-      }
+      runOn(second) { cluster.leave(first) }
       enterBarrier("first-left")
       runOn(second, third, fourth, fifth) {
         markNodeAsUnavailable(first)

@@ -51,9 +51,7 @@ class MenuBar(override val delegate: jfxsc.MenuBar = new jfxsc.MenuBar())
   /**
     * Sets the list of Menus for this instance.
     */
-  def menus_=(c: Iterable[Menu]) {
-    fillSFXCollection(this.menus, c)
-  }
+  def menus_=(c: Iterable[Menu]) { fillSFXCollection(this.menus, c) }
 
   /**
     * Gets the useSystemMenuBar for this instance.
@@ -63,8 +61,6 @@ class MenuBar(override val delegate: jfxsc.MenuBar = new jfxsc.MenuBar())
   /**
     * Sets the useSystemMenuBar for this instance.
     */
-  def useSystemMenuBar_=(v: Boolean) {
-    useSystemMenuBar() = v
-  }
+  def useSystemMenuBar_=(v: Boolean) { useSystemMenuBar() = v }
 
 }

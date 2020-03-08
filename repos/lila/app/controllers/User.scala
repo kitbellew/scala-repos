@@ -252,9 +252,9 @@ object User extends LilaController {
         ) flatMap { followables =>
           (ops zip followables).map {
             case ((u, nb), followable) =>
-              ctx.userId ?? {
-                relationApi.fetchRelation(_, u.id)
-              } map { lila.relation.Related(u, nb.some, followable, _) }
+              ctx.userId ?? { relationApi.fetchRelation(_, u.id) } map {
+                lila.relation.Related(u, nb.some, followable, _)
+              }
           }.sequenceFu map { relateds => html.user.opponents(user, relateds) }
         }
       }

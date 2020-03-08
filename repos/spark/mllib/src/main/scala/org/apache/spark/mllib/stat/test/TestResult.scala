@@ -66,9 +66,7 @@ trait TestResult[DF] {
       s"Strong presumption against null hypothesis: $nullHypothesis."
     } else if (0.05 < pValue && pValue <= 0.1) {
       s"Low presumption against null hypothesis: $nullHypothesis."
-    } else {
-      s"No presumption against null hypothesis: $nullHypothesis."
-    }
+    } else { s"No presumption against null hypothesis: $nullHypothesis." }
 
     s"degrees of freedom = ${degreesOfFreedom.toString} \n" +
       s"statistic = $statistic \n" +

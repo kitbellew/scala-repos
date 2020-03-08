@@ -71,9 +71,7 @@ object Covariant {
   }
 
   abstract class T[+A] {
-    val x: T[A] {
-      val m: A => A
-    }
+    val x: T[A] { val m: A => A }
   }
   object ST extends T[String] {
     val x: T[String] { val m: String => String } = ST

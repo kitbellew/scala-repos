@@ -82,9 +82,7 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
   private def expandInteraction(
       schema: StructType,
       terms: Seq[InteractableTerm]): Seq[Seq[String]] = {
-    if (terms.isEmpty) {
-      return Seq(Nil)
-    }
+    if (terms.isEmpty) { return Seq(Nil) }
 
     val rest = expandInteraction(schema, terms.tail)
     val validInteractions = (terms.head match {

@@ -129,9 +129,7 @@ abstract class ClusterMetricsEnabledSpec
     }
     "reflect the correct number of node metrics in cluster view" in within(
       30 seconds) {
-      runOn(node2) {
-        cluster.leave(node1)
-      }
+      runOn(node2) { cluster.leave(node1) }
       enterBarrier("first-left")
       runOn(node2, node3, node4, node5) {
         markNodeAsUnavailable(node1)

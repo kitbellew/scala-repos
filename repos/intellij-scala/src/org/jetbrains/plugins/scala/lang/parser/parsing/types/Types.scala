@@ -19,14 +19,11 @@ object Types extends ParserNode {
     var isTuple = false
 
     def typesParse() =
-      if (ParamType.parseInner(builder)) {
-        true
-      } else if (builder.getTokenType == ScalaTokenTypes.tUNDER) {
+      if (ParamType.parseInner(builder)) { true }
+      else if (builder.getTokenType == ScalaTokenTypes.tUNDER) {
         builder.advanceLexer()
         true
-      } else {
-        false
-      }
+      } else { false }
 
     val typesMarker = builder.mark
     if (!typesParse) {

@@ -104,11 +104,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
       "which are only flagged as dirty_? when setBox is called with a different value" in {
         field.clear
         field match {
-          case owned: OwnedField[_] =>
-            owned.owner.runSafe {
-              field.resetDirty
-            }
-          case _ => field.resetDirty
+          case owned: OwnedField[_] => owned.owner.runSafe { field.resetDirty }
+          case _                    => field.resetDirty
         }
         field.dirty_? must_== false
         val valueBox = field.valueBox
@@ -128,9 +125,7 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
     }
 
     "support mandatory fields" in {
-      "which are configured correctly" in {
-        mandatory.optional_? must_== false
-      }
+      "which are configured correctly" in { mandatory.optional_? must_== false }
 
       "which initialize to some value" in {
         mandatory.valueBox.isDefined must_== true
@@ -155,9 +150,7 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
           legacyOptional.optional_? must_== true
         }
 
-        "which initialize to Empty" in {
-          legacyOptional.valueBox must_== Empty
-        }
+        "which initialize to Empty" in { legacyOptional.valueBox must_== Empty }
 
         "common behaviors for all flavors" in {
           commonBehaviorsForAllFlavors(legacyOptional)

@@ -44,9 +44,7 @@ object CSSHelpers extends ControlHelpers {
       while ({ line = reader.readLine(); line != null }) {
         res append line + "\n"
       }
-    } finally {
-      reader close
-    }
+    } finally { reader close }
     val str = res toString;
     (CSSParser(rootPrefix).fixCSS(str), str);
   }
@@ -80,9 +78,7 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
 
       def walk(in: Input)(f: Char => Boolean): Input = {
         var seq = in
-        while (!seq.atEnd && !f(seq first)) {
-          seq = seq rest
-        }
+        while (!seq.atEnd && !f(seq first)) { seq = seq rest }
         seq rest
       }
 
@@ -130,11 +126,8 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
 
   def fullUrl(innerUrl: Parser[String], quoteString: String): Parser[String] = {
     val escapedPrefix =
-      if (quoteString.isEmpty) {
-        prefix
-      } else {
-        prefix.replace(quoteString, "\\" + quoteString)
-      }
+      if (quoteString.isEmpty) { prefix }
+      else { prefix.replace(quoteString, "\\" + quoteString) }
 
     // do the parsing per CSS spec http://www.w3.org/TR/REC-CSS2/syndata.html#uri section 4.3.4
     spaces ~> innerUrl <~ (spaces <~ elem(')')) ^^ {
@@ -142,11 +135,8 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
         val trimmedPath = urlPath.trim
 
         val updatedPath =
-          if (trimmedPath.charAt(0) == '/') {
-            escapedPrefix + trimmedPath
-          } else {
-            trimmedPath
-          }
+          if (trimmedPath.charAt(0) == '/') { escapedPrefix + trimmedPath }
+          else { trimmedPath }
 
         quoteString + updatedPath + quoteString + ")"
       }

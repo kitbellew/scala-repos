@@ -20,17 +20,13 @@ class BinaryMoveTimeTest extends Specification {
 
   "binary move times" should {
     "write" in {
-      write(Vector(1, 10, 100, 5)) must_== {
-        "00000010" :: "10100001" :: Nil
-      }
+      write(Vector(1, 10, 100, 5)) must_== { "00000010" :: "10100001" :: Nil }
       write(Vector(1, 10, 100, 5, 600)) must_== {
         "00000010" :: "10100001" :: "11110000" :: Nil
       }
     }
     "read" in {
-      read("00000010" :: "10100001" :: Nil) must_== {
-        Vector(1, 10, 100, 5)
-      }
+      read("00000010" :: "10100001" :: Nil) must_== { Vector(1, 10, 100, 5) }
       read("00000010" :: "10100001" :: "11110000" :: Nil) must_== {
         Vector(1, 10, 100, 5, 600, 1)
       }

@@ -30,9 +30,7 @@ class StopwatchSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(sw.name === "sw")
     assert(sw.elapsed() === 0L)
     assert(!sw.isRunning)
-    intercept[AssertionError] {
-      sw.stop()
-    }
+    intercept[AssertionError] { sw.stop() }
     val duration = checkStopwatch(sw)
     val elapsed = sw.elapsed()
     assert(elapsed === duration)
@@ -42,9 +40,7 @@ class StopwatchSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(sw.toString === s"sw: ${elapsed2}ms")
     sw.start()
     assert(sw.isRunning)
-    intercept[AssertionError] {
-      sw.start()
-    }
+    intercept[AssertionError] { sw.start() }
   }
 
   test("LocalStopwatch") {
@@ -73,9 +69,7 @@ class StopwatchSuite extends SparkFunSuite with MLlibTestSparkContext {
       .addDistributed("spark")
     assert(sw("local").name === "local")
     assert(sw("spark").name === "spark")
-    intercept[NoSuchElementException] {
-      sw("some")
-    }
+    intercept[NoSuchElementException] { sw("some") }
     assert(sw.toString === "{\n  local: 0ms,\n  spark: 0ms\n}")
     val localDuration = checkStopwatch(sw("local"))
     val sparkDuration = checkStopwatch(sw("spark"))

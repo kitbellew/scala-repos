@@ -338,13 +338,9 @@ class SingleConsumerOnlyMailboxVerificationSpec
 
   "A SingleConsumerOnlyMailbox" should {
     "support pathological ping-ponging for the unbounded case" in within(
-      30.seconds) {
-      pathologicalPingPong("test-unbounded-dispatcher")
-    }
+      30.seconds) { pathologicalPingPong("test-unbounded-dispatcher") }
 
     "support pathological ping-ponging for the bounded case" in within(
-      30.seconds) {
-      pathologicalPingPong("test-bounded-dispatcher")
-    }
+      30.seconds) { pathologicalPingPong("test-bounded-dispatcher") }
   }
 }

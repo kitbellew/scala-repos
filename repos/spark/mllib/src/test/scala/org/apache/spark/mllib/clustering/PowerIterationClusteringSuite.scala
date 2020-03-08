@@ -92,11 +92,8 @@ class PowerIterationClusteringSuite
 
     val edges = similarities.flatMap {
       case (i, j, s) =>
-        if (i != j) {
-          Seq(Edge(i, j, s), Edge(j, i, s))
-        } else {
-          None
-        }
+        if (i != j) { Seq(Edge(i, j, s), Edge(j, i, s)) }
+        else { None }
     }
     val graph = Graph.fromEdges(sc.parallelize(edges, 2), 0.0)
 
@@ -182,9 +179,7 @@ class PowerIterationClusteringSuite
       model.save(sc, path)
       val sameModel = PowerIterationClusteringModel.load(sc, path)
       PowerIterationClusteringSuite.checkEqual(model, sameModel)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally { Utils.deleteRecursively(tempDir) }
   }
 }
 
@@ -207,9 +202,7 @@ object PowerIterationClusteringSuite extends SparkFunSuite {
     val bAssignments = b.assignments.map(x => (x.id, x.cluster))
     val unequalElements = aAssignments
       .join(bAssignments)
-      .filter {
-        case (id, (c1, c2)) => c1 != c2
-      }
+      .filter { case (id, (c1, c2)) => c1 != c2 }
       .count()
     assert(unequalElements === 0L)
   }

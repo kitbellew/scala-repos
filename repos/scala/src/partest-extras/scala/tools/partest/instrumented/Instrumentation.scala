@@ -63,9 +63,7 @@ object Instrumentation {
 
   def getStatistics: Statistics = {
     val isProfiling = Profiler.isProfiling()
-    if (isProfiling) {
-      Profiler.stopProfiling()
-    }
+    if (isProfiling) { Profiler.stopProfiling() }
     val stats = Profiler.getStatistics().asScala.toSeq.map {
       case (trace, count) =>
         MethodCallTrace(
@@ -74,9 +72,7 @@ object Instrumentation {
           trace.methodDescriptor) -> count.intValue
     }
     val res = Map(stats: _*)
-    if (isProfiling) {
-      Profiler.startProfiling()
-    }
+    if (isProfiling) { Profiler.startProfiling() }
     res
   }
 
@@ -96,9 +92,7 @@ object Instrumentation {
     val toBePrinted = stats.toSeq.filter(p => filter(p._1)).sortBy(_._1)
     // <count> <trace>
     val format = "%5d  %s\n"
-    toBePrinted foreach {
-      case (trace, count) => printf(format, count, trace)
-    }
+    toBePrinted foreach { case (trace, count) => printf(format, count, trace) }
   }
 
 }

@@ -62,11 +62,8 @@ class OccurrenceData(
     extendedClassOccurrence: Array[ScTypeElement],
     isReplaceInExtendedClasses: Boolean) {
   def getUsualOccurrences = {
-    if (isReplaceAllUsual) {
-      usualOccurrence
-    } else {
-      Array(typeElement)
-    }
+    if (isReplaceAllUsual) { usualOccurrence }
+    else { Array(typeElement) }
   }
 
   def getCompanionObjOccurrences =
@@ -83,10 +80,7 @@ class OccurrenceData(
   private def getOccurrences(
       occ: Array[ScTypeElement],
       needAll: Boolean): Array[ScTypeElement] = {
-    if (needAll) {
-      occ
-    } else {
-      Array[ScTypeElement]()
-    }
+    if (needAll) { occ }
+    else { Array[ScTypeElement]() }
   }
 }

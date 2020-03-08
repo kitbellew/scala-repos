@@ -20,9 +20,8 @@ package object financial {
       presentValue: Double,
       when: PaymentTime = End): Double = {
     require(numPeriods >= 0)
-    if (rate == 0) {
-      -1 * (presentValue + payment * numPeriods)
-    } else {
+    if (rate == 0) { -1 * (presentValue + payment * numPeriods) }
+    else {
       val fromPv = presentValue * math.pow(1.0 + rate, numPeriods)
       val fromPayments = payment * ((1.0 + rate * when.t) / rate) * (math.pow(
         1.0 + rate,
@@ -38,9 +37,8 @@ package object financial {
       futureValue: Double,
       when: PaymentTime = End): Double = {
     require(numPeriods >= 0)
-    if (rate == 0) {
-      -1 * (futureValue + payment * numPeriods)
-    } else {
+    if (rate == 0) { -1 * (futureValue + payment * numPeriods) }
+    else {
       val denominator = math.pow(1.0 + rate, numPeriods)
       val fromPayments = payment * ((1.0 + rate * when.t) / rate) * (math.pow(
         1.0 + rate,
@@ -83,9 +81,8 @@ package object financial {
       presentValue: Double,
       futureValue: Double = 0.0,
       when: PaymentTime = End): Double = {
-    if (rate == 0) {
-      -1 * (futureValue + presentValue) / numPeriods
-    } else {
+    if (rate == 0) { -1 * (futureValue + presentValue) / numPeriods }
+    else {
       val denominator = ((1.0 + rate * when.t) / rate) * (math.pow(
         1.0 + rate,
         numPeriods) - 1.0)
@@ -171,17 +168,13 @@ package object financial {
       }
 
       complexEig
-    } else {
-      DenseVector.zeros[Complex](N + 1)
-    }
+    } else { DenseVector.zeros[Complex](N + 1) }
     //pading 0 to the end
     val fullRoots = if (0 < trailingZeros) {
       DenseVector.vertcat(
         complexRoots,
         DenseVector.zeros[Complex](trailingZeros))
-    } else {
-      complexRoots
-    }
+    } else { complexRoots }
     fullRoots
   }
 
@@ -199,11 +192,8 @@ package object financial {
     )
     val rates = realRes.mapValues(v => 1.0 / v - 1.0)
 
-    val rate = if (rates.length <= 0) {
-      None
-    } else {
-      Option[Double](rates(argmin(abs(rates))))
-    }
+    val rate = if (rates.length <= 0) { None }
+    else { Option[Double](rates(argmin(abs(rates)))) }
     rate
   }
 
@@ -237,9 +227,8 @@ package object financial {
       when: PaymentTime = End) = {
     require(pmt != 0, "The payment of annuity(pmt) can not be zero!")
 
-    val nper = if (0 == rate) {
-      (-fv + pv) / pmt;
-    } else {
+    val nper = if (0 == rate) { (-fv + pv) / pmt; }
+    else {
       val z = pmt * (1.0 + rate * when.t) / rate
       log((z - fv) / (z + pv)) / log(1.0 + rate)
     }

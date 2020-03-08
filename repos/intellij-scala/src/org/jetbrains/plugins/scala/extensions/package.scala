@@ -63,9 +63,7 @@ package object extensions {
       hasNoParams && hasQueryLikeName && !hasVoidReturnType
     }
 
-    def isMutator: Boolean = {
-      hasVoidReturnType || hasMutatorLikeName
-    }
+    def isMutator: Boolean = { hasVoidReturnType || hasMutatorLikeName }
 
     def hasQueryLikeName = {
       def startsWith(name: String, prefix: String) =
@@ -429,11 +427,7 @@ package object extensions {
     CommandProcessor.getInstance.executeCommand(
       project,
       new Runnable {
-        def run() {
-          inWriteAction {
-            body
-          }
-        }
+        def run() { inWriteAction { body } }
       },
       commandName,
       null)
@@ -517,26 +511,21 @@ package object extensions {
 
   def invokeLater[T](body: => T) {
     ApplicationManager.getApplication.invokeLater(new Runnable {
-      def run() {
-        body
-      }
+      def run() { body }
     })
   }
 
   def invokeAndWait[T](body: => Unit) {
     preservingControlFlow {
       SwingUtilities.invokeAndWait(new Runnable {
-        def run() {
-          body
-        }
+        def run() { body }
       })
     }
   }
 
   private def preservingControlFlow(body: => Unit) {
-    try {
-      body
-    } catch {
+    try { body }
+    catch {
       case e: InvocationTargetException =>
         e.getTargetException match {
           case control: NonLocalReturnControl[_] => throw control
@@ -606,19 +595,13 @@ package object extensions {
   }
 
   def using[A <: Closeable, B](resource: A)(block: A => B): B = {
-    try {
-      block(resource)
-    } finally {
-      if (resource != null) resource.close()
-    }
+    try { block(resource) }
+    finally { if (resource != null) resource.close() }
   }
 
   def using[B](source: Source)(block: Source => B): B = {
-    try {
-      block(source)
-    } finally {
-      source.close()
-    }
+    try { block(source) }
+    finally { source.close() }
   }
 
   val ChildOf = Parent

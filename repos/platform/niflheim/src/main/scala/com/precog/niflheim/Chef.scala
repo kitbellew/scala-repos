@@ -63,9 +63,7 @@ final case class Chef(blockFormat: CookedBlockFormat, format: SegmentFormat)
           format.writer.writeSegment(channel, seg) map { _ =>
             (seg.id, relativized)
           }
-        } finally {
-          channel.close()
-        }
+        } finally { channel.close() }
       result.toValidationNel
     }
 
@@ -81,9 +79,7 @@ final case class Chef(blockFormat: CookedBlockFormat, format: SegmentFormat)
         blockFormat.writeCookedBlock(channel, metadata).toValidationNel.map {
           _: PrecogUnit => new File(mdFile.getName)
         }
-      } finally {
-        channel.close()
-      }
+      } finally { channel.close() }
     }
   }
 

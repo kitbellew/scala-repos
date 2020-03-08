@@ -36,14 +36,10 @@ trait CanTraverseValues[From, A] {
     traverse(
       from,
       new ValuesVisitor[A] {
-        override def visit(a: A): Unit = {
-          bb = fn(bb, a)
-        }
+        override def visit(a: A): Unit = { bb = fn(bb, a) }
 
         override def zeros(numZero: Int, zeroValue: A): Unit = {
-          for (i <- 0 until numZero) {
-            bb = fn(bb, zeroValue)
-          }
+          for (i <- 0 until numZero) { bb = fn(bb, zeroValue) }
         }
       }
     )
@@ -111,9 +107,7 @@ object CanTraverseValues {
       override def traverse(
           from: X,
           fn: CanTraverseValues.ValuesVisitor[V]): Unit = {
-        for (v <- from) {
-          fn.visit(v)
-        }
+        for (v <- from) { fn.visit(v) }
       }
 
       def isTraversableAgain(from: X): Boolean = from.isTraversableAgain
@@ -128,9 +122,7 @@ trait LowPrioCanTraverseValues { this: CanTraverseValues.type =>
       /** Traverses all values from the given collection. */
       override def traverse(
           from: V,
-          fn: CanTraverseValues.ValuesVisitor[V]): Unit = {
-        fn.visit(from)
-      }
+          fn: CanTraverseValues.ValuesVisitor[V]): Unit = { fn.visit(from) }
 
       def isTraversableAgain(from: V): Boolean = true
     }

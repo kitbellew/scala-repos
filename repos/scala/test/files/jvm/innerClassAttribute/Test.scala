@@ -8,9 +8,7 @@ object Test extends BytecodeTest {
   // Helpful for debugging the test:
   // println(new java.io.File(classpath.asURLs.head.toURI).list().sorted.mkString("\n"))
 
-  def assertSame(a: Any, b: Any) = {
-    assert(a == b, s"\na: $a\nb: $b")
-  }
+  def assertSame(a: Any, b: Any) = { assert(a == b, s"\na: $a\nb: $b") }
 
   val publicStatic = Flags.ACC_PUBLIC | Flags.ACC_STATIC
   val publicAbstractInterface =
@@ -128,9 +126,7 @@ object Test extends BytecodeTest {
     assertMember(b2, "A3", "B2$", flags = publicStatic)
   }
 
-  def testA4() = {
-    testInner("A4", methodHandlesLookup)
-  }
+  def testA4() = { testInner("A4", methodHandlesLookup) }
 
   def testA5() = {
     val List(b1) = innerClassNodes("A5")
@@ -147,18 +143,14 @@ object Test extends BytecodeTest {
     assertMember(tt2, "A6", "TT", flags = publicAbstractInterface)
   }
 
-  def testA7() = {
-    val List() = innerClassNodes("A7")
-  }
+  def testA7() = { val List() = innerClassNodes("A7") }
 
   def testA8() = {
     val List(tt) = innerClassNodes("A8")
     assertMember(tt, "A6", "TT", flags = publicAbstractInterface)
   }
 
-  def testA10() = {
-    val List() = innerClassNodes("A10")
-  }
+  def testA10() = { val List() = innerClassNodes("A10") }
 
   def testA11() = {
     val List(ann) = innerClassNodes("A11")
@@ -242,13 +234,9 @@ object Test extends BytecodeTest {
     assertEnclosingMethod("A18$B$4", "A18", "g$1", "()V")
   }
 
-  def testA19() = {
-    testInner("A19", methodHandlesLookup)
-  }
+  def testA19() = { testInner("A19", methodHandlesLookup) }
 
-  def testA20() = {
-    testInner("A20", methodHandlesLookup)
-  }
+  def testA20() = { testInner("A20", methodHandlesLookup) }
 
   def testA21() = {
     val List(i1c, i2c, i3c, j1) = innerClassNodes("A21")

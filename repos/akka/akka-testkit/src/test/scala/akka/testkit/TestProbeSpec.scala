@@ -44,9 +44,7 @@ class TestProbeSpec extends AkkaSpec with DefaultTimeout {
     }
 
     def assertFailureMessageContains(expectedHint: String)(block: ⇒ Unit) {
-      Try {
-        block
-      } match {
+      Try { block } match {
         case scala.util.Failure(e: AssertionError) ⇒
           if (!(e.getMessage contains expectedHint))
             fail(

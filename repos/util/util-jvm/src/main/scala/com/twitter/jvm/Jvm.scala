@@ -164,9 +164,8 @@ trait Jvm {
 
       for (gc @ Gc(count, name, _, _) <- gcs) {
         val lastCount = lastByName.get(name)
-        if (lastCount == null) {
-          f(gc)
-        } else if (lastCount != count) {
+        if (lastCount == null) { f(gc) }
+        else if (lastCount != count) {
           missedCollections += count - 1 - lastCount
           if (missedCollections > 0 && Time.now - lastLog > LogPeriod) {
             if (log.isLoggable(Level.FINE)) {
@@ -185,7 +184,9 @@ trait Jvm {
     }
 
     executor.scheduleAtFixedRate(
-      new Runnable { def run() = sample() },
+      new Runnable {
+        def run() = sample()
+      },
       0 /*initial delay*/,
       Period.inMilliseconds,
       TimeUnit.MILLISECONDS)
@@ -263,9 +264,7 @@ object Jvm {
 
   private lazy val _jvm =
     try new Hotspot
-    catch {
-      case NonFatal(_) => NilJvm
-    }
+    catch { case NonFatal(_) => NilJvm }
 
   private val log = Logger.getLogger(getClass.getName)
 

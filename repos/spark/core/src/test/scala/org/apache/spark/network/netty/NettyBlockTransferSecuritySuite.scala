@@ -154,15 +154,11 @@ class NettyBlockTransferSecuritySuite
       new BlockFetchingListener {
         override def onBlockFetchFailure(
             blockId: String,
-            exception: Throwable): Unit = {
-          promise.failure(exception)
-        }
+            exception: Throwable): Unit = { promise.failure(exception) }
 
         override def onBlockFetchSuccess(
             blockId: String,
-            data: ManagedBuffer): Unit = {
-          promise.success(data.retain())
-        }
+            data: ManagedBuffer): Unit = { promise.success(data.retain()) }
       }
     )
 

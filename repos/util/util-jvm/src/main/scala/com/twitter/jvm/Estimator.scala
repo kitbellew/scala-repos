@@ -87,9 +87,7 @@ class KalmanGaussianError(N: Int, range: Double)
   require(range >= 0d && range < 1d)
   private[this] val rng = new Random
 
-  def measure(m: Double) {
-    measure(m, rng.nextGaussian() * range * m)
-  }
+  def measure(m: Double) { measure(m, rng.nextGaussian() * range * m) }
 }
 
 /**

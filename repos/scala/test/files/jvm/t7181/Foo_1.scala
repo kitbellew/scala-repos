@@ -3,9 +3,8 @@ class Exception2 extends RuntimeException
 
 class Foo_1 {
   def foo(baz: Baz) {
-    try {
-      baz.bar
-    } catch {
+    try { baz.bar }
+    catch {
       case _: Exception1 => println("exception 1")
       case _: Exception2 => println("exception 2")
     } finally {

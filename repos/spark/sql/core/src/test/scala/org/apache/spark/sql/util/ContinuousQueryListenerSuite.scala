@@ -136,9 +136,7 @@ class ContinuousQueryListenerSuite
       sqlContext.streams.removeListener(listener1)
       assert(isListenerActive(listener1) === false)
       assert(isListenerActive(listener2) === true)
-    } finally {
-      addedListeners.foreach(sqlContext.streams.removeListener)
-    }
+    } finally { addedListeners.foreach(sqlContext.streams.removeListener) }
   }
 
   test("event ordering") {
@@ -167,9 +165,7 @@ class ContinuousQueryListenerSuite
         sqlContext.streams.addListener(listener)
         body
       }
-    } finally {
-      sqlContext.streams.removeListener(listener)
-    }
+    } finally { sqlContext.streams.removeListener(listener) }
   }
 
   private def addedListeners(): Array[ContinuousQueryListener] = {
@@ -205,9 +201,7 @@ class ContinuousQueryListenerSuite
     }
 
     override def onQueryStarted(queryStarted: QueryStarted): Unit = {
-      asyncTestWaiter {
-        startStatus = QueryStatus(queryStarted.query)
-      }
+      asyncTestWaiter { startStatus = QueryStatus(queryStarted.query) }
     }
 
     override def onQueryProgress(queryProgress: QueryProgress): Unit = {

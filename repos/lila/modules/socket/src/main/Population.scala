@@ -11,9 +11,7 @@ private[socket] final class Population extends Actor {
 
   bus.subscribe(self, 'socketDoor)
 
-  override def postStop() {
-    bus.unsubscribe(self)
-  }
+  override def postStop() { bus.unsubscribe(self) }
 
   def receive = {
 

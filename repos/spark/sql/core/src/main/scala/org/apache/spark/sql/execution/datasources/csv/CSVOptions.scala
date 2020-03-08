@@ -47,9 +47,8 @@ private[sql] class CSVOptions(
     paramValue match {
       case None => default
       case Some(value) =>
-        try {
-          value.toInt
-        } catch {
+        try { value.toInt }
+        catch {
           case e: NumberFormatException =>
             throw new RuntimeException(
               s"$paramName should be an integer. Found $value")
@@ -59,13 +58,9 @@ private[sql] class CSVOptions(
 
   private def getBool(paramName: String, default: Boolean = false): Boolean = {
     val param = parameters.getOrElse(paramName, default.toString)
-    if (param.toLowerCase == "true") {
-      true
-    } else if (param.toLowerCase == "false") {
-      false
-    } else {
-      throw new Exception(s"$paramName flag can be true or false")
-    }
+    if (param.toLowerCase == "true") { true }
+    else if (param.toLowerCase == "false") { false }
+    else { throw new Exception(s"$paramName flag can be true or false") }
   }
 
   val delimiter = CSVTypeCast.toChar(

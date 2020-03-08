@@ -41,9 +41,7 @@ object Externalizables {
 
     // TODO: abort if T not a tuple type
 
-    val targs = tag.tpe match {
-      case TypeRef(_, _, args) => args
-    }
+    val targs = tag.tpe match { case TypeRef(_, _, args) => args }
 
     // extract argument trees of `arg` tuple (to avoid allocating and destructuring a tuple)
     // note: passing a tuple created using `->` doesn't work
@@ -165,9 +163,7 @@ object Externalizables {
 
     // TODO: abort if T not a tuple type
 
-    val targs = tag.tpe match {
-      case TypeRef(_, _, args) => args
-    }
+    val targs = tag.tpe match { case TypeRef(_, _, args) => args }
 
     /* see java.io.DataOutput:
        writeBoolean(boolean v)
@@ -206,9 +202,8 @@ object Externalizables {
     def writeTree(is: List[Int], tpeName: String): Tree = {
       val fldName = newTermName(tpeName + "Arr")
       if (is.isEmpty) q"???"
-      else if (is.size == 1) {
-        q"{ state += 1; $fldName(0) = x }"
-      } else if (is.size == 2) {
+      else if (is.size == 1) { q"{ state += 1; $fldName(0) = x }" }
+      else if (is.size == 2) {
         q"""
           state += 1
           if (state == ${is.head}) $fldName(0) = x

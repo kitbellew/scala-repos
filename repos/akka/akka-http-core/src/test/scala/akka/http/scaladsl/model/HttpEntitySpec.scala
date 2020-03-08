@@ -37,9 +37,7 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
 
   "HttpEntity" - {
     "support dataBytes" - {
-      "Strict" in {
-        Strict(tpe, abc) must collectBytesTo(abc)
-      }
+      "Strict" in { Strict(tpe, abc) must collectBytesTo(abc) }
       "Default" in {
         Default(tpe, 11, source(abc, de, fgh, ijk)) must collectBytesTo(
           abc,
@@ -73,9 +71,7 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
       }
     }
     "support contentLength" - {
-      "Strict" in {
-        Strict(tpe, abc).contentLengthOption mustEqual Some(3)
-      }
+      "Strict" in { Strict(tpe, abc).contentLengthOption mustEqual Some(3) }
       "Default" in {
         Default(
           tpe,
@@ -97,9 +93,7 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
       }
     }
     "support toStrict" - {
-      "Strict" in {
-        Strict(tpe, abc) must strictifyTo(Strict(tpe, abc))
-      }
+      "Strict" in { Strict(tpe, abc) must strictifyTo(Strict(tpe, abc)) }
       "Default" in {
         Default(tpe, 11, source(abc, de, fgh, ijk)) must
           strictifyTo(Strict(tpe, abc ++ de ++ fgh ++ ijk))

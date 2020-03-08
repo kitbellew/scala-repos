@@ -59,11 +59,8 @@ private[util] trait Props extends Logger {
       before + lookedUp + after
     }
 
-    if (interpolated.isEmpty) {
-      value.toString
-    } else {
-      interpolated.mkString
-    }
+    if (interpolated.isEmpty) { value.toString }
+    else { interpolated.mkString }
   }
 
   // def apply(name: String): String = props(name)
@@ -397,9 +394,7 @@ private[util] trait Props extends Logger {
     first(vendStreams) {
       case (str, streamBox) =>
         tried ::= str
-        for {
-          stream <- streamBox()
-        } yield {
+        for { stream <- streamBox() } yield {
           val ret = new Properties
           val ba = Helpers.readWholeStream(stream)
           try {

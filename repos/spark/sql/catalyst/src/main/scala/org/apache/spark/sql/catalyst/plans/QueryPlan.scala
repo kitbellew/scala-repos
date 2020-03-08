@@ -161,9 +161,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
 
     @inline def transformExpressionDown(e: Expression): Expression = {
       val newE = e.transformDown(rule)
-      if (newE.fastEquals(e)) {
-        e
-      } else {
+      if (newE.fastEquals(e)) { e }
+      else {
         changed = true
         newE
       }
@@ -196,9 +195,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
 
     @inline def transformExpressionUp(e: Expression): Expression = {
       val newE = e.transformUp(rule)
-      if (newE.fastEquals(e)) {
-        e
-      } else {
+      if (newE.fastEquals(e)) { e }
+      else {
         changed = true
         newE
       }

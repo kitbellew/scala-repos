@@ -71,9 +71,7 @@ class TestSealedExhaustive { // compile only
   sealed class B
   case class B1() extends B
   case object B2 extends B
-  def ma8(x: B) = x match {
-    case _: B => true
-  }
+  def ma8(x: B) = x match { case _: B => true }
   def ma9(x: B) = x match {
     case B1() => true // missing B, which is not abstract so must be included
     case B2   => true

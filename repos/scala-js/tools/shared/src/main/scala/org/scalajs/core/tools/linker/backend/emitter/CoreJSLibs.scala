@@ -79,9 +79,7 @@ private[scalajs] object CoreJSLibs {
           skipDepth -= 1
           if (skipDepth == 0)
             skipping = false
-        } else if (line.startsWith("//!if ")) {
-          skipDepth += 1
-        }
+        } else if (line.startsWith("//!if ")) { skipDepth += 1 }
         false
       } else {
         if (line.startsWith("//!")) {
@@ -101,13 +99,9 @@ private[scalajs] object CoreJSLibs {
             skipDepth = 1
           } else if (line == "//!endif") {
             // nothing to do
-          } else {
-            throw new MatchError(line)
-          }
+          } else { throw new MatchError(line) }
           false
-        } else {
-          true
-        }
+        } else { true }
       }
       if (includeThisLine) line
       else "" // blank line preserves line numbers in source maps

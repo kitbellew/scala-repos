@@ -32,13 +32,9 @@ class PrimitiveVectorSuite extends SparkFunSuite {
 
     assert(vector.size === 1000)
     assert(vector.size == vector.length)
-    intercept[IllegalArgumentException] {
-      vector(1000)
-    }
+    intercept[IllegalArgumentException] { vector(1000) }
 
-    for (i <- 0 until 1000) {
-      assert(vector(i) == i)
-    }
+    for (i <- 0 until 1000) { assert(vector(i) == i) }
   }
 
   test("non-primitive value") {
@@ -51,13 +47,9 @@ class PrimitiveVectorSuite extends SparkFunSuite {
 
     assert(vector.size === 1000)
     assert(vector.size == vector.length)
-    intercept[IllegalArgumentException] {
-      vector(1000)
-    }
+    intercept[IllegalArgumentException] { vector(1000) }
 
-    for (i <- 0 until 1000) {
-      assert(vector(i) == i.toString)
-    }
+    for (i <- 0 until 1000) { assert(vector(i) == i.toString) }
   }
 
   test("ideal growth") {
@@ -75,9 +67,7 @@ class PrimitiveVectorSuite extends SparkFunSuite {
 
   test("ideal size") {
     val vector = new PrimitiveVector[Long](8192)
-    for (i <- 0 until 8192) {
-      vector += i
-    }
+    for (i <- 0 until 8192) { vector += i }
     assert(vector.size === 8192)
     assert(vector.capacity === 8192)
     val actualSize = SizeEstimator.estimate(vector)
@@ -89,9 +79,7 @@ class PrimitiveVectorSuite extends SparkFunSuite {
 
   test("resizing") {
     val vector = new PrimitiveVector[Long]
-    for (i <- 0 until 4097) {
-      vector += i
-    }
+    for (i <- 0 until 4097) { vector += i }
     assert(vector.size === 4097)
     assert(vector.capacity === 8192)
     vector.trim()
@@ -106,11 +94,7 @@ class PrimitiveVectorSuite extends SparkFunSuite {
     vector.resize(5000)
     assert(vector.size === 4000)
     assert(vector.capacity === 5000)
-    for (i <- 0 until 4000) {
-      assert(vector(i) == i)
-    }
-    intercept[IllegalArgumentException] {
-      vector(4000)
-    }
+    for (i <- 0 until 4000) { assert(vector(i) == i) }
+    intercept[IllegalArgumentException] { vector(4000) }
   }
 }

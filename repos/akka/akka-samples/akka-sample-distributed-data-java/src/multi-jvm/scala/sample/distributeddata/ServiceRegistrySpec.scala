@@ -29,9 +29,7 @@ object ServiceRegistrySpec extends MultiNodeConfig {
     """))
 
   class Service extends Actor {
-    def receive = {
-      case s: String ⇒ sender() ! self.path.name + ": " + s
-    }
+    def receive = { case s: String ⇒ sender() ! self.path.name + ": " + s }
   }
 
 }
@@ -53,9 +51,7 @@ class ServiceRegistrySpec
   val registry = system.actorOf(ServiceRegistry.props)
 
   def join(from: RoleName, to: RoleName): Unit = {
-    runOn(from) {
-      cluster join node(to).address
-    }
+    runOn(from) { cluster join node(to).address }
     enterBarrier(from.name + "-joined")
   }
 

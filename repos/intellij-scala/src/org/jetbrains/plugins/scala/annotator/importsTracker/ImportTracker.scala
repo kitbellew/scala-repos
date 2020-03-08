@@ -16,9 +16,7 @@ import scala.collection.mutable.ArrayBuffer
 class ImportTracker {
   def registerUsedImports(file: ScalaFile, used: Set[ImportUsed]) {
     val refHolder = ScalaRefCountHolder.getInstance(file)
-    for (imp <- used) {
-      refHolder.registerImportUsed(imp)
-    }
+    for (imp <- used) { refHolder.registerImportUsed(imp) }
   }
 
   def getUnusedImport(file: ScalaFile): Array[ImportUsed] = {

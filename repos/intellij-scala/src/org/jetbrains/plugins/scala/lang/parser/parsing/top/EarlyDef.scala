@@ -49,16 +49,11 @@ object EarlyDef {
                 subparse
               }
               case _ => {
-                if (builder.newlineBeforeCurrentToken) {
-                  subparse
-                } else {
-                  false
-                }
+                if (builder.newlineBeforeCurrentToken) { subparse }
+                else { false }
               }
             }
-          } else {
-            false
-          }
+          } else { false }
       }
     }
     if (!subparse) {

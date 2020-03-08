@@ -75,11 +75,8 @@ object PcgXshRr64_32 extends GeneratorCompanion[PcgXshRr64_32, PcgSeed64] {
   private[this] def nextStreamId(): Long = {
     val current = streamUniquifier.get()
     val next = current * 181783497276652981L
-    if (streamUniquifier.compareAndSet(current, next)) {
-      next
-    } else {
-      nextStreamId()
-    }
+    if (streamUniquifier.compareAndSet(current, next)) { next }
+    else { nextStreamId() }
   }
 }
 

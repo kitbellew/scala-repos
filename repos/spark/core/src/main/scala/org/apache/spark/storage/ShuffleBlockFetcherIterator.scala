@@ -135,9 +135,7 @@ private[spark] final class ShuffleBlockFetcherIterator(
     * Mark the iterator as zombie, and release all buffers that haven't been deserialized yet.
     */
   private[this] def cleanup() {
-    synchronized {
-      isZombie = true
-    }
+    synchronized { isZombie = true }
     releaseCurrentResultBuffer()
     // Release buffers in the results queue
     val iter = results.iterator()

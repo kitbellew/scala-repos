@@ -19,9 +19,7 @@ class NotifyLaunchQueueStepImplTest
     with GivenWhenThen
     with Mockito
     with ScalaFutures {
-  test("name") {
-    new Fixture().step.name should equal("notifyLaunchQueue")
-  }
+  test("name") { new Fixture().step.name should equal("notifyLaunchQueue") }
 
   test("notifying launch queue") {
     val f = new Fixture

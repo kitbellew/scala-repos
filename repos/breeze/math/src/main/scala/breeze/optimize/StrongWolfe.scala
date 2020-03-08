@@ -121,9 +121,7 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
 
           // Zoom exit condition is the "curvature" condition
           // Essentially that the directional derivative is large enough
-          if (abs(c.dd) <= c2 * abs(dd)) {
-            return c.t
-          }
+          if (abs(c.dd) <= c2 * abs(dd)) { return c.t }
 
           // If the signs don't coincide, flip left to right before updating l to c
           if (c.dd * (hi.t - low.t) >= 0) {
@@ -165,9 +163,7 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
 
         // We don't need to zoom at all
         // if the strong wolfe condition is satisfied already.
-        if (abs(c.dd) <= c2 * abs(dd)) {
-          return c.t
-        }
+        if (abs(c.dd) <= c2 * abs(dd)) { return c.t }
 
         // If c.dd is positive, we zoom on the inverted interval.
         // Occurs if we skipped over the nearest local minimum

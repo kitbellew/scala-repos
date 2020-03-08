@@ -26,9 +26,8 @@ class IteratorTemplateTest extends Assertions {
   val iterator = new IteratorTemplate[Int]() {
     var i = 0
     override def makeNext() = {
-      if (i >= lst.size) {
-        allDone()
-      } else {
+      if (i >= lst.size) { allDone() }
+      else {
         val item = lst(i)
         i += 1
         item
@@ -55,12 +54,8 @@ class IteratorTemplateTest extends Assertions {
         iterator.next)
     }
     assertEquals("All gone!", false, iterator.hasNext)
-    intercept[NoSuchElementException] {
-      iterator.peek
-    }
-    intercept[NoSuchElementException] {
-      iterator.next
-    }
+    intercept[NoSuchElementException] { iterator.peek }
+    intercept[NoSuchElementException] { iterator.next }
   }
 
 }

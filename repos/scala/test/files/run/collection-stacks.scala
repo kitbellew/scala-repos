@@ -11,9 +11,7 @@ object Test extends App {
     immutable.Stack.empty[T] pushAll xs
   }
 
-  def check[T](expected: T, got: T) {
-    println(got + ": " + (expected == got))
-  }
+  def check[T](expected: T, got: T) { println(got + ": " + (expected == got)) }
 
   // check #957
   check("3-2-1", immutableStack(1, 2, 3).iterator.mkString("-"))

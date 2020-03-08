@@ -31,13 +31,9 @@ private[spark] class MutableURLClassLoader(
     parent: ClassLoader)
     extends URLClassLoader(urls, parent) {
 
-  override def addURL(url: URL): Unit = {
-    super.addURL(url)
-  }
+  override def addURL(url: URL): Unit = { super.addURL(url) }
 
-  override def getURLs(): Array[URL] = {
-    super.getURLs()
-  }
+  override def getURLs(): Array[URL] = { super.getURLs() }
 
 }
 
@@ -66,15 +62,12 @@ private[spark] class ChildFirstURLClassLoader(
     if (lock == null) {
       val newLock = new Object()
       lock = locks.putIfAbsent(name, newLock)
-      if (lock == null) {
-        lock = newLock
-      }
+      if (lock == null) { lock = newLock }
     }
 
     lock.synchronized {
-      try {
-        super.loadClass(name, resolve)
-      } catch {
+      try { super.loadClass(name, resolve) }
+      catch {
         case e: ClassNotFoundException =>
           parentClassLoader.loadClass(name, resolve)
       }
@@ -93,8 +86,6 @@ private[spark] class ChildFirstURLClassLoader(
     (childUrls ++ parentUrls).asJavaEnumeration
   }
 
-  override def addURL(url: URL) {
-    super.addURL(url)
-  }
+  override def addURL(url: URL) { super.addURL(url) }
 
 }

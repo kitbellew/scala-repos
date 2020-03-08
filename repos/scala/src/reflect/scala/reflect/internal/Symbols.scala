@@ -651,9 +651,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     /** Given a field, construct a term symbol that represents the source construct that gave rise the field */
     def sugaredSymbolOrSelf = {
       val getter = getterIn(owner)
-      if (getter == NoSymbol) {
-        this
-      } else {
+      if (getter == NoSymbol) { this }
+      else {
         val result = owner
           .newValue(
             getter.name.toTermName,
@@ -1644,9 +1643,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       val ob1 = other.accessBoundary(owner)
       val ob2 = ob1.linkedClassOfClass
       var o = tb
-      while (o != NoSymbol && o != ob1 && o != ob2) {
-        o = o.owner
-      }
+      while (o != NoSymbol && o != ob1 && o != ob2) { o = o.owner }
       o != NoSymbol && o != tb
     }
 
@@ -1867,9 +1864,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
                 if (itr.pid == NoPhase.id) curPeriod
                 else period(currentRunId, itr.pid)
             }
-          } finally {
-            phase = current
-          }
+          } finally { phase = current }
         }
       }
       infos.info
@@ -1878,9 +1873,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     // adapt to new run in fsc.
     private def adaptInfos(infos: TypeHistory): TypeHistory = {
       assert(isCompilerUniverse)
-      if (infos == null || runId(infos.validFrom) == currentRunId) {
-        infos
-      } else if (infos ne infos.oldest) {
+      if (infos == null || runId(infos.validFrom) == currentRunId) { infos }
+      else if (infos ne infos.oldest) {
         // SI-8871 Discard all but the first element of type history. Specialization only works in the resident
         // compiler / REPL if re-run its info transformer in this run to correctly populate its
         // per-run caches, e.g. typeEnv
@@ -2344,9 +2338,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
         enteringPhase(picklerPhase)(owner.info)
           .decl(name)
           .suchThat(!_.isAccessor)
-      } else {
-        localField
-      }
+      } else { localField }
     }
 
     /** The module corresponding to this module class (note that this
@@ -2464,15 +2456,13 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
     /** The top-level class containing this symbol. */
     def enclosingTopLevelClass: Symbol =
-      if (isTopLevel) {
-        if (isClass) this else moduleClass
-      } else owner.enclosingTopLevelClass
+      if (isTopLevel) { if (isClass) this else moduleClass }
+      else owner.enclosingTopLevelClass
 
     /** The top-level class or local dummy symbol containing this symbol. */
     def enclosingTopLevelClassOrDummy: Symbol =
-      if (isTopLevel) {
-        if (isClass) this else moduleClass.orElse(this)
-      } else owner.enclosingTopLevelClassOrDummy
+      if (isTopLevel) { if (isClass) this else moduleClass.orElse(this) }
+      else owner.enclosingTopLevelClassOrDummy
 
     /** Is this symbol defined in the same scope and compilation unit as `that` symbol? */
     def isCoDefinedWith(that: Symbol) = (
@@ -3187,9 +3177,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     override def expandName(base: Symbol) {
       if (!hasFlag(EXPANDEDNAME)) {
         setFlag(EXPANDEDNAME)
-        if (hasAccessorFlag && !isDeferred) {
-          accessed.expandName(base)
-        } else if (hasGetter) {
+        if (hasAccessorFlag && !isDeferred) { accessed.expandName(base) }
+        else if (hasGetter) {
           getterIn(owner).expandName(base)
           setterIn(owner).expandName(base)
         }

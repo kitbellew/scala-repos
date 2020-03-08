@@ -179,9 +179,8 @@ trait PullRequestService { self: IssuesService =>
       toBranch: String,
       fromBranch: String,
       commitId: String)(implicit s: Session): Option[(PullRequest, Issue)] = {
-    if (toBranch == fromBranch) {
-      None
-    } else {
+    if (toBranch == fromBranch) { None }
+    else {
       PullRequests
         .innerJoin(Issues)
         .on { (t1, t2) =>

@@ -49,16 +49,12 @@ abstract class Control(override val delegate: jfxsc.Control)
     */
   def contextMenu: ObjectProperty[jfxsc.ContextMenu] =
     delegate.contextMenuProperty
-  def contextMenu_=(v: ContextMenu) {
-    contextMenu() = v
-  }
+  def contextMenu_=(v: ContextMenu) { contextMenu() = v }
 
   /**
     * The ToolTip for this control.
     */
   def tooltip: ObjectProperty[jfxsc.Tooltip] = delegate.tooltipProperty
-  def tooltip_=(v: Tooltip) {
-    tooltip() = v
-  }
+  def tooltip_=(v: Tooltip) { tooltip() = v }
 
 }

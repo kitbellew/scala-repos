@@ -40,20 +40,15 @@ class JsonLine(p: String, fields: Fields, failOnEmptyLines: Boolean)
       failOnEmptyLines = failOnEmptyLines)
 
 class JsonLineJob(args: Args) extends Job(args) {
-  try {
-    Tsv("input0", ('query, 'queryStats)).read.write(JsonLine("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  try { Tsv("input0", ('query, 'queryStats)).read.write(JsonLine("output0")) }
+  catch { case e: Exception => e.printStackTrace() }
 }
 
 class JsonLineRestrictedFieldsJob(args: Args) extends Job(args) {
   try {
     Tsv("input0", ('query, 'queryStats)).read
       .write(JsonLine("output0", Tuple1('query)))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 class JsonLineInputJob(args: Args) extends Job(args) {
@@ -62,9 +57,7 @@ class JsonLineInputJob(args: Args) extends Job(args) {
       .project('foo, 'bar)
       .write(Tsv("output0"))
 
-  } catch {
-    case e: Exception => e.printStackTrace
-  }
+  } catch { case e: Exception => e.printStackTrace }
 }
 
 class JsonLineInputJobSkipEmptyLines(args: Args) extends Job(args) {
@@ -73,9 +66,7 @@ class JsonLineInputJobSkipEmptyLines(args: Args) extends Job(args) {
       .project('foo, 'bar)
       .write(Tsv("output0"))
 
-  } catch {
-    case e: Exception => e.printStackTrace
-  }
+  } catch { case e: Exception => e.printStackTrace }
 }
 
 class JsonLineNestedInputJob(args: Args) extends Job(args) {
@@ -85,9 +76,7 @@ class JsonLineNestedInputJob(args: Args) extends Job(args) {
       .project('foo, 'bar)
       .write(Tsv("output0"))
 
-  } catch {
-    case e: Exception => e.printStackTrace
-  }
+  } catch { case e: Exception => e.printStackTrace }
 }
 
 class JsonLineTest extends WordSpec {
@@ -126,9 +115,7 @@ class JsonLineTest extends WordSpec {
     JobTest(new JsonLineInputJob(_))
       .source(JsonLine("input0", ('foo, 'bar)), List((0, json)))
       .sink[(Int, String)](Tsv("output0")) { outBuf =>
-        "read json line input" in {
-          assert(outBuf.toList === List((3, "baz")))
-        }
+        "read json line input" in { assert(outBuf.toList === List((3, "baz"))) }
       }
       .run
       .finish

@@ -999,9 +999,7 @@ private[spark] object JsonProtocolSuite extends Assertions {
     if (opt1.isDefined) {
       assert(opt2.isDefined)
       assertEquals(opt1.get, opt2.get)
-    } else {
-      assert(!opt2.isDefined)
-    }
+    } else { assert(!opt2.isDefined) }
   }
 
   /**
@@ -1009,15 +1007,11 @@ private[spark] object JsonProtocolSuite extends Assertions {
     */
   private def assertShuffleReadEquals(
       r1: ShuffleReadMetrics,
-      r2: ShuffleReadMetrics) {
-    assertEquals(r1, r2)
-  }
+      r2: ShuffleReadMetrics) { assertEquals(r1, r2) }
 
   private def assertShuffleWriteEquals(
       w1: ShuffleWriteMetrics,
-      w2: ShuffleWriteMetrics) {
-    assertEquals(w1, w2)
-  }
+      w2: ShuffleWriteMetrics) { assertEquals(w1, w2) }
 
   private def assertInputMetricsEquals(i1: InputMetrics, i2: InputMetrics) {
     assertEquals(i1, i2)
@@ -1035,15 +1029,11 @@ private[spark] object JsonProtocolSuite extends Assertions {
 
   private def assertBlockEquals(
       b1: (BlockId, BlockStatus),
-      b2: (BlockId, BlockStatus)) {
-    assert(b1 === b2)
-  }
+      b2: (BlockId, BlockStatus)) { assert(b1 === b2) }
 
   private def assertStackTraceElementEquals(
       ste1: StackTraceElement,
-      ste2: StackTraceElement) {
-    assert(ste1 === ste2)
-  }
+      ste2: StackTraceElement) { assert(ste1 === ste2) }
 
   /** ----------------------------------- *
    | Util methods for constructing events |

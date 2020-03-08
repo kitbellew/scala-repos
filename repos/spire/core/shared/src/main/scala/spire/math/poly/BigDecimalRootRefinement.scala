@@ -226,9 +226,7 @@ object BigDecimalRootRefinement {
         // is actually in the sub interval (l, r).
         val poly0 = shift(shift(poly, l), (r - l).reciprocal)
         poly0.signVariations % 2 == 1
-      } else {
-        false
-      }
+      } else { false }
 
     // QIR expects that (lx,rx) contain exactly 1 root and that they evaluate
     // to different, non-zero signs. However, we may find 1 or both of the
@@ -273,11 +271,8 @@ object BigDecimalRootRefinement {
           // We've managed to overshoot the actual root, but since we're still
           // "in-bounds", we know it's in either the left cut off bit or the
           // right.
-          if (hasRoot(lowerBound, qlx)) {
-            BoundedLeft(lowerBound, lb)
-          } else {
-            BoundedRight(ub, upperBound)
-          }
+          if (hasRoot(lowerBound, qlx)) { BoundedLeft(lowerBound, lb) }
+          else { BoundedRight(ub, upperBound) }
         } else {
           // Yay! We've successfully approximated the lower/upper bounds with
           // big decimal, while keeping the root within (lx, rx).
@@ -318,9 +313,8 @@ object BigDecimalRootRefinement {
       val dx = rx.subtract(lx)
       val scale = max(getEps(lx), getEps(rx))
       val eps = JBigDecimal.valueOf(1, scale)
-      if (dx.compareTo(eps) <= 0) {
-        Bounded(lx, ly, rx, ry, n)
-      } else {
+      if (dx.compareTo(eps) <= 0) { Bounded(lx, ly, rx, ry, n) }
+      else {
         val dy = ly.subtract(ry)
         val s = ly.divide(dy, n, RoundingMode.HALF_UP) // BAM!
         val delta = dx.multiply(s.ulp)
@@ -342,9 +336,7 @@ object BigDecimalRootRefinement {
           if (s0 == s1) loop0(lx, ly, rx, ry)
           else if (s0 == ly.sign) loop(x0, y0, x1, y1, 2 * n)
           else ExactRoot(x0)
-        } else {
-          ExactRoot(x1)
-        }
+        } else { ExactRoot(x1) }
       }
     }
 
@@ -388,9 +380,8 @@ object BigDecimalRootRefinement {
           bisect(x0, y0, x1, y1, x2, y2)
         } else {
           val (x3, y3) = eval(3)
-          if (y3.sign == y5.sign) {
-            loop(x2, y2, x3, y3, 1)
-          } else {
+          if (y3.sign == y5.sign) { loop(x2, y2, x3, y3, 1) }
+          else {
             val (x4, y4) = eval(4)
             bisect(x3, y3, x4, y4, x5, y5)
           }
@@ -402,9 +393,8 @@ object BigDecimalRootRefinement {
           bisect(x3, y3, x4, y4, x5, y5)
         } else {
           val (x2, y2) = eval(2)
-          if (y2.sign == y0.sign) {
-            loop(x2, y2, x3, y3, 1)
-          } else {
+          if (y2.sign == y0.sign) { loop(x2, y2, x3, y3, 1) }
+          else {
             val (x1, y1) = eval(1)
             bisect(x0, y0, x1, y1, x2, y2)
           }
@@ -417,11 +407,8 @@ object BigDecimalRootRefinement {
     val rx = upperBound
     val ry = upperBoundValue
 
-    if (n0 <= 0) {
-      loop0(lx, ly, rx, ry)
-    } else {
-      loop(lx, ly, rx, ry, n0)
-    }
+    if (n0 <= 0) { loop0(lx, ly, rx, ry) }
+    else { loop(lx, ly, rx, ry, n0) }
   }
   // scalastyle:on method.length
 }

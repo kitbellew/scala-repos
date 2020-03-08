@@ -18,9 +18,7 @@ abstract class LocalSchedulerTest(lifo: Boolean) extends FunSuite {
 
   test("run the first submitter immediately") {
     var ok = false
-    submit {
-      ok = true
-    }
+    submit { ok = true }
     assert(ok)
   }
 
@@ -46,9 +44,7 @@ abstract class LocalSchedulerTest(lifo: Boolean) extends FunSuite {
     var ran = Nil: List[Int]
     submit {
       for (which <- 0 until N)
-        submit {
-          ran ::= which
-        }
+        submit { ran ::= which }
     }
     if (lifo)
       assert(ran == (0 until N))

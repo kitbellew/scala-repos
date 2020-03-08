@@ -118,9 +118,7 @@ trait ItemsList[T <: Mapper[T]] {
   /**
     * Adds a new, unsaved item
     */
-  def add {
-    added ::= metaMapper.create
-  }
+  def add { added ::= metaMapper.create }
 
   /**
     * Marks an item pending for removal
@@ -144,9 +142,7 @@ trait ItemsList[T <: Mapper[T]] {
   /**
     * Reloads the contents of 'current' from the database
     */
-  def refresh {
-    current = metaMapper.findAll
-  }
+  def refresh { current = metaMapper.findAll }
 
   /**
     * Sends to the database:
@@ -260,9 +256,8 @@ trait ItemsListEditor[T <: Mapper[T]] {
   def onInsert: Unit = items.add
   def onRemove(item: T): Unit = items.remove(item)
   def onSubmit: Unit =
-    try {
-      items.save
-    } catch {
+    try { items.save }
+    catch {
       case e: java.sql.SQLException =>
         S.error("Not all items could be saved!")
     }
@@ -290,11 +285,8 @@ trait ItemsListEditor[T <: Mapper[T]] {
     val noPrompt = "onclick" -> "safeToContinue=true"
     val optScript =
       if ((items.added.length + items.removed.length == 0) &&
-          items.current.forall(!_.dirty_?)) {
-        NodeSeq.Empty
-      } else {
-        unsavedScript
-      }
+          items.current.forall(!_.dirty_?)) { NodeSeq.Empty }
+      else { unsavedScript }
 
     val bindRemovedItems =
       items.removed.map { item =>

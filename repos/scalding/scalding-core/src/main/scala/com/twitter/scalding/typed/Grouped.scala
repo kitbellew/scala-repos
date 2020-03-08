@@ -364,9 +364,8 @@ case class UnsortedIdentityReduce[K, V1](
     if (n < 1) {
       // This means don't take anything, which is legal, but strange
       filterKeys(_ => false)
-    } else if (n == 1) {
-      head
-    } else {
+    } else if (n == 1) { head }
+    else {
       // By default, there is no ordering. This method is overridden
       // in IdentityValueSortedReduce
       // Note, this is going to bias toward low hashcode items.

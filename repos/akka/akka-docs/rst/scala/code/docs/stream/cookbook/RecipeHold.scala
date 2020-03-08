@@ -30,14 +30,10 @@ object HoldOps {
               pull(in)
             }
 
-            override def onPull(): Unit = {
-              push(out, currentValue)
-            }
+            override def onPull(): Unit = { push(out, currentValue) }
           })
 
-        override def preStart(): Unit = {
-          pull(in)
-        }
+        override def preStart(): Unit = { pull(in) }
       }
 
   }
@@ -76,9 +72,7 @@ object HoldOps {
           }
         )
 
-        override def preStart(): Unit = {
-          pull(in)
-        }
+        override def preStart(): Unit = { pull(in) }
       }
   }
   //#hold-version-2

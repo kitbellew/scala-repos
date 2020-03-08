@@ -422,9 +422,7 @@ abstract class SuperAccessors
             transformArgs(fn.tpe.params, args))
 
         case Function(vparams, body) =>
-          withInvalidOwner {
-            treeCopy.Function(tree, vparams, transform(body))
-          }
+          withInvalidOwner { treeCopy.Function(tree, vparams, transform(body)) }
 
         case _ =>
           super.transform(tree)

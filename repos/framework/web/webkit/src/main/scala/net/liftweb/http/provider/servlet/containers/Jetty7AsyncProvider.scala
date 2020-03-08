@@ -111,9 +111,7 @@ class Jetty7AsyncProvider(req: HTTPRequest) extends ServletAsyncProvider {
           case (r: Req, lr: LiftResponse) => Some(r -> lr)
           case _                          => None
         }
-      } catch {
-        case e: Exception => None
-      }
+      } catch { case e: Exception => None }
     }
 
   def suspend(timeout: Long): RetryState.Value = {

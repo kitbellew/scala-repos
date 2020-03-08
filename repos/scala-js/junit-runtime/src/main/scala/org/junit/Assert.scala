@@ -330,9 +330,7 @@ object Assert {
       val expectedFormatted = formatClassAndValue(expected, expectedString)
       val actualFormatted = formatClassAndValue(actual, actualString)
       s"${formatted}expected: $expectedFormatted but was: $actualFormatted"
-    } else {
-      s"${formatted}expected:<$expectedString> but was:<$actualString>"
-    }
+    } else { s"${formatted}expected:<$expectedString> but was:<$actualString>" }
   }
 
   private def formatClassAndValue(value: Any, valueString: String): String = {

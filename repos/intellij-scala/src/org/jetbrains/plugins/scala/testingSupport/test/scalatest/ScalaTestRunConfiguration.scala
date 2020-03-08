@@ -97,10 +97,7 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
         annotation.isDefined
       case _ => false
     }
-    if (hasConfigMapAnnotation) {
-      lackConfigMapConstructor(clazz)
-    } else {
-      AbstractTestRunConfiguration.lackSuitableConstructor(clazz)
-    }
+    if (hasConfigMapAnnotation) { lackConfigMapConstructor(clazz) }
+    else { AbstractTestRunConfiguration.lackSuitableConstructor(clazz) }
   }
 }

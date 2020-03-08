@@ -33,17 +33,11 @@ class StubApplicationAttemptId(
     applicationId = appID
   }
 
-  override def getAttemptId: Int = {
-    attempt
-  }
+  override def getAttemptId: Int = { attempt }
 
-  override def setAttemptId(attemptId: Int): Unit = {
-    attempt = attemptId
-  }
+  override def setAttemptId(attemptId: Int): Unit = { attempt = attemptId }
 
-  override def getApplicationId: ApplicationId = {
-    applicationId
-  }
+  override def getApplicationId: ApplicationId = { applicationId }
 
   override def build(): Unit = {}
 }

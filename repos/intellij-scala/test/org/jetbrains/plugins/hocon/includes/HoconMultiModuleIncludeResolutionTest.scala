@@ -109,9 +109,7 @@ class HoconMultiModuleIncludeResolutionTest
     super.tearDown()
   }
 
-  def testIncludeFromLibrary(): Unit = {
-    checkFile("modC/src/including.conf")
-  }
+  def testIncludeFromLibrary(): Unit = { checkFile("modC/src/including.conf") }
 
   def testIncludeFromModuleDependency(): Unit = {
     checkFile("modB/src/including.conf")
@@ -121,9 +119,7 @@ class HoconMultiModuleIncludeResolutionTest
     checkFile("modA/src/including.conf")
   }
 
-  def testIncludeInLibrary(): Unit = {
-    checkFile("modC/lib/including.conf")
-  }
+  def testIncludeInLibrary(): Unit = { checkFile("modC/lib/including.conf") }
 
   def testIncludeInLibraryFromModuleDependency(): Unit = {
     checkFile("modB/lib/including.conf")

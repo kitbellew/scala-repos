@@ -45,9 +45,7 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer {
   /**
     * Is it safe to make changes to the record (or should we check access control?)
     */
-  final def safe_? : Boolean = {
-    Safe.safe_?(System.identityHashCode(this))
-  }
+  final def safe_? : Boolean = { Safe.safe_?(System.identityHashCode(this)) }
 
   def runSafe[T](f: => T): T = {
     Safe.runSafe(System.identityHashCode(this))(f)
@@ -56,20 +54,14 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer {
   /**
     * Returns the HTML representation of this Record
     */
-  def toXHtml: NodeSeq = {
-    meta.toXHtml(this)
-  }
+  def toXHtml: NodeSeq = { meta.toXHtml(this) }
 
   /**
     * Validates this Record by calling validators for each field
     *
     * @return a List of FieldError. If this list is empty you can assume that record was validated successfully
     */
-  def validate: List[FieldError] = {
-    runSafe {
-      meta.validate(this)
-    }
-  }
+  def validate: List[FieldError] = { runSafe { meta.validate(this) } }
 
   /**
     * Returns the JSON representation of this record

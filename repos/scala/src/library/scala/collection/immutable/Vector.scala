@@ -269,17 +269,15 @@ final class Vector[+A] private[immutable] (
   }
 
   private def gotoPosWritable(oldIndex: Int, newIndex: Int, xor: Int) =
-    if (dirty) {
-      gotoPosWritable1(oldIndex, newIndex, xor)
-    } else {
+    if (dirty) { gotoPosWritable1(oldIndex, newIndex, xor) }
+    else {
       gotoPosWritable0(newIndex, xor)
       dirty = true
     }
 
   private def gotoFreshPosWritable(oldIndex: Int, newIndex: Int, xor: Int) =
-    if (dirty) {
-      gotoFreshPosWritable1(oldIndex, newIndex, xor)
-    } else {
+    if (dirty) { gotoFreshPosWritable1(oldIndex, newIndex, xor) }
+    else {
       gotoFreshPosWritable0(oldIndex, newIndex, xor)
       dirty = true
     }
@@ -562,9 +560,8 @@ final class Vector[+A] private[immutable] (
 
   // requires structure is at index cutIndex and writable at level 0
   private def cleanLeftEdge(cutIndex: Int) = {
-    if (cutIndex < (1 << 5)) {
-      zeroLeft(display0, cutIndex)
-    } else if (cutIndex < (1 << 10)) {
+    if (cutIndex < (1 << 5)) { zeroLeft(display0, cutIndex) }
+    else if (cutIndex < (1 << 10)) {
       zeroLeft(display0, cutIndex & 0x1f)
       display1 = copyRight(display1, (cutIndex >>> 5))
     } else if (cutIndex < (1 << 15)) {
@@ -589,9 +586,7 @@ final class Vector[+A] private[immutable] (
       display3 = copyRight(display3, (cutIndex >>> 15) & 0x1f)
       display4 = copyRight(display4, (cutIndex >>> 20) & 0x1f)
       display5 = copyRight(display5, (cutIndex >>> 25))
-    } else {
-      throw new IllegalArgumentException()
-    }
+    } else { throw new IllegalArgumentException() }
   }
 
   // requires structure is writable and at index cutIndex
@@ -600,9 +595,8 @@ final class Vector[+A] private[immutable] (
     // we're actually sitting one block left if cutIndex lies on a block boundary
     // this means that we'll end up erasing the whole block!!
 
-    if (cutIndex <= (1 << 5)) {
-      zeroRight(display0, cutIndex)
-    } else if (cutIndex <= (1 << 10)) {
+    if (cutIndex <= (1 << 5)) { zeroRight(display0, cutIndex) }
+    else if (cutIndex <= (1 << 10)) {
       zeroRight(display0, ((cutIndex - 1) & 0x1f) + 1)
       display1 = copyLeft(display1, (cutIndex >>> 5))
     } else if (cutIndex <= (1 << 15)) {
@@ -627,9 +621,7 @@ final class Vector[+A] private[immutable] (
       display3 = copyLeft(display3, (((cutIndex - 1) >>> 15) & 0x1f) + 1)
       display4 = copyLeft(display4, (((cutIndex - 1) >>> 20) & 0x1f) + 1)
       display5 = copyLeft(display5, (cutIndex >>> 25))
-    } else {
-      throw new IllegalArgumentException()
-    }
+    } else { throw new IllegalArgumentException() }
   }
 
   private def requiredDepth(xor: Int) = {
@@ -722,9 +714,7 @@ class VectorIterator[+A](_startIndex: Int, endIndex: Int)
         blockIndex = newBlockIndex
         endLo = math.min(endIndex - blockIndex, 32)
         lo = 0
-      } else {
-        _hasNext = false
-      }
+      } else { _hasNext = false }
     }
 
     res

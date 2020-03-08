@@ -45,9 +45,7 @@ class DefaultCamelTest
 
     when(camel.context.stop()) thenThrow new RuntimeException("context")
     when(camel.template.stop()) thenThrow new RuntimeException("template")
-    val exception = intercept[RuntimeException] {
-      camel.shutdown()
-    }
+    val exception = intercept[RuntimeException] { camel.shutdown() }
 
     "throws exception thrown by context.stop()" in {
       exception.getMessage() should ===("context");
@@ -65,9 +63,7 @@ class DefaultCamelTest
 
     when(camel.template.start()) thenThrow new RuntimeException
 
-    intercept[RuntimeException] {
-      camel.start
-    }
+    intercept[RuntimeException] { camel.start }
 
     verify(camel.context).stop()
 

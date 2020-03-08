@@ -121,9 +121,7 @@ private[hive] class SparkHiveWriterContainer(
     }
   }
 
-  def commitJob() {
-    committer.commitJob(jobContext)
-  }
+  def commitJob() { committer.commitJob(jobContext) }
 
   protected def initWriters() {
     // NOTE this method is executed at the executor side.
@@ -143,9 +141,7 @@ private[hive] class SparkHiveWriterContainer(
   }
 
   def abortTask(): Unit = {
-    if (committer != null) {
-      committer.abortTask(taskContext)
-    }
+    if (committer != null) { committer.abortTask(taskContext) }
     logError(s"Task attempt $taskContext aborted.")
   }
 
@@ -338,9 +334,7 @@ private[spark] class SparkHiveDynamicPartitionWriterContainer(
       try {
         while (sortedIterator.next()) {
           if (currentKey != sortedIterator.getKey) {
-            if (currentWriter != null) {
-              currentWriter.close(false)
-            }
+            if (currentWriter != null) { currentWriter.close(false) }
             currentKey = sortedIterator.getKey.copy()
             logDebug(s"Writing partition: $currentKey")
             currentWriter = newOutputWriter(currentKey)
@@ -348,20 +342,13 @@ private[spark] class SparkHiveDynamicPartitionWriterContainer(
 
           var i = 0
           while (i < fieldOIs.length) {
-            outputData(i) = if (sortedIterator.getValue.isNullAt(i)) {
-              null
-            } else {
-              wrappers(i)(sortedIterator.getValue.get(i, dataTypes(i)))
-            }
+            outputData(i) = if (sortedIterator.getValue.isNullAt(i)) { null }
+            else { wrappers(i)(sortedIterator.getValue.get(i, dataTypes(i))) }
             i += 1
           }
           currentWriter.write(serializer.serialize(outputData, standardOI))
         }
-      } finally {
-        if (currentWriter != null) {
-          currentWriter.close(false)
-        }
-      }
+      } finally { if (currentWriter != null) { currentWriter.close(false) } }
       commit()
     } catch {
       case cause: Throwable =>

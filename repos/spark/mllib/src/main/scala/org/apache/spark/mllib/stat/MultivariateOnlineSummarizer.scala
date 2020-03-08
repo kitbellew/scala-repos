@@ -97,12 +97,8 @@ class MultivariateOnlineSummarizer
     val localCurrMin = currMin
     instance.foreachActive { (index, value) =>
       if (value != 0.0) {
-        if (localCurrMax(index) < value) {
-          localCurrMax(index) = value
-        }
-        if (localCurrMin(index) > value) {
-          localCurrMin(index) = value
-        }
+        if (localCurrMax(index) < value) { localCurrMax(index) = value }
+        if (localCurrMin(index) > value) { localCurrMin(index) = value }
 
         val prevMean = localCurrMean(index)
         val diff = value - prevMean

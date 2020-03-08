@@ -52,13 +52,9 @@ object JavaConversionUtil {
       case _ =>
     }
 
-    if (isStatic) {
-      builder.append("static ")
-    }
+    if (isStatic) { builder.append("static ") }
 
-    if (s.hasModifierProperty("final")) {
-      builder.append("final ")
-    }
+    if (s.hasModifierProperty("final")) { builder.append("final ") }
 
     s.getModifierList.accessModifier match {
       case Some(a) if a.isUnqualifiedPrivateOrThis => builder.append("private ")

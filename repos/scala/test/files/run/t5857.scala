@@ -29,9 +29,7 @@ object Test {
   }
 
   def check[U](b: => U) {
-    val exectime = time {
-      b
-    }
+    val exectime = time { b }
 
     // whatever it is, it should be less than, say, 250ms
     // if `max` involves traversal, it takes over 5 seconds on a 3.2GHz i7 CPU

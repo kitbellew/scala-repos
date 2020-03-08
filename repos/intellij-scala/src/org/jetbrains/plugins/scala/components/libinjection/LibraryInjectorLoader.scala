@@ -40,9 +40,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
 
   class DynamicClassLoader(urls: Array[URL], parent: ClassLoader)
       extends java.net.URLClassLoader(urls, parent) {
-    def addUrl(url: URL) = {
-      super.addURL(url)
-    }
+    def addUrl(url: URL) = { super.addURL(url) }
   }
 
   type AttributedManifest = (JarManifest, Seq[InjectorDescriptor])
@@ -167,9 +165,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
           ScalaPluginVersionVerifier.getPluginVersion.getOrElse(
             Version.Snapshot),
           new util.HashMap())
-    } finally {
-      if (stream != null) stream.close()
-    }
+    } finally { if (stream != null) stream.close() }
   }
 
   private def saveJarCache(c: InjectorPersistentCache, f: File) = {
@@ -181,9 +177,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     } catch {
       case e: Throwable =>
         Error.cacheSaveError(e)
-    } finally {
-      stream.close()
-    }
+    } finally { stream.close() }
   }
 
   private def verifyLibraryCache(
@@ -281,9 +275,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
           loadInjector(manifest, injector)
           numLoaded += 1
         }
-      } else {
-        jarCache.cache.remove(manifest.jarPath)
-      }
+      } else { jarCache.cache.remove(manifest.jarPath) }
     }
     LOG.trace(
       s"Loaded injectors from $numLoaded jars (${cachedProjectJars.size - numLoaded} filtered)")
@@ -391,9 +383,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
         target.createNewFile()
         FileUtil.copy(virtualFile.getInputStream, targetStream)
         target
-      } finally {
-        targetStream.close()
-      }
+      } finally { targetStream.close() }
     }
     if (tmpDir.exists()) {
       val root = VirtualFileManager
@@ -410,12 +400,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
             }
             .getOrElse(Seq.empty)
         })
-      } else {
-        Error.noJarFound(jar)
-      }
-    } else {
-      Error.extractFailed(injectorDescriptor.impl, tmpDir)
-    }
+      } else { Error.noJarFound(jar) }
+    } else { Error.extractFailed(injectorDescriptor.impl, tmpDir) }
   }
 
   private def askUser(candidates: ManifestToDescriptors) = {
@@ -586,11 +572,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   private def runWithHelperModule[T](f: Module => T) = {
     inWriteAction {
       val module = createIdeaModule()
-      try {
-        f(module)
-      } finally {
-        removeIdeaModule()
-      }
+      try { f(module) }
+      finally { removeIdeaModule() }
     }
   }
 

@@ -6,9 +6,7 @@ object Test extends App {
     x
   }
 
-  def bar(g: => Int) = {
-    g _
-  }
+  def bar(g: => Int) = { g _ }
 
   Console.println((bar { Console.println("g called"); 42 })())
   Console.println(foo()())

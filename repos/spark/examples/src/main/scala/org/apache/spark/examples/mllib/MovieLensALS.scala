@@ -134,9 +134,7 @@ object MovieLensALS {
            * are "the same as never having interacted at all".
            */
           Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble - 2.5)
-        } else {
-          Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble)
-        }
+        } else { Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble) }
       }
       .cache()
 
@@ -159,9 +157,7 @@ object MovieLensALS {
        */
       splits(1).map(x =>
         Rating(x.user, x.product, if (x.rating > 0) 1.0 else 0.0))
-    } else {
-      splits(1)
-    }.cache()
+    } else { splits(1) }.cache()
 
     val numTraining = training.count()
     val numTest = test.count()

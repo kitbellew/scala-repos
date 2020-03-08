@@ -21,9 +21,7 @@ object Test extends App {
     printBase64Binary(bos.toByteArray())
   }
 
-  def amend(file: File)(f: String => String) {
-    file.writeAll(f(file.slurp))
-  }
+  def amend(file: File)(f: String => String) { file.writeAll(f(file.slurp)) }
   def quote(s: String) = List("\"", s, "\"").mkString
 
   def patch(file: File, line: Int, prevResult: String, result: String) {

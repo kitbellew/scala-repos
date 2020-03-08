@@ -61,9 +61,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     "not send chunked responses when given a Content-Length" in {
       requestFromServer("/hello") { request => request.get() } {
         case ("GET", "/hello") =>
-          Action {
-            Ok("greetings").withHeaders(CONTENT_LENGTH -> "9")
-          }
+          Action { Ok("greetings").withHeaders(CONTENT_LENGTH -> "9") }
       } { response =>
         response.status must_== 200
         response.header(CONTENT_TYPE) must_== Some("text/plain; charset=UTF-8")
@@ -185,9 +183,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
         def testStartAndStop(i: Int) = {
           val resultString = s"result-$i"
           val app = GuiceApplicationBuilder()
-            .routes {
-              case ("GET", "/") => Action(Ok(resultString))
-            }
+            .routes { case ("GET", "/") => Action(Ok(resultString)) }
             .build()
           val server = TestServer(
             testServerPort,
@@ -197,9 +193,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
           try {
             val response = await(wsUrl("/")(testServerPort).get())
             response.body must_== resultString
-          } finally {
-            server.stop()
-          }
+          } finally { server.stop() }
         }
         // Start and stop the server 20 times
         (0 until 20) must contain { (i: Int) => testStartAndStop(i) }

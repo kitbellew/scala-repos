@@ -151,9 +151,7 @@ private[graphx] class ShippableVertexPartition[VD: ClassTag](
       val vids = new PrimitiveVector[VertexId](routingTable.partitionSize(pid))
       var i = 0
       routingTable.foreachWithinEdgePartition(pid, true, true) { vid =>
-        if (isDefined(vid)) {
-          vids += vid
-        }
+        if (isDefined(vid)) { vids += vid }
         i += 1
       }
       (pid, vids.trim().array)

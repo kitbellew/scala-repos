@@ -66,9 +66,7 @@ trait LocationLineManager {
         if (debugProcess.getVirtualMachineProxy.versionHigher("1.4"))
           refType.locationsOfLine(DebugProcess.JAVA_STRATUM, null, line + 1)
         else refType.locationsOfLine(line + 1)
-      } catch {
-        case aie: AbsentInformationException => return Seq.empty
-      }
+      } catch { case aie: AbsentInformationException => return Seq.empty }
 
     checkAndUpdateCaches(refType)
 
@@ -124,9 +122,7 @@ trait LocationLineManager {
           val bytecodes = location.method().bytecodes()
           val index = location.codeIndex()
           bytecodes(index.toInt) == Opcodes.voidReturn
-        } catch {
-          case e: Throwable => false
-        }
+        } catch { case e: Throwable => false }
       }
 
       def shouldPointAtStartLine(location: Location): Boolean = {
@@ -149,18 +145,14 @@ trait LocationLineManager {
         .methodsByName("<init>")
         .asScala
         .filter(_.declaringType() == refType)
-      for {
-        location <- methods.flatMap(_.allLineLocations().asScala)
-      } {
+      for { location <- methods.flatMap(_.allLineLocations().asScala) } {
         if (shouldPointAtStartLine(location)) {
           val significantElem =
             DebuggerUtil.getSignificantElement(generatingElem)
           val lineNumber = elementStartLine(significantElem)
           if (lineNumber != ScalaPositionManager.checkedLineNumber(location))
             cacheCustomLine(location, lineNumber)
-        } else if (isReturnInstr(location)) {
-          cacheCustomLine(location, -1)
-        }
+        } else if (isReturnInstr(location)) { cacheCustomLine(location, -1) }
       }
     }
 
@@ -240,9 +232,7 @@ trait LocationLineManager {
 
         val bytecodes =
           try method.bytecodes()
-          catch {
-            case t: Throwable => return
-          }
+          catch { case t: Throwable => return }
 
         val tail: Seq[Location] = locations.tail
 
@@ -261,9 +251,7 @@ trait LocationLineManager {
       def customizeFor(caseClauses: ScCaseClauses): Unit = {
         def tooSmall(m: Method) = {
           try m.allLineLocations().size() <= 3
-          catch {
-            case ae: AbsentInformationException => true
-          }
+          catch { case ae: AbsentInformationException => true }
         }
 
         val baseLine = caseClauses.getParent match {
@@ -289,9 +277,7 @@ trait LocationLineManager {
           m <- methods
           line <- baseLine
           if locationsOfLine(m, line).size > 1
-        } {
-          skipBaseLineExtraLocations(m, line)
-        }
+        } { skipBaseLineExtraLocations(m, line) }
       }
 
       val allCaseClauses = generatingElem.breadthFirst.collect {

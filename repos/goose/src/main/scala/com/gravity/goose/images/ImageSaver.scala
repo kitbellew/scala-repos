@@ -54,26 +54,18 @@ object ImageSaver extends Logging {
         ImageUtils.getImageDimensions(config.imagemagickIdentifyPath, fileName)
       mimeType = imageDims.getMimeType
       if (mimeType == "GIF") {
-        if (logger.isDebugEnabled) {
-          logger.debug("SNEAKY GIF! " + fileName)
-        }
+        if (logger.isDebugEnabled) { logger.debug("SNEAKY GIF! " + fileName) }
         throw new SecretGifException
       }
-      if (mimeType == "JPEG") {
-        fileExtension = ".jpg"
-      } else if (mimeType == "PNG") {
-        fileExtension = ".png"
-      } else {
+      if (mimeType == "JPEG") { fileExtension = ".jpg" }
+      else if (mimeType == "PNG") { fileExtension = ".png" }
+      else {
         throw new IOException(
           "BAD MIME TYPE: " + mimeType + " FILENAME:" + fileName)
       }
     } catch {
-      case e: SecretGifException => {
-        throw e
-      }
-      case e: FileNotFoundException => {
-        logger.error(e.getMessage)
-      }
+      case e: SecretGifException    => { throw e }
+      case e: FileNotFoundException => { logger.error(e.getMessage) }
       case e: IOException => {
         logger.error(e.getMessage)
         throw e
@@ -93,16 +85,11 @@ object ImageSaver extends Logging {
     val httpget = new HttpGet(imageSrc)
     val response = httpClient.execute(httpget, localContext)
     val respStatus: String = response.getStatusLine.toString
-    if (!respStatus.contains("200")) {
-      None
-    } else {
-      try {
-        Some(response.getEntity)
-      } catch {
-        case e: Exception => warn(e, e.toString); None
-      } finally {
-        httpget.abort()
-      }
+    if (!respStatus.contains("200")) { None }
+    else {
+      try { Some(response.getEntity) }
+      catch { case e: Exception => warn(e, e.toString); None }
+      finally { httpget.abort() }
     }
   }
 
@@ -137,11 +124,8 @@ object ImageSaver extends Logging {
       //      localSrcPath = localSrcPath + fileExtension
       trace("Image successfully Written to Disk")
       newFilename
-    } catch {
-      case e: Exception => {
-        throw e
-      }
-    } finally {
+    } catch { case e: Exception => { throw e } }
+    finally {
       //            entity.consumeContent
       instream.close()
       outstream.close()
@@ -168,15 +152,10 @@ object ImageSaver extends Logging {
       fetchEntity(httpClient, imageSrc) match {
         case Some(entity) => {
 
-          try {
-            return copyInputStreamToLocalImage(entity, linkhash, config)
-          } catch {
-            case e: SecretGifException => {
-              throw e
-            }
-            case e: Exception => {
-              logger.error(e.getMessage); null
-            }
+          try { return copyInputStreamToLocalImage(entity, linkhash, config) }
+          catch {
+            case e: SecretGifException => { throw e }
+            case e: Exception          => { logger.error(e.getMessage); null }
           }
 
         }
@@ -184,18 +163,10 @@ object ImageSaver extends Logging {
       }
 
     } catch {
-      case e: IllegalArgumentException => {
-        logger.warn(e.getMessage)
-      }
-      case e: SecretGifException => {
-        raise(e)
-      }
-      case e: ClientProtocolException => {
-        logger.error(e.toString)
-      }
-      case e: IOException => {
-        logger.error(e.toString)
-      }
+      case e: IllegalArgumentException => { logger.warn(e.getMessage) }
+      case e: SecretGifException       => { raise(e) }
+      case e: ClientProtocolException  => { logger.error(e.toString) }
+      case e: IOException              => { logger.error(e.toString) }
       case e: Exception => {
         e.printStackTrace()
         logger.error(e.toString)

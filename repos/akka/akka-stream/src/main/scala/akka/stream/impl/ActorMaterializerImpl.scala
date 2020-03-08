@@ -211,9 +211,8 @@ private[akka] case class ActorMaterializerImpl(
 
           val impl =
             if (subflowFuser != null && !effectiveAttributes.contains(
-                  Attributes.AsyncBoundary)) {
-              subflowFuser(shell)
-            } else {
+                  Attributes.AsyncBoundary)) { subflowFuser(shell) }
+            else {
               val props = ActorGraphInterpreter.props(shell)
               actorOf(
                 props,

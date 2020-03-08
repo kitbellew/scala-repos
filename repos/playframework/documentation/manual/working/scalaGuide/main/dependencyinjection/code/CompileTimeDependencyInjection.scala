@@ -52,9 +52,7 @@ package basic {
   import play.api.routing.Router
 
   class MyApplicationLoader extends ApplicationLoader {
-    def load(context: Context) = {
-      new MyComponents(context).application
-    }
+    def load(context: Context) = { new MyComponents(context).application }
   }
 
   class MyComponents(context: Context)
@@ -115,9 +113,7 @@ package routers {
   import router.Routes
 
   class MyApplicationLoader extends ApplicationLoader {
-    def load(context: Context) = {
-      new MyComponents(context).application
-    }
+    def load(context: Context) = { new MyComponents(context).application }
   }
 
   class MyComponents(context: Context)

@@ -35,9 +35,7 @@ class Producer[K, V](
     * synchronous or the asynchronous producer
     * @param message the producer data object that encapsulates the topic, key and message data
     */
-  def send(message: KeyedMessage[K, V]) {
-    underlying.send(message)
-  }
+  def send(message: KeyedMessage[K, V]) { underlying.send(message) }
 
   /**
     * Use this API to send data to multiple topics

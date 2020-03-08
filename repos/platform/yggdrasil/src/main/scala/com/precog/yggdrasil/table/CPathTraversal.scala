@@ -86,16 +86,10 @@ sealed trait CPathTraversal { self =>
             val i = firstDefinedIndexFor(lCols, r1)
             val j = firstDefinedIndexFor(rCols, r2)
             if (i == -1) {
-              if (j == -1) {
-                NoComp
-              } else {
-                Lt
-              }
-            } else if (j == -1) {
-              Gt
-            } else {
-              comparators(i * rCols.length + j).compare(r1, r2, indices)
-            }
+              if (j == -1) { NoComp }
+              else { Lt }
+            } else if (j == -1) { Gt }
+            else { comparators(i * rCols.length + j).compare(r1, r2, indices) }
           }
         }
 
@@ -109,9 +103,7 @@ sealed trait CPathTraversal { self =>
             var result: MaybeOrdering = NoComp
             while ((result == Eq || result == NoComp) && i < comparators.length) {
               val iResult = comparators(i).compare(r1, r2, indices)
-              if (iResult != NoComp) {
-                result = iResult
-              }
+              if (iResult != NoComp) { result = iResult }
 
               i += 1
             }
@@ -158,9 +150,7 @@ sealed trait CPathTraversal { self =>
                 result = tailComp.compare(row1, row2, indices)
                 i += 1
               }
-              if (result == NoComp) {
-                result = Eq
-              }
+              if (result == NoComp) { result = Eq }
             }
 
             result
@@ -410,9 +400,7 @@ object CPathTraversal {
               ((CPathRange(ns1, l1, Some(l2 - 1)) :: is) reverse_::: ps) :: rss
             } else if (l2 < l1) {
               ((CPathRange(ns2, l2, Some(l1 - 1)) :: is) reverse_::: qs) :: rss
-            } else {
-              rss
-            }
+            } else { rss }
 
             val rss1 = (r1, r2) match {
               case (r1, Some(r2)) if r1 map (_ > r2) getOrElse true =>
@@ -483,12 +471,8 @@ object CPathTraversal {
           if (intersect(a, b)) {
             pq.enqueue(disjoint(a, b): _*)
             rec(pq.dequeue(), ts)
-          } else {
-            rec(b, a :: ts)
-          }
-        } else {
-          (a :: ts).reverse
-        }
+          } else { rec(b, a :: ts) }
+        } else { (a :: ts).reverse }
       }
 
       if (pq.isEmpty) Nil else rec(pq.dequeue(), Nil)

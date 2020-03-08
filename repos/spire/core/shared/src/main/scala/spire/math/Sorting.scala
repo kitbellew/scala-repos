@@ -67,9 +67,7 @@ object MergeSort extends Sort {
     while (width < len) {
       i = 0
       limit = len - step
-      while (i < limit) {
-        merge(buf1, buf2, i, i + width, i + step); i += step
-      }
+      while (i < limit) { merge(buf1, buf2, i, i + width, i + step); i += step }
       while (i < len) {
         merge(buf1, buf2, i, min(i + width, len), len); i += step
       }
@@ -103,9 +101,7 @@ object MergeSort extends Sort {
     while (kk < end) {
       if (ii < mid && (jj >= end || o.lteqv(in(ii), in(jj)))) {
         out(kk) = in(ii); ii += 1
-      } else {
-        out(kk) = in(jj); jj += 1
-      }
+      } else { out(kk) = in(jj); jj += 1 }
       kk += 1
     }
   }

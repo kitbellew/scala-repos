@@ -64,64 +64,48 @@ class PerspectiveTransform(
     * The x coordinate of the output location onto which the lower left corner of the source is mapped.
     */
   def llx: DoubleProperty = delegate.llxProperty
-  def llx_=(v: Double) {
-    llx() = v
-  }
+  def llx_=(v: Double) { llx() = v }
 
   /**
     * The y coordinate of the output location onto which the lower left corner of the source is mapped.
     */
   def lly: DoubleProperty = delegate.llyProperty
-  def lly_=(v: Double) {
-    lly() = v
-  }
+  def lly_=(v: Double) { lly() = v }
 
   /**
     * The x coordinate of the output location onto which the lower right corner of the source is mapped.
     */
   def lrx: DoubleProperty = delegate.lrxProperty
-  def lrx_=(v: Double) {
-    lrx() = v
-  }
+  def lrx_=(v: Double) { lrx() = v }
 
   /**
     * The y coordinate of the output location onto which the lower right corner of the source is mapped.
     */
   def lry: DoubleProperty = delegate.lryProperty
-  def lry_=(v: Double) {
-    lry() = v
-  }
+  def lry_=(v: Double) { lry() = v }
 
   /**
     * The x coordinate of the output location onto which the upper left corner of the source is mapped.
     */
   def ulx: DoubleProperty = delegate.ulxProperty
-  def ulx_=(v: Double) {
-    ulx() = v
-  }
+  def ulx_=(v: Double) { ulx() = v }
 
   /**
     * The y coordinate of the output location onto which the upper left corner of the source is mapped.
     */
   def uly: DoubleProperty = delegate.ulyProperty
-  def uly_=(v: Double) {
-    uly() = v
-  }
+  def uly_=(v: Double) { uly() = v }
 
   /**
     * The x coordinate of the output location onto which the upper right corner of the source is mapped.
     */
   def urx: DoubleProperty = delegate.urxProperty
-  def urx_=(v: Double) {
-    urx() = v
-  }
+  def urx_=(v: Double) { urx() = v }
 
   /**
     * The y coordinate of the output location onto which the upper right corner of the source is mapped.
     */
   def ury: DoubleProperty = delegate.uryProperty
-  def ury_=(v: Double) {
-    ury() = v
-  }
+  def ury_=(v: Double) { ury() = v }
 
 }

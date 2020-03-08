@@ -472,9 +472,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       // Test that a shuffle on the file works, because this used to be a bug
       assert(
         file.map(line => (line, 1)).reduceByKey(_ + _).collect().toList === Nil)
-    } finally {
-      Utils.deleteRecursively(emptyDir)
-    }
+    } finally { Utils.deleteRecursively(emptyDir) }
   }
 
   test("keys and values") {
@@ -698,9 +696,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         actual: Int,
         trials: Int,
         p: Double): Unit = {
-      if (exact) {
-        assert(actual == math.ceil(p * trials).toInt)
-      } else {
+      if (exact) { assert(actual == math.ceil(p * trials).toInt) }
+      else {
         val dist = new BinomialDistribution(trials, p)
         val q = dist.cumulativeProbability(actual)
         withClue(s"p = $p: trials = $trials") {
@@ -714,9 +711,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         actual: Int,
         trials: Int,
         p: Double): Unit = {
-      if (exact) {
-        assert(actual == math.ceil(p * trials).toInt)
-      } else {
+      if (exact) { assert(actual == math.ceil(p * trials).toInt) }
+      else {
         val dist = new PoissonDistribution(p * trials)
         val q = dist.cumulativeProbability(actual)
         withClue(s"p = $p: trials = $trials") {
@@ -754,9 +750,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       val fractions = Map("1" -> samplingRate, "0" -> samplingRate)
       val sample = if (exact) {
         stratifiedData.sampleByKeyExact(false, fractions, seed)
-      } else {
-        stratifiedData.sampleByKey(false, fractions, seed)
-      }
+      } else { stratifiedData.sampleByKey(false, fractions, seed) }
       val sampleCounts = sample.countByKey()
       val takeSample = sample.collect()
       sampleCounts.foreach {
@@ -787,9 +781,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       val fractions = Map("1" -> samplingRate, "0" -> samplingRate)
       val sample = if (exact) {
         stratifiedData.sampleByKeyExact(true, fractions, seed)
-      } else {
-        stratifiedData.sampleByKey(true, fractions, seed)
-      }
+      } else { stratifiedData.sampleByKey(true, fractions, seed) }
       val sampleCounts = sample.countByKey()
       val takeSample = sample.collect()
       sampleCounts.foreach {
@@ -806,9 +798,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
           // sample large enough for there to be repeats with high likelihood
           assert(v.toSet.size < expectedSampleSize(key))
         } else {
-          if (exact) {
-            assert(v.toSet.size <= expectedSampleSize(key))
-          } else {
+          if (exact) { assert(v.toSet.size <= expectedSampleSize(key)) }
+          else {
             assertPoissonSample(
               false,
               actual = v.toSet.size,

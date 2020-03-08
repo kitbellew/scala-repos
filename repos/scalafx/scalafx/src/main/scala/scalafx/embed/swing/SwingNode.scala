@@ -66,8 +66,6 @@ class SwingNode(override val delegate: jfxes.SwingNode = new jfxes.SwingNode)
     * the JComponent instance attached to this SwingNode.
     */
   def content: JComponent = delegate.getContent
-  def content_=(c: JComponent) {
-    delegate.setContent(c)
-  }
+  def content_=(c: JComponent) { delegate.setContent(c) }
 
 }

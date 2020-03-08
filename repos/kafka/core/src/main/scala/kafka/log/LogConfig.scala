@@ -97,9 +97,7 @@ case class LogConfig(props: java.util.Map[_, _])
 
 object LogConfig {
 
-  def main(args: Array[String]) {
-    System.out.println(configDef.toHtmlTable)
-  }
+  def main(args: Array[String]) { System.out.println(configDef.toHtmlTable) }
 
   val Delete = "delete"
   val Compact = "compact"

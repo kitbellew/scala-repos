@@ -36,9 +36,7 @@ final class RelationApi(
         BSONDocument("r" -> true, "_id" -> false)
       )
       .one[BSONDocument]
-      .map {
-        _.flatMap(_.getAs[Boolean]("r"))
-      }
+      .map { _.flatMap(_.getAs[Boolean]("r")) }
 
   def fetchFollowing = RelationRepo following _
 

@@ -54,9 +54,7 @@ object ScalaProjectSettingsUtil {
           inputString)
     }
 
-    def canClose(inputString: String): Boolean = {
-      checkInput(inputString)
-    }
+    def canClose(inputString: String): Boolean = { checkInput(inputString) }
   }
 
   def getPackageValidator: InputValidator = new InputValidator {
@@ -65,9 +63,7 @@ object ScalaProjectSettingsUtil {
         .isValidPackage(inputString, checkPlaceholder = false)
     }
 
-    def canClose(inputString: String): Boolean = {
-      checkInput(inputString)
-    }
+    def canClose(inputString: String): Boolean = { checkInput(inputString) }
   }
 
   def getPatternListPanel(

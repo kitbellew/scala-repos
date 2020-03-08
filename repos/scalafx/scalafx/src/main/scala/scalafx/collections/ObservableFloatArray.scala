@@ -82,9 +82,7 @@ class ObservableFloatArray(
       srcIdx: Int,
       dest: Array[Float],
       destIdx: Int,
-      length: Int) {
-    delegate.copyTo(srcIdx, dest, destIdx, length)
-  }
+      length: Int) { delegate.copyTo(srcIdx, dest, destIdx, length) }
 
   /**
     * @inheritdoc
@@ -93,9 +91,7 @@ class ObservableFloatArray(
       srcIdx: Int,
       dest: ObservableFloatArray,
       destIdx: Int,
-      length: Int) {
-    delegate.copyTo(srcIdx, dest.delegate, destIdx, length)
-  }
+      length: Int) { delegate.copyTo(srcIdx, dest.delegate, destIdx, length) }
 
   /**
     * @inheritdoc
@@ -105,9 +101,7 @@ class ObservableFloatArray(
   /**
     * @inheritdoc.
     */
-  override def addAll(elems: Float*) {
-    delegate.addAll(elems: _*)
-  }
+  override def addAll(elems: Float*) { delegate.addAll(elems: _*) }
 
   /**
     * @inheritdoc.
@@ -133,9 +127,7 @@ class ObservableFloatArray(
   /**
     * @inheritdoc.
     */
-  override def setAll(elems: Float*) {
-    delegate.setAll(elems: _*)
-  }
+  override def setAll(elems: Float*) { delegate.setAll(elems: _*) }
 
   /**
     * @inheritdoc.
@@ -161,9 +153,7 @@ class ObservableFloatArray(
   /**
     * @inheritdoc
     */
-  override def set(idx: Int, elem: Float) {
-    delegate.set(idx, elem)
-  }
+  override def set(idx: Int, elem: Float) { delegate.set(idx, elem) }
 
   /**
     * @inheritdoc
@@ -179,9 +169,7 @@ class ObservableFloatArray(
       destIdx: Int,
       src: ObservableFloatArray,
       srcIdx: Int,
-      length: Int) {
-    delegate.set(destIdx, src.delegate, srcIdx, length)
-  }
+      length: Int) { delegate.set(destIdx, src.delegate, srcIdx, length) }
 
   /**
     * @inheritdoc

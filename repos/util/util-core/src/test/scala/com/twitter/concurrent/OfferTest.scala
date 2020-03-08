@@ -39,9 +39,7 @@ class OfferTest extends WordSpec with MockitoSugar {
       val mapped = offer map { i => (i - 100).toString }
 
       val f = mapped.prepare() flatMap { tx => tx.ack() }
-      f match {
-        case Future(Return(Commit("23"))) => assert(true)
-      }
+      f match { case Future(Return(Commit("23"))) => assert(true) }
     }
   }
 
@@ -71,9 +69,7 @@ class OfferTest extends WordSpec with MockitoSugar {
         val h = new TxReadyHelper
         import h._
 
-        offer.prepare() match {
-          case Future(Return(tx)) => assert(tx eq tx1)
-        }
+        offer.prepare() match { case Future(Return(tx)) => assert(tx eq tx1) }
         verify(tx1, never()).ack()
         verify(tx1, never()).nack()
       }
@@ -84,9 +80,7 @@ class OfferTest extends WordSpec with MockitoSugar {
 
         offer.prepare()
         val tx = mock[Tx[Int]]
-        for (i <- Seq(0, 2)) {
-          pendingTxs(i).setValue(tx)
-        }
+        for (i <- Seq(0, 2)) { pendingTxs(i).setValue(tx) }
         verify(tx, times(2)).nack()
         verify(tx, never()).ack()
       }
@@ -101,9 +95,7 @@ class OfferTest extends WordSpec with MockitoSugar {
         assert(tx.isDefined == false)
         val tx0 = mock[Tx[Int]]
         pendingTxs(0).setValue(tx0)
-        tx match {
-          case Future(Return(tx)) => assert(tx eq tx0)
-        }
+        tx match { case Future(Return(tx)) => assert(tx eq tx0) }
       }
 
       "nack losers" in {
@@ -179,9 +171,7 @@ class OfferTest extends WordSpec with MockitoSugar {
 
         assert(tx.ack() == (result))
         txp.setValue(tx)
-        offer.sync() match {
-          case Future(Return(123)) => assert(true)
-        }
+        offer.sync() match { case Future(Return(123)) => assert(true) }
         verify(tx, times(2)).ack()
         verify(tx, never()).nack()
       }
@@ -225,9 +215,7 @@ class OfferTest extends WordSpec with MockitoSugar {
         assert(tx.ack() == (result))
         val offer = spy(new SimpleOffer(tx))
 
-        offer.sync() match {
-          case Future(Return(123)) => assert(true)
-        }
+        offer.sync() match { case Future(Return(123)) => assert(true) }
         verify(tx, times(2)).ack()
         verify(tx, never()).nack()
         verify(offer).prepare()

@@ -77,15 +77,11 @@ class ExecutorClassLoaderSuite
 
   override def afterAll() {
     try {
-      if (classServer != null) {
-        classServer.stop()
-      }
+      if (classServer != null) { classServer.stop() }
       Utils.deleteRecursively(tempDir1)
       Utils.deleteRecursively(tempDir2)
       SparkEnv.set(null)
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   test("child first") {

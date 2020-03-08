@@ -3,7 +3,9 @@ object Test extends App {
   trait B extends A
 
   trait C {
-    trait D { type T >: B <: A }
+    trait D {
+      type T >: B <: A
+    }
     val y: (D with this.type)#T = new B {}
   }
 

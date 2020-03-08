@@ -19,9 +19,8 @@ object PromiseMock {
       else None
 
     global.Promise = js.constructorOf[MockPromise[_]]
-    try {
-      body(MockPromise.processQueue _)
-    } finally {
+    try { body(MockPromise.processQueue _) }
+    finally {
       oldPromise.fold {
         global.asInstanceOf[js.Dictionary[Any]].delete("Promise")
       } { old => global.Promise = old }
@@ -32,15 +31,11 @@ object PromiseMock {
   def withMockedPromiseIfExists[A](body: (Option[() => Unit]) => A): A = {
     val oldPromise = global.Promise
 
-    if (js.isUndefined(oldPromise)) {
-      body(None)
-    } else {
+    if (js.isUndefined(oldPromise)) { body(None) }
+    else {
       global.Promise = js.constructorOf[MockPromise[_]]
-      try {
-        body(Some(MockPromise.processQueue _))
-      } finally {
-        global.Promise = oldPromise
-      }
+      try { body(Some(MockPromise.processQueue _)) }
+      finally { global.Promise = oldPromise }
     }
   }
 
@@ -102,9 +97,8 @@ object PromiseMock {
     }
 
     private def tryCatchAny[A](tryBody: => A)(catchBody: Any => A): A = {
-      try {
-        tryBody
-      } catch {
+      try { tryBody }
+      catch {
         case th: Throwable =>
           catchBody(th match {
             case js.JavaScriptException(e) => e
@@ -138,9 +132,7 @@ object PromiseMock {
           js.Function1[A | Thenable[A], _],
           js.Function1[scala.Any, _],
           _]) = {
-      tryCatchAny[Unit] {
-        executor(resolve _, reject _)
-      } { e => reject(e) }
+      tryCatchAny[Unit] { executor(resolve _, reject _) } { e => reject(e) }
     }
 
     private[this] def fulfill(value: A): Unit = {
@@ -172,9 +164,8 @@ object PromiseMock {
         } else {
           tryCatchAny {
             val thenAction = resolution.asInstanceOf[js.Dynamic].`then`
-            if (!isCallable(thenAction)) {
-              fulfill(resolution.asInstanceOf[A])
-            } else {
+            if (!isCallable(thenAction)) { fulfill(resolution.asInstanceOf[A]) }
+            else {
               val thenable = resolution.asInstanceOf[Thenable[A]]
               val thenActionFun = thenAction.asInstanceOf[js.Function]
               enqueue(() => promiseResolveThenableJob(thenable, thenActionFun))
@@ -211,16 +202,16 @@ object PromiseMock {
               innerResolve: js.Function1[B | Thenable[B], _],
               innerReject: js.Function1[scala.Any, _]) =>
             def doFulfilled(value: A): Unit = {
-              tryCatchAny[Unit] {
-                innerResolve(onFulfilled(value))
-              } { e => innerReject(e) }
+              tryCatchAny[Unit] { innerResolve(onFulfilled(value)) } { e =>
+                innerReject(e)
+              }
             }
 
             def doRejected(reason: Any): Unit = {
               tryCatchAny[Unit] {
-                onRejected.fold[Unit] {
-                  innerReject(reason)
-                } { onRejectedFun => innerResolve(onRejectedFun(reason)) }
+                onRejected.fold[Unit] { innerReject(reason) } { onRejectedFun =>
+                  innerResolve(onRejectedFun(reason))
+                }
               } { e => innerReject(e) }
             }
 
@@ -249,8 +240,6 @@ object PromiseMock {
     // 25.4.5.1 Promise.prototype.catch
     def `catch`[B >: A](
         onRejected: js.UndefOr[js.Function1[scala.Any, B | Thenable[B]]])
-        : MockPromise[B] = {
-      `then`((), onRejected)
-    }
+        : MockPromise[B] = { `then`((), onRejected) }
   }
 }

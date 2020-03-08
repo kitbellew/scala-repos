@@ -102,9 +102,7 @@ object Gaussian
 
   val emptySufficientStatistic = SufficientStatistic(0, 0, 0)
 
-  def sufficientStatisticFor(t: Double) = {
-    SufficientStatistic(1, t, 0)
-  }
+  def sufficientStatisticFor(t: Double) = { SufficientStatistic(1, t, 0) }
 
   def mle(stats: SufficientStatistic) = (stats.mean, stats.variance)
 

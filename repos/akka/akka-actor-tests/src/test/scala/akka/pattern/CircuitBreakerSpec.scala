@@ -292,9 +292,7 @@ class CircuitBreakerSpec extends AkkaSpec with BeforeAndAfter {
       breaker().currentFailureCount should ===(1)
       // Since the timeout should have happend before the inner code finishes
       // we expect a timeout, not TestException
-      intercept[TimeoutException] {
-        Await.result(fut, awaitTimeout)
-      }
+      intercept[TimeoutException] { Await.result(fut, awaitTimeout) }
 
     }
   }

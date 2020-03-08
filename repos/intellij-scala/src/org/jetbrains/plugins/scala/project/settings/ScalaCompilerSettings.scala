@@ -7,9 +7,7 @@ import org.jetbrains.plugins.scala.project.{CompileOrder, DebuggingInfoLevel}
   * @author Pavel Fatin
   */
 class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
-  def this() {
-    this(new ScalaCompilerSettingsState())
-  }
+  def this() { this(new ScalaCompilerSettingsState()) }
 
   loadState(state)
 
@@ -92,9 +90,7 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
     (toggledOptions :+ debuggingLevelOption) ++ pluginOptions ++ additionalCompilerOptions
   }
 
-  def initFrom(options: Seq[String]) {
-    initFrom0(normalized(options))
-  }
+  def initFrom(options: Seq[String]) { initFrom0(normalized(options)) }
 
   def sbtIncOptions =
     SbtIncrementalOptions(
@@ -115,9 +111,7 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
       .map(_._2)
       .getOrElse(DebuggingInfoLevel.Vars)
 
-    plugins = options collect {
-      case PluginOptionPattern(path) => path
-    }
+    plugins = options collect { case PluginOptionPattern(path) => path }
 
     additionalCompilerOptions = options.filterNot { option =>
       optionToSetter.keySet.contains(option) ||

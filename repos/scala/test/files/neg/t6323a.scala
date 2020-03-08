@@ -14,8 +14,6 @@ object Test extends App {
       val aAccessor = lookAtMe.reflectMethod(member.head.asMethod)
       val thisShouldBeA = aAccessor.apply()
       println(thisShouldBeA)
-    } catch {
-      case ScalaReflectionException(msg) => println(msg)
-    }
+    } catch { case ScalaReflectionException(msg) => println(msg) }
   }
 }

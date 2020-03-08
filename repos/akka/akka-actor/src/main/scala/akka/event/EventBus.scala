@@ -392,9 +392,8 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier ⇒
         val removed = current.remove(monitored, monitor)
         val removedMonitors = removed.get(monitored)
 
-        if (monitors.isEmpty || monitors == removedMonitors) {
-          false
-        } else {
+        if (monitors.isEmpty || monitors == removedMonitors) { false }
+        else {
           if (mappings.compareAndSet(current, removed))
             unregisterFromUnsubscriber(monitor, removed.seqNr)
           else dissociate(monitored, monitor)

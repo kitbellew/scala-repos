@@ -46,11 +46,8 @@ class JettyServerSpec extends WordSpec with BeforeAndAfterAll {
     "return hello" in {
       val stream = Source.fromInputStream(
         new URL("http://localhost:" + port + "/").openStream())
-      try {
-        assert(stream.getLines().mkString === "hello")
-      } finally {
-        stream.close()
-      }
+      try { assert(stream.getLines().mkString === "hello") }
+      finally { stream.close() }
     }
   }
 }

@@ -32,9 +32,7 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
 
   override def afterFunction() {
     super.afterFunction()
-    if (ssc != null) {
-      ssc.stop()
-    }
+    if (ssc != null) { ssc.stop() }
   }
 
   test("accuracy for single center and equivalence to grand average") {
@@ -114,11 +112,8 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
     // cluster ordering is arbitrary, so choose closest cluster
     val d0 = Vectors.sqdist(kMeans.latestModel().clusterCenters(0), centers(0))
     val d1 = Vectors.sqdist(kMeans.latestModel().clusterCenters(0), centers(1))
-    val (c0, c1) = if (d0 < d1) {
-      (centers(0), centers(1))
-    } else {
-      (centers(1), centers(0))
-    }
+    val (c0, c1) = if (d0 < d1) { (centers(0), centers(1)) }
+    else { (centers(1), centers(0)) }
     assert(c0 ~== kMeans.latestModel().clusterCenters(0) absTol 1e-1)
     assert(c1 ~== kMeans.latestModel().clusterCenters(1) absTol 1e-1)
   }

@@ -99,7 +99,8 @@ object EventSeq {
   @varargs final def create(events: Any*): EventSeq = EventsSeq(events.toList)
   final def apply(events: Any*): EventSeq = EventsSeq(events.toList)
 }
-final case class SingleEventSeq(event: Any) extends EventSeq { // TODO try to make it a value class, would save allocations
+final case class SingleEventSeq(event: Any)
+    extends EventSeq { // TODO try to make it a value class, would save allocations
   override val events: immutable.Seq[Any] = List(event)
   override def toString = s"SingleEventSeq($event)"
 }

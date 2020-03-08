@@ -78,9 +78,7 @@ class Preferences(val preferences: SharedPreferences) extends Dynamic {
       preferences.getStringSet(name, v).toSet.asInstanceOf[T]
   }
 
-  def remove(name: String) {
-    preferences.edit().remove(name).commit()
-  }
+  def remove(name: String) { preferences.edit().remove(name).commit() }
 
   abstract class TypedPreferences[T] extends Dynamic {
     def get(name: String): T

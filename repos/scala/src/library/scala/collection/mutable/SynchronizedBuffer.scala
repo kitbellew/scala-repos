@@ -30,17 +30,11 @@ trait SynchronizedBuffer[A] extends Buffer[A] {
 
   import scala.collection.Traversable
 
-  abstract override def length: Int = synchronized {
-    super.length
-  }
+  abstract override def length: Int = synchronized { super.length }
 
-  abstract override def iterator: Iterator[A] = synchronized {
-    super.iterator
-  }
+  abstract override def iterator: Iterator[A] = synchronized { super.iterator }
 
-  abstract override def apply(n: Int): A = synchronized {
-    super.apply(n)
-  }
+  abstract override def apply(n: Int): A = synchronized { super.apply(n) }
 
   /** Append a single element to this buffer.
     *
@@ -66,17 +60,13 @@ trait SynchronizedBuffer[A] extends Buffer[A] {
     *  @param xs   the iterable object.
     */
   override def ++=(xs: TraversableOnce[A]): this.type =
-    synchronized[this.type] {
-      super.++=(xs)
-    }
+    synchronized[this.type] { super.++=(xs) }
 
   /** Appends a sequence of elements to this buffer.
     *
     *  @param elems  the elements to append.
     */
-  override def append(elems: A*): Unit = synchronized {
-    super.++=(elems)
-  }
+  override def append(elems: A*): Unit = synchronized { super.++=(elems) }
 
   /** Appends a number of elements provided by a traversable object
     *  via its `foreach` method.
@@ -138,9 +128,7 @@ trait SynchronizedBuffer[A] extends Buffer[A] {
     *  @param xs    the traversable object providing all elements to insert.
     */
   abstract override def insertAll(n: Int, xs: Traversable[A]): Unit =
-    synchronized {
-      super.insertAll(n, xs)
-    }
+    synchronized { super.insertAll(n, xs) }
 
   /** Replace element at index `n` with the new element `newelem`.
     *
@@ -155,35 +143,25 @@ trait SynchronizedBuffer[A] extends Buffer[A] {
     *
     *  @param n  the index which refers to the element to delete.
     */
-  abstract override def remove(n: Int): A = synchronized {
-    super.remove(n)
-  }
+  abstract override def remove(n: Int): A = synchronized { super.remove(n) }
 
   /** Clears the buffer contents.
     */
-  abstract override def clear(): Unit = synchronized {
-    super.clear()
-  }
+  abstract override def clear(): Unit = synchronized { super.clear() }
 
   @deprecated("Scripting is deprecated.", "2.11.0")
-  override def <<(cmd: Message[A]): Unit = synchronized {
-    super.<<(cmd)
-  }
+  override def <<(cmd: Message[A]): Unit = synchronized { super.<<(cmd) }
 
   /** Return a clone of this buffer.
     *
     *  @return an `ArrayBuffer` with the same elements.
     */
-  override def clone(): Self = synchronized {
-    super.clone()
-  }
+  override def clone(): Self = synchronized { super.clone() }
 
   /** The `hashCode` method always yields an error, since it is not
     *  safe to use buffers as keys in hash tables.
     *
     *  @return never.
     */
-  override def hashCode(): Int = synchronized {
-    super.hashCode()
-  }
+  override def hashCode(): Int = synchronized { super.hashCode() }
 }

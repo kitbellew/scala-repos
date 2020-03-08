@@ -242,9 +242,7 @@ class AsyncMeter private[concurrent] (
   private[this] def restartTimerIfDead(): Unit = synchronized {
     if (!running) {
       running = true
-      task = timer.schedule(interval) {
-        allow()
-      }
+      task = timer.schedule(interval) { allow() }
     }
   }
 

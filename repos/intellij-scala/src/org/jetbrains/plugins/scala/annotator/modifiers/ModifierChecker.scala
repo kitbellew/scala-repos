@@ -39,9 +39,7 @@ import scala.collection.mutable
   */
 private[annotator] object ModifierChecker {
   def checkModifiers(ml: ScModifierList, holder: AnnotationHolder) {
-    if (!ml.getParent.isInstanceOf[ScModifierListOwner]) {
-      return
-    }
+    if (!ml.getParent.isInstanceOf[ScModifierListOwner]) { return }
     val owner = ml.getParent.asInstanceOf[ScModifierListOwner]
     val modifiersSet = new mutable.HashSet[String]
     def checkDublicates(element: PsiElement, text: String): Boolean =
@@ -82,11 +80,8 @@ private[annotator] object ModifierChecker {
       val modifierPsi = modifier.getPsi
       modifierPsi match {
         case am: ScAccessModifier => //todo: check private with final or sealed combination.
-          if (am.isPrivate) {
-            checkDublicates(am, "private")
-          } else if (am.isProtected) {
-            checkDublicates(am, "protected")
-          }
+          if (am.isPrivate) { checkDublicates(am, "private") }
+          else if (am.isProtected) { checkDublicates(am, "protected") }
         case _ =>
           modifier.getText match {
             case "lazy" =>
@@ -157,9 +152,7 @@ private[annotator] object ModifierChecker {
                         holder,
                         new RemoveModifierQuickFix(owner, "final"))
                     }
-                  } else {
-                    checkDublicates(modifierPsi, "final")
-                  }
+                  } else { checkDublicates(modifierPsi, "final") }
                 case e: ScClassParameter =>
                   if (PsiTreeUtil
                         .getParentOfType(e, classOf[ScTypeDefinition])
@@ -172,9 +165,7 @@ private[annotator] object ModifierChecker {
                         holder,
                         new RemoveModifierQuickFix(owner, "final"))
                     }
-                  } else {
-                    checkDublicates(modifierPsi, "final")
-                  }
+                  } else { checkDublicates(modifierPsi, "final") }
                 case _ =>
                   proccessError(
                     ScalaBundle.message("final.modifier.is.not.allowed.here"),
@@ -219,9 +210,7 @@ private[annotator] object ModifierChecker {
                       modifierPsi,
                       holder,
                       new RemoveModifierQuickFix(owner, "abstract"))
-                  } else {
-                    checkDublicates(modifierPsi, "abstract")
-                  }
+                  } else { checkDublicates(modifierPsi, "abstract") }
                 case _ =>
                   proccessError(
                     ScalaBundle.message("abstract.modifier.is.not.allowed"),

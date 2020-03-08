@@ -1,7 +1,5 @@
 package a {
-  package b {
-    class U
-  }
+  package b { class U }
   package object b {
     def U = 123
   }

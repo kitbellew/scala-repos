@@ -111,9 +111,7 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       .map(_.getPath)
       .sortBy(_.toUri)
 
-    if (paths.nonEmpty) {
-      FileInputFormat.setInputPaths(job, paths: _*)
-    }
+    if (paths.nonEmpty) { FileInputFormat.setInputPaths(job, paths: _*) }
 
     sqlContext.sparkContext
       .hadoopRDD(
@@ -170,7 +168,5 @@ class TextOutputWriter(
     recordWriter.write(NullWritable.get(), buffer)
   }
 
-  override def close(): Unit = {
-    recordWriter.close(context)
-  }
+  override def close(): Unit = { recordWriter.close(context) }
 }

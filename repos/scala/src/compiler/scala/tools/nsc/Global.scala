@@ -223,9 +223,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     try {
       nodePrinters.infolevel = infolevel
       op
-    } finally {
-      nodePrinters.infolevel = saved
-    }
+    } finally { nodePrinters.infolevel = saved }
   }
 
   /** Representing ASTs as graphs */
@@ -255,9 +253,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
   /** Register new context; called for every created context
     */
-  def registerContext(c: analyzer.Context) {
-    lastSeenContext = c
-  }
+  def registerContext(c: analyzer.Context) { lastSeenContext = c }
 
   /** Register top level class (called on entering the class)
     */
@@ -275,18 +271,14 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       throw new java.lang.AssertionError(
         "assertion failed: " + supplementErrorMessage("" + message))
   }
-  @inline final def assert(assertion: Boolean) {
-    assert(assertion, "")
-  }
+  @inline final def assert(assertion: Boolean) { assert(assertion, "") }
   @inline final def require(requirement: Boolean, message: => Any) {
     // calling Predef.require would send a freshly allocated closure wrapping the one received as argument.
     if (!requirement)
       throw new IllegalArgumentException(
         "requirement failed: " + supplementErrorMessage("" + message))
   }
-  @inline final def require(requirement: Boolean) {
-    require(requirement, "")
-  }
+  @inline final def require(requirement: Boolean) { require(requirement, "") }
 
   @inline final def ifDebug(body: => Unit) {
     if (settings.debug)
@@ -630,9 +622,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     val runsRightAfter = None
     override val terminal = true
 
-    def newPhase(prev: Phase): GlobalPhase = {
-      new TerminalPhase(prev)
-    }
+    def newPhase(prev: Phase): GlobalPhase = { new TerminalPhase(prev) }
     private class TerminalPhase(prev: Phase) extends GlobalPhase(prev) {
       def name = phaseName
       def apply(unit: CompilationUnit) {}

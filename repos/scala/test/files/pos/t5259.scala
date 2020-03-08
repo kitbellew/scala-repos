@@ -15,7 +15,5 @@ object Test {
   val stableB = new B
   stableB.m()
 
-  def f {
-    println((new C).foo(0))
-  }
+  def f { println((new C).foo(0)) }
 }

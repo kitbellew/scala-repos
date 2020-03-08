@@ -61,9 +61,7 @@ object SnapshotSpec extends Spec {
 
         override def run() =
           try check()
-          catch {
-            case ex: Exception => e = ex
-          }
+          catch { case ex: Exception => e = ex }
 
         def check() {
           val initial = mutable.Map[Wrap, Int]()
@@ -191,9 +189,7 @@ object SnapshotSpec extends Spec {
 
         override def run() =
           try check()
-          catch {
-            case ex: Exception => e = ex
-          }
+          catch { case ex: Exception => e = ex }
 
         def check() {
           val initial = mutable.Map[Wrap, Int]()
@@ -215,9 +211,7 @@ object SnapshotSpec extends Spec {
               val expected = if (k % 2 == 0) -i else i
               //println(trie.get(new Wrap(i)))
               assert(trie.get(new Wrap(i)) == Some(expected))
-            } else {
-              assert(trie.get(new Wrap(i)) == None)
-            }
+            } else { assert(trie.get(new Wrap(i)) == None) }
           }
         }
       }

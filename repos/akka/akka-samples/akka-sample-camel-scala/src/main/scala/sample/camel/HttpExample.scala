@@ -25,9 +25,7 @@ object HttpExample {
   class HttpConsumer(producer: ActorRef) extends Consumer {
     def endpointUri = "jetty:http://0.0.0.0:8875/"
 
-    def receive = {
-      case msg => producer forward msg
-    }
+    def receive = { case msg => producer forward msg }
   }
 
   class HttpProducer(transformer: ActorRef) extends Actor with Producer {

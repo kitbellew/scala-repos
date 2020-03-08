@@ -50,9 +50,7 @@ final class JettyTestServer(baseUrlBox: Box[URL]) {
 
   def urlFor(path: String) = baseUrl + path
 
-  def start() {
-    server_.start()
-  }
+  def start() { server_.start() }
 
   def stop() {
     context_.setShutdown(true)
@@ -73,9 +71,7 @@ final class JettyTestServer(baseUrlBox: Box[URL]) {
         System.err.println("server response: ", wc.getServerResponse)
         throw exc
       }
-    } finally {
-      wc.closeBrowser()
-    }
+    } finally { wc.closeBrowser() }
   }
 
 }

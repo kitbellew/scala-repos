@@ -107,9 +107,7 @@ trait FunctionAnnotator {
       } else if (unitFunction && explicitReturn && !emptyReturn) {
         redundantReturnExpression()
       } else if (!unitFunction && !anyReturn && !underCatchBlock && !usageType
-                   .conforms(functionType)) {
-        typeMismatch()
-      }
+                   .conforms(functionType)) { typeMismatch() }
 
       def needsTypeAnnotation() = {
         val message = ScalaBundle.message(

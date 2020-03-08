@@ -40,9 +40,7 @@ class MyEventsByTagPublisher(
     self,
     Continue)
 
-  override def postStop(): Unit = {
-    continueTask.cancel()
-  }
+  override def postStop(): Unit = { continueTask.cancel() }
 
   def receive = {
     case _: Request | Continue ⇒

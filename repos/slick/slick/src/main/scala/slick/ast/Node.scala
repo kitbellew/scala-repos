@@ -428,9 +428,15 @@ object Ordering {
   final case object NullsFirst extends NullOrdering(true, false)
   final case object NullsLast extends NullOrdering(false, true)
 
-  sealed abstract class Direction(val desc: Boolean) { def reverse: Direction }
-  final case object Asc extends Direction(false) { def reverse = Desc }
-  final case object Desc extends Direction(true) { def reverse = Asc }
+  sealed abstract class Direction(val desc: Boolean) {
+    def reverse: Direction
+  }
+  final case object Asc extends Direction(false) {
+    def reverse = Desc
+  }
+  final case object Desc extends Direction(true) {
+    def reverse = Asc
+  }
 }
 
 /** A .groupBy call. */

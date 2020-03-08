@@ -133,9 +133,7 @@ object TreeView {
     */
   def apply[T](layoutChildrenOp: () => Unit) =
     new TreeView[T](new jfxsc.TreeView[T] {
-      override def layoutChildren() {
-        layoutChildrenOp()
-      }
+      override def layoutChildren() { layoutChildrenOp() }
     })
 
 }
@@ -153,9 +151,7 @@ class TreeView[T](
   def cellFactory = delegate.cellFactoryProperty
   def cellFactory_=(v: (TreeView[T] => TreeCell[T])) {
     cellFactory() = new jfxu.Callback[jfxsc.TreeView[T], jfxsc.TreeCell[T]] {
-      def call(tv: jfxsc.TreeView[T]): jfxsc.TreeCell[T] = {
-        v(tv)
-      }
+      def call(tv: jfxsc.TreeView[T]): jfxsc.TreeCell[T] = { v(tv) }
     }
   }
 
@@ -165,9 +161,7 @@ class TreeView[T](
     * into their editing state.
     */
   def editable: BooleanProperty = delegate.editableProperty
-  def editable_=(v: Boolean) {
-    editable() = v
-  }
+  def editable_=(v: Boolean) { editable() = v }
 
   /**
     * A property used to represent the TreeItem currently being edited in the
@@ -182,9 +176,7 @@ class TreeView[T](
 
   /** Specifies whether this control has cells that are a fixed height (of the specified value). */
   def fixedCellSize: DoubleProperty = delegate.fixedCellSizeProperty
-  def fixedCellSize_=(v: Double) {
-    fixedCellSize() = v
-  }
+  def fixedCellSize_=(v: Double) { fixedCellSize() = v }
 
   /**
     * The FocusModel provides the API through which it is possible to control
@@ -192,9 +184,7 @@ class TreeView[T](
     */
   def focusModel: ObjectProperty[jfxsc.FocusModel[jfxsc.TreeItem[T]]] =
     delegate.focusModelProperty
-  def focusModel_=(v: FocusModel[jfxsc.TreeItem[T]]) {
-    focusModel() = v
-  }
+  def focusModel_=(v: FocusModel[jfxsc.TreeItem[T]]) { focusModel() = v }
 
   /**
     * This event handler will be fired when the user cancels editing a cell.
@@ -237,16 +227,12 @@ class TreeView[T](
     * Property representing the root node of the TreeView.
     */
   def root: ObjectProperty[jfxsc.TreeItem[T]] = delegate.rootProperty
-  def root_=(v: TreeItem[T]) {
-    root() = v
-  }
+  def root_=(v: TreeItem[T]) { root() = v }
 
   /**
     * Scrolls the TreeView such that the item in the given index is visible to the end user.
     */
-  def scrollTo(index: Int) {
-    delegate.scrollTo(index)
-  }
+  def scrollTo(index: Int) { delegate.scrollTo(index) }
 
   /**
     *
@@ -262,9 +248,7 @@ class TreeView[T](
     * Property that represents whether or not the TreeView root node is visible.
     */
   def showRoot: BooleanProperty = delegate.showRootProperty
-  def showRoot_=(v: Boolean) {
-    showRoot() = v
-  }
+  def showRoot_=(v: Boolean) { showRoot() = v }
 
   /**
     * Returns the number of levels of 'indentation' of the given TreeItem, based on how many times getParent()
@@ -282,9 +266,7 @@ class TreeView[T](
     * Instructs the TreeView to begin editing the given TreeItem, if the
     * TreeView is `editable`.
     */
-  def edit(item: TreeItem[T]) {
-    delegate.edit(item)
-  }
+  def edit(item: TreeItem[T]) { delegate.edit(item) }
 
   /**
     * Returns the index position of the given TreeItem, taking into account the

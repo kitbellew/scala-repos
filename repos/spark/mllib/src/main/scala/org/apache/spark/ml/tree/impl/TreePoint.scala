@@ -68,9 +68,7 @@ private[spark] object TreePoint {
       case (arity, idx) =>
         if (arity == 0) {
           splits(idx).map(_.asInstanceOf[ContinuousSplit].threshold)
-        } else {
-          Array.empty[Double]
-        }
+        } else { Array.empty[Double] }
     }
     input.map { x =>
       TreePoint.labeledPointToTreePoint(x, thresholds, featureArity)
@@ -119,11 +117,8 @@ private[spark] object TreePoint {
 
     if (featureArity == 0) {
       val idx = java.util.Arrays.binarySearch(thresholds, featureValue)
-      if (idx >= 0) {
-        idx
-      } else {
-        -idx - 1
-      }
+      if (idx >= 0) { idx }
+      else { -idx - 1 }
     } else {
       // Categorical feature bins are indexed by feature values.
       if (featureValue < 0 || featureValue >= featureArity) {

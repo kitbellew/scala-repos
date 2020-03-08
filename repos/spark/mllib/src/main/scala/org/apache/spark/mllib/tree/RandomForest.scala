@@ -206,9 +206,7 @@ private class RandomForest(
               .sortBy(-_._1)
               .take(metadata.numFeaturesPerNode)
               .map(_._2))
-        } else {
-          None
-        }
+        } else { None }
       RandomForest.aggregateSizeForNode(metadata, featureSubset) * 8L
     }
     require(
@@ -236,9 +234,7 @@ private class RandomForest(
           numTrees = numTrees,
           checkpointInterval = strategy.checkpointInterval,
           initVal = 1))
-    } else {
-      None
-    }
+    } else { None }
 
     // FIFO queue of nodes to train: (treeIndex, node)
     val nodeQueue = new mutable.Queue[(Int, Node)]()
@@ -291,9 +287,8 @@ private class RandomForest(
 
     // Delete any remaining checkpoints used for node Id cache.
     if (nodeIdCache.nonEmpty) {
-      try {
-        nodeIdCache.get.deleteAllCheckpoints()
-      } catch {
+      try { nodeIdCache.get.deleteAllCheckpoints() }
+      catch {
         case e: IOException =>
           logWarning(
             s"delete all checkpoints failed. Error reason: ${e.getMessage}")
@@ -578,9 +573,7 @@ object RandomForest extends Serializable with Logging {
                 metadata.numFeaturesPerNode,
                 rng.nextLong)
               ._1)
-        } else {
-          None
-        }
+        } else { None }
       // Check if enough memory remains to add this node to the group.
       val nodeMemUsage =
         RandomForest.aggregateSizeForNode(metadata, featureSubset) * 8L
@@ -618,13 +611,8 @@ object RandomForest extends Serializable with Logging {
       featureSubset.get
         .map(featureIndex => metadata.numBins(featureIndex).toLong)
         .sum
-    } else {
-      metadata.numBins.map(_.toLong).sum
-    }
-    if (metadata.isClassification) {
-      metadata.numClasses * totalBins
-    } else {
-      3 * totalBins
-    }
+    } else { metadata.numBins.map(_.toLong).sum }
+    if (metadata.isClassification) { metadata.numClasses * totalBins }
+    else { 3 * totalBins }
   }
 }

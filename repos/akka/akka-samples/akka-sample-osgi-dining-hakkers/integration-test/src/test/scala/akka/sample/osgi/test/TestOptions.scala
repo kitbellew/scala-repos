@@ -68,9 +68,7 @@ object TestOptions {
       testBundles())
   }
 
-  def featureDiningHakkers(): PaxOption = {
-    akkaFeature("dining-hakker")
-  }
+  def featureDiningHakkers(): PaxOption = { akkaFeature("dining-hakker") }
 
   def akkaFeature(feature: String): PaxOption = {
     scanFeatures(

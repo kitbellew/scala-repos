@@ -115,9 +115,8 @@ private[columnar] case object RunLengthEncoding extends CompressionScheme {
         lastRun = 1
         _compressedSize += actualSize + 4
       } else {
-        if (columnType.getField(lastValue, 0) == value) {
-          lastRun += 1
-        } else {
+        if (columnType.getField(lastValue, 0) == value) { lastRun += 1 }
+        else {
           _compressedSize += actualSize + 4
           columnType.copyField(row, ordinal, lastValue, 0)
           lastRun = 1
@@ -140,9 +139,8 @@ private[columnar] case object RunLengthEncoding extends CompressionScheme {
 
           if (value.get(0, columnType.dataType) == currentValue.get(
                 0,
-                columnType.dataType)) {
-            currentRun += 1
-          } else {
+                columnType.dataType)) { currentRun += 1 }
+          else {
             // Writes current run
             columnType.append(currentValue, 0, to)
             to.putInt(currentRun)
@@ -177,9 +175,7 @@ private[columnar] case object RunLengthEncoding extends CompressionScheme {
         currentValue = columnType.extract(buffer)
         run = ByteBufferHelper.getInt(buffer)
         valueCount = 1
-      } else {
-        valueCount += 1
-      }
+      } else { valueCount += 1 }
 
       columnType.setField(row, ordinal, currentValue)
     }
@@ -332,9 +328,7 @@ private[columnar] case object BooleanBitSet extends CompressionScheme {
 
     override def gatherCompressibilityStats(
         row: InternalRow,
-        ordinal: Int): Unit = {
-      _uncompressedSize += BOOLEAN.defaultSize
-    }
+        ordinal: Int): Unit = { _uncompressedSize += BOOLEAN.defaultSize }
 
     override def compress(from: ByteBuffer, to: ByteBuffer): ByteBuffer = {
       to.putInt(BooleanBitSet.typeId)
@@ -346,9 +340,7 @@ private[columnar] case object BooleanBitSet extends CompressionScheme {
         var i = 0
 
         while (i < BITS_PER_LONG) {
-          if (BOOLEAN.extract(from)) {
-            word |= (1: Long) << i
-          }
+          if (BOOLEAN.extract(from)) { word |= (1: Long) << i }
           i += 1
         }
 
@@ -360,9 +352,7 @@ private[columnar] case object BooleanBitSet extends CompressionScheme {
         var i = 0
 
         while (from.hasRemaining) {
-          if (BOOLEAN.extract(from)) {
-            word |= (1: Long) << i
-          }
+          if (BOOLEAN.extract(from)) { word |= (1: Long) << i }
           i += 1
         }
 
@@ -393,9 +383,7 @@ private[columnar] case object BooleanBitSet extends CompressionScheme {
       val bit = visited % BITS_PER_LONG
 
       visited += 1
-      if (bit == 0) {
-        currentWord = ByteBufferHelper.getLong(buffer)
-      }
+      if (bit == 0) { currentWord = ByteBufferHelper.getLong(buffer) }
 
       row.setBoolean(ordinal, ((currentWord >> bit) & 1) != 0)
     }

@@ -28,9 +28,7 @@ object Main {
     resetShutdownTimer(context)
   }
 
-  def main(args: Array[String]) {
-    make(args, System.out, standalone = true)
-  }
+  def main(args: Array[String]) { make(args, System.out, standalone = true) }
 
   private def make(
       arguments: Seq[String],
@@ -91,9 +89,7 @@ object Main {
     } catch {
       case e: Throwable =>
         client.trace(e)
-    } finally {
-      System.setOut(oldOut)
-    }
+    } finally { System.setOut(oldOut) }
   }
 
   private def cancelShutdown() = {

@@ -19,9 +19,7 @@ class MacroExpansionCollector(private val project: Project)
         aborted: Boolean,
         errors: Int,
         warnings: Int,
-        compileContext: CompileContext) = {
-      println(compileContext)
-    }
+        compileContext: CompileContext) = { println(compileContext) }
   }
 
   override def projectOpened() = {

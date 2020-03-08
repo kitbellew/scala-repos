@@ -154,9 +154,7 @@ object Evolutions {
   }
 
   private def writeFileIfChanged(path: File, content: String): Unit = {
-    if (content != PlayIO.readFileAsString(path)) {
-      writeFile(path, content)
-    }
+    if (content != PlayIO.readFileAsString(path)) { writeFile(path, content) }
   }
 
   private def writeFile(destination: File, content: String): Unit = {
@@ -204,9 +202,7 @@ object Evolutions {
     downs
       .zip(ups)
       .reverse
-      .dropWhile {
-        case (down, up) => down.hash == up.hash
-      }
+      .dropWhile { case (down, up) => down.hash == up.hash }
       .reverse
       .unzip
 
@@ -262,12 +258,10 @@ object Evolutions {
       autocommit: Boolean = true,
       schema: String = "")(block: => T): T = {
     applyEvolutions(database, evolutionsReader, autocommit, schema)
-    try {
-      block
-    } finally {
-      try {
-        cleanupEvolutions(database, autocommit, schema)
-      } catch {
+    try { block }
+    finally {
+      try { cleanupEvolutions(database, autocommit, schema) }
+      catch {
         case e: Exception =>
           Logger.warn("Error resetting evolutions", e)
       }

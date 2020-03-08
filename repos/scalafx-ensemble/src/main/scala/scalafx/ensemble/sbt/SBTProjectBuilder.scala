@@ -42,13 +42,9 @@ object SBTProjectBuilder {
   private val resourceSubDir = "src/main/resources/"
 
   /** Last used parent directory of a saved project or users home directory */
-  def parentDir: File = synchronized {
-    _parentDir
-  }
+  def parentDir: File = synchronized { _parentDir }
 
-  def parentDir_=(dir: File) = synchronized {
-    _parentDir = dir
-  }
+  def parentDir_=(dir: File) = synchronized { _parentDir = dir }
 
   /** Create and save SBT project for a sample.
     *

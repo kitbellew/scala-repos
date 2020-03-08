@@ -104,9 +104,7 @@ class SequentialTransition(
     * This Node is used in all child Transitions, that do not define a target Node themselves.
     */
   def node: ObjectProperty[jfxs.Node] = delegate.nodeProperty
-  def node_=(n: Node) {
-    node() = n
-  }
+  def node_=(n: Node) { node() = n }
 
   /**
     * A list of $ANS that will be played sequentially.
@@ -119,7 +117,5 @@ class SequentialTransition(
     *
     * @param c list of $ANS to replace prior content.
     */
-  def children_=(c: Iterable[Animation]) {
-    fillSFXCollection(this.children, c)
-  }
+  def children_=(c: Iterable[Animation]) { fillSFXCollection(this.children, c) }
 }

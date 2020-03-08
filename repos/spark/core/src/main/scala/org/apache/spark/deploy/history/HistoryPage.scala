@@ -70,11 +70,8 @@ private[history] class HistoryPage(parent: HistoryServer)
 
             <a href={makePageLink(!requestedIncomplete)}>
               {
-        if (requestedIncomplete) {
-          "Back to completed applications"
-        } else {
-          "Show incomplete applications"
-        }
+        if (requestedIncomplete) { "Back to completed applications" }
+        else { "Show incomplete applications" }
       }
             </a>
           </div>

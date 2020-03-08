@@ -152,8 +152,6 @@ package object debug {
     override def doConsume(
         ctx: CodegenContext,
         input: Seq[ExprCode],
-        row: String): String = {
-      consume(ctx, input)
-    }
+        row: String): String = { consume(ctx, input) }
   }
 }

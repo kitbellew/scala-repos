@@ -147,9 +147,7 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
       {
         val df = sql("SELECT name, contacts FROM t WHERE age > 5 AND age < 8")
         assert(df.count() === 2)
-        assertResult(4) {
-          df.rdd.flatMap(_.getAs[Seq[_]]("contacts")).count()
-        }
+        assertResult(4) { df.rdd.flatMap(_.getAs[Seq[_]]("contacts")).count() }
       }
 
       // ppd:
@@ -159,9 +157,7 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
       {
         val df = sql("SELECT name, contacts FROM t WHERE age < 2 OR age > 8")
         assert(df.count() === 3)
-        assertResult(6) {
-          df.rdd.flatMap(_.getAs[Seq[_]]("contacts")).count()
-        }
+        assertResult(6) { df.rdd.flatMap(_.getAs[Seq[_]]("contacts")).count() }
       }
     }
   }
@@ -274,9 +270,7 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
     withOrcTable(data, "t") {
       checkAnswer(
         sql("SELECT `_1`.`_2`[0] FROM t"),
-        data.map {
-          case Tuple1((_, Seq(string))) => Row(string)
-        })
+        data.map { case Tuple1((_, Seq(string))) => Row(string) })
     }
   }
 
@@ -285,9 +279,7 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
     withOrcTable(data, "t") {
       checkAnswer(
         sql("SELECT `_1`[0].`_2` FROM t"),
-        data.map {
-          case Tuple1(Seq((_, string))) => Row(string)
-        })
+        data.map { case Tuple1(Seq((_, string))) => Row(string) })
     }
   }
 

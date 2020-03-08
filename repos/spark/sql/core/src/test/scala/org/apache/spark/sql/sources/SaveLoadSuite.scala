@@ -53,14 +53,10 @@ class SaveLoadSuite
     try {
       caseInsensitiveContext.conf
         .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, originalDefaultSource)
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
-  after {
-    Utils.deleteRecursively(path)
-  }
+  after { Utils.deleteRecursively(path) }
 
   def checkLoad(expectedDF: DataFrame = df, tbl: String = "jsonTable"): Unit = {
     caseInsensitiveContext.conf

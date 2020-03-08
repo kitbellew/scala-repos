@@ -67,9 +67,7 @@ abstract class ScPackageContainerElementType[TypeDef <: ScPackageContainer](
         ScalaIndexKeys.PACKAGE_FQN_KEY,
         append(ownNamePart).hashCode)
       i = ownNamePart.lastIndexOf(".")
-      if (i > 0) {
-        ownNamePart = ownNamePart.substring(0, i)
-      }
+      if (i > 0) { ownNamePart = ownNamePart.substring(0, i) }
     } while (i > 0)
   }
 }

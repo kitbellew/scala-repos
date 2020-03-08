@@ -110,9 +110,7 @@ trait TraitView[This <: android.view.View]
     basis.findViewById(id).asInstanceOf[V]
 
   @inline def uniqueId(implicit activity: Activity): Int = {
-    if (basis.getId < 0) {
-      basis.setId(getUniqueId)
-    }
+    if (basis.getId < 0) { basis.setId(getUniqueId) }
     basis.getId
   }
 

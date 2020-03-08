@@ -6,9 +6,7 @@ object Test extends App {
   {
     class C {
       type T = Int
-      val code = reify {
-        List[T](2)
-      }
+      val code = reify { List[T](2) }
       println(code.eval)
     }
 

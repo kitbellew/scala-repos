@@ -37,18 +37,14 @@ class InterpreterTest extends FunSuite {
     new InterpreterHelper {
       interpreter(Set(Buf.Utf8("name"), Time.now, Buf.Utf8("rawr")))
       interpreter(Open(Buf.Utf8("name")))
-      intercept[InvalidStateTransition] {
-        interpreter(Open(Buf.Utf8("name")))
-      }
+      intercept[InvalidStateTransition] { interpreter(Open(Buf.Utf8("name"))) }
     }
   }
 
   test("Interpreter: transactions should set & get/abort") {
     new InterpreterHelper {
       interpreter(Set(Buf.Utf8("name"), Time.now, Buf.Utf8("rawr")))
-      intercept[InvalidStateTransition] {
-        interpreter(Abort(Buf.Utf8("name")))
-      }
+      intercept[InvalidStateTransition] { interpreter(Abort(Buf.Utf8("name"))) }
     }
   }
 

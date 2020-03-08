@@ -32,11 +32,7 @@ object FixedPortTestUtils {
       val ports = sockets.map(_.getLocalPort())
       sockets.foreach(_.close())
       ports
-    } catch {
-      case e: IOException => {
-        throw new RuntimeException(e)
-      }
-    }
+    } catch { case e: IOException => { throw new RuntimeException(e) } }
   }
 
   def createBrokerConfigs(

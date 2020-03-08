@@ -95,9 +95,7 @@ trait AnnotationCheckers {
   }
 
   /** Remove all annotation checkers */
-  def removeAllAnnotationCheckers() {
-    annotationCheckers = Nil
-  }
+  def removeAllAnnotationCheckers() { annotationCheckers = Nil }
 
   /** @see AnnotationChecker.annotationsConform */
   def annotationsConform(tp1: Type, tp2: Type): Boolean =

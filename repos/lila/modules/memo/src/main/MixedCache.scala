@@ -12,9 +12,8 @@ final class MixedCache[K, V] private (
     logger: lila.log.Logger) {
 
   def get(k: K): V =
-    try {
-      cache get k
-    } catch {
+    try { cache get k }
+    catch {
       case e: java.util.concurrent.ExecutionException =>
         logger.debug(e.getMessage)
         default(k)

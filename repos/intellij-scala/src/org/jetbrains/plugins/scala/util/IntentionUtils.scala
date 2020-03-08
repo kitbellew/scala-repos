@@ -84,9 +84,7 @@ object IntentionUtils {
               val newArgExpr = ScalaPsiElementFactory.createExpressionFromText(
                 param.name + " = " + argExpr.getText,
                 element.getManager)
-              inWriteAction {
-                argExpr.replace(newArgExpr)
-              }
+              inWriteAction { argExpr.replace(newArgExpr) }
             }
           case _ =>
         }

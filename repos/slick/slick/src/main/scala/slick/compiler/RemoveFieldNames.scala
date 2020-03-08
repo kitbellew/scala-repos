@@ -17,9 +17,7 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
         rsm.from.nodeType
       val requiredSyms = rsm.map
         .collect[TermSymbol](
-          {
-            case Select(Ref(s), f) if s == rsm.generator => f
-          },
+          { case Select(Ref(s), f) if s == rsm.generator => f },
           stopOnMatch = true)
         .toSeq
         .distinct

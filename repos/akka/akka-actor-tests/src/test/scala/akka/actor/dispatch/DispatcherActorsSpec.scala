@@ -20,11 +20,7 @@ class DispatcherActorsSpec extends AkkaSpec {
   }
 
   class FastActor(finishedCounter: CountDownLatch) extends Actor {
-    def receive = {
-      case x: Int ⇒ {
-        finishedCounter.countDown()
-      }
-    }
+    def receive = { case x: Int ⇒ { finishedCounter.countDown() } }
   }
 
   "A dispatcher and two actors" must {
@@ -35,14 +31,10 @@ class DispatcherActorsSpec extends AkkaSpec {
       val f = system.actorOf(Props(new FastActor(fFinished)))
 
       // send a lot of stuff to s
-      for (i ← 1 to 50) {
-        s ! i
-      }
+      for (i ← 1 to 50) { s ! i }
 
       // send some messages to f
-      for (i ← 1 to 10) {
-        f ! i
-      }
+      for (i ← 1 to 10) { f ! i }
 
       // now assert that f is finished while s is still busy
       fFinished.await

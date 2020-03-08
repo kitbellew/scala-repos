@@ -257,11 +257,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     }
 
   def --(rhs: Interval[A]): List[Interval[A]] =
-    if (lhs intersects rhs) {
-      (~rhs).map(lhs & _).filter(_.nonEmpty)
-    } else {
-      if (lhs.isEmpty) Nil else List(lhs)
-    }
+    if (lhs intersects rhs) { (~rhs).map(lhs & _).filter(_.nonEmpty) }
+    else { if (lhs.isEmpty) Nil else List(lhs) }
 
   def split(t: A): (Interval[A], Interval[A]) =
     (this intersect Interval.below(t), this intersect Interval.above(t))
@@ -271,9 +268,7 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
 
   def mapAroundZero[B](f: Interval[A] => B)(
       implicit ev: AdditiveMonoid[A]): (B, B) =
-    splitAtZero match {
-      case (a, b) => (f(a), f(b))
-    }
+    splitAtZero match { case (a, b) => (f(a), f(b)) }
 
   def |(rhs: Interval[A]): Interval[A] =
     lhs union rhs
@@ -311,11 +306,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         case _ => // Above or Below
           Interval.atOrAbove(m.zero)
       }
-    } else if (hasBelow(m.zero)) {
-      -this
-    } else {
-      this
-    }
+    } else if (hasBelow(m.zero)) { -this }
+    else { this }
 
   // for all a in A, and all b in B, (A vmin B) is the interval that contains all (a min b)
   def vmin(rhs: Interval[A])(implicit m: AdditiveMonoid[A]): Interval[A] =
@@ -597,9 +589,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         case Below(u, uf)     => Above(u * rhs, upperFlagToLower(uf))
         case All() | Empty()  => this
       }
-    } else if (rhs === ev.zero) {
-      Interval.zero
-    } else {
+    } else if (rhs === ev.zero) { Interval.zero }
+    else {
       this match {
         case Point(v)             => Point(v * rhs)
         case Bounded(l, u, flags) => Bounded(l * rhs, u * rhs, flags)
@@ -616,24 +607,18 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       else
         loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
 
-    if (k < 0) {
-      throw new IllegalArgumentException(s"negative exponent: $k")
-    } else if (k == 0) {
-      Interval.point(r.one)
-    } else if (k == 1) {
-      this
-    } else if ((k & 1) == 0) {
+    if (k < 0) { throw new IllegalArgumentException(s"negative exponent: $k") }
+    else if (k == 0) { Interval.point(r.one) }
+    else if (k == 1) { this }
+    else if ((k & 1) == 0) {
       val t = abs
       loop(t, k - 1, t)
-    } else {
-      loop(this, k - 1, this)
-    }
+    } else { loop(this, k - 1, this) }
   }
 
   def nroot(k: Int)(implicit r: Ring[A], n: NRoot[A]): Interval[A] = {
-    if (k == 1) {
-      this
-    } else if ((k & 1) == 0 && hasBelow(r.zero)) {
+    if (k == 1) { this }
+    else if ((k & 1) == 0 && hasBelow(r.zero)) {
       throw new IllegalArgumentException(
         "can't take even root of negative number")
     } else {
@@ -800,18 +785,14 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         safe: Boolean,
         continue: A => Boolean,
         test: (A, A) => Boolean): Iterator[A] =
-      if (nt.overflows && !safe) {
-        iter1(start, continue, test)
-      } else {
-        iter0(start, continue)
-      }
+      if (nt.overflows && !safe) { iter1(start, continue, test) }
+      else { iter0(start, continue) }
 
     // build the actual iterator, which primarily relies on figuring
     // out which "direction" we are moving (based on the sign of the
     // step) as well as what kind of limiting bounds we have.
-    if (step === ev.zero) {
-      throw new IllegalArgumentException("zero step")
-    } else if (step > ev.zero) {
+    if (step === ev.zero) { throw new IllegalArgumentException("zero step") }
+    else if (step > ev.zero) {
       val x = getStart(lowerBound, step, "positive step with no lower bound")
       val test = (x1: A, x2: A) => x1 < x2
       upperBound match {
@@ -921,13 +902,10 @@ object Interval {
     *         NaN => Interval.empty
     */
   def errorBounds(d: Double): Interval[Rational] =
-    if (d == Double.PositiveInfinity) {
-      Interval.above(Double.MaxValue)
-    } else if (d == Double.NegativeInfinity) {
-      Interval.below(Double.MinValue)
-    } else if (isNaN(d)) {
-      Interval.empty[Rational]
-    } else {
+    if (d == Double.PositiveInfinity) { Interval.above(Double.MaxValue) }
+    else if (d == Double.NegativeInfinity) { Interval.below(Double.MinValue) }
+    else if (isNaN(d)) { Interval.empty[Rational] }
+    else {
       val n0 = Rational(Math.nextAfter(d, -1.0))
       val n1 = Rational(d)
       val n2 = Rational(Math.nextUp(d))

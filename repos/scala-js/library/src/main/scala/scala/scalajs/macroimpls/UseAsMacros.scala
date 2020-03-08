@@ -28,9 +28,7 @@ private[scalajs] object UseAsMacros {
 
   def as_impl[A: c.WeakTypeTag, B <: js.Any: c.WeakTypeTag](c: Context {
     type PrefixType = js.Using[_]
-  }): c.Expr[B] = {
-    (new Macros[c.type](c)).as[A, B]
-  }
+  }): c.Expr[B] = { (new Macros[c.type](c)).as[A, B] }
 
   private class Macros[C <: Context { type PrefixType = js.Using[_] }](val c: C)
       extends JSMembers
@@ -62,9 +60,7 @@ private[scalajs] object UseAsMacros {
 
       // Nothing and Null have everything
       if (srcSym != definitions.NothingClass &&
-          srcSym != definitions.NullClass) {
-        check(srcTpe, trgTpe)
-      }
+          srcSym != definitions.NullClass) { check(srcTpe, trgTpe) }
 
       reify { c.prefix.splice.x.asInstanceOf[B] }
     }
@@ -182,9 +178,7 @@ private[scalajs] object UseAsMacros {
       }
 
       // Group by member selection
-      for {
-        (selection, members) <- tups.groupBy(_._1)
-      } yield {
+      for { (selection, members) <- tups.groupBy(_._1) } yield {
         (selection, members.map(_._2).toList)
       }
     }
@@ -195,11 +189,9 @@ private[scalajs] object UseAsMacros {
 
       def hasAnnot(annot: Symbol) = annots.exists(annotIs(_, annot))
 
-      if (hasAnnot(JSBracketAccessAnnotation)) {
-        JSMemberBracketAccess
-      } else if (hasAnnot(JSBracketCallAnnotation)) {
-        JSMemberBracketCall
-      } else {
+      if (hasAnnot(JSBracketAccessAnnotation)) { JSMemberBracketAccess }
+      else if (hasAnnot(JSBracketCallAnnotation)) { JSMemberBracketCall }
+      else {
         val optAnnot = annots.find(annotIs(_, JSNameAnnotation))
         val optName = optAnnot.flatMap(annotStringArg)
 
@@ -216,9 +208,7 @@ private[scalajs] object UseAsMacros {
       val exports = tpe.baseClasses.flatMap(exportedDecls(tpe, _))
 
       // Group exports by name
-      for {
-        (name, elems) <- exports.groupBy(_._1)
-      } yield {
+      for { (name, elems) <- exports.groupBy(_._1) } yield {
         (JSNamedMember(name), elems.map(_._2))
       }
     }
@@ -234,9 +224,7 @@ private[scalajs] object UseAsMacros {
       for {
         decl <- sym.info.decls if decl.isMethod && !decl.isConstructor
         name <- exportNames(decl.asMethod, exportAll)
-      } yield {
-        (name, jsMemberFor(origTpe, decl.asMethod))
-      }
+      } yield { (name, jsMemberFor(origTpe, decl.asMethod)) }
     }
 
     /** Get the JS member for a method in [[origTpe]] */
@@ -278,9 +266,7 @@ private[scalajs] object UseAsMacros {
       val explicitNames = for {
         annot <- memberAnnotations(sym)
         if annotIs(annot, JSExportAnnotation)
-      } yield {
-        annotStringArg(annot).getOrElse(default)
-      }
+      } yield { annotStringArg(annot).getOrElse(default) }
 
       if (exportAll && sym.isPublic) default :: explicitNames
       else explicitNames

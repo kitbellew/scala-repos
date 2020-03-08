@@ -85,9 +85,7 @@ class IorTests extends CatsSuite {
 
   test("isLeft consistent with forall and exists") {
     forAll { (i: Int Ior String, p: String => Boolean) =>
-      if (i.isLeft) {
-        (i.forall(p) && !i.exists(p)) should ===(true)
-      }
+      if (i.isLeft) { (i.forall(p) && !i.exists(p)) should ===(true) }
     }
   }
 

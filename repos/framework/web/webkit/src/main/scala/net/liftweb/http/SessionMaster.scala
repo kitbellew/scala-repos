@@ -112,9 +112,7 @@ object SessionMaster extends LiftActor with Loggable {
     import scala.collection.JavaConversions._
 
     val ses = lockRead(nsessions)
-    ses.valuesIterator.foreach {
-      _.session.breakOutComet()
-    }
+    ses.valuesIterator.foreach { _.session.breakOutComet() }
   }
 
   def getSession(id: String, otherId: Box[String]): Box[LiftSession] =
@@ -175,13 +173,9 @@ object SessionMaster extends LiftActor with Loggable {
       }
     }
 
-  private def lockRead[T](f: => T): T = this.synchronized {
-    f
-  }
+  private def lockRead[T](f: => T): T = this.synchronized { f }
 
-  private def lockWrite[T](f: => T): T = this.synchronized {
-    f
-  }
+  private def lockWrite[T](f: => T): T = this.synchronized { f }
 
   /**
     * Adds a new session to SessionMaster
@@ -241,9 +235,8 @@ object SessionMaster extends LiftActor with Loggable {
             () => {
               try {
                 s.doShutDown
-                try {
-                  s.httpSession.foreach(_.unlink(s))
-                } catch {
+                try { s.httpSession.foreach(_.unlink(s)) }
+                catch {
                   case e: Exception => // ignore... sometimes you can't do this and it's okay
                 }
               } catch {
@@ -253,9 +246,7 @@ object SessionMaster extends LiftActor with Loggable {
             },
             0.seconds
           )
-          lockWrite {
-            nsessions.remove(sessionId)
-          }
+          lockWrite { nsessions.remove(sessionId) }
       }
 
     case CheckAndPurge =>
@@ -268,13 +259,9 @@ object SessionMaster extends LiftActor with Loggable {
         killedSessions.filter(_._2 < now).map(_._1)
       removeKeys.foreach(s => killedSessions.remove(s))
 
-      val ses = Map(lockRead {
-        nsessions
-      }.toList: _*)
+      val ses = Map(lockRead { nsessions }.toList: _*)
 
-      for {
-        f <- sessionCheckFuncs
-      } {
+      for { f <- sessionCheckFuncs } {
         if (Props.inGAE) {
           f(
             ses,
@@ -311,18 +298,13 @@ object SessionMaster extends LiftActor with Loggable {
   private[http] def sendMsg(in: Any): Unit =
     if (!Props.inGAE) this ! in
     else {
-      lockWrite {
-        tryo {
-          if (reaction.isDefinedAt(in)) reaction.apply(in)
-        }
-      }
+      lockWrite { tryo { if (reaction.isDefinedAt(in)) reaction.apply(in) } }
     }
 
   private def doPing() {
     if (!Props.inGAE) {
-      try {
-        Schedule.schedule(this, CheckAndPurge, 10.seconds)
-      } catch {
+      try { Schedule.schedule(this, CheckAndPurge, 10.seconds) }
+      catch {
         case e: Exception =>
           logger.error("Couldn't start SessionMaster ping", e)
       }

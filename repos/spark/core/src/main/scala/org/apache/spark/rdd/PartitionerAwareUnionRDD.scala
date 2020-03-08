@@ -74,9 +74,7 @@ private[spark] class PartitionerAwareUnionRDD[T: ClassTag](
   override def getPartitions: Array[Partition] = {
     val numPartitions = partitioner.get.numPartitions
     (0 until numPartitions)
-      .map(index => {
-        new PartitionerAwareUnionRDDPartition(rdds, index)
-      })
+      .map(index => { new PartitionerAwareUnionRDDPartition(rdds, index) })
       .toArray
   }
 
@@ -94,9 +92,8 @@ private[spark] class PartitionerAwareUnionRDD[T: ClassTag](
         parentLocations
       }
     }
-    val location = if (locations.isEmpty) {
-      None
-    } else {
+    val location = if (locations.isEmpty) { None }
+    else {
       // Find the location that maximum number of parent partitions prefer
       Some(locations.groupBy(x => x).maxBy(_._2.length)._1)
     }

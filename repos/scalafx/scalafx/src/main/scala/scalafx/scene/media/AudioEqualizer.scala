@@ -50,9 +50,7 @@ class AudioEqualizer(override val delegate: jfxsm.AudioEqualizer)
     * Whether the AudioEqualizer is enabled.
     */
   def enabled: BooleanProperty = delegate.enabledProperty
-  def enabled_=(v: Boolean) {
-    enabled() = v
-  }
+  def enabled_=(v: Boolean) { enabled() = v }
 
   /**
     * ObservableList containing EqualizerBand elements.

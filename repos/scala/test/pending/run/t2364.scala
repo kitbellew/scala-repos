@@ -44,9 +44,8 @@ object Test {
     val fac = new NoBindingFactoryAdapter
 
     parser.setContentHandler(fac)
-    try {
-      parser.parse(str)
-    } catch {
+    try { parser.parse(str) }
+    catch {
       case x: Exception =>
         x.printStackTrace
     }

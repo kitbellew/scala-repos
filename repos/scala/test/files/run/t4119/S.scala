@@ -1,14 +1,10 @@
 class S extends foo.bar.J {
   sss =>
 
-  val fn = () => {
-    foo(S.this)
-  }
+  val fn = () => { foo(S.this) }
   fn()
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
-    new S
-  }
+  def main(args: Array[String]): Unit = { new S }
 }

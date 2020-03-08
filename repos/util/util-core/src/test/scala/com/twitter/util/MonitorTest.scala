@@ -149,9 +149,7 @@ class MonitorTest extends WordSpec with MockitoSugar {
   "Monitor.restore" should {
     "restore current configuration" in {
       val orig = Monitor.get
-      Monitor.restoring {
-        Monitor.set(mock[Monitor])
-      }
+      Monitor.restoring { Monitor.set(mock[Monitor]) }
       assert(Monitor.get == orig)
     }
   }

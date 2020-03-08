@@ -92,9 +92,7 @@ private class UnsafeRowSerializerInstance(numFields: Int)
         throw new UnsupportedOperationException
       }
 
-      override def flush(): Unit = {
-        dOut.flush()
-      }
+      override def flush(): Unit = { dOut.flush() }
 
       override def close(): Unit = {
         writeBuffer = null
@@ -116,9 +114,8 @@ private class UnsafeRowSerializerInstance(numFields: Int)
         new Iterator[(Int, UnsafeRow)] {
 
           private[this] def readSize(): Int =
-            try {
-              dIn.readInt()
-            } catch {
+            try { dIn.readInt() }
+            catch {
               case e: EOFException =>
                 dIn.close()
                 EOF
@@ -143,9 +140,7 @@ private class UnsafeRowSerializerInstance(numFields: Int)
               rowBuffer = null
               rowTuple = null
               _rowTuple
-            } else {
-              rowTuple
-            }
+            } else { rowTuple }
           }
         }
       }
@@ -163,9 +158,7 @@ private class UnsafeRowSerializerInstance(numFields: Int)
 
       override def readValue[T: ClassTag](): T = {
         val rowSize = dIn.readInt()
-        if (rowBuffer.length < rowSize) {
-          rowBuffer = new Array[Byte](rowSize)
-        }
+        if (rowBuffer.length < rowSize) { rowBuffer = new Array[Byte](rowSize) }
         ByteStreams.readFully(dIn, rowBuffer, 0, rowSize)
         row.pointTo(rowBuffer, Platform.BYTE_ARRAY_OFFSET, rowSize)
         row.asInstanceOf[T]
@@ -176,9 +169,7 @@ private class UnsafeRowSerializerInstance(numFields: Int)
         throw new UnsupportedOperationException
       }
 
-      override def close(): Unit = {
-        dIn.close()
-      }
+      override def close(): Unit = { dIn.close() }
     }
   }
 

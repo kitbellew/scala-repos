@@ -14,11 +14,8 @@ trait IsolatedEnsimeVFSFixture extends Suite with EnsimeVFSFixture {
 
   override def withVFS[T](testCode: EnsimeVFS => T): T = {
     val vfs = EnsimeVFS()
-    try {
-      testCode(vfs)
-    } finally {
-      vfs.close()
-    }
+    try { testCode(vfs) }
+    finally { vfs.close() }
   }
 }
 
@@ -42,7 +39,5 @@ trait SharedEnsimeVFSFixture
     _vfs.close()
   }
 
-  override def withVFS[T](testCode: EnsimeVFS => T): T = {
-    testCode(_vfs)
-  }
+  override def withVFS[T](testCode: EnsimeVFS => T): T = { testCode(_vfs) }
 }

@@ -75,9 +75,7 @@ class RegressionMetrics @Since("2.0.0") (
   private lazy val SSreg = {
     val yMean = summary.mean(0)
     predictionAndObservations
-      .map {
-        case (prediction, _) => math.pow(prediction - yMean, 2)
-      }
+      .map { case (prediction, _) => math.pow(prediction - yMean, 2) }
       .sum()
   }
 
@@ -87,36 +85,28 @@ class RegressionMetrics @Since("2.0.0") (
     * @see [[https://en.wikipedia.org/wiki/Fraction_of_variance_unexplained]]
     */
   @Since("1.2.0")
-  def explainedVariance: Double = {
-    SSreg / summary.count
-  }
+  def explainedVariance: Double = { SSreg / summary.count }
 
   /**
     * Returns the mean absolute error, which is a risk function corresponding to the
     * expected value of the absolute error loss or l1-norm loss.
     */
   @Since("1.2.0")
-  def meanAbsoluteError: Double = {
-    summary.normL1(1) / summary.count
-  }
+  def meanAbsoluteError: Double = { summary.normL1(1) / summary.count }
 
   /**
     * Returns the mean squared error, which is a risk function corresponding to the
     * expected value of the squared error loss or quadratic loss.
     */
   @Since("1.2.0")
-  def meanSquaredError: Double = {
-    SSerr / summary.count
-  }
+  def meanSquaredError: Double = { SSerr / summary.count }
 
   /**
     * Returns the root mean squared error, which is defined as the square root of
     * the mean squared error.
     */
   @Since("1.2.0")
-  def rootMeanSquaredError: Double = {
-    math.sqrt(this.meanSquaredError)
-  }
+  def rootMeanSquaredError: Double = { math.sqrt(this.meanSquaredError) }
 
   /**
     * Returns R^2^, the unadjusted coefficient of determination.
@@ -127,10 +117,7 @@ class RegressionMetrics @Since("2.0.0") (
     */
   @Since("1.2.0")
   def r2: Double = {
-    if (throughOrigin) {
-      1 - SSerr / SSy
-    } else {
-      1 - SSerr / SStot
-    }
+    if (throughOrigin) { 1 - SSerr / SSy }
+    else { 1 - SSerr / SStot }
   }
 }

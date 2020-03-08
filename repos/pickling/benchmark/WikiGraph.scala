@@ -28,9 +28,7 @@ final class Vertex(val label: String, var neighbors: List[Vertex])
 
   //var graph: Graph = null
 
-  def connectTo(v: Vertex) {
-    neighbors = v +: neighbors
-  }
+  def connectTo(v: Vertex) { neighbors = v +: neighbors }
 
   def sameAs(other: Vertex): Boolean = {
     (this ne other) &&
@@ -108,9 +106,7 @@ object GraphReader extends RegexParsers {
             graph.addVertex(new Vertex(names(targetLabel), List()))
           vertices.put(targetLabel, newVertex)
           newVertex
-        } else {
-          vertexOpt.get
-        }
+        } else { vertexOpt.get }
       }
 
       firstVertex.neighbors = targetVertices
@@ -123,9 +119,7 @@ object GraphReader extends RegexParsers {
   def printGraph(g: Graph): Unit = {
     for (v <- g.vertices) {
       print(v.label + ":")
-      for (to <- v.neighbors) {
-        print(" " + to.label)
-      }
+      for (to <- v.neighbors) { print(" " + to.label) }
       println()
     }
   }
@@ -140,9 +134,7 @@ object WikiGraph {
   codec.onUnmappableCharacter(CodingErrorAction.REPLACE)
 
   val names: Map[String, String] = new HashMap[String, String] {
-    override def default(label: String) = {
-      "no_title[" + label + "]"
-    }
+    override def default(label: String) = { "no_title[" + label + "]" }
   }
   // println("Building page title map...")
 
@@ -266,9 +258,7 @@ object WikiGraphJavaBench extends WikiGraphBenchmark {
 object WikiGraphKryoBench extends WikiGraphBenchmark {
   var ser: KryoSerializer = _
 
-  override def tearDown() {
-    ser = null
-  }
+  override def tearDown() { ser = null }
 
   override def run() {
     val rnd: Int = Random.nextInt(10)

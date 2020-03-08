@@ -33,9 +33,7 @@ private[memcached] object InternalMemcached {
           server.start().boundAddress.asInstanceOf[InetSocketAddress]
         def stop() { server.stop(true) }
       })
-    } catch {
-      case NonFatal(_) => None
-    }
+    } catch { case NonFatal(_) => None }
   }
 }
 
@@ -100,9 +98,7 @@ private[memcached] object ExternalMemcached { self =>
           })
         else
           None
-      } catch {
-        case _: Throwable => None
-      }
+      } catch { case _: Throwable => None }
     }
   }
 

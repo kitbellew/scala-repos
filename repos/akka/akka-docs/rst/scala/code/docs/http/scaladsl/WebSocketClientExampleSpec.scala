@@ -51,9 +51,8 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
     val connected = upgradeResponse.map { upgrade =>
       // just like a regular http request we can get 404 NotFound,
       // with a response body, that will be available from upgrade.response
-      if (upgrade.response.status == StatusCodes.OK) {
-        Done
-      } else {
+      if (upgrade.response.status == StatusCodes.OK) { Done }
+      else {
         throw new RuntimeException(
           s"Connection failed: ${upgrade.response.status}")
       }
@@ -139,9 +138,8 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
     // just like a regular http request we can get 404 NotFound etc.
     // that will be available from upgrade.response
     val connected = upgradeResponse.flatMap { upgrade =>
-      if (upgrade.response.status == StatusCodes.OK) {
-        Future.successful(Done)
-      } else {
+      if (upgrade.response.status == StatusCodes.OK) { Future.successful(Done) }
+      else {
         throw new RuntimeException(
           s"Connection failed: ${upgrade.response.status}")
       }

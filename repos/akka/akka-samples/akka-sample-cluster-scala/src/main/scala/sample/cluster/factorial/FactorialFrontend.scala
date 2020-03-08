@@ -22,9 +22,7 @@ class FactorialFrontend(upToN: Int, repeat: Boolean)
 
   override def preStart(): Unit = {
     sendJobs()
-    if (repeat) {
-      context.setReceiveTimeout(10.seconds)
-    }
+    if (repeat) { context.setReceiveTimeout(10.seconds) }
   }
 
   def receive = {

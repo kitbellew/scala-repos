@@ -33,9 +33,7 @@ object ReplicatedMetrics {
     override def toString =
       percentPerNode.toSeq
         .sortBy(_._1)
-        .map {
-          case (key, value) ⇒ key + " --> " + value + " %"
-        }
+        .map { case (key, value) ⇒ key + " --> " + value + " %" }
         .mkString("\n")
   }
 

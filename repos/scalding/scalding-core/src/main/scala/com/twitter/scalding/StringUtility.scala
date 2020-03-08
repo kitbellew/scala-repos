@@ -9,11 +9,8 @@ object StringUtility {
       keyLength: Int): List[String] = {
     val firstIndex = text.indexOf(key, from)
     if (firstIndex == -1) {
-      if (from < textLength) {
-        List(text.substring(from))
-      } else {
-        List("")
-      }
+      if (from < textLength) { List(text.substring(from)) }
+      else { List("") }
     } else {
       // the text till the separator should be kept in any case
       text.substring(from, firstIndex) :: fastSplitHelper(

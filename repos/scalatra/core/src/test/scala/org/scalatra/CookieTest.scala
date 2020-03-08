@@ -71,11 +71,7 @@ class CookieTest extends WordSpec with Matchers with BeforeAndAfterAll {
     }
   }
 
-  override protected def afterAll() {
-    Cookie.unfreezeTime()
-  }
+  override protected def afterAll() { Cookie.unfreezeTime() }
 
-  override protected def beforeAll() {
-    Cookie.freezeTime()
-  }
+  override protected def beforeAll() { Cookie.freezeTime() }
 }

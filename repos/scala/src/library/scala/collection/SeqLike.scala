@@ -514,7 +514,9 @@ trait SeqLike[+A, +Repr]
   }
 
   private def occCounts[B](sq: Seq[B]): mutable.Map[B, Int] = {
-    val occ = new mutable.HashMap[B, Int] { override def default(k: B) = 0 }
+    val occ = new mutable.HashMap[B, Int] {
+      override def default(k: B) = 0
+    }
     for (y <- sq) occ(y) += 1
     occ
   }
@@ -784,9 +786,8 @@ object SeqLike {
         arr(pos) = cnd + 1
         pos += 1
         cnd += 1
-      } else if (cnd > 0) {
-        cnd = arr(cnd)
-      } else {
+      } else if (cnd > 0) { cnd = arr(cnd) }
+      else {
         arr(pos) = 0
         pos += 1
       }

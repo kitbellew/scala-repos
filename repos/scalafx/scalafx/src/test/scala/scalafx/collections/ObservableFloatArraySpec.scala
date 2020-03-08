@@ -60,12 +60,8 @@ class ObservableFloatArraySpec
     val instance2 = ObservableFloatArray(array2)
     val change = Buffer.empty[(ObservableFloatArray, Change)]
     var changes = 0
-    def onChangeFull(a: ObservableFloatArray, c: Change) {
-      change += ((a, c))
-    }
-    def onChangeBrief() {
-      changes += 1
-    }
+    def onChangeFull(a: ObservableFloatArray, c: Change) { change += ((a, c)) }
+    def onChangeBrief() { changes += 1 }
     instance0.onChange(onChangeFull(_, _))
     instance0.onChange(onChangeBrief)
     instance1.onChange(onChangeFull(_, _))
@@ -98,27 +94,21 @@ class ObservableFloatArraySpec
     * Test that a function to access/change an array element with an invalid index yields an out of bounds exception.
     */
   def testOutOfBoundsExceptionThrown(f: => Unit) {
-    intercept[ArrayIndexOutOfBoundsException] {
-      f
-    }
+    intercept[ArrayIndexOutOfBoundsException] { f }
   }
 
   /**
     * Test that a function results in an NegativeArraySizeException being thrown.
     */
   def testNegativeArraySizeExceptionThrown(f: => Unit) {
-    intercept[NegativeArraySizeException] {
-      f
-    }
+    intercept[NegativeArraySizeException] { f }
   }
 
   /**
     * Test that a function results in an IllegalArgumentException being thrown.
     */
   def testIllegalArgumentExceptionThrown(f: => Unit) {
-    intercept[IllegalArgumentException] {
-      f
-    }
+    intercept[IllegalArgumentException] { f }
   }
 
   /**

@@ -348,9 +348,7 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
   private[this] def maxIds(arr: Array[Array[_]], mask: BitSet): Int = {
     var back = -1
     0 until arr.length foreach { i =>
-      if (mask get i) {
-        back = back max arr(i).length
-      }
+      if (mask get i) { back = back max arr(i).length }
     }
     back
   }

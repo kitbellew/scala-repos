@@ -33,9 +33,7 @@ case class FilePart(
     try {
       copyStream()
       bos.toByteArray
-    } finally {
-      fin.close()
-    }
+    } finally { fin.close() }
   }
 
   def contentLength = file.length()

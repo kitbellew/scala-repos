@@ -15,17 +15,11 @@ object ConcurrentTest extends SpecLite {
 
     "run forked code" in {
       val latch = new CountDownLatch(1)
-      fork {
-        latch.countDown
-      }
+      fork { latch.countDown }
       assertCountDown(latch, "Should be processed asynchronously")
     }
 
-    "run test with timeout" in {
-      (withTimeout(2000) {
-        true
-      })
-    }
+    "run test with timeout" in { (withTimeout(2000) { true }) }
 
     "fail when timeout occurs" in {
       (withTimeout(100) {
@@ -46,9 +40,7 @@ object ConcurrentTest extends SpecLite {
 
   def fork(f: => Unit) {
     new Thread {
-      override def run() {
-        f
-      }
+      override def run() { f }
     }.start()
   }
 

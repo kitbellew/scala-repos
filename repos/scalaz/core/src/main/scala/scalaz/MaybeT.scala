@@ -38,9 +38,7 @@ final case class MaybeT[F[_], A](run: F[Maybe[A]]) {
     * both `F`s.  It is not compatible with `Monad#bind`.
     */
   def app[B](f: => MaybeT[F, A => B])(implicit F: Apply[F]): MaybeT[F, B] =
-    MaybeT(F.apply2(f.run, run) {
-      case (ff, aa) => maybeInstance.ap(aa)(ff)
-    })
+    MaybeT(F.apply2(f.run, run) { case (ff, aa) => maybeInstance.ap(aa)(ff) })
 
   def isJust(implicit F: Functor[F]): F[Boolean] = mapO(_.isJust)
 
@@ -202,9 +200,7 @@ private trait MaybeTBindRec[F[_]]
   final def tailrecM[A, B](f: A => MaybeT[F, A \/ B])(a: A): MaybeT[F, B] =
     MaybeT(
       B.tailrecM[A, Maybe[B]](a =>
-        F.map(f(a).run) {
-          _.cata(_.map(Maybe.just), \/.right(Maybe.empty))
-        })(a)
+        F.map(f(a).run) { _.cata(_.map(Maybe.just), \/.right(Maybe.empty)) })(a)
     )
 }
 

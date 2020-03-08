@@ -258,9 +258,7 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
     reserve(ah.activeSize)
     var i = 0
     while (i < ah.iterableSize) {
-      if (ah.isActive(i)) {
-        add(ah.index(i), ah.data(i))
-      }
+      if (ah.isActive(i)) { add(ah.index(i), ah.data(i)) }
       i += 1
     }
   }
@@ -316,11 +314,8 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
 
   def toVector = {
     requirePositiveLength()
-    if (size < 40 || activeSize > size / 2) {
-      toDenseVector
-    } else {
-      toSparseVector
-    }
+    if (size < 40 || activeSize > size / 2) { toDenseVector }
+    else { toSparseVector }
 
   }
 }
@@ -347,9 +342,7 @@ object VectorBuilder extends VectorBuilderOps {
 
   def apply[V: ClassTag: Semiring: Zero](length: Int)(values: (Int, V)*) = {
     val r = zeros[V](length)
-    for ((i, v) <- values) {
-      r.add(i, v)
-    }
+    for ((i, v) <- values) { r.add(i, v) }
     r
   }
 
@@ -357,17 +350,13 @@ object VectorBuilder extends VectorBuilderOps {
   class CanCopyBuilder[
       @spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero]
       extends CanCopy[VectorBuilder[V]] {
-    def apply(v1: VectorBuilder[V]) = {
-      v1.copy
-    }
+    def apply(v1: VectorBuilder[V]) = { v1.copy }
   }
 
   class CanZerosBuilder[
       @spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero]
       extends CanCreateZerosLike[VectorBuilder[V], VectorBuilder[V]] {
-    def apply(v1: VectorBuilder[V]) = {
-      v1.zerosLike
-    }
+    def apply(v1: VectorBuilder[V]) = { v1.zerosLike }
   }
 
   implicit def canCopyBuilder[@spec(

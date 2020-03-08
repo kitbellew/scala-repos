@@ -79,21 +79,15 @@ class MenuButton(override val delegate: jfxsc.MenuButton = new jfxsc.MenuButton)
     *
     * @param c Items to replace prior content.
     */
-  def items_=(c: Iterable[MenuItem]) {
-    fillSFXCollection(this.items, c)
-  }
+  def items_=(c: Iterable[MenuItem]) { fillSFXCollection(this.items, c) }
 
   /** Indicates on which side the ContextMenu should open in relation to the MenuButton. */
   def popupSide: jfxbp.ObjectProperty[jfxg.Side] = delegate.popupSideProperty()
 
-  def popupSide_=(side: Side) {
-    popupSide() = side
-  }
+  def popupSide_=(side: Side) { popupSide() = side }
 
   /** Hides the ContextMenu. */
-  def hide() {
-    delegate.hide()
-  }
+  def hide() { delegate.hide() }
 
   /** Gets the value of the property showing. */
   def showing: Boolean = delegate.isShowing
@@ -101,7 +95,5 @@ class MenuButton(override val delegate: jfxsc.MenuButton = new jfxsc.MenuButton)
   /** If the Menu is not disabled and the ContextMenu is not already showing,
     * then this will cause the ContextMenu to be shown.
     */
-  def show() {
-    delegate.show()
-  }
+  def show() { delegate.show() }
 }

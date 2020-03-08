@@ -35,10 +35,7 @@ object string {
   var SPACE_SPLITTER: StringSplitter = new StringSplitter(" ")
 
   def tryToInt(input: String): Option[Int] = {
-    try {
-      Some(input.toInt)
-    } catch {
-      case _: Exception => None
-    }
+    try { Some(input.toInt) }
+    catch { case _: Exception => None }
   }
 }

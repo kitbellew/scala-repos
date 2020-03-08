@@ -35,9 +35,7 @@ private[spark] abstract class SparkFunSuite
     try {
       // Avoid leaking map entries in tests that use accumulators without SparkContext
       Accumulators.clear()
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   /**

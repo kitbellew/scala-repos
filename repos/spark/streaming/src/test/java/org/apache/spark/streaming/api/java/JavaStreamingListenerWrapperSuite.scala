@@ -343,13 +343,9 @@ class TestJavaStreamingListener extends JavaStreamingListener {
 
   override def onOutputOperationStarted(
       outputOperationStarted: JavaStreamingListenerOutputOperationStarted)
-      : Unit = {
-    this.outputOperationStarted = outputOperationStarted
-  }
+      : Unit = { this.outputOperationStarted = outputOperationStarted }
 
   override def onOutputOperationCompleted(
       outputOperationCompleted: JavaStreamingListenerOutputOperationCompleted)
-      : Unit = {
-    this.outputOperationCompleted = outputOperationCompleted
-  }
+      : Unit = { this.outputOperationCompleted = outputOperationCompleted }
 }

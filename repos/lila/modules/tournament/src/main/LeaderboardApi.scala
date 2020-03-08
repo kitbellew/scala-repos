@@ -36,9 +36,7 @@ final class LeaderboardApi(coll: Coll, maxPerPage: Int) {
             "points" -> Push("s"),
             "ratios" -> Push("w")))
       )
-      .map {
-        _.documents map leaderboardAggregationResultBSONHandler.read
-      }
+      .map { _.documents map leaderboardAggregationResultBSONHandler.read }
       .map { aggs =>
         ChartData {
           aggs

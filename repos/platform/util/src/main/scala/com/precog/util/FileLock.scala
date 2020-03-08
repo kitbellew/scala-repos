@@ -47,9 +47,7 @@ object FileLock {
       val lockFile = new File(target, lockPrefix + ".lock")
       lockFile.createNewFile
       (lockFile, true)
-    } else {
-      (target, false)
-    }
+    } else { (target, false) }
 
     val channel = new RandomAccessFile(lockFile, "rw").getChannel
     val lock = channel.tryLock

@@ -103,9 +103,8 @@ class LDA private (
   @Since("1.3.0")
   def getDocConcentration: Double = {
     val parameter = docConcentration(0)
-    if (docConcentration.size == 1) {
-      parameter
-    } else {
+    if (docConcentration.size == 1) { parameter }
+    else {
       require(docConcentration.toArray.forall(_ == parameter))
       parameter
     }

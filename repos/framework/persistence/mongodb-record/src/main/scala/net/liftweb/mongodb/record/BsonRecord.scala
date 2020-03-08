@@ -151,8 +151,6 @@ trait BsonMetaRecord[BaseRecord <: BsonRecord[BaseRecord]]
     for (k <- dbo.keySet; field <- inst.fieldByName(k.toString)) {
       field.setFromAny(dbo.get(k.toString))
     }
-    inst.runSafe {
-      inst.fields.foreach(_.resetDirty)
-    }
+    inst.runSafe { inst.fields.foreach(_.resetDirty) }
   }
 }

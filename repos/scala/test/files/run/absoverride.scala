@@ -5,9 +5,7 @@ abstract class AbsIterator {
 }
 
 trait RichIterator extends AbsIterator {
-  def foreach(f: T => Unit) {
-    while (hasNext) f(next)
-  }
+  def foreach(f: T => Unit) { while (hasNext) f(next) }
 }
 
 class StringIterator(s: String) extends AbsIterator {

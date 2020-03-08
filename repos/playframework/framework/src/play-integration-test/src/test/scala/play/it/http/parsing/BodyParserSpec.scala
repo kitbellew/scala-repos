@@ -28,15 +28,9 @@ object BodyParserSpec
     implicit val mat = ActorMaterializer()(system)
     try {
       await {
-        Future {
-          bodyParser(FakeRequest())
-        }.flatMap {
-          _.run(Source.empty)
-        }
+        Future { bodyParser(FakeRequest()) }.flatMap { _.run(Source.empty) }
       }
-    } finally {
-      system.terminate()
-    }
+    } finally { system.terminate() }
   }
 
   def constant[A](a: A): BodyParser[A] =
@@ -72,9 +66,7 @@ object BodyParserSpec
 
     "satisfy functor law 1" in prop { (x: Int) =>
       mustExecute(1) { implicit ec => // one execution from `map`
-        run {
-          constant(x).map(identity)
-        } must beRight(x)
+        run { constant(x).map(identity) } must beRight(x)
       }
     }
 
@@ -86,17 +78,13 @@ object BodyParserSpec
           constant(x)
             .map(inc)
             .map(dbl)
-        } must_== run {
-          constant(x).map(inc andThen dbl)
-        }
+        } must_== run { constant(x).map(inc andThen dbl) }
       }
     }
 
     "pass through simple result" in prop { (s: Result) =>
       mustExecute(1) { implicit ec => // one execution from `map`
-        run {
-          simpleResult(s).map(identity)
-        } must beLeft(s)
+        run { simpleResult(s).map(identity) } must beLeft(s)
       }
     }
   }
@@ -105,9 +93,7 @@ object BodyParserSpec
 
     "satisfy lifted functor law 1" in prop { (x: Int) =>
       mustExecute(1) { implicit ec => // one execution from `mapM`
-        run {
-          constant(x).mapM(Future.successful)
-        } must beRight(x)
+        run { constant(x).mapM(Future.successful) } must beRight(x)
       }
     }
 
@@ -131,9 +117,7 @@ object BodyParserSpec
 
     "pass through simple result" in prop { (s: Result) =>
       mustExecute(1) { implicit ec => // one execution from `mapM`
-        run {
-          simpleResult(s).mapM(Future.successful)
-        } must beLeft(s)
+        run { simpleResult(s).mapM(Future.successful) } must beLeft(s)
       }
     }
   }
@@ -143,9 +127,7 @@ object BodyParserSpec
     "satisfy right-biased functor law 1" in prop { (x: Int) =>
       val id = (i: Int) => Right(i)
       mustExecute(1) { implicit ec => // one execution from `validate`
-        run {
-          constant(x).validate(id)
-        } must beRight(x)
+        run { constant(x).validate(id) } must beRight(x)
       }
     }
 
@@ -165,25 +147,19 @@ object BodyParserSpec
 
     "pass through simple result (case 1)" in prop { (s: Result) =>
       mustExecute(1) { implicit ec => // one execution from `validate`
-        run {
-          simpleResult(s).validate(Right.apply)
-        } must beLeft(s)
+        run { simpleResult(s).validate(Right.apply) } must beLeft(s)
       }
     }
 
     "pass through simple result (case 2)" in prop { (s1: Result, s2: Result) =>
       mustExecute(1) { implicit ec => // one execution from `validate`
-        run {
-          simpleResult(s1).validate { _ => Left(s2) }
-        } must beLeft(s1)
+        run { simpleResult(s1).validate { _ => Left(s2) } } must beLeft(s1)
       }
     }
 
     "fail with simple result" in prop { (s: Result) =>
       mustExecute(1) { implicit ec => // one execution from `validate`
-        run {
-          constant(0).validate { _ => Left(s) }
-        } must beLeft(s)
+        run { constant(0).validate { _ => Left(s) } } must beLeft(s)
       }
     }
   }
@@ -193,9 +169,7 @@ object BodyParserSpec
     "satisfy right-biased, lifted functor law 1" in prop { (x: Int) =>
       val id = (i: Int) => Future.successful(Right(i))
       mustExecute(1) { implicit ec => // one execution from `validateM`
-        run {
-          constant(x).validateM(id)
-        } must beRight(x)
+        run { constant(x).validateM(id) } must beRight(x)
       }
     }
 
@@ -203,9 +177,7 @@ object BodyParserSpec
       val inc = (i: Int) => Future.successful(Right(i + 1))
       val dbl = (i: Int) => Future.successful(Right(i * 2))
       mustExecute(3) { implicit ec => // three executions from `validateM`
-        run {
-          constant(x).validateM(inc).validateM(dbl)
-        } must_== run {
+        run { constant(x).validateM(inc).validateM(dbl) } must_== run {
           constant(x).validateM { y => Future.successful(Right((y + 1) * 2)) }
         }
       }

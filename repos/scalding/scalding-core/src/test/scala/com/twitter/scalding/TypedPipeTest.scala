@@ -159,7 +159,9 @@ class TypedPipeJoinTest extends WordSpec with Matchers {
 }
 
 // This is a non-serializable class
-class OpaqueJoinBox(i: Int) { def get = i }
+class OpaqueJoinBox(i: Int) {
+  def get = i
+}
 
 class TypedPipeJoinKryoJob(args: Args) extends Job(args) {
   val box = new OpaqueJoinBox(2)
@@ -274,9 +276,7 @@ class TypedPipeGroupedDistinctJobTest extends WordSpec with Matchers {
       .sink[(Int, Int)](TypedText.tsv[(Int, Int)]("outputFile1")) {
         outputBuffer =>
           val outSet = outputBuffer.toSet
-          "correctly generate unique items" in {
-            outSet should have size 4
-          }
+          "correctly generate unique items" in { outSet should have size 4 }
       }
       .sink[(Int, Int)](TypedText.tsv[(Int, Long)]("outputFile2")) {
         outputBuffer =>
@@ -686,9 +686,7 @@ class TypedGroupAllTest extends WordSpec with Matchers {
         .typedSink(TypedText.tsv[String]("out")) { outbuf =>
           val sortedL = outbuf.toList
           val correct = input.map { _._2 }.sorted
-          (idx + ": create sorted output") in {
-            sortedL shouldBe correct
-          }
+          (idx + ": create sorted output") in { sortedL shouldBe correct }
           idx += 1
         }
         .run
@@ -775,9 +773,7 @@ class TypedJoinWCTest extends WordSpec with Matchers {
         .source(TextLine("in1"), in1)
         .typedSink(TypedText.tsv[(String, Int, Int)]("out")) { outbuf =>
           val sortedL = outbuf.toList
-          "create sorted output" in {
-            sortedL shouldBe correct
-          }
+          "create sorted output" in { sortedL shouldBe correct }
         }
         .run
         .finish
@@ -1393,9 +1389,7 @@ class JoinMapGroupJobTest extends WordSpec with Matchers {
   "A JoinMapGroupJob" should {
     JobTest(new JoinMapGroupJob(_))
       .typedSink(TypedText.tsv[(Int, String)]("output")) { outBuf =>
-        "not duplicate keys" in {
-          outBuf.toList shouldBe List((1, "a"))
-        }
+        "not duplicate keys" in { outBuf.toList shouldBe List((1, "a")) }
       }
       .run
       .finish
@@ -1442,9 +1436,7 @@ class NullSinkJobTest extends WordSpec with Matchers {
     val buf = scala.collection.mutable.Buffer[Int]()
     JobTest(new NullSinkJob(_, buf))
       .typedSink[Any](source.NullSink) { _ =>
-        "have a side effect" in {
-          assert(buf.toSet === (0 to 100).toSet)
-        }
+        "have a side effect" in { assert(buf.toSet === (0 to 100).toSet) }
       }
       .run
       .finish

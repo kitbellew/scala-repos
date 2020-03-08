@@ -261,9 +261,7 @@ trait Writer {
             if (c < ' ') {
               val t = "000" + Integer.toHexString(c)
               sb.append("\\u" + t.takeRight(4))
-            } else {
-              sb.append(c.toString)
-            }
+            } else { sb.append(c.toString) }
         }
         i += 1
       }
@@ -488,9 +486,7 @@ class Json extends Writer2 {
     var linePos = 1
     var charPos = 1
 
-    def getDigits() = {
-      while (chKind == Digit) chNext()
-    }
+    def getDigits() = { while (chKind == Digit) chNext() }
 
     def handleDigit() {
       val first = chMark
@@ -499,21 +495,14 @@ class Json extends Writer2 {
         chNext()
         getDigits()
         BIGNUMBER
-      } else {
-        NUMBER
-      }
+      } else { NUMBER }
       val k2 = if (ch == 'E'.toInt || ch == 'e'.toInt) {
         chNext()
-        if (ch == '+'.toInt) {
-          chNext()
-        } else if (ch == '-'.toInt) {
-          chNext()
-        }
+        if (ch == '+'.toInt) { chNext() }
+        else if (ch == '-'.toInt) { chNext() }
         getDigits()
         FLOATNUMBER
-      } else {
-        k1
-      }
+      } else { k1 }
 
       /**/
       tokenKind = k2 /**/
@@ -556,9 +545,7 @@ class Json extends Writer2 {
         kind match {
           case Letter =>
             val first = chMark
-            while (chKind == Letter || chKind == Digit) {
-              chNext()
-            }
+            while (chKind == Letter || chKind == Digit) { chNext() }
             tokenKind = ID
             tokenValue = chSubstr(first)
 
@@ -595,9 +582,7 @@ class Json extends Writer2 {
                     sb.append(code.toChar.toString)
                 }
                 first = chMark
-              } else {
-                chNext()
-              }
+              } else { chNext() }
             }
             if (ch != '"') chError("Unexpected string character: " + ch.toChar)
 
@@ -607,9 +592,7 @@ class Json extends Writer2 {
 
             tokenValue = sb.toString()
             chNext()
-            if (tokenValue.length() == 0 && ch == '{') {
-              handleRaw()
-            }
+            if (tokenValue.length() == 0 && ch == '{') { handleRaw() }
 
           case Colon => handle(COLON) /**/
           case Comma => handle(COMMA) /**/
@@ -693,11 +676,8 @@ class Json extends Writer2 {
       JsObject(result.toMap)
     }
     def handleNumber(name: String, f: String => Unit) = {
-      try {
-        f(tokenValue)
-      } catch {
-        case _: Throwable => tokenError("Bad " + name)
-      }
+      try { f(tokenValue) }
+      catch { case _: Throwable => tokenError("Bad " + name) }
       val old = tokenValue
       tokenNext()
 

@@ -125,9 +125,7 @@ class InplaceRenameHelper(parent: PsiElement) {
 
           override def templateFinished(
               template: Template,
-              brokenOff: Boolean) {
-            clearHighlighters()
-          }
+              brokenOff: Boolean) { clearHighlighters() }
 
           private def addHighlights(
               ranges: mutable.HashMap[RangeMarker, TextAttributes],

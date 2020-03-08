@@ -104,8 +104,6 @@ class DontLeakActorsOnFailingConnectionSpecs
     }
   }
 
-  override def afterAll = {
-    Await.result(system.terminate(), 3.seconds)
-  }
+  override def afterAll = { Await.result(system.terminate(), 3.seconds) }
 
 }

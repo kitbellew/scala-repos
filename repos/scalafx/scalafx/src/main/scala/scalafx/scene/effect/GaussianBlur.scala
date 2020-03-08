@@ -50,8 +50,6 @@ class GaussianBlur(
     * The radius of the blur kernel.
     */
   def radius: DoubleProperty = delegate.radiusProperty
-  def radius_=(v: Double) {
-    radius() = v
-  }
+  def radius_=(v: Double) { radius() = v }
 
 }

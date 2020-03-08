@@ -328,9 +328,7 @@ object EnumerateesSpec
     "passAlong a future enumerator" in {
       mustExecute(9) { sumEC =>
         val passAlongFuture = Enumeratee.flatten {
-          Future {
-            Enumeratee.passAlong[Int]
-          }(ExecutionContext.global)
+          Future { Enumeratee.passAlong[Int] }(ExecutionContext.global)
         }
         val sum = Iteratee.fold[Int, Int](0)(_ + _)(sumEC)
         val enumerator = Enumerator(1, 2, 3, 4, 5, 6, 7, 8, 9)

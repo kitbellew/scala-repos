@@ -127,28 +127,20 @@ class Region(override val delegate: jfxsl.Region = new jfxsl.Region())
     */
   def background: ObjectProperty[jfxsl.Background] =
     delegate.backgroundProperty()
-  def background_=(v: Background) {
-    background() = v
-  }
+  def background_=(v: Background) { background() = v }
 
   /** The border of the Region, which is made up of zero or more BorderStrokes, and zero or more BorderImages. */
   def border: ObjectProperty[jfxsl.Border] = delegate.borderProperty()
-  def border_=(v: Border) {
-    border() = v
-  }
+  def border_=(v: Border) { border() = v }
 
   /** Defines a hint to the system indicating that the Shape used to define the region's
     * background is stable and would benefit from caching. */
   def cacheShape: BooleanProperty = delegate.cacheProperty()
-  def cacheShape_=(v: Boolean) {
-    cacheShape() = v
-  }
+  def cacheShape_=(v: Boolean) { cacheShape() = v }
 
   /** Defines whether the shape is centered within the Region's width or height. */
   def centerShape: BooleanProperty = delegate.centerShapeProperty()
-  def centerShape_=(v: Boolean) {
-    centerShape() = v
-  }
+  def centerShape_=(v: Boolean) { centerShape() = v }
 
   /**
     * The height of this resizable node.
@@ -164,79 +156,59 @@ class Region(override val delegate: jfxsl.Region = new jfxsl.Region())
     * Property for overriding the region's computed maximum height.
     */
   def maxHeight: DoubleProperty = delegate.maxHeightProperty
-  def maxHeight_=(v: Double) {
-    maxHeight() = v
-  }
+  def maxHeight_=(v: Double) { maxHeight() = v }
 
   /**
     * Property for overriding the region's computed maximum width.
     */
   def maxWidth: DoubleProperty = delegate.maxWidthProperty
-  def maxWidth_=(v: Double) {
-    maxWidth() = v
-  }
+  def maxWidth_=(v: Double) { maxWidth() = v }
 
   /**
     * Property for overriding the region's computed minimum height.
     */
   def minHeight: DoubleProperty = delegate.minHeightProperty
-  def minHeight_=(v: Double) {
-    minHeight() = v
-  }
+  def minHeight_=(v: Double) { minHeight() = v }
 
   /**
     * Property for overriding the region's computed minimum width.
     */
   def minWidth: DoubleProperty = delegate.minWidthProperty
-  def minWidth_=(v: Double) {
-    minWidth() = v
-  }
+  def minWidth_=(v: Double) { minWidth() = v }
 
   /** Defines the area of the region within which completely opaque pixels are drawn. */
   def opaqueInsets: ObjectProperty[jfxg.Insets] =
     delegate.opaqueInsetsProperty()
-  def opaqueInsets_=(v: Insets) {
-    opaqueInsets() = v
-  }
+  def opaqueInsets_=(v: Insets) { opaqueInsets() = v }
 
   /**
     * The top,right,bottom,left padding around the region's content.
     */
   def padding: ObjectProperty[jfxg.Insets] = delegate.paddingProperty
-  def padding_=(v: Insets) {
-    padding() = v
-  }
+  def padding_=(v: Insets) { padding() = v }
 
   /**
     * Property for overriding the region's computed preferred height.
     */
   def prefHeight: DoubleProperty = delegate.prefHeightProperty
-  def prefHeight_=(v: Double) {
-    prefHeight() = v
-  }
+  def prefHeight_=(v: Double) { prefHeight() = v }
 
   /**
     * Property for overriding the region's computed preferred width.
     */
   def prefWidth: DoubleProperty = delegate.prefWidthProperty
-  def prefWidth_=(v: Double) {
-    prefWidth() = v
-  }
+  def prefWidth_=(v: Double) { prefWidth() = v }
 
   /** When specified, the shape will cause the region to be rendered as the specified shape rather than as a rounded rectangle. */
   def shape: ObjectProperty[jfxss.Shape] = delegate.shapeProperty()
-  def shape_=(v: Shape) {
-    shape() = v
-  }
+  def shape_=(v: Shape) { shape() = v }
 
   /**
     * Defines whether this region rounds position/spacing and cell size values to pixel boundaries
     * when laying out its children.
     */
   def snapToPixel: BooleanProperty = delegate.snapToPixelProperty
-  def snapToPixel_=(v: Boolean) {
-    snapToPixel() = v
-  }
+  def snapToPixel_=(v: Boolean) { snapToPixel() = v }
 
   /**
     * Returns true since all Regions are resizable.
@@ -252,9 +224,7 @@ class Region(override val delegate: jfxsl.Region = new jfxsl.Region())
 
   /** Specifies whether the shape, if defined, is scaled to match the size of the Region. */
   def scaleShape: BooleanProperty = delegate.scaleShapeProperty()
-  def scaleShape_=(v: Boolean) {
-    scaleShape() = v
-  }
+  def scaleShape_=(v: Boolean) { scaleShape() = v }
 
   /**
     * Gets the space around content, which will include any borders plus padding if set.

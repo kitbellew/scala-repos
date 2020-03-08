@@ -101,9 +101,8 @@ object Main {
     if (ActorSystem.GlobalHome.isDefined) {
       val home = ActorSystem.GlobalHome.get
       val deploy = new File(home, "deploy")
-      if (deploy.exists) {
-        loadDeployJars(deploy)
-      } else {
+      if (deploy.exists) { loadDeployJars(deploy) }
+      else {
         log("[warning] No deploy dir found at " + deploy)
         Thread.currentThread.getContextClassLoader
       }

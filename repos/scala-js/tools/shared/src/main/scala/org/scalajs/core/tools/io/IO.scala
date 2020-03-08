@@ -37,9 +37,7 @@ object IO {
       }
       loop()
       builder.result()
-    } finally {
-      br.close()
-    }
+    } finally { br.close() }
   }
 
   /** Reads the entire content of a reader as a string. */
@@ -139,9 +137,7 @@ object IO {
         // New line after each file
         out.write('\n')
       }
-    } finally {
-      out.close()
-    }
+    } finally { out.close() }
   }
 
   @inline

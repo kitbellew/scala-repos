@@ -173,9 +173,7 @@ class SparkILoop(
 
   private def sparkCleanUp() {
     echo("Stopping spark context.")
-    intp.beQuietDuring {
-      command("sc.stop()")
-    }
+    intp.beQuietDuring { command("sc.stop()") }
   }
 
   /** Close the interpreter and set the var to null. */
@@ -740,9 +738,8 @@ class SparkILoop(
     }
     def innerLoop() {
       val shouldContinue =
-        try {
-          processLine(readOneLine())
-        } catch { case t: Throwable => crashRecovery(t) }
+        try { processLine(readOneLine()) }
+        catch { case t: Throwable => crashRecovery(t) }
       if (shouldContinue)
         innerLoop()
     }
@@ -1117,9 +1114,7 @@ class SparkILoop(
       // initialization in certain cases, there's an initialization order issue that prevents
       // this from being set after SparkContext is instantiated.
       .set("spark.repl.class.outputDir", intp.outputDir.getAbsolutePath())
-    if (execUri != null) {
-      conf.set("spark.executor.uri", execUri)
-    }
+    if (execUri != null) { conf.set("spark.executor.uri", execUri) }
     sparkContext = new SparkContext(conf)
     logInfo("Created spark context..")
     sparkContext

@@ -62,9 +62,8 @@ object RunHook {
         val failures: LinkedHashMap[RunHook, Throwable] = LinkedHashMap.empty
 
         hooks foreach { hook =>
-          try {
-            f(hook)
-          } catch {
+          try { f(hook) }
+          catch {
             case NonFatal(e) =>
               failures += hook -> e
           }
@@ -72,11 +71,8 @@ object RunHook {
 
         // Throw failure if it occurred....
         if (!suppressFailure && failures.nonEmpty) {
-          if (failures.size == 1) {
-            throw failures.values.head
-          } else {
-            throw RunHookCompositeThrowable(failures.values.toSet)
-          }
+          if (failures.size == 1) { throw failures.values.head }
+          else { throw RunHookCompositeThrowable(failures.values.toSet) }
         }
       } catch {
         case NonFatal(e) if suppressFailure =>

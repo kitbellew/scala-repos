@@ -15,9 +15,7 @@ final class SocketHub extends Actor {
 
   context.system.lilaBus.subscribe(self, 'deploy, 'socket)
 
-  override def postStop() {
-    context.system.lilaBus.unsubscribe(self)
-  }
+  override def postStop() { context.system.lilaBus.unsubscribe(self) }
 
   import SocketHub._
 

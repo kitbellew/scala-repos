@@ -222,10 +222,6 @@ object ToHeadUsages extends Specification {
     }
   }
 
-  step {
-    tryo {
-      jetty.stop()
-    }
-  }
+  step { tryo { jetty.stop() } }
 
 }

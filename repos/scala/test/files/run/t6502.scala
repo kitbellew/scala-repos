@@ -76,9 +76,7 @@ object Test extends StoreReporterDirectTest {
       s"[${added}] in [${output.lines.mkString("/")}]"
     )
     lines = lines drop promptLength
-    assert {
-      lines.next.contains("testing...")
-    }
+    assert { lines.next.contains("testing...") }
   }
 
   def test2(): Unit = {
@@ -95,9 +93,7 @@ object Test extends StoreReporterDirectTest {
     var lines = output.lines.drop(headerLength)
     lines = lines drop promptLength
     val added = lines.next
-    assert {
-      added.contains("Added") && added.contains("test1.jar")
-    }
+    assert { added.contains("Added") && added.contains("test1.jar") }
     lines = lines drop promptLength
     val msg = lines.next
     assert {
@@ -121,13 +117,9 @@ object Test extends StoreReporterDirectTest {
     var lines = output.lines.drop(headerLength)
     lines = lines drop promptLength
     val added = lines.next
-    assert {
-      added.contains("Added") && added.contains("test1.jar")
-    }
+    assert { added.contains("Added") && added.contains("test1.jar") }
     lines = lines drop (2 * promptLength + 1)
-    assert {
-      lines.next.contains("new object in existing package")
-    }
+    assert { lines.next.contains("new object in existing package") }
   }
 
   def test4(): Unit = {
@@ -141,9 +133,7 @@ object Test extends StoreReporterDirectTest {
     var lines = output.lines.drop(headerLength)
     lines = lines drop promptLength
     val added = lines.next
-    assert {
-      added.contains("Added") && added.contains("test1.jar")
-    }
+    assert { added.contains("Added") && added.contains("test1.jar") }
     lines = lines drop promptLength
     val msg = lines.next
     assert {

@@ -254,9 +254,7 @@ abstract class TreeSetTest(val factory: TreeSetFactory)
     if (factory.allowsNullElement) {
       assertTrue(hs.add(null))
       assertTrue(hs.contains(null))
-    } else {
-      expectThrows(classOf[Exception], hs.add(null))
-    }
+    } else { expectThrows(classOf[Exception], hs.add(null)) }
   }
 
   @Test def should_not_put_a_whole_Collection_with_null_elements_into()
@@ -270,10 +268,7 @@ abstract class TreeSetTest(val factory: TreeSetFactory)
       assertTrue(ts1.contains("ONE"))
       assertFalse(ts1.contains("THREE"))
     } else {
-      expectThrows(
-        classOf[Exception], {
-          ts1.addAll(asJavaCollection(l))
-        })
+      expectThrows(classOf[Exception], { ts1.addAll(asJavaCollection(l)) })
     }
   }
 

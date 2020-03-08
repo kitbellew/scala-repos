@@ -146,13 +146,9 @@ object HttpBinApplication {
 
   val redirect: Routes = {
     case GET(p"/redirect/0") =>
-      Action {
-        Redirect("/get")
-      }
+      Action { Redirect("/get") }
     case GET(p"/redirect/$param<([0-9]+)>") =>
-      Action {
-        Redirect("redirect/" + param)
-      }
+      Action { Redirect("redirect/" + param) }
   }
 
   val redirectTo: Routes = {
@@ -240,11 +236,8 @@ object HttpBinApplication {
         val p = Promise[Result]()
 
         Future {
-          Try {
-            Await.result(p.future, Duration(duration.toLong, SECONDS))
-          }.getOrElse {
-            p.success(Ok(requestWriter.writes(request)))
-          }
+          Try { Await.result(p.future, Duration(duration.toLong, SECONDS)) }
+            .getOrElse { p.success(Ok(requestWriter.writes(request))) }
         }
 
         p.future
@@ -316,9 +309,7 @@ object HttpBinApplication {
 
   val robots: Routes = {
     case GET(p"/robots.txt") =>
-      Action {
-        Ok("User-agent: *\nDisallow: /deny")
-      }
+      Action { Ok("User-agent: *\nDisallow: /deny") }
     case GET(p"deny") =>
       Action {
         Ok("""

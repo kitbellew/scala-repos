@@ -100,13 +100,9 @@ class BloomFilterTest extends FunSuite with Checkers {
       strings2: Set[String]): Boolean = {
     val bf = new BloomFilter[String](numBuckets, numHashes.abs)
     val bf2 = new BloomFilter[String](numBuckets, numHashes.abs)
-    strings foreach {
-      bf += _
-    }
+    strings foreach { bf += _ }
     bf2 |= bf
-    val numBad = (strings2 -- strings).count {
-      bf2 contains _
-    }
+    val numBad = (strings2 -- strings).count { bf2 contains _ }
     numBad <= ((strings2 -- strings).size / 100) + 1
   }
 }

@@ -37,9 +37,7 @@ class PolynomialExpansionSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  test("params") {
-    ParamsSuite.checkParams(new PolynomialExpansion)
-  }
+  test("params") { ParamsSuite.checkParams(new PolynomialExpansion) }
 
   private val data = Array(
     Vectors.sparse(3, Seq((0, -2.0), (1, 2.3))),

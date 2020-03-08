@@ -86,9 +86,7 @@ private[streaming] class StreamingListenerBus(sparkListenerBus: LiveListenerBus)
     * Unregister this one with the Spark listener bus and all StreamingListeners won't receive any
     * events after that.
     */
-  def stop(): Unit = {
-    sparkListenerBus.removeListener(this)
-  }
+  def stop(): Unit = { sparkListenerBus.removeListener(this) }
 
   /**
     * Wrapper for StreamingListenerEvent as SparkListenerEvent so that it can be posted to Spark

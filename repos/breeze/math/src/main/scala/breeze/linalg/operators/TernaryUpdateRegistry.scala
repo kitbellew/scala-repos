@@ -68,9 +68,8 @@ trait TernaryUpdateRegistry[A, B, C, Op]
           method.asInstanceOf[InPlaceImpl3[Op, A, B, C]].apply(a, b, c)
         case _ =>
           val selected = selectBestOption(options)
-          if (selected.size != 1) {
-            multipleOptions(a, b, c, options)
-          } else {
+          if (selected.size != 1) { multipleOptions(a, b, c, options) }
+          else {
             val method = selected.values.head
             cache.put((ac, bc, cc), Some(method))
             method.asInstanceOf[InPlaceImpl3[Op, A, B, C]].apply(a, b, c)

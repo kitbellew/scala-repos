@@ -94,9 +94,7 @@ private[streaming] class FileBasedWriteAheadLog(
       while (!succeeded && failures < maxFailures) {
         try {
           fileSegment = getLogWriter(time).write(byteBuffer)
-          if (closeFileAfterWrite) {
-            resetWriter()
-          }
+          if (closeFileAfterWrite) { resetWriter() }
           succeeded = true
         } catch {
           case ex: Exception =>
@@ -121,9 +119,7 @@ private[streaming] class FileBasedWriteAheadLog(
       reader =
         new FileBasedWriteAheadLogRandomReader(fileSegment.path, hadoopConf)
       byteBuffer = reader.read(fileSegment)
-    } finally {
-      reader.close()
-    }
+    } finally { reader.close() }
     byteBuffer
   }
 
@@ -210,9 +206,7 @@ private[streaming] class FileBasedWriteAheadLog(
 
   /** Stop the manager, close any open log writer */
   def close(): Unit = synchronized {
-    if (currentLogWriter != null) {
-      currentLogWriter.close()
-    }
+    if (currentLogWriter != null) { currentLogWriter.close() }
     executionContext.shutdown()
     logInfo("Stopped write ahead log manager")
   }

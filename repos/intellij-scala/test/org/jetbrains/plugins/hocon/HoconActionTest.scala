@@ -41,9 +41,7 @@ abstract class HoconActionTest(actionId: String, subpath: String)
     try {
       executeAction(dataContext, editor)
       resultAfterAction(editor)
-    } finally {
-      editorManager.closeFile(psiFile.getVirtualFile)
-    }
+    } finally { editorManager.closeFile(psiFile.getVirtualFile) }
   }
 
   protected def executeAction(

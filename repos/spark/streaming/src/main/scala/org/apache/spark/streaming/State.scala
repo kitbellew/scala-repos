@@ -139,16 +139,11 @@ private[streaming] class StateImpl[S] extends State[S] {
   private var removed: Boolean = false
 
   // ========= Public API =========
-  override def exists(): Boolean = {
-    defined
-  }
+  override def exists(): Boolean = { defined }
 
   override def get(): S = {
-    if (defined) {
-      state
-    } else {
-      throw new NoSuchElementException("State is not set")
-    }
+    if (defined) { state }
+    else { throw new NoSuchElementException("State is not set") }
   }
 
   override def update(newState: S): Unit = {
@@ -159,9 +154,7 @@ private[streaming] class StateImpl[S] extends State[S] {
     updated = true
   }
 
-  override def isTimingOut(): Boolean = {
-    timingOut
-  }
+  override def isTimingOut(): Boolean = { timingOut }
 
   override def remove(): Unit = {
     require(!timingOut, "Cannot remove the state that is timing out")
@@ -174,14 +167,10 @@ private[streaming] class StateImpl[S] extends State[S] {
   // ========= Internal API =========
 
   /** Whether the state has been marked for removing */
-  def isRemoved(): Boolean = {
-    removed
-  }
+  def isRemoved(): Boolean = { removed }
 
   /** Whether the state has been been updated */
-  def isUpdated(): Boolean = {
-    updated
-  }
+  def isUpdated(): Boolean = { updated }
 
   /**
     * Update the internal data and flags in `this` to the given state option.

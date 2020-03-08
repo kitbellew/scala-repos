@@ -4,9 +4,7 @@ class AbortException extends RuntimeException
 
 object Transaction {
   private var cnt = 0L
-  def nextId: Long = synchronized {
-    cnt += 1; cnt
-  }
+  def nextId: Long = synchronized { cnt += 1; cnt }
 
   // Transaction status constants
   val Running = 0

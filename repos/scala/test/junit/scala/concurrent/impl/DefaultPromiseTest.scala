@@ -242,9 +242,7 @@ class DefaultPromiseTest {
     val t = new Tester()
     var pMap = Map.empty[PromiseKey, PromiseId]
     def byKey(key: PromiseKey): PromiseId = {
-      if (!pMap.contains(key)) {
-        pMap = pMap.updated(key, t.newPromise())
-      }
+      if (!pMap.contains(key)) { pMap = pMap.updated(key, t.newPromise()) }
       pMap(key)
     }
 
@@ -272,15 +270,11 @@ class DefaultPromiseTest {
 
   /** Test all permutations of actions with a single promise */
   @Test
-  def testPermutations1 {
-    testPermutations(1)
-  }
+  def testPermutations1 { testPermutations(1) }
 
   /** Test all permutations of actions with two promises - about 40 thousand */
   @Test
-  def testPermutations2 {
-    testPermutations(2)
-  }
+  def testPermutations2 { testPermutations(2) }
 
   /** Link promises in different orders, using the same link structure as is
     *  used in Future.flatMap */
@@ -300,9 +294,8 @@ class DefaultPromiseTest {
           count: Int,
           p1: PromiseId,
           acc: List[FlatMapEvent]): List[FlatMapEvent] = {
-        if (count == 0) {
-          Complete(p1) :: acc
-        } else {
+        if (count == 0) { Complete(p1) :: acc }
+        else {
           val p2 = t.newPromise()
           flatMapEvents(count - 1, p2, Link(p2, p1) :: acc)
         }
@@ -336,17 +329,14 @@ class DefaultPromiseTest {
               startLatch.await()
               f
               doneLatch.countDown()
-            } catch {
-              case NonFatal(e) => ec.reportFailure(e)
-            }
+            } catch { case NonFatal(e) => ec.reportFailure(e) }
           }
         })
       }
       @tailrec
       def flatMapTimes(count: Int, p1: DefaultPromise[Int]) {
-        if (count == 0) {
-          execute { p1.success(1) }
-        } else {
+        if (count == 0) { execute { p1.success(1) } }
+        else {
           val p2 = new DefaultPromise[Int]()
           execute { p2.linkRootOf(p1) }
           flatMapTimes(count - 1, p2)

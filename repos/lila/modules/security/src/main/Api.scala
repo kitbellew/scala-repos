@@ -54,9 +54,7 @@ final class Api(
           Store userIdAndFingerprint sessionId flatMap {
             _ ?? { d =>
               UserRepo.byId(d.user) map {
-                _ map {
-                  FingerprintedUser(_, d.fp.isDefined)
-                }
+                _ map { FingerprintedUser(_, d.fp.isDefined) }
               }
             }
           }

@@ -198,9 +198,7 @@ trait Names extends api.Names {
              typeName.start,
              cs,
              0,
-             cs.length))) {
-      typeName = typeName.next
-    }
+             cs.length))) { typeName = typeName.next }
     assert(typeName != null, s"TypeName ${new String(cs)} not yet created.")
     typeName
   }

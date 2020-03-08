@@ -37,9 +37,7 @@ object StopWords {
     .split(sys.props("line.separator"))
     .toSet
 
-  def removePunctuation(str: String): String = {
-    PUNCTUATION.replaceAll(str)
-  }
+  def removePunctuation(str: String): String = { PUNCTUATION.replaceAll(str) }
 
   def getStopWordCount(content: String): WordStats = {
 

@@ -242,9 +242,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       val numStreams = options.valueOf(numStreamsOpt).intValue()
 
       Runtime.getRuntime.addShutdownHook(new Thread("MirrorMakerShutdownHook") {
-        override def run() {
-          cleanShutdown()
-        }
+        override def run() { cleanShutdown() }
       })
 
       // create producer
@@ -290,9 +288,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
                 CoreUtils.createObject[ConsumerRebalanceListener](
                   customRebalanceListenerClass))
             }
-          } else {
-            None
-          }
+          } else { None }
         }
 
         if (customRebalanceListener.exists(
@@ -324,9 +320,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
                   org.apache.kafka.clients.consumer.ConsumerRebalanceListener](
                   customRebalanceListenerClass))
             }
-          } else {
-            None
-          }
+          } else { None }
         }
         if (customRebalanceListener.exists(!_.isInstanceOf[
               org.apache.kafka.clients.consumer.ConsumerRebalanceListener]))
@@ -356,9 +350,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
           else
             CoreUtils.createObject[MirrorMakerMessageHandler](
               customMessageHandlerClass)
-        } else {
-          defaultMirrorMakerMessageHandler
-        }
+        } else { defaultMirrorMakerMessageHandler }
       }
     } catch {
       case ct: ControlThrowable => throw ct
@@ -448,9 +440,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
   def commitOffsets(mirrorMakerConsumer: MirrorMakerBaseConsumer) {
     if (!exitingOnSendFailure) {
       trace("Committing offsets.")
-      try {
-        mirrorMakerConsumer.commit()
-      } catch {
+      try { mirrorMakerConsumer.commit() }
+      catch {
         case e: WakeupException =>
           // we only call wakeup() once to close the consumer,
           // so if we catch it in commit we can safely retry
@@ -458,9 +449,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
           mirrorMakerConsumer.commit()
           throw e
       }
-    } else {
-      info("Exiting on send failure, skip committing offsets.")
-    }
+    } else { info("Exiting on send failure, skip committing offsets.") }
   }
 
   def cleanShutdown() {
@@ -628,13 +617,9 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       // Do nothing
     }
 
-    override def cleanup() {
-      connector.shutdown()
-    }
+    override def cleanup() { connector.shutdown() }
 
-    override def commit() {
-      connector.commitOffsets
-    }
+    override def commit() { connector.commitOffsets }
   }
 
   private class MirrorMakerNewConsumer(
@@ -697,13 +682,9 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         record.value)
     }
 
-    override def stop() {
-      consumer.wakeup()
-    }
+    override def stop() { consumer.wakeup() }
 
-    override def cleanup() {
-      consumer.close()
-    }
+    override def cleanup() { consumer.close() }
 
     override def commit() {
       consumer.commitSync(offsets.map {
@@ -768,9 +749,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
     val producer = new KafkaProducer[Array[Byte], Array[Byte]](producerProps)
 
     def send(record: ProducerRecord[Array[Byte], Array[Byte]]) {
-      if (sync) {
-        this.producer.send(record).get()
-      } else {
+      if (sync) { this.producer.send(record).get() }
+      else {
         this.producer.send(
           record,
           new MirrorMakerProducerCallback(
@@ -780,13 +760,9 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       }
     }
 
-    def flush() {
-      this.producer.flush()
-    }
+    def flush() { this.producer.flush() }
 
-    def close() {
-      this.producer.close()
-    }
+    def close() { this.producer.close() }
 
     def close(timeout: Long) {
       this.producer.close(timeout, TimeUnit.MILLISECONDS)

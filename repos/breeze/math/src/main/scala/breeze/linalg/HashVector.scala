@@ -33,9 +33,7 @@ class HashVector[@spec(Double, Int, Float, Long) E](
 
   def apply(i: Int): E = array(i)
 
-  def update(i: Int, v: E) {
-    array(i) = v
-  }
+  def update(i: Int, v: E) { array(i) = v }
 
   def default = array.defaultValue
 
@@ -52,9 +50,7 @@ class HashVector[@spec(Double, Int, Float, Long) E](
   final def index = array.index
   final def isActive(i: Int) = array.isActive(i)
 
-  override def toString = {
-    activeIterator.mkString("HashVector(", ", ", ")")
-  }
+  override def toString = { activeIterator.mkString("HashVector(", ", ", ")") }
 
   def allVisitableIndicesActive: Boolean = false
 
@@ -107,9 +103,7 @@ object HashVector
 
   def apply[V: ClassTag: Zero](length: Int)(values: (Int, V)*) = {
     val r = zeros[V](length)
-    for ((i, v) <- values) {
-      r(i) = v
-    }
+    for ((i, v) <- values) { r(i) = v }
     r
   }
 
@@ -118,17 +112,13 @@ object HashVector
   implicit def canCreateZeros[V: ClassTag: Zero]
       : CanCreateZeros[HashVector[V], Int] =
     new CanCreateZeros[HashVector[V], Int] {
-      def apply(d: Int): HashVector[V] = {
-        zeros[V](d)
-      }
+      def apply(d: Int): HashVector[V] = { zeros[V](d) }
     }
 
   // implicits
   class CanCopyHashVector[@specialized(Int, Float, Double) V: ClassTag: Zero]
       extends CanCopy[HashVector[V]] {
-    def apply(v1: HashVector[V]) = {
-      v1.copy
-    }
+    def apply(v1: HashVector[V]) = { v1.copy }
   }
 
   implicit def canCopyHash[@specialized(Int, Float, Double) V: ClassTag: Zero]

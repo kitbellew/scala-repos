@@ -19,13 +19,9 @@ class MetricsKitSpec
 
   val KitKey = MetricKey.fromString("metrics-kit")
 
-  after {
-    clearMetrics()
-  }
+  after { clearMetrics() }
 
-  override def afterAll() {
-    shutdownMetrics()
-  }
+  override def afterAll() { shutdownMetrics() }
 
   "MetricsKit" must {
 
@@ -36,9 +32,7 @@ class MetricsKitSpec
     }
 
     "allow to measure time, on known number of operations" in {
-      timedWithKnownOps(KitKey, ops = 10) {
-        2 + 2
-      }
+      timedWithKnownOps(KitKey, ops = 10) { 2 + 2 }
     }
 
     "allow to measure average value using Gauge, given multiple values" in {

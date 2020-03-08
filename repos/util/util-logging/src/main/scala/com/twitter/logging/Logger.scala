@@ -117,9 +117,7 @@ class Logger protected (val name: String, private val wrapped: javalog.Logger) {
           new LazyLogRecordUnformatted(level, message, items: _*)
         else new LogRecord(level, message)
       record.setLoggerName(wrapped.getName)
-      if (thrown ne null) {
-        record.setThrown(thrown)
-      }
+      if (thrown ne null) { record.setThrown(thrown) }
       wrapped.log(record)
     }
   }
@@ -189,9 +187,7 @@ class Logger protected (val name: String, private val wrapped: javalog.Logger) {
     if ((myLevel eq null) || (level.intValue >= myLevel.intValue)) {
       val record = new LazyLogRecord(level, message)
       record.setLoggerName(wrapped.getName)
-      if (thrown ne null) {
-        record.setThrown(thrown)
-      }
+      if (thrown ne null) { record.setThrown(thrown) }
       wrapped.log(record)
     }
   }
@@ -227,9 +223,8 @@ class Logger protected (val name: String, private val wrapped: javalog.Logger) {
     val handlers = getHandlers()
     if (handlers ne null) {
       for (handler <- handlers) {
-        try {
-          handler.close()
-        } catch { case _: Throwable => () }
+        try { handler.close() }
+        catch { case _: Throwable => () }
         removeHandler(handler)
       }
     }
@@ -366,11 +361,8 @@ object Logger extends Iterable[Logger] {
       case null =>
         val logger = new Logger(name, javalog.Logger.getLogger(name))
         val oldLogger = loggersCache.putIfAbsent(name, logger)
-        if (oldLogger != null) {
-          oldLogger
-        } else {
-          logger
-        }
+        if (oldLogger != null) { oldLogger }
+        else { logger }
     }
   }
 
@@ -394,9 +386,7 @@ object Logger extends Iterable[Logger] {
   private def getForClassName(className: String) = {
     if (className.endsWith("$")) {
       get(className.substring(0, className.length - 1))
-    } else {
-      get(className)
-    }
+    } else { get(className) }
   }
 
   /**

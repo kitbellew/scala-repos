@@ -224,9 +224,7 @@ object TaskTest extends SpecLite {
       val t = fork(
         Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)
 
-      t.unsafePerformSyncAttempt mustMatch {
-        case -\/(e) => e must_== ex; true
-      }
+      t.unsafePerformSyncAttempt mustMatch { case -\/(e) => e must_== ex; true }
 
       t1v.get must_== 0
       t3v.get must_== 0
@@ -249,9 +247,7 @@ object TaskTest extends SpecLite {
       val t = fork(
         Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)
 
-      t.unsafePerformSyncAttempt mustMatch {
-        case -\/(e) => e must_== ex; true
-      }
+      t.unsafePerformSyncAttempt mustMatch { case -\/(e) => e must_== ex; true }
 
       sleep(3000)
 

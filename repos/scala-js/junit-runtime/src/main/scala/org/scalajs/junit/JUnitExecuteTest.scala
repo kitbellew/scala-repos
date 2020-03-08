@@ -39,12 +39,8 @@ final class JUnitExecuteTest(
     } else {
       def runWithOrWithoutQuietMode[T](block: => T): T = {
         if (runner.runSettings.quiet) {
-          scala.Console.withOut(new ByteArrayOutputStream()) {
-            block
-          }
-        } else {
-          block
-        }
+          scala.Console.withOut(new ByteArrayOutputStream()) { block }
+        } else { block }
       }
 
       runWithOrWithoutQuietMode {

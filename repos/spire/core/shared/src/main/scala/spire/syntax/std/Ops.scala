@@ -149,9 +149,7 @@ final class ArrayOps[@sp A](arr: Array[A]) {
 
   import spire.math.{Sorting, Selection, Searching}
 
-  def qsearch(a: A)(implicit ev: Order[A]): Int = {
-    Searching.search(arr, a)
-  }
+  def qsearch(a: A)(implicit ev: Order[A]): Int = { Searching.search(arr, a) }
 
   def qsort(implicit ev: Order[A], ct: ClassTag[A]): Unit = {
     Sorting.sort(arr)
@@ -349,9 +347,8 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
       ct: ClassTag[A],
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     val arr = as.toArray
-    if (arr.length <= k) {
-      fromArray(arr)
-    } else {
+    if (arr.length <= k) { fromArray(arr) }
+    else {
       Selection.select(arr, k)
       fromSizeAndArray(k, arr)
     }

@@ -47,9 +47,7 @@ akka {
         EventFilter.warning(pattern = "received dead letter.*Disassociate")))
   }
 
-  override def afterTermination() {
-    shutdown(other)
-  }
+  override def afterTermination() { shutdown(other) }
 
   override def expectedTestDuration: FiniteDuration = 120.seconds
 
@@ -64,9 +62,7 @@ akka {
       s"akka.tcp://OtherSystem@localhost:$port/user/foo/bar#1752527294")
     system.actorOf(Props(new Actor {
       context.watch(ref)
-      def receive = {
-        case Terminated(r) ⇒ testActor ! r
-      }
+      def receive = { case Terminated(r) ⇒ testActor ! r }
     }).withDeploy(Deploy.local))
 
     expectMsg(20.seconds, ref)
@@ -88,9 +84,7 @@ akka {
     system.actorOf(
       Props(new Actor {
         context.watch(context.actorFor(path))
-        def receive = {
-          case t: Terminated ⇒ testActor ! t.actor.path
-        }
+        def receive = { case t: Terminated ⇒ testActor ! t.actor.path }
       }).withDeploy(Deploy.local),
       name = "observer2")
 

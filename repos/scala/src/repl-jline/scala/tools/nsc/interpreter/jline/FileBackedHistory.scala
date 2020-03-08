@@ -19,9 +19,7 @@ trait FileBackedHistory extends JLineHistory with PersistentHistory {
   protected lazy val historyFile: File = FileBackedHistory.defaultFile
   private var isPersistent = true
 
-  locally {
-    load()
-  }
+  locally { load() }
 
   def withoutSaving[T](op: => T): T = {
     val saved = isPersistent
@@ -58,9 +56,7 @@ trait FileBackedHistory extends JLineHistory with PersistentHistory {
         // than abandon hope we'll try to read it as ISO-8859-1
         case _: Exception =>
           try historyFile.lines("ISO-8859-1").toIndexedSeq
-          catch {
-            case _: Exception => Vector()
-          }
+          catch { case _: Exception => Vector() }
       }
     }
 

@@ -29,9 +29,7 @@ class LocalServer extends Server {
         LocalServer.createAnalysisStore)
     }
 
-    if (!client.isCanceled) {
-      compiler.compile(compilationData, client)
-    }
+    if (!client.isCanceled) { compiler.compile(compilationData, client) }
 
     client.compilationEnd()
     ExitCode.OK

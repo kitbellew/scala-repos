@@ -73,9 +73,7 @@ trait DoubleLinkedListLike[A, This <: Seq[A] with DoubleLinkedListLike[A, This]]
       if (next.isEmpty) {
         next = that
         if (that.nonEmpty) that.prev = repr
-      } else {
-        next.append(that)
-      }
+      } else { next.append(that) }
       repr
     }
 

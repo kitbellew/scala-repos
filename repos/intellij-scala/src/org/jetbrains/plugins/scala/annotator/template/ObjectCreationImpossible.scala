@@ -43,9 +43,8 @@ object ObjectCreationImpossible extends AnnotatorPart[ScTemplateDefinition] {
             member <- getMembersToImplement(definition)
             if !member.isInstanceOf[ScAliasMember] // See SCL-2887
           } yield {
-            try {
-              (member.getText, member.getParentNodeDelegate.getText)
-            } catch {
+            try { (member.getText, member.getParentNodeDelegate.getText) }
+            catch {
               case iae: IllegalArgumentException =>
                 throw new RuntimeException("memer: " + member.getText, iae)
             }

@@ -177,9 +177,7 @@ abstract class LambdaLift extends InfoTransform {
         tree match {
           case ClassDef(_, _, _, _) =>
             liftedDefs(tree.symbol) = Nil
-            if (sym.isLocalToBlock) {
-              renamable += sym
-            }
+            if (sym.isLocalToBlock) { renamable += sym }
           case DefDef(_, _, _, _, _, _) =>
             if (sym.isLocalToBlock) {
               renamable += sym
@@ -188,9 +186,8 @@ abstract class LambdaLift extends InfoTransform {
               symSet(called, sym) += sym.owner
             }
           case Ident(name) =>
-            if (sym == NoSymbol) {
-              assert(name == nme.WILDCARD)
-            } else if (sym.isLocalToBlock) {
+            if (sym == NoSymbol) { assert(name == nme.WILDCARD) }
+            else if (sym.isLocalToBlock) {
               val owner = currentOwner.logicallyEnclosingMember
               if (sym.isTerm && !sym.isMethod) markFree(sym, owner)
               else if (sym.isMethod) markCalled(sym, owner)
@@ -560,9 +557,7 @@ abstract class LambdaLift extends InfoTransform {
 
     override def transformUnit(unit: CompilationUnit) {
       computeFreeVars()
-      afterOwnPhase {
-        super.transformUnit(unit)
-      }
+      afterOwnPhase { super.transformUnit(unit) }
       assert(liftedDefs.isEmpty, liftedDefs.keys mkString ", ")
     }
   } // class LambdaLifter

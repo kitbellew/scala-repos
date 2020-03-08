@@ -38,9 +38,7 @@ class MatricesSuite extends SparkFunSuite {
   }
 
   test("dense matrix construction with wrong dimension") {
-    intercept[RuntimeException] {
-      Matrices.dense(3, 2, Array(0.0, 1.0, 2.0))
-    }
+    intercept[RuntimeException] { Matrices.dense(3, 2, Array(0.0, 1.0, 2.0)) }
   }
 
   test("sparse matrix construction") {
@@ -159,9 +157,7 @@ class MatricesSuite extends SparkFunSuite {
     assert(sparseMat(0, 1) === sparseMat.values(2))
     assert(sparseMat(0, 0) === 0.0)
 
-    intercept[NoSuchElementException] {
-      sparseMat.update(0, 0, 10.0)
-    }
+    intercept[NoSuchElementException] { sparseMat.update(0, 0, 10.0) }
 
     sparseMat.update(0, 1, 10.0)
     assert(sparseMat(0, 1) === 10.0)

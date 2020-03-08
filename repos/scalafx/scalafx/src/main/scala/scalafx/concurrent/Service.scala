@@ -68,9 +68,7 @@ abstract class Service[T](override val delegate: jfxc.Service[T])
     * The executor to use for running this Service.
     */
   def executor: ObjectProperty[juc.Executor] = delegate.executorProperty
-  def executor_=(v: juc.Executor) {
-    executor() = v
-  }
+  def executor_=(v: juc.Executor) { executor() = v }
 
   /**
     * The onCancelled event handler is called whenever the Task state transitions to the CANCELLED
@@ -85,17 +83,13 @@ abstract class Service[T](override val delegate: jfxc.Service[T])
     * The onFailed event handler is called whenever the Task state transitions to the FAILED state.
     */
   def onFailed = delegate.onFailedProperty
-  def onFailed_=(v: jfxe.EventHandler[jfxc.WorkerStateEvent]) {
-    onFailed() = v
-  }
+  def onFailed_=(v: jfxe.EventHandler[jfxc.WorkerStateEvent]) { onFailed() = v }
 
   /**
     * The onReady event handler is called whenever the Task state transitions to the READY state.
     */
   def onReady = delegate.onReadyProperty
-  def onReady_=(v: jfxe.EventHandler[jfxc.WorkerStateEvent]) {
-    onReady() = v
-  }
+  def onReady_=(v: jfxe.EventHandler[jfxc.WorkerStateEvent]) { onReady() = v }
 
   /**
     * The onRunning event handler is called whenever the Task state transitions to the RUNNING state.
@@ -126,22 +120,16 @@ abstract class Service[T](override val delegate: jfxc.Service[T])
   /**
     * Resets the Service.
     */
-  def reset() {
-    delegate.reset()
-  }
+  def reset() { delegate.reset() }
 
   /**
     * Cancels any currently running Task, if any, and restarts this Service.
     */
-  def restart() {
-    delegate.restart()
-  }
+  def restart() { delegate.restart() }
 
   /**
     * Starts this Service.
     */
-  def start() {
-    delegate.start()
-  }
+  def start() { delegate.start() }
 
 }

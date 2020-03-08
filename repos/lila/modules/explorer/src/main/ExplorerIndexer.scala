@@ -55,9 +55,7 @@ private final class ExplorerIndexer(
         .cursor[Game](ReadPreference.secondaryPreferred)
         .enumerate(maxGames, stopOnError = true) &>
         Enumeratee.mapM[Game].apply[Option[GamePGN]] { game =>
-          makeFastPgn(game) map {
-            _ map { game -> _ }
-          }
+          makeFastPgn(game) map { _ map { game -> _ } }
         } &>
         Enumeratee.collect { case Some(el) => el } &>
         Enumeratee.grouped(Iteratee takeUpTo batchSize) |>>>

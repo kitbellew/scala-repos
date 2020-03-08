@@ -125,9 +125,7 @@ trait BaseScaldingShell extends MainGenericRunner {
     */
   def main(args: Array[String]) {
     val retVal = process(args)
-    if (!retVal) {
-      sys.exit(1)
-    }
+    if (!retVal) { sys.exit(1) }
   }
 
   /**
@@ -156,11 +154,8 @@ trait BaseScaldingShell extends MainGenericRunner {
       virtualDirectory: VirtualDirectory,
       jarFile: File): File = {
     val jarStream = new JarOutputStream(new FileOutputStream(jarFile))
-    try {
-      addVirtualDirectoryToJar(virtualDirectory, "", jarStream)
-    } finally {
-      jarStream.close()
-    }
+    try { addVirtualDirectoryToJar(virtualDirectory, "", jarStream) }
+    finally { jarStream.close() }
 
     jarFile
   }

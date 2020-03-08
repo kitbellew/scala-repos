@@ -101,9 +101,7 @@ private[classification] trait LogisticRegressionParams
           .mkString(",")
       )
       1.0 / (1.0 + ts(0) / ts(1))
-    } else {
-      $(threshold)
-    }
+    } else { $(threshold) }
   }
 
   /**
@@ -138,9 +136,7 @@ private[classification] trait LogisticRegressionParams
     if (!isSet(thresholds) && isSet(threshold)) {
       val t = $(threshold)
       Array(1 - t, t)
-    } else {
-      $(thresholds)
-    }
+    } else { $(thresholds) }
   }
 
   /**
@@ -166,9 +162,7 @@ private[classification] trait LogisticRegressionParams
     }
   }
 
-  override def validateParams(): Unit = {
-    checkThresholdConsistency()
-  }
+  override def validateParams(): Unit = { checkThresholdConsistency() }
 }
 
 /**
@@ -391,12 +385,10 @@ class LogisticRegression @Since("1.2.0") (
           val standardizationParam = $(standardization)
           def regParamL1Fun = (index: Int) => {
             // Remove the L1 penalization on the intercept
-            if (index == numFeatures) {
-              0.0
-            } else {
-              if (standardizationParam) {
-                regParamL1
-              } else {
+            if (index == numFeatures) { 0.0 }
+            else {
+              if (standardizationParam) { regParamL1 }
+              else {
                 // If `standardization` is false, we still standardize the data
                 // to improve the rate of convergence; as a result, we have to
                 // perform this reverse standardization by penalizing each component
@@ -675,13 +667,9 @@ class LogisticRegressionModel private[spark] (
   override protected def raw2prediction(rawPrediction: Vector): Double = {
     // Note: We should use getThreshold instead of $(threshold) since getThreshold is overridden.
     val t = getThreshold
-    val rawThreshold = if (t == 0.0) {
-      Double.NegativeInfinity
-    } else if (t == 1.0) {
-      Double.PositiveInfinity
-    } else {
-      math.log(t / (1.0 - t))
-    }
+    val rawThreshold = if (t == 0.0) { Double.NegativeInfinity }
+    else if (t == 1.0) { Double.PositiveInfinity }
+    else { math.log(t / (1.0 - t)) }
     if (rawPrediction(1) > rawThreshold) 1 else 0
   }
 
@@ -817,11 +805,8 @@ private[classification] class MultiClassSummarizer extends Serializable {
     */
   def merge(other: MultiClassSummarizer): MultiClassSummarizer = {
     val (largeMap, smallMap) =
-      if (this.distinctMap.size > other.distinctMap.size) {
-        (this, other)
-      } else {
-        (other, this)
-      }
+      if (this.distinctMap.size > other.distinctMap.size) { (this, other) }
+      else { (other, this) }
     smallMap.distinctMap.foreach {
       case (key, value) =>
         val (counts: Long, weightSum: Double) =
@@ -1087,9 +1072,7 @@ private class LogisticAggregator(
                     index))
                 }
               }
-              sum + {
-                if (fitIntercept) localCoefficientsArray(dim) else 0.0
-              }
+              sum + { if (fitIntercept) localCoefficientsArray(dim) else 0.0 }
             }
 
             val multiplier = weight * (1.0 / (1.0 + math.exp(margin)) - label)
@@ -1101,16 +1084,12 @@ private class LogisticAggregator(
               }
             }
 
-            if (fitIntercept) {
-              localGradientSumArray(dim) += multiplier
-            }
+            if (fitIntercept) { localGradientSumArray(dim) += multiplier }
 
             if (label > 0) {
               // The following is equivalent to log(1 + exp(margin)) but more numerically stable.
               lossSum += weight * MLUtils.log1pExp(margin)
-            } else {
-              lossSum += weight * (MLUtils.log1pExp(margin) - margin)
-            }
+            } else { lossSum += weight * (MLUtils.log1pExp(margin) - margin) }
           case _ =>
             new NotImplementedError(
               "LogisticRegression with ElasticNet in ML package " +
@@ -1208,9 +1187,8 @@ private class LogisticCostFun(
     val totalGradientArray = logisticAggregator.gradient.toArray
 
     // regVal is the sum of coefficients squares excluding intercept for L2 regularization.
-    val regVal = if (regParamL2 == 0.0) {
-      0.0
-    } else {
+    val regVal = if (regParamL2 == 0.0) { 0.0 }
+    else {
       var sum = 0.0
       coeffs.foreachActive { (index, value) =>
         // If `fitIntercept` is true, the last term which is intercept doesn't
@@ -1232,9 +1210,7 @@ private class LogisticCostFun(
                 val temp = value / (featuresStd(index) * featuresStd(index))
                 totalGradientArray(index) += regParamL2 * temp
                 value * temp
-              } else {
-                0.0
-              }
+              } else { 0.0 }
             }
           }
         }

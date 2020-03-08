@@ -5,7 +5,9 @@ object r {
   class A
   class B
   class List[+A]
-  object List { def apply[A](xs: A*): List[A] = new List[A] }
+  object List {
+    def apply[A](xs: A*): List[A] = new List[A]
+  }
   object Nil extends List[Nothing]
 
   trait OuterP[A] {
@@ -16,8 +18,12 @@ object r {
     trait Inner
     trait InnerP[B]
   }
-  object Un { def unapply(x: Any) = Some(5) }
-  object UnSeq { def unapplySeq(x: Any) = Some(Seq(5)) }
+  object Un {
+    def unapply(x: Any) = Some(5)
+  }
+  object UnSeq {
+    def unapplySeq(x: Any) = Some(Seq(5))
+  }
   class C[T]
   class D
   trait E
@@ -57,7 +63,11 @@ object s {
     })
     act(reify { (x: Int) => x /* Function */ })
     act(reify { var v = 1; v = 2 /* Assign */ })
-    act(reify { class A() { def this(x: A) = this() } /* This */ })
+    act(reify {
+      class A() {
+        def this(x: A) = this()
+      } /* This */
+    })
     act(reify { new List[Int] /* New */ })
     act(reify { 0: @unchecked /* Annotated */ })
     act(reify { null: Outer#Inner /* SelectFromTypeTree */ })

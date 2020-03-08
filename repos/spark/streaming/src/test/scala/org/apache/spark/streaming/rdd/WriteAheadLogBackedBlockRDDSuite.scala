@@ -57,11 +57,8 @@ class WriteAheadLogBackedBlockRDDSuite
   }
 
   override def afterEach(): Unit = {
-    try {
-      Utils.deleteRecursively(dir)
-    } finally {
-      super.afterEach()
-    }
+    try { Utils.deleteRecursively(dir) }
+    finally { super.afterEach() }
   }
 
   override def beforeAll(): Unit = {
@@ -75,9 +72,7 @@ class WriteAheadLogBackedBlockRDDSuite
     try {
       sparkContext.stop()
       System.clearProperty("spark.driver.port")
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   test("Read data available in both block manager and write ahead log") {
@@ -231,9 +226,7 @@ class WriteAheadLogBackedBlockRDDSuite
         blockIds.toArray,
         recordHandles.toArray,
         isBlockIdValid = Array.fill(blockIds.length)(false))
-      intercept[SparkException] {
-        rdd2.collect()
-      }
+      intercept[SparkException] { rdd2.collect() }
     }
 
     // Verify that the RDD is not invalid after the blocks are removed and can still read data

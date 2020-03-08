@@ -105,14 +105,10 @@ class ReplTest extends WordSpec {
 
         val correct = helloRef.map(l => (l.toLowerCase, l))
 
-        "is explicit" in {
-          (grp.snapshot.toList === correct)
-        }
+        "is explicit" in { (grp.snapshot.toList === correct) }
 
         // Note: Must explicitly to toIterator because `grp.toList` resolves to `KeyedList.toList`
-        "is implicit" in {
-          assert(grp.toIterator.toList === correct)
-        }
+        "is implicit" in { assert(grp.toIterator.toList === correct) }
       }
 
       "joined -- CoGrouped[String, Long]" which {
@@ -135,9 +131,7 @@ class ReplTest extends WordSpec {
           val s = grp.snapshot
           assert(s.toIterator.toMap === correct)
         }
-        "is implicit" in {
-          assert(grp.toIterator.toMap === correct)
-        }
+        "is implicit" in { assert(grp.toIterator.toMap === correct) }
       }
 
       "support toOption on ValuePipe" in {
@@ -177,9 +171,7 @@ class ReplTest extends WordSpec {
           assert(line.contains("Hello world") || line.contains("Goodbye world"))
         }
       }
-      "support toList" in {
-        assert(hello.toList === helloRef)
-      }
+      "support toList" in { assert(hello.toList === helloRef) }
     }
 
     "toIterator should generate a snapshot for TypedPipe with" should {

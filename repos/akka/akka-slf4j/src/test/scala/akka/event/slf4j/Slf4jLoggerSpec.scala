@@ -64,9 +64,7 @@ class Slf4jLoggerSpec
 
   val producer = system.actorOf(Props[LogProducer], name = "logProducer")
 
-  override def beforeEach(): Unit = {
-    output.reset()
-  }
+  override def beforeEach(): Unit = { output.reset() }
 
   val sourceThreadRegex =
     "sourceThread=\\[Slf4jLoggerSpec-akka.actor.default-dispatcher-[1-9][0-9]*\\]"

@@ -1,6 +1,12 @@
-trait T0 { def ap(): Int }
-trait T1 { def ap(a: Any): Int }
-trait T2 { def ap(a: Any, b: Any): Int }
+trait T0 {
+  def ap(): Int
+}
+trait T1 {
+  def ap(a: Any): Int
+}
+trait T2 {
+  def ap(a: Any, b: Any): Int
+}
 
 class Test {
   (() => 0): T1

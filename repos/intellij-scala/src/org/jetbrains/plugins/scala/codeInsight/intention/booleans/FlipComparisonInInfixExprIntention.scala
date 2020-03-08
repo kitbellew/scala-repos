@@ -46,9 +46,8 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
 
     val notChanged =
       mutable.HashSet[String]("==", "!=", "equals", "eq", "ne", "&&", "||")
-    if (notChanged.contains(oper)) {
-      setText("Flip '" + oper + "'")
-    } else {
+    if (notChanged.contains(oper)) { setText("Flip '" + oper + "'") }
+    else {
       val replaceOper = Map(">" -> "<", "<" -> ">", ">=" -> "<=", "<=" -> ">=")
       setText("Flip '" + oper + "' to '" + replaceOper(oper) + "'")
     }

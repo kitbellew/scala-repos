@@ -53,9 +53,7 @@ case class ScalarSubquery(@transient executedPlan: SparkPlan, exprId: ExprId)
   // the first column in first row from `query`.
   private var result: Any = null
 
-  def updateResult(v: Any): Unit = {
-    result = v
-  }
+  def updateResult(v: Any): Unit = { result = v }
 
   override def eval(input: InternalRow): Any = result
 

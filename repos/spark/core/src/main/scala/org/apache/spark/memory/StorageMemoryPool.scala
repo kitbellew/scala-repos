@@ -36,9 +36,7 @@ private[memory] class StorageMemoryPool(lock: Object)
   @GuardedBy("lock")
   private[this] var _memoryUsed: Long = 0L
 
-  override def memoryUsed: Long = lock.synchronized {
-    _memoryUsed
-  }
+  override def memoryUsed: Long = lock.synchronized { _memoryUsed }
 
   private var _memoryStore: MemoryStore = _
   def memoryStore: MemoryStore = {
@@ -52,9 +50,7 @@ private[memory] class StorageMemoryPool(lock: Object)
     * Set the [[MemoryStore]] used by this manager to evict cached blocks.
     * This must be set after construction due to initialization ordering constraints.
     */
-  final def setMemoryStore(store: MemoryStore): Unit = {
-    _memoryStore = store
-  }
+  final def setMemoryStore(store: MemoryStore): Unit = { _memoryStore = store }
 
   /**
     * Acquire N bytes of memory to cache the given block, evicting existing ones if necessary.
@@ -89,9 +85,7 @@ private[memory] class StorageMemoryPool(lock: Object)
     // back into this StorageMemoryPool in order to free memory. Therefore, these variables
     // should have been updated.
     val enoughMemory = numBytesToAcquire <= memoryFree
-    if (enoughMemory) {
-      _memoryUsed += numBytesToAcquire
-    }
+    if (enoughMemory) { _memoryUsed += numBytesToAcquire }
     enoughMemory
   }
 
@@ -101,14 +95,10 @@ private[memory] class StorageMemoryPool(lock: Object)
         s"Attempted to release $size bytes of storage " +
           s"memory when we only have ${_memoryUsed} bytes")
       _memoryUsed = 0
-    } else {
-      _memoryUsed -= size
-    }
+    } else { _memoryUsed -= size }
   }
 
-  def releaseAllMemory(): Unit = lock.synchronized {
-    _memoryUsed = 0
-  }
+  def releaseAllMemory(): Unit = lock.synchronized { _memoryUsed = 0 }
 
   /**
     * Try to shrink the size of this storage memory pool by `spaceToFree` bytes. Return the number
@@ -127,8 +117,6 @@ private[memory] class StorageMemoryPool(lock: Object)
       // not need to decrement _memoryUsed here. However, we do need to decrement the pool size.
       decrementPoolSize(spaceFreedByEviction)
       spaceFreedByReleasingUnusedMemory + spaceFreedByEviction
-    } else {
-      spaceFreedByReleasingUnusedMemory
-    }
+    } else { spaceFreedByReleasingUnusedMemory }
   }
 }

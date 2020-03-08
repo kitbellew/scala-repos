@@ -533,9 +533,7 @@ trait Slice { source =>
       source.columns filter {
         case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
       }
-    } else {
-      Map.empty[ColumnRef, Column]
-    }
+    } else { Map.empty[ColumnRef, Column] }
 
     Slice(columns, source.size)
   }
@@ -820,9 +818,7 @@ trait Slice { source =>
             (slice.size - 1 to 0 by -1).find(row =>
               slice.columns.values.exists(_.isDefinedAt(row)))
           }
-          .map {
-            (prevFilter.get, _)
-          }
+          .map { (prevFilter.get, _) }
 
         val firstDefined = (0 until filter.size).find(i =>
           filter.columns.values.exists(_.isDefinedAt(i)))
@@ -961,9 +957,7 @@ trait Slice { source =>
     * new prefix will contain all indices less than that index, and
     * the new suffix will contain indices >= that index.
     */
-  def split(idx: Int): (Slice, Slice) = {
-    (take(idx), drop(idx))
-  }
+  def split(idx: Int): (Slice, Slice) = { (take(idx), drop(idx)) }
 
   def take(sz: Int): Slice =
     if (sz >= source.size) source
@@ -1102,9 +1096,8 @@ trait Slice { source =>
 
   def renderJson[M[+_]](delimiter: String)(
       implicit M: Monad[M]): (StreamT[M, CharBuffer], Boolean) = {
-    if (columns.isEmpty) {
-      (StreamT.empty, false)
-    } else {
+    if (columns.isEmpty) { (StreamT.empty, false) }
+    else {
       val BufferSize = 1024 * 10 // 10 KB
 
       val optSchema = {
@@ -1333,9 +1326,8 @@ trait Slice { source =>
 
             val flag = inFlags.popFront()
 
-            if (flag) {
-              renderString(str)
-            } else {
+            if (flag) { renderString(str) }
+            else {
               checkPush(str.length)
               buffer.put(str)
             }
@@ -1349,9 +1341,7 @@ trait Slice { source =>
         @inline
         @tailrec
         def renderString(str: String, idx: Int = 0) {
-          if (idx == 0) {
-            push('"')
-          }
+          if (idx == 0) { push('"') }
 
           if (idx < str.length) {
             val c = str.charAt(idx)
@@ -1369,16 +1359,12 @@ trait Slice { source =>
                 if ((c >= '\u0000' && c < '\u001f') || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
                   pushStr("\\u")
                   pushStr("%04x".format(Character.codePointAt(str, idx)))
-                } else {
-                  push(c)
-                }
+                } else { push(c) }
               }
             }
 
             renderString(str, idx + 1)
-          } else {
-            push('"')
-          }
+          } else { push('"') }
         }
 
         @inline
@@ -1411,16 +1397,13 @@ trait Slice { source =>
             val MinString = "-9223372036854775808"
             checkPush(MinString.length)
             buffer.put(MinString)
-          } else if (ln == 0) {
-            push('0')
-          } else if (ln < 0) {
+          } else if (ln == 0) { push('0') }
+          else if (ln < 0) {
             push('-')
 
             val ln2 = ln * -1
             renderPositive(ln2, power10(ln2))
-          } else {
-            renderPositive(ln, power10(ln))
-          }
+          } else { renderPositive(ln, power10(ln)) }
         }
 
         // TODO is this a problem?
@@ -1441,37 +1424,24 @@ trait Slice { source =>
 
         @inline
         def renderBoolean(b: Boolean) {
-          if (b) {
-            pushStr("true")
-          } else {
-            pushStr("false")
-          }
+          if (b) { pushStr("true") }
+          else { pushStr("false") }
         }
 
         @inline
-        def renderNull() {
-          pushStr("null")
-        }
+        def renderNull() { pushStr("null") }
 
         @inline
-        def renderEmptyObject() {
-          pushStr("{}")
-        }
+        def renderEmptyObject() { pushStr("{}") }
 
         @inline
-        def renderEmptyArray() {
-          pushStr("[]")
-        }
+        def renderEmptyArray() { pushStr("[]") }
 
         @inline
-        def renderDate(date: DateTime) {
-          renderString(date.toString)
-        }
+        def renderDate(date: DateTime) { renderString(date.toString) }
 
         @inline
-        def renderPeriod(period: Period) {
-          renderString(period.toString)
-        }
+        def renderPeriod(period: Period) { renderString(period.toString) }
 
         @inline
         def renderArray[A](array: Array[A]) {
@@ -1491,9 +1461,7 @@ trait Slice { source =>
                   val key = keys(idx)
                   val value = values(idx)
 
-                  if (done) {
-                    pushIn(",", false)
-                  }
+                  if (done) { pushIn(",", false) }
 
                   pushIn(key, true)
                   pushIn(":", false)
@@ -1504,25 +1472,18 @@ trait Slice { source =>
                     popIn()
                     popIn()
 
-                    if (done) {
-                      popIn()
-                    }
+                    if (done) { popIn() }
                   }
 
                   loop(idx + 1, done || emitted)
-                } else {
-                  done
-                }
+                } else { done }
               }
 
               pushIn("{", false)
               val done = loop(0, false)
 
-              if (done) {
-                push('}')
-              } else {
-                popIn()
-              }
+              if (done) { push('}') }
+              else { popIn() }
 
               done
             }
@@ -1536,9 +1497,7 @@ trait Slice { source =>
                 if (idx < values.length) {
                   val value = values(idx)
 
-                  if (done) {
-                    pushIn(",", false)
-                  }
+                  if (done) { pushIn(",", false) }
 
                   val emitted = traverseSchema(row, value)
 
@@ -1547,19 +1506,14 @@ trait Slice { source =>
                   }
 
                   loop(idx + 1, done || emitted)
-                } else {
-                  done
-                }
+                } else { done }
               }
 
               pushIn("[", false)
               val done = loop(0, false)
 
-              if (done) {
-                push(']')
-              } else {
-                popIn()
-              }
+              if (done) { push(']') }
+              else { popIn() }
 
               done
             }
@@ -1572,9 +1526,7 @@ trait Slice { source =>
               def loop(idx: Int): Boolean = {
                 if (idx < pos.length) {
                   traverseSchema(row, pos(idx)) || loop(idx + 1)
-                } else {
-                  false
-                }
+                } else { false }
               }
 
               loop(0)
@@ -1589,9 +1541,7 @@ trait Slice { source =>
                     flushIn()
                     renderString(specCol(row))
                     true
-                  } else {
-                    false
-                  }
+                  } else { false }
                 }
 
                 case CBoolean => {
@@ -1601,9 +1551,7 @@ trait Slice { source =>
                     flushIn()
                     renderBoolean(specCol(row))
                     true
-                  } else {
-                    false
-                  }
+                  } else { false }
                 }
 
                 case CLong => {
@@ -1613,9 +1561,7 @@ trait Slice { source =>
                     flushIn()
                     renderLong(specCol(row))
                     true
-                  } else {
-                    false
-                  }
+                  } else { false }
                 }
 
                 case CDouble => {
@@ -1625,9 +1571,7 @@ trait Slice { source =>
                     flushIn()
                     renderDouble(specCol(row))
                     true
-                  } else {
-                    false
-                  }
+                  } else { false }
                 }
 
                 case CNum => {
@@ -1637,9 +1581,7 @@ trait Slice { source =>
                     flushIn()
                     renderNum(specCol(row))
                     true
-                  } else {
-                    false
-                  }
+                  } else { false }
                 }
 
                 case CNull => {
@@ -1648,9 +1590,7 @@ trait Slice { source =>
                     flushIn()
                     renderNull()
                     true
-                  } else {
-                    false
-                  }
+                  } else { false }
                 }
 
                 case CEmptyObject => {
@@ -1659,9 +1599,7 @@ trait Slice { source =>
                     flushIn()
                     renderEmptyObject()
                     true
-                  } else {
-                    false
-                  }
+                  } else { false }
                 }
 
                 case CEmptyArray => {
@@ -1670,9 +1608,7 @@ trait Slice { source =>
                     flushIn()
                     renderEmptyArray()
                     true
-                  } else {
-                    false
-                  }
+                  } else { false }
                 }
 
                 case CDate => {
@@ -1682,9 +1618,7 @@ trait Slice { source =>
                     flushIn()
                     renderDate(specCol(row))
                     true
-                  } else {
-                    false
-                  }
+                  } else { false }
                 }
 
                 case CPeriod => {
@@ -1694,9 +1628,7 @@ trait Slice { source =>
                     flushIn()
                     renderPeriod(specCol(row))
                     true
-                  } else {
-                    false
-                  }
+                  } else { false }
                 }
 
                 case CArrayType(_) => {
@@ -1706,9 +1638,7 @@ trait Slice { source =>
                     flushIn()
                     renderArray(specCol(row))
                     true
-                  } else {
-                    false
-                  }
+                  } else { false }
                 }
 
                 case CUndefined => false
@@ -1718,20 +1648,14 @@ trait Slice { source =>
         @tailrec
         def render(row: Int, delimit: Boolean): Boolean = {
           if (row < size) {
-            if (delimit) {
-              pushIn(delimiter, false)
-            }
+            if (delimit) { pushIn(delimiter, false) }
 
             val rowRendered = traverseSchema(row, schema)
 
-            if (delimit && !rowRendered) {
-              popIn()
-            }
+            if (delimit && !rowRendered) { popIn() }
 
             render(row + 1, delimit || rowRendered)
-          } else {
-            delimit
-          }
+          } else { delimit }
         }
 
         val rendered = render(0, false)
@@ -1750,9 +1674,7 @@ trait Slice { source =>
         }
 
         (stream, rendered)
-      } else {
-        (StreamT.empty, false)
-      }
+      } else { (StreamT.empty, false) }
     }
   }
 

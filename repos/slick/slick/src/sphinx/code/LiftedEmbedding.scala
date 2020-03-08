@@ -433,9 +433,7 @@ object LiftedEmbedding extends App {
       {
         //#compiled1
         def userNameByIDRange(min: Rep[Int], max: Rep[Int]) =
-          for {
-            u <- users if u.id >= min && u.id < max
-          } yield u.first
+          for { u <- users if u.id >= min && u.id < max } yield u.first
 
         val userNameByIDRangeCompiled = Compiled(userNameByIDRange _)
 

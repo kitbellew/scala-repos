@@ -1,5 +1,7 @@
 object Test extends App {
-  class A { class V }
+  class A {
+    class V
+  }
 
   abstract class B[S] {
     def foo(t: S, a: A)(v: a.V)

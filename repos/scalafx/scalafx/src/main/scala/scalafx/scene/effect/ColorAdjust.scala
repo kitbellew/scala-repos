@@ -58,32 +58,24 @@ class ColorAdjust(
     * The brightness adjustment value.
     */
   def brightness: DoubleProperty = delegate.brightnessProperty
-  def brightness_=(v: Double) {
-    brightness() = v
-  }
+  def brightness_=(v: Double) { brightness() = v }
 
   /**
     * The contrast adjustment value.
     */
   def contrast: DoubleProperty = delegate.contrastProperty
-  def contrast_=(v: Double) {
-    contrast() = v
-  }
+  def contrast_=(v: Double) { contrast() = v }
 
   /**
     * The hue adjustment value.
     */
   def hue: DoubleProperty = delegate.hueProperty
-  def hue_=(v: Double) {
-    hue() = v
-  }
+  def hue_=(v: Double) { hue() = v }
 
   /**
     * The saturation adjustment value.
     */
   def saturation: DoubleProperty = delegate.saturationProperty
-  def saturation_=(v: Double) {
-    saturation() = v
-  }
+  def saturation_=(v: Double) { saturation() = v }
 
 }

@@ -42,9 +42,7 @@ class ScalaMoveToPackageQuickFix(myFile: ScalaFile, packQualName: String)
       null,
       true)
 
-    if (directory == null) {
-      return
-    }
+    if (directory == null) { return }
     val error = RefactoringMessageUtil.checkCanCreateFile(directory, file.name)
     if (error != null) {
       Messages.showMessageDialog(

@@ -11,6 +11,13 @@ class SCL5472A {
   def foo(z: Any) = "text"
 
   /*start*/
-  (foo(new C { type T = A }), foo(new C { type T = D })) /*end*/
+  (
+    foo(new C {
+      type T = A
+    }),
+    foo(new C {
+      type T = D
+    })
+  ) /*end*/
 }
 //(String, Int)

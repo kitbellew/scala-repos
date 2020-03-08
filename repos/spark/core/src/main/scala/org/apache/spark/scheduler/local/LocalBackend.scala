@@ -164,13 +164,9 @@ private[spark] class LocalBackend(
     launcherBackend.setState(SparkAppHandle.State.RUNNING)
   }
 
-  override def stop() {
-    stop(SparkAppHandle.State.FINISHED)
-  }
+  override def stop() { stop(SparkAppHandle.State.FINISHED) }
 
-  override def reviveOffers() {
-    localEndpoint.send(ReviveOffers)
-  }
+  override def reviveOffers() { localEndpoint.send(ReviveOffers) }
 
   override def defaultParallelism(): Int =
     scheduler.conf.getInt("spark.default.parallelism", totalCores)
@@ -193,11 +189,8 @@ private[spark] class LocalBackend(
 
   private def stop(finalState: SparkAppHandle.State): Unit = {
     localEndpoint.ask(StopExecutor)
-    try {
-      launcherBackend.setState(finalState)
-    } finally {
-      launcherBackend.close()
-    }
+    try { launcherBackend.setState(finalState) }
+    finally { launcherBackend.close() }
   }
 
 }

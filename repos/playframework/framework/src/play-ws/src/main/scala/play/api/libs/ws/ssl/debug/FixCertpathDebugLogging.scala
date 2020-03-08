@@ -94,16 +94,10 @@ object FixCertpathDebugLogging {
   class SunSecurityUtilDebugLogger(logger: org.slf4j.Logger)
       extends sun.security.util.Debug {
     override def println(message: String) {
-      if (logger.isDebugEnabled) {
-        logger.debug(message)
-      }
+      if (logger.isDebugEnabled) { logger.debug(message) }
     }
 
-    override def println() {
-      if (logger.isDebugEnabled) {
-        logger.debug("")
-      }
-    }
+    override def println() { if (logger.isDebugEnabled) { logger.debug("") } }
   }
 
   def apply(newOptions: String, debugOption: Option[Debug] = None) {

@@ -155,11 +155,8 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
       case Glicko.Result.Win  => results.addResult(white, black)
       case Glicko.Result.Loss => results.addResult(black, white)
     }
-    try {
-      system.updateRatings(results)
-    } catch {
-      case e: Exception => logger.error("update ratings", e)
-    }
+    try { system.updateRatings(results) }
+    catch { case e: Exception => logger.error("update ratings", e) }
   }
 
   private def mkPerfs(ratings: Ratings, perfs: Perfs, game: Game): Perfs = {

@@ -35,13 +35,9 @@ class ScalaRefCountHolder private () {
     myValueUsed.clear()
   }
 
-  def registerImportUsed(used: ImportUsed) {
-    myImportUsed.add(used)
-  }
+  def registerImportUsed(used: ImportUsed) { myImportUsed.add(used) }
 
-  def registerValueUsed(used: ValueUsed) {
-    myValueUsed.add(used)
-  }
+  def registerValueUsed(used: ValueUsed) { myValueUsed.add(used) }
 
   def isRedundant(used: ImportUsed): Boolean = {
     assertIsRetrieving()
@@ -69,18 +65,14 @@ class ScalaRefCountHolder private () {
       val iterator: java.util.Iterator[ImportUsed] = myImportUsed.iterator
       while (iterator.hasNext) {
         val ref: ImportUsed = iterator.next
-        if (!ref.e.isValid) {
-          iterator.remove()
-        }
+        if (!ref.e.isValid) { iterator.remove() }
       }
     }
     myValueUsed synchronized {
       val valuesIterator: java.util.Iterator[ValueUsed] = myValueUsed.iterator()
       while (valuesIterator.hasNext) {
         val ref: ValueUsed = valuesIterator.next
-        if (!ref.e.isValid) {
-          valuesIterator.remove()
-        }
+        if (!ref.e.isValid) { valuesIterator.remove() }
       }
     }
   }
@@ -93,11 +85,8 @@ class ScalaRefCountHolder private () {
     if (!myState.compareAndSet(State.VIRGIN, State.WRITE)) return false
     try {
       if (dirtyScope != null) {
-        if (dirtyScope.equals(file.getTextRange)) {
-          clear()
-        } else {
-          removeInvalidRefs()
-        }
+        if (dirtyScope.equals(file.getTextRange)) { clear() }
+        else { removeInvalidRefs() }
       }
       analyze.run()
     } finally {
@@ -108,12 +97,9 @@ class ScalaRefCountHolder private () {
   }
 
   def retrieveUnusedReferencesInfo(analyze: Runnable): Boolean = {
-    if (!myState.compareAndSet(State.READY, State.READ)) {
-      return false
-    }
-    try {
-      analyze.run()
-    } finally {
+    if (!myState.compareAndSet(State.READY, State.READ)) { return false }
+    try { analyze.run() }
+    finally {
       val set: Boolean = myState.compareAndSet(State.READ, State.READY)
       assert(set, myState.get)
     }

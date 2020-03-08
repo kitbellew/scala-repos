@@ -57,9 +57,7 @@ class ValidateNaiveTimeoutFilter extends FunSuite {
           case (duration: Duration, f: Future[Boolean]) =>
             f onSuccess { _ => assert(duration <= timeout) } onFailure { _ =>
               assert(duration > timeout)
-            } ensure {
-              num += 1
-            }
+            } ensure { num += 1 }
         }: (Duration, Future[Boolean]) => Unit,
         filter,
         timer

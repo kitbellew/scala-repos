@@ -226,9 +226,8 @@ private[http] trait LiftMerge {
                     _ append _)
 
                 case _ =>
-                  if (headChild) {
-                    headChildren ++= normalizedResults.node
-                  } else if (headInBodyChild) {
+                  if (headChild) { headChildren ++= normalizedResults.node }
+                  else if (headInBodyChild) {
                     addlHead ++= normalizedResults.node
                   } else if (tailInBodyChild) {
                     addlTail ++= normalizedResults.node
@@ -238,13 +237,9 @@ private[http] trait LiftMerge {
 
                   if (bodyHead || bodyTail) {
                     soFar.append(normalizedResults.js)
-                  } else {
-                    soFar.append(normalizedResults)
-                  }
+                  } else { soFar.append(normalizedResults) }
               }
-            } getOrElse {
-            soFar
-          }
+            } getOrElse { soFar }
       }
     }
 
@@ -268,9 +263,7 @@ private[http] trait LiftMerge {
 
       val nl = Text("\n")
 
-      for {
-        node <- HeadHelper.removeHtmlDuplicates(addlHead.toList)
-      } {
+      for { node <- HeadHelper.removeHtmlDuplicates(addlHead.toList) } {
         headChildren += node
         headChildren += nl
       }
@@ -309,13 +302,9 @@ private[http] trait LiftMerge {
                     case CometVersionPair(guid, version) =>
                       (s"data-lift-comet-$guid" -> version.toString)
                   }
-              } else {
-                Nil
-              }
+              } else { Nil }
             )
-        } else {
-          Nil
-        }
+        } else { Nil }
 
       htmlKids += nl
       htmlKids += headElement.copy(child = headChildren.toList)

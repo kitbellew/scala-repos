@@ -148,9 +148,7 @@ class LogisticRegressionSuite
     // thresholds and threshold must be consistent
     lr2.setThresholds(Array(0.1, 0.2, 0.3))
     withClue("getThreshold should throw error if thresholds has length != 2.") {
-      intercept[IllegalArgumentException] {
-        lr2.getThreshold
-      }
+      intercept[IllegalArgumentException] { lr2.getThreshold }
     }
     // thresholds and threshold must be consistent: values
     withClue(
@@ -973,9 +971,7 @@ class LogisticRegressionSuite
         case labeledPoint: LabeledPoint =>
           if (labeledPoint.label == 1.0) {
             Iterator(labeledPoint, labeledPoint)
-          } else {
-            Iterator(labeledPoint)
-          }
+          } else { Iterator(labeledPoint) }
       }
 
       val rnd = new Random(8392)
@@ -995,11 +991,8 @@ class LogisticRegressionSuite
                 Instance(label, 0.6, features))
             }
           } else {
-            if (label == 1.0) {
-              Iterator(Instance(label, 2.0, features))
-            } else {
-              Iterator(Instance(label, 1.0, features))
-            }
+            if (label == 1.0) { Iterator(Instance(label, 2.0, features)) }
+            else { Iterator(Instance(label, 1.0, features)) }
           }
       }
 

@@ -100,17 +100,13 @@ object BigInteger {
     if (lVal < 0) {
       if (lVal != -1) new BigInteger(-1, -lVal)
       else MINUS_ONE
-    } else if (lVal <= 10) {
-      SMALL_VALUES(lVal.toInt)
-    } else {
-      new BigInteger(1, lVal)
-    }
+    } else if (lVal <= 10) { SMALL_VALUES(lVal.toInt) }
+    else { new BigInteger(1, lVal) }
   }
 
   private[math] def getPowerOfTwo(exp: Int): BigInteger = {
-    if (exp < TWO_POWS.length) {
-      TWO_POWS(exp)
-    } else {
+    if (exp < TWO_POWS.length) { TWO_POWS(exp) }
+    else {
       val intCount = exp >> 5
       val bitN = exp & 31
       val resDigits = new Array[Int](intCount + 1)
@@ -228,9 +224,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
       sign = 1
       numberLength = (numBits + 31) >> 5
       digits = new Array[Int](numberLength)
-      for (i <- 0 until numberLength) {
-        digits(i) = rnd.nextInt()
-      }
+      for (i <- 0 until numberLength) { digits(i) = rnd.nextInt() }
       digits(numberLength - 1) >>>= (-numBits) & 31
       this.cutOffLeadingZeroes()
     }
@@ -247,9 +241,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
     this.setFromString(s, radix)
   }
 
-  def this(s: String) = {
-    this(s, 10)
-  }
+  def this(s: String) = { this(s, 10) }
 
   /** Constructs a number which array is of size 1.
     *
@@ -370,17 +362,14 @@ class BigInteger extends Number with Comparable[BigInteger] {
           if (thisLen != divisorLen) {
             if (thisLen > divisorLen) 1
             else -1
-          } else {
-            Elementary.compareArrays(digits, divisor.digits, thisLen)
-          }
+          } else { Elementary.compareArrays(digits, divisor.digits, thisLen) }
         }
 
         if (cmp == EQUALS) {
           if (thisSign == divisorSign) ONE
           else MINUS_ONE
-        } else if (cmp == LESS) {
-          ZERO
-        } else {
+        } else if (cmp == LESS) { ZERO }
+        else {
           val resLength = thisLen - divisorLen + 1
           val resDigits = new Array[Int](resLength)
           val resSign = if (thisSign == divisorSign) 1 else -1
@@ -427,14 +416,11 @@ class BigInteger extends Number with Comparable[BigInteger] {
         if (thisLen != divisorLen) {
           if (thisLen > divisorLen) 1
           else -1
-        } else {
-          Elementary.compareArrays(thisDigits, divisorDigits, thisLen)
-        }
+        } else { Elementary.compareArrays(thisDigits, divisorDigits, thisLen) }
       }
 
-      if (cmp < 0) {
-        new QuotAndRem(ZERO, this)
-      } else {
+      if (cmp < 0) { new QuotAndRem(ZERO, this) }
+      else {
         val thisSign = sign
         val quotientLength = thisLen - divisorLen + 1
         val remainderLength = divisorLen
@@ -482,24 +468,19 @@ class BigInteger extends Number with Comparable[BigInteger] {
     val val1 = this.abs()
     val val2 = bi.abs()
     // To avoid a possible division by zero
-    if (val1.signum() == 0) {
-      val2
-    } else if (val2.signum() == 0) {
-      val1
-    } else if (((val1.numberLength == 1) && (val1.digits(0) > 0)) &&
-               ((val2.numberLength == 1) && (val2.digits(0) > 0))) {
+    if (val1.signum() == 0) { val2 }
+    else if (val2.signum() == 0) { val1 }
+    else if (((val1.numberLength == 1) && (val1.digits(0) > 0)) &&
+             ((val2.numberLength == 1) && (val2.digits(0) > 0))) {
       // Optimization for small operands
       // (op2.bitLength() < 32) and (op1.bitLength() < 32)
       BigInteger.valueOf(Division.gcdBinary(val1.intValue(), val2.intValue()))
-    } else {
-      Division.gcdBinary(val1.copy(), val2.copy())
-    }
+    } else { Division.gcdBinary(val1.copy(), val2.copy()) }
   }
 
   def getLowestSetBit(): Int = {
-    if (sign == 0) {
-      -1
-    } else {
+    if (sign == 0) { -1 }
+    else {
       // (sign != 0) implies that exists some non zero digit
       val i = getFirstNonzeroDigit
       (i << 5) + java.lang.Integer.numberOfTrailingZeros(digits(i))
@@ -507,12 +488,9 @@ class BigInteger extends Number with Comparable[BigInteger] {
   }
 
   override def hashCode(): Int = {
-    if (_hashCode != 0) {
-      _hashCode
-    } else {
-      for (i <- 0 until numberLength) {
-        _hashCode = _hashCode * 33 + digits(i)
-      }
+    if (_hashCode != 0) { _hashCode }
+    else {
+      for (i <- 0 until numberLength) { _hashCode = _hashCode * 33 + digits(i) }
       _hashCode = _hashCode * sign
       _hashCode
     }
@@ -555,9 +533,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
     } else if (!(testBit(0) || m.testBit(0))) {
       // If both are even, no inverse exists
       throw new ArithmeticException("BigInteger not invertible.")
-    } else if (m.isOne) {
-      ZERO
-    } else {
+    } else if (m.isOne) { ZERO }
+    else {
       // From now on: (m > 1)
       val res = Division.modInverseMontgomery(abs().mod(m), m)
       if (res.sign == 0)
@@ -574,11 +551,9 @@ class BigInteger extends Number with Comparable[BigInteger] {
       throw new ArithmeticException("BigInteger: modulus not positive")
 
     var base = this
-    if (m.isOne || (_exponent.sign > 0 && base.sign == 0)) {
-      BigInteger.ZERO
-    } else if (base.sign == 0 && _exponent.sign == 0) {
-      BigInteger.ONE
-    } else {
+    if (m.isOne || (_exponent.sign > 0 && base.sign == 0)) { BigInteger.ZERO }
+    else if (base.sign == 0 && _exponent.sign == 0) { BigInteger.ONE }
+    else {
       if (_exponent.sign < 0) {
         base = modInverse(m)
         _exponent = _exponent.negate()
@@ -616,17 +591,12 @@ class BigInteger extends Number with Comparable[BigInteger] {
   def or(bi: BigInteger): BigInteger = Logical.or(this, bi)
 
   def pow(exp: Int): BigInteger =
-    if (exp < 0) {
-      throw new ArithmeticException("Negative exponent")
-    } else if (exp == 0) {
-      ONE
-    } else if (exp == 1 || equals(ONE) || equals(ZERO)) {
-      this
-    } else if (!testBit(0)) {
+    if (exp < 0) { throw new ArithmeticException("Negative exponent") }
+    else if (exp == 0) { ONE }
+    else if (exp == 1 || equals(ONE) || equals(ZERO)) { this }
+    else if (!testBit(0)) {
       var x = 1
-      while (!testBit(x)) {
-        x += 1
-      }
+      while (!testBit(x)) { x += 1 }
       getPowerOfTwo(x * exp).multiply(this.shiftRight(x).pow(exp))
     } else {
       // if even take out 2^x factor which we can calculate by shifting.
@@ -643,14 +613,11 @@ class BigInteger extends Number with Comparable[BigInteger] {
       if (thisLen != divisorLen) {
         if (thisLen > divisorLen) 1
         else -1
-      } else {
-        Elementary.compareArrays(digits, divisor.digits, thisLen)
-      }
+      } else { Elementary.compareArrays(digits, divisor.digits, thisLen) }
     }
 
-    if (cmp == LESS) {
-      this
-    } else {
+    if (cmp == LESS) { this }
+    else {
       val resLength = divisorLen
       var resDigits = new Array[Int](resLength)
       if (resLength == 1) {
@@ -696,15 +663,11 @@ class BigInteger extends Number with Comparable[BigInteger] {
   def testBit(n: Int): Boolean = {
     val intCount = n >> 5
 
-    if (n == 0) {
-      (digits(0) & 1) != 0
-    } else if (n < 0) {
-      throw new ArithmeticException("Negative bit address")
-    } else if (intCount >= numberLength) {
-      sign < 0
-    } else if (sign < 0 && intCount < getFirstNonzeroDigit) {
-      false
-    } else {
+    if (n == 0) { (digits(0) & 1) != 0 }
+    else if (n < 0) { throw new ArithmeticException("Negative bit address") }
+    else if (intCount >= numberLength) { sign < 0 }
+    else if (sign < 0 && intCount < getFirstNonzeroDigit) { false }
+    else {
       var digit = digits(intCount)
       if (sign < 0)
         digit = if (getFirstNonzeroDigit == intCount) -digit else ~digit
@@ -770,9 +733,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
     if (sign < 0) {
       setBytesForDigit(-temp.digits(digitIndex))
       loopBytes(i => setBytesForDigit(~temp.digits(i)))
-    } else {
-      loopBytes(i => setBytesForDigit(temp.digits(i)))
-    }
+    } else { loopBytes(i => setBytesForDigit(temp.digits(i))) }
     bytes
   }
 
@@ -802,9 +763,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
     }
 
     loop()
-    if (digits(numberLength) == 0) {
-      sign = 0
-    }
+    if (digits(numberLength) == 0) { sign = 0 }
     numberLength += 1
   }
 
@@ -814,13 +773,10 @@ class BigInteger extends Number with Comparable[BigInteger] {
   private[math] def getFirstNonzeroDigit(): Int = {
     if (firstNonzeroDigit == firstNonzeroDigitNotSet) {
       firstNonzeroDigit = {
-        if (this.sign == 0) {
-          -1
-        } else {
+        if (this.sign == 0) { -1 }
+        else {
           var i = 0
-          while (digits(i) == 0) {
-            i += 1
-          }
+          while (digits(i) == 0) { i += 1 }
           i
         }
       }

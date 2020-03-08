@@ -46,33 +46,23 @@ class ScalacFork extends ScalaMatchingTask with ScalacShared with TaskArgs {
 
   /** Sets the `srcdir` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `sourceDir`. */
-  def setSrcdir(input: File) {
-    sourceDir = Some(input)
-  }
+  def setSrcdir(input: File) { sourceDir = Some(input) }
 
   /** Sets the `failonerror` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `failOnError`. */
-  def setFailOnError(input: Boolean) {
-    failOnError = input
-  }
+  def setFailOnError(input: Boolean) { failOnError = input }
 
   /** Sets the `timeout` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `timeout`. */
-  def setTimeout(input: Long) {
-    timeout = Some(input)
-  }
+  def setTimeout(input: Long) { timeout = Some(input) }
 
   /** Sets the `jvmargs` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `jvmArgs`. */
-  def setJvmArgs(input: String) {
-    jvmArgs = Some(input)
-  }
+  def setJvmArgs(input: String) { jvmArgs = Some(input) }
 
   /** Sets the `argfile` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `argfile`. */
-  def setArgfile(input: File) {
-    argfile = Some(input)
-  }
+  def setArgfile(input: File) { argfile = Some(input) }
 
   private var sourceDir: Option[File] = None
   private var failOnError: Boolean = true

@@ -58,9 +58,7 @@ class AbstractCollectionFactory extends CollectionFactory {
             }
           }
 
-          def hasNext: Boolean = {
-            innerIter.hasNext
-          }
+          def hasNext: Boolean = { innerIter.hasNext }
         }
       }
     }

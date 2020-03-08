@@ -65,9 +65,7 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
                 equalsMethod.get.delete()
                 hashCodeMethod.get.delete()
                 true
-              } catch {
-                case e: IncorrectOperationException => false
-              }
+              } catch { case e: IncorrectOperationException => false }
             }
           })
         if (!deletedOk) return false
@@ -212,9 +210,7 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
           hashCodeMethod ++: equalsMethod ++: canEqualMethod ++: Nil
         GenerationUtil.addMembers(aClass, newMethods, editor.getDocument)
       }
-    } finally {
-      cleanup()
-    }
+    } finally { cleanup() }
   }
 
   def startInWriteAction(): Boolean = true

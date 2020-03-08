@@ -48,9 +48,7 @@ object Test {
   def runScript(code: String): String =
     stringFromStream(stream =>
       Console.withOut(stream) {
-        Console.withErr(stream) {
-          ScriptRunner.runCommand(settings, code, Nil)
-        }
+        Console.withErr(stream) { ScriptRunner.runCommand(settings, code, Nil) }
       })
 
   val tests: List[(String, String)] = List(

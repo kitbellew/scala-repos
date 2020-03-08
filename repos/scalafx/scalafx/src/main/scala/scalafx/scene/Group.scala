@@ -63,25 +63,19 @@ class Group(override val delegate: jfxs.Group = new jfxs.Group())
     *
     * @param c list of children to replace prior content.
     */
-  def children_=(c: Iterable[Node]) {
-    fillSFXCollection(this.children, c)
-  }
+  def children_=(c: Iterable[Node]) { fillSFXCollection(this.children, c) }
 
   /**
     * Sets a child, replacing the prior content. If you want append to current content, use `add` or similar.
     *
     * @param n Node to replace prior content.
     */
-  def children_=(n: Node) {
-    fillSFXCollectionWithOne(this.children, n)
-  }
+  def children_=(n: Node) { fillSFXCollectionWithOne(this.children, n) }
 
   /**
     * Controls whether or not this Group will automatically resize any managed resizable children
     * to their preferred sizes during the layout pass.
     */
   def autoSizeChildren: BooleanProperty = delegate.autoSizeChildrenProperty
-  def autoSizeChildren_=(v: Boolean) {
-    autoSizeChildren() = v
-  }
+  def autoSizeChildren_=(v: Boolean) { autoSizeChildren() = v }
 }

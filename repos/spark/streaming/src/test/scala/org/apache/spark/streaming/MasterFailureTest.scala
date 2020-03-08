@@ -155,9 +155,7 @@ private[streaming] object MasterFailureTest extends Logging {
     // Setup the stream computation with the given operation
     val ssc = StreamingContext.getOrCreate(
       checkpointDir.toString,
-      () => {
-        setupStreams(batchDuration, operation, checkpointDir, testDir)
-      })
+      () => { setupStreams(batchDuration, operation, checkpointDir, testDir) })
 
     // Check if setupStream was called to create StreamingContext
     // (and not created from checkpoint file)
@@ -265,9 +263,7 @@ private[streaming] object MasterFailureTest extends Logging {
         }
       } catch {
         case e: Exception => logError("Error running streaming context", e)
-      } finally {
-        ssc.stop()
-      }
+      } finally { ssc.stop() }
       if (killingThread.isAlive) {
         killingThread.interrupt()
         // SparkContext.stop will set SparkEnv.env to null. We need to make sure SparkContext is
@@ -426,9 +422,8 @@ private[streaming] class FileGeneratingThread(
             }
           }
         }
-        if (!done) {
-          logError("Could not generate file " + hadoopFile)
-        } else {
+        if (!done) { logError("Could not generate file " + hadoopFile) }
+        else {
           logInfo(
             "Generated file " + hadoopFile + " at " + System.currentTimeMillis)
         }

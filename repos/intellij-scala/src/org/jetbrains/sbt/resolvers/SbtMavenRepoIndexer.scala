@@ -76,9 +76,8 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
   }
 
   def close(): Unit =
-    try {
-      indexer.closeIndexingContext(context, false)
-    } finally {
+    try { indexer.closeIndexingContext(context, false) }
+    finally {
       container.dispose()
       Thread.currentThread().setContextClassLoader(origClassLoader)
     }
@@ -187,9 +186,7 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
         progressIndicator foreach (_.setFraction(
           0.5 + 0.5 * (i.toFloat / maxDoc)))
       }
-    } finally {
-      context.releaseIndexSearcher(searcher)
-    }
+    } finally { context.releaseIndexSearcher(searcher) }
   }
 }
 

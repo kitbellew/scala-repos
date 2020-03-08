@@ -5,9 +5,7 @@ import scalaz._
 object StateTUsage extends App {
   import StateT._
 
-  def f[M[_]: Functor] {
-    Functor[StateT[M, Int, ?]]
-  }
+  def f[M[_]: Functor] { Functor[StateT[M, Int, ?]] }
 
   def m[M[_]: Monad] {
     Applicative[StateT[M, Int, ?]]
@@ -37,9 +35,7 @@ object FibStateExample extends App {
   } yield b // if we yield n, getNFibs gives you (1,2,3,5,8...)
   // yield b instead to get (1,1,2,3...)
 
-  def getNFibs(k: Int): State[(Int, Int), List[Int]] = {
-    nextFib.replicateM(k)
-  }
+  def getNFibs(k: Int): State[(Int, Int), List[Int]] = { nextFib.replicateM(k) }
 
   def getNthFib(k: Int): State[(Int, Int), Int] = {
     if (k == 0)

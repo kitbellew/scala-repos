@@ -45,9 +45,7 @@ object ExtractSuperUtil {
     try {
       val classes = ScalaPsiUtil
         .getParents(element, file)
-        .collect {
-          case t: ScTemplateDefinition if isSuitableClass(t) => t
-        }
+        .collect { case t: ScTemplateDefinition if isSuitableClass(t) => t }
         .toArray[PsiClass]
       classes.size match {
         case 0 =>
@@ -73,9 +71,7 @@ object ExtractSuperUtil {
             )
             .showInBestPositionFor(editor)
       }
-    } catch {
-      case _: IntroduceException => return
-    }
+    } catch { case _: IntroduceException => return }
   }
 
   def classPresentableName(clazz: ScTemplateDefinition) = {
@@ -141,9 +137,7 @@ object ExtractSuperUtil {
         for (dir <- directories) {
           if (Comparing.equal(
                 fileIndex.getSourceRootForFile(dir.getVirtualFile),
-                sourceRoot)) {
-            return dir
-          }
+                sourceRoot)) { return dir }
         }
       }
     }

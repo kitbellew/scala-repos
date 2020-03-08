@@ -5,7 +5,5 @@ object Test {
     return -x
   }
 
-  def main(args: Array[String]) = {
-    Console.println("abs(-5) = " + abs(-5))
-  }
+  def main(args: Array[String]) = { Console.println("abs(-5) = " + abs(-5)) }
 }

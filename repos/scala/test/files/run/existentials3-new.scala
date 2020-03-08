@@ -3,7 +3,9 @@ import scala.reflect.runtime.universe._
 import internal._
 
 object Test {
-  trait ToS { final override def toString = getClass.getName }
+  trait ToS {
+    final override def toString = getClass.getName
+  }
 
   def f1 = { case class Bar() extends ToS; Bar }
   def f2 = { case class Bar() extends ToS; Bar() }
@@ -16,7 +18,11 @@ object Test {
   def f8 = { trait A; trait B extends A; class C extends B with ToS; new C {} }
   def f9 = { trait A; trait B; class C extends B with A with ToS; new C {} }
 
-  def f10 = { class A { type T1 }; List[A#T1]() }
+  def f10 = {
+    class A {
+      type T1
+    }; List[A#T1]()
+  }
   def f11 = { abstract class A extends Seq[Int]; List[A]() }
   def f12 = {
     abstract class A extends Seq[U forSome { type U <: Int }]; List[A]()
@@ -33,7 +39,11 @@ object Test {
   val g8 = { trait A; trait B extends A; class C extends B with ToS; new C {} }
   val g9 = { trait A; trait B; class C extends B with A with ToS; new C {} }
 
-  val g10 = { class A { type T1 }; List[A#T1]() }
+  val g10 = {
+    class A {
+      type T1
+    }; List[A#T1]()
+  }
   val g11 = { abstract class A extends Seq[Int]; List[A]() }
   val g12 = {
     abstract class A extends Seq[U forSome { type U <: Int }]; List[A]()
@@ -79,7 +89,9 @@ object Test {
 }
 
 object Misc {
-  trait Bippy { def bippy = "I'm Bippy!" }
+  trait Bippy {
+    def bippy = "I'm Bippy!"
+  }
   object o1 {
     def f1 = {
       trait A extends Seq[U forSome { type U <: Bippy }];

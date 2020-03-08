@@ -441,9 +441,7 @@ class BucketedReadSuite
       df1.write.parquet(tableDir.getAbsolutePath)
 
       val agged = hiveContext.table("bucketed_table").groupBy("i").count()
-      val error = intercept[RuntimeException] {
-        agged.count()
-      }
+      val error = intercept[RuntimeException] { agged.count() }
 
       assert(error.toString contains "Invalid bucket file")
     }

@@ -13,7 +13,9 @@ import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 import scala.collection.immutable
 
-sealed private trait ZkOp { type Res; val res = new Promise[Res] }
+sealed private trait ZkOp {
+  type Res; val res = new Promise[Res]
+}
 private object ZkOp {
   case class Exists(path: String) extends ZkOp {
     type Res = Option[Data.Stat]
@@ -196,9 +198,7 @@ class ZkSessionTest extends FunSuite with Eventually with IntegrationPatience {
         retryStream,
         () => new ZkSession(retryStream, watchedZk, NullStatsReceiver))
 
-      zk.changes.respond {
-        case _ => ()
-      }
+      zk.changes.respond { case _ => () }
 
       zkState() = WatchState.SessionState(SessionState.SyncConnected)
       eventually {

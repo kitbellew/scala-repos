@@ -45,9 +45,7 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       assert(c(1) === "2")
       assert(c(2) === "3")
       assert(c(3) === "4")
-    } else {
-      assert(true)
-    }
+    } else { assert(true) }
   }
 
   test("failure in iterating over pipe input") {
@@ -65,9 +63,7 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
 
       val piped = nums.pipe(Seq("cat"))
 
-      intercept[SparkException] {
-        piped.collect()
-      }
+      intercept[SparkException] { piped.collect() }
     }
   }
 
@@ -79,9 +75,7 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       val piped = nums.pipe(
         Seq("cat"),
         Map[String, String](),
-        (f: String => Unit) => {
-          bl.value.map(f(_)); f("\u0001")
-        },
+        (f: String => Unit) => { bl.value.map(f(_)); f("\u0001") },
         (i: Int, f: String => Unit) => f(i + "_"))
 
       val c = piped.collect()
@@ -102,13 +96,9 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
         .pipe(
           Seq("cat"),
           Map[String, String](),
-          (f: String => Unit) => {
-            bl.value.map(f(_)); f("\u0001")
-          },
+          (f: String => Unit) => { bl.value.map(f(_)); f("\u0001") },
           (i: Tuple2[String, Iterable[String]], f: String => Unit) => {
-            for (e <- i._2) {
-              f(e + "_")
-            }
+            for (e <- i._2) { f(e + "_") }
           }
         )
         .collect()
@@ -121,9 +111,7 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       assert(d(5) === "\u0001")
       assert(d(6) === "a\t1_")
       assert(d(7) === "a\t3_")
-    } else {
-      assert(true)
-    }
+    } else { assert(true) }
   }
 
   test("pipe with env variable") {
@@ -136,21 +124,15 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       assert(c.size === 2)
       assert(c(0) === "LALALA")
       assert(c(1) === "LALALA")
-    } else {
-      assert(true)
-    }
+    } else { assert(true) }
   }
 
   test("pipe with non-zero exit status") {
     if (testCommandAvailable("cat")) {
       val nums = sc.makeRDD(Array(1, 2, 3, 4), 2)
       val piped = nums.pipe(Seq("cat nonexistent_file", "2>", "/dev/null"))
-      intercept[SparkException] {
-        piped.collect()
-      }
-    } else {
-      assert(true)
-    }
+      intercept[SparkException] { piped.collect() }
+    } else { assert(true) }
   }
 
   test("basic pipe with separate working directory") {
@@ -171,9 +153,7 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       assert(pipedLs.length > 0)
       // clean up top level tasks directory
       Utils.deleteRecursively(new File("tasks"))
-    } else {
-      assert(true)
-    }
+    } else { assert(true) }
   }
 
   test("test pipe exports map_input_file") {

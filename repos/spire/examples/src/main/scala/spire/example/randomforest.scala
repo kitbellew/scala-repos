@@ -177,9 +177,8 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
     // until we hit the minimum region size.
 
     def growTree(members: Array[Int]): DecisionTree[V, F, K] = {
-      if (members.length < opts.minSplitSize) {
-        Leaf(region(members).value)
-      } else {
+      if (members.length < opts.minSplitSize) { Leaf(region(members).value) }
+      else {
         val region0 = region(members)
         val vars = predictors()
 
@@ -248,9 +247,7 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
     if (opts.parallel) {
       Forest(
         (1 to opts.numTrees).toList.par.map({ _ => growTree(sample()) }).toList)
-    } else {
-      Forest(List.fill(opts.numTrees)(growTree(sample())))
-    }
+    } else { Forest(List.fill(opts.numTrees)(growTree(sample()))) }
   }
 
   protected def fromForest(forest: Forest): V => K

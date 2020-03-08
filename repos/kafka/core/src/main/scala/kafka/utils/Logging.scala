@@ -42,9 +42,7 @@ trait Logging {
     if (logger.isTraceEnabled())
       logger.trace(msgWithLogIdent(msg), e)
   }
-  def swallowTrace(action: => Unit) {
-    CoreUtils.swallow(logger.trace, action)
-  }
+  def swallowTrace(action: => Unit) { CoreUtils.swallow(logger.trace, action) }
 
   def debug(msg: => String): Unit = {
     if (logger.isDebugEnabled())
@@ -58,9 +56,7 @@ trait Logging {
     if (logger.isDebugEnabled())
       logger.debug(msgWithLogIdent(msg), e)
   }
-  def swallowDebug(action: => Unit) {
-    CoreUtils.swallow(logger.debug, action)
-  }
+  def swallowDebug(action: => Unit) { CoreUtils.swallow(logger.debug, action) }
 
   def info(msg: => String): Unit = {
     if (logger.isInfoEnabled())
@@ -74,43 +70,25 @@ trait Logging {
     if (logger.isInfoEnabled())
       logger.info(msgWithLogIdent(msg), e)
   }
-  def swallowInfo(action: => Unit) {
-    CoreUtils.swallow(logger.info, action)
-  }
+  def swallowInfo(action: => Unit) { CoreUtils.swallow(logger.info, action) }
 
-  def warn(msg: => String): Unit = {
-    logger.warn(msgWithLogIdent(msg))
-  }
-  def warn(e: => Throwable): Any = {
-    logger.warn(logIdent, e)
-  }
+  def warn(msg: => String): Unit = { logger.warn(msgWithLogIdent(msg)) }
+  def warn(e: => Throwable): Any = { logger.warn(logIdent, e) }
   def warn(msg: => String, e: => Throwable) = {
     logger.warn(msgWithLogIdent(msg), e)
   }
-  def swallowWarn(action: => Unit) {
-    CoreUtils.swallow(logger.warn, action)
-  }
+  def swallowWarn(action: => Unit) { CoreUtils.swallow(logger.warn, action) }
   def swallow(action: => Unit) = swallowWarn(action)
 
-  def error(msg: => String): Unit = {
-    logger.error(msgWithLogIdent(msg))
-  }
-  def error(e: => Throwable): Any = {
-    logger.error(logIdent, e)
-  }
+  def error(msg: => String): Unit = { logger.error(msgWithLogIdent(msg)) }
+  def error(e: => Throwable): Any = { logger.error(logIdent, e) }
   def error(msg: => String, e: => Throwable) = {
     logger.error(msgWithLogIdent(msg), e)
   }
-  def swallowError(action: => Unit) {
-    CoreUtils.swallow(logger.error, action)
-  }
+  def swallowError(action: => Unit) { CoreUtils.swallow(logger.error, action) }
 
-  def fatal(msg: => String): Unit = {
-    logger.fatal(msgWithLogIdent(msg))
-  }
-  def fatal(e: => Throwable): Any = {
-    logger.fatal(logIdent, e)
-  }
+  def fatal(msg: => String): Unit = { logger.fatal(msgWithLogIdent(msg)) }
+  def fatal(e: => Throwable): Any = { logger.fatal(logIdent, e) }
   def fatal(msg: => String, e: => Throwable) = {
     logger.fatal(msgWithLogIdent(msg), e)
   }

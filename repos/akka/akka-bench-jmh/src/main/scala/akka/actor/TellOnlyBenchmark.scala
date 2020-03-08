@@ -84,9 +84,7 @@ class TellOnlyBenchmark {
 
   @Benchmark
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def tell(): Unit = {
-    probe.send(actor, message)
-  }
+  def tell(): Unit = { probe.send(actor, message) }
 }
 
 object TellOnlyBenchmark {

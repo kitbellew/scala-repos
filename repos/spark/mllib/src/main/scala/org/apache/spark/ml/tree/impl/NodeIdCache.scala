@@ -46,9 +46,7 @@ private[tree] case class NodeIndexUpdater(split: Split, nodeIndex: Int) {
   def updateNodeIndex(binnedFeature: Int, splits: Array[Split]): Int = {
     if (split.shouldGoLeft(binnedFeature, splits)) {
       LearningNode.leftChildIndex(nodeIndex)
-    } else {
-      LearningNode.rightChildIndex(nodeIndex)
-    }
+    } else { LearningNode.rightChildIndex(nodeIndex) }
   }
 }
 
@@ -135,17 +133,14 @@ private[spark] class NodeIdCache(
         if (checkpointQueue(1).getCheckpointFile.isDefined) {
           val old = checkpointQueue.dequeue()
           // Since the old checkpoint is not deleted by Spark, we'll manually delete it here.
-          try {
-            fs.delete(new Path(old.getCheckpointFile.get), true)
-          } catch {
+          try { fs.delete(new Path(old.getCheckpointFile.get), true) }
+          catch {
             case e: IOException =>
               logError(
                 "Decision Tree learning using cacheNodeIds failed to remove checkpoint" +
                   s" file: ${old.getCheckpointFile.get}")
           }
-        } else {
-          canDelete = false
-        }
+        } else { canDelete = false }
       }
 
       nodeIdsForInstances.checkpoint()
@@ -160,9 +155,8 @@ private[spark] class NodeIdCache(
     while (checkpointQueue.nonEmpty) {
       val old = checkpointQueue.dequeue()
       if (old.getCheckpointFile.isDefined) {
-        try {
-          fs.delete(new Path(old.getCheckpointFile.get), true)
-        } catch {
+        try { fs.delete(new Path(old.getCheckpointFile.get), true) }
+        catch {
           case e: IOException =>
             logError(
               "Decision Tree learning using cacheNodeIds failed to remove checkpoint" +

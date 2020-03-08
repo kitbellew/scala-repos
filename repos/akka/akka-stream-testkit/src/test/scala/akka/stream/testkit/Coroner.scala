@@ -124,7 +124,9 @@ object Coroner { // FIXME: remove once going back to project dependencies
       }
     }
     new Thread(
-      new Runnable { def run = triggerReportIfOverdue(duration) },
+      new Runnable {
+        def run = triggerReportIfOverdue(duration)
+      },
       "Coroner").start()
     watchedHandle.waitForStart()
     watchedHandle
@@ -165,18 +167,16 @@ object Coroner { // FIXME: remove once going back to project dependencies
           threadMx.findMonitorDeadlockedThreads(),
           "monitors, but NOT ownable synchronizers")
       }
-      if (ids == null) {
-        (Seq.empty, desc)
-      } else {
+      if (ids == null) { (Seq.empty, desc) }
+      else {
         val maxTraceDepth = 1000 // Seems deep enough
         (threadMx.getThreadInfo(ids, maxTraceDepth), desc)
       }
     }
 
     def printThreadInfos(threadInfos: Seq[ThreadInfo]) = {
-      if (threadInfos.isEmpty) {
-        println("None")
-      } else {
+      if (threadInfos.isEmpty) { println("None") }
+      else {
         for (ti ← threadInfos.sortBy(_.getThreadName)) {
           println(threadInfoToString(ti))
         }
@@ -192,9 +192,7 @@ object Coroner { // FIXME: remove once going back to project dependencies
       sb.append(" ")
       sb.append(ti.getThreadState)
 
-      if (ti.getLockName != null) {
-        sb.append(" on " + ti.getLockName)
-      }
+      if (ti.getLockName != null) { sb.append(" on " + ti.getLockName) }
 
       if (ti.getLockOwnerName != null) {
         sb.append(" owned by \"")
@@ -203,13 +201,9 @@ object Coroner { // FIXME: remove once going back to project dependencies
         sb.append(ti.getLockOwnerId)
       }
 
-      if (ti.isSuspended) {
-        sb.append(" (suspended)")
-      }
+      if (ti.isSuspended) { sb.append(" (suspended)") }
 
-      if (ti.isInNative) {
-        sb.append(" (in native)")
-      }
+      if (ti.isInNative) { sb.append(" (in native)") }
 
       sb.append('\n')
 

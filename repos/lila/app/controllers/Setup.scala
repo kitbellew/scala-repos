@@ -29,10 +29,7 @@ object Setup extends LilaController with TheftPrevention {
           Env.fishnet.aiPerfApi.intRatings,
           form("fen").value flatMap ValidFen(getBool("strict")))
       }
-    } else
-      fuccess {
-        Redirect(routes.Lobby.home + "#ai")
-      }
+    } else fuccess { Redirect(routes.Lobby.home + "#ai") }
   }
 
   def ai = process(env.forms.ai) { config => implicit ctx =>
@@ -51,10 +48,7 @@ object Setup extends LilaController with TheftPrevention {
             }
         }
       }
-    } else
-      fuccess {
-        Redirect(routes.Lobby.home + "#friend")
-      }
+    } else fuccess { Redirect(routes.Lobby.home + "#friend") }
   }
 
   def friend(userId: Option[String]) =
@@ -110,10 +104,7 @@ object Setup extends LilaController with TheftPrevention {
         html.setup.hook(_)
       }
     }
-    else
-      fuccess {
-        Redirect(routes.Lobby.home + "#hook")
-      }
+    else fuccess { Redirect(routes.Lobby.home + "#hook") }
   }
 
   private def hookResponse(hookId: String) =

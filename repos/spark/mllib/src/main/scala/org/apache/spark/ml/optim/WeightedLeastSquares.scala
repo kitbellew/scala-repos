@@ -123,12 +123,8 @@ private[ml] class WeightedLeastSquares(
     var j = 2
     while (i < triK) {
       var lambda = regParam
-      if (standardizeFeatures) {
-        lambda *= aVar(j - 2)
-      }
-      if (standardizeLabel && bStd != 0) {
-        lambda /= bStd
-      }
+      if (standardizeFeatures) { lambda *= aVar(j - 2) }
+      if (standardizeLabel && bStd != 0) { lambda /= bStd }
       aaValues(i) += lambda
       i += j
       j += 1
@@ -136,14 +132,9 @@ private[ml] class WeightedLeastSquares(
 
     val aa = if (fitIntercept) {
       Array.concat(aaBar.values, aBar.values, Array(1.0))
-    } else {
-      aaBar.values
-    }
-    val ab = if (fitIntercept) {
-      Array.concat(abBar.values, Array(bBar))
-    } else {
-      abBar.values
-    }
+    } else { aaBar.values }
+    val ab = if (fitIntercept) { Array.concat(abBar.values, Array(bBar)) }
+    else { abBar.values }
 
     val x = CholeskyDecomposition.solve(aa, ab)
 
@@ -156,9 +147,7 @@ private[ml] class WeightedLeastSquares(
 
     val (coefficients, intercept) = if (fitIntercept) {
       (new DenseVector(x.slice(0, x.length - 1)), x.last)
-    } else {
-      (new DenseVector(x), 0.0)
-    }
+    } else { (new DenseVector(x), 0.0) }
 
     new WeightedLeastSquaresModel(coefficients, intercept, diagInvAtWA)
   }
@@ -214,9 +203,7 @@ private[ml] object WeightedLeastSquares {
     def add(instance: Instance): this.type = {
       val Instance(l, w, f) = instance
       val ak = f.size
-      if (!initialized) {
-        init(ak)
-      }
+      if (!initialized) { init(ak) }
       assert(
         ak == k,
         s"Dimension mismatch. Expect vectors of size $k but got $ak.")
@@ -235,12 +222,9 @@ private[ml] object WeightedLeastSquares {
       * Merges another [[Aggregator]].
       */
     def merge(other: Aggregator): this.type = {
-      if (!other.initialized) {
-        this
-      } else {
-        if (!initialized) {
-          init(other.k)
-        }
+      if (!other.initialized) { this }
+      else {
+        if (!initialized) { init(other.k) }
         assert(
           k == other.k,
           s"dimension mismatch: this.k = $k but other.k = ${other.k}")

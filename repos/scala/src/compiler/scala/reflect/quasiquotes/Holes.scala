@@ -14,7 +14,9 @@ object Rank {
   val NoDot = new Rank(0)
   val DotDot = new Rank(1)
   val DotDotDot = new Rank(2)
-  object Dot { def unapply(rank: Rank) = rank != NoDot }
+  object Dot {
+    def unapply(rank: Rank) = rank != NoDot
+  }
   def parseDots(part: String) = {
     if (part.endsWith("...")) (part.stripSuffix("..."), DotDotDot)
     else if (part.endsWith("..")) (part.stripSuffix(".."), DotDot)
@@ -234,9 +236,7 @@ trait Holes { self: Quasiquotes =>
           else
             unlifters
               .spawn(strippedTpe, rank)
-              .map {
-                Apply(_, treeNoUnlift :: Nil)
-              }
+              .map { Apply(_, treeNoUnlift :: Nil) }
               .getOrElse {
                 c.abort(
                   pat.pos,

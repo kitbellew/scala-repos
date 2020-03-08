@@ -129,9 +129,7 @@ object Cors {
     protected[this] def handleSimple(
         request: Request,
         response: Response): Response =
-      getOrigin(request) map {
-        setOriginAndCredentials(response, _)
-      } map {
+      getOrigin(request) map { setOriginAndCredentials(response, _) } map {
         addExposedHeaders(_)
       } getOrElse response
 

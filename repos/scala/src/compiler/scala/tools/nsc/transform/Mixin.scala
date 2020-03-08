@@ -170,9 +170,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
       val forwarderInfo =
         if (erasureMap(specificForwardInfo) =:= erasedInterfaceInfo)
           specificForwardInfo
-        else {
-          erasedInterfaceInfo
-        }
+        else { erasedInterfaceInfo }
       // Optimize: no need if mixinClass has no typeparams.
       // !!! JZ Really? What about the effect of abstract types, prefix?
       if (mixinClass.typeParams.isEmpty) sym
@@ -1049,9 +1047,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
       // for all symbols `sym` in the class definition, which are mixed in:
       for (sym <- clazz.info.decls; if sym hasFlag MIXEDIN) {
         // if current class is a trait, add an abstract method for accessor `sym`
-        if (clazz.isTrait) {
-          addDefDef(sym)
-        } else {
+        if (clazz.isTrait) { addDefDef(sym) }
+        else {
           // if class is not a trait add accessor definitions
           if (isConcreteAccessor(sym)) {
             // add accessor definitions

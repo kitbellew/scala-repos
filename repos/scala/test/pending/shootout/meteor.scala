@@ -68,16 +68,13 @@ final class Solver(n: Int) {
           unplaced += k
         }
       }
-    } else {
-      puzzleSolved
-    }
+    } else { puzzleSolved }
   }
 
   private def puzzleSolved() = {
     val b = board.asString
-    if (first == null) {
-      first = b; last = b
-    } else {
+    if (first == null) { first = b; last = b }
+    else {
       if (b < first) { first = b }
       else { if (b > last) { last = b } }
     }

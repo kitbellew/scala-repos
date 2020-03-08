@@ -114,9 +114,7 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
   /** Update the given block in this storage status. If it doesn't already exist, add it. */
   private[spark] def updateBlock(
       blockId: BlockId,
-      blockStatus: BlockStatus): Unit = {
-    addBlock(blockId, blockStatus)
-  }
+      blockStatus: BlockStatus): Unit = { addBlock(blockId, blockStatus) }
 
   /** Remove the given block from this storage status. */
   private[spark] def removeBlock(blockId: BlockId): Option[BlockStatus] = {
@@ -127,13 +125,9 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
         if (_rddBlocks.contains(rddId)) {
           val removed = _rddBlocks(rddId).remove(blockId)
           // If the given RDD has no more blocks left, remove the RDD
-          if (_rddBlocks(rddId).isEmpty) {
-            _rddBlocks.remove(rddId)
-          }
+          if (_rddBlocks(rddId).isEmpty) { _rddBlocks.remove(rddId) }
           removed
-        } else {
-          None
-        }
+        } else { None }
       case _ =>
         _nonRddBlocks.remove(blockId)
     }
@@ -236,11 +230,8 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
     blockId match {
       case RDDBlockId(rddId, _) =>
         // If this RDD is no longer persisted, remove it
-        if (newMem + newDisk == 0) {
-          _rddStorageInfo.remove(rddId)
-        } else {
-          _rddStorageInfo(rddId) = (newMem, newDisk, level)
-        }
+        if (newMem + newDisk == 0) { _rddStorageInfo.remove(rddId) }
+        else { _rddStorageInfo(rddId) = (newMem, newDisk, level) }
       case _ =>
         _nonRddStorageInfo = (newMem, newDisk)
     }

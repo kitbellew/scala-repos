@@ -123,9 +123,7 @@ private[deploy] class Worker(
         sys.props.contains("spark.test.home"),
         "spark.test.home is not set!")
       new File(sys.props("spark.test.home"))
-    } else {
-      new File(sys.env.get("SPARK_HOME").getOrElse("."))
-    }
+    } else { new File(sys.env.get("SPARK_HOME").getOrElse(".")) }
 
   var workDir: File = null
   val finishedExecutors = new LinkedHashMap[String, ExecutorRunner]
@@ -253,9 +251,8 @@ private[deploy] class Worker(
   private def reregisterWithMaster(): Unit = {
     Utils.tryOrExit {
       connectionAttemptCount += 1
-      if (registered) {
-        cancelLastRegistrationRetry()
-      } else if (connectionAttemptCount <= TOTAL_REGISTRATION_RETRIES) {
+      if (registered) { cancelLastRegistrationRetry() }
+      else if (connectionAttemptCount <= TOTAL_REGISTRATION_RETRIES) {
         logInfo(
           s"Retrying connection to master (attempt # $connectionAttemptCount)")
 
@@ -387,9 +384,7 @@ private[deploy] class Worker(
       .onComplete {
         // This is a very fast action so we can use "ThreadUtils.sameThread"
         case Success(msg) =>
-          Utils.tryLogNonFatalError {
-            handleRegisterResponse(msg)
-          }
+          Utils.tryLogNonFatalError { handleRegisterResponse(msg) }
         case Failure(e) =>
           logError(s"Cannot register with master: ${masterEndpoint.address}", e)
           System.exit(1)
@@ -627,9 +622,7 @@ private[deploy] class Worker(
     case driverStateChanged @ DriverStateChanged(
           driverId,
           state,
-          exception) => {
-      handleDriverStateChanged(driverStateChanged)
-    }
+          exception) => { handleDriverStateChanged(driverStateChanged) }
 
     case ReregisterWithMaster =>
       reregisterWithMaster()
@@ -863,8 +856,6 @@ private[deploy] object Worker extends Logging {
         } :+
         s"-D$useNLC=true"
       cmd.copy(javaOpts = newJavaOpts)
-    } else {
-      cmd
-    }
+    } else { cmd }
   }
 }

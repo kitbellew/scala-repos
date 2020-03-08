@@ -13,9 +13,7 @@ class CsrfTokenServlet extends ScalatraServlet with CsrfTokenSupport {
     </html>
   }
 
-  post("/renderForm") {
-    "SUCCESS"
-  }
+  post("/renderForm") { "SUCCESS" }
 }
 
 object CsrfTokenSpec extends MutableScalatraSpec {
@@ -23,9 +21,7 @@ object CsrfTokenSpec extends MutableScalatraSpec {
   addServlet(classOf[CsrfTokenServlet], "/*")
 
   "the get request should include the CSRF token" in {
-    get("/renderForm") {
-      body must beMatching("""(?s).*value="\w+".*""")
-    }
+    get("/renderForm") { body must beMatching("""(?s).*value="\w+".*""") }
   }
 
   "the post should be valid when it uses the right csrf token" in {

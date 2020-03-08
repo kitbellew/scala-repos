@@ -141,9 +141,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
     Files.write(lines, file, StandardCharsets.UTF_8)
     val path = tempDir.toURI.toString
 
-    intercept[SparkException] {
-      loadLibSVMFile(sc, path).collect()
-    }
+    intercept[SparkException] { loadLibSVMFile(sc, path).collect() }
     Utils.deleteRecursively(tempDir)
   }
 
@@ -159,9 +157,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
     Files.write(lines, file, StandardCharsets.UTF_8)
     val path = tempDir.toURI.toString
 
-    intercept[SparkException] {
-      loadLibSVMFile(sc, path).collect()
-    }
+    intercept[SparkException] { loadLibSVMFile(sc, path).collect() }
     Utils.deleteRecursively(tempDir)
   }
 

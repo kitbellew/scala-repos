@@ -322,9 +322,7 @@ private[ml] trait DecisionTreeRegressorParams
       super.validateAndTransformSchema(schema, fitting, featuresDataType)
     if (isDefined(varianceCol) && $(varianceCol).nonEmpty) {
       SchemaUtils.appendColumn(newSchema, $(varianceCol), DoubleType)
-    } else {
-      newSchema
-    }
+    } else { newSchema }
   }
 }
 

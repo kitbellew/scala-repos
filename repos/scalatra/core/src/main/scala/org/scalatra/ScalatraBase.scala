@@ -146,9 +146,7 @@ trait ScalatraBase
     request(CookieSupport.SweetCookiesKey) =
       new SweetCookies(request.cookies, response)
     response.characterEncoding = Some(defaultCharacterEncoding)
-    withRequestResponse(request, response) {
-      executeRoutes()
-    }
+    withRequestResponse(request, response) { executeRoutes() }
   }
 
   /**
@@ -207,9 +205,7 @@ trait ScalatraBase
         }
         rendered = false
         r
-      } else {
-        throw prehandleException.get.asInstanceOf[Exception]
-      }
+      } else { throw prehandleException.get.asInstanceOf[Exception] }
     }
 
     cradleHalt(
@@ -222,11 +218,8 @@ trait ScalatraBase
           },
           e => {
             runCallbacks(Failure(e))
-            try {
-              renderUncaughtException(e)
-            } finally {
-              runRenderCallbacks(Failure(e))
-            }
+            try { renderUncaughtException(e) }
+            finally { runRenderCallbacks(Failure(e)) }
           })
       }
     )
@@ -311,17 +304,12 @@ trait ScalatraBase
     *         or `None` if the action calls `pass`.
     */
   protected def invoke(matchedRoute: MatchedRoute): Option[Any] = {
-    withRouteMultiParams(Some(matchedRoute)) {
-      liftAction(matchedRoute.action)
-    }
+    withRouteMultiParams(Some(matchedRoute)) { liftAction(matchedRoute.action) }
   }
 
   private def liftAction(action: Action): Option[Any] = {
-    try {
-      Some(action())
-    } catch {
-      case e: PassException => None
-    }
+    try { Some(action()) }
+    catch { case e: PassException => None }
   }
 
   def before(transformers: RouteTransformer*)(fun: => Any): Unit = {
@@ -338,9 +326,7 @@ trait ScalatraBase
     */
   protected var doNotFound: Action
 
-  def notFound(fun: => Any): Unit = {
-    doNotFound = { () => fun }
-  }
+  def notFound(fun: => Any): Unit = { doNotFound = { () => fun } }
 
   /**
     * Called if no route matches the current request method, but routes
@@ -374,9 +360,7 @@ trait ScalatraBase
     * The error handler function, called if an exception is thrown during
     * before filters or the routes.
     */
-  protected var errorHandler: ErrorHandler = {
-    case t => throw t
-  }
+  protected var errorHandler: ErrorHandler = { case t => throw t }
 
   def error(handler: ErrorHandler): Unit = {
     errorHandler = handler orElse errorHandler
@@ -387,11 +371,8 @@ trait ScalatraBase
       implicit request: HttpServletRequest): S = {
     val originalParams = multiParams
     setMultiparams(matchedRoute, originalParams)
-    try {
-      thunk
-    } finally {
-      request(MultiParamsKey) = originalParams
-    }
+    try { thunk }
+    finally { request(MultiParamsKey) = originalParams }
   }
 
   protected def setMultiparams[S](
@@ -412,9 +393,7 @@ trait ScalatraBase
     */
   protected def renderResponse(actionResult: Any): Unit = {
     if (contentType == null)
-      contentTypeInferrer.lift(actionResult) foreach {
-        contentType = _
-      }
+      contentTypeInferrer.lift(actionResult) foreach { contentType = _ }
 
     renderResponseBody(actionResult)
   }
@@ -434,9 +413,7 @@ trait ScalatraBase
     case file: File              => MimeTypes(file)
     case actionResult: ActionResult =>
       actionResult.headers
-        .find {
-          case (name, value) => name equalsIgnoreCase "CONTENT-TYPE"
-        }
+        .find { case (name, value) => name equalsIgnoreCase "CONTENT-TYPE" }
         .getOrElse(("Content-Type", contentTypeInferrer(actionResult.body)))
         ._2
     //    case Unit | _: Unit => null
@@ -459,11 +436,8 @@ trait ScalatraBase
     } catch {
       case e: Throwable =>
         runCallbacks(Failure(e))
-        try {
-          renderUncaughtException(e)
-        } finally {
-          runRenderCallbacks(Failure(e))
-        }
+        try { renderUncaughtException(e) }
+        finally { runRenderCallbacks(Failure(e)) }
     }
   }
 
@@ -488,9 +462,7 @@ trait ScalatraBase
         response.setCharacterEncoding(FileCharset(bytes).name)
       response.outputStream.write(bytes)
     case is: java.io.InputStream =>
-      using(is) {
-        util.io.copy(_, response.outputStream)
-      }
+      using(is) { util.io.copy(_, response.outputStream) }
     case file: File =>
       if (contentType startsWith "text")
         response.setCharacterEncoding(FileCharset(file).name)
@@ -553,9 +525,7 @@ trait ScalatraBase
     * @see [[org.scalatra.BooleanBlockRouteMatcher]]
     */
   protected implicit def booleanBlock2RouteMatcher(
-      block: => Boolean): RouteMatcher = {
-    new BooleanBlockRouteMatcher(block)
-  }
+      block: => Boolean): RouteMatcher = { new BooleanBlockRouteMatcher(block) }
 
   protected def renderHaltException(e: HaltException): Unit = {
     try {
@@ -603,9 +573,7 @@ trait ScalatraBase
   def delete(transformers: RouteTransformer*)(action: => Any): Route =
     addRoute(Delete, transformers, action)
 
-  def trap(codes: Range)(block: => Any): Unit = {
-    addStatusRoute(codes, block)
-  }
+  def trap(codes: Range)(block: => Any): Unit = { addStatusRoute(codes, block) }
 
   def options(transformers: RouteTransformer*)(action: => Any): Route =
     addRoute(Options, transformers, action)

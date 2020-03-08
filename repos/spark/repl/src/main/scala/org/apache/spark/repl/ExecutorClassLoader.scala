@@ -82,9 +82,8 @@ class ExecutorClassLoader(
       case true =>
         findClassLocally(name).getOrElse(parentLoader.loadClass(name))
       case false => {
-        try {
-          parentLoader.loadClass(name)
-        } catch {
+        try { parentLoader.loadClass(name) }
+        catch {
           case e: ClassNotFoundException => {
             val classOption = findClassLocally(name)
             classOption match {
@@ -115,9 +114,8 @@ class ExecutorClassLoader(
         toClassNotFound(super.read(b, offset, len))
 
       private def toClassNotFound(fn: => Int): Int = {
-        try {
-          fn
-        } catch {
+        try { fn }
+        catch {
           case e: Exception =>
             throw new ClassNotFoundException(path, e)
         }
@@ -132,9 +130,7 @@ class ExecutorClassLoader(
       val newuri =
         Utils.constructURIForAuthentication(uri, SparkEnv.get.securityManager)
       newuri.toURL
-    } else {
-      new URL(classUri + "/" + urlEncode(pathInDirectory))
-    }
+    } else { new URL(classUri + "/" + urlEncode(pathInDirectory)) }
     val connection: HttpURLConnection = Utils
       .setupSecureURLConnection(
         url.openConnection(),
@@ -149,16 +145,13 @@ class ExecutorClassLoader(
     try {
       if (connection.getResponseCode != 200) {
         // Close the error stream so that the connection is eligible for re-use
-        try {
-          connection.getErrorStream.close()
-        } catch {
+        try { connection.getErrorStream.close() }
+        catch {
           case ioe: IOException =>
             logError("Exception while closing error stream", ioe)
         }
         throw new ClassNotFoundException(s"Class file not found at URL $url")
-      } else {
-        connection.getInputStream
-      }
+      } else { connection.getInputStream }
     } catch {
       case NonFatal(e) if !e.isInstanceOf[ClassNotFoundException] =>
         connection.disconnect()
@@ -169,9 +162,8 @@ class ExecutorClassLoader(
   private def getClassFileInputStreamFromFileSystem(fileSystem: FileSystem)(
       pathInDirectory: String): InputStream = {
     val path = new Path(directory, pathInDirectory)
-    if (fileSystem.exists(path)) {
-      fileSystem.open(path)
-    } else {
+    if (fileSystem.exists(path)) { fileSystem.open(path) }
+    else {
       throw new ClassNotFoundException(s"Class file not found at path $path")
     }
   }
@@ -196,9 +188,8 @@ class ExecutorClassLoader(
         None
     } finally {
       if (inputStream != null) {
-        try {
-          inputStream.close()
-        } catch {
+        try { inputStream.close() }
+        catch {
           case e: Exception =>
             logError("Exception while closing inputStream", e)
         }
@@ -225,11 +216,8 @@ class ExecutorClassLoader(
       var done = false
       while (!done) {
         val num = in.read(bytes)
-        if (num >= 0) {
-          bos.write(bytes, 0, num)
-        } else {
-          done = true
-        }
+        if (num >= 0) { bos.write(bytes, 0, num) }
+        else { done = true }
       }
       return bos.toByteArray
     }
@@ -271,8 +259,6 @@ class ConstructorCleaner(className: String, cv: ClassVisitor)
       mv.visitMaxs(-1, -1) // stack size and local vars will be auto-computed
       mv.visitEnd()
       return null
-    } else {
-      return mv
-    }
+    } else { return mv }
   }
 }

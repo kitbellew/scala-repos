@@ -198,9 +198,7 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
               classBTypeFromParsedClassfile(declClass),
               classBTypeFromParsedClassfile(lambdaBodyHandle.getOwner),
               ownerClass)
-          } yield {
-            isAccessible
-          }
+          } yield { isAccessible }
 
           def pos =
             callGraph
@@ -334,10 +332,9 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         Type.getArgumentTypes(lambdaBodyMethodDescWithoutCaptures)
       val res = new Array[Option[AbstractInsnNode]](invokeArgTypes.length)
       for (i <- invokeArgTypes.indices) {
-        if (invokeArgTypes(i) == implMethodArgTypes(i)) {
-          res(i) = None
-        } else if (isPrimitiveType(implMethodArgTypes(i)) && invokeArgTypes(
-                     i).getDescriptor == ObjectRef.descriptor) {
+        if (invokeArgTypes(i) == implMethodArgTypes(i)) { res(i) = None }
+        else if (isPrimitiveType(implMethodArgTypes(i)) && invokeArgTypes(
+                   i).getDescriptor == ObjectRef.descriptor) {
           res(i) = Some(getScalaUnbox(implMethodArgTypes(i)))
         } else if (isPrimitiveType(invokeArgTypes(i)) && implMethodArgTypes(
                      i).getDescriptor == ObjectRef.descriptor) {

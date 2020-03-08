@@ -231,9 +231,7 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   def eqv(b: Jet[T])(implicit o: Eq[T]): Boolean = {
     real === b.real && ArraySupport.eqv(infinitesimal, b.infinitesimal)
   }
-  def neqv(b: Jet[T])(implicit o: Eq[T]): Boolean = {
-    !(this eqv b)
-  }
+  def neqv(b: Jet[T])(implicit o: Eq[T]): Boolean = { !(this eqv b) }
 
   def unary_-()(implicit f: Field[T], v: VectorSpace[Array[T], T]): Jet[T] = {
     new Jet(-real, -infinitesimal)
@@ -294,9 +292,7 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
       c: ClassTag[T],
       f: Field[T],
       r: IsReal[T],
-      v: VectorSpace[Array[T], T]): Jet[T] = {
-    this - ((this /~ b) * b)
-  }
+      v: VectorSpace[Array[T], T]): Jet[T] = { this - ((this /~ b) * b) }
 
   def /%(b: Jet[T])(implicit
       c: ClassTag[T],
@@ -317,9 +313,7 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
       f: Field[T],
       r: IsReal[T],
       t: Trig[T],
-      v: VectorSpace[Array[T], T]): Jet[T] = {
-    pow(f.fromInt(k).reciprocal())
-  }
+      v: VectorSpace[Array[T], T]): Jet[T] = { pow(f.fromInt(k).reciprocal()) }
 
   def **(b: Jet[T])(implicit
       c: ClassTag[T],
@@ -327,9 +321,7 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
       f: Field[T],
       r: IsReal[T],
       t: Trig[T],
-      v: VectorSpace[Array[T], T]): Jet[T] = {
-    pow(b)
-  }
+      v: VectorSpace[Array[T], T]): Jet[T] = { pow(b) }
 
   def floor()(implicit
       c: ClassTag[T],
@@ -370,14 +362,11 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   private def powScalarToScalar(
       b: T,
       e: T)(implicit f: Field[T], eq: Eq[T], r: IsReal[T], t: Trig[T]): T = {
-    if (e === f.zero) {
-      f.one
-    } else if (b === f.zero) {
+    if (e === f.zero) { f.one }
+    else if (b === f.zero) {
       if (e < f.zero) throw new Exception("raising 0 to a negative power")
       else f.zero
-    } else {
-      spire.math.exp(e * spire.math.log(b))
-    }
+    } else { spire.math.exp(e * spire.math.log(b)) }
   }
 
   // pow -- base is a constant, exponent (this) is a differentiable function.
@@ -389,9 +378,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
       m: Module[Array[T], T],
       r: IsReal[T],
       t: Trig[T]): Jet[T] = {
-    if (isZero) {
-      Jet.one[T]
-    } else {
+    if (isZero) { Jet.one[T] }
+    else {
       val tmp = powScalarToScalar(a, real)
       new Jet(tmp, (spire.math.log(a) * tmp) *: infinitesimal)
     }
@@ -431,9 +419,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
       m: Module[Array[T], T],
       r: IsReal[T],
       t: Trig[T]): Jet[T] = {
-    if (b.isZero) {
-      Jet.one[T]
-    } else {
+    if (b.isZero) { Jet.one[T] }
+    else {
       val tmp1 = powScalarToScalar(real, b.real)
       val tmp2 = b.real * powScalarToScalar(real, b.real - f.one)
       val tmp3 = tmp1 * spire.math.log(real)

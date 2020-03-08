@@ -57,9 +57,7 @@ object Memoize {
       private[this] var memo = Map.empty[A, Either[JCountDownLatch, B]]
 
       def snap: Map[A, B] =
-        synchronized(memo) collect {
-          case (a, Right(b)) => (a, b)
-        }
+        synchronized(memo) collect { case (a, Right(b)) => (a, b) }
 
       /**
         * What to do if we do not find the value already in the memo
@@ -103,9 +101,8 @@ object Memoize {
           case Left(latch) =>
             // Compute the value outside of the synchronized block.
             val b =
-              try {
-                f(a)
-              } catch {
+              try { f(a) }
+              catch {
                 case t: Throwable =>
                   // If there was an exception running the
                   // computation, then we need to make sure we do not

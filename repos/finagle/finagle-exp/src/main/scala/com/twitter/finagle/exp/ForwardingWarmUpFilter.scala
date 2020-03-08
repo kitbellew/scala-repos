@@ -44,9 +44,8 @@ abstract class ForwardingWarmUpFilter[Req, Rep](
   def bypassForward: Boolean
 
   final override def apply(request: Req, service: Service[Req, Rep]) = {
-    if (warmupComplete || bypassForward) {
-      service(request)
-    } else {
+    if (warmupComplete || bypassForward) { service(request) }
+    else {
       val start = startTime.inMillis
 
       val timePassed = math.max(Time.now.inMillis - start, 0)

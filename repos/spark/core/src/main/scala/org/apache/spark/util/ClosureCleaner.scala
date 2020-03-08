@@ -107,9 +107,7 @@ private[spark] object ClosureCleaner extends Logging {
             "Unexpected void parameter in constructor")
         case _ => new java.lang.Byte(0: Byte)
       }
-    } else {
-      null
-    }
+    } else { null }
   }
 
   /**
@@ -184,9 +182,7 @@ private[spark] object ClosureCleaner extends Logging {
     // TODO: clean all inner closures first. This requires us to find the inner objects.
     // TODO: cache outerClasses / innerClasses / accessedFields
 
-    if (func == null) {
-      return
-    }
+    if (func == null) { return }
 
     logDebug(s"+++ Cleaning closure $func (${func.getClass.getName}) +++")
 
@@ -222,9 +218,7 @@ private[spark] object ClosureCleaner extends Logging {
         s" + populating accessed fields because this is the starting closure")
       // Initialize accessed fields with the outer classes first
       // This step is needed to associate the fields to the correct classes later
-      for (cls <- outerClasses) {
-        accessedFields(cls) = Set[String]()
-      }
+      for (cls <- outerClasses) { accessedFields(cls) = Set[String]() }
       // Populate accessed fields by visiting all fields and methods accessed by this and
       // all of its inner closures. If transitive cleaning is enabled, this may recursively
       // visits methods that belong to other classes in search of transitively referenced fields.
@@ -254,9 +248,7 @@ private[spark] object ClosureCleaner extends Logging {
     } else if (outerPairs.size > 0) {
       logDebug(
         s" + outermost object is a closure, so we just keep it: ${outerPairs.head}")
-    } else {
-      logDebug(" + there are no enclosing objects!")
-    }
+    } else { logDebug(" + there are no enclosing objects!") }
 
     // Clone the closure objects themselves, nulling out any fields that are not
     // used in the closure we're working on or any of its inner closures.
@@ -309,9 +301,7 @@ private[spark] object ClosureCleaner extends Logging {
     logDebug(
       s" +++ closure $func (${func.getClass.getName}) is now cleaned +++")
 
-    if (checkSerializable) {
-      ensureSerializable(func)
-    }
+    if (checkSerializable) { ensureSerializable(func) }
   }
 
   private def ensureSerializable(func: AnyRef) {
@@ -360,9 +350,7 @@ private class ReturnStatementFinder extends ClassVisitor(ASM5) {
           }
         }
       }
-    } else {
-      new MethodVisitor(ASM5) {}
-    }
+    } else { new MethodVisitor(ASM5) {} }
   }
 }
 
@@ -426,9 +414,7 @@ private[util] class FieldAccessFinder(
           // Check for calls a getter method for a variable in an interpreter wrapper object.
           // This means that the corresponding field will be accessed, so we should save it.
           if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name.endsWith(
-                "$outer")) {
-            fields(cl) += name
-          }
+                "$outer")) { fields(cl) += name }
           // Optionally visit other methods to find fields that are transitively referenced
           if (findTransitively) {
             val m = MethodIdentifier(cl, name, desc)
@@ -467,9 +453,7 @@ private class InnerClosureFinder(output: Set[Class[_]])
       name: String,
       sig: String,
       superName: String,
-      interfaces: Array[String]) {
-    myName = name
-  }
+      interfaces: Array[String]) { myName = name }
 
   override def visitMethod(
       access: Int,

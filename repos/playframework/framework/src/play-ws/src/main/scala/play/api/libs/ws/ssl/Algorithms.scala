@@ -71,9 +71,7 @@ object Algorithms {
       case sk: SecretKey =>
         if ((sk.getFormat == "RAW") && sk.getEncoded != null) {
           Some(sk.getEncoded.length * 8)
-        } else {
-          None
-        }
+        } else { None }
       case pubk: RSAKey =>
         Some(pubk.getModulus.bitLength)
       case pubk: ECKey =>
@@ -157,17 +155,13 @@ object Algorithms {
     val elements = (for {
       t <- tokens
       name <- withAndPattern.split(t)
-    } yield {
-      name
-    }).toSet
+    } yield { name }).toSet
 
     if (elements.contains("SHA1") && !elements.contains("SHA-1")) {
       elements + "SHA-1"
     } else if (elements.contains("SHA-1") && !elements.contains("SHA1")) {
       elements + "SHA1"
-    } else {
-      elements
-    }
+    } else { elements }
   }
 
 }
@@ -227,9 +221,7 @@ case class AlgorithmConstraint(
     * Returns true if the algorithm name matches, and if there's a keySize constraint, will match on that as well.
     */
   def matches(algorithm: String, keySize: Int): Boolean = {
-    if (!matches(algorithm)) {
-      return false
-    }
+    if (!matches(algorithm)) { return false }
 
     constraint match {
       case Some(expression) =>
@@ -240,9 +232,7 @@ case class AlgorithmConstraint(
     }
   }
 
-  override def toString = {
-    algorithm + constraint.getOrElse("")
-  }
+  override def toString = { algorithm + constraint.getOrElse("") }
 }
 
 /**

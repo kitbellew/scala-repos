@@ -126,9 +126,7 @@ trait GrouperSpec[M[+_]]
       } yield {
         key.toJValue must beLike {
           case jo: JObject =>
-            (jo \ "tic_a") match {
-              case JNum(i) => set must contain(i)
-            }
+            (jo \ "tic_a") match { case JNum(i) => set must contain(i) }
         }
 
         val histoKey = key.toJValue(tic_aj)
@@ -192,9 +190,7 @@ trait GrouperSpec[M[+_]]
       } yield {
         key.toJValue must beLike {
           case jo: JObject =>
-            (jo \ "tic_a") match {
-              case JNum(i) => set must contain(i)
-            }
+            (jo \ "tic_a") match { case JNum(i) => set must contain(i) }
         }
 
         val histoKey = key.toJValue(tic_aj)
@@ -336,15 +332,11 @@ trait GrouperSpec[M[+_]]
 
             a must beLike {
               case JNum(i) if i == 12 => {
-                b must beLike {
-                  case JNum(i) if i == 7 => ok
-                }
+                b must beLike { case JNum(i) if i == 7 => ok }
               }
 
               case JNum(i) if i == -7 => {
-                b must beLike {
-                  case JNum(i) if i == 3 => ok
-                }
+                b must beLike { case JNum(i) if i == 3 => ok }
               }
             }
           }
@@ -359,11 +351,7 @@ trait GrouperSpec[M[+_]]
 
     resultJson must haveSize(2)
 
-    forall(resultJson) { v =>
-      v must beLike {
-        case JNum(i) if i == 1 => ok
-      }
-    }
+    forall(resultJson) { v => v must beLike { case JNum(i) if i == 1 => ok } }
   }
 
   def testHistogramTwoKeysOr = {
@@ -418,15 +406,11 @@ trait GrouperSpec[M[+_]]
             } else {
               a must beLike {
                 case JNum(i) if i == 12 => {
-                  b must beLike {
-                    case JNum(i) if i == 7 => ok
-                  }
+                  b must beLike { case JNum(i) if i == 7 => ok }
                 }
 
                 case JNum(i) if i == -7 => {
-                  b must beLike {
-                    case JNum(i) if i == 3 => ok
-                  }
+                  b must beLike { case JNum(i) if i == 3 => ok }
                 }
               }
 
@@ -443,9 +427,7 @@ trait GrouperSpec[M[+_]]
     resultJson must haveSize(8)
 
     forall(resultJson) { v =>
-      v must beLike {
-        case JNum(i) if i == 2 || i == 1 => ok
-      }
+      v must beLike { case JNum(i) if i == 2 || i == 1 => ok }
     }
   }
 
@@ -485,9 +467,7 @@ trait GrouperSpec[M[+_]]
         gs1 <- map(groupId)
         gs1Json <- gs1.toJson
       } yield {
-        (key.toJValue(tic_bj)) must beLike {
-          case JNum(i) => i must_== 7
-        }
+        (key.toJValue(tic_bj)) must beLike { case JNum(i) => i must_== 7 }
 
         gs1Json must haveSize(1)
         fromJson(Stream(JNum(gs1Json.size)))
@@ -498,11 +478,7 @@ trait GrouperSpec[M[+_]]
 
     resultJson must haveSize(1)
 
-    forall(resultJson) { v =>
-      v must beLike {
-        case JNum(i) if i == 1 => ok
-      }
-    }
+    forall(resultJson) { v => v must beLike { case JNum(i) if i == 1 => ok } }
   }
 
   def testHistogramExtraOr = {
@@ -544,9 +520,7 @@ trait GrouperSpec[M[+_]]
       } yield {
         (key.toJValue(tic_bj)) must beLike {
           case JUndefined =>
-            (gs1Json.head \ "a") must beLike {
-              case JNum(i) if i == 12 => ok
-            }
+            (gs1Json.head \ "a") must beLike { case JNum(i) if i == 12 => ok }
 
           case JNum(i) if i == 7  => gs1Json must haveSize(2)
           case JNum(i) if i == 15 => gs1Json must haveSize(1)
@@ -621,9 +595,7 @@ trait GrouperSpec[M[+_]]
         val JNum(keyBigInt) = key.toJValue(tic_aj)
 
         forall(gs1Json) { row =>
-          row must beLike {
-            case JNum(i) => i mustEqual keyBigInt
-          }
+          row must beLike { case JNum(i) => i mustEqual keyBigInt }
         }
 
         gs1Json must haveSize(rawData1.count(_ == keyBigInt.toInt))
@@ -710,23 +682,17 @@ trait GrouperSpec[M[+_]]
         gs2Json <- gs2.toJson
       } yield {
         val JNum(keyBigInt) = key.toJValue(tic_aj)
-        key.toJValue(tic_bj) must beLike {
-          case JNum(_) => ok
-        }
+        key.toJValue(tic_bj) must beLike { case JNum(_) => ok }
 
         gs1Json must not(beEmpty)
         gs2Json must not(beEmpty)
 
         forall(gs1Json) { row =>
-          (row \ "a") must beLike {
-            case JNum(i) => i mustEqual keyBigInt
-          }
+          (row \ "a") must beLike { case JNum(i) => i mustEqual keyBigInt }
         }
 
         forall(gs2Json) { row =>
-          (row \ "a") must beLike {
-            case JNum(i) => i mustEqual keyBigInt
-          }
+          (row \ "a") must beLike { case JNum(i) => i mustEqual keyBigInt }
         }
 
         fromJson(
@@ -845,9 +811,7 @@ trait GrouperSpec[M[+_]]
         }
 
         forall(gs2Json) { row =>
-          (row \ "a") must beLike {
-            case JNum(i) => i mustEqual kaValue
-          }
+          (row \ "a") must beLike { case JNum(i) => i mustEqual kaValue }
         }
 
         val result = fromJson(

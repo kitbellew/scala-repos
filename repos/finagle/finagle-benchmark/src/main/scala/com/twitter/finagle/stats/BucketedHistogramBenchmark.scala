@@ -51,9 +51,7 @@ object BucketedHistogramBenchmark {
     val histogram = BucketedHistogram()
 
     @Setup
-    def setup(state: DataState): Unit = {
-      state.datas.foreach(histogram.add)
-    }
+    def setup(state: DataState): Unit = { state.datas.foreach(histogram.add) }
   }
 
 }

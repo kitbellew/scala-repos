@@ -33,11 +33,8 @@ object ConditionalFeatureTester extends JFXApp {
 
   for (cf <- ConditionalFeature.values) {
     val isSupported =
-      try {
-        Platform.isSupported(cf)
-      } catch {
-        case _: Throwable => false
-      }
+      try { Platform.isSupported(cf) }
+      catch { case _: Throwable => false }
 
     println(cf.toString + " : " + isSupported)
   }

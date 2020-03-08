@@ -257,9 +257,7 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
       true
     }
 
-    def hasExpired(): Boolean = {
-      yggConfig.clock.now() isAfter expiresAt
-    }
+    def hasExpired(): Boolean = { yggConfig.clock.now() isAfter expiresAt }
 
     def isCancelled(): Boolean = cancelled.get()
 

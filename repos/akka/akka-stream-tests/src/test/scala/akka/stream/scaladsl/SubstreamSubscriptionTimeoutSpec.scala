@@ -26,9 +26,7 @@ class SubstreamSubscriptionTimeoutSpec(conf: String) extends AkkaSpec(conf) {
           |}""".stripMargin)
   }
 
-  def this() {
-    this(300.millis)
-  }
+  def this() { this(300.millis) }
 
   val settings = ActorMaterializerSettings(system)
     .withInputBuffer(initialSize = 2, maxSize = 2)

@@ -54,7 +54,5 @@ trait SimpleController {
     httpRequest.session.setAttribute(name, value)
   }
 
-  def unset(name: String) {
-    httpRequest.session.removeAttribute(name)
-  }
+  def unset(name: String) { httpRequest.session.removeAttribute(name) }
 }

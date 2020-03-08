@@ -186,11 +186,8 @@ object SwaggerSerializers {
     override val dateFormat = new DateFormat {
       def format(d: JDate) = new DateTime(d).toString(Iso8601Date)
       def parse(s: String) =
-        try {
-          Option(Iso8601Date.parseDateTime(s).toDate)
-        } catch {
-          case _: Throwable ⇒ None
-        }
+        try { Option(Iso8601Date.parseDateTime(s).toDate) }
+        catch { case _: Throwable ⇒ None }
     }
   }
 
@@ -205,12 +202,8 @@ object SwaggerSerializers {
   class HttpMethodSerializer
       extends CustomSerializer[HttpMethod](implicit formats =>
         (
-          {
-            case JString(method) => HttpMethod(method)
-          },
-          {
-            case method: HttpMethod => JString(method.toString)
-          }))
+          { case JString(method)    => HttpMethod(method) },
+          { case method: HttpMethod => JString(method.toString) }))
 
   def writeDataType(dataType: DataType, key: String = "type")(
       implicit formats: Formats): JValue = dataType match {
@@ -257,9 +250,7 @@ object SwaggerSerializers {
       } else {
         DataType((value \ "type").as[String], format = str(value \ "format"))
       }
-    } else {
-      DataType(t, qualifiedName = str(value \ "qualifiedType"))
-    }
+    } else { DataType(t, qualifiedName = str(value \ "qualifiedType")) }
   }
 
   class AllowableValuesSerializer

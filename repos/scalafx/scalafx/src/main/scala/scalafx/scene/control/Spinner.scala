@@ -159,9 +159,7 @@ class Spinner[T](override val delegate: jfxsc.Spinner[T] = new jfxsc.Spinner[T])
     *
     * @param items A list of items that will be stepped through in the Spinner.
     */
-  def this(items: ObservableBuffer[T]) {
-    this(new jfxsc.Spinner[T](items))
-  }
+  def this(items: ObservableBuffer[T]) { this(new jfxsc.Spinner[T](items)) }
 
   /**
     * Creates a Spinner instance with the given value factory set.
@@ -196,9 +194,7 @@ class Spinner[T](override val delegate: jfxsc.Spinner[T] = new jfxsc.Spinner[T])
     */
   def valueFactory: ObjectProperty[jfxsc.SpinnerValueFactory[T]] =
     delegate.valueFactoryProperty()
-  def valueFactory_=(value: SpinnerValueFactory[T]) {
-    valueFactory() = value
-  }
+  def valueFactory_=(value: SpinnerValueFactory[T]) { valueFactory() = value }
 
   /**
     * The editable property is used to specify whether user input is able to
@@ -212,9 +208,7 @@ class Spinner[T](override val delegate: jfxsc.Spinner[T] = new jfxsc.Spinner[T])
     * will need to react accordingly and back out this change.
     */
   def editable: BooleanProperty = delegate.editableProperty()
-  def editable_=(value: Boolean): Unit = {
-    editable() = value
-  }
+  def editable_=(value: Boolean): Unit = { editable() = value }
 
   def editor: ReadOnlyObjectProperty[jfxsc.TextField] =
     delegate.editorProperty()

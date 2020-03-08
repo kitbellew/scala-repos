@@ -248,9 +248,7 @@ class PromiseTests extends MinimalScalaTest {
   def futureWithException[E <: Throwable: Manifest](
       f: ((Future[Any], String) => Unit) => Unit) {
 
-    "be completed" in {
-      f((future, _) => future.isCompleted mustBe (true))
-    }
+    "be completed" in { f((future, _) => future.isCompleted mustBe (true)) }
 
     "contain a value" in {
       f((future, message) => {

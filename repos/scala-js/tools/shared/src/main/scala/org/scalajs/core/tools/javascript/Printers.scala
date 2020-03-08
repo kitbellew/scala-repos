@@ -342,9 +342,8 @@ object Printers {
         case UnaryOp(op, lhs) =>
           import ir.Trees.JSUnaryOp._
           print('(')
-          if (op == `typeof`) {
-            print("typeof ")
-          } else {
+          if (op == `typeof`) { print("typeof ") }
+          else {
             (op: @switch) match {
               case +        => print('+')
               case -        => print('-')
@@ -438,20 +437,17 @@ object Printers {
           print(if (value) "true" else "false")
 
         case IntLiteral(value) =>
-          if (value >= 0) {
-            print(value.toString)
-          } else {
+          if (value >= 0) { print(value.toString) }
+          else {
             print('(')
             print(value.toString)
             print(')')
           }
 
         case DoubleLiteral(value) =>
-          if (value == 0 && 1 / value < 0) {
-            print("(-0)")
-          } else if (value >= 0) {
-            print(value.toString)
-          } else {
+          if (value == 0 && 1 / value < 0) { print("(-0)") }
+          else if (value >= 0) { print(value.toString) }
+          else {
             print('(')
             print(value.toString)
             print(')')

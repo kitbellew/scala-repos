@@ -115,9 +115,7 @@ class RowFormatSpec
   implicit val shrinkRows: Shrink[List[List[CValue]]] =
     Shrink.shrinkAny[List[List[CValue]]]
 
-  "ValueRowFormat" should {
-    checkRoundTrips(RowFormat.forValues(_))
-  }
+  "ValueRowFormat" should { checkRoundTrips(RowFormat.forValues(_)) }
 
   private def identityCols(len: Int): List[ColumnRef] =
     (0 until len).map({ i => ColumnRef(CPath(CPathIndex(i)), CLong) })(

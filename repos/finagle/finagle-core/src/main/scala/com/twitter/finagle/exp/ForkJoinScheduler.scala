@@ -40,9 +40,7 @@ private class ForkJoinScheduler(
     }
 
   private[this] val exceptionHandler = new Thread.UncaughtExceptionHandler {
-    def uncaughtException(t: Thread, exc: Throwable) {
-      Monitor.handle(exc)
-    }
+    def uncaughtException(t: Thread, exc: Throwable) { Monitor.handle(exc) }
   }
 
   private[this] val pool = new ForkJoinPool(

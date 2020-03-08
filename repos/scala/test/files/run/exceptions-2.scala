@@ -13,26 +13,23 @@ object NoExcep {
   def c = true;
 
   def method1(t: Tree) =
-    try {
-      Console.println(t);
-    } catch {
+    try { Console.println(t); }
+    catch {
       case Node(Leaf(_), Leaf(_)) => a;
       case Leaf(_)                => b;
     }
 
   def method2 =
-    try {
-      Console.println("Hello, world");
-    } catch {
+    try { Console.println("Hello, world"); }
+    catch {
       case _: Error     => Console.println("File error");
       case t: Throwable => Console.println("Unknown error");
     }
 
   def method3 =
     try {
-      try {
-        Console.println("method3");
-      } catch {
+      try { Console.println("method3"); }
+      catch {
         case Node(Leaf(_), Leaf(_)) => Console.println("First one");
         case Leaf(_)                => Console.println("Second one");
       }
@@ -42,36 +39,23 @@ object NoExcep {
     }
 
   def method4 =
-    try {
-      Console.println("..");
-    } catch {
-      case _: Throwable => sys.error("..");
-    }
+    try { Console.println(".."); }
+    catch { case _: Throwable => sys.error(".."); }
 }
 
 object Test {
   def nested1: Unit =
     try {
-      try {
-        sys.error("nnnnoooo");
-      } finally {
-        Console.println("Innermost finally");
-      }
-    } finally {
-      Console.println("Outermost finally");
-    }
+      try { sys.error("nnnnoooo"); }
+      finally { Console.println("Innermost finally"); }
+    } finally { Console.println("Outermost finally"); }
 
   def nested2 =
     try {
-      try {
-        sys.error("nnnnoooo");
-      } finally {
-        Console.println("Innermost finally");
-      }
+      try { sys.error("nnnnoooo"); }
+      finally { Console.println("Innermost finally"); }
       Console.println("Intermediary step");
-    } finally {
-      Console.println("Outermost finally");
-    }
+    } finally { Console.println("Outermost finally"); }
 
   def mixed =
     try {
@@ -81,9 +65,7 @@ object Test {
     } catch {
       case Leaf(a)      => Console.println(a);
       case _: Exception => Console.println("Exception occurred");
-    } finally {
-      Console.println("Finally!");
-    }
+    } finally { Console.println("Finally!"); }
 
   def method2: Unit = {
     try {
@@ -109,9 +91,7 @@ object Test {
       try {
         val a: Leaf = null;
         println(a.x);
-      } catch {
-        case Leaf(a) => Console.println(a);
-      }
+      } catch { case Leaf(a) => Console.println(a); }
     } catch {
       case npe: NullPointerException =>
         Console.println("Caught an NPE");
@@ -119,31 +99,23 @@ object Test {
 
   def withValue1: Unit = {
     val x =
-      try {
-        10
-      } finally {
-        Console.println("Oh, oh");
-      };
+      try { 10 }
+      finally { Console.println("Oh, oh"); };
     Console.println(x);
   }
 
   def withValue2: Unit = {
     val x =
-      try {
-        null
-      } finally {
-        Console.println("droped a null");
-      };
+      try { null }
+      finally { Console.println("droped a null"); };
     Console.println(x);
   }
 
   def tryFinallyTry: Unit = {
-    try {
-      ()
-    } finally {
-      try {
-        sys.error("a");
-      } catch {
+    try { () }
+    finally {
+      try { sys.error("a"); }
+      catch {
         case _: Throwable =>
           Console.println("Silently ignore exception in finally");
       }
@@ -159,9 +131,8 @@ object Test {
   def tryAndValInFinally: Unit =
     try {} finally {
       val fin = "Abc";
-      try {
-        Console.println(fin);
-      } catch { case _: Throwable => () }
+      try { Console.println(fin); }
+      catch { case _: Throwable => () }
     }
 
   def returnInBody: Unit =
@@ -170,12 +141,8 @@ object Test {
         Console.println("Normal execution...");
         return
         Console.println("non reachable code");
-      } finally {
-        Console.println("inner finally");
-      }
-    } finally {
-      Console.println("Outer finally");
-    }
+      } finally { Console.println("inner finally"); }
+    } finally { Console.println("Outer finally"); }
 
   def returnInBodySynch: Unit =
     try {
@@ -184,13 +151,9 @@ object Test {
           Console.println("Synchronized normal execution...");
           return
           Console.println("non reachable code");
-        } finally {
-          Console.println("inner finally");
-        }
+        } finally { Console.println("inner finally"); }
       }
-    } finally {
-      Console.println("Outer finally");
-    }
+    } finally { Console.println("Outer finally"); }
 
   def returnInBodyAndInFinally: Unit =
     try {
@@ -217,9 +180,7 @@ object Test {
         try {
           Console.println("inner finally");
           return
-        } finally {
-          Console.println("finally inside finally");
-        }
+        } finally { Console.println("finally inside finally"); }
       }
     } finally {
       Console.println("Outer finally");
@@ -228,9 +189,8 @@ object Test {
 
   /** bug #1020, no crash at compile time */
   def tryCatchInFinally: Unit = {
-    try {
-      Console.println("Try")
-    } catch {
+    try { Console.println("Try") }
+    catch {
       case e: java.io.IOException =>
         throw e
     } finally {
@@ -252,17 +212,12 @@ object Test {
       case e: Exception =>
         print("B")
         throw e
-    } finally {
-      println("C")
-    }
+    } finally { println("C") }
   }
 
   def execute(f: => Unit) =
-    try {
-      f;
-    } catch {
-      case _: Throwable => ()
-    }
+    try { f; }
+    catch { case _: Throwable => () }
 
   def returnWithFinallyClean: Int =
     try {
@@ -271,9 +226,7 @@ object Test {
         return 10
         Console.println("non reachable code");
         11
-      } finally {
-        Console.println("inner finally");
-      }
+      } finally { Console.println("inner finally"); }
     } finally {
       Console.println("Outer finally");
       try { 1 }
@@ -286,15 +239,11 @@ object Test {
     var b = 0
     try {
       //    println("abc")
-    } finally {
-      while (b == -1) { b = 0 }
-    }
+    } finally { while (b == -1) { b = 0 } }
   }
 
   /* Tests that class Issue passes verification. */
-  def whileInFinally = {
-    new Issue
-  }
+  def whileInFinally = { new Issue }
 
   def main(args: Array[String]): Unit = {
     Console.println("nested1: ");

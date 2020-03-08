@@ -84,9 +84,8 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
 
   private def formatResult(outData: Map[Key, (Seq[S], Value)])
       : TraversableOnce[(Seq[S], Future[TraversableOnce[OutputElement]])] = {
-    if (outData.isEmpty) {
-      noData
-    } else {
+    if (outData.isEmpty) { noData }
+    else {
       var mmMap = MMap[Int, (ListBuffer[S], MMap[Key, Value])]()
 
       outData.toIterator.foreach {
@@ -128,9 +127,7 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
           )
         )
       }
-    } catch {
-      case NonFatal(e) => Future.exception(e)
-    }
+    } catch { case NonFatal(e) => Future.exception(e) }
 
   override def apply(state: S, tup: Event) =
     lockedOp.get.apply(tup).map { cache(state, _) }.flatten

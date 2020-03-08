@@ -68,9 +68,7 @@ object Act {
         proj: Option[ResolvedReference],
         confAmb: ParsedAxis[String],
         baseMask: ScopeMask): Seq[Parser[ParsedKey]] =
-      for {
-        conf <- configs(confAmb, defaultConfigs, proj, index)
-      } yield for {
+      for { conf <- configs(confAmb, defaultConfigs, proj, index) } yield for {
         taskAmb <- taskAxis(conf, index.tasks(proj, conf), keyMap)
         task = resolveTask(taskAmb)
         key <- key(index, proj, conf, task, keyMap)

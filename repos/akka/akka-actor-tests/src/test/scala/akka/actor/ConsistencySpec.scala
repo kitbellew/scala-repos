@@ -71,9 +71,7 @@ class ConsistencySpec extends AkkaSpec(ConsistencySpec.config) {
         Props[ConsistencyCheckingActor].withDispatcher("consistency-dispatcher")
       val actors = Vector.fill(noOfActors)(system.actorOf(props))
 
-      for (i ← 0L until 100000L) {
-        actors.foreach(_.tell(i, testActor))
-      }
+      for (i ← 0L until 100000L) { actors.foreach(_.tell(i, testActor)) }
 
       for (a ← actors) { a.tell("done", testActor) }
 

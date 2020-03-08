@@ -123,18 +123,14 @@ class LocalTest extends FunSuite {
   test("Local.let: should scope with a value and restore previous value") {
     val local = new Local[Int]
     local() = 123
-    local.let(321) {
-      assert(local() == Some(321))
-    }
+    local.let(321) { assert(local() == Some(321)) }
     assert(local() == Some(123))
   }
 
   test("Local.letClear: should clear Local and restore previous value") {
     val local = new Local[Int]
     local() = 123
-    local.letClear {
-      assert(local() == None)
-    }
+    local.letClear { assert(local() == None) }
     assert(local() == Some(123))
   }
 

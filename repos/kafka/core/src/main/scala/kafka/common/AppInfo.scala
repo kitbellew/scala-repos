@@ -25,31 +25,21 @@ object AppInfo extends KafkaMetricsGroup {
   private val lock = new Object()
 
   def registerInfo(): Unit = {
-    lock.synchronized {
-      if (isRegistered) {
-        return
-      }
-    }
+    lock.synchronized { if (isRegistered) { return } }
 
     newGauge(
       "Version",
       new Gauge[String] {
-        def value = {
-          AppInfoParser.getVersion()
-        }
+        def value = { AppInfoParser.getVersion() }
       })
 
     newGauge(
       "CommitID",
       new Gauge[String] {
-        def value = {
-          AppInfoParser.getCommitId();
-        }
+        def value = { AppInfoParser.getCommitId(); }
       })
 
-    lock.synchronized {
-      isRegistered = true
-    }
+    lock.synchronized { isRegistered = true }
 
   }
 }

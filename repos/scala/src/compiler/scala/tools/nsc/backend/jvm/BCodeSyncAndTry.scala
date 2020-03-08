@@ -358,9 +358,7 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
           if (earlyReturnVar != null) {
             locals.load(earlyReturnVar)
             bc.emitRETURN(locals(earlyReturnVar).tk)
-          } else {
-            bc emitRETURN UNIT
-          }
+          } else { bc emitRETURN UNIT }
           shouldEmitCleanup = false
 
         case nextCleanup :: _ =>
@@ -387,17 +385,13 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
       var saved: immutable.Map[ /* LabelDef */ Symbol, asm.Label] = null
       if (isDuplicate) {
         saved = jumpDest
-        for (ldef <- labelDefsAtOrUnder(finalizer)) {
-          jumpDest -= ldef.symbol
-        }
+        for (ldef <- labelDefsAtOrUnder(finalizer)) { jumpDest -= ldef.symbol }
       }
       // when duplicating, the above guarantees new asm.Labels are used for LabelDefs contained in the finalizer (their vars are reused, that's ok)
       if (tmp != null) { locals.store(tmp) }
       genLoad(finalizer, UNIT)
       if (tmp != null) { locals.load(tmp) }
-      if (isDuplicate) {
-        jumpDest = saved
-      }
+      if (isDuplicate) { jumpDest = saved }
     }
 
     /* Does this tree have a try-catch block? */

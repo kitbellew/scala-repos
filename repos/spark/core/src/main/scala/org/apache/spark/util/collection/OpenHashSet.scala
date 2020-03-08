@@ -74,13 +74,9 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
     //         at scala.tools.nsc.typechecker.Infer$Inferencer.error(Infer.scala:207)
     //         ...
     val mt = classTag[T]
-    if (mt == ClassTag.Long) {
-      (new LongHasher).asInstanceOf[Hasher[T]]
-    } else if (mt == ClassTag.Int) {
-      (new IntHasher).asInstanceOf[Hasher[T]]
-    } else {
-      new Hasher[T]
-    }
+    if (mt == ClassTag.Long) { (new LongHasher).asInstanceOf[Hasher[T]] }
+    else if (mt == ClassTag.Int) { (new IntHasher).asInstanceOf[Hasher[T]] }
+    else { new Hasher[T] }
   }
 
   protected var _capacity = nextPowerOf2(initialCapacity)
@@ -117,9 +113,7 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
 
   def union(other: OpenHashSet[T]): OpenHashSet[T] = {
     val iterator = other.iterator
-    while (iterator.hasNext) {
-      add(iterator.next())
-    }
+    while (iterator.hasNext) { add(iterator.next()) }
     this
   }
 
@@ -167,9 +161,7 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
       k: T,
       allocateFunc: (Int) => Unit,
       moveFunc: (Int, Int) => Unit) {
-    if (_size > _growThreshold) {
-      rehash(k, allocateFunc, moveFunc)
-    }
+    if (_size > _growThreshold) { rehash(k, allocateFunc, moveFunc) }
   }
 
   /**
@@ -179,11 +171,9 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
     var pos = hashcode(hasher.hash(k)) & _mask
     var delta = 1
     while (true) {
-      if (!_bitset.get(pos)) {
-        return INVALID_POS
-      } else if (k == _data(pos)) {
-        return pos
-      } else {
+      if (!_bitset.get(pos)) { return INVALID_POS }
+      else if (k == _data(pos)) { return pos }
+      else {
         // quadratic probing with values increase by 1, 2, 3, ...
         pos = (pos + delta) & _mask
         delta += 1

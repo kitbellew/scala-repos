@@ -18,9 +18,7 @@ import akka.testkit._
 object RemoteRandomMultiJvmSpec extends MultiNodeConfig {
 
   class SomeActor extends Actor {
-    def receive = {
-      case "hit" ⇒ sender() ! self
-    }
+    def receive = { case "hit" ⇒ sender() ! self }
   }
 
   val first = role("first")

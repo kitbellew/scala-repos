@@ -156,9 +156,7 @@ class ScPackagingImpl private (
             processor,
             state,
             lastParent,
-            place)) {
-        return false
-      }
+            place)) { return false }
 
       findPackageObject(place.getResolveScope) match {
         case Some(po) =>

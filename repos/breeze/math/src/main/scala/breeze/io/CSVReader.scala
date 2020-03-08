@@ -74,9 +74,7 @@ object CSVWriter {
     mat match {
       case Seq(x @ _*) => writer.writeAll(x.map(_.toArray).asJava)
       case _ =>
-        for (l <- mat) {
-          writer.writeNext(l.toArray)
-        }
+        for (l <- mat) { writer.writeNext(l.toArray) }
     }
     writer.flush()
   }

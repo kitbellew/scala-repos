@@ -69,9 +69,7 @@ object StaticRoutesGenerator extends RoutesGenerator {
           namespace,
           task.additionalImports,
           rules))
-    } else {
-      Nil
-    }
+    } else { Nil }
 
     val reverseRoutesFiles = if (task.reverseRouter) {
       Seq(
@@ -95,9 +93,7 @@ object StaticRoutesGenerator extends RoutesGenerator {
           namespace,
           rules,
           task.namespaceReverseRouter)
-    } else {
-      Nil
-    }
+    } else { Nil }
 
     forwardsRoutesFiles ++ reverseRoutesFiles
   }
@@ -233,9 +229,7 @@ object InjectedRoutesGenerator extends RoutesGenerator {
           namespace,
           task.additionalImports,
           rules))
-    } else {
-      Nil
-    }
+    } else { Nil }
 
     val reverseRoutesFiles = if (task.reverseRouter) {
       Seq(
@@ -259,9 +253,7 @@ object InjectedRoutesGenerator extends RoutesGenerator {
           namespace,
           rules,
           task.namespaceReverseRouter)
-    } else {
-      Nil
-    }
+    } else { Nil }
 
     forwardsRoutesFiles ++ reverseRoutesFiles
   }
@@ -274,9 +266,7 @@ object InjectedRoutesGenerator extends RoutesGenerator {
 
     // Generate dependency descriptors for all includes
     val includesDeps = rules
-      .collect {
-        case include: Include => include
-      }
+      .collect { case include: Include => include }
       .groupBy(_.router)
       .zipWithIndex
       .map {

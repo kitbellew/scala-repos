@@ -92,13 +92,11 @@ object BoxesRunTime {
   def hashFromDouble(n: java.lang.Double): Int = {
     val iv = n.intValue()
     val dv = n.doubleValue()
-    if (iv == dv) {
-      iv
-    } else {
+    if (iv == dv) { iv }
+    else {
       val lv = n.longValue()
-      if (lv == dv) {
-        java.lang.Long.valueOf(lv).hashCode()
-      } else {
+      if (lv == dv) { java.lang.Long.valueOf(lv).hashCode() }
+      else {
         // don't test the case floatValue() == dv
         n.hashCode()
       }

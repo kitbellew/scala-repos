@@ -3,7 +3,5 @@ object Test {
     println(args.map(_ => foo _).map(_ => "<function1>").deep)
   }
 
-  def foo(xs: String*) {
-    println(xs)
-  }
+  def foo(xs: String*) { println(xs) }
 }

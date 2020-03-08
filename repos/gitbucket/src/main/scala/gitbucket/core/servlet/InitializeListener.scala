@@ -24,9 +24,7 @@ class InitializeListener
 
   override def contextInitialized(event: ServletContextEvent): Unit = {
     val dataDir = event.getServletContext.getInitParameter("gitbucket.home")
-    if (dataDir != null) {
-      System.setProperty("gitbucket.home", dataDir)
-    }
+    if (dataDir != null) { System.setProperty("gitbucket.home", dataDir) }
     org.h2.Driver.load()
 
     Database() withTransaction { session =>

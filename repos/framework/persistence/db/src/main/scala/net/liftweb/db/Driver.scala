@@ -128,9 +128,7 @@ abstract class DriverType(val name: String) {
     * mapping for columns should override the customColumnTypeMap method.
     */
   def columnTypeMap: TypeMapFunc =
-    customColumnTypeMap orElse {
-      case x => x
-    }
+    customColumnTypeMap orElse { case x => x }
 
   /**
     * Allows the Vendor-specific Driver to do custom type mapping for a particular
@@ -470,9 +468,7 @@ object OracleDriver extends DriverType("Oracle") {
   override def brokenLimit_? : Boolean = true
 
   import java.sql.Types
-  override def customColumnTypeMap = {
-    case Types.BOOLEAN => Types.INTEGER
-  }
+  override def customColumnTypeMap = { case Types.BOOLEAN => Types.INTEGER }
 
   override def primaryKeySetup(
       tableName: String,

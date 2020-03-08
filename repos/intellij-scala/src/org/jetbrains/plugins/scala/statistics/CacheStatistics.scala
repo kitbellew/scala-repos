@@ -27,18 +27,11 @@ class CacheStatistics private (id: String, name: String) {
 
   //we could ask time of entrance to measure time locality
   //also, we could find out whether multiple threads are calculating this cache at the same time
-  def aboutToEnterCachedArea(): Unit = {
-    cachedAreaEntrances += 1
-  }
+  def aboutToEnterCachedArea(): Unit = { cachedAreaEntrances += 1 }
 
-  def recalculatingCache(): Unit = {
-    cachesRecalculated += 1
-  }
+  def recalculatingCache(): Unit = { cachesRecalculated += 1 }
 
-  def reportTimeToCalculate(time: Long): Unit = {
-
-    calculationTimes.add(time)
-  }
+  def reportTimeToCalculate(time: Long): Unit = { calculationTimes.add(time) }
 
   def hits: Long = cachedAreaEntrances - cachesRecalculated
 
@@ -63,9 +56,7 @@ class CacheStatistics private (id: String, name: String) {
 
   def objectsToKeepTrackOfNormalReferences: mutable.Set[Any] = {
     import scala.collection.JavaConversions._
-    objectsToKeepTrackOf.collect {
-      case WeakReference(ref) => ref
-    }
+    objectsToKeepTrackOf.collect { case WeakReference(ref) => ref }
   }
 
   //this method may take a while time to run

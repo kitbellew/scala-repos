@@ -15,19 +15,11 @@ trait ScDocSyntaxElement extends ScalaPsiElement {
 
   def getFlags = flags
 
-  def setFlag(flag: Int) {
-    flags |= flag
-  }
+  def setFlag(flag: Int) { flags |= flag }
 
-  def reverseFlag(flag: Int) {
-    flags ^= flag
-  }
+  def reverseFlag(flag: Int) { flags ^= flag }
 
-  def clearFlag(flag: Int) {
-    flags &= ~flag
-  }
+  def clearFlag(flag: Int) { flags &= ~flag }
 
-  def clearAll() {
-    flags = 0
-  }
+  def clearAll() { flags = 0 }
 }

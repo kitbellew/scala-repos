@@ -27,8 +27,6 @@ class ListSpec extends FlatSpec with Matchers {
     2 -> Set('b)
   )
 
-  it should "gather multimap sets" in {
-    tuples.toMultiMapSet shouldEqual multi
-  }
+  it should "gather multimap sets" in { tuples.toMultiMapSet shouldEqual multi }
 
 }

@@ -28,25 +28,19 @@ object PolynomialSetup {
   // default scalacheck bigdecimals are weird
   implicit val arbitraryBigDecimal = Arbitrary(for {
     r <- arbitrary[Int]
-  } yield {
-    BigDecimal(r)
-  })
+  } yield { BigDecimal(r) })
 
   implicit def arbitraryComplex[A: Arbitrary: Fractional: Trig] =
     Arbitrary(for {
       re <- arbitrary[A]
       im <- arbitrary[A]
-    } yield {
-      Complex(re, im)
-    })
+    } yield { Complex(re, im) })
 
   implicit def arbitraryTerm[A: Arbitrary: Ring: Eq: ClassTag] =
     Arbitrary(for {
       c <- arbitrary[A]
       e0 <- arbitrary[Int]
-    } yield {
-      Term(c, (e0 % 100).abs)
-    })
+    } yield { Term(c, (e0 % 100).abs) })
 }
 
 class PolynomialCheck
@@ -70,18 +64,14 @@ class PolynomialCheck
   def runDense[A: Arbitrary: Eq: Field: ClassTag](typ: String): Unit = {
     implicit val arb: Arbitrary[Polynomial[A]] = Arbitrary(for {
       ts <- arbitrary[List[Term[A]]]
-    } yield {
-      Polynomial(ts).toDense
-    })
+    } yield { Polynomial(ts).toDense })
     runTest[A](s"$typ/dense")
   }
 
   def runSparse[A: Arbitrary: Eq: Field: ClassTag](typ: String): Unit = {
     implicit val arb: Arbitrary[Polynomial[A]] = Arbitrary(for {
       ts <- arbitrary[List[Term[A]]]
-    } yield {
-      Polynomial(ts).toSparse
-    })
+    } yield { Polynomial(ts).toSparse })
     runTest[A](s"$typ/sparse")
   }
 
@@ -93,29 +83,19 @@ class PolynomialCheck
     val zero = Polynomial.zero[A]
     val one = Polynomial.one[A]
 
-    property(s"$name p = p") {
-      forAll { (p: P) => p shouldBe p }
-    }
+    property(s"$name p = p") { forAll { (p: P) => p shouldBe p } }
 
-    property(s"$name p + 0 = p") {
-      forAll { (p: P) => p + zero shouldBe p }
-    }
+    property(s"$name p + 0 = p") { forAll { (p: P) => p + zero shouldBe p } }
 
     property(s"$name p + (-p) = 0") {
       forAll { (p: P) => p + (-p) shouldBe zero }
     }
 
-    property(s"$name p * 0 = 0") {
-      forAll { (p: P) => p * zero shouldBe zero }
-    }
+    property(s"$name p * 0 = 0") { forAll { (p: P) => p * zero shouldBe zero } }
 
-    property(s"$name p * 1 = p") {
-      forAll { (p: P) => p * one shouldBe p }
-    }
+    property(s"$name p * 1 = p") { forAll { (p: P) => p * one shouldBe p } }
 
-    property(s"$name p /~ 1 = p") {
-      forAll { (p: P) => p /~ one shouldBe p }
-    }
+    property(s"$name p /~ 1 = p") { forAll { (p: P) => p /~ one shouldBe p } }
 
     property(s"$name p /~ p = 1") {
       forAll { (p: P) => if (!p.isZero) p /~ p shouldBe one }
@@ -157,15 +137,11 @@ class PolynomialCheck
 
   implicit val arbDense: Arbitrary[PolyDense[Rational]] = Arbitrary(for {
     ts <- arbitrary[List[Term[Rational]]]
-  } yield {
-    Polynomial(ts).toDense
-  })
+  } yield { Polynomial(ts).toDense })
 
   implicit val arbSparse: Arbitrary[PolySparse[Rational]] = Arbitrary(for {
     ts <- arbitrary[List[Term[Rational]]]
-  } yield {
-    Polynomial(ts).toSparse
-  })
+  } yield { Polynomial(ts).toSparse })
 
   property("terms") {
     forAll { (t: Term[Rational]) =>
@@ -247,9 +223,7 @@ class PolynomialCheck
           c <- arbitrary[Rational]
           e <- arbitrary[Int] map { n => (n % 10).abs }
         } yield (e, c))
-      } yield {
-        Polynomial(ts.toMap).toDense
-      })
+      } yield { Polynomial(ts.toMap).toDense })
 
     forAll { (x: Polynomial[Rational], y: Polynomial[Rational]) =>
       gcdTest(x, y)

@@ -115,9 +115,7 @@ class TrainValidationSplitSuite
 
     val invalidParamMaps = paramMaps :+ ParamMap(est.inputCol -> "")
     cv.setEstimatorParamMaps(invalidParamMaps)
-    intercept[IllegalArgumentException] {
-      cv.transformSchema(new StructType())
-    }
+    intercept[IllegalArgumentException] { cv.transformSchema(new StructType()) }
   }
 }
 

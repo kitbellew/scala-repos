@@ -32,9 +32,7 @@ private[spark] class WorkerWatcher(
     with Logging {
 
   logInfo(s"Connecting to worker $workerUrl")
-  if (!isTesting) {
-    rpcEnv.asyncSetupEndpointRefByURI(workerUrl)
-  }
+  if (!isTesting) { rpcEnv.asyncSetupEndpointRefByURI(workerUrl) }
 
   // Used to avoid shutting down JVM during tests
   // In the normal case, exitNonZero will call `System.exit(-1)` to shutdown the JVM. In the unit

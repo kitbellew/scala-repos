@@ -69,9 +69,7 @@ class DensePolynomialTest extends FunSuite {
       i => { //   x is matrix with 1's just below the diagonal
         cfor(0)(j => j < M, j => j + 1)(
           j => { // so x*x is matrix with row of 1's 2 below the diagonal, etc
-            if (j == i - 1) {
-              x.update(i, j, 1.0)
-            }
+            if (j == i - 1) { x.update(i, j, 1.0) }
           })
       })
 

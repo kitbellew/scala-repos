@@ -27,11 +27,8 @@ package scalaguide.forms.scalaforms {
           case allLetters() => Seq(ValidationError("Password is all letters"))
           case _            => Nil
         }
-        if (errors.isEmpty) {
-          Valid
-        } else {
-          Invalid(errors)
-        }
+        if (errors.isEmpty) { Valid }
+        else { Invalid(errors) }
       })
     // #passwordcheck-constraint
 

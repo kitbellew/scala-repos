@@ -20,9 +20,7 @@ class JvmTest extends WordSpec with TestLogging {
           def compileThresh = None
         }
         def snapCounters = Map()
-        def setSnap(snap: Snapshot) {
-          currentSnap = snap
-        }
+        def setSnap(snap: Snapshot) { currentSnap = snap }
 
         override val executor = new MockScheduledExecutorService
 

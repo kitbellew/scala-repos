@@ -178,9 +178,7 @@ private[akka] final class BoundedBuffer[T](val capacity: Int)
     override def enqueue(elem: T): Unit =
       if (tail - head == FixedQueueSize) {
         val queue = new DynamicQueue(head)
-        while (nonEmpty) {
-          queue.enqueue(dequeue())
-        }
+        while (nonEmpty) { queue.enqueue(dequeue()) }
         q = queue
         queue.enqueue(elem)
       } else {
@@ -199,9 +197,7 @@ private[akka] final class BoundedBuffer[T](val capacity: Int)
       if (tail == head) null.asInstanceOf[T]
       else queue(head & FixedQueueMask).asInstanceOf[T]
     override def clear(): Unit =
-      while (nonEmpty) {
-        dequeue()
-      }
+      while (nonEmpty) { dequeue() }
     override def dropHead(): Unit = dequeue()
     override def dropTail(): Unit = {
       tail -= 1

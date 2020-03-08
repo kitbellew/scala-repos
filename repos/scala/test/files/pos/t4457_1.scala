@@ -22,7 +22,5 @@ object ImplicitConvAmbiguity2 {
     val x = aFunc(4f)
     bFunc(x)
   }
-  def typeMe2 {
-    bFunc(aFunc(4f))
-  }
+  def typeMe2 { bFunc(aFunc(4f)) }
 }

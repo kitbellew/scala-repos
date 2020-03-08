@@ -90,9 +90,7 @@ object InfixExpr {
 
     }
     infixMarker.drop()
-    while (markerStack.nonEmpty) {
-      markerStack.pop().drop()
-    }
+    while (markerStack.nonEmpty) { markerStack.pop().drop() }
     true
   }
   //private var assoc: Int = 0  //this mark associativity: left - 1, right - -1

@@ -49,9 +49,7 @@ class YarnShuffleServiceSuite
 
     yarnConfig.get("yarn.nodemanager.local-dirs").split(",").foreach { dir =>
       val d = new File(dir)
-      if (d.exists()) {
-        FileUtils.deleteDirectory(d)
-      }
+      if (d.exists()) { FileUtils.deleteDirectory(d) }
       FileUtils.forceMkdir(d)
       logInfo(s"creating yarn.nodemanager.local-dirs: $d")
     }
@@ -75,9 +73,7 @@ class YarnShuffleServiceSuite
         s3.stop()
         s3 = null
       }
-    } finally {
-      super.afterEach()
-    }
+    } finally { super.afterEach() }
   }
 
   test("executor state kept across NM restart") {

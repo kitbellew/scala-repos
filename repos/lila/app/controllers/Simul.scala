@@ -78,9 +78,7 @@ object Simul extends LilaController {
   }
 
   def form = Auth { implicit ctx => me =>
-    NoEngine {
-      Ok(html.simul.form(env.forms.create, env.forms)).fuccess
-    }
+    NoEngine { Ok(html.simul.form(env.forms.create, env.forms)).fuccess }
   }
 
   def create = AuthBody { implicit ctx => implicit me =>

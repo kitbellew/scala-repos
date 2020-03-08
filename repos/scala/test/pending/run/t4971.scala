@@ -14,7 +14,5 @@ object Test {
   def delegate[@specialized(Int) K, @specialized(Double) V](
       a: A[K, V],
       k: K,
-      v: V) {
-    a.doStuff(k, v)
-  }
+      v: V) { a.doStuff(k, v) }
 }

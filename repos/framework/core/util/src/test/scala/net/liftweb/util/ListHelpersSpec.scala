@@ -124,12 +124,8 @@ object ListHelpersSpec extends Specification with ListHelpers {
   }
 
   "The ListHelpers head function (headOr on a list object)" should {
-    "return the first element of a list" in {
-      List(1).headOr(2) must_== 1
-    }
-    "return a default value if the list is empty" in {
-      head(Nil, 2) must_== 2
-    }
+    "return the first element of a list" in { List(1).headOr(2) must_== 1 }
+    "return a default value if the list is empty" in { head(Nil, 2) must_== 2 }
     "not evaluate the default valueif list is not empty" in {
       head(List(1), { sys.error("stop"); 2 }) must_== 1
     }

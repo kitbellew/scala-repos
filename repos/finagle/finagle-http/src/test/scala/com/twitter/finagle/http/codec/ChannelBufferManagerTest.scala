@@ -66,9 +66,7 @@ class ChannelBufferManagerTest extends FunSuite with MockitoSugar {
     assert(usageTracker.currentUsage == (0.bytes))
 
     makeGetMessage(20)
-    intercept[ChannelBufferUsageException] {
-      handler.messageReceived(ctx, me)
-    }
+    intercept[ChannelBufferUsageException] { handler.messageReceived(ctx, me) }
     assert(usageTracker.currentUsage == (0.bytes))
 
     handler.channelClosed(ctx, e)
@@ -89,9 +87,7 @@ class ChannelBufferManagerTest extends FunSuite with MockitoSugar {
     assert(usageTracker.currentUsage == (100.bytes))
 
     makeGetMessage(350)
-    intercept[ChannelBufferUsageException] {
-      handler.messageReceived(ctx, me)
-    }
+    intercept[ChannelBufferUsageException] { handler.messageReceived(ctx, me) }
     assert(usageTracker.currentUsage == (100.bytes))
     assert(usageTracker.maxUsage == (100.bytes))
 

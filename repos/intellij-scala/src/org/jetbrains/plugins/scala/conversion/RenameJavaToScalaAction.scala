@@ -50,9 +50,7 @@ class RenameJavaToScalaAction extends AnAction {
         }
       }
       enable()
-    } catch {
-      case e: Exception => disable()
-    }
+    } catch { case e: Exception => disable() }
 
   }
 
@@ -112,9 +110,8 @@ class RenameJavaToScalaAction extends AnAction {
                   settings.KEEP_BLANK_LINES_IN_CODE = 0
                   settings.KEEP_BLANK_LINES_IN_DECLARATIONS = 0
                   settings.KEEP_BLANK_LINES_BEFORE_RBRACE = 0
-                  try {
-                    manager.reformatText(file, 0, file.getTextLength)
-                  } finally {
+                  try { manager.reformatText(file, 0, file.getTextLength) }
+                  finally {
                     settings.KEEP_BLANK_LINES_IN_CODE = keep_blank_lines_in_code
                     settings.KEEP_BLANK_LINES_IN_DECLARATIONS =
                       keep_blank_lines_in_declarations

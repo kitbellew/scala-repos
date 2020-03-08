@@ -123,9 +123,7 @@ class HBLEvents(
       if (!result.isEmpty()) {
         val event = resultToEvent(result, appId)
         Some(event)
-      } else {
-        None
-      }
+      } else { None }
     }
   }
 

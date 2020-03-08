@@ -34,9 +34,7 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
     val buffer = new ConcurrentLinkedQueue[Int]
     val eventLoop = new EventLoop[Int]("test") {
 
-      override def onReceive(event: Int): Unit = {
-        buffer.add(event)
-      }
+      override def onReceive(event: Int): Unit = { buffer.add(event) }
 
       override def onError(e: Throwable): Unit = {}
     }
@@ -67,13 +65,9 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
     @volatile var receivedError: Throwable = null
     val eventLoop = new EventLoop[Int]("test") {
 
-      override def onReceive(event: Int): Unit = {
-        throw e
-      }
+      override def onReceive(event: Int): Unit = { throw e }
 
-      override def onError(e: Throwable): Unit = {
-        receivedError = e
-      }
+      override def onError(e: Throwable): Unit = { receivedError = e }
     }
     eventLoop.start()
     eventLoop.post(1)
@@ -89,9 +83,7 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
     @volatile var receivedError: Throwable = null
     val eventLoop = new EventLoop[Int]("test") {
 
-      override def onReceive(event: Int): Unit = {
-        throw e
-      }
+      override def onReceive(event: Int): Unit = { throw e }
 
       override def onError(e: Throwable): Unit = {
         receivedError = e
@@ -115,9 +107,7 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
 
       override def onError(e: Throwable): Unit = {}
 
-      override def onStop(): Unit = {
-        onStopTimes += 1
-      }
+      override def onStop(): Unit = { onStopTimes += 1 }
     }
 
     eventLoop.start()
@@ -133,9 +123,7 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
     @volatile var receivedEventsCount = 0
     val eventLoop = new EventLoop[Int]("test") {
 
-      override def onReceive(event: Int): Unit = {
-        receivedEventsCount += 1
-      }
+      override def onReceive(event: Int): Unit = { receivedEventsCount += 1 }
 
       override def onError(e: Throwable): Unit = {}
 
@@ -164,9 +152,8 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
 
       override def onReceive(event: Int): Unit = {
         onReceiveLatch.countDown()
-        try {
-          Thread.sleep(5000)
-        } catch {
+        try { Thread.sleep(5000) }
+        catch {
           case ie: InterruptedException => // swallow
         }
       }
@@ -187,9 +174,7 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
   test("EventLoop: stop in eventThread") {
     val eventLoop = new EventLoop[Int]("test") {
 
-      override def onReceive(event: Int): Unit = {
-        stop()
-      }
+      override def onReceive(event: Int): Unit = { stop() }
 
       override def onError(e: Throwable): Unit = {}
 
@@ -205,17 +190,13 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
     @volatile var onStopCalled: Boolean = false
     val eventLoop = new EventLoop[Int]("test") {
 
-      override def onStart(): Unit = {
-        stop()
-      }
+      override def onStart(): Unit = { stop() }
 
       override def onReceive(event: Int): Unit = {}
 
       override def onError(e: Throwable): Unit = {}
 
-      override def onStop(): Unit = {
-        onStopCalled = true
-      }
+      override def onStop(): Unit = { onStopCalled = true }
     }
     eventLoop.start()
     eventually(timeout(5 seconds), interval(5 millis)) {
@@ -228,15 +209,11 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
     @volatile var onStopCalled: Boolean = false
     val eventLoop = new EventLoop[Int]("test") {
 
-      override def onReceive(event: Int): Unit = {
-        stop()
-      }
+      override def onReceive(event: Int): Unit = { stop() }
 
       override def onError(e: Throwable): Unit = {}
 
-      override def onStop(): Unit = {
-        onStopCalled = true
-      }
+      override def onStop(): Unit = { onStopCalled = true }
     }
     eventLoop.start()
     eventLoop.post(1)
@@ -254,13 +231,9 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
         throw new RuntimeException("Oops")
       }
 
-      override def onError(e: Throwable): Unit = {
-        stop()
-      }
+      override def onError(e: Throwable): Unit = { stop() }
 
-      override def onStop(): Unit = {
-        onStopCalled = true
-      }
+      override def onStop(): Unit = { onStopCalled = true }
     }
     eventLoop.start()
     eventLoop.post(1)

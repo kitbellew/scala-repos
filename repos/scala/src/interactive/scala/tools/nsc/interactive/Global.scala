@@ -287,9 +287,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
   private var ignoredFiles: Set[AbstractFile] = Set()
 
   /** Flush the buffer of sources that are ignored during background compilation. */
-  def clearIgnoredFiles() {
-    ignoredFiles = Set()
-  }
+  def clearIgnoredFiles() { ignoredFiles = Set() }
 
   /** Remove a crashed file from the ignore buffer. Background compilation will take it into account
     *  and errors will be reported against it. */
@@ -333,9 +331,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
     */
   override def signalParseProgress(pos: Position) {
     // We only want to be interruptible when running on the PC thread.
-    if (onCompilerThread) {
-      checkForMoreWork(pos)
-    }
+    if (onCompilerThread) { checkForMoreWork(pos) }
   }
 
   /** Called from typechecker, which signals hereby that a node has been completely typechecked.
@@ -363,9 +359,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
         }
         throw new TyperResult(located)
       } else {
-        try {
-          checkForMoreWork(old.pos)
-        } catch {
+        try { checkForMoreWork(old.pos) }
+        catch {
           case ex: ValidateException => // Ignore, this will have been reported elsewhere
             debugLog("validate exception caught: " + ex)
           case ex: Throwable =>
@@ -521,9 +516,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
                   "picked up work item at " + pos + ": " + action + timeStep)
                 action()
                 debugLog("done with work item: " + action)
-              } finally {
-                debugLog("quitting work item: " + action + timeStep)
-              }
+              } finally { debugLog("quitting work item: " + action + timeStep) }
             case None =>
           }
         }
@@ -618,9 +611,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
             "[%s]: exception during background compile: ".format(
               unit.source) + ex)
           ex.printStackTrace()
-          for (r <- waitLoadedTypeResponses(unit.source)) {
-            r.raise(ex)
-          }
+          for (r <- waitLoadedTypeResponses(unit.source)) { r.raise(ex) }
           serviceParsedEntered()
 
           lastException = Some(ex)
@@ -768,9 +759,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
           ex.printStackTrace()
         }
         response raise ex
-    } finally {
-      pendingResponse = prevResponse
-    }
+    } finally { pendingResponse = prevResponse }
   }
 
   private[interactive] def reloadSource(source: SourceFile) {
@@ -857,11 +846,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
             typeCheck(unit)
 //          println("tree not found at "+pos)
             EmptyTree
-          } catch {
-            case ex: TyperResult => new Locator(pos) locateIn ex.tree
-          } finally {
-            unit.targetPos = NoPosition
-          }
+          } catch { case ex: TyperResult => new Locator(pos) locateIn ex.tree }
+          finally { unit.targetPos = NoPosition }
         }
     }
 
@@ -880,9 +866,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
   /** Set sync var `response` to a fully attributed tree located at position `pos`  */
   private[interactive] def getTypedTreeAt(
       pos: Position,
-      response: Response[Tree]) {
-    respond(response)(typedTreeAt(pos))
-  }
+      response: Response[Tree]) { respond(response)(typedTreeAt(pos)) }
 
   /** Set sync var `response` to a fully attributed tree corresponding to the
     *  entire compilation unit  */
@@ -902,9 +886,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
         f(unitOfSrc)
       case unknown =>
         reloadSources(unknown)
-        try {
-          f(unitOfSrc)
-        } finally afterRunRemoveUnitsOf(unknown)
+        try { f(unitOfSrc) }
+        finally afterRunRemoveUnitsOf(unknown)
     }
   }
 
@@ -1484,9 +1467,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
     }
   }
 
-  def newTyperRun() {
-    currentTyperRun = new TyperRun
-  }
+  def newTyperRun() { currentTyperRun = new TyperRun }
 
   class TyperResult(val tree: Tree) extends ControlThrowable
 
@@ -1498,9 +1479,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
   // but DivergentImplicit shouldn't leak anymore here
   class OnTypeError[T](op: => T) {
     def onTypeError(alt: => T) =
-      try {
-        op
-      } catch {
+      try { op }
+      catch {
         case ex: TypeError =>
           debugLog("type error caught: " + ex)
           alt

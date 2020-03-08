@@ -33,9 +33,7 @@ class RunConsoleAction extends AnAction {
         case _: ScalaFile => enable()
         case _            => disable()
       }
-    } catch {
-      case e: Exception => disable()
-    }
+    } catch { case e: Exception => disable() }
   }
 
   def actionPerformed(e: AnActionEvent) {
@@ -78,9 +76,7 @@ class RunConsoleAction extends AnAction {
         for (setting <- settings) {
           ActionRunner.runInsideReadAction(
             new ActionRunner.InterruptibleRunnable {
-              def run() {
-                execute(setting)
-              }
+              def run() { execute(setting) }
             })
           return
         }

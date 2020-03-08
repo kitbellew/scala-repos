@@ -67,32 +67,24 @@ class PrimitiveKeyOpenHashMapSuite extends SparkFunSuite with Matchers {
 
     assert(map.size === 1000)
 
-    for (i <- 1 to 1000) {
-      assert(map(i + longBase) === i)
-    }
+    for (i <- 1 to 1000) { assert(map(i + longBase) === i) }
 
     // Test iterator
     val set = new HashSet[(Long, Int)]
-    for ((k, v) <- map) {
-      set.add((k, v))
-    }
+    for ((k, v) <- map) { set.add((k, v)) }
     assert(set === (1 to 1000).map(x => (x + longBase, x)).toSet)
   }
 
   test("null values") {
     val map = new PrimitiveKeyOpenHashMap[Long, String]()
-    for (i <- 1 to 100) {
-      map(i.toLong) = null
-    }
+    for (i <- 1 to 100) { map(i.toLong) = null }
     assert(map.size === 100)
     assert(map(1.toLong) === null)
   }
 
   test("changeValue") {
     val map = new PrimitiveKeyOpenHashMap[Long, String]()
-    for (i <- 1 to 100) {
-      map(i.toLong) = i.toString
-    }
+    for (i <- 1 to 100) { map(i.toLong) = i.toString }
     assert(map.size === 100)
     for (i <- 1 to 100) {
       val res = map.changeValue(
@@ -116,13 +108,9 @@ class PrimitiveKeyOpenHashMapSuite extends SparkFunSuite with Matchers {
 
   test("inserting in capacity-1 map") {
     val map = new PrimitiveKeyOpenHashMap[Long, String](1)
-    for (i <- 1 to 100) {
-      map(i.toLong) = i.toString
-    }
+    for (i <- 1 to 100) { map(i.toLong) = i.toString }
     assert(map.size === 100)
-    for (i <- 1 to 100) {
-      assert(map(i.toLong) === i.toString)
-    }
+    for (i <- 1 to 100) { assert(map(i.toLong) === i.toString) }
   }
 
   test("contains") {

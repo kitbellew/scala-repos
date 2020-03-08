@@ -164,9 +164,8 @@ private[akka] class OutputStreamAdapter(
   @scala.throws(classOf[IOException])
   private[this] def sendData(data: ByteString): Unit =
     send(() ⇒ {
-      try {
-        dataQueue.put(data)
-      } catch { case NonFatal(ex) ⇒ throw new IOException(ex) }
+      try { dataQueue.put(data) }
+      catch { case NonFatal(ex) ⇒ throw new IOException(ex) }
       if (downstreamStatus.get() == Canceled) {
         isPublisherAlive = false
         throw publisherClosedException
@@ -191,9 +190,7 @@ private[akka] class OutputStreamAdapter(
       })
 
   @scala.throws(classOf[IOException])
-  override def write(b: Int): Unit = {
-    sendData(ByteString(b))
-  }
+  override def write(b: Int): Unit = { sendData(ByteString(b)) }
 
   @scala.throws(classOf[IOException])
   override def write(b: Array[Byte], off: Int, len: Int): Unit = {

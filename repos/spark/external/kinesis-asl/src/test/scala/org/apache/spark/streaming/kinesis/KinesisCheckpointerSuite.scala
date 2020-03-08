@@ -152,9 +152,7 @@ class KinesisCheckpointerSuite
       Future(kinesisCheckpointer.removeCheckpointer(shardId, checkpointerMock))(
         ExecutionContext.global)
 
-    intercept[TimeoutException] {
-      Await.ready(f, 50 millis)
-    }
+    intercept[TimeoutException] { Await.ready(f, 50 millis) }
 
     clock.advance(checkpointInterval.milliseconds / 2)
     eventually(timeout(1 second)) {

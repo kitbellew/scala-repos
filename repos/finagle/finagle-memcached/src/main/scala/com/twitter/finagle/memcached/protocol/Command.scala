@@ -65,10 +65,7 @@ trait KeyValidation {
   }
 
   def badKey(key: Buf): Boolean = {
-    if (key == null) true
-    else {
-      tooLong(key) || invalidByteIndex(key) != -1
-    }
+    if (key == null) true else { tooLong(key) || invalidByteIndex(key) != -1 }
   }
 }
 

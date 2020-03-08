@@ -107,7 +107,5 @@ class SimpleConsumer(
     underlying.fetchOffsets(request.underlying)
   }
 
-  def close() {
-    underlying.close
-  }
+  def close() { underlying.close }
 }

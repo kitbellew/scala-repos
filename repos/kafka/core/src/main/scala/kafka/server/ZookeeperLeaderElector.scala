@@ -113,9 +113,7 @@ class ZookeeperLeaderElector(
     amILeader
   }
 
-  def close = {
-    leaderId = -1
-  }
+  def close = { leaderId = -1 }
 
   def amILeader: Boolean = leaderId == brokerId
 

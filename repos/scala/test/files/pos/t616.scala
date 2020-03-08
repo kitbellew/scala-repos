@@ -8,7 +8,9 @@ object testImplicit {
     def testCoercionThisExplicit: Any =
       this.baz // --> error: value baz is not a  member of Foo
   }
-  trait Bar { def baz: Unit }
+  trait Bar {
+    def baz: Unit
+  }
 }
 // mentioned before: http://thread.gmane.org/gmane.comp.lang.scala/2038,
 // but couldn't find a bug report

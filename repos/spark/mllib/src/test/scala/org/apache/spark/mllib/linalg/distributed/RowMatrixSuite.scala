@@ -80,12 +80,8 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("empty rows") {
     val rows = sc.parallelize(Seq[Vector](), 1)
     val emptyMat = new RowMatrix(rows)
-    intercept[RuntimeException] {
-      emptyMat.numCols()
-    }
-    intercept[RuntimeException] {
-      emptyMat.numRows()
-    }
+    intercept[RuntimeException] { emptyMat.numCols() }
+    intercept[RuntimeException] { emptyMat.numRows() }
   }
 
   test("toBreeze") {
@@ -192,9 +188,7 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("validate k in svd") {
     for (mat <- Seq(denseMat, sparseMat)) {
-      intercept[IllegalArgumentException] {
-        mat.computeSVD(-1)
-      }
+      intercept[IllegalArgumentException] { mat.computeSVD(-1) }
     }
   }
 
@@ -202,9 +196,7 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     G.valuesIterator.map(math.abs).sum < 1e-6
   }
 
-  def closeToZero(v: BDV[Double]): Boolean = {
-    brzNorm(v, 1.0) < 1e-6
-  }
+  def closeToZero(v: BDV[Double]): Boolean = { brzNorm(v, 1.0) < 1e-6 }
 
   def assertColumnEqualUpToSign(A: BDM[Double], B: BDM[Double], k: Int) {
     assert(A.rows === B.rows)

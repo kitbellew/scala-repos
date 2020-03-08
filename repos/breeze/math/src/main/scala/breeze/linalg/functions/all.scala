@@ -20,9 +20,7 @@ object all extends UFunc {
       impl2: Impl2[S => Boolean, T, Boolean],
       base: UFunc.UImpl[F, S, Boolean]): Impl2[F, T, Boolean] = {
     new Impl2[F, T, Boolean] {
-      override def apply(v: F, v2: T): Boolean = {
-        all((x: S) => base(x), v2)
-      }
+      override def apply(v: F, v2: T): Boolean = { all((x: S) => base(x), v2) }
     }
   }
 
@@ -32,9 +30,7 @@ object all extends UFunc {
       override def apply(f: S => Boolean, v2: T): Boolean = {
 
         object Visitor extends ValuesVisitor[S] {
-          def visit(a: S): Unit = {
-            if (!f(a)) throw Found
-          }
+          def visit(a: S): Unit = { if (!f(a)) throw Found }
 
           def zeros(numZero: Int, zeroValue: S): Unit = {
             if (numZero != 0 && !f(zeroValue)) throw Found
@@ -45,9 +41,7 @@ object all extends UFunc {
         try {
           ctv.traverse(v2, Visitor)
           true
-        } catch {
-          case Found => false
-        }
+        } catch { case Found => false }
 
       }
     }
@@ -56,9 +50,7 @@ object all extends UFunc {
   implicit def reduceZero[T, S](implicit
       impl2: Impl2[S => Boolean, T, Boolean],
       z: Zero[S]): Impl[T, Boolean] = new Impl[T, Boolean] {
-    override def apply(v: T): Boolean = {
-      all((_: S) != z.zero, v)
-    }
+    override def apply(v: T): Boolean = { all((_: S) != z.zero, v) }
   }
 
 }

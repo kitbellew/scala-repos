@@ -17,9 +17,7 @@ private[reflect] trait Gil {
       try {
         gil.lock()
         body
-      } finally {
-        gil.unlock()
-      }
+      } finally { gil.unlock() }
     }
   }
 }

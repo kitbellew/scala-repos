@@ -7,9 +7,7 @@ object EnumTest extends SpecLite {
   import std.java.enum._
   import java.util.concurrent.TimeUnit
 
-  "equal" in {
-    TimeUnit.values forall (tu => tu === tu)
-  }
+  "equal" in { TimeUnit.values forall (tu => tu === tu) }
 
   "not equal" in {
     //get all 2-element subsets of TimeUnit

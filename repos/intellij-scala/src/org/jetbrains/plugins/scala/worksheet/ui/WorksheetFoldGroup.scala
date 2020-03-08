@@ -30,10 +30,7 @@ class WorksheetFoldGroup(
   def left2rightOffset(left: Int) = {
     val key: Int = unfolded floorKey left
 
-    if (key == 0) left
-    else {
-      unfolded.get(key) + left
-    }
+    if (key == 0) left else { unfolded.get(key) + left }
   }
 
   def addRegion(

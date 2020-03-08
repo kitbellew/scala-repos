@@ -110,9 +110,7 @@ private[thrift] class ThriftClientChannelBufferEncoder
                 Channels.fireMessageReceived(ctx, ChannelBuffers.EMPTY_BUFFER)
               } else if (f.isCancelled) {
                 Channels.fireExceptionCaught(ctx, new CancelledRequestException)
-              } else {
-                Channels.fireExceptionCaught(ctx, f.getCause)
-              }
+              } else { Channels.fireExceptionCaught(ctx, f.getCause) }
           })
         }
 
@@ -146,11 +144,8 @@ private[finagle] case class ThriftClientPreparer(
       params[Thrift.param.AttemptTTwitterUpgrade]
     val payloadSizeService = payloadSize.andThen(service)
     val upgradedService =
-      if (attemptUpgrade) {
-        upgrade(payloadSizeService)
-      } else {
-        Future.value(payloadSizeService)
-      }
+      if (attemptUpgrade) { upgrade(payloadSizeService) }
+      else { Future.value(payloadSizeService) }
 
     upgradedService.map { upgraded =>
       new ValidateThriftService(upgraded, protocolFactory)
@@ -171,14 +166,10 @@ private[finagle] case class ThriftClientPreparer(
         val stat = stats.stat("codec_connection_preparation_latency_ms")
         override def apply(conn: ClientConnection) = {
           val elapsed = Stopwatch.start()
-          super.apply(conn).ensure {
-            stat.add(elapsed().inMilliseconds)
-          }
+          super.apply(conn).ensure { stat.add(elapsed().inMilliseconds) }
         }
       }
-    } else {
-      preparingFactory
-    }
+    } else { preparingFactory }
   }
 
   private def upgrade(

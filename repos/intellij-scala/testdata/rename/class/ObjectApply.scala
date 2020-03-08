@@ -6,9 +6,7 @@ object OuterObjectApply {
   }
 
   object Main {
-    def main(args: Array[String]) {
-      print( /*caret*/ Objecta.foo("ti "))
-    }
+    def main(args: Array[String]) { print( /*caret*/ Objecta.foo("ti ")) }
   }
 }
 /*

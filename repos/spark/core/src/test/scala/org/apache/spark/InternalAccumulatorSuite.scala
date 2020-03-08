@@ -28,11 +28,8 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
   import AccumulatorParam._
 
   override def afterEach(): Unit = {
-    try {
-      Accumulators.clear()
-    } finally {
-      super.afterEach()
-    }
+    try { Accumulators.clear() }
+    finally { super.afterEach() }
   }
 
   test("get param") {
@@ -275,9 +272,7 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
             taskContext.partitionId(),
             taskContext.partitionId(),
             "simulated fetch failure")
-        } else {
-          iter
-        }
+        } else { iter }
     }
 
     // Register asserts in job completion callback to avoid flakiness

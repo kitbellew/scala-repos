@@ -132,13 +132,9 @@ object Sink {
 
   // exposed for testing
   private[events] def newDefault: Sink = {
-    if (!sinkEnabled.apply()) {
-      Null
-    } else if (approxNumEvents() <= 0) {
-      Null
-    } else {
-      SizedSink(approxNumEvents())
-    }
+    if (!sinkEnabled.apply()) { Null }
+    else if (approxNumEvents() <= 0) { Null }
+    else { SizedSink(approxNumEvents()) }
   }
 
   /**

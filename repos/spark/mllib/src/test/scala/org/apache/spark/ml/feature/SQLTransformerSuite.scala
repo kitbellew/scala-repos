@@ -27,9 +27,7 @@ class SQLTransformerSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  test("params") {
-    ParamsSuite.checkParams(new SQLTransformer())
-  }
+  test("params") { ParamsSuite.checkParams(new SQLTransformer()) }
 
   test("transform numeric data") {
     val original = sqlContext

@@ -59,14 +59,9 @@ class ScalaLineMarkerProvider(
     if (!element.isValid) return null
     val gator = getGatorInfo(element)
     if (daemonSettings.SHOW_METHOD_SEPARATORS && isSeparatorNeeded(element)) {
-      if (gator == null) {
-        addSeparatorInfo(createMarkerInfo(element))
-      } else {
-        addSeparatorInfo(gator)
-      }
-    } else {
-      gator
-    }
+      if (gator == null) { addSeparatorInfo(createMarkerInfo(element)) }
+      else { addSeparatorInfo(gator) }
+    } else { gator }
   }
 
   def createMarkerInfo(element: PsiElement) = {
@@ -137,9 +132,7 @@ class ScalaLineMarkerProvider(
               OVERRIDING_METHOD_ICON
             else IMPLEMENTING_METHOD_ICON
           val typez = ScalaMarkerType.OVERRIDING_MEMBER
-          if (signatures.nonEmpty) {
-            return marker(method.nameId, icon, typez)
-          }
+          if (signatures.nonEmpty) { return marker(method.nameId, icon, typez) }
         case (x @ (_: ScValue | _: ScVariable), _: ScTemplateBody)
             if containsNamedElement(x.asInstanceOf[ScDeclaredElementsHolder]) =>
           val signatures = new ArrayBuffer[Signature]

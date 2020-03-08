@@ -256,9 +256,7 @@ class StreamingKMeans @Since("1.2.0") (
     * Return the latest model.
     */
   @Since("1.2.0")
-  def latestModel(): StreamingKMeansModel = {
-    model
-  }
+  def latestModel(): StreamingKMeansModel = { model }
 
   /**
     * Update the clustering model by training on batches of data from a DStream.

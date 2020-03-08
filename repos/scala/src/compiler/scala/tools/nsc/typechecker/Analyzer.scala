@@ -108,9 +108,7 @@ trait Analyzer
             warnUnusedImports(unit)
           if (settings.warnUnused)
             typer checkUnused unit
-        } finally {
-          unit.toCheck.clear()
-        }
+        } finally { unit.toCheck.clear() }
       }
     }
   }

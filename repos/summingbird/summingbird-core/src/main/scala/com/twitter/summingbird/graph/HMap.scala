@@ -98,7 +98,9 @@ trait GenPartial[T[_], R[_]] {
 object HMap {
   def empty[K[_], V[_]]: HMap[K, V] = from[K, V](Map.empty[K[_], V[_]])
   private def from[K[_], V[_]](m: Map[K[_], V[_]]): HMap[K, V] =
-    new HMap[K, V] { override val map = m }
+    new HMap[K, V] {
+      override val map = m
+    }
 }
 
 /**

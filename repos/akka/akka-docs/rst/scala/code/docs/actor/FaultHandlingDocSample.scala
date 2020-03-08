@@ -147,9 +147,7 @@ class CounterService extends Actor {
 
   import context.dispatcher // Use this Actors' Dispatcher as ExecutionContext
 
-  override def preStart() {
-    initStorage()
-  }
+  override def preStart() { initStorage() }
 
   /**
     * The child storage is restarted in case of failure, but after 3 restarts,
@@ -291,9 +289,7 @@ object DummyDB {
   }
 
   @throws(classOf[StorageException])
-  def load(key: String): Option[Long] = synchronized {
-    db.get(key)
-  }
+  def load(key: String): Option[Long] = synchronized { db.get(key) }
 }
 //#dummydb
 //#all

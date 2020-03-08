@@ -90,9 +90,8 @@ object Analysis {
     def syntheticKind: MethodSyntheticKind
 
     def displayName: String = {
-      if (isExported) {
-        encodedName
-      } else {
+      if (isExported) { encodedName }
+      else {
         import ir.Types._
 
         def typeDisplayName(tpe: ReferenceType): String = tpe match {
@@ -239,9 +238,8 @@ object Analysis {
       val involvedClasses = new mutable.ListBuffer[ClassInfo]
 
       def onlyOnce(level: Level, info: AnyRef): Boolean = {
-        if (seenInfos.add(info)) {
-          true
-        } else {
+        if (seenInfos.add(info)) { true }
+        else {
           log(level, "  (already seen, not repeating call stack)")
           false
         }
@@ -270,9 +268,7 @@ object Analysis {
         }
       }
 
-      indented {
-        loopTrace(optFrom, verb = verb)
-      }
+      indented { loopTrace(optFrom, verb = verb) }
 
       if (involvedClasses.nonEmpty) {
         log(level, "involving instantiated classes:")

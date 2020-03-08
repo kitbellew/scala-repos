@@ -69,9 +69,7 @@ private[streaming] class RecurringTimer(
   /**
     * Start at the earliest time it can start based on the period.
     */
-  def start(): Long = {
-    start(getStartTime())
-  }
+  def start(): Long = { start(getStartTime()) }
 
   /**
     * Stop the timer, and return the last time the callback was made.
@@ -83,9 +81,7 @@ private[streaming] class RecurringTimer(
   def stop(interruptTimer: Boolean): Long = synchronized {
     if (!stopped) {
       stopped = true
-      if (interruptTimer) {
-        thread.interrupt()
-      }
+      if (interruptTimer) { thread.interrupt() }
       thread.join()
       logInfo("Stopped timer for " + name + " after time " + prevTime)
     }
@@ -105,9 +101,7 @@ private[streaming] class RecurringTimer(
     */
   private def loop() {
     try {
-      while (!stopped) {
-        triggerActionForNextInterval()
-      }
+      while (!stopped) { triggerActionForNextInterval() }
       triggerActionForNextInterval()
     } catch {
       case e: InterruptedException =>

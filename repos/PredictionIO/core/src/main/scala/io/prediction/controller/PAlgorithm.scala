@@ -115,11 +115,7 @@ abstract class PAlgorithm[PD, M, Q, P] extends BaseAlgorithm[PD, M, Q, P] {
       if (m.asInstanceOf[PersistentModel[Params]]
             .save(modelId, algoParams, sc)) {
         PersistentModelManifest(className = m.getClass.getName)
-      } else {
-        Unit
-      }
-    } else {
-      Unit
-    }
+      } else { Unit }
+    } else { Unit }
   }
 }

@@ -63,9 +63,7 @@ class HTMLEditor(override val delegate: jfxsw.HTMLEditor = new jfxsw.HTMLEditor)
     * Returns the HTML content of the editor.
     */
   def htmlText = delegate.getHtmlText
-  def htmlText_=(htmlText: String) {
-    delegate.setHtmlText(htmlText)
-  }
+  def htmlText_=(htmlText: String) { delegate.setHtmlText(htmlText) }
 
   /**
     * Prints the content of the editor using the given printer job.

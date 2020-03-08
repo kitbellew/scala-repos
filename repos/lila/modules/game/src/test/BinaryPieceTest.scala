@@ -20,9 +20,7 @@ class BinaryPieceTest extends Specification {
 
   "binary pieces" should {
     "write" should {
-      "empty board" in {
-        write(Map.empty) must_== List.fill(32)(noop)
-      }
+      "empty board" in { write(Map.empty) must_== List.fill(32)(noop) }
       "A1 white king" in {
         write(Map(A1 -> White.king)) must_== {
           "00010000" :: List.fill(31)(noop)

@@ -258,9 +258,7 @@ trait EventService
       : AsyncHttpService[ByteChunk, ByteChunk] = {
     path("/data/fs/'path") {
       get {
-        accept(FileContent.XQuirrelScript) {
-          proxy(shardClient) { _ => true }
-        }
+        accept(FileContent.XQuirrelScript) { proxy(shardClient) { _ => true } }
       }
     }
   }

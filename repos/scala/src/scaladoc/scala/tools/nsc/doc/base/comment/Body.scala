@@ -67,7 +67,9 @@ final case class Subscript(text: Inline) extends Inline
 final case class Link(target: String, title: Inline) extends Inline
 final case class Monospace(text: Inline) extends Inline
 final case class Text(text: String) extends Inline
-abstract class EntityLink(val title: Inline) extends Inline { def link: LinkTo }
+abstract class EntityLink(val title: Inline) extends Inline {
+  def link: LinkTo
+}
 object EntityLink {
   def apply(title: Inline, linkTo: LinkTo) = new EntityLink(title) {
     def link: LinkTo = linkTo
@@ -84,9 +86,7 @@ final case class HtmlTag(data: String) extends Inline {
       (false, None)
   }
 
-  def canClose(open: HtmlTag) = {
-    isEnd && tagName == open.tagName
-  }
+  def canClose(open: HtmlTag) = { isEnd && tagName == open.tagName }
 
   private val TagsNotToClose = Set("br", "img")
   def close = tagName collect {

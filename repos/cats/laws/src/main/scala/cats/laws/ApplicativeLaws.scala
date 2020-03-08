@@ -50,5 +50,7 @@ trait ApplicativeLaws[F[_]] extends ApplyLaws[F] {
 
 object ApplicativeLaws {
   def apply[F[_]](implicit ev: Applicative[F]): ApplicativeLaws[F] =
-    new ApplicativeLaws[F] { def F: Applicative[F] = ev }
+    new ApplicativeLaws[F] {
+      def F: Applicative[F] = ev
+    }
 }

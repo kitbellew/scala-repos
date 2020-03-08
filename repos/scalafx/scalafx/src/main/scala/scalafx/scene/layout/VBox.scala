@@ -43,9 +43,7 @@ object VBox {
   /**
     * Removes all vbox constraints from the child node.
     */
-  def clearConstraints(child: jfxs.Node) {
-    jfxsl.VBox.clearConstraints(child)
-  }
+  def clearConstraints(child: jfxs.Node) { jfxsl.VBox.clearConstraints(child) }
 
   /**
     * Returns the child's margin constraint if set.
@@ -104,18 +102,14 @@ class VBox(override val delegate: jfxsl.VBox = new jfxsl.VBox)
     * The amount of vertical space between each child in the vbox.
     */
   def spacing: DoubleProperty = delegate.spacingProperty
-  def spacing_=(v: Double) {
-    spacing() = v
-  }
+  def spacing_=(v: Double) { spacing() = v }
 
   /**
     * Whether or not resizable children will be resized to fill the full width of the vbox or be
     * kept to their preferred width and aligned according to the alignment hpos value.
     */
   def fillWidth: BooleanProperty = delegate.fillWidthProperty
-  def fillWidth_=(v: Boolean) {
-    fillWidth() = v
-  }
+  def fillWidth_=(v: Boolean) { fillWidth() = v }
 
   /**
     * Returns the orientation of a node's resizing bias for layout purposes.
@@ -125,8 +119,6 @@ class VBox(override val delegate: jfxsl.VBox = new jfxsl.VBox)
   /**
     * Requests a layout pass to be performed before the next scene is rendered.
     */
-  def requestLayout() {
-    delegate.requestLayout()
-  }
+  def requestLayout() { delegate.requestLayout() }
 
 }

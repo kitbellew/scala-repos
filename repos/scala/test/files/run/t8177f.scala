@@ -1,4 +1,6 @@
-trait Thing { type A; var p: A = _ }
+trait Thing {
+  type A; var p: A = _
+}
 class A[T](final val x: Thing { type A = T }) {
   type Q = T
 

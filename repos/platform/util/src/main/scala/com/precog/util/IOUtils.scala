@@ -104,9 +104,7 @@ object IOUtils extends Logging {
       }
     } else if (startDir.isDirectory) {
       if (Option(startDir.list).exists(_.length == 0)) {
-        IO {
-          startDir.delete()
-        }.flatMap { _ =>
+        IO { startDir.delete() }.flatMap { _ =>
           recursiveDeleteEmptyDirs(startDir.getParentFile, upTo)
         }
       } else {

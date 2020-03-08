@@ -94,9 +94,7 @@ class NingAsyncHttpClientConfigBuilder(
     *
     * @return the resulting builder
     */
-  def build(): AsyncHttpClientConfig = {
-    configure().build()
-  }
+  def build(): AsyncHttpClientConfig = { configure().build() }
 
   /**
     * Modify the underlying `DefaultAsyncHttpClientConfig.Builder` using the provided function, after defaults are set.
@@ -286,9 +284,8 @@ class NingAsyncHttpClientConfigBuilder(
       keyConstraints = constraints,
       signatureConstraints = Set())
     for (cert <- trustManager.getAcceptedIssuers) {
-      try {
-        algorithmChecker.checkKeyAlgorithms(cert)
-      } catch {
+      try { algorithmChecker.checkKeyAlgorithms(cert) }
+      catch {
         case e: CertPathValidatorException =>
           logger.warn(
             "You are using ws.ssl.default=true and have a weak certificate in your default trust store!  (You can modify ws.ssl.disabledKeyAlgorithms to remove this message.)",

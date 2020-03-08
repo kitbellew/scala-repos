@@ -56,9 +56,7 @@ object MenuSpec extends Specification {
       testS(mockReq) {
         val rules = new LiftRules()
         rules.setSiteMap(siteMap)
-        LiftRulesMocker.devTestLiftRulesInstance.doWith(rules) {
-          f
-        }
+        LiftRulesMocker.devTestLiftRulesInstance.doWith(rules) { f }
       }
     }
   }

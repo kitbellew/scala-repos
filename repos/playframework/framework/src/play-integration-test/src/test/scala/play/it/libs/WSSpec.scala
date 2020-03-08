@@ -65,19 +65,16 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     }
 
     def withResult[T](result: Result)(block: play.libs.ws.WSClient => T) = {
-      Server.withRouter() {
-        case _ => Action(result)
-      } { implicit port => withClient(block) }
+      Server.withRouter() { case _ => Action(result) } { implicit port =>
+        withClient(block)
+      }
     }
 
     def withClient[T](block: play.libs.ws.WSClient => T)(
         implicit port: Port): T = {
       val wsClient = play.libs.ws.WS.newClient(port.value)
-      try {
-        block(wsClient)
-      } finally {
-        wsClient.close()
-      }
+      try { block(wsClient) }
+      finally { wsClient.close() }
     }
 
     import play.libs.ws.WSSignatureCalculator
@@ -255,9 +252,9 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     }
 
     def withResult[T](result: Result)(block: play.api.libs.ws.WSClient => T) = {
-      Server.withRouter() {
-        case _ => Action(result)
-      } { implicit port => WsTestClient.withClient(block) }
+      Server.withRouter() { case _ => Action(result) } { implicit port =>
+        WsTestClient.withClient(block)
+      }
     }
 
     "make GET Requests" in withServer { ws =>

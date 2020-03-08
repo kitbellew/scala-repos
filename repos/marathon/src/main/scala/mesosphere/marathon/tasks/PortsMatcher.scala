@@ -131,9 +131,7 @@ class PortsMatcher(
               s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
                 s"Insufficient ports in offer for app [${app.id}]")
             None
-          } else {
-            Option(availablePortsWithoutStaticHostPorts.next())
-          }
+          } else { Option(availablePortsWithoutStaticHostPorts.next()) }
         case pm: PortMapping =>
           offeredPortRanges.find(_.contains(pm.hostPort)) match {
             case Some(PortRange(role, _, _, reservation)) =>
@@ -182,9 +180,7 @@ object PortsMatcher {
       role: String,
       port: Int,
       reservation: Option[MesosProtos.Resource.ReservationInfo] = None) {
-    def toRange: protos.Range = {
-      protos.Range(port.toLong, port.toLong)
-    }
+    def toRange: protos.Range = { protos.Range(port.toLong, port.toLong) }
   }
 
   object PortWithRole {

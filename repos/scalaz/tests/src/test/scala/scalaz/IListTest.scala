@@ -424,11 +424,8 @@ object IListTest extends SpecLite {
   // uncons is tested everywhere
 
   "updated" ! forAll { (ns: IList[Int], i: Int, n: Int) =>
-    if (i < 0 || i >= ns.length) {
-      ns.updated(i, n) must_=== ns
-    } else {
-      ns.updated(i, n).toList must_=== ns.toList.updated(i, n)
-    }
+    if (i < 0 || i >= ns.length) { ns.updated(i, n) must_=== ns }
+    else { ns.updated(i, n).toList must_=== ns.toList.updated(i, n) }
   }
 
   "unzip" ! forAll { (ns: IList[(Int, String)]) =>

@@ -54,9 +54,7 @@ class JobSettingsSpec
     if (jfxp.PrinterJob.createPrinterJob == null
         || jfxp.PrinterJob.createPrinterJob.getJobSettings == null) {
       "Neither Default Printer Job nor Job Settings defined."
-    } else {
-      ""
-    }
+    } else { "" }
 
   override val skipJfxToSfxCause = skipingMessage
 

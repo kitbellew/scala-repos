@@ -57,7 +57,5 @@ class Sphere(override val delegate: jfxss.Sphere = new jfxss.Sphere())
 
   /** Defines the radius of the Sphere. */
   def radius: DoubleProperty = delegate.radiusProperty
-  def radius_=(v: Double) {
-    radius() = v
-  }
+  def radius_=(v: Double) { radius() = v }
 }

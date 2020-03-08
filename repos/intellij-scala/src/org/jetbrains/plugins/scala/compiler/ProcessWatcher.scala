@@ -15,9 +15,7 @@ class ProcessWatcher(process: Process, commandLine: String) {
 
   processHandler.addProcessListener(MyProcessListener)
 
-  def startNotify() {
-    processHandler.startNotify()
-  }
+  def startNotify() { processHandler.startNotify() }
 
   def running: Boolean = !processHandler.isProcessTerminated
 
@@ -29,9 +27,7 @@ class ProcessWatcher(process: Process, commandLine: String) {
     }
   }
 
-  def destroyProcess() {
-    process.destroy()
-  }
+  def destroyProcess() { process.destroy() }
 
   private object MyProcessListener extends ProcessAdapter {
     override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
@@ -49,9 +45,7 @@ class ProcessWatcher(process: Process, commandLine: String) {
           }
 
         case ProcessOutputTypes.STDERR =>
-          lock.synchronized {
-            errorLines :+= text
-          }
+          lock.synchronized { errorLines :+= text }
 
         case _ => // do nothing
       }

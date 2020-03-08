@@ -87,9 +87,7 @@ trait Index[T] extends Iterable[T] with (T => Int) with Serializable {
 
   override def hashCode = defaultHashCode
 
-  override def toString = {
-    iterator.mkString("Index(", ",", ")")
-  }
+  override def toString = { iterator.mkString("Index(", ",", ")") }
 
   def |[U](right: Index[U]) = new EitherIndex(this, right)
 }
@@ -186,9 +184,7 @@ class HashIndex[T] extends MutableIndex[T] with Serializable {
       objects += t
       indices.put(t, ind)
       ind
-    } else {
-      indices(t)
-    }
+    } else { indices(t) }
   }
 
   def pairs = indices.iterator
@@ -236,17 +232,13 @@ object Index {
   import scala.reflect.ClassTag.{Char => MChar}
   import scala.reflect.OptManifest
   def apply[T: OptManifest](): MutableIndex[T] =
-    implicitly[OptManifest[T]] match {
-      case _ => new HashIndex[T];
-    }
+    implicitly[OptManifest[T]] match { case _ => new HashIndex[T]; }
 
   /** Constructs an Index from some iterator. */
   def apply[T: OptManifest](iterator: Iterator[T]): Index[T] = {
     val index = Index[T]()
     // read through all iterator now -- don't lazily defer evaluation
-    for (element <- iterator) {
-      index.index(element)
-    }
+    for (element <- iterator) { index.index(element) }
     index
   }
 
@@ -254,9 +246,7 @@ object Index {
   def apply[T](iterable: Iterable[T]): Index[T] = {
     val index = Index[T]()
     // read through all iterator now -- don't lazily defer evaluation
-    for (element <- iterable) {
-      index.index(element)
-    }
+    for (element <- iterable) { index.index(element) }
     index
   }
 
@@ -358,9 +348,7 @@ final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
 
   def apply(t: (Int, U)) = {
     if (t._1 >= indices.length || t._1 < 0) -1
-    else {
-      indices(t._1).asInstanceOf[Index[U]](t._2) + offsets(t._1)
-    }
+    else { indices(t._1).asInstanceOf[Index[U]](t._2) + offsets(t._1) }
   }
 
   def unapply(i: Int) = {

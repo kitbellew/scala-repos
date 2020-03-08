@@ -179,11 +179,8 @@ class DenseVectorTest extends FunSuite with Checkers {
     assert(x === DenseVector(1, 2, 2, 1, 0))
 
     assert(x(0 until 5) === x)
-    assert(try {
-      x(0 to 5); false
-    } catch {
-      case _: Throwable => true
-    })
+    assert(try { x(0 to 5); false }
+    catch { case _: Throwable => true })
   }
 
   test("Slice and Transpose") {

@@ -68,11 +68,8 @@ object JavaStreamEnrichments {
     if (i < 0) illegal(s"negative numbers not allowed: $i")
     if (i < ((1 << 8) - 1)) 1
     else {
-      if (i < ((1 << 16) - 1)) {
-        3
-      } else {
-        7
-      }
+      if (i < ((1 << 16) - 1)) { 3 }
+      else { 7 }
     }
   }
 

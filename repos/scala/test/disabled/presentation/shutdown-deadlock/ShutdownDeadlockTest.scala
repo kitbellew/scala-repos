@@ -13,9 +13,7 @@ object Test extends InteractiveTest {
 
   def fireAsks() {
     val jobs1 = for (i <- 1 until Reps) yield {
-      if (i % 10 == 0) {
-        askReload(sourceFiles)
-      }
+      if (i % 10 == 0) { askReload(sourceFiles) }
       askSomething
     }
 
@@ -34,9 +32,7 @@ object Test extends InteractiveTest {
 
   override def main(args: Array[String]) {
     new Thread("Asking") {
-      override def run() {
-        fireAsks()
-      }
+      override def run() { fireAsks() }
     }.start()
 
     Thread.sleep(800)

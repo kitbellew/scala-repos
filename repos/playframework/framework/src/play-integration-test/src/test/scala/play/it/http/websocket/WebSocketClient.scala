@@ -71,11 +71,8 @@ object WebSocketClient {
 
   def apply[T](block: WebSocketClient => T) = {
     val client = WebSocketClient.create()
-    try {
-      block(client)
-    } finally {
-      client.shutdown()
-    }
+    try { block(client) }
+    finally { client.shutdown() }
   }
 
   private implicit class ToFuture(chf: ChannelFuture) {
@@ -83,13 +80,10 @@ object WebSocketClient {
       val promise = Promise[Channel]()
       chf.addListener(new ChannelFutureListener {
         def operationComplete(future: ChannelFuture) = {
-          if (future.isSuccess) {
-            promise.success(future.channel())
-          } else if (future.isCancelled) {
+          if (future.isSuccess) { promise.success(future.channel()) }
+          else if (future.isCancelled) {
             promise.failure(new RuntimeException("Future cancelled"))
-          } else {
-            promise.failure(future.cause())
-          }
+          } else { promise.failure(future.cause()) }
         }
       })
       promise.future
@@ -148,9 +142,7 @@ object WebSocketClient {
           handshaker.handshake(channel)
           channel.read()
         }
-        .onFailure {
-          case t => disconnected.tryFailure(t)
-        }
+        .onFailure { case t => disconnected.tryFailure(t) }
 
       disconnected.future
     }
@@ -344,11 +336,8 @@ object WebSocketClient {
     }
 
     override def exceptionCaught(ctx: ChannelHandlerContext, e: Throwable) {
-      if (serverInitiatedClose.get()) {
-        disconnected.trySuccess(())
-      } else {
-        disconnected.tryFailure(e)
-      }
+      if (serverInitiatedClose.get()) { disconnected.trySuccess(()) }
+      else { disconnected.tryFailure(e) }
       ctx.channel.close()
       ctx.fireExceptionCaught(e)
     }

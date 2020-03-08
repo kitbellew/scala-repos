@@ -73,9 +73,7 @@ class HttpEventStreamHandleActor(
 
       import context.dispatcher
       sendFuture pipeTo self
-    } else {
-      context.become(waitForEvent)
-    }
+    } else { context.become(waitForEvent) }
   }
 
   private[this] def handleException(ex: Throwable): Unit = ex match {

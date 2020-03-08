@@ -55,9 +55,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     intercept[Exception] {
       testData.groupBy("nonExistentName").agg(Map("key" -> "sum"))
     }
-    intercept[Exception] {
-      testData.groupBy($"abcd").agg(Map("key" -> "sum"))
-    }
+    intercept[Exception] { testData.groupBy($"abcd").agg(Map("key" -> "sum")) }
   }
 
   test("dataframe toString") {
@@ -97,9 +95,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       complexData.filter(complexData("s").getField("key") === 1).count() == 1)
   }
 
-  test("table scan") {
-    checkAnswer(testData, testData.collect().toSeq)
-  }
+  test("table scan") { checkAnswer(testData, testData.collect().toSeq) }
 
   test("union all") {
     val unionDF = testData
@@ -793,9 +789,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     )
 
     def checkError(testFun: => Unit): Unit = {
-      val e = intercept[org.apache.spark.sql.AnalysisException] {
-        testFun
-      }
+      val e = intercept[org.apache.spark.sql.AnalysisException] { testFun }
       assert(e.getMessage.contains("syntax error in attribute name:"))
     }
     checkError(df("`abc.`c`"))
@@ -1214,9 +1208,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   private def verifyNonExchangingAgg(df: DataFrame) = {
     var atFirstAgg: Boolean = false
     df.queryExecution.executedPlan.foreach {
-      case agg: TungstenAggregate => {
-        atFirstAgg = !atFirstAgg
-      }
+      case agg: TungstenAggregate => { atFirstAgg = !atFirstAgg }
       case _ => {
         if (atFirstAgg) {
           fail("Should not have operators between the two aggregations")
@@ -1232,9 +1224,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     var atFirstAgg: Boolean = false
     df.queryExecution.executedPlan.foreach {
       case agg: TungstenAggregate => {
-        if (atFirstAgg) {
-          fail("Should not have back to back Aggregates")
-        }
+        if (atFirstAgg) { fail("Should not have back to back Aggregates") }
         atFirstAgg = true
       }
       case e: ShuffleExchange => atFirstAgg = false

@@ -331,9 +331,7 @@ class KafkaConfigTest {
     try {
       KafkaConfig.fromProps(props)
       true
-    } catch {
-      case e: IllegalArgumentException => false
-    }
+    } catch { case e: IllegalArgumentException => false }
   }
 
   @Test
@@ -373,9 +371,7 @@ class KafkaConfigTest {
       TestUtils.createBrokerConfig(0, TestUtils.MockZkConnect, port = 8181)
     props.put(KafkaConfig.UncleanLeaderElectionEnableProp, "invalid")
 
-    intercept[ConfigException] {
-      KafkaConfig.fromProps(props)
-    }
+    intercept[ConfigException] { KafkaConfig.fromProps(props) }
   }
 
   @Test
@@ -432,9 +428,7 @@ class KafkaConfigTest {
     val props =
       TestUtils.createBrokerConfig(0, TestUtils.MockZkConnect, port = 8181)
     props.put(KafkaConfig.CompressionTypeProp, "abc")
-    intercept[IllegalArgumentException] {
-      KafkaConfig.fromProps(props)
-    }
+    intercept[IllegalArgumentException] { KafkaConfig.fromProps(props) }
   }
 
   @Test
@@ -445,9 +439,7 @@ class KafkaConfigTest {
     props.put(
       KafkaConfig.InterBrokerSecurityProtocolProp,
       SecurityProtocol.PLAINTEXT.toString)
-    intercept[IllegalArgumentException] {
-      KafkaConfig.fromProps(props)
-    }
+    intercept[IllegalArgumentException] { KafkaConfig.fromProps(props) }
   }
 
   @Test
@@ -471,9 +463,7 @@ class KafkaConfigTest {
       KafkaConfig.ListenersProp,
       "TRACE://localhost:9091,SSL://localhost:9093")
     props.put(KafkaConfig.AdvertisedListenersProp, "PLAINTEXT://localhost:9092")
-    intercept[IllegalArgumentException] {
-      KafkaConfig.fromProps(props)
-    }
+    intercept[IllegalArgumentException] { KafkaConfig.fromProps(props) }
   }
 
   @Test
@@ -909,9 +899,7 @@ class KafkaConfigTest {
     values.foreach((value) => {
       val props = validRequiredProps
       props.setProperty(name, value.toString)
-      intercept[Exception] {
-        KafkaConfig.fromProps(props)
-      }
+      intercept[Exception] { KafkaConfig.fromProps(props) }
     })
   }
 

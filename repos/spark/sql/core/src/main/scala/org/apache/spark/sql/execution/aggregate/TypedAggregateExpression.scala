@@ -73,11 +73,8 @@ case class TypedAggregateExpression(
   override def nullable: Boolean = true
 
   override def dataType: DataType =
-    if (cEncoder.flat) {
-      cEncoder.schema.head.dataType
-    } else {
-      cEncoder.schema
-    }
+    if (cEncoder.flat) { cEncoder.schema.head.dataType }
+    else { cEncoder.schema }
 
   override def deterministic: Boolean = true
 

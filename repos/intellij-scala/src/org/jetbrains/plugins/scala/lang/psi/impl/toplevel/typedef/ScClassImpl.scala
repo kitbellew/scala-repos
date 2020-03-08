@@ -200,9 +200,7 @@ class ScClassImpl private (
     ScalaPsiUtil.getCompanionModule(this) match {
       case Some(o: ScObject) =>
         def add(method: PsiMethod) {
-          if (!names.contains(method.getName)) {
-            res += method
-          }
+          if (!names.contains(method.getName)) { res += method }
         }
         TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(o) { node =>
           this.processPsiMethodsForNode(
@@ -348,9 +346,7 @@ class ScClassImpl private (
               this)
             method.setSynthetic(this)
             Some(method)
-          } catch {
-            case e: Exception => None
-          }
+          } catch { case e: Exception => None }
         case None => None
       }
     } else None

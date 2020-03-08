@@ -73,9 +73,7 @@ private[netty] case class RpcOutboxMessage(
     client.removeRpcRequest(requestId)
   }
 
-  override def onFailure(e: Throwable): Unit = {
-    _onFailure(e)
-  }
+  override def onFailure(e: Throwable): Unit = { _onFailure(e) }
 
   override def onSuccess(response: ByteBuffer): Unit = {
     _onSuccess(client, response)
@@ -115,9 +113,8 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
     */
   def send(message: OutboxMessage): Unit = {
     val dropped = synchronized {
-      if (stopped) {
-        true
-      } else {
+      if (stopped) { true }
+      else {
         messages.add(message)
         false
       }
@@ -125,9 +122,7 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
     if (dropped) {
       message.onFailure(
         new SparkException("Message is dropped because Outbox is stopped"))
-    } else {
-      drainOutbox()
-    }
+    } else { drainOutbox() }
   }
 
   /**
@@ -138,9 +133,7 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
   private def drainOutbox(): Unit = {
     var message: OutboxMessage = null
     synchronized {
-      if (stopped) {
-        return
-      }
+      if (stopped) { return }
       if (connectFuture != null) {
         // We are connecting to the remote address, so just exit
         return
@@ -155,28 +148,21 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
         return
       }
       message = messages.poll()
-      if (message == null) {
-        return
-      }
+      if (message == null) { return }
       draining = true
     }
     while (true) {
       try {
         val _client = synchronized { client }
-        if (_client != null) {
-          message.sendWith(_client)
-        } else {
-          assert(stopped == true)
-        }
+        if (_client != null) { message.sendWith(_client) }
+        else { assert(stopped == true) }
       } catch {
         case NonFatal(e) =>
           handleNetworkFailure(e)
           return
       }
       synchronized {
-        if (stopped) {
-          return
-        }
+        if (stopped) { return }
         message = messages.poll()
         if (message == null) {
           draining = false
@@ -195,9 +181,7 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
             val _client = nettyEnv.createClient(address)
             outbox.synchronized {
               client = _client
-              if (stopped) {
-                closeClient()
-              }
+              if (stopped) { closeClient() }
             }
           } catch {
             case ie: InterruptedException =>
@@ -222,9 +206,7 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
   private def handleNetworkFailure(e: Throwable): Unit = {
     synchronized {
       assert(connectFuture == null)
-      if (stopped) {
-        return
-      }
+      if (stopped) { return }
       stopped = true
       closeClient()
     }
@@ -246,9 +228,7 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
 
   private def closeClient(): Unit = synchronized {
     // Not sure if `client.close` is idempotent. Just for safety.
-    if (client != null) {
-      client.close()
-    }
+    if (client != null) { client.close() }
     client = null
   }
 
@@ -258,13 +238,9 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
     */
   def stop(): Unit = {
     synchronized {
-      if (stopped) {
-        return
-      }
+      if (stopped) { return }
       stopped = true
-      if (connectFuture != null) {
-        connectFuture.cancel(true)
-      }
+      if (connectFuture != null) { connectFuture.cancel(true) }
       closeClient()
     }
 

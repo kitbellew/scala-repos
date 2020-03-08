@@ -1,5 +1,7 @@
 // An extractor with 2 results
-object Foo { def unapply(x: String) = Some((x, x)) }
+object Foo {
+  def unapply(x: String) = Some((x, x))
+}
 
 object Test extends App {
 

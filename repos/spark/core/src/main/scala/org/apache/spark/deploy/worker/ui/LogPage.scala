@@ -184,13 +184,9 @@ private[ui] class LogPage(parent: WorkerWebUI)
       val totalLength = files.map { _.length }.sum
       val offset = offsetOption.getOrElse(totalLength - byteLength)
       val startIndex = {
-        if (offset < 0) {
-          0L
-        } else if (offset > totalLength) {
-          totalLength
-        } else {
-          offset
-        }
+        if (offset < 0) { 0L }
+        else if (offset > totalLength) { totalLength }
+        else { offset }
       }
       val endIndex = math.min(startIndex + byteLength, totalLength)
       logDebug(s"Getting log from $startIndex to $endIndex")

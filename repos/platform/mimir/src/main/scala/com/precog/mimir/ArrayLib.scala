@@ -55,9 +55,8 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             case ColumnRef(CPath(CPathIndex(i), _ @_*), _) => i
           }
 
-          if (indices.isEmpty) {
-            Slice.empty
-          } else {
+          if (indices.isEmpty) { Slice.empty }
+          else {
             val maxLength = indices.max + 1
 
             val columnTables =

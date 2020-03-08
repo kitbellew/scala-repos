@@ -1284,9 +1284,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       ord1: ORD[O1],
       ord2: ORD[O2],
       m1: ST[O1],
-      m2: ST[O2]): Frame[V, O1, T] = {
-    T.unstack.T
-  }
+      m2: ST[O2]): Frame[V, O1, T] = { T.unstack.T }
 
   /**
     * Unstack pivots the innermost row labels to the innermost col labels. That is, it splits
@@ -1574,9 +1572,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   }
 
   private def rows(): MatCols[T] = {
-    if (cachedRows.isEmpty) {
-      cachedRows = Some(toMat.rows())
-    }
+    if (cachedRows.isEmpty) { cachedRows = Some(toMat.rows()) }
     cachedRows.get
   }
 
@@ -1904,9 +1900,7 @@ object Frame extends BinOpFrame {
       colIx: Index[CX]): Frame[RX, CX, T] =
     if (mat.length == 0)
       empty[RX, CX, T]
-    else {
-      new Frame[RX, CX, T](mat.cols(), rowIx, colIx) withMat Some(mat)
-    }
+    else { new Frame[RX, CX, T](mat.cols(), rowIx, colIx) withMat Some(mat) }
 }
 
 /**

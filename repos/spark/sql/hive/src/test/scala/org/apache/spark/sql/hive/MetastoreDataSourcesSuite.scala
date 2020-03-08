@@ -155,9 +155,7 @@ class MetastoreDataSourcesSuite
 
       sql("DROP TABLE jsonTable")
 
-      intercept[Exception] {
-        sql("SELECT * FROM jsonTable").collect()
-      }
+      intercept[Exception] { sql("SELECT * FROM jsonTable").collect() }
 
       assert(
         new File(jsonFilePath).exists(),

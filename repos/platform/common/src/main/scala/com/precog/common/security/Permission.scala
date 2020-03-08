@@ -42,20 +42,32 @@ import scalaz.syntax.apply._
 import scalaz.syntax.plusEmpty._
 import Permission._
 
-sealed trait AccessMode { def name: String }
+sealed trait AccessMode {
+  def name: String
+}
 sealed trait ReadMode extends AccessMode
 sealed trait WriteMode extends AccessMode
 
 object AccessMode {
-  case object Read extends AccessMode with ReadMode { val name = "read" }
-  case object Execute extends AccessMode with ReadMode { val name = "execute" }
+  case object Read extends AccessMode with ReadMode {
+    val name = "read"
+  }
+  case object Execute extends AccessMode with ReadMode {
+    val name = "execute"
+  }
   case object ReadMetadata extends AccessMode with ReadMode {
     val name = "metadata"
   }
 
-  case object Create extends AccessMode with WriteMode { val name = "create" }
-  case object Replace extends AccessMode with WriteMode { val name = "replace" }
-  case object Append extends AccessMode with WriteMode { val name = "append" }
+  case object Create extends AccessMode with WriteMode {
+    val name = "create"
+  }
+  case object Replace extends AccessMode with WriteMode {
+    val name = "replace"
+  }
+  case object Append extends AccessMode with WriteMode {
+    val name = "append"
+  }
 }
 
 sealed trait Permission extends Logging {
@@ -202,9 +214,7 @@ object Permission {
               failure(Invalid(
                 "Cannot extract read permission for more than one account ID."))
         }
-      } getOrElse {
-        pathV map { f(_: Path, WrittenByAny) }
-      }
+      } getOrElse { pathV map { f(_: Path, WrittenByAny) } }
     }
 
     override def validated(obj: JValue) = {
@@ -215,9 +225,7 @@ object Permission {
             (pathV |@| ids.validated[Set[AccountId]]) { (path, accountIds) =>
               WritePermission(path, WriteAs(accountIds))
             }
-          } getOrElse {
-            pathV map { WritePermission(_: Path, WriteAsAny) }
-          }
+          } getOrElse { pathV map { WritePermission(_: Path, WriteAsAny) } }
 
         case "read" =>
           writtenByPermission(obj, pathV) { ReadPermission.apply _ }
@@ -238,9 +246,7 @@ object Permission {
       obj.validated[Option[String]]("ownerAccountId") flatMap { opt =>
         opt map { id =>
           pathV map { f(_: Path, WrittenByAccount(id)) }
-        } getOrElse {
-          pathV map { f(_: Path, WrittenByAny) }
-        }
+        } getOrElse { pathV map { f(_: Path, WrittenByAny) } }
       }
     }
 
@@ -251,9 +257,7 @@ object Permission {
           obj.validated[Option[String]]("ownerAccountId") flatMap { opt =>
             opt map { id =>
               pathV map { WritePermission(_: Path, WriteAs(Set(id))) }
-            } getOrElse {
-              pathV map { WritePermission(_: Path, WriteAsAny) }
-            }
+            } getOrElse { pathV map { WritePermission(_: Path, WriteAsAny) } }
           }
 
         case "read" =>

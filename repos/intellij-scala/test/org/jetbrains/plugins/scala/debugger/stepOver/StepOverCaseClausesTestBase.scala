@@ -29,9 +29,7 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
       |}
     """.stripMargin.trim
   )
-  def testSimple(): Unit = {
-    testStepThrough(Seq(2, 3, 4, 5, 6, 8, 1))
-  }
+  def testSimple(): Unit = { testStepThrough(Seq(2, 3, 4, 5, 6, 8, 1)) }
 
   addFileWithBreakpoints(
     "MultilineExpr.scala",
@@ -52,9 +50,7 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
        |}
     """.stripMargin.trim
   )
-  def testMultilineExpr(): Unit = {
-    testStepThrough(Seq(2, 3, 4, 6, 8, 9, 1))
-  }
+  def testMultilineExpr(): Unit = { testStepThrough(Seq(2, 3, 4, 6, 8, 9, 1)) }
 
   addFileWithBreakpoints(
     "SkipStoreResult.scala",
@@ -78,9 +74,7 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
        |}
     """.stripMargin.trim
   )
-  def testSkipStoreResult(): Unit = {
-    testStepThrough(Seq(2, 3, 4, 5, 6, 11))
-  }
+  def testSkipStoreResult(): Unit = { testStepThrough(Seq(2, 3, 4, 5, 6, 11)) }
 
   addFileWithBreakpoints(
     "PartialFun.scala",

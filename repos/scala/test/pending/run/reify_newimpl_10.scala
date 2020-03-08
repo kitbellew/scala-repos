@@ -8,9 +8,7 @@ object Test extends App {
     implicit val tt =
       implicitly[TypeTag[String]]
         .asInstanceOf[TypeTag[T]] // this "mistake" is made for a reason!
-    val code = reify {
-      List[T](2)
-    }
+    val code = reify { List[T](2) }
     println(code.eval)
   }
 }

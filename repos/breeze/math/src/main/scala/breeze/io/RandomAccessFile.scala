@@ -86,17 +86,13 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   /** Tries to write an Int8 (Byte) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeInt8(v: Byte): Unit = {
-    rafObj.write(v)
-  }
+  final def writeInt8(v: Byte): Unit = { rafObj.write(v) }
 
   /** Tries to write n Int8s (Bytes) to the current getFilePointer().
     * Will throw an exception if it encounters an end of file.
     */
   @throws(classOf[IOException])
-  final def writeInt8(v: Array[Byte]): Unit = {
-    rafObj.write(v)
-  }
+  final def writeInt8(v: Array[Byte]): Unit = { rafObj.write(v) }
   //</editor-fold>
 
   //<editor-fold desc="Aliases">
@@ -997,9 +993,7 @@ abstract class ByteConverter {
       b4: Byte,
       b5: Byte,
       b6: Byte,
-      b7: Byte): ULong = {
-    ULong(bytesToInt64(b0, b1, b2, b3, b4, b5, b6, b7))
-  }
+      b7: Byte): ULong = { ULong(bytesToInt64(b0, b1, b2, b3, b4, b5, b6, b7)) }
 
   /**Takes 8 Bytes and returns a Int64 (Long)*/
   def bytesToInt64(

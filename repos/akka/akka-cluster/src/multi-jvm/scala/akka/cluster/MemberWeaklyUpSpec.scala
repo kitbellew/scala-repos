@@ -83,12 +83,8 @@ abstract class MemberWeaklyUpSpec
 
     "accept joining on each side and set status to WeaklyUp" taggedAs LongRunningTest in within(
       20 seconds) {
-      runOn(second) {
-        Cluster(system).join(first)
-      }
-      runOn(fifth) {
-        Cluster(system).join(fourth)
-      }
+      runOn(second) { Cluster(system).join(first) }
+      runOn(fifth) { Cluster(system).join(fourth) }
       enterBarrier("joined")
 
       runOn(side1: _*) {

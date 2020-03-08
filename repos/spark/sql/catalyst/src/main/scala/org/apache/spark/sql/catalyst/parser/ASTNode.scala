@@ -40,9 +40,7 @@ case class ASTNode(
     if (line == 0) {
       if (children.nonEmpty) children.head.line
       else 0
-    } else {
-      line
-    }
+    } else { line }
   }
 
   /** Position of the Character at which ASTNode starts. */
@@ -51,9 +49,7 @@ case class ASTNode(
     if (line == -1) {
       if (children.nonEmpty) children.head.positionInLine
       else 0
-    } else {
-      line
-    }
+    } else { line }
   }
 
   /** Origin of the ASTNode. */
@@ -84,16 +80,12 @@ case class ASTNode(
       val r = f(other)
       (l == null && r == null) || l.equals(r)
     }
-    if (other == null) {
-      false
-    } else if (!check(_.token.getType)
-               || !check(_.token.getText)
-               || !check(_.numChildren)) {
-      false
-    } else {
-      children.zip(other.children).forall {
-        case (l, r) => l treeEquals r
-      }
+    if (other == null) { false }
+    else if (!check(_.token.getType)
+             || !check(_.token.getText)
+             || !check(_.numChildren)) { false }
+    else {
+      children.zip(other.children).forall { case (l, r) => l treeEquals r }
     }
   }
 

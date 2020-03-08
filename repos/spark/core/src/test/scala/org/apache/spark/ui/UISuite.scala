@@ -165,9 +165,7 @@ class UISuite extends SparkFunSuite {
       val boundPort = serverInfo.boundPort
       assert(server.getState === "STARTED")
       assert(boundPort != 0)
-      intercept[BindException] {
-        socket = new ServerSocket(boundPort)
-      }
+      intercept[BindException] { socket = new ServerSocket(boundPort) }
     } finally {
       stopServer(serverInfo)
       closeSocket(socket)
@@ -189,9 +187,7 @@ class UISuite extends SparkFunSuite {
       val boundPort = serverInfo.boundPort
       assert(server.getState === "STARTED")
       assert(boundPort != 0)
-      intercept[BindException] {
-        socket = new ServerSocket(boundPort)
-      }
+      intercept[BindException] { socket = new ServerSocket(boundPort) }
     } finally {
       stopServer(serverInfo)
       closeSocket(socket)

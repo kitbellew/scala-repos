@@ -116,9 +116,7 @@ object RelativeActorPath extends PathUtils {
       val uri = new URI(addr)
       if (uri.isAbsolute) None
       else Some(split(uri.getRawPath, uri.getRawFragment))
-    } catch {
-      case _: URISyntaxException ⇒ None
-    }
+    } catch { case _: URISyntaxException ⇒ None }
   }
 }
 
@@ -174,7 +172,5 @@ object ActorPathExtractor extends PathUtils {
             .unapply(uri)
             .map((_, split(path, uri.getRawFragment).drop(1)))
       }
-    } catch {
-      case _: URISyntaxException ⇒ None
-    }
+    } catch { case _: URISyntaxException ⇒ None }
 }

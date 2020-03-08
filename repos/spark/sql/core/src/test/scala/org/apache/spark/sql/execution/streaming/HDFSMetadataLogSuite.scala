@@ -91,9 +91,7 @@ class HDFSMetadataLogSuite extends SparkFunSuite with SharedSQLContext {
             } catch {
               case e: ConcurrentModificationException =>
               // This is expected since there are multiple writers
-            } finally {
-              waiter.dismiss()
-            }
+            } finally { waiter.dismiss() }
           }
         }.start()
       }

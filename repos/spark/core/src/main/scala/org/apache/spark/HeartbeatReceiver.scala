@@ -62,9 +62,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
     with SparkListener
     with Logging {
 
-  def this(sc: SparkContext) {
-    this(sc, new SystemClock)
-  }
+  def this(sc: SparkContext) { this(sc, new SystemClock) }
 
   sc.addSparkListener(this)
 
@@ -238,9 +236,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
   }
 
   override def onStop(): Unit = {
-    if (timeoutCheckingTask != null) {
-      timeoutCheckingTask.cancel(true)
-    }
+    if (timeoutCheckingTask != null) { timeoutCheckingTask.cancel(true) }
     eventLoopThread.shutdownNow()
     killExecutorThread.shutdownNow()
   }

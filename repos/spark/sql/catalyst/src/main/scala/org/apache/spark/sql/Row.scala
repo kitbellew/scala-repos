@@ -308,11 +308,8 @@ trait Row extends Serializable {
   def getStruct(i: Int): Row = {
     // Product and Row both are recognized as StructType in a Row
     val t = get(i)
-    if (t.isInstanceOf[Product]) {
-      Row.fromTuple(t.asInstanceOf[Product])
-    } else {
-      t.asInstanceOf[Row]
-    }
+    if (t.isInstanceOf[Product]) { Row.fromTuple(t.asInstanceOf[Product]) }
+    else { t.asInstanceOf[Row] }
   }
 
   /**
@@ -383,15 +380,11 @@ trait Row extends Serializable {
 
     if (other eq null) return false
 
-    if (length != other.length) {
-      return false
-    }
+    if (length != other.length) { return false }
 
     var i = 0
     while (i < length) {
-      if (isNullAt(i) != other.isNullAt(i)) {
-        return false
-      }
+      if (isNullAt(i) != other.isNullAt(i)) { return false }
       if (!isNullAt(i)) {
         val o1 = get(i)
         val o2 = other.get(i)
@@ -403,23 +396,16 @@ trait Row extends Serializable {
             }
           case f1: Float if java.lang.Float.isNaN(f1) =>
             if (!o2.isInstanceOf[Float] || !java.lang.Float.isNaN(
-                  o2.asInstanceOf[Float])) {
-              return false
-            }
+                  o2.asInstanceOf[Float])) { return false }
           case d1: Double if java.lang.Double.isNaN(d1) =>
             if (!o2.isInstanceOf[Double] || !java.lang.Double.isNaN(
-                  o2.asInstanceOf[Double])) {
-              return false
-            }
+                  o2.asInstanceOf[Double])) { return false }
           case d1: java.math.BigDecimal
               if o2.isInstanceOf[java.math.BigDecimal] =>
             if (d1.compareTo(o2.asInstanceOf[java.math.BigDecimal]) != 0) {
               return false
             }
-          case _ =>
-            if (o1 != o2) {
-              return false
-            }
+          case _ => if (o1 != o2) { return false }
         }
       }
       i += 1

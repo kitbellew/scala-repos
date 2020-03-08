@@ -120,9 +120,7 @@ object CanFilterMedian {
               arr(count) = toValue
               count = Int.MinValue
               found = true
-            } else {
-              count -= 1
-            }
+            } else { count -= 1 }
           }
         } else { //if( fromValue > pivotValue ){
           var count = pivotPoint + 1
@@ -131,9 +129,7 @@ object CanFilterMedian {
               arr(count) = toValue
               count = Int.MaxValue
               found = true
-            } else {
-              count += 1
-            }
+            } else { count += 1 }
           }
         }
 

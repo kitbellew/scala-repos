@@ -63,11 +63,8 @@ trait NIHDBIngestSupport
   private val sid = new java.util.concurrent.atomic.AtomicInteger(0)
 
   private def openZipFile(f: File): Option[ZipFile] =
-    try {
-      Some(new ZipFile(f))
-    } catch {
-      case _: ZipException => None
-    }
+    try { Some(new ZipFile(f)) }
+    catch { case _: ZipException => None }
 
   /**
     * Reads a JArray from a JSON file or a set of JSON files zipped up together.
@@ -97,9 +94,7 @@ trait NIHDBIngestSupport
           rows
         }
         .toList
-    } getOrElse {
-      JParser.parseManyFromFile(data).valueOr(throw _)
-    }
+    } getOrElse { JParser.parseManyFromFile(data).valueOr(throw _) }
   }
 
   /**
@@ -151,9 +146,7 @@ trait NIHDBIngestSupport
       }
     }.copoint
 
-    while (projection.db.status.copoint.pending > 0) {
-      Thread.sleep(100)
-    }
+    while (projection.db.status.copoint.pending > 0) { Thread.sleep(100) }
 
     projection.db.close(actorSystem).copoint
 

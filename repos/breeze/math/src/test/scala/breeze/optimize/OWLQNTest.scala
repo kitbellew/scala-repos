@@ -55,9 +55,8 @@ class OWLQNTest extends OptimizeTestBase {
 
       val result = lbfgs.minimize(f, init)
       val closeish = norm(result - 2.5, 2) < 1e-4
-      if (closeish) {
-        true
-      } else {
+      if (closeish) { true }
+      else {
         throw new Exception(result.toString + " is not close enough to 2.5")
       }
     }
@@ -78,9 +77,8 @@ class OWLQNTest extends OptimizeTestBase {
 
       val result = lbfgs.minimize(f, init)
       val closeish = norm(result - 2.5, 2) < 1e-4
-      if (closeish) {
-        true
-      } else {
+      if (closeish) { true }
+      else {
         throw new Exception(result.toString + " is not close enough to 2.5")
       }
     }

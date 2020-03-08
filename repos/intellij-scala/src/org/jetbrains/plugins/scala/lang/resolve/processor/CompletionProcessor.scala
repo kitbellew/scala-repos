@@ -131,9 +131,7 @@ class CompletionProcessor(
                         result) && next.element != result.element &&
                       signature == getSignature(
                         next.element,
-                        next.substitutor)) {
-                    iterator.remove()
-                  }
+                        next.substitutor)) { iterator.remove() }
                 }
               case Some(false) => //do nothing
               case None =>

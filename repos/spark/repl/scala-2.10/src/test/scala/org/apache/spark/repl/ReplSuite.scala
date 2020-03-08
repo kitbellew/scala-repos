@@ -38,9 +38,7 @@ class ReplSuite extends SparkFunSuite {
     if (cl.isInstanceOf[URLClassLoader]) {
       val urlLoader = cl.asInstanceOf[URLClassLoader]
       for (url <- urlLoader.getURLs) {
-        if (url.getProtocol == "file") {
-          paths += url.getFile
-        }
+        if (url.getProtocol == "file") { paths += url.getFile }
       }
     }
     val classpath = paths.mkString(File.pathSeparator)
@@ -52,14 +50,10 @@ class ReplSuite extends SparkFunSuite {
     org.apache.spark.repl.Main.interp = interp
     interp.process(Array("-classpath", classpath))
     org.apache.spark.repl.Main.interp = null
-    if (interp.sparkContext != null) {
-      interp.sparkContext.stop()
-    }
+    if (interp.sparkContext != null) { interp.sparkContext.stop() }
     if (oldExecutorClasspath != null) {
       System.setProperty(CONF_EXECUTOR_CLASSPATH, oldExecutorClasspath)
-    } else {
-      System.clearProperty(CONF_EXECUTOR_CLASSPATH)
-    }
+    } else { System.clearProperty(CONF_EXECUTOR_CLASSPATH) }
     return out.toString
   }
 

@@ -22,24 +22,15 @@ class ParamsTestServlet extends ScalatraServlet {
   }
 
   get("/params/:key") {
-    try {
-      params(params("key"))
-    } catch {
-      case _: NoSuchElementException => NoSuchElement
-    }
+    try { params(params("key")) }
+    catch { case _: NoSuchElementException => NoSuchElement }
   }
 
-  get("/symbol/:sym") {
-    params('sym)
-  }
+  get("/symbol/:sym") { params('sym) }
 
-  get("/twoSymbols/:sym1/:sym2") {
-    params('sym1) + " and " + params('sym2)
-  }
+  get("/twoSymbols/:sym1/:sym2") { params('sym1) + " and " + params('sym2) }
 
-  post("/read-body") {
-    "body: " + request.body
-  }
+  post("/read-body") { "body: " + request.body }
 }
 
 class ParamsTest extends ScalatraFunSuite {
@@ -50,9 +41,7 @@ class ParamsTest extends ScalatraFunSuite {
       "/multiParams/numbers",
       "numbers" -> "one",
       "numbers" -> "two",
-      "numbers" -> "three") {
-      body should equal("[one,two,three]")
-    }
+      "numbers" -> "three") { body should equal("[one,two,three]") }
   }
 
   test("supports multiple parameters with ruby like syntax") {
@@ -60,9 +49,7 @@ class ParamsTest extends ScalatraFunSuite {
       "/multiParams/numbers_ruby",
       "numbers_ruby[]" -> "one",
       "numbers_ruby[]" -> "two",
-      "numbers_ruby[]" -> "three") {
-      body should equal("[one,two,three]")
-    }
+      "numbers_ruby[]" -> "three") { body should equal("[one,two,three]") }
   }
 
   test("unknown multiParam returns an empty seq") {
@@ -77,27 +64,19 @@ class ParamsTest extends ScalatraFunSuite {
       "/params/numbers",
       "numbers" -> "one",
       "numbers" -> "two",
-      "numbers" -> "three") {
-      body should equal("one")
-    }
+      "numbers" -> "three") { body should equal("one") }
   }
 
   test("params on unknown key throws NoSuchElementException") {
-    get("/params/oops") {
-      body should equal(ParamsTestServlet.NoSuchElement)
-    }
+    get("/params/oops") { body should equal(ParamsTestServlet.NoSuchElement) }
   }
 
   test("can use symbols as keys for retrieval") {
-    get("/symbol/hello") {
-      body should equal("hello")
-    }
+    get("/symbol/hello") { body should equal("hello") }
   }
 
   test("can use symbols multiple times ") {
-    get("/twoSymbols/hello/world") {
-      body should equal("hello and world")
-    }
+    get("/twoSymbols/hello/world") { body should equal("hello and world") }
   }
 
   test("can read the body of a post") {

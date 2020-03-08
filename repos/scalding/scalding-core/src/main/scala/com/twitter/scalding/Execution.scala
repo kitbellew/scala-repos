@@ -245,9 +245,7 @@ object Execution {
         if (availablePermits > 0) {
           availablePermits -= 1
           setAcquired()
-        } else {
-          waiters.enqueue(setAcquired)
-        }
+        } else { waiters.enqueue(setAcquired) }
       }
 
       promise.future
@@ -541,9 +539,8 @@ object Execution {
             */
           val finished = Promise[(T, ExecutionCounters)]()
           res.onComplete { tryT =>
-            try {
-              fn(tryT.map(_._1))
-            } finally {
+            try { fn(tryT.map(_._1)) }
+            finally {
               // Do our best to signal when we are done
               finished.complete(tryT)
             }

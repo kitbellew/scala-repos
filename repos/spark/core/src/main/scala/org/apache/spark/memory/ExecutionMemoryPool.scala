@@ -51,9 +51,7 @@ private[memory] class ExecutionMemoryPool(
   @GuardedBy("lock")
   private val memoryForTask = new mutable.HashMap[Long, Long]()
 
-  override def memoryUsed: Long = lock.synchronized {
-    memoryForTask.values.sum
-  }
+  override def memoryUsed: Long = lock.synchronized { memoryForTask.values.sum }
 
   /**
     * Returns the memory consumption, in bytes, for the given task.
@@ -156,9 +154,7 @@ private[memory] class ExecutionMemoryPool(
           s"Internal error: release called on $numBytes bytes but task only has $curMem bytes " +
             s"of memory from the $poolName pool")
         curMem
-      } else {
-        numBytes
-      }
+      } else { numBytes }
       if (memoryForTask.contains(taskAttemptId)) {
         memoryForTask(taskAttemptId) -= memoryToFree
         if (memoryForTask(taskAttemptId) <= 0) {

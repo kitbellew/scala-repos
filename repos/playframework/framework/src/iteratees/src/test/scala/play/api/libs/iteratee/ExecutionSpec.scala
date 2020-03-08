@@ -33,9 +33,7 @@ object ExecutionSpec extends Specification {
 
       // Work out how deep to go to cause an overflow
       val overflowingExecutionContext = new ExecutionContext {
-        def execute(runnable: Runnable): Unit = {
-          runnable.run()
-        }
+        def execute(runnable: Runnable): Unit = { runnable.run() }
         def reportFailure(t: Throwable): Unit = t.printStackTrace()
       }
 
@@ -46,9 +44,7 @@ object ExecutionSpec extends Specification {
           overflowTimes = overflowTimes << 1
         }
         sys.error("Can't get the stack to overflow")
-      } catch {
-        case _: StackOverflowError => ()
-      }
+      } catch { case _: StackOverflowError => () }
 
       // Now verify that we don't overflow
       Try(executeRecursively(trampoline, overflowTimes)) must beSuccessfulTry[

@@ -18,9 +18,8 @@ object TailrecAfterTryCatch {
   final def good2() {
     //1 match {
     //  case 2 => {
-    try {
-      return
-    } catch {
+    try { return }
+    catch {
       case e: ClassNotFoundException =>
     }
     good2()
@@ -31,9 +30,8 @@ object TailrecAfterTryCatch {
   @annotation.tailrec
   final def good3() {
     val 1 = 2
-    try {
-      return
-    } catch {
+    try { return }
+    catch {
       case e: ClassNotFoundException =>
     }
     good3()
@@ -43,9 +41,8 @@ object TailrecAfterTryCatch {
   final def bad() {
     1 match {
       case 2 => {
-        try {
-          return
-        } catch {
+        try { return }
+        catch {
           case e: ClassNotFoundException =>
         }
         bad()

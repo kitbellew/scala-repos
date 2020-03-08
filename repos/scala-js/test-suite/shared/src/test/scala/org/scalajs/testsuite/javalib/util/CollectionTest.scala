@@ -185,11 +185,8 @@ trait CollectionTest {
     coll.add("one")
     assertTrue(coll.contains("one"))
     assertFalse(coll.contains("two"))
-    if (factory.allowsNullElementQuery) {
-      assertFalse(coll.contains(null))
-    } else {
-      expectThrows(classOf[Exception], coll.contains(null))
-    }
+    if (factory.allowsNullElementQuery) { assertFalse(coll.contains(null)) }
+    else { expectThrows(classOf[Exception], coll.contains(null)) }
   }
 
   @Test def shouldCheckContainedPresenceForDoubleCornerCases(): Unit = {

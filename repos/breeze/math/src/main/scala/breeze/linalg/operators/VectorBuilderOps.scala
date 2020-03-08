@@ -171,9 +171,8 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
         require(
           a.length < 0 || b.length < 0 || a.length == b.length,
           "Dimension mismatch!")
-        if (a eq b) {
-          a :*= (1 + s)
-        } else {
+        if (a eq b) { a :*= (1 + s) }
+        else {
           val bActiveSize: Int = b.activeSize
           a.reserve(bActiveSize + a.activeSize)
           var i = 0
@@ -196,9 +195,8 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
           a.length < 0 || b.length < 0 || a.length == b.length,
           "Dimension mismatch!")
 
-        if (a eq b) {
-          a :*= sr.+(sr.one, s)
-        } else {
+        if (a eq b) { a :*= sr.+(sr.one, s) }
+        else {
           val bActiveSize: Int = b.activeSize
           a.reserve(bActiveSize + a.activeSize)
           var i = 0
@@ -278,9 +276,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
           case _ =>
             a.reserve(a.activeSize + b.activeSize)
             require(a.length == b.length, "Dimension mismatch!")
-            for ((i, v) <- b.activeIterator) {
-              a.add(i, v)
-            }
+            for ((i, v) <- b.activeIterator) { a.add(i, v) }
         }
 
       }
@@ -307,9 +303,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
           case _ =>
             a.reserve(a.activeSize + b.activeSize)
             require(a.length == b.length, "Dimension mismatch!")
-            for ((i, v) <- b.activeIterator) {
-              a.add(i, ring.negate(v))
-            }
+            for ((i, v) <- b.activeIterator) { a.add(i, ring.negate(v)) }
         }
 
       }

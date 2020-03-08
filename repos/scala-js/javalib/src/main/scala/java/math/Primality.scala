@@ -111,9 +111,7 @@ private[math] object Primality {
       val last = count - 1
       do {
         // To fill the array with random integers
-        for (i <- 0 until n.numberLength) {
-          n.digits(i) = rnd.nextInt()
-        }
+        for (i <- 0 until n.numberLength) { n.digits(i) = rnd.nextInt() }
         // To fix to the correct bitLength
         n.digits(last) = (n.digits(last) | 0x80000000) >>> shiftCount
         // To create an odd number
@@ -133,9 +131,8 @@ private[math] object Primality {
   def isProbablePrime(n: BigInteger, certainty: Int): Boolean = {
     // scalastyle:off return
     // PRE: n >= 0
-    if (certainty <= 0 || (n.numberLength == 1 && n.digits(0) == 2)) {
-      true
-    } else if (!n.testBit(0)) {
+    if (certainty <= 0 || (n.numberLength == 1 && n.digits(0) == 2)) { true }
+    else if (!n.testBit(0)) {
       // To discard all even numbers
       false
     } else if (n.numberLength == 1 && (n.digits(0) & 0XFFFFFC00) == 0) {
@@ -155,9 +152,7 @@ private[math] object Primality {
       var i: Int = 0
       val bitLength = n.bitLength()
       i = 2
-      while (bitLength < Bits(i)) {
-        i += 1
-      }
+      while (bitLength < Bits(i)) { i += 1 }
       val newCertainty = Math.min(i, 1 + ((certainty - 1) >> 1))
       millerRabin(n, newCertainty)
     }
@@ -185,9 +180,7 @@ private[math] object Primality {
     val digitsLessPrime = (n.digits(0) < Primes(Primes.length - 1))
     if ((n.numberLength == 1) && (n.digits(0) >= 0) && digitsLessPrime) {
       var i = 0
-      while (n.digits(0) >= Primes(i)) {
-        i += 1
-      }
+      while (n.digits(0) >= Primes(i)) { i += 1 }
       return BiPrimes(i)
     }
 
@@ -205,9 +198,7 @@ private[math] object Primality {
 
     // To set the improved certainty of Miller-Rabin
     var certainty = 2
-    for (j <- startPoint.bitLength() until Bits(certainty)) {
-      certainty += 1
-    }
+    for (j <- startPoint.bitLength() until Bits(certainty)) { certainty += 1 }
 
     // To calculate modules: N mod p1, N mod p2, ... for first primes.
     for (i <- 0 until Primes.length) {
@@ -233,9 +224,7 @@ private[math] object Primality {
       for (j <- 0 until gapSize) {
         if (!isDivisible(j)) {
           Elementary.inplaceAdd(probPrime, j)
-          if (millerRabin(probPrime, certainty)) {
-            return probPrime
-          }
+          if (millerRabin(probPrime, certainty)) { return probPrime }
         }
       }
       Elementary.inplaceAdd(startPoint, gapSize)
@@ -265,17 +254,14 @@ private[math] object Primality {
     val rnd = new Random()
     for (i <- 0 until t) {
       // To generate a witness 'x', first it use the primes of table
-      if (i < Primes.length) {
-        x = BiPrimes(i)
-      } else {
+      if (i < Primes.length) { x = BiPrimes(i) }
+      else {
         /*
          * It generates random witness only if it's necesssary. Note that all
          * methods would call Miller-Rabin with t <= 50 so this part is only to
          * do more robust the algorithm
          */
-        do {
-          x = new BigInteger(bitLength, rnd)
-        } while ((x.compareTo(
+        do { x = new BigInteger(bitLength, rnd) } while ((x.compareTo(
           n) >= BigInteger.EQUALS) || x.sign == 0 || x.isOne)
       }
 

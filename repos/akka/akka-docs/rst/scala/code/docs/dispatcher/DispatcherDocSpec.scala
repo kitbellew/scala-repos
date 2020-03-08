@@ -348,9 +348,7 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
         self ! 'highpriority
         self ! PoisonPill
 
-        def receive = {
-          case x => log.info(x.toString)
-        }
+        def receive = { case x => log.info(x.toString) }
       }
       val a = system.actorOf(
         Props(classOf[Logger], this).withDispatcher("prio-dispatcher"))
@@ -385,9 +383,7 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
         self ! MyControlMessage
         self ! PoisonPill
 
-        def receive = {
-          case x => log.info(x.toString)
-        }
+        def receive = { case x => log.info(x.toString) }
       }
       val a = system.actorOf(
         Props(classOf[Logger], this).withDispatcher("control-aware-dispatcher"))

@@ -54,15 +54,9 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(bkm.getSeed !== seed)
     assert(bkm.setSeed(seed).getSeed === seed)
 
-    intercept[IllegalArgumentException] {
-      bkm.setK(0)
-    }
-    intercept[IllegalArgumentException] {
-      bkm.setMaxIterations(0)
-    }
-    intercept[IllegalArgumentException] {
-      bkm.setMinDivisibleClusterSize(0.0)
-    }
+    intercept[IllegalArgumentException] { bkm.setK(0) }
+    intercept[IllegalArgumentException] { bkm.setMaxIterations(0) }
+    intercept[IllegalArgumentException] { bkm.setMinDivisibleClusterSize(0.0) }
   }
 
   test("1D data") {
@@ -170,11 +164,8 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
       (0, -1)
     ).map {
       case (x, y) =>
-        if (x == 0) {
-          Vectors.sparse(2, Array(1), Array(y))
-        } else {
-          Vectors.dense(x, y)
-        }
+        if (x == 0) { Vectors.sparse(2, Array(1), Array(y)) }
+        else { Vectors.dense(x, y) }
     }
     val data = sc.parallelize(points, 2)
     val bkm = new BisectingKMeans()

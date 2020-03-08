@@ -192,9 +192,7 @@ abstract class Request extends Message with HttpRequestProxy {
   def getResponse(): Response = response
 
   /** Encode an HTTP message to String */
-  def encodeString(): String = {
-    new String(encodeBytes(), "UTF-8")
-  }
+  def encodeString(): String = { new String(encodeBytes(), "UTF-8") }
 
   /** Encode an HTTP message to Array[Byte] */
   def encodeBytes(): Array[Byte] = {

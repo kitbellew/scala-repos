@@ -38,15 +38,12 @@ class CombinedBatcher(
   def batchOf(d: Timestamp): BatchID =
     if (!beforeBound.contains(d)) {
       (after.batchOf(d) - afterBatchDelta.id) + batchAtBound.id
-    } else {
-      before.batchOf(d)
-    }
+    } else { before.batchOf(d) }
 
   def earliestTimeOf(b: BatchID): Timestamp =
     if (b > batchAtBound) {
       after.earliestTimeOf((b - batchAtBound.id) + afterBatchDelta.id)
-    } else if (b == batchAtBound) {
-      beforeBound.upper
-    } else
+    } else if (b == batchAtBound) { beforeBound.upper }
+    else
       before.earliestTimeOf(b)
 }

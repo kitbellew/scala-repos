@@ -135,15 +135,13 @@ object ProductLike {
         q"$prev + $t"
     }
 
-    if (noLength > 0) {
-      NoLengthCalculationAvailable(c)
-    } else {
+    if (noLength > 0) { NoLengthCalculationAvailable(c) }
+    else {
       if (maybeLength.isEmpty && dynamicFunctions.isEmpty) {
         ConstantLengthCalculation(c)(constSize)
       } else {
-        if (maybeLength.isEmpty) {
-          FastLengthCalculation(c)(combinedDynamic)
-        } else {
+        if (maybeLength.isEmpty) { FastLengthCalculation(c)(combinedDynamic) }
+        else {
 
           val const =
             q"_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.ConstLen"
@@ -163,9 +161,7 @@ object ProductLike {
               case $noLen => $noLen
             }
           """)
-          } else {
-            MaybeLengthCalculation(c)(combinedMaybe)
-          }
+          } else { MaybeLengthCalculation(c)(combinedMaybe) }
         }
       }
     }

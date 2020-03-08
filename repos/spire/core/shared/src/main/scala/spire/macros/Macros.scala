@@ -31,9 +31,7 @@ object Macros {
       val n = BigInt(s)
       if (n < lower || n > upper) Left("illegal constant: %s" format s)
       else Right(n)
-    } catch {
-      case _: Exception => Left("illegal constant: %s" format s)
-    }
+    } catch { case _: Exception => Left("illegal constant: %s" format s) }
 
   def byte(c: Context)(): c.Expr[Byte] = {
     import c.universe._
@@ -119,9 +117,8 @@ object Macros {
 
   def handleInt(c: Context, name: String, sep: String): c.Expr[Int] = {
     import c.universe._
-    try {
-      c.Expr[Int](Literal(Constant(formatWhole(c, sep).toInt)))
-    } catch {
+    try { c.Expr[Int](Literal(Constant(formatWhole(c, sep).toInt))) }
+    catch {
       case e: Exception =>
         throw new NumberFormatException("illegal %s Int constant" format name)
     }
@@ -129,9 +126,8 @@ object Macros {
 
   def handleLong(c: Context, name: String, sep: String): c.Expr[Long] = {
     import c.universe._
-    try {
-      c.Expr[Long](Literal(Constant(formatWhole(c, sep).toLong)))
-    } catch {
+    try { c.Expr[Long](Literal(Constant(formatWhole(c, sep).toLong))) }
+    catch {
       case e: Exception =>
         throw new NumberFormatException("illegal %s Long constant" format name)
     }

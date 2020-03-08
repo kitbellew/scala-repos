@@ -284,9 +284,7 @@ object Dispatchers {
               "Unknown MessageDispatcherConfigurator type [%s]" format fqn,
               l.a)
         }
-    } map {
-      _ configure cfg
-    }
+    } map { _ configure cfg }
   }
 }
 

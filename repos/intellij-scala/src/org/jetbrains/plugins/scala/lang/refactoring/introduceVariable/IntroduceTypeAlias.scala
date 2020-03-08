@@ -127,15 +127,11 @@ trait IntroduceTypeAlias {
                   PsiTreeUtil.getParentOfType(
                     simpleType,
                     classOf[ScParameterizedTypeElement])
-                } else {
-                  simpleType
-                }
+                } else { simpleType }
               case typeElement: ScTypeElement =>
                 typeElement
             }
-          } else {
-            typeElement
-          }
+          } else { typeElement }
 
         val updatedMainScope = mainScope match {
           case simpleScope: SimpleScopeItem if fromInplace =>
@@ -271,9 +267,7 @@ trait IntroduceTypeAlias {
             TemplateManagerImpl.getTemplateState(
               InjectedLanguageUtil.getTopLevelEditor(editor))
 
-          if (templateState != null) {
-            templateState.cancelTemplate()
-          }
+          if (templateState != null) { templateState.cancelTemplate() }
 
           val enteredName = currentDataObject.getNamedElement.getName
           ScalaInplaceTypeAliasIntroducer.revertState(
@@ -401,9 +395,7 @@ trait IntroduceTypeAlias {
 
     val resultTypeElement = if (typeElementIdx == -1) {
       replaceTypeElements(Array(typeElement), typeName, typeAlias).apply(0)
-    } else {
-      usualOccurrences.apply(typeElementIdx)
-    }
+    } else { usualOccurrences.apply(typeElementIdx) }
 
     (
       SmartPointerManager
@@ -472,9 +464,7 @@ trait IntroduceTypeAlias {
       scopes: Array[ScopeItem],
       refactoringName: String)(invokesNext: (ScopeItem) => Unit) {
 
-    def chooseScopeItem(item: ScopeItem): Unit = {
-      invokesNext(item)
-    }
+    def chooseScopeItem(item: ScopeItem): Unit = { invokesNext(item) }
     showTypeAliasChooser(
       editor,
       scopes,
@@ -501,11 +491,8 @@ trait IntroduceTypeAlias {
       }
 
       //avoid replacing typeelement that was replaced
-      if (typeElement.calcType.presentableText == inName) {
-        typeElement
-      } else {
-        typeElement.replace(replacement).asInstanceOf[ScTypeElement]
-      }
+      if (typeElement.calcType.presentableText == inName) { typeElement }
+      else { typeElement.replace(replacement).asInstanceOf[ScTypeElement] }
     }
 
     def bindHelper(typeElement: ScTypeElement) = {
@@ -556,9 +543,7 @@ trait IntroduceTypeAlias {
     val selection = new Selection
     val highlighter: ScopeHighlighter = new ScopeHighlighter(editor)
     val model = JListCompatibility.createDefaultListModel()
-    for (element <- elements) {
-      JListCompatibility.addElement(model, element)
-    }
+    for (element <- elements) { JListCompatibility.addElement(model, element) }
     val list = JListCompatibility.createJListFromModel(model)
     JListCompatibility.setCellRenderer(
       list,
@@ -598,9 +583,7 @@ trait IntroduceTypeAlias {
       .setResizable(false)
       .setRequestFocus(true)
       .setItemChoosenCallback(new Runnable {
-        def run() {
-          pass(list.getSelectedValue.asInstanceOf[T])
-        }
+        def run() { pass(list.getSelectedValue.asInstanceOf[T]) }
       })
       .addListener(new JBPopupAdapter {
         override def beforeShown(event: LightweightWindowEvent): Unit = {
@@ -621,18 +604,13 @@ trait IntroduceTypeAlias {
       suggestedDirectory: PsiDirectory,
       needCreateDirectory: Boolean,
       inNewDirectoryName: String): ScTemplateBody = {
-    val newDirectoryName = if (needCreateDirectory) {
-      inNewDirectoryName
-    } else {
-      "package"
-    }
+    val newDirectoryName = if (needCreateDirectory) { inNewDirectoryName }
+    else { "package" }
 
     val currentDirectory = suggestedDirectory
     val newDir = if (needCreateDirectory) {
       currentDirectory.createSubdirectory(newDirectoryName)
-    } else {
-      currentDirectory
-    }
+    } else { currentDirectory }
 
     val packageObject: ScTypeDefinition =
       ScalaDirectoryService

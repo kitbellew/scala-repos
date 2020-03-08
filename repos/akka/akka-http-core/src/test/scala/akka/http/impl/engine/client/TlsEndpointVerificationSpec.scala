@@ -77,9 +77,7 @@ class TlsEndpointVerificationSpec
        */
       "fail hostname verification on spoofed https://www.howsmyssl.com/" in {
         val req = HttpRequest(uri = "https://www.howsmyssl.com/")
-        val ex = intercept[Exception] {
-          Http().singleRequest(req).futureValue
-        }
+        val ex = intercept[Exception] { Http().singleRequest(req).futureValue }
         // JDK built-in verification
         val expectedMsg =
           "No subject alternative DNS name matching www.howsmyssl.com found"

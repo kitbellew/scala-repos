@@ -201,9 +201,8 @@ class TcpIntegrationSpec extends AkkaSpec("""
       val connectionActor = connectCommander.lastSender
       connectCommander.send(connectionActor, PoisonPill)
       failAfter(3 seconds) {
-        try {
-          accept.getInputStream.read() should ===(-1)
-        } catch {
+        try { accept.getInputStream.read() should ===(-1) }
+        catch {
           case e: IOException ⇒ // this is also fine
         }
       }

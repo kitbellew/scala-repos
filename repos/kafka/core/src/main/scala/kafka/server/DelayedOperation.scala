@@ -69,9 +69,7 @@ abstract class DelayedOperation(delayMs: Long) extends TimerTask with Logging {
       cancel()
       onComplete()
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   /**
@@ -296,9 +294,7 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
     def watched: Int = operations synchronized operations.size
 
     // add the element to watch
-    def watch(t: T) {
-      operations synchronized operations.add(t)
-    }
+    def watch(t: T) { operations synchronized operations.add(t) }
 
     // traverse the list and try to complete some watched elements
     def tryCompleteWatched(): Int = {

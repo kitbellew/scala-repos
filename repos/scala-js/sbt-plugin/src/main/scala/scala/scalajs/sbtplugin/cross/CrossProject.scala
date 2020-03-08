@@ -323,9 +323,7 @@ object CrossProject extends CrossProjectExtra {
       sharedSrcDir: Option[File],
       scalaBinaryVersion: String,
       cross: Boolean): Seq[File] = {
-    sharedSrcDir.fold[Seq[File]] {
-      Seq.empty
-    } { srcDir =>
+    sharedSrcDir.fold[Seq[File]] { Seq.empty } { srcDir =>
       if (cross)
         Seq(
           srcDir.getParentFile / s"${srcDir.name}-$scalaBinaryVersion",

@@ -118,9 +118,7 @@ class MouseEvent(override val delegate: jfxsi.MouseEvent)
   /**
     * Augments drag detection behavior.
     */
-  def dragDetect_=(detected: Boolean) {
-    delegate.setDragDetect(detected)
-  }
+  def dragDetect_=(detected: Boolean) { delegate.setDragDetect(detected) }
 
   /**
     * Whether or not the Meta modifier is down on this event.

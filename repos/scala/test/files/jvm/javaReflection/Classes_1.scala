@@ -1,6 +1,8 @@
 // See Test.scala for comments
 
-trait T { def f = 1 }
+trait T {
+  def f = 1
+}
 
 class A {
   // member class
@@ -36,9 +38,7 @@ class A {
       object J
       new T {}
       (() => "3")
-    } else {
-      ()
-    }
+    } else { () }
   }
 
   {

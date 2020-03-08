@@ -20,9 +20,7 @@ class WindowedMaxBenchmark extends StdBenchAnnotations {
   var windowedMax: WindowedMax = _
 
   @Setup
-  def setup(): Unit = {
-    windowedMax = new WindowedMax(windowSize)
-  }
+  def setup(): Unit = { windowedMax = new WindowedMax(windowSize) }
 
   @Benchmark
   def addAndGet(s: Stream): Long = {

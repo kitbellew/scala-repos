@@ -37,11 +37,8 @@ private[v1] class ApplicationListResource(uiRoot: UIRoot) {
         "maxDate") maxDate: SimpleDateParam): Iterator[ApplicationInfo] = {
     val allApps = uiRoot.getApplicationInfoList
     val adjStatus = {
-      if (status.isEmpty) {
-        Arrays.asList(ApplicationStatus.values(): _*)
-      } else {
-        status
-      }
+      if (status.isEmpty) { Arrays.asList(ApplicationStatus.values(): _*) }
+      else { status }
     }
     val includeCompleted = adjStatus.contains(ApplicationStatus.COMPLETED)
     val includeRunning = adjStatus.contains(ApplicationStatus.RUNNING)
@@ -77,9 +74,7 @@ private[spark] object ApplicationsListResource {
           endTime = new Date(internalAttemptInfo.endTime),
           duration = if (internalAttemptInfo.endTime > 0) {
             internalAttemptInfo.endTime - internalAttemptInfo.startTime
-          } else {
-            0
-          },
+          } else { 0 },
           lastUpdated = new Date(internalAttemptInfo.lastUpdated),
           sparkUser = internalAttemptInfo.sparkUser,
           completed = internalAttemptInfo.completed
@@ -106,9 +101,7 @@ private[spark] object ApplicationsListResource {
           endTime = new Date(internal.endTime),
           duration = if (internal.endTime > 0) {
             internal.endTime - internal.startTime
-          } else {
-            0
-          },
+          } else { 0 },
           lastUpdated = new Date(internal.endTime),
           sparkUser = internal.desc.user,
           completed = completed

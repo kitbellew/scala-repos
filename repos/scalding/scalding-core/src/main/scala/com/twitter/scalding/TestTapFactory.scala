@@ -57,7 +57,9 @@ object TestTapFactory extends Serializable {
       src: Source,
       scheme: Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], A, B],
       sinkMode: SinkMode): TestTapFactory =
-    new TestTapFactory(src, sinkMode) { override def hdfsScheme = Some(scheme) }
+    new TestTapFactory(src, sinkMode) {
+      override def hdfsScheme = Some(scheme)
+    }
 }
 
 class TestTapFactory(src: Source, sinkMode: SinkMode) extends Serializable {

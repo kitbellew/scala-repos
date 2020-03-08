@@ -143,12 +143,8 @@ abstract class ScalaStubBasedElementImpl[T <: PsiElement](
 
   override def getParent: PsiElement = {
     val stub = getStub
-    if (stub != null) {
-      return stub.getParentStub.getPsi
-    }
-    inReadAction {
-      SharedImplUtil.getParent(getNode)
-    }
+    if (stub != null) { return stub.getParentStub.getPsi }
+    inReadAction { SharedImplUtil.getParent(getNode) }
   }
 
   def getLastChildStub: PsiElement = {

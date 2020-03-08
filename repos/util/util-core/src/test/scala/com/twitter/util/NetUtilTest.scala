@@ -70,9 +70,7 @@ class NetUtilTest extends WordSpec {
       assert(NetUtil.ipToInt("255.255.255.0") == 0xFFFFFF00)
       assert(NetUtil.ipToInt("255.0.255.0") == 0xFF00FF00)
       assert(NetUtil.ipToInt("61.197.253.56") == 0x3dc5fd38)
-      intercept[IllegalArgumentException] {
-        NetUtil.ipToInt("256.0.255.0")
-      }
+      intercept[IllegalArgumentException] { NetUtil.ipToInt("256.0.255.0") }
     }
 
     "inetAddressToInt" in {
@@ -151,12 +149,8 @@ class NetUtilTest extends WordSpec {
       assert(NetUtil.isIpInBlocks("200.1.1.2", blocks) == true)
       assert(NetUtil.isIpInBlocks("200.1.3.2", blocks) == false)
 
-      intercept[IllegalArgumentException] {
-        NetUtil.isIpInBlocks("", blocks)
-      }
-      intercept[IllegalArgumentException] {
-        NetUtil.isIpInBlocks("no", blocks)
-      }
+      intercept[IllegalArgumentException] { NetUtil.isIpInBlocks("", blocks) }
+      intercept[IllegalArgumentException] { NetUtil.isIpInBlocks("no", blocks) }
       intercept[IllegalArgumentException] {
         NetUtil.isIpInBlocks("::127.0.0.1", blocks)
       }

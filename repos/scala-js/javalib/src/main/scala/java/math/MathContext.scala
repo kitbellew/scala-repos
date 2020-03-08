@@ -47,9 +47,8 @@ object MathContext {
 
     val precisionString = s.substring(precisionLength, spaceIndex)
     val precision = {
-      try {
-        java.lang.Integer.parseInt(precisionString)
-      } catch {
+      try { java.lang.Integer.parseInt(precisionString) }
+      catch {
         case _: NumberFormatException => invalidMathContext("Bad precision", s)
       }
     }
@@ -88,13 +87,9 @@ class MathContext(setPrecision: Int, setRoundingMode: RoundingMode) {
 
   def getRoundingMode(): RoundingMode = roundingMode
 
-  def this(setPrecision: Int) = {
-    this(setPrecision, RoundingMode.HALF_UP)
-  }
+  def this(setPrecision: Int) = { this(setPrecision, RoundingMode.HALF_UP) }
 
-  private def this(args: (Int, RoundingMode)) = {
-    this(args._1, args._2)
-  }
+  private def this(args: (Int, RoundingMode)) = { this(args._1, args._2) }
 
   def this(s: String) = {
     this(MathContext.getArgs(s))

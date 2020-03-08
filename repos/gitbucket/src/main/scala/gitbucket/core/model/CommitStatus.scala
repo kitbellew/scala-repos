@@ -95,16 +95,11 @@ object CommitState {
     * success if the latest status for all contexts is success
     */
   def combine(statuses: Set[CommitState]): CommitState = {
-    if (statuses.isEmpty) {
-      PENDING
-    } else if (statuses.contains(CommitState.ERROR) || statuses.contains(
-                 CommitState.FAILURE)) {
-      FAILURE
-    } else if (statuses.contains(CommitState.PENDING)) {
-      PENDING
-    } else {
-      SUCCESS
-    }
+    if (statuses.isEmpty) { PENDING }
+    else if (statuses.contains(CommitState.ERROR) || statuses.contains(
+               CommitState.FAILURE)) { FAILURE }
+    else if (statuses.contains(CommitState.PENDING)) { PENDING }
+    else { SUCCESS }
   }
 
   implicit val getResult: GetResult[CommitState] =

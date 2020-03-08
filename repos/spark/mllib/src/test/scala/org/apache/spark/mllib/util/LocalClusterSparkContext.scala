@@ -37,12 +37,7 @@ trait LocalClusterSparkContext extends BeforeAndAfterAll { self: Suite =>
   }
 
   override def afterAll() {
-    try {
-      if (sc != null) {
-        sc.stop()
-      }
-    } finally {
-      super.afterAll()
-    }
+    try { if (sc != null) { sc.stop() } }
+    finally { super.afterAll() }
   }
 }

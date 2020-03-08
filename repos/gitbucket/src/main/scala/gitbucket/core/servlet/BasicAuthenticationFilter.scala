@@ -103,11 +103,8 @@ class BasicAuthenticationFilter
           request.gitRepositoryPath,
           account.map(_.userName),
           settings,
-          isUpdating)) {
-      chain.doFilter(request, response)
-    } else {
-      requireAuth(response)
-    }
+          isUpdating)) { chain.doFilter(request, response) }
+    else { requireAuth(response) }
   }
 
   private def defaultRepository(
@@ -144,11 +141,8 @@ class BasicAuthenticationFilter
                   } else false
                 } else true
 
-              if (passed.getOrElse(false)) {
-                chain.doFilter(request, response)
-              } else {
-                requireAuth(response)
-              }
+              if (passed.getOrElse(false)) { chain.doFilter(request, response) }
+              else { requireAuth(response) }
             }
           }
           case None => {
@@ -172,8 +166,6 @@ class BasicAuthenticationFilter
   private def decodeAuthHeader(header: String): String = {
     try {
       new String(new sun.misc.BASE64Decoder().decodeBuffer(header.substring(6)))
-    } catch {
-      case _: Throwable => ""
-    }
+    } catch { case _: Throwable => "" }
   }
 }

@@ -92,49 +92,37 @@ abstract class TableColumnBase[S, T] protected (
     */
   def contextMenu: ObjectProperty[jfxsc.ContextMenu] =
     delegate.contextMenuProperty
-  def contextMenu_=(v: ContextMenu) {
-    contextMenu() = v
-  }
+  def contextMenu_=(v: ContextMenu) { contextMenu() = v }
 
   /**
     * Specifies whether this TableColumnBase allows editing.
     */
   def editable: BooleanProperty = delegate.editableProperty
-  def editable_=(v: Boolean) {
-    editable() = v
-  }
+  def editable_=(v: Boolean) { editable() = v }
 
   /**
     * The graphic in the TableColumnBase.
     */
   def graphic: ObjectProperty[jfxs.Node] = delegate.graphicProperty
-  def graphic_=(v: Node) {
-    graphic() = v
-  }
+  def graphic_=(v: Node) { graphic() = v }
 
   /**
     * The id of this TableColumnBase.
     */
   def id: StringProperty = delegate.idProperty
-  def id_=(v: String) {
-    id() = v
-  }
+  def id_=(v: String) { id() = v }
 
   /**
     * The maximum width the TableColumnBase is permitted to be resized to.
     */
   def maxWidth: DoubleProperty = delegate.maxWidthProperty
-  def maxWidth_=(v: Double) {
-    maxWidth() = v
-  }
+  def maxWidth_=(v: Double) { maxWidth() = v }
 
   /**
     * The minimum width the TableColumnBase is permitted to be resized to.
     */
   def minWidth: DoubleProperty = delegate.minWidthProperty
-  def minWidth_=(v: Double) {
-    minWidth() = v
-  }
+  def minWidth_=(v: Double) { minWidth() = v }
 
   /**
     * This read-only property will always refer to the parent of this column, in the situation where nested columns are being used.
@@ -146,50 +134,38 @@ abstract class TableColumnBase[S, T] protected (
     * The preferred width of the TableColumnBase.
     */
   def prefWidth: DoubleProperty = delegate.prefWidthProperty
-  def prefWidth_=(v: Double) {
-    prefWidth() = v
-  }
+  def prefWidth_=(v: Double) { prefWidth() = v }
 
   /**
     * Used to indicate whether the width of this column can change.
     */
   def resizable: BooleanProperty = delegate.resizableProperty
-  def resizable_=(v: Boolean) {
-    resizable() = v
-  }
+  def resizable_=(v: Boolean) { resizable() = v }
 
   /**
     * A boolean property to toggle on and off the sortability of this column.
     */
   def sortable: BooleanProperty = delegate.sortableProperty
-  def sortable_=(v: Boolean) {
-    sortable() = v
-  }
+  def sortable_=(v: Boolean) { sortable() = v }
 
   /**
     * The sort node is commonly seen represented as a triangle that rotates on screen to indicate whether the
     * TableColumnBase is part of the sort order, and if so, what position in the sort order it is in.
     */
   def sortNode: ObjectProperty[jfxs.Node] = delegate.sortNodeProperty
-  def sortNode_=(v: Node) {
-    sortNode() = v
-  }
+  def sortNode_=(v: Node) { sortNode() = v }
 
   /**
     * The CSS style string associated to this TableColumnBase.
     */
   def style: StringProperty = delegate.styleProperty
-  def style_=(v: String) {
-    style() = v
-  }
+  def style_=(v: String) { style() = v }
 
   /**
     * This is the text to show in the header for this column.
     */
   def text: StringProperty = delegate.textProperty
-  def text_=(v: String) {
-    text() = v
-  }
+  def text_=(v: String) { text() = v }
 
   /**
     * Returns a previously set Object property, or null if no such property has been set using the
@@ -201,9 +177,7 @@ abstract class TableColumnBase[S, T] protected (
     * Toggling this will immediately toggle the visibility of this column, and all children columns.
     */
   def visible: BooleanProperty = delegate.visibleProperty
-  def visible_=(v: Boolean) {
-    visible() = v
-  }
+  def visible_=(v: Boolean) { visible() = v }
 
   /**
     * The width of this column.

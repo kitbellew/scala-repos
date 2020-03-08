@@ -177,9 +177,8 @@ object PlaySettings {
       } else Nil
     },
     scriptClasspath := {
-      if (externalizeResources.value) {
-        "../conf/" +: scriptClasspath.value
-      } else scriptClasspath.value
+      if (externalizeResources.value) { "../conf/" +: scriptClasspath.value }
+      else scriptClasspath.value
     },
     // taskDyn ensures we only build the sans externalised jar if we need to
     scriptClasspathOrdering <<= Def.taskDyn {
@@ -203,9 +202,7 @@ object PlaySettings {
             case other => other
           }
         }
-      } else {
-        Def.task(oldValue)
-      }
+      } else { Def.task(oldValue) }
     },
     mappings in Universal ++= {
       val docDirectory = (doc in Compile).value
@@ -249,9 +246,7 @@ object PlaySettings {
         val toExclude = copied.collect {
           case (source, dest) if externalized(source) => dest
         }.toSet
-        packageBinMappings.filterNot {
-          case (file, _) => toExclude(file)
-        }
+        packageBinMappings.filterNot { case (file, _) => toExclude(file) }
       },
       artifactClassifier in playJarSansExternalized := Option(
         "sans-externalized")

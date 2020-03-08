@@ -56,9 +56,7 @@ class DecimalPrecisionSuite extends PlanTest with BeforeAndAfter {
   val f: Expression = UnresolvedAttribute("f")
   val b: Expression = UnresolvedAttribute("b")
 
-  before {
-    catalog.registerTable(TableIdentifier("table"), relation)
-  }
+  before { catalog.registerTable(TableIdentifier("table"), relation) }
 
   private def checkType(
       expression: Expression,
@@ -73,9 +71,7 @@ class DecimalPrecisionSuite extends PlanTest with BeforeAndAfter {
     val plan = Project(Alias(expression, "c")() :: Nil, relation)
     val comparison = analyzer
       .execute(plan)
-      .collect {
-        case Project(Alias(e: BinaryComparison, _) :: Nil, _) => e
-      }
+      .collect { case Project(Alias(e: BinaryComparison, _) :: Nil, _) => e }
       .head
     assert(comparison.left.dataType === expectedType)
     assert(comparison.right.dataType === expectedType)

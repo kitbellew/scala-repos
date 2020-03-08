@@ -40,9 +40,7 @@ trait BasicAuthSupport[UserType <: AnyRef] {
       response.setHeader("WWW-Authenticate", "Basic realm=\"%s\"" format realm)
       halt(401, "Unauthenticated")
     }
-    if (!baReq.isBasicAuth) {
-      halt(400, "Bad Request")
-    }
+    if (!baReq.isBasicAuth) { halt(400, "Bad Request") }
     scentry.authenticate("Basic")
   }
 
@@ -127,7 +125,5 @@ abstract class BasicAuthStrategy[UserType <: AnyRef](
 
   override def afterLogout(user: UserType)(implicit
       request: HttpServletRequest,
-      response: HttpServletResponse) {
-    response.setHeader(REMOTE_USER, "")
-  }
+      response: HttpServletResponse) { response.setHeader(REMOTE_USER, "") }
 }

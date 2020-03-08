@@ -57,11 +57,8 @@ class IndexShuffleBlockResolverSuite
   }
 
   override def afterEach(): Unit = {
-    try {
-      Utils.deleteRecursively(tempDir)
-    } finally {
-      super.afterEach()
-    }
+    try { Utils.deleteRecursively(tempDir) }
+    finally { super.afterEach() }
   }
 
   test("commit shuffle files multiple times") {
@@ -69,11 +66,7 @@ class IndexShuffleBlockResolverSuite
     val lengths = Array[Long](10, 0, 20)
     val dataTmp = File.createTempFile("shuffle", null, tempDir)
     val out = new FileOutputStream(dataTmp)
-    Utils.tryWithSafeFinally {
-      out.write(new Array[Byte](30))
-    } {
-      out.close()
-    }
+    Utils.tryWithSafeFinally { out.write(new Array[Byte](30)) } { out.close() }
     resolver.writeIndexFileAndCommit(1, 2, lengths, dataTmp)
 
     val dataFile = resolver.getDataFile(1, 2)
@@ -87,9 +80,7 @@ class IndexShuffleBlockResolverSuite
     Utils.tryWithSafeFinally {
       out2.write(Array[Byte](1))
       out2.write(new Array[Byte](29))
-    } {
-      out2.close()
-    }
+    } { out2.close() }
     resolver.writeIndexFileAndCommit(1, 2, lengths2, dataTmp2)
     assert(lengths2.toSeq === lengths.toSeq)
     assert(dataFile.exists())
@@ -99,11 +90,7 @@ class IndexShuffleBlockResolverSuite
     // The dataFile should be the previous one
     val firstByte = new Array[Byte](1)
     val in = new FileInputStream(dataFile)
-    Utils.tryWithSafeFinally {
-      in.read(firstByte)
-    } {
-      in.close()
-    }
+    Utils.tryWithSafeFinally { in.read(firstByte) } { in.close() }
     assert(firstByte(0) === 0)
 
     // remove data file
@@ -115,9 +102,7 @@ class IndexShuffleBlockResolverSuite
     Utils.tryWithSafeFinally {
       out3.write(Array[Byte](2))
       out3.write(new Array[Byte](34))
-    } {
-      out3.close()
-    }
+    } { out3.close() }
     resolver.writeIndexFileAndCommit(1, 2, lengths3, dataTmp3)
     assert(lengths3.toSeq != lengths.toSeq)
     assert(dataFile.exists())
@@ -127,11 +112,7 @@ class IndexShuffleBlockResolverSuite
     // The dataFile should be the previous one
     val firstByte2 = new Array[Byte](1)
     val in2 = new FileInputStream(dataFile)
-    Utils.tryWithSafeFinally {
-      in2.read(firstByte2)
-    } {
-      in2.close()
-    }
+    Utils.tryWithSafeFinally { in2.read(firstByte2) } { in2.close() }
     assert(firstByte2(0) === 2)
   }
 }

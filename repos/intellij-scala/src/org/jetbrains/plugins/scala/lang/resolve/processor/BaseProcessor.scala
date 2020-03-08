@@ -76,11 +76,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
   def definePriority(p: Int)(body: => Unit) {
     val oldPriority = knownPriority
     knownPriority = Some(p)
-    try {
-      body
-    } finally {
-      knownPriority = oldPriority
-    }
+    try { body }
+    finally { knownPriority = oldPriority }
   }
 
   def isPredefPriority = knownPriority == Some(PrecedenceTypes.SCALA_PREDEF)
@@ -124,12 +121,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
 
   //todo: fix this ugly performance improvement
   private var classKind = true
-  def setClassKind(classKind: Boolean) {
-    this.classKind = classKind
-  }
-  def getClassKind = {
-    classKind && getClassKindInner
-  }
+  def setClassKind(classKind: Boolean) { this.classKind = classKind }
+  def getClassKind = { classKind && getClassKindInner }
   def getClassKindInner = {
     (kinds contains ResolveTargets.CLASS) ||
     (kinds contains ResolveTargets.OBJECT) ||

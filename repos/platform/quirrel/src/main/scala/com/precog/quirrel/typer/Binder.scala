@@ -100,12 +100,8 @@ trait Binder extends parser.AST {
                       Some(Identifier(Vector(), name) -> b)
                     else
                       None
-                  } else {
-                    None
-                  }
-                } else {
-                  None
-                }
+                  } else { None }
+                } else { None }
               }
 
               case _ => None
@@ -125,9 +121,7 @@ trait Binder extends parser.AST {
                     Some(Identifier(Vector(), name) -> b)
                   else
                     None
-                } else {
-                  None
-                }
+                } else { None }
               }
 
               case _ => None

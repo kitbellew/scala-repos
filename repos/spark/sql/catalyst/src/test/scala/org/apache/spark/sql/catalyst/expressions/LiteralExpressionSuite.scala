@@ -111,9 +111,7 @@ class LiteralExpressionSuite extends SparkFunSuite with ExpressionEvalHelper {
     checkEvaluation(Literal("\u0000"), "\u0000")
   }
 
-  test("sum two literals") {
-    checkEvaluation(Add(Literal(1), Literal(1)), 2)
-  }
+  test("sum two literals") { checkEvaluation(Add(Literal(1), Literal(1)), 2) }
 
   test("binary literals") {
     checkEvaluation(

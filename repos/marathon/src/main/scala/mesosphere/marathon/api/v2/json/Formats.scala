@@ -220,11 +220,8 @@ trait Formats
       errorMsg: String => String): Format[A] = {
     val reads = Reads[A] {
       case JsString(str) =>
-        try {
-          JsSuccess(read(str))
-        } catch {
-          case _: IllegalArgumentException => JsError(errorMsg(str))
-        }
+        try { JsSuccess(read(str)) }
+        catch { case _: IllegalArgumentException => JsError(errorMsg(str)) }
 
       case x: JsValue => JsError(s"expected string, got $x")
     }

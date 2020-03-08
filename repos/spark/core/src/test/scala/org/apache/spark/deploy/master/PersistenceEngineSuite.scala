@@ -37,9 +37,7 @@ class PersistenceEngineSuite extends SparkFunSuite {
         conf,
         serializer =>
           new FileSystemPersistenceEngine(dir.getAbsolutePath, serializer))
-    } finally {
-      Utils.deleteRecursively(dir)
-    }
+    } finally { Utils.deleteRecursively(dir) }
   }
 
   test("ZooKeeperPersistenceEngine") {
@@ -56,9 +54,7 @@ class PersistenceEngineSuite extends SparkFunSuite {
           conf.set("spark.deploy.zookeeper.url", zkTestServer.getConnectString)
           new ZooKeeperPersistenceEngine(conf, serializer)
         })
-    } finally {
-      zkTestServer.stop()
-    }
+    } finally { zkTestServer.stop() }
   }
 
   private def testPersistenceEngine(
@@ -125,9 +121,7 @@ class PersistenceEngineSuite extends SparkFunSuite {
         testRpcEnv.shutdown()
         testRpcEnv.awaitTermination()
       }
-    } finally {
-      persistenceEngine.close()
-    }
+    } finally { persistenceEngine.close() }
   }
 
   private def findFreePort(conf: SparkConf): Int = {

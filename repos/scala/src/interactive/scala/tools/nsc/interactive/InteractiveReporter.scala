@@ -25,9 +25,8 @@ abstract class InteractiveReporter extends Reporter {
     try {
       severity.count += 1
       val problems =
-        if (compiler eq null) {
-          otherProblems
-        } else if (pos.isDefined) {
+        if (compiler eq null) { otherProblems }
+        else if (pos.isDefined) {
           compiler.getUnit(pos.source) match {
             case Some(unit) =>
               compiler.debugLog(

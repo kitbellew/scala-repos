@@ -1,7 +1,11 @@
 import scala.tools.partest.MemoryTest
 
-trait A { type T <: A }
-trait B { type T <: B }
+trait A {
+  type T <: A
+}
+trait B {
+  type T <: B
+}
 
 object Test extends MemoryTest {
   override def maxDelta = 10
@@ -9,7 +13,9 @@ object Test extends MemoryTest {
   override def calc() {
     import scala.reflect.runtime.universe._
     def foo = {
-      class A { def x = 2; def y: A = new A }
+      class A {
+        def x = 2; def y: A = new A
+      }
       weakTypeOf[A { def z: Int }]
     }
     foo

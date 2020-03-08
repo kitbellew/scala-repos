@@ -30,12 +30,8 @@ object TestkitDocSpec {
 
   class TestFsmActor extends Actor with FSM[Int, String] {
     startWith(1, "")
-    when(1) {
-      case Event("go", _) => goto(2) using "go"
-    }
-    when(2) {
-      case Event("back", _) => goto(1) using "back"
-    }
+    when(1) { case Event("go", _)   => goto(2) using "go" }
+    when(2) { case Event("back", _) => goto(1) using "back" }
   }
 
   //#my-double-echo
@@ -58,9 +54,7 @@ object TestkitDocSpec {
 
   //#test-probe-forward-actors
   class Source(target: ActorRef) extends Actor {
-    def receive = {
-      case "start" => target ! "work"
-    }
+    def receive = { case "start" => target ! "work" }
   }
 
   class Destination extends Actor {
@@ -202,9 +196,7 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
     val probe = new TestProbe(system) {
       def expectUpdate(x: Int) = {
-        expectMsgPF() {
-          case Update(id, _) if id == x => true
-        }
+        expectMsgPF() { case Update(id, _) if id == x => true }
         sender() ! "ACK"
       }
     }
@@ -285,9 +277,7 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       EventFilter[ActorKilledException](occurrences = 1) intercept {
         actor ! Kill
       }
-    } finally {
-      shutdown(system)
-    }
+    } finally { shutdown(system) }
     //#event-filter
   }
 
@@ -314,9 +304,7 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
     intercept[AssertionError] {
       //#test-within-probe
       val probe = TestProbe()
-      within(1 second) {
-        probe.expectMsg("hello")
-      }
+      within(1 second) { probe.expectMsg("hello") }
       //#test-within-probe
     }
   }

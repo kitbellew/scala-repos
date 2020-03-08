@@ -15,7 +15,9 @@ import scala.reflect.{classTag, ClassTag}
 import scala.tools.partest.TestUtil.intercept
 
 trait TestBase {
-  trait Done { def apply(proof: => Boolean): Unit }
+  trait Done {
+    def apply(proof: => Boolean): Unit
+  }
   def once(body: Done => Unit) {
     import java.util.concurrent.{LinkedBlockingQueue, TimeUnit}
     val q = new LinkedBlockingQueue[Try[Boolean]]
@@ -320,9 +322,7 @@ trait FutureCombinators extends TestBase {
 
   def testRecoverSuccess(): Unit = once { done =>
     val cause = new RuntimeException
-    val f = Future {
-      throw cause
-    } recover {
+    val f = Future { throw cause } recover {
       case re: RuntimeException =>
         "recovered"
     }
@@ -332,9 +332,7 @@ trait FutureCombinators extends TestBase {
 
   def testRecoverFailure(): Unit = once { done =>
     val cause = new RuntimeException
-    val f = Future {
-      throw cause
-    } recover {
+    val f = Future { throw cause } recover {
       case te: TimeoutException => "timeout"
     }
     f onSuccess { case _   => done(false) }
@@ -343,9 +341,7 @@ trait FutureCombinators extends TestBase {
 
   def testRecoverWithSuccess(): Unit = once { done =>
     val cause = new RuntimeException
-    val f = Future {
-      throw cause
-    } recoverWith {
+    val f = Future { throw cause } recoverWith {
       case re: RuntimeException =>
         Future { "recovered" }
     }
@@ -355,9 +351,7 @@ trait FutureCombinators extends TestBase {
 
   def testRecoverWithFailure(): Unit = once { done =>
     val cause = new RuntimeException
-    val f = Future {
-      throw cause
-    } recoverWith {
+    val f = Future { throw cause } recoverWith {
       case te: TimeoutException =>
         Future { "timeout" }
     }
@@ -549,9 +543,7 @@ trait Blocking extends TestBase {
     try {
       Await.result(f, Duration(500, "ms"))
       done(false)
-    } catch {
-      case t: Throwable => done(t == cause)
-    }
+    } catch { case t: Throwable => done(t == cause) }
   }
 
   def testFQCNForAwaitAPI(): Unit = once { done =>
@@ -594,9 +586,7 @@ trait BlockContexts extends TestBase {
     }
 
     val bc = getBlockContext({
-      BlockContext.withBlockContext(customBC) {
-        BlockContext.current
-      }
+      BlockContext.withBlockContext(customBC) { BlockContext.current }
     })
 
     assert(bc eq customBC)
@@ -694,11 +684,8 @@ trait CustomExecutionContext extends TestBase {
       val wrapper = new Runnable() {
         override def run() = {
           enterEC()
-          try {
-            runnable.run()
-          } finally {
-            leaveEC()
-          }
+          try { runnable.run() }
+          finally { leaveEC() }
         }
       }
       delegate.execute(wrapper)

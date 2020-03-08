@@ -42,15 +42,11 @@ abstract class JoinInProgressSpec
   "A cluster node" must {
     "send heartbeats immediately when joining to avoid false failure detection due to delayed gossip" taggedAs LongRunningTest in {
 
-      runOn(first) {
-        startClusterNode()
-      }
+      runOn(first) { startClusterNode() }
 
       enterBarrier("first-started")
 
-      runOn(second) {
-        cluster.join(first)
-      }
+      runOn(second) { cluster.join(first) }
 
       runOn(first) {
         val until = Deadline.now + 5.seconds

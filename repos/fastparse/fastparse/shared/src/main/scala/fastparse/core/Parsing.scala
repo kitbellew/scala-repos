@@ -464,9 +464,7 @@ trait ParserResults[+T] { this: Parser[T] =>
         f.traceParsers =
           if (traceParsers == null) Set(this)
           else traceParsers
-      } else {
-        f.traceParsers = Set.empty
-      }
+      } else { f.traceParsers = Set.empty }
     }
     f.lastParser = this
     f

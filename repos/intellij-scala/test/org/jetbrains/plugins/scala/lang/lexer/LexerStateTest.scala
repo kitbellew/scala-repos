@@ -15,9 +15,7 @@ class LexerStateTest extends TestCase {
   // is assumed to be equal to a state after starting analysis of an empty string.
   // However in other places (like Lexer itself) there's an assumption that initial state 0 is valid.
   // So it's better to ensure that 0 value is used as initial state.
-  def testInitialState() {
-    assertStates("", 0)
-  }
+  def testInitialState() { assertStates("", 0) }
 
   def testPlainContent() {
     assertStates("foo;", 0, 0, 0)
@@ -27,13 +25,9 @@ class LexerStateTest extends TestCase {
   }
 
   // Ensure that core lexer state is propagated
-  def testCoreLexerState() {
-    assertStates("s\"foo\";", 0, 239, 239, 0, 0)
-  }
+  def testCoreLexerState() { assertStates("s\"foo\";", 0, 239, 239, 0, 0) }
 
-  def testXmlContent() {
-    assertStates("<foo/>;", 0, 239, 239, 0, 0)
-  }
+  def testXmlContent() { assertStates("<foo/>;", 0, 239, 239, 0, 0) }
 
   private def assertStates(s: String, states: Int*) {
     assertEquals(states.toList, statesIn(s).toList)

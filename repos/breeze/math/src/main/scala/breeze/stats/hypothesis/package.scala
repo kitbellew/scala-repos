@@ -107,9 +107,7 @@ package object hypothesis {
     * sidakCorrectedPVal(p1,n) < 5% or sidakCorrectedPVal(p2, n) < 5%, etc,
     * you can reject the null hypothesis.
     */
-  def sidakCorrectedPVal(p: Double, n: Int): Double = {
-    1.0 - pow(1.0 - p, n)
-  }
+  def sidakCorrectedPVal(p: Double, n: Int): Double = { 1.0 - pow(1.0 - p, n) }
 
   /**
     * Takes a p-value run for a single statistical test,

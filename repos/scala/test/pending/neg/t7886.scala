@@ -1,5 +1,7 @@
 trait Covariant[+A]
-trait Contra[-A] { def accept(p: A): Unit }
+trait Contra[-A] {
+  def accept(p: A): Unit
+}
 trait Invariant[A] extends Covariant[A] with Contra[A]
 
 case class Unravel[A](m: Contra[A], msg: A)
@@ -13,7 +15,9 @@ object Test extends Covariant[Any] {
   def main(args: Array[String]) {
     f(
       Unravel[String](
-        new Contra[String] { def accept(x: String) = x.length },
+        new Contra[String] {
+          def accept(x: String) = x.length
+        },
         ""))
   }
 }

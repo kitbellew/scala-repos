@@ -24,9 +24,7 @@ object TimerBasedThrottlerSpec {
   //#demo-code
   // A simple actor that prints whatever it receives
   class PrintActor extends Actor {
-    def receive = {
-      case x ⇒ println(x)
-    }
+    def receive = { case x ⇒ println(x) }
   }
 
   //#demo-code
@@ -42,9 +40,7 @@ class TimerBasedThrottlerSpec
 
   import TimerBasedThrottlerSpec._
 
-  override def afterAll {
-    shutdown()
-  }
+  override def afterAll { shutdown() }
 
   "A throttler" must {
     def println(a: Any) = ()
@@ -73,9 +69,7 @@ class TimerBasedThrottlerSpec
       1 to 6 foreach { throttler ! _ }
       expectNoMsg(1 second)
       throttler ! SetTarget(Some(echo))
-      within(2.5 seconds) {
-        1 to 6 foreach { expectMsg(_) }
-      }
+      within(2.5 seconds) { 1 to 6 foreach { expectMsg(_) } }
     }
 
     "send messages after a `SetTarget(None)` pause" in {
@@ -92,9 +86,7 @@ class TimerBasedThrottlerSpec
       expectNoMsg(1 second)
       throttler ! SetTarget(Some(echo))
       4 to 7 foreach { throttler ! _ }
-      within(1.5 seconds) {
-        4 to 7 foreach { expectMsg(_) }
-      }
+      within(1.5 seconds) { 4 to 7 foreach { expectMsg(_) } }
     }
 
     "keep messages when the target is set to None" in {
@@ -110,9 +102,7 @@ class TimerBasedThrottlerSpec
       }
       expectNoMsg(1 second)
       throttler ! SetTarget(Some(echo))
-      within(1.5 seconds) {
-        4 to 7 foreach { expectMsg(_) }
-      }
+      within(1.5 seconds) { 4 to 7 foreach { expectMsg(_) } }
     }
 
     "respect the rate (3 msg/s)" in within(1.5 seconds, 2.5 seconds) {

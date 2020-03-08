@@ -5,9 +5,7 @@ import bug.action.Action
 
 abstract class Outer extends Display {
 
-  def init() {
-    m_glob.putAction(ScalaActivity)
-  }
+  def init() { m_glob.putAction(ScalaActivity) }
 
   object ScalaActivity extends Action {
     def run(v: Int) {

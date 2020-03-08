@@ -496,9 +496,8 @@ abstract class Erasure
           sym.matchingSymbol(bc, site).alternatives filter (sym =>
             !sym.isBridge)
         for (overBridge <- exitingPostErasure(overriddenBy(bridge))) {
-          if (overBridge == member) {
-            clashError("the member itself")
-          } else {
+          if (overBridge == member) { clashError("the member itself") }
+          else {
             val overMembers = overriddenBy(member)
             if (!overMembers.exists(overMember =>
                   exitingPostErasure(overMember.tpe =:= overBridge.tpe))) {
@@ -696,9 +695,8 @@ abstract class Erasure
           }
           tree
         case Select(qual, name) =>
-          if (tree.symbol == NoSymbol) {
-            tree
-          } else if (name == nme.CONSTRUCTOR) {
+          if (tree.symbol == NoSymbol) { tree }
+          else if (name == nme.CONSTRUCTOR) {
             if (tree.symbol.owner == AnyValClass)
               tree.symbol = ObjectClass.primaryConstructor
             tree
@@ -736,9 +734,7 @@ abstract class Erasure
                          Super] || (qual1.tpe.typeSymbol isSubClass tree.symbol.owner))) {
               assert(tree.symbol.owner != ArrayClass)
               selectFrom(cast(qual1, tree.symbol.owner.tpe.resultType))
-            } else {
-              selectFrom(qual1)
-            }
+            } else { selectFrom(qual1) }
           }
         case SelectFromArray(qual, name, erasure) =>
           var qual1 = typedQualifier(qual)
@@ -817,9 +813,7 @@ abstract class Erasure
             val sym1 = tree1.symbol.filter { alt =>
               alt == first || !(first.tpe looselyMatches alt.tpe)
             }
-            if (tree.symbol ne sym1) {
-              tree1 setSymbol sym1 setType sym1.tpe
-            }
+            if (tree.symbol ne sym1) { tree1 setSymbol sym1 setType sym1.tpe }
           }
           tree1
         case _ =>
@@ -1041,11 +1035,9 @@ abstract class Erasure
           }
         }
 
-        if (fn.symbol == Any_asInstanceOf) {
-          preEraseAsInstanceOf
-        } else if (fn.symbol == Any_isInstanceOf) {
-          preEraseIsInstanceOf
-        } else if (fn.symbol.isOnlyRefinementMember) {
+        if (fn.symbol == Any_asInstanceOf) { preEraseAsInstanceOf }
+        else if (fn.symbol == Any_isInstanceOf) { preEraseIsInstanceOf }
+        else if (fn.symbol.isOnlyRefinementMember) {
           // !!! Another spot where we produce overloaded types (see test pos/t6301)
           log(
             s"${fn.symbol.fullLocationString} originates in refinement class - call will be implemented via reflection.")
@@ -1054,9 +1046,7 @@ abstract class Erasure
           Apply(
             gen.mkAttributedRef(extensionMethods.extensionMethod(fn.symbol)),
             qualifier :: args)
-        } else {
-          tree
-        }
+        } else { tree }
       }
 
       private def preEraseApply(tree: Apply) = {

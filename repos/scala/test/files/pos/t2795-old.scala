@@ -10,7 +10,5 @@ trait Config {
 }
 
 trait Transform { self: Config =>
-  def processBlock(block: Array[T]): Unit = {
-    var X = new Array[T](1)
-  }
+  def processBlock(block: Array[T]): Unit = { var X = new Array[T](1) }
 }

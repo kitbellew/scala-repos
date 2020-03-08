@@ -944,9 +944,7 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * (e.g. a table name to write to) in the same way as it would be configured for a Hadoop
     * MapReduce job.
     */
-  def saveAsHadoopDataset(conf: JobConf) {
-    rdd.saveAsHadoopDataset(conf)
-  }
+  def saveAsHadoopDataset(conf: JobConf) { rdd.saveAsHadoopDataset(conf) }
 
   /**
     * Repartition the RDD according to the given partitioner and, within each resulting partition,

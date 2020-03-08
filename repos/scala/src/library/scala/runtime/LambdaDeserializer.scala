@@ -115,9 +115,8 @@ object LambdaDeserializer {
 
     val key =
       serialized.getImplMethodName + " : " + serialized.getImplMethodSignature
-    val factory: MethodHandle = if (cache == null) {
-      makeCallSite.getTarget
-    } else
+    val factory: MethodHandle = if (cache == null) { makeCallSite.getTarget }
+    else
       cache.get(key) match {
         case null =>
           val callSite = makeCallSite

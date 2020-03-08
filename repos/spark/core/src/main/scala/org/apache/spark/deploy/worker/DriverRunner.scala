@@ -58,13 +58,9 @@ private[deploy] class DriverRunner(
   private var finalExitCode: Option[Int] = None
 
   // Decoupled for testing
-  def setClock(_clock: Clock): Unit = {
-    clock = _clock
-  }
+  def setClock(_clock: Clock): Unit = { clock = _clock }
 
-  def setSleeper(_sleeper: Sleeper): Unit = {
-    sleeper = _sleeper
-  }
+  def setSleeper(_sleeper: Sleeper): Unit = { sleeper = _sleeper }
 
   private var clock: Clock = new SystemClock()
   private var sleeper = new Sleeper {
@@ -94,16 +90,12 @@ private[deploy] class DriverRunner(
             sparkHome.getAbsolutePath,
             substituteVariables)
           launchDriver(builder, driverDir, driverDesc.supervise)
-        } catch {
-          case e: Exception => finalException = Some(e)
-        }
+        } catch { case e: Exception => finalException = Some(e) }
 
         val state =
-          if (killed) {
-            DriverState.KILLED
-          } else if (finalException.isDefined) {
-            DriverState.ERROR
-          } else {
+          if (killed) { DriverState.KILLED }
+          else if (finalException.isDefined) { DriverState.ERROR }
+          else {
             finalExitCode match {
               case Some(0) => DriverState.FINISHED
               case _       => DriverState.FAILED

@@ -183,9 +183,7 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           // check that it has a topic assigned.
           doc.foreachActive((term, wcnt) =>
             assert(wcnt === 0 || inds.contains(term)))
-        } else {
-          assert(doc.numNonzeros === 0)
-        }
+        } else { assert(doc.numNonzeros === 0) }
     }
   }
 
@@ -595,15 +593,11 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           .sortByKey()
           .collect())
       val edge = graph.edges
-        .map {
-          case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos)
-        }
+        .map { case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos) }
         .sortBy(x => (x._1, x._2))
         .collect()
       val sameEdge = sameGraph.edges
-        .map {
-          case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos)
-        }
+        .map { case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos) }
         .sortBy(x => (x._1, x._2))
         .collect()
       assert(edge === sameEdge)
@@ -694,9 +688,7 @@ private[clustering] object LDASuite {
   ) // sanity check for test data
 
   def getNonEmptyDoc(corpus: Array[(Long, Vector)]): Array[(Long, Vector)] =
-    corpus.filter {
-      case (_, wc: Vector) => Vectors.norm(wc, p = 1.0) != 0.0
-    }
+    corpus.filter { case (_, wc: Vector) => Vectors.norm(wc, p = 1.0) != 0.0 }
 
   def toyData: Array[(Long, Vector)] =
     Array(

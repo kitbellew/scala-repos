@@ -93,9 +93,7 @@ class ReceivedBlockHandlerSuite
 
   after {
     for (blockManager <- blockManagerBuffer) {
-      if (blockManager != null) {
-        blockManager.stop()
-      }
+      if (blockManager != null) { blockManager.stop() }
     }
     blockManager = null
     blockManagerBuffer.clear()
@@ -468,11 +466,8 @@ class ReceivedBlockHandlerSuite
       hadoopConf,
       tempDirectory.toString,
       manualClock)
-    try {
-      body(receivedBlockHandler)
-    } finally {
-      receivedBlockHandler.stop()
-    }
+    try { body(receivedBlockHandler) }
+    finally { receivedBlockHandler.stop() }
   }
 
   /** Store blocks using a handler */

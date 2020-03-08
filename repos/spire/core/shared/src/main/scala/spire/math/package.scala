@@ -167,9 +167,7 @@ package object math {
 
       if (i <= leeway) {
         sum.setScale(k.mc.getPrecision - sum.precision + sum.scale, FLOOR)
-      } else {
-        doit(precision + 3, leeway * 1000)
-      }
+      } else { doit(precision + 3, leeway * 1000) }
     }
 
     val r = doit(k.mc.getPrecision + 3, 1000)
@@ -245,11 +243,8 @@ package object math {
       else if (base == 1) base
       else if (base == -1) if (ex.testBit(0)) BigInt(1) else base
       else BigInt(0)
-    } else if (ex.isValidInt) {
-      base.pow(ex.toInt)
-    } else {
-      bigIntPow(BigInt(1), base, ex)
-    }
+    } else if (ex.isValidInt) { base.pow(ex.toInt) }
+    else { bigIntPow(BigInt(1), base, ex) }
   }
 
   /**
@@ -270,9 +265,7 @@ package object math {
       else if (base == 1L) 1L
       else if (base == -1L) if ((exponent & 1L) == 0L) -1L else 1L
       else 0L
-    } else {
-      longPow(1L, base, exponent)
-    }
+    } else { longPow(1L, base, exponent) }
   }
 
   final def pow(base: Double, exponent: Double): Double =

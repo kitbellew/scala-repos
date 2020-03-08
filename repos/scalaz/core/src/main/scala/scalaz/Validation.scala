@@ -423,18 +423,14 @@ object Validation extends ValidationInstances {
 
   def fromTryCatchThrowable[T, E <: Throwable](
       a: => T)(implicit nn: NotNothing[E], ex: ClassTag[E]): Validation[E, T] =
-    try {
-      Success(a)
-    } catch {
+    try { Success(a) }
+    catch {
       case e if ex.runtimeClass.isInstance(e) => Failure(e.asInstanceOf[E])
     }
 
   def fromTryCatchNonFatal[T](a: => T): Validation[Throwable, T] =
-    try {
-      Success(a)
-    } catch {
-      case NonFatal(t) => Failure(t)
-    }
+    try { Success(a) }
+    catch { case NonFatal(t) => Failure(t) }
 
   /** Construct a `Validation` from an `Either`. */
   def fromEither[E, A](e: Either[E, A]): Validation[E, A] =

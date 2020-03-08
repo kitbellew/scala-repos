@@ -6,9 +6,7 @@ object Test extends App {
   {
     class C {
       type T = Int
-      val code = reify {
-        List[C#T](2)
-      }
+      val code = reify { List[C#T](2) }
       try { println(code.eval) }
       catch { case e: ToolBoxError => println(e.getMessage) }
     }

@@ -107,9 +107,7 @@ class RecipeByteStrings extends RecipeSpec {
               out,
               new InHandler with OutHandler {
 
-                override def onPull(): Unit = {
-                  pull(in)
-                }
+                override def onPull(): Unit = { pull(in) }
 
                 override def onPush(): Unit = {
                   val chunk = grab(in)

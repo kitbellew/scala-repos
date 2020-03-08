@@ -17,9 +17,7 @@ trait ChannelSnooper
 
   def printer(message: String, exc: Throwable = null) {
     printStream.println(message)
-    if (exc != null) {
-      exc.printStackTrace(printStream)
-    }
+    if (exc != null) { exc.printStackTrace(printStream) }
   }
 
   def print(id: java.lang.Integer, indicator: String, message: String) {

@@ -75,7 +75,9 @@ object InputWrapper {
       pos)
 
   // TODO 2.11 Remove this after dropping 2.10.x support.
-  private object HasCompat { val compat = ??? }; import HasCompat._
+  private object HasCompat {
+    val compat = ???
+  }; import HasCompat._
 
   /**
     * Wraps an arbitrary Tree in a call to the `<s>.<wrapName>` method of this module for later processing by an enclosing macro.

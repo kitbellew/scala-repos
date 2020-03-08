@@ -62,12 +62,8 @@ object EngineServerPluginContext extends Logging {
         if ((params \ "enabled").extractOrElse(false)) {
           info(s"Plugin ${service.pluginName} is enabled.")
           plugins(service.pluginType) += service.pluginName -> service
-        } else {
-          info(s"Plugin ${service.pluginName} is disabled.")
-        }
-      } getOrElse {
-        info(s"Plugin ${service.pluginName} is disabled.")
-      }
+        } else { info(s"Plugin ${service.pluginName} is disabled.") }
+      } getOrElse { info(s"Plugin ${service.pluginName} is disabled.") }
     }
     new EngineServerPluginContext(plugins, pluginParams, log)
   }

@@ -57,9 +57,8 @@ trait AdditiveSemigroup[@sp(Byte, Short, Int, Long, Float, Double) A]
 
   protected def sumnAboveOne(a: A, n: Int): A = {
     @tailrec def loop(b: A, k: Int, extra: A): A =
-      if (k == 1) {
-        plus(b, extra)
-      } else {
+      if (k == 1) { plus(b, extra) }
+      else {
         val x = if ((k & 1) == 1) plus(b, extra) else extra
         loop(plus(b, b), k >>> 1, x)
       }

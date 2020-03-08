@@ -74,9 +74,7 @@ class DoublePropertySpec extends FlatSpec with BeforeAndAfterEach {
     doubleProperty.name should equal("Test Double")
   }
 
-  it should "know its bean" in {
-    doubleProperty.bean should equal(bean)
-  }
+  it should "know its bean" in { doubleProperty.bean should equal(bean) }
 
   it should "be bindable to another Double Property" in {
     doubleProperty <== doubleProperty2
@@ -292,12 +290,8 @@ class DoublePropertySpec extends FlatSpec with BeforeAndAfterEach {
     var invalidateCount = 0
     var changeCount = 0
     val binding = doubleProperty * doubleProperty2
-    binding onInvalidate {
-      invalidateCount += 1
-    }
-    binding onChange {
-      changeCount += 1
-    }
+    binding onInvalidate { invalidateCount += 1 }
+    binding onChange { changeCount += 1 }
     doubleProperty() = 1
     invalidateCount should equal(1)
     changeCount should equal(0)

@@ -76,9 +76,7 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     true
   }
 
-  def bulkDelete_!!(qry: DBObject): Unit = {
-    useColl(coll => coll.remove(qry))
-  }
+  def bulkDelete_!!(qry: DBObject): Unit = { useColl(coll => coll.remove(qry)) }
 
   def bulkDelete_!!(k: String, o: Any): Unit =
     bulkDelete_!!(new BasicDBObject(k, o))

@@ -32,9 +32,7 @@ class KafkaTest {
   class ExitCalled extends SecurityException {}
 
   private class NoExitSecurityManager extends SecurityManager {
-    override def checkExit(status: Int): Unit = {
-      throw new ExitCalled
-    }
+    override def checkExit(status: Int): Unit = { throw new ExitCalled }
 
     override def checkPermission(perm: Permission): Unit = {}
 

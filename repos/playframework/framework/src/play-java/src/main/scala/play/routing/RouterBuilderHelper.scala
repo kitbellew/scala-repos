@@ -47,9 +47,7 @@ private[routing] object RouterBuilderHelper {
                   case (param, routeParam) =>
                     val rawParam = if (routeParam.decode) {
                       UriEncoding.decodePathSegment(param, "utf-8")
-                    } else {
-                      param
-                    }
+                    } else { param }
                     routeParam.pathBindable.bind(routeParam.name, rawParam)
                 }
 
@@ -86,9 +84,7 @@ private[routing] object RouterBuilderHelper {
                           case promise: CompletionStage[Result] =>
                             FutureConverters.toScala(promise).map(_.asScala)
                         }
-                      } finally {
-                        Context.current.remove()
-                      }
+                      } finally { Context.current.remove() }
                     }
                 }
 

@@ -57,9 +57,7 @@ class ReplicatorPruningSpec
   val KeyC = PNCounterMapKey("C")
 
   def join(from: RoleName, to: RoleName): Unit = {
-    runOn(from) {
-      cluster join node(to).address
-    }
+    runOn(from) { cluster join node(to).address }
     enterBarrier(from.name + "-joined")
   }
 
@@ -121,9 +119,7 @@ class ReplicatorPruningSpec
 
       enterBarrier("get-old")
 
-      runOn(first) {
-        cluster.leave(node(third).address)
-      }
+      runOn(first) { cluster.leave(node(third).address) }
 
       runOn(first, second) {
         within(15.seconds) {
@@ -180,28 +176,20 @@ class ReplicatorPruningSpec
             retrieved.value should be(expectedValue)
         }
       }
-      runOn(first) {
-        updateAfterPruning(expectedValue = 10)
-      }
+      runOn(first) { updateAfterPruning(expectedValue = 10) }
       enterBarrier("update-first-after-pruning")
 
-      runOn(second) {
-        updateAfterPruning(expectedValue = 11)
-      }
+      runOn(second) { updateAfterPruning(expectedValue = 11) }
       enterBarrier("update-second-after-pruning")
 
       // after pruning performed and maxDissemination it is tombstoned
       // and we should still not be able to update with data from removed node
       expectNoMsg(maxPruningDissemination + 3.seconds)
 
-      runOn(first) {
-        updateAfterPruning(expectedValue = 12)
-      }
+      runOn(first) { updateAfterPruning(expectedValue = 12) }
       enterBarrier("update-first-after-tombstone")
 
-      runOn(second) {
-        updateAfterPruning(expectedValue = 13)
-      }
+      runOn(second) { updateAfterPruning(expectedValue = 13) }
       enterBarrier("update-second-after-tombstone")
 
       enterBarrier("after-1")

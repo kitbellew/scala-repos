@@ -227,9 +227,7 @@ object StageActorRefSpec {
             case (sender, CallInitStageActorRef) ⇒
               sender ! getStageActor(behaviour).ref
             case (sender, BecomeStringEcho) ⇒
-              getStageActor {
-                case (theSender, msg) ⇒ theSender ! msg.toString
-              }
+              getStageActor { case (theSender, msg) ⇒ theSender ! msg.toString }
             case (sender, StopNow) ⇒
               p.trySuccess(sum)
               completeStage()

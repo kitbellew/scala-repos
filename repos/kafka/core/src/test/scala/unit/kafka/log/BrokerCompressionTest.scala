@@ -42,9 +42,7 @@ class BrokerCompressionTest(
   val logConfig = LogConfig()
 
   @After
-  def tearDown() {
-    CoreUtils.rm(tmpDir)
-  }
+  def tearDown() { CoreUtils.rm(tmpDir) }
 
   /**
     * Test broker-side compression configuration

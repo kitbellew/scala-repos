@@ -129,9 +129,7 @@ object App extends Logging {
         if (firstKey) {
           info(f"  Access Key: ${k.key}%s | ${events}%s")
           firstKey = false
-        } else {
-          info(f"              ${k.key}%s | ${events}%s")
-        }
+        } else { info(f"              ${k.key}%s | ${events}%s") }
       }
 
       val chans = channels.getByAppid(app.id)
@@ -248,11 +246,8 @@ object App extends Logging {
   }
 
   def dataDelete(ca: ConsoleArgs): Int = {
-    if (ca.app.all) {
-      dataDeleteAll(ca)
-    } else {
-      dataDeleteOne(ca)
-    }
+    if (ca.app.all) { dataDeleteAll(ca) }
+    else { dataDeleteOne(ca) }
   }
 
   def dataDeleteOne(ca: ConsoleArgs): Int = {
@@ -296,16 +291,12 @@ object App extends Logging {
           val r1 = if (events.remove(app.id, channelId)) {
             if (channelId.isDefined) {
               info(s"Removed Event Store for this channel ID: ${channelId.get}")
-            } else {
-              info(s"Removed Event Store for this app ID: ${app.id}")
-            }
+            } else { info(s"Removed Event Store for this app ID: ${app.id}") }
             0
           } else {
             if (channelId.isDefined) {
               error(s"Error removing Event Store for this channel.")
-            } else {
-              error(s"Error removing Event Store for this app.")
-            }
+            } else { error(s"Error removing Event Store for this app.") }
             1
           }
           // re-create table

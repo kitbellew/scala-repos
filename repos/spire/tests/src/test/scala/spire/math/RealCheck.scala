@@ -44,17 +44,13 @@ class RealCheck
     }
   }
 
-  property("x + 0 = x") {
-    forAll { (x: Real) => x + Real.zero shouldBe x }
-  }
+  property("x + 0 = x") { forAll { (x: Real) => x + Real.zero shouldBe x } }
 
   property("x * 0 = 0") {
     forAll { (x: Real) => x * Real.zero shouldBe Real.zero }
   }
 
-  property("x * 1 = x") {
-    forAll { (x: Real) => x + Real.zero shouldBe x }
-  }
+  property("x * 1 = x") { forAll { (x: Real) => x + Real.zero shouldBe x } }
 
   property("x + y = y + x") {
     forAll { (x: Real, y: Real) => x + y shouldBe y + x }
@@ -72,9 +68,7 @@ class RealCheck
     forAll { (x: Real, y: Real) => x * y shouldBe y * x }
   }
 
-  property("x + x = 2x") {
-    forAll { (x: Real) => x + x shouldBe x * Real(2) }
-  }
+  property("x + x = 2x") { forAll { (x: Real) => x + x shouldBe x * Real(2) } }
 
   property("x * (y + z) = xy + xz") {
     forAll { (x: Real, y: Real, z: Real) => x * (y + z) shouldBe x * y + x * z }
@@ -129,11 +123,8 @@ class RealCheck
   property("x.round = (((x * 2).floor + 1) / 2).floor") {
     forAll { (x0: Rational) =>
       val x = Real(x0)
-      if (x.signum >= 0) {
-        x.round shouldBe (((x * 2).floor + 1) / 2).floor
-      } else {
-        x.round shouldBe (((x * 2).ceil - 1) / 2).ceil
-      }
+      if (x.signum >= 0) { x.round shouldBe (((x * 2).floor + 1) / 2).floor }
+      else { x.round shouldBe (((x * 2).ceil - 1) / 2).ceil }
     }
   }
 
@@ -193,17 +184,11 @@ class RealCheck
     }.mkString
 
   // useful for visually debugging atan/asin
-  property("atan sample") {
-    arcSample(_ / 2)(scala.math.atan, Real.atan)
-  }
+  property("atan sample") { arcSample(_ / 2)(scala.math.atan, Real.atan) }
 
-  property("asin sample") {
-    arcSample(_ / 8)(scala.math.asin, Real.asin)
-  }
+  property("asin sample") { arcSample(_ / 8)(scala.math.asin, Real.asin) }
 
-  property("acos sample") {
-    arcSample(_ / 8)(scala.math.acos, Real.acos)
-  }
+  property("acos sample") { arcSample(_ / 8)(scala.math.acos, Real.acos) }
 
   // // TODO: this doesn't really work due to the kind of rounding that
   // // even computable reals introduce when computing 1/3.

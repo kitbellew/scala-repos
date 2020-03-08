@@ -167,9 +167,7 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
   def indexStub(stub: ScTemplateDefinitionStub, sink: IndexSink) {
     if (stub.isScriptFileClass) return
     val name = stub.getName
-    if (name != null) {
-      sink.occurrence(ScalaIndexKeys.SHORT_NAME_KEY, name)
-    }
+    if (name != null) { sink.occurrence(ScalaIndexKeys.SHORT_NAME_KEY, name) }
     val javaName = stub.javaName
     if (javaName != null && stub.isVisibleInJava)
       sink.occurrence(JavaStubIndexKeys.CLASS_SHORT_NAMES, javaName)

@@ -31,9 +31,7 @@ abstract class JSASTTest extends DirectTest {
         try {
           clDefs.map(traverse)
           false
-        } catch {
-          case Found => true
-        }
+        } catch { case Found => true }
       }
 
       def traverse(): Unit = {

@@ -35,9 +35,7 @@ class PromiseRefSpec extends AkkaSpec with ImplicitSender {
     }
 
     "throw IllegalArgumentException on negative timeout" in {
-      intercept[IllegalArgumentException] {
-        PromiseRef(-5.seconds)
-      }
+      intercept[IllegalArgumentException] { PromiseRef(-5.seconds) }
     }
 
     "receive only one message" in {

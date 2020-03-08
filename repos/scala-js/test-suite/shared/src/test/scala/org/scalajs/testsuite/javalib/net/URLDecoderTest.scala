@@ -28,9 +28,7 @@ class URLDecoderTest {
            * when encountering an invalid codepoint.
            */
           res.contains(ReplacementChar)
-        } catch {
-          case _: IllegalArgumentException => true
-        }
+        } catch { case _: IllegalArgumentException => true }
       }
 
       assertTrue(thrown)

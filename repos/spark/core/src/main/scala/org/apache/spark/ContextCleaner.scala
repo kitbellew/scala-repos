@@ -144,9 +144,7 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
     // doing so. This guards against the race condition where a cleaning thread may
     // potentially clean similarly named variables created by a different SparkContext,
     // resulting in otherwise inexplicable block-not-found exceptions (SPARK-6132).
-    synchronized {
-      cleaningThread.interrupt()
-    }
+    synchronized { cleaningThread.interrupt() }
     cleaningThread.join()
     periodicGCService.shutdown()
   }
@@ -230,9 +228,7 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
       sc.unpersistRDD(rddId, blocking)
       listeners.asScala.foreach(_.rddCleaned(rddId))
       logInfo("Cleaned RDD " + rddId)
-    } catch {
-      case e: Exception => logError("Error cleaning RDD " + rddId, e)
-    }
+    } catch { case e: Exception => logError("Error cleaning RDD " + rddId, e) }
   }
 
   /** Perform shuffle cleanup, asynchronously. */

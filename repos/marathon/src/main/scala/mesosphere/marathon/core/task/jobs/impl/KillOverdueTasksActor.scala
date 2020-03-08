@@ -96,9 +96,7 @@ private class KillOverdueTasksActor(support: KillOverdueTasksActor.Support)
     )
   }
 
-  override def postStop(): Unit = {
-    checkTicker.cancel()
-  }
+  override def postStop(): Unit = { checkTicker.cancel() }
 
   override def receive: Receive = {
     case KillOverdueTasksActor.Check(maybeAck) =>

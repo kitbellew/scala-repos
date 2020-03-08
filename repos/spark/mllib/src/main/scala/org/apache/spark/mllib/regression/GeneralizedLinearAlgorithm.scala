@@ -205,9 +205,7 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
     * Generate the initial weights when the user does not supply them
     */
   protected def generateInitialWeights(input: RDD[LabeledPoint]): Vector = {
-    if (numFeatures < 0) {
-      numFeatures = input.map(_.features.size).first()
-    }
+    if (numFeatures < 0) { numFeatures = input.map(_.features.size).first() }
 
     /**
       * When `numOfLinearPredictor > 1`, the intercepts are encapsulated into weights,
@@ -220,13 +218,10 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       * TODO: See if we can deprecate `intercept` in `GeneralizedLinearModel`, and always
       * have the intercept as part of weights to have consistent design.
       */
-    if (numOfLinearPredictor == 1) {
-      Vectors.zeros(numFeatures)
-    } else if (addIntercept) {
+    if (numOfLinearPredictor == 1) { Vectors.zeros(numFeatures) }
+    else if (addIntercept) {
       Vectors.zeros((numFeatures + 1) * numOfLinearPredictor)
-    } else {
-      Vectors.zeros(numFeatures * numOfLinearPredictor)
-    }
+    } else { Vectors.zeros(numFeatures * numOfLinearPredictor) }
   }
 
   /**
@@ -247,9 +242,7 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
   @Since("1.0.0")
   def run(input: RDD[LabeledPoint], initialWeights: Vector): M = {
 
-    if (numFeatures < 0) {
-      numFeatures = input.map(_.features.size).first()
-    }
+    if (numFeatures < 0) { numFeatures = input.map(_.features.size).first() }
 
     if (input.getStorageLevel == StorageLevel.NONE) {
       logWarning(
@@ -284,9 +277,7 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
     val scaler = if (useFeatureScaling) {
       new StandardScaler(withStd = true, withMean = false)
         .fit(input.map(_.features))
-    } else {
-      null
-    }
+    } else { null }
 
     // Prepend an extra variable consisting of all 1.0's for the intercept.
     // TODO: Apply feature scaling to the weight vector instead of input data.
@@ -296,15 +287,11 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
           input
             .map(lp => (lp.label, appendBias(scaler.transform(lp.features))))
             .cache()
-        } else {
-          input.map(lp => (lp.label, appendBias(lp.features))).cache()
-        }
+        } else { input.map(lp => (lp.label, appendBias(lp.features))).cache() }
       } else {
         if (useFeatureScaling) {
           input.map(lp => (lp.label, scaler.transform(lp.features))).cache()
-        } else {
-          input.map(lp => (lp.label, lp.features))
-        }
+        } else { input.map(lp => (lp.label, lp.features)) }
       }
 
     /**
@@ -326,16 +313,12 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
 
     val intercept = if (addIntercept && numOfLinearPredictor == 1) {
       weightsWithIntercept(weightsWithIntercept.size - 1)
-    } else {
-      0.0
-    }
+    } else { 0.0 }
 
     var weights = if (addIntercept && numOfLinearPredictor == 1) {
       Vectors.dense(
         weightsWithIntercept.toArray.slice(0, weightsWithIntercept.size - 1))
-    } else {
-      weightsWithIntercept
-    }
+    } else { weightsWithIntercept }
 
     /**
       * The weights and intercept are trained in the scaled space; we're converting them back to
@@ -346,9 +329,8 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       * is the coefficient in the original space, and v_i is the variance of the column i.
       */
     if (useFeatureScaling) {
-      if (numOfLinearPredictor == 1) {
-        weights = scaler.transform(weights)
-      } else {
+      if (numOfLinearPredictor == 1) { weights = scaler.transform(weights) }
+      else {
 
         /**
           * For `numOfLinearPredictor > 1`, we have to transform the weights back to the original
@@ -386,9 +368,7 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
     }
 
     // Unpersist cached data
-    if (data.getStorageLevel != StorageLevel.NONE) {
-      data.unpersist(false)
-    }
+    if (data.getStorageLevel != StorageLevel.NONE) { data.unpersist(false) }
 
     createModel(weights, intercept)
   }

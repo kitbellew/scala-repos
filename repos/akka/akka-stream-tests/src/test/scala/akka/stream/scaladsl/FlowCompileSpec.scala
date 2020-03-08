@@ -28,12 +28,8 @@ class FlowCompileSpec extends AkkaSpec {
       val open: Flow[Int, Int, _] = Flow[Int]
       "open.run()" shouldNot compile
     }
-    "accept Iterable" in {
-      val f: Source[Int, _] = intSeq.via(Flow[Int])
-    }
-    "accept Future" in {
-      val f: Source[Int, _] = intFut.via(Flow[Int])
-    }
+    "accept Iterable" in { val f: Source[Int, _] = intSeq.via(Flow[Int]) }
+    "accept Future" in { val f: Source[Int, _] = intFut.via(Flow[Int]) }
     "append Flow" in {
       val open1: Flow[Int, String, _] = Flow[Int].map(_.toString)
       val open2: Flow[String, Int, _] = Flow[String].map(_.hashCode)
@@ -72,29 +68,17 @@ class FlowCompileSpec extends AkkaSpec {
   "Sink" should {
     val openSink: Sink[Int, _] =
       Flow[Int].map(_.toString).to(Sink.asPublisher[String](false))
-    "accept Source" in {
-      intSeq.to(openSink)
-    }
-    "not accept Sink" in {
-      "openSink.to(Sink.head[String])" shouldNot compile
-    }
-    "not run()" in {
-      "openSink.run()" shouldNot compile
-    }
+    "accept Source" in { intSeq.to(openSink) }
+    "not accept Sink" in { "openSink.to(Sink.head[String])" shouldNot compile }
+    "not run()" in { "openSink.run()" shouldNot compile }
   }
 
   "Source" should {
     val openSource: Source[String, _] =
       Source(Seq(1, 2, 3)).map(_.toString)
-    "accept Sink" in {
-      openSource.to(Sink.asPublisher[String](false))
-    }
-    "not be accepted by Source" in {
-      "openSource.to(intSeq)" shouldNot compile
-    }
-    "not run()" in {
-      "openSource.run()" shouldNot compile
-    }
+    "accept Sink" in { openSource.to(Sink.asPublisher[String](false)) }
+    "not be accepted by Source" in { "openSource.to(intSeq)" shouldNot compile }
+    "not run()" in { "openSource.run()" shouldNot compile }
   }
 
   "RunnableGraph" should {
@@ -103,16 +87,10 @@ class FlowCompileSpec extends AkkaSpec {
       Source(Seq(1, 2, 3))
         .map(_.toString)
         .toMat(Sink.asPublisher[String](false))(Keep.right)
-    "run" in {
-      closed.run()
-    }
-    "not be accepted by Source" in {
-      "intSeq.to(closed)" shouldNot compile
-    }
+    "run" in { closed.run() }
+    "not be accepted by Source" in { "intSeq.to(closed)" shouldNot compile }
 
-    "not accept Sink" in {
-      "closed.to(Sink.head[String])" shouldNot compile
-    }
+    "not accept Sink" in { "closed.to(Sink.head[String])" shouldNot compile }
   }
 
   "FlowOps" should {

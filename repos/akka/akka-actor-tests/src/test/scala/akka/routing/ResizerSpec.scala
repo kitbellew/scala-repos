@@ -29,9 +29,7 @@ object ResizerSpec {
     """
 
   class TestActor extends Actor {
-    def receive = {
-      case latch: TestLatch ⇒ latch.countDown()
-    }
+    def receive = { case latch: TestLatch ⇒ latch.countDown() }
   }
 
 }
@@ -92,9 +90,7 @@ class ResizerSpec
           enabled = on
         }
       """)
-      intercept[ResizerInitializationException] {
-        Resizer.fromConfig(cfg)
-      }
+      intercept[ResizerInitializationException] { Resizer.fromConfig(cfg) }
     }
 
     "return None if neither resizer is enabled which is default" in {

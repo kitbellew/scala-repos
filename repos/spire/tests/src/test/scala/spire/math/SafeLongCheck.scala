@@ -113,11 +113,8 @@ class SafeLongCheck
       val sx = SafeLong(x)
       val sm = SafeLong(m)
       if (!sm.isZero) {
-        if (k < 0) {
-          intercept[IllegalArgumentException] { sx.modPow(k, sm) }
-        } else {
-          invariant(sx.modPow(k, sm)) shouldBe (sx pow k) % m
-        }
+        if (k < 0) { intercept[IllegalArgumentException] { sx.modPow(k, sm) } }
+        else { invariant(sx.modPow(k, sm)) shouldBe (sx pow k) % m }
       }
       true shouldBe true
     }

@@ -286,9 +286,7 @@ object ScalaRunTime {
         val classLoader = potentialSubClass.getClassLoader
         val clazz = Class.forName(ofClass, /*initialize =*/ false, classLoader)
         clazz.isAssignableFrom(potentialSubClass)
-      } catch {
-        case cnfe: ClassNotFoundException => false
-      }
+      } catch { case cnfe: ClassNotFoundException => false }
     def isXmlNode(potentialSubClass: Class[_]) =
       isSubClassOf(potentialSubClass, "scala.xml.Node")
     def isXmlMetaData(potentialSubClass: Class[_]) =

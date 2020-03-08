@@ -70,14 +70,8 @@ abstract class ScalaPsiTestCase extends PsiTestCase {
           }
         })
       } finally {
-        if (!Disposer.isDisposed(libModel)) {
-          Disposer.dispose(libModel)
-        }
+        if (!Disposer.isDisposed(libModel)) { Disposer.dispose(libModel) }
       }
-    } finally {
-      if (!rootModel.isDisposed) {
-        rootModel.dispose()
-      }
-    }
+    } finally { if (!rootModel.isDisposed) { rootModel.dispose() } }
   }
 }

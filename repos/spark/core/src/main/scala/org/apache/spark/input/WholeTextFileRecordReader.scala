@@ -34,9 +34,7 @@ import org.apache.hadoop.mapreduce.lib.input.{
   */
 private[spark] trait Configurable extends HConfigurable {
   private var conf: Configuration = _
-  def setConf(c: Configuration) {
-    conf = c
-  }
+  def setConf(c: Configuration) { conf = c }
   def getConf: Configuration = conf
 }
 
@@ -81,17 +79,13 @@ private[spark] class WholeTextFileRecordReader(
       val fileIn = fs.open(path)
       val innerBuffer = if (codec != null) {
         ByteStreams.toByteArray(codec.createInputStream(fileIn))
-      } else {
-        ByteStreams.toByteArray(fileIn)
-      }
+      } else { ByteStreams.toByteArray(fileIn) }
 
       value = new Text(innerBuffer)
       Closeables.close(fileIn, false)
       processed = true
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 }
 
@@ -113,9 +107,7 @@ private[spark] class ConfigurableCombineFileRecordReader[K, V](
 
   override def initNextRecordReader(): Boolean = {
     val r = super.initNextRecordReader()
-    if (r) {
-      this.curReader.asInstanceOf[HConfigurable].setConf(getConf)
-    }
+    if (r) { this.curReader.asInstanceOf[HConfigurable].setConf(getConf) }
     r
   }
 }

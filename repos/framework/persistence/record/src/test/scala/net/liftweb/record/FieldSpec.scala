@@ -137,11 +137,8 @@ object FieldSpec extends Specification {
       "which are only flagged as dirty_? when setBox is called with a different value" in {
         in.clear
         in match {
-          case owned: OwnedField[_] =>
-            owned.owner.runSafe {
-              in.resetDirty
-            }
-          case _ => in.resetDirty
+          case owned: OwnedField[_] => owned.owner.runSafe { in.resetDirty }
+          case _                    => in.resetDirty
         }
         in.dirty_? must_== false
         val valueBox = in.valueBox
@@ -167,9 +164,7 @@ object FieldSpec extends Specification {
       commonBehaviorsForAllFlavors(mandatory)
       commonBehaviorsForMandatory(mandatory)
 
-      "which are configured correctly" in {
-        mandatory.optional_? must_== false
-      }
+      "which are configured correctly" in { mandatory.optional_? must_== false }
 
       "which initialize to some value" in {
         mandatory.clear
@@ -193,9 +188,7 @@ object FieldSpec extends Specification {
         legacyOptional.optional_? must_== true
       }
 
-      "which initialize to Empty" in {
-        legacyOptional.valueBox must_== Empty
-      }
+      "which initialize to Empty" in { legacyOptional.valueBox must_== Empty }
 
       "which do not fail when set to Empty" in {
         legacyOptional.set(example)
@@ -221,13 +214,9 @@ object FieldSpec extends Specification {
     "support optional fields" in {
       commonBehaviorsForAllFlavors(optional)
 
-      "which are configured correctly" in {
-        optional.optional_? must_== true
-      }
+      "which are configured correctly" in { optional.optional_? must_== true }
 
-      "which initialize to Empty" in {
-        optional.valueBox must_== Empty
-      }
+      "which initialize to Empty" in { optional.valueBox must_== Empty }
 
       "which don't fail when set with an empty string" in {
         optional.setFromString(null)

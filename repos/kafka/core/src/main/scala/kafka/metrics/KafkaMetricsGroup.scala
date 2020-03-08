@@ -241,9 +241,7 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
         .mkString(",")
 
       Some(tagsString)
-    } else {
-      None
-    }
+    } else { None }
   }
 
   private def toScope(tags: collection.Map[String, String]): Option[String] = {
@@ -259,9 +257,7 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
         .mkString(".")
 
       Some(tagsString)
-    } else {
-      None
-    }
+    } else { None }
   }
 
   def removeAllConsumerMetrics(clientId: String) {

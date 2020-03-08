@@ -37,46 +37,32 @@ class PhongMaterial(
 
   /** The bump map of this `PhongMaterial`. */
   def bumpMap: ObjectProperty[jfxsi.Image] = delegate.bumpMapProperty
-  def bumpMap_=(v: jfxsi.Image) {
-    bumpMap() = v
-  }
+  def bumpMap_=(v: jfxsi.Image) { bumpMap() = v }
 
   /** Specifies the diffuse color of this Material. */
   def diffuseColor: ObjectProperty[jfxsp.Color] = delegate.diffuseColorProperty
-  def diffuseColor_=(v: jfxsp.Color) {
-    diffuseColor() = v
-  }
+  def diffuseColor_=(v: jfxsp.Color) { diffuseColor() = v }
 
   /** The diffuse map of this `PhongMaterial`. */
   def diffuseMap: ObjectProperty[jfxsi.Image] = delegate.diffuseMapProperty
-  def diffuseMap_=(v: jfxsi.Image) {
-    diffuseMap() = v
-  }
+  def diffuseMap_=(v: jfxsi.Image) { diffuseMap() = v }
 
   /** The self illumination map of this `PhongMaterial`. */
   def selfIlluminationMap: ObjectProperty[jfxsi.Image] =
     delegate.selfIlluminationMapProperty
-  def selfIlluminationMap_=(v: jfxsi.Image) {
-    selfIlluminationMap() = v
-  }
+  def selfIlluminationMap_=(v: jfxsi.Image) { selfIlluminationMap() = v }
 
   /** Specifies the specular color of this Material. */
   def specularColor: ObjectProperty[jfxsp.Color] =
     delegate.specularColorProperty
-  def specularColor_=(v: jfxsp.Color) {
-    specularColor() = v
-  }
+  def specularColor_=(v: jfxsp.Color) { specularColor() = v }
 
   /** The specular map of this `PhongMaterial`. */
   def specularMap: ObjectProperty[jfxsi.Image] = delegate.specularMapProperty
-  def specularMap_=(v: jfxsi.Image) {
-    specularMap() = v
-  }
+  def specularMap_=(v: jfxsi.Image) { specularMap() = v }
 
   /** Defines the specular power of this Material. */
   def specularPower: DoubleProperty = delegate.specularPowerProperty
-  def specularPower_=(v: Double) {
-    specularPower() = v
-  }
+  def specularPower_=(v: Double) { specularPower() = v }
 
 }

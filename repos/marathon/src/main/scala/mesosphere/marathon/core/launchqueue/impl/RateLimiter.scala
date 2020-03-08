@@ -49,9 +49,8 @@ private[launchqueue] class RateLimiter(clock: Clock) {
           (now until maybeDelay.map(_.deadline).getOrElse(now)).toHumanReadable
         val timeLeft = (now until newDelay.deadline).toHumanReadable
 
-        if (newDelay.deadline <= now) {
-          resetDelay(app)
-        } else {
+        if (newDelay.deadline <= now) { resetDelay(app) }
+        else {
           log.info(
             s"$message. Task launch delay for [${app.id}] changed from [$priorTimeLeft] to [$timeLeft].")
           taskLaunchDelays += ((

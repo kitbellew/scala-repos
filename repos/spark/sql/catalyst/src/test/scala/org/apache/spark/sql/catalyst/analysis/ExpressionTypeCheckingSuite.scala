@@ -37,9 +37,7 @@ class ExpressionTypeCheckingSuite extends SparkFunSuite {
     'mapField.map(StringType, LongType))
 
   def assertError(expr: Expression, errorMessage: String): Unit = {
-    val e = intercept[AnalysisException] {
-      assertSuccess(expr)
-    }
+    val e = intercept[AnalysisException] { assertSuccess(expr) }
     assert(
       e.getMessage.contains(
         s"cannot resolve '${expr.sql}' due to data type mismatch:"))

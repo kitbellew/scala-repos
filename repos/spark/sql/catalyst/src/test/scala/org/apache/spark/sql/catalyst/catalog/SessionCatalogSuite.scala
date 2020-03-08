@@ -168,9 +168,7 @@ class SessionCatalogSuite extends SparkFunSuite {
     assert(catalog.getCurrentDatabase == "default")
     catalog.setCurrentDatabase("db2")
     assert(catalog.getCurrentDatabase == "db2")
-    intercept[AnalysisException] {
-      catalog.setCurrentDatabase("deebo")
-    }
+    intercept[AnalysisException] { catalog.setCurrentDatabase("deebo") }
     catalog.createDatabase(newDb("deebo"), ignoreIfExists = false)
     catalog.setCurrentDatabase("deebo")
     assert(catalog.getCurrentDatabase == "deebo")
@@ -469,9 +467,7 @@ class SessionCatalogSuite extends SparkFunSuite {
           TableIdentifier("tbl4"),
           TableIdentifier("tbl1", Some("db2")),
           TableIdentifier("tbl2", Some("db2"))))
-    intercept[AnalysisException] {
-      catalog.listTables("unknown_db")
-    }
+    intercept[AnalysisException] { catalog.listTables("unknown_db") }
   }
 
   test("list tables with pattern") {
@@ -493,9 +489,7 @@ class SessionCatalogSuite extends SparkFunSuite {
     assert(
       catalog.listTables("db2", "*1").toSet ==
         Set(TableIdentifier("tbl1"), TableIdentifier("tbl1", Some("db2"))))
-    intercept[AnalysisException] {
-      catalog.listTables("unknown_db")
-    }
+    intercept[AnalysisException] { catalog.listTables("unknown_db") }
   }
 
   // --------------------------------------------------------------------------

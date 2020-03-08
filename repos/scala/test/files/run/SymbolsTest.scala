@@ -85,9 +85,7 @@ object Test {
     assert(scl.s1 == Symbol("myFirstSymbol"))
   }
 
-  def testForLoop {
-    for (i <- 0 until 100) List("Val" + i)
-  }
+  def testForLoop { for (i <- 0 until 100) List("Val" + i) }
 
   def testInnerClasses {
     val innerPower = new Inner

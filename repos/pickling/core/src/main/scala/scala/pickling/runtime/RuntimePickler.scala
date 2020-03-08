@@ -97,9 +97,7 @@ class RuntimePickler(
 
       builder.putField(
         fir.name,
-        b => {
-          pickleLogic(fldClass, fldValue, b, fldPickler, fldTag)
-        })
+        b => { pickleLogic(fldClass, fldValue, b, fldPickler, fldTag) })
     }
 
     def pickleLogic(
@@ -182,9 +180,7 @@ class RuntimePickler(
 
       builder.putField(
         field.getName,
-        b => {
-          pickleLogic(fldClass, fldValue, b, fldPickler, fldTag)
-        })
+        b => { pickleLogic(fldClass, fldValue, b, fldPickler, fldTag) })
     }
 
     def pickleLogic(
@@ -255,9 +251,7 @@ class RuntimePickler(
                 new PrivateEffectivelyFinalJavaFieldLogic(fir, javaField)
               else new PrivateJavaFieldLogic(fir, javaField)
             )
-          } catch {
-            case e: java.lang.NoSuchFieldException => List()
-          }
+          } catch { case e: java.lang.NoSuchFieldException => List() }
       }
 
       def putFields(picklee: Any, builder: PBuilder): Unit = {

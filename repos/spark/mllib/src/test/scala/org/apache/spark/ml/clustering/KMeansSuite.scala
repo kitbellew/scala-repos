@@ -74,15 +74,11 @@ class KMeansSuite
   }
 
   test("parameters validation") {
-    intercept[IllegalArgumentException] {
-      new KMeans().setK(1)
-    }
+    intercept[IllegalArgumentException] { new KMeans().setK(1) }
     intercept[IllegalArgumentException] {
       new KMeans().setInitMode("no_such_a_mode")
     }
-    intercept[IllegalArgumentException] {
-      new KMeans().setInitSteps(0)
-    }
+    intercept[IllegalArgumentException] { new KMeans().setInitSteps(0) }
   }
 
   test("fit & transform") {

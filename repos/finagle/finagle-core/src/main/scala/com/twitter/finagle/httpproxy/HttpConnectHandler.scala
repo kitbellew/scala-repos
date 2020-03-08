@@ -51,9 +51,7 @@ object HttpConnectHandler {
       proxyAddr: SocketAddress,
       addr: InetSocketAddress,
       pipeline: ChannelPipeline
-  ): HttpConnectHandler = {
-    addHandler(proxyAddr, addr, pipeline, None)
-  }
+  ): HttpConnectHandler = { addHandler(proxyAddr, addr, pipeline, None) }
 }
 
 class HttpConnectHandler(

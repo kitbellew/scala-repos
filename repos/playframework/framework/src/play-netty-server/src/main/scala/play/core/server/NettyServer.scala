@@ -179,14 +179,10 @@ class NettyServer(
           sslEngine.setUseClientMode(false)
           if (config.configuration
                 .getBoolean("play.server.https.wantClientAuth")
-                .getOrElse(false)) {
-            sslEngine.setWantClientAuth(true)
-          }
+                .getOrElse(false)) { sslEngine.setWantClientAuth(true) }
           if (config.configuration
                 .getBoolean("play.server.https.needClientAuth")
-                .getOrElse(false)) {
-            sslEngine.setNeedClientAuth(true)
-          }
+                .getOrElse(false)) { sslEngine.setNeedClientAuth(true) }
           pipeline.addLast("ssl", new SslHandler(sslEngine))
         }
       }
@@ -266,11 +262,8 @@ class NettyServer(
     // Now shut the application down
     applicationProvider.current.foreach(Play.stop)
 
-    try {
-      super.stop()
-    } catch {
-      case NonFatal(e) => logger.error("Error while stopping logger", e)
-    }
+    try { super.stop() }
+    catch { case NonFatal(e) => logger.error("Error while stopping logger", e) }
 
     mode match {
       case Mode.Test =>

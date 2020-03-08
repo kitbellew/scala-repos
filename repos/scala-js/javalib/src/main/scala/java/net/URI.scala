@@ -677,9 +677,7 @@ object URI {
           decoder.reset()
           byteBuf.clear()
           decoding = false
-        } else {
-          byteBuf.compact()
-        }
+        } else { byteBuf.compact() }
       }
 
       while (inBuf.hasRemaining) {

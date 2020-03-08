@@ -482,9 +482,7 @@ trait RepositoryService { self: AccountService =>
       getGroupMembers(userName).collect {
         case x if (x.isManager) => x.userName
       }
-    } else {
-      Seq(userName)
-    }
+    } else { Seq(userName) }
 
   /**
     * Updates the last activity date of the repository.

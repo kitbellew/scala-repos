@@ -55,9 +55,7 @@ class RedundantBlockInspection extends AbstractInspection {
     def doApplyFix(project: Project): Unit = {
       val bl = getElement
       val children = bl.getChildren.drop(1).dropRight(1)
-      for (child <- children) {
-        bl.getParent.addBefore(child, bl)
-      }
+      for (child <- children) { bl.getParent.addBefore(child, bl) }
       bl.delete()
     }
   }

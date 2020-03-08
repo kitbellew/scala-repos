@@ -20,13 +20,9 @@ class ConnectionHandler(
 ) extends Actor
     with ActorLogging {
 
-  override def preStart(): Unit = {
-    broadcaster ! Broadcaster.Register
-  }
+  override def preStart(): Unit = { broadcaster ! Broadcaster.Register }
 
-  override def postStop(): Unit = {
-    broadcaster ! Broadcaster.Unregister
-  }
+  override def postStop(): Unit = { broadcaster ! Broadcaster.Unregister }
 
   // not Receive, thanks to https://issues.scala-lang.org/browse/SI-8861
   // (fixed in 2.11.7)

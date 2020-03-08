@@ -92,9 +92,8 @@ abstract class TreeGen {
       case SingleType(pre, sym) =>
         mkApplyIfNeeded(mkAttributedStableRef(pre, sym))
       case TypeRef(pre, sym, args) =>
-        if (sym.isRoot) {
-          mkAttributedThis(sym)
-        } else if (sym.isModuleClass) {
+        if (sym.isRoot) { mkAttributedThis(sym) }
+        else if (sym.isModuleClass) {
           mkApplyIfNeeded(mkAttributedRef(pre, sym.sourceModule))
         } else if (sym.isModule || sym.isClass) {
           assert(phase.erasedTypes, failMessage)
@@ -102,9 +101,7 @@ abstract class TreeGen {
         } else if (sym.isType) {
           assert(termSym != NoSymbol, failMessage)
           mkAttributedIdent(termSym) setType tpe
-        } else {
-          mkAttributedRef(pre, sym)
-        }
+        } else { mkAttributedRef(pre, sym) }
 
       case ConstantType(value) =>
         Literal(value) setType tpe
@@ -560,9 +557,7 @@ abstract class TreeGen {
               Nil,
               mkTemplate(parents, self, NoMods, ListOfNil, stats, cpos.focus))
           }),
-          atPos(npos) {
-            New(Ident(x) setPos npos.focus, Nil)
-          }
+          atPos(npos) { New(Ident(x) setPos npos.focus, Nil) }
         )
       }
     }

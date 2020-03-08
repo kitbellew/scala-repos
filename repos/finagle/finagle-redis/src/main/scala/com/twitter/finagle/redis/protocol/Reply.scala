@@ -105,9 +105,7 @@ class ReplyCodec extends UnifiedProtocolCodec {
   }
 
   def decodeBulkReply = readLine { line =>
-    RequireServerProtocol.safe {
-      NumberFormat.toInt(line)
-    } match {
+    RequireServerProtocol.safe { NumberFormat.toInt(line) } match {
       case empty if empty < 0 => emit(EmptyBulkReply())
       case replySz =>
         readBytes(replySz) { bytes =>

@@ -158,15 +158,11 @@ private[spark] class TaskSetManager(
   // Figure out the current map output tracker epoch and set it on all tasks
   val epoch = sched.mapOutputTracker.getEpoch
   logDebug("Epoch for " + taskSet + ": " + epoch)
-  for (t <- tasks) {
-    t.epoch = epoch
-  }
+  for (t <- tasks) { t.epoch = epoch }
 
   // Add all our tasks to the pending lists. We do this in reverse order
   // of task index so that tasks with low indices get launched first.
-  for (i <- (0 until numTasks).reverse) {
-    addPendingTask(i)
-  }
+  for (i <- (0 until numTasks).reverse) { addPendingTask(i) }
 
   // Figure out which locality levels we have in our TaskSet, so we can do delay scheduling
   var myLocalityLevels = computeValidLocalityLevels()
@@ -414,9 +410,7 @@ private[spark] class TaskSetManager(
       for {
         rack <- sched.getRackForHost(host)
         index <- dequeueTaskFromList(execId, getPendingTasksForRack(rack))
-      } {
-        return Some((index, TaskLocality.RACK_LOCAL, false))
-      }
+      } { return Some((index, TaskLocality.RACK_LOCAL, false)) }
     }
 
     if (TaskLocality.isAllowed(maxLocality, TaskLocality.ANY)) {
@@ -539,9 +533,7 @@ private[spark] class TaskSetManager(
   }
 
   private def maybeFinishTaskSet() {
-    if (isZombie && runningTasks == 0) {
-      sched.taskSetFinished(this)
-    }
+    if (isZombie && runningTasks == 0) { sched.taskSetFinished(this) }
   }
 
   /**
@@ -556,11 +548,8 @@ private[spark] class TaskSetManager(
       while (indexOffset > 0) {
         indexOffset -= 1
         val index = pendingTaskIds(indexOffset)
-        if (copiesRunning(index) == 0 && !successful(index)) {
-          return true
-        } else {
-          pendingTaskIds.remove(indexOffset)
-        }
+        if (copiesRunning(index) == 0 && !successful(index)) { return true }
+        else { pendingTaskIds.remove(indexOffset) }
       }
       false
     }
@@ -572,9 +561,8 @@ private[spark] class TaskSetManager(
       val emptyKeys = new ArrayBuffer[String]
       val hasTasks = pendingTasks.exists {
         case (id: String, tasks: ArrayBuffer[Int]) =>
-          if (tasksNeedToBeScheduledFrom(tasks)) {
-            true
-          } else {
+          if (tasksNeedToBeScheduledFrom(tasks)) { true }
+          else {
             emptyKeys += id
             false
           }
@@ -610,9 +598,7 @@ private[spark] class TaskSetManager(
           s"Moving to ${myLocalityLevels(currentLocalityIndex + 1)} after waiting for " +
             s"${localityWaits(currentLocalityIndex)}ms")
         currentLocalityIndex += 1
-      } else {
-        return myLocalityLevels(currentLocalityIndex)
-      }
+      } else { return myLocalityLevels(currentLocalityIndex) }
     }
     myLocalityLevels(currentLocalityIndex)
   }
@@ -624,9 +610,7 @@ private[spark] class TaskSetManager(
     */
   def getLocalityIndex(locality: TaskLocality.TaskLocality): Int = {
     var index = 0
-    while (locality > myLocalityLevels(index)) {
-      index += 1
-    }
+    while (locality > myLocalityLevels(index)) { index += 1 }
     index
   }
 
@@ -653,9 +637,7 @@ private[spark] class TaskSetManager(
       logError(msg)
       abort(msg)
       false
-    } else {
-      true
-    }
+    } else { true }
   }
 
   /**
@@ -691,9 +673,7 @@ private[spark] class TaskSetManager(
           numTasks))
       // Mark successful and stop if all the tasks have succeeded.
       successful(index) = true
-      if (tasksSuccessful == numTasks) {
-        isZombie = true
-      }
+      if (tasksSuccessful == numTasks) { isZombie = true }
     } else {
       logInfo(
         "Ignoring task-finished event for " + info.id + " in stage " + taskSet.id +
@@ -709,9 +689,7 @@ private[spark] class TaskSetManager(
     */
   def handleFailedTask(tid: Long, state: TaskState, reason: TaskEndReason) {
     val info = taskInfos(tid)
-    if (info.failed) {
-      return
-    }
+    if (info.failed) { return }
     removeRunningTask(tid)
     info.markFailed()
     val index = info.index
@@ -761,9 +739,8 @@ private[spark] class TaskSetManager(
             (true, 0)
           }
         }
-        if (printFull) {
-          logWarning(failureReason)
-        } else {
+        if (printFull) { logWarning(failureReason) }
+        else {
           logInfo(
             s"Lost task ${info.id} in stage ${taskSet.id} (TID $tid) on executor ${info.host}: " +
               s"${ef.className} (${ef.description}) [duplicate $dupCount]")
@@ -836,9 +813,7 @@ private[spark] class TaskSetManager(
     }
   }
 
-  override def getSchedulableByName(name: String): Schedulable = {
-    null
-  }
+  override def getSchedulableByName(name: String): Schedulable = { null }
 
   override def addSchedulable(schedulable: Schedulable) {}
 
@@ -908,9 +883,7 @@ private[spark] class TaskSetManager(
   override def checkSpeculatableTasks(): Boolean = {
     // Can't speculate if we only have one task, and no need to speculate if the task set is a
     // zombie.
-    if (isZombie || numTasks == 1) {
-      return false
-    }
+    if (isZombie || numTasks == 1) { return false }
     var foundTasks = false
     val minFinishedForSpeculation =
       (SPECULATION_QUANTILE * numTasks).floor.toInt
@@ -954,9 +927,7 @@ private[spark] class TaskSetManager(
 
     if (localityWaitKey != null) {
       conf.getTimeAsMs(localityWaitKey, defaultWait)
-    } else {
-      0L
-    }
+    } else { 0L }
   }
 
   /**
@@ -976,9 +947,7 @@ private[spark] class TaskSetManager(
         pendingTasksForHost.keySet.exists(sched.hasExecutorsAliveOnHost(_))) {
       levels += NODE_LOCAL
     }
-    if (!pendingTasksWithNoPrefs.isEmpty) {
-      levels += NO_PREF
-    }
+    if (!pendingTasksWithNoPrefs.isEmpty) { levels += NO_PREF }
     if (!pendingTasksForRack.isEmpty && getLocalityWait(RACK_LOCAL) != 0 &&
         pendingTasksForRack.keySet.exists(sched.hasHostAliveOnRack(_))) {
       levels += RACK_LOCAL
@@ -996,9 +965,7 @@ private[spark] class TaskSetManager(
     currentLocalityIndex = getLocalityIndex(previousLocalityLevel)
   }
 
-  def executorAdded() {
-    recomputeLocality()
-  }
+  def executorAdded() { recomputeLocality() }
 }
 
 private[spark] object TaskSetManager {

@@ -142,9 +142,8 @@ trait ReferrerAuthenticator { self: ControllerBase with RepositoryService =>
     {
       defining(request.paths) { paths =>
         getRepository(paths(0), paths(1)).map { repository =>
-          if (!repository.repository.isPrivate) {
-            action(repository)
-          } else {
+          if (!repository.repository.isPrivate) { action(repository) }
+          else {
             context.loginAccount match {
               case Some(x) if (x.isAdmin)              => action(repository)
               case Some(x) if (paths(0) == x.userName) => action(repository)

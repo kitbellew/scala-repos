@@ -82,9 +82,7 @@ trait Chunker {
     try {
       while (buffer.remaining() > 0) {
         val chunk = takeChunk(buffer)
-        while (chunk.remaining() > 0) {
-          channel.write(chunk)
-        }
+        while (chunk.remaining() > 0) { channel.write(chunk) }
       }
       Success(result)
     } catch {
@@ -97,18 +95,14 @@ trait Chunker {
       channel: ReadableByteChannel): Validation[IOException, ByteBuffer] = {
     try {
       val chunk = allocate(ChunkSize)
-      while (chunk.remaining() > 0) {
-        channel.read(chunk)
-      }
+      while (chunk.remaining() > 0) { channel.read(chunk) }
       chunk.flip()
 
       val length = chunk.getInt(0)
       val buffer = allocate(length)
       while (readChunk(chunk, buffer) > 0) {
         chunk.clear()
-        while (chunk.remaining() > 0) {
-          channel.read(chunk)
-        }
+        while (chunk.remaining() > 0) { channel.read(chunk) }
         chunk.flip()
       }
       buffer.flip()

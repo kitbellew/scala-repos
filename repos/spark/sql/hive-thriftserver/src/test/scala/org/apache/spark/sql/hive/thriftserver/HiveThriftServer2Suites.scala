@@ -244,17 +244,13 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         val rs1 =
           statement.executeQuery("SELECT key FROM test_table ORDER BY KEY DESC")
         val buf1 = new collection.mutable.ArrayBuffer[Int]()
-        while (rs1.next()) {
-          buf1 += rs1.getInt(1)
-        }
+        while (rs1.next()) { buf1 += rs1.getInt(1) }
         rs1.close()
 
         val rs2 =
           statement.executeQuery("SELECT key FROM test_map ORDER BY KEY DESC")
         val buf2 = new collection.mutable.ArrayBuffer[Int]()
-        while (rs2.next()) {
-          buf2 += rs2.getInt(1)
-        }
+        while (rs2.next()) { buf2 += rs2.getInt(1) }
         rs2.close()
 
         assert(buf1 === buf2)
@@ -328,9 +324,7 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         val rs =
           statement.executeQuery("SELECT key FROM test_map ORDER BY KEY DESC")
         val buf = new collection.mutable.ArrayBuffer[Int]()
-        while (rs.next()) {
-          buf += rs.getInt(1)
-        }
+        while (rs.next()) { buf += rs.getInt(1) }
         rs.close()
         assert(buf === data)
       },
@@ -385,9 +379,7 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         // slightly more conservatively than may be strictly necessary.
         Thread.sleep(1000)
         statement.cancel()
-        val e = intercept[SQLException] {
-          Await.result(f, 3.minute)
-        }
+        val e = intercept[SQLException] { Await.result(f, 3.minute) }
         assert(e.getMessage.contains("cancelled"))
 
         // Cancellation is a no-op if spark.sql.hive.thriftServer.async=false
@@ -415,9 +407,7 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         } finally {
           statement.executeQuery("SET spark.sql.hive.thriftServer.async=true")
         }
-      } finally {
-        ec.shutdownNow()
-      }
+      } finally { ec.shutdownNow() }
     }
   }
 
@@ -646,9 +636,7 @@ abstract class HiveThriftJdbcTest extends HiveThriftServer2Test {
        |hive.server2.transport.mode=http;
        |hive.server2.thrift.http.path=cliservice
      """.stripMargin.split("\n").mkString.trim
-    } else {
-      s"jdbc:hive2://localhost:$serverPort/"
-    }
+    } else { s"jdbc:hive2://localhost:$serverPort/" }
 
   def withMultipleConnectionJdbcStatement(fs: (Statement => Unit)*) {
     val user = System.getProperty("user.name")
@@ -657,9 +645,8 @@ abstract class HiveThriftJdbcTest extends HiveThriftServer2Test {
     }
     val statements = connections.map(_.createStatement())
 
-    try {
-      statements.zip(fs).foreach { case (s, f) => f(s) }
-    } finally {
+    try { statements.zip(fs).foreach { case (s, f) => f(s) } }
+    finally {
       statements.foreach(_.close())
       connections.foreach(_.close())
     }
@@ -706,9 +693,7 @@ abstract class HiveThriftServer2Test
   protected def serverStartCommand(port: Int) = {
     val portConf = if (mode == ServerMode.binary) {
       ConfVars.HIVE_SERVER2_THRIFT_PORT
-    } else {
-      ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT
-    }
+    } else { ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT }
 
     val driverClassPath = {
       // Writes a temporary log4j.properties and prepend it to driver classpath, so that it
@@ -822,9 +807,7 @@ abstract class HiveThriftServer2Test
           diagnosisBuffer += line
 
           successLines.foreach { r =>
-            if (line.contains(r)) {
-              serverStarted.trySuccess(())
-            }
+            if (line.contains(r)) { serverStarted.trySuccess(()) }
           }
         }
 
@@ -903,8 +886,6 @@ abstract class HiveThriftServer2Test
     try {
       stopThriftServer()
       logInfo("HiveThriftServer2 stopped")
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 }

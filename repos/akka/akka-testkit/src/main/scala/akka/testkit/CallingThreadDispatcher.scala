@@ -87,9 +87,7 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
     if (queues contains mbox) {
       val newSet = queues(mbox) + new WeakReference(q)
       queues += mbox -> newSet
-    } else {
-      queues += mbox -> Set(new WeakReference(q))
-    }
+    } else { queues += mbox -> Set(new WeakReference(q)) }
     val now = System.nanoTime
     if (now - lastGC > 1000000000L) {
       lastGC = now
@@ -98,9 +96,7 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
   }
 
   protected[akka] def unregisterQueues(mbox: CallingThreadMailbox): Unit =
-    synchronized {
-      queues -= mbox
-    }
+    synchronized { queues -= mbox }
 
   /*
    * This method must be called with "own" being this thread's queue for the
@@ -322,9 +318,8 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
     if (!mbox.ctdLock.isHeldByCurrentThread) {
       var intex = interruptedEx
       val gotLock =
-        try {
-          mbox.ctdLock.tryLock(50, TimeUnit.MILLISECONDS)
-        } catch {
+        try { mbox.ctdLock.tryLock(50, TimeUnit.MILLISECONDS) }
+        catch {
           case ie: InterruptedException ⇒
             Thread
               .interrupted() // clear interrupted flag before we continue, exception will be thrown later
@@ -333,19 +328,14 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
         }
       if (gotLock) {
         val ie =
-          try {
-            process(intex)
-          } finally {
-            mbox.ctdLock.unlock
-          }
+          try { process(intex) }
+          finally { mbox.ctdLock.unlock }
         throwInterruptionIfExistsOrSet(ie)
       } else {
         // if we didn't get the lock and our mailbox still has messages, then we need to try again
         if (mbox.hasSystemMessages || mbox.hasMessages) {
           runQueue(mbox, queue, intex)
-        } else {
-          throwInterruptionIfExistsOrSet(intex)
-        }
+        } else { throwInterruptionIfExistsOrSet(intex) }
       }
     }
   }

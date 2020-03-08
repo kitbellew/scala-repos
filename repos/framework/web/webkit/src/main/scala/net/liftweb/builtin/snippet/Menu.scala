@@ -227,9 +227,8 @@ object Menu extends DispatchSnippet {
         }
 
         def buildUlLine(in: Seq[MenuItem]): NodeSeq =
-          if (in.isEmpty) {
-            NodeSeq.Empty
-          } else {
+          if (in.isEmpty) { NodeSeq.Empty }
+          else {
             if (outerTag.length > 0) {
               Elem(
                 null,
@@ -239,9 +238,7 @@ object Menu extends DispatchSnippet {
                 true,
                 <xml:group>{in.flatMap(buildANavItem)}</xml:group>) %
                 S.prefixedAttrsToMetaData("ul")
-            } else {
-              in.flatMap(buildANavItem)
-            }
+            } else { in.flatMap(buildANavItem) }
           }
 
         val realMenuItems = level match {
@@ -342,18 +339,14 @@ object Menu extends DispatchSnippet {
             val idx = str.indexOf("%*%")
             val bodyStr = if (idx >= 0) {
               str.substring(0, idx) + rts + str.substring(idx + 3)
-            } else {
-              str + " " + rts
-            }
+            } else { str + " " + rts }
 
             <title>{bodyStr}</title> % attrs
           }
         } openOr text
       }
 
-      case _ => {
-        r openOr Text("")
-      }
+      case _ => { r openOr Text("") }
     }
   }
 
@@ -362,9 +355,8 @@ object Menu extends DispatchSnippet {
       if (in.length == 1 && in(0).isInstanceOf[Elem]) {
         val e = in(0).asInstanceOf[Elem]
         if (e.prefix == null && e.label == "title") {
-          if (e.child.length == 0) {
-            Some(e.attributes -> "")
-          } else if (e.child.length == 1 && e.child(0).isInstanceOf[Atom[_]]) {
+          if (e.child.length == 0) { Some(e.attributes -> "") }
+          else if (e.child.length == 1 && e.child(0).isInstanceOf[Atom[_]]) {
             Some(e.attributes -> e.child.text)
           } else None
         } else None
@@ -492,9 +484,7 @@ object Menu extends DispatchSnippet {
         case xs      => xs
       })).apply(_text)
 
-    for {
-      name <- S.attr("name").toList
-    } yield {
+    for { name <- S.attr("name").toList } yield {
       type T = Q forSome { type Q }
 
       // Builds a link for the given loc
@@ -523,20 +513,15 @@ object Menu extends DispatchSnippet {
               typedLoc.cssClassForMenuItem,
               <a href={link}></a> %
                 S.prefixedAttrsToMetaData("a"))
-          }) openOr {
-            Text("")
-          }
+          }) openOr { Text("") }
         }
 
         case (Full(loc), _, _) if loc.name == name => {
           (linkToSelf, donthide) match {
             case (true, _) => buildLink(loc)
             case (_, true) => {
-              if (!text.isEmpty) {
-                Group(text)
-              } else {
-                Group(loc.linkText openOr Text(loc.name))
-              }
+              if (!text.isEmpty) { Group(text) }
+              else { Group(loc.linkText openOr Text(loc.name)) }
             }
             case _ => Text("")
           }

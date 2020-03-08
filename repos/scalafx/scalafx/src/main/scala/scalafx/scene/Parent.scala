@@ -62,7 +62,5 @@ abstract class Parent(override val delegate: jfxs.Parent)
     *
     * @param c list of stylesheets URLs to replace prior content.
     */
-  def stylesheets_=(c: Iterable[String]) {
-    fillCollection(this.stylesheets, c)
-  }
+  def stylesheets_=(c: Iterable[String]) { fillCollection(this.stylesheets, c) }
 }

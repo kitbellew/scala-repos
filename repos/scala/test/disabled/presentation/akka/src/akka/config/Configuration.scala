@@ -31,11 +31,8 @@ object Configuration {
 
   def fromFile(filename: String): Configuration = {
     val n = filename.lastIndexOf('/')
-    if (n < 0) {
-      fromFile(DefaultPath, filename)
-    } else {
-      fromFile(filename.substring(0, n), filename.substring(n + 1))
-    }
+    if (n < 0) { fromFile(DefaultPath, filename) }
+    else { fromFile(filename.substring(0, n), filename.substring(n + 1)) }
   }
 
   def fromResource(filename: String): Configuration = {
@@ -49,13 +46,9 @@ object Configuration {
     fromFile(filename, importer)
   }
 
-  def fromMap(map: Map[String, Any]) = {
-    new Configuration(map)
-  }
+  def fromMap(map: Map[String, Any]) = { new Configuration(map) }
 
-  def fromString(data: String): Configuration = {
-    load(data)
-  }
+  def fromString(data: String): Configuration = { load(data) }
 }
 
 class Configuration(val map: Map[String, Any]) {
@@ -67,22 +60,16 @@ class Configuration(val map: Map[String, Any]) {
   def keys: Iterable[String] = map.keys
 
   def getAny(key: String): Option[Any] = {
-    try {
-      Some(map(key))
-    } catch {
-      case _ => None
-    }
+    try { Some(map(key)) }
+    catch { case _ => None }
   }
 
   def getAny(key: String, defaultValue: Any): Any =
     getAny(key).getOrElse(defaultValue)
 
   def getSeqAny(key: String): Seq[Any] = {
-    try {
-      map(key).asInstanceOf[Seq[Any]]
-    } catch {
-      case _ => Seq.empty[Any]
-    }
+    try { map(key).asInstanceOf[Seq[Any]] }
+    catch { case _ => Seq.empty[Any] }
   }
 
   def getString(key: String): Option[String] = map.get(key).map(_.toString)
@@ -91,52 +78,37 @@ class Configuration(val map: Map[String, Any]) {
     getString(key).getOrElse(defaultValue)
 
   def getList(key: String): Seq[String] = {
-    try {
-      map(key).asInstanceOf[Seq[String]]
-    } catch {
-      case _ => Seq.empty[String]
-    }
+    try { map(key).asInstanceOf[Seq[String]] }
+    catch { case _ => Seq.empty[String] }
   }
 
   def getInt(key: String): Option[Int] = {
-    try {
-      Some(map(key).toString.toInt)
-    } catch {
-      case _ => None
-    }
+    try { Some(map(key).toString.toInt) }
+    catch { case _ => None }
   }
 
   def getInt(key: String, defaultValue: Int): Int =
     getInt(key).getOrElse(defaultValue)
 
   def getLong(key: String): Option[Long] = {
-    try {
-      Some(map(key).toString.toLong)
-    } catch {
-      case _ => None
-    }
+    try { Some(map(key).toString.toLong) }
+    catch { case _ => None }
   }
 
   def getLong(key: String, defaultValue: Long): Long =
     getLong(key).getOrElse(defaultValue)
 
   def getFloat(key: String): Option[Float] = {
-    try {
-      Some(map(key).toString.toFloat)
-    } catch {
-      case _ => None
-    }
+    try { Some(map(key).toString.toFloat) }
+    catch { case _ => None }
   }
 
   def getFloat(key: String, defaultValue: Float): Float =
     getFloat(key).getOrElse(defaultValue)
 
   def getDouble(key: String): Option[Double] = {
-    try {
-      Some(map(key).toString.toDouble)
-    } catch {
-      case _ => None
-    }
+    try { Some(map(key).toString.toDouble) }
+    catch { case _ => None }
   }
 
   def getDouble(key: String, defaultValue: Double): Double =

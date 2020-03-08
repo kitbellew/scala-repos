@@ -24,9 +24,7 @@ class ScTypeArgsImpl(node: ASTNode)
     while (i < size) {
       val child = children(i)
       if (TokenSets.TYPE_ELEMENTS_TOKEN_SET.contains(
-            child.getNode.getElementType)) {
-        count += 1
-      }
+            child.getNode.getElementType)) { count += 1 }
       i += 1
     }
     val result = JavaArrayFactoryUtil.ScTypeElementFactory.create(count)

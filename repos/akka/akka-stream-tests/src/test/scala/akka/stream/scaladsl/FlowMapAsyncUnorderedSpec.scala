@@ -76,9 +76,7 @@ class FlowMapAsyncUnorderedSpec extends AkkaSpec {
       probe.expectNoMsg(500.millis)
       sub.request(25)
       probe.expectMsgAllOf(6 to 20: _*)
-      c.within(3.seconds) {
-        for (_ ← 2 to 20) got += c.expectNext()
-      }
+      c.within(3.seconds) { for (_ ← 2 to 20) got += c.expectNext() }
 
       got should be((1 to 20).toSet)
       c.expectComplete()
@@ -251,9 +249,7 @@ class FlowMapAsyncUnorderedSpec extends AkkaSpec {
               promise.success(count)
               count += 1
               true
-            } catch {
-              case _: InterruptedException ⇒ false
-            }
+            } catch { case _: InterruptedException ⇒ false }
           if (cont) run()
         }
       }
@@ -275,9 +271,7 @@ class FlowMapAsyncUnorderedSpec extends AkkaSpec {
           .mapAsyncUnordered(parallelism)(i ⇒ deferred())
           .runFold(0)((c, _) ⇒ c + 1)
           .futureValue(PatienceConfig(3.seconds)) should ===(N)
-      } finally {
-        timer.interrupt()
-      }
+      } finally { timer.interrupt() }
     }
 
   }

@@ -75,9 +75,7 @@ private[spark] class Pool(
     }
     for (schedulable <- schedulableQueue.asScala) {
       val sched = schedulable.getSchedulableByName(schedulableName)
-      if (sched != null) {
-        return sched
-      }
+      if (sched != null) { return sched }
     }
     null
   }
@@ -110,15 +108,11 @@ private[spark] class Pool(
 
   def increaseRunningTasks(taskNum: Int) {
     runningTasks += taskNum
-    if (parent != null) {
-      parent.increaseRunningTasks(taskNum)
-    }
+    if (parent != null) { parent.increaseRunningTasks(taskNum) }
   }
 
   def decreaseRunningTasks(taskNum: Int) {
     runningTasks -= taskNum
-    if (parent != null) {
-      parent.decreaseRunningTasks(taskNum)
-    }
+    if (parent != null) { parent.decreaseRunningTasks(taskNum) }
   }
 }

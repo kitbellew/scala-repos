@@ -201,9 +201,7 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
     SwaggerAuthSerializers.authFormats(userOption)(userManifest)
 
   protected def docToJson(doc: ApiType): JValue = Extraction.decompose(doc)
-  before() {
-    scentry.authenticate()
-  }
+  before() { scentry.authenticate() }
 
   abstract override def initialize(config: ConfigT) {
     super.initialize(config)

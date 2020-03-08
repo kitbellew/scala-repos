@@ -68,7 +68,5 @@ object Test {
     ()
   }
 
-  def main(args: Array[String]): Unit = {
-    runOps(20)
-  }
+  def main(args: Array[String]): Unit = { runOps(20) }
 }

@@ -70,9 +70,7 @@ class IDF @Since("1.2.0") (@Since("1.2.0") val minDocFreq: Int) {
     * @param dataset a JavaRDD of term frequency vectors
     */
   @Since("1.1.0")
-  def fit(dataset: JavaRDD[Vector]): IDFModel = {
-    fit(dataset.rdd)
-  }
+  def fit(dataset: JavaRDD[Vector]): IDFModel = { fit(dataset.rdd) }
 }
 
 private object IDF {
@@ -90,26 +88,20 @@ private object IDF {
 
     /** Adds a new document. */
     def add(doc: Vector): this.type = {
-      if (isEmpty) {
-        df = BDV.zeros(doc.size)
-      }
+      if (isEmpty) { df = BDV.zeros(doc.size) }
       doc match {
         case SparseVector(size, indices, values) =>
           val nnz = indices.length
           var k = 0
           while (k < nnz) {
-            if (values(k) > 0) {
-              df(indices(k)) += 1L
-            }
+            if (values(k) > 0) { df(indices(k)) += 1L }
             k += 1
           }
         case DenseVector(values) =>
           val n = values.length
           var j = 0
           while (j < n) {
-            if (values(j) > 0.0) {
-              df(j) += 1L
-            }
+            if (values(j) > 0.0) { df(j) += 1L }
             j += 1
           }
         case other =>
@@ -124,11 +116,8 @@ private object IDF {
     def merge(other: DocumentFrequencyAggregator): this.type = {
       if (!other.isEmpty) {
         m += other.m
-        if (df == null) {
-          df = other.df.copy
-        } else {
-          df += other.df
-        }
+        if (df == null) { df = other.df.copy }
+        else { df += other.df }
       }
       this
     }

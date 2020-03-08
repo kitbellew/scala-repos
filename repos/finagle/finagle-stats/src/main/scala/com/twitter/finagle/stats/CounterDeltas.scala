@@ -46,11 +46,7 @@ private[stats] class CounterDeltas {
       case (k, v) =>
         val last = lasts.get(k)
         val current = v.longValue
-        val delta =
-          if (last == null) current
-          else {
-            current - last.abs
-          }
+        val delta = if (last == null) current else { current - last.abs }
         next.put(k, new Last(current, delta))
     }
     lasts = next

@@ -31,9 +31,9 @@ class ParameterDirectivesSpec
       }
     }
     "supply typed default values" in {
-      Get() ~> {
-        parameter('amount ? 45) { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "45" }
+      Get() ~> { parameter('amount ? 45) { echoComplete } } ~> check {
+        responseAs[String] shouldEqual "45"
+      }
     }
     "create typed optional parameters that" - {
       "extract Some(value) when present" in {
@@ -42,9 +42,9 @@ class ParameterDirectivesSpec
         } ~> check { responseAs[String] shouldEqual "Some(12)" }
       }
       "extract None when not present" in {
-        Get() ~> {
-          parameter("amount".as[Int].?) { echoComplete }
-        } ~> check { responseAs[String] shouldEqual "None" }
+        Get() ~> { parameter("amount".as[Int].?) { echoComplete } } ~> check {
+          responseAs[String] shouldEqual "None"
+        }
       }
       "cause a MalformedQueryParamRejection on illegal Int values" in {
         Get("/?amount=x") ~> {

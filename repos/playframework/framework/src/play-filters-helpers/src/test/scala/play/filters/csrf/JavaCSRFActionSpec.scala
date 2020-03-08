@@ -96,9 +96,7 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
     "allow accessing the token from the http context" in withServer(
       Seq(
         "play.http.filters" -> "play.filters.csrf.CsrfFilters"
-      )) {
-      case _ => javaAction[MyAction]("getToken", myAction.getToken())
-    } {
+      )) { case _ => javaAction[MyAction]("getToken", myAction.getToken()) } {
       lazy val token = crypto.generateSignedToken
       import play.api.Play.current
       val returned = await(
@@ -124,9 +122,7 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
         })
     }
     @RequireCSRFCheck
-    def check(): Result = {
-      Results.ok()
-    }
+    def check(): Result = { Results.ok() }
     @AddCSRFToken
     def withSession(): Result = {
       Context.current().session().put("hello", "world")
@@ -142,9 +138,7 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
       Results.ok(CSRF.getToken.get.value)
     }
     @RequireCSRFCheck(error = classOf[CustomErrorHandler])
-    def check(): Result = {
-      Results.ok()
-    }
+    def check(): Result = { Results.ok() }
   }
 
   class CustomErrorHandler extends CSRFErrorHandler {

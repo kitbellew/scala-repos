@@ -113,9 +113,8 @@ private[prediction] case class EventOp(
 
       val combinedFields = deleteEntity
         .map { delete =>
-          if (delete.t >= set.t) {
-            None
-          } else {
+          if (delete.t >= set.t) { None }
+          else {
             val deleteKeys: Set[String] = set.fields.filter {
               case (k, PropTime(kv, t)) =>
                 (delete.t >= t)
@@ -123,9 +122,7 @@ private[prediction] case class EventOp(
             Some(set.fields -- unsetKeys -- deleteKeys)
           }
         }
-        .getOrElse {
-          Some(set.fields -- unsetKeys)
-        }
+        .getOrElse { Some(set.fields -- unsetKeys) }
 
       // Note: mapValues() doesn't return concrete Map and causes
       // NotSerializableException issue. Use map(identity) to work around this.
@@ -159,9 +156,7 @@ private[prediction] object EventOp {
           deleteEntity = Some(DeleteEntity(t))
         )
       }
-      case _ => {
-        EventOp()
-      }
+      case _ => { EventOp() }
     }
   }
 }

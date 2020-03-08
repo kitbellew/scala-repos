@@ -51,29 +51,17 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     additionalScaladocFlags = flags
   }
 
-  def setScope(scope: AnalysisScope) {
-    this.scope = scope
-  }
+  def setScope(scope: AnalysisScope) { this.scope = scope }
 
-  def setVerbose(flag: Boolean) {
-    verbose = flag
-  }
+  def setVerbose(flag: Boolean) { verbose = flag }
 
-  def setDocTitle(title: String) {
-    docTitle = title
-  }
+  def setDocTitle(title: String) { docTitle = title }
 
-  def setMaxHeapSize(size: String) {
-    maxHeapSize = size
-  }
+  def setMaxHeapSize(size: String) { maxHeapSize = size }
 
-  def setShowInBrowser(b: Boolean) {
-    showInBrowser = b
-  }
+  def setShowInBrowser(b: Boolean) { showInBrowser = b }
 
-  def setOutputDir(dir: String) {
-    outputDir = dir
-  }
+  def setOutputDir(dir: String) { outputDir = dir }
 
   override protected def startProcess: OSProcessHandler = {
     val handler: OSProcessHandler =
@@ -104,9 +92,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
           .MutableList[VirtualFile]()): mutable.MutableList[VirtualFile] = {
       if (file == null) return acc
       if (file.isDirectory) {
-        for (c <- file.getChildren) {
-          visitInner(c, scope, acc)
-        }
+        for (c <- file.getChildren) { visitInner(c, scope, acc) }
       } else {
         if (file.getExtension == "scala" && file.isValid && scope.contains(
               file)) {
@@ -147,9 +133,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
 
     (params + " ").foldLeft((false, new StringBuilder(""))) {
       case ((flag, acc), ' ') =>
-        if (flag) {
-          acc.append(' ')
-        } else {
+        if (flag) { acc.append(' ') }
+        else {
           result += acc.toString
           acc.clear()
         }
@@ -187,9 +172,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     jp.setMainClass(MAIN_CLASS)
 
     val vmParamList = jp.getVMParametersList
-    if (maxHeapSize.length > 0) {
-      vmParamList.add("-Xmx" + maxHeapSize + "m")
-    }
+    if (maxHeapSize.length > 0) { vmParamList.add("-Xmx" + maxHeapSize + "m") }
 
     val paramList = jp.getProgramParametersList
 
@@ -261,9 +244,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         }
       case AnalysisScope.MODULES =>
         for (module <- modules) {
-          if (scope.containsModule(module)) {
-            modulesNeeded += module
-          }
+          if (scope.containsModule(module)) { modulesNeeded += module }
         }
       case _ => needFilter = true
     }
@@ -273,9 +254,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
 
       for (c <- children) {
         val documentableFiles = visitAll(c, scope)
-        if (needFilter) {
-          filterModulesList(documentableFiles: _*)
-        }
+        if (needFilter) { filterModulesList(documentableFiles: _*) }
 
         for (docFile <- documentableFiles) {
           documentableFilesList += docFile.getPath
@@ -294,9 +273,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     paramListSimple += "-sourcepath"
     paramListSimple += sourcepathWithFacet.mkString(classpathDelimeter)
 
-    if (verbose) {
-      paramListSimple += "-verbose"
-    }
+    if (verbose) { paramListSimple += "-verbose" }
 
     paramListSimple += "-doc-title"
     paramListSimple += docTitle
@@ -317,9 +294,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         for (param <- paramListSimple) {
           var paramEsc = param
           if (param.contains(" ") && !(param.startsWith("\"") && param.endsWith(
-                "\""))) {
-            paramEsc = "\"" + param + "\""
-          }
+                "\""))) { paramEsc = "\"" + param + "\"" }
 
           pw.println(paramEsc)
         }
@@ -329,9 +304,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
       } catch {
         case e: IOException => throw new ExecutionException("I/O Error", e)
       }
-    } else {
-      paramList.addAll(paramListSimple)
-    }
+    } else { paramList.addAll(paramListSimple) }
 
     jp
   }

@@ -98,11 +98,8 @@ private object LocalPrefixSpan {
       */
     def :+(item: Int): ReversedPrefix = {
       require(item != 0)
-      if (item < 0) {
-        new ReversedPrefix(-item :: items, length + 1)
-      } else {
-        new ReversedPrefix(item :: 0 :: items, length + 1)
-      }
+      if (item < 0) { new ReversedPrefix(-item :: items, length + 1) }
+      else { new ReversedPrefix(item :: 0 :: items, length + 1) }
     }
 
     /**

@@ -99,9 +99,7 @@ class IdeClientIdea(
     }
   }
 
-  override def compilationEnd(): Unit = {
-    persistPackageObjectData()
-  }
+  override def compilationEnd(): Unit = { persistPackageObjectData() }
 
   private def handlePackageObject(
       source: File,
@@ -133,9 +131,7 @@ class IdeClientIdea(
         packageName,
         typeName)
       if !packageObjectsBaseClasses.contains(packObjectBaseClass)
-    } yield {
-      packObjectBaseClass
-    }
+    } yield { packObjectBaseClass }
   }
 
   private def persistPackageObjectData(): Unit = {

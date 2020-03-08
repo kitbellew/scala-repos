@@ -63,9 +63,7 @@ object Partitioner {
     }
     if (rdd.context.conf.contains("spark.default.parallelism")) {
       new HashPartitioner(rdd.context.defaultParallelism)
-    } else {
-      new HashPartitioner(bySize.head.partitions.length)
-    }
+    } else { new HashPartitioner(bySize.head.partitions.length) }
   }
 }
 
@@ -122,9 +120,8 @@ class RangePartitioner[K: Ordering: ClassTag, V](
 
   // An array of upper bounds for the first (partitions - 1) partitions
   private var rangeBounds: Array[K] = {
-    if (partitions <= 1) {
-      Array.empty
-    } else {
+    if (partitions <= 1) { Array.empty }
+    else {
       // This is the sample size we need to have roughly balanced output partitions, capped at 1M.
       val sampleSize = math.min(20.0 * partitions, 1e6)
       // Assume the input partitions are roughly balanced and over-sample a little bit.
@@ -132,9 +129,8 @@ class RangePartitioner[K: Ordering: ClassTag, V](
         math.ceil(3.0 * sampleSize / rdd.partitions.length).toInt
       val (numItems, sketched) =
         RangePartitioner.sketch(rdd.map(_._1), sampleSizePerPartition)
-      if (numItems == 0L) {
-        Array.empty
-      } else {
+      if (numItems == 0L) { Array.empty }
+      else {
         // If a partition contains much more than the average number of items, we re-sample from it
         // to ensure that enough items are collected from that partition.
         val fraction = math.min(sampleSize / math.max(numItems, 1L), 1.0)
@@ -147,9 +143,7 @@ class RangePartitioner[K: Ordering: ClassTag, V](
             } else {
               // The weight is 1 over the sampling probability.
               val weight = (n.toDouble / sample.length).toFloat
-              for (key <- sample) {
-                candidates += ((key, weight))
-              }
+              for (key <- sample) { candidates += ((key, weight)) }
             }
         }
         if (imbalancedPartitions.nonEmpty) {
@@ -180,25 +174,16 @@ class RangePartitioner[K: Ordering: ClassTag, V](
       // If we have less than 128 partitions naive search
       while (partition < rangeBounds.length && ordering.gt(
                k,
-               rangeBounds(partition))) {
-        partition += 1
-      }
+               rangeBounds(partition))) { partition += 1 }
     } else {
       // Determine which binary search method to use only once.
       partition = binarySearch(rangeBounds, k)
       // binarySearch either returns the match location or -[insertion point]-1
-      if (partition < 0) {
-        partition = -partition - 1
-      }
-      if (partition > rangeBounds.length) {
-        partition = rangeBounds.length
-      }
+      if (partition < 0) { partition = -partition - 1 }
+      if (partition > rangeBounds.length) { partition = rangeBounds.length }
     }
-    if (ascending) {
-      partition
-    } else {
-      rangeBounds.length - partition
-    }
+    if (ascending) { partition }
+    else { rangeBounds.length - partition }
   }
 
   override def equals(other: Any): Boolean = other match {

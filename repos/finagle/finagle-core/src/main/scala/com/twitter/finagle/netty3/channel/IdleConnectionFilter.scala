@@ -97,9 +97,7 @@ class IdleConnectionFilter[Req, Rep](
     c.onClose ensure { connectionCounter.decrementAndGet() }
     if (accept(c)) {
       queue.add(c)
-      c.onClose ensure {
-        queue.remove(c)
-      }
+      c.onClose ensure { queue.remove(c) }
       self(c) map { filterFactory(c) andThen _ }
     } else {
       refused.incr()
@@ -119,9 +117,7 @@ class IdleConnectionFilter[Req, Rep](
     new SimpleFilter[Req, Rep] {
       def apply(request: Req, service: Service[Req, Rep]) = {
         queue.remove(c)
-        service(request) ensure {
-          queue.touch(c)
-        }
+        service(request) ensure { queue.touch(c) }
       }
     }
 

@@ -50,9 +50,7 @@ class AddressTerminatedTopicBenchSpec extends AkkaSpec("akka.loglevel=INFO") {
           "Stopping {} actors took {} ms",
           num,
           (System.nanoTime() - t2).nanos.toMillis)
-      } finally {
-        if (!sys.isTerminated) shutdown(sys)
-      }
+      } finally { if (!sys.isTerminated) shutdown(sys) }
     }
 
   }

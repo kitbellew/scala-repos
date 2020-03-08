@@ -67,15 +67,12 @@ final class Linker(frontend: LinkerFrontend, backend: LinkerBackend)
         "Linker is invalid due to a previous exception in a component")
     }
 
-    try {
-      body
-    } catch {
+    try { body }
+    catch {
       case t: Throwable =>
         _valid = false
         throw t
-    } finally {
-      _linking.set(false)
-    }
+    } finally { _linking.set(false) }
   }
 }
 

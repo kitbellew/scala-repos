@@ -1,6 +1,8 @@
 class Num[T] {
   def mkOps = new Ops
-  class Ops { def +++(rhs: T) = () }
+  class Ops {
+    def +++(rhs: T) = ()
+  }
 }
 
 class A {

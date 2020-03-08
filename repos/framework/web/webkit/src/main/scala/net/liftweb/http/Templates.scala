@@ -178,9 +178,8 @@ object Templates {
     val resolver = LiftRules.externalTemplateResolver.vend()
     val key = (locale, places)
 
-    if (resolver.isDefinedAt(key)) {
-      resolver(key)
-    } else {
+    if (resolver.isDefinedAt(key)) { resolver(key) }
+    else {
       val lrCache = LiftRules.templateCache
       val cache =
         if (lrCache.isDefined) lrCache.openOrThrowException("passes isDefined")

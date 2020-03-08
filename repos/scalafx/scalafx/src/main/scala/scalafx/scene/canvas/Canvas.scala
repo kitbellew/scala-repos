@@ -56,17 +56,13 @@ class Canvas(override val delegate: jfxsc.Canvas = new jfxsc.Canvas)
     * Defines the height of the canvas.
     */
   def height: DoubleProperty = delegate.heightProperty
-  def height_=(v: Double) {
-    height() = v
-  }
+  def height_=(v: Double) { height() = v }
 
   /**
     * Defines the width of the canvas.
     */
   def width: DoubleProperty = delegate.widthProperty
-  def width_=(v: Double) {
-    width() = v
-  }
+  def width_=(v: Double) { width() = v }
 
   /**
     * returns the `GraphicsContext` associated with this `Canvas`.

@@ -163,9 +163,8 @@ class ZKEphemeralTest(val secure: Boolean) extends ZooKeeperTestHarness {
 
     //Bootstraps the ZKWatchedEphemeral object
     var gotException = false;
-    try {
-      zwe.create()
-    } catch {
+    try { zwe.create() }
+    catch {
       case e: ZkNodeExistsException =>
         gotException = true
     }
@@ -187,9 +186,8 @@ class ZKEphemeralTest(val secure: Boolean) extends ZooKeeperTestHarness {
       new ZKCheckedEphemeral(path, "", zk, JaasUtils.isZkSecurityEnabled())
     //Bootstraps the ZKWatchedEphemeral object
     var gotException = false;
-    try {
-      zwe.create()
-    } catch {
+    try { zwe.create() }
+    catch {
       case e: ZkNodeExistsException =>
         gotException = true
     }

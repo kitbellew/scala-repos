@@ -56,9 +56,7 @@ abstract class AbstractTable[T](
   def create_* : Iterable[FieldSymbol] = collectFieldSymbols(*.toNode)
 
   protected[this] def collectFieldSymbols(n: Node): Iterable[FieldSymbol] =
-    n.collect {
-        case Select(in, f: FieldSymbol) if in == tableNode => f
-      }
+    n.collect { case Select(in, f: FieldSymbol) if in == tableNode => f }
       .toSeq
       .distinct
 

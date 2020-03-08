@@ -31,9 +31,7 @@ abstract class HoconLightMultiFileTestCase
     val contentEntry = rootModel.addContentEntry(testDataRoot)
     contentEntry.addSourceFolder(testDataRoot, false)
 
-    inWriteAction {
-      rootModel.commit()
-    }
+    inWriteAction { rootModel.commit() }
   }
 
   override def tearDown() = {

@@ -132,9 +132,7 @@ object RecoverableNetworkWordCount {
             if (blacklist.value.contains(word)) {
               droppedWordsCounter += count
               false
-            } else {
-              true
-            }
+            } else { true }
         }
         .collect()
         .mkString("[", ", ", "]")
@@ -167,9 +165,7 @@ object RecoverableNetworkWordCount {
     val Array(ip, IntParam(port), checkpointDirectory, outputPath) = args
     val ssc = StreamingContext.getOrCreate(
       checkpointDirectory,
-      () => {
-        createContext(ip, port, outputPath, checkpointDirectory)
-      })
+      () => { createContext(ip, port, outputPath, checkpointDirectory) })
     ssc.start()
     ssc.awaitTermination()
   }

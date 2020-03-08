@@ -44,9 +44,7 @@ class Zk2ResolverTest
     inst.start()
   }
 
-  after {
-    inst.stop()
-  }
+  after { inst.stop() }
 
   override def test(testName: String, testTags: Tag*)(f: => Unit) {
     // Since this test currently relies on timing, it's currently best to treat it as flaky for CI.

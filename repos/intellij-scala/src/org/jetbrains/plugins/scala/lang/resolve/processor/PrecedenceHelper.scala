@@ -158,9 +158,7 @@ trait PrecedenceHelper[T] {
     def addResults() {
       if (qualifiedName != null) levelQualifiedNamesSet.add(qualifiedName)
       val iterator = results.iterator
-      while (iterator.hasNext) {
-        levelSet.add(iterator.next())
-      }
+      while (iterator.hasNext) { levelSet.add(iterator.next()) }
     }
     val currentPrecedence = getPrecedence(result)
     val topPrecedence = getTopPrecedence(result)
@@ -170,10 +168,9 @@ trait PrecedenceHelper[T] {
     else if (currentPrecedence == topPrecedence) {
       if (isCheckForEqualPrecedence && qualifiedName != null &&
           (levelQualifiedNamesSet.contains(qualifiedName) ||
-          qualifiedNamesSet.contains(qualifiedName))) {
-        return false
-      } else if (qualifiedName != null && qualifiedNamesSet.contains(
-                   qualifiedName)) return false
+          qualifiedNamesSet.contains(qualifiedName))) { return false }
+      else if (qualifiedName != null && qualifiedNamesSet.contains(
+                 qualifiedName)) return false
       if (!fromHistory && isUpdateHistory && isSpecialResult(result)) {
         results.foreach(ignoredSet.add)
       } else addResults()
@@ -188,9 +185,7 @@ trait PrecedenceHelper[T] {
           val levelSetIterator = levelSet.iterator()
           while (levelSetIterator.hasNext) {
             val next = levelSetIterator.next()
-            if (filterNot(next, result)) {
-              levelSetIterator.remove()
-            }
+            if (filterNot(next, result)) { levelSetIterator.remove() }
           }
           clearLevelQualifiedSet(result)
           addResults()

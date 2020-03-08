@@ -106,9 +106,7 @@ case class SortBasedAggregate(
             numOutputRows += 1
             Iterator[UnsafeRow](
               outputIter.outputForEmptyGroupingKeyWithoutInput())
-          } else {
-            outputIter
-          }
+          } else { outputIter }
         }
       }
     }

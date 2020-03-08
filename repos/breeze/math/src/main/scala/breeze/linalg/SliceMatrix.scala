@@ -85,9 +85,7 @@ object SliceMatrix {
 
       override def mapActive(
           from: SliceMatrix[K1, K2, V],
-          fn: ((Int, Int), V) => V2): DenseMatrix[V2] = {
-        map(from, fn)
-      }
+          fn: ((Int, Int), V) => V2): DenseMatrix[V2] = { map(from, fn) }
     }
   }
 
@@ -120,9 +118,7 @@ object SliceMatrix {
 
       /** Iterates all key-value pairs from the given collection. */
       def traverse(from: SliceMatrix[K1, K2, V], fn: ValuesVisitor[V]): Unit = {
-        from.activeValuesIterator foreach {
-          fn.visit(_)
-        }
+        from.activeValuesIterator foreach { fn.visit(_) }
       }
 
     }
@@ -135,9 +131,7 @@ object SliceMatrix {
       override def traverse(
           from: SliceMatrix[K1, K2, V],
           fn: KeyValuePairsVisitor[(Int, Int), V]): Unit = {
-        from.iterator foreach {
-          case (k, v) => fn.visit(k, v)
-        }
+        from.iterator foreach { case (k, v) => fn.visit(k, v) }
 
       }
 

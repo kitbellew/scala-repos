@@ -21,19 +21,13 @@ class StringConcatenationBenchmark extends StdBenchAnnotations {
   }
 
   @Benchmark
-  def concatenate: String = {
-    word() + " " + word() + " " + word()
-  }
+  def concatenate: String = { word() + " " + word() + " " + word() }
 
   @Benchmark
-  def interpolate: String = {
-    s"${word()} ${word()} ${word()}"
-  }
+  def interpolate: String = { s"${word()} ${word()} ${word()}" }
 
   @Benchmark
-  def format: String = {
-    "%s %s %s".format(word(), word(), word())
-  }
+  def format: String = { "%s %s %s".format(word(), word(), word()) }
 
   @Benchmark
   def stringBuilder: String = {

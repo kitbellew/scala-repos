@@ -81,9 +81,7 @@ object PersistencePluginProxySpec {
     val p = context.actorOf(
       Props(classOf[ExamplePersistentActor], probe, context.system.name))
 
-    def receive = {
-      case m ⇒ p forward m
-    }
+    def receive = { case m ⇒ p forward m }
 
   }
 }

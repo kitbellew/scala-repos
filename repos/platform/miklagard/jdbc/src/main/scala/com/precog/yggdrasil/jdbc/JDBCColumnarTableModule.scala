@@ -99,9 +99,7 @@ object JDBCColumnarTableModule {
           ucChar.toUpperCase + rest.toLowerCase
         }
         .mkString("")
-    } else {
-      parts.head.toLowerCase
-    }
+    } else { parts.head.toLowerCase }
   }
 }
 
@@ -137,11 +135,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
   protected def unescapeColumnNames: Boolean
 
   private def truncateString(input: String) =
-    if (input.length > 43) {
-      input.take(40) + "..."
-    } else {
-      input
-    }
+    if (input.length > 43) { input.take(40) + "..." }
+    else { input }
 
   private def metaToColumn(meta: ResultSetMetaData, index: Int): DBColumns = {
     val columnName = meta.getColumnLabel(index)
@@ -285,9 +280,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             }
 
           }
-        } else {
-          EmptyDBColumn
-        }
+        } else { EmptyDBColumn }
 
       case other =>
         logger.warn(
@@ -330,9 +323,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             case (name, childType) =>
               val newPaths = if (current.nonEmpty) {
                 current.map { s => s + "." + name }
-              } else {
-                Set(name)
-              }
+              } else { Set(name) }
               jTypeToProperties(childType, newPaths)
           }
           .toSet
@@ -360,9 +351,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         extends LoadState
 
     def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] = {
-      for {
-        paths <- pathsM(table)
-      } yield {
+      for { paths <- pathsM(table) } yield {
         import trans._
         val idSpec = InnerObjectConcat(
           Leaf(Source),
@@ -470,14 +459,10 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
           val nextSkip = if (rowIndex == yggConfig.maxSliceSize) {
             Some(skip + yggConfig.maxSliceSize)
-          } else {
-            None
-          }
+          } else { None }
 
           (slice, nextSkip)
-        } finally {
-          conn.close()
-        }
+        } finally { conn.close() }
       }
     }
   }

@@ -1,5 +1,7 @@
 class A[-S](y: S) {
-  val f = new { val x = y }
+  val f = new {
+    val x = y
+  }
 }
 
 object Test extends App {

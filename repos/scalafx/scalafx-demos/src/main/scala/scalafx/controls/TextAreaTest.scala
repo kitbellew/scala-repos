@@ -95,9 +95,7 @@ class TextAreaControls(target: TextArea)
       def changed(
           observable: ObservableValue[_],
           oldValue: Any,
-          newValue: Any) {
-        target.prefColumnCount = newValue.toString.toInt
-      }
+          newValue: Any) { target.prefColumnCount = newValue.toString.toInt }
     })
 
   val chbPrefRowCount = new ChoiceBox[Int] {
@@ -109,9 +107,7 @@ class TextAreaControls(target: TextArea)
       def changed(
           observable: ObservableValue[_],
           oldValue: Any,
-          newValue: Any) {
-        target.prefRowCount = newValue.toString.toInt
-      }
+          newValue: Any) { target.prefRowCount = newValue.toString.toInt }
     })
 
   val chbScrollLeft = new ChoiceBox[Double] {

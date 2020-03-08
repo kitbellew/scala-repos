@@ -126,17 +126,9 @@ class UndefOrTest {
   }
 
   @Test def collect(): Unit = {
-    assertEquals(
-      "ok",
-      some("hello") collect {
-        case "hello" => "ok"
-      })
-    assertTrue(js.isUndefined(some("hello") collect {
-      case "notthis" => "ko"
-    }))
-    assertTrue(js.isUndefined(none[String] collect {
-      case "hello" => "ko"
-    }))
+    assertEquals("ok", some("hello") collect { case "hello" => "ok" })
+    assertTrue(js.isUndefined(some("hello") collect { case "notthis" => "ko" }))
+    assertTrue(js.isUndefined(none[String] collect { case "hello"    => "ko" }))
   }
 
   @Test def collect_should_call_guard_at_most_once(): Unit = {
@@ -147,9 +139,7 @@ class UndefOrTest {
     }
     assertEquals(
       "ok",
-      some("hello") collect {
-        case x @ "hello" if guard(x) => "ok"
-      })
+      some("hello") collect { case x @ "hello" if guard(x) => "ok" })
     assertEquals(1, witness)
   }
 

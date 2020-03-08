@@ -13,7 +13,5 @@ object Test {
     }
   }
 
-  def main(args: Array[String]): Unit = {
-    cmp("abcde")
-  }
+  def main(args: Array[String]): Unit = { cmp("abcde") }
 }

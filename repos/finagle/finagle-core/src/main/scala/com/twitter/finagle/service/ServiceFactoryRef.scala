@@ -14,9 +14,7 @@ private[finagle] class ServiceFactoryRef[Req, Rep](
     with Updatable[ServiceFactory[Req, Rep]] {
   @volatile private[this] var cur: ServiceFactory[Req, Rep] = init
 
-  def update(newFactory: ServiceFactory[Req, Rep]) {
-    cur = newFactory
-  }
+  def update(newFactory: ServiceFactory[Req, Rep]) { cur = newFactory }
 
   override def self: ServiceFactory[Req, Rep] = cur
 }

@@ -43,9 +43,7 @@ class ComboBoxControls(target: ComboBox[String])
     target += "Item %d".format(itemIndex)
   }
 
-  def removeCurrentItem() {
-    target -= target.value.get
-  }
+  def removeCurrentItem() { target -= target.value.get }
 
   val txfVisibleRowCount = new TextField {
     text = target.visibleRowCount.get.toString

@@ -57,9 +57,7 @@ case class ScalaMethodEvaluator(
   def evaluate(context: EvaluationContextImpl): AnyRef = {
     val debugProcess: DebugProcessImpl = context.getDebugProcess
     if (!debugProcess.isAttached) return null
-    if (debugProcess != prevProcess) {
-      initCache(debugProcess)
-    }
+    if (debugProcess != prevProcess) { initCache(debugProcess) }
     val requiresSuperObject: Boolean =
       objectEvaluator.isInstanceOf[ScSuperEvaluator] ||
         (objectEvaluator.isInstanceOf[DisableGC] &&
@@ -70,9 +68,7 @@ case class ScalaMethodEvaluator(
     val obj: AnyRef = DebuggerUtil.unwrapScalaRuntimeObjectRef {
       objectEvaluator.evaluate(context)
     }
-    if (obj == null) {
-      throw EvaluationException(new NullPointerException)
-    }
+    if (obj == null) { throw EvaluationException(new NullPointerException) }
     if (!(obj.isInstanceOf[ObjectReference] || obj.isInstanceOf[ClassType])) {
       throw EvaluationException(
         DebuggerBundle
@@ -154,9 +150,7 @@ case class ScalaMethodEvaluator(
               try {
                 if (m.isVarArgs) args.length >= m.argumentTypeNames().size()
                 else args.length == m.argumentTypeNames().size()
-              } catch {
-                case a: AbsentInformationException => true
-              }
+              } catch { case a: AbsentInformationException => true }
             }
             if (filtered.isEmpty) jdiMethod = sortedMethodCandidates.head
             else if (filtered.length == 1) jdiMethod = filtered.head
@@ -271,9 +265,7 @@ case class ScalaMethodEvaluator(
         objRef,
         jdiMethod,
         unwrappedArgs(args, jdiMethod))
-    } catch {
-      case e: Exception => throw EvaluationException(e)
-    }
+    } catch { case e: Exception => throw EvaluationException(e) }
   }
 
   private def unwrappedArgs(

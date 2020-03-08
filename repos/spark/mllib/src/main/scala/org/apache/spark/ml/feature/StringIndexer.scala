@@ -163,11 +163,8 @@ class StringIndexerModel(override val uid: String, val labels: Array[String])
     validateAndTransformSchema(dataset.schema)
 
     val indexer = udf { label: String =>
-      if (labelToIndex.contains(label)) {
-        labelToIndex(label)
-      } else {
-        throw new SparkException(s"Unseen label: $label.")
-      }
+      if (labelToIndex.contains(label)) { labelToIndex(label) }
+      else { throw new SparkException(s"Unseen label: $label.") }
     }
 
     val metadata = NominalAttribute.defaultAttr
@@ -320,16 +317,11 @@ class IndexToString private[ml] (override val uid: String)
         .asInstanceOf[NominalAttribute]
         .values
         .get
-    } else {
-      $(labels)
-    }
+    } else { $(labels) }
     val indexer = udf { index: Double =>
       val idx = index.toInt
-      if (0 <= idx && idx < values.length) {
-        values(idx)
-      } else {
-        throw new SparkException(s"Unseen index: $index ??")
-      }
+      if (0 <= idx && idx < values.length) { values(idx) }
+      else { throw new SparkException(s"Unseen index: $index ??") }
     }
     val outputColName = $(outputCol)
     dataset.select(
@@ -337,9 +329,7 @@ class IndexToString private[ml] (override val uid: String)
       indexer(dataset($(inputCol)).cast(DoubleType)).as(outputColName))
   }
 
-  override def copy(extra: ParamMap): IndexToString = {
-    defaultCopy(extra)
-  }
+  override def copy(extra: ParamMap): IndexToString = { defaultCopy(extra) }
 }
 
 @Since("1.6.0")

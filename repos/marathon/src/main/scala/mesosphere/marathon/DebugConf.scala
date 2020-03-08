@@ -67,9 +67,7 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
     override def invoke(in: MethodInvocation): AnyRef = {
       val metrics: Metrics = metricsProvider.get
 
-      metrics.timed(metrics.name(MetricPrefixes.SERVICE, in)) {
-        in.proceed
-      }
+      metrics.timed(metrics.name(MetricPrefixes.SERVICE, in)) { in.proceed }
     }
   }
 

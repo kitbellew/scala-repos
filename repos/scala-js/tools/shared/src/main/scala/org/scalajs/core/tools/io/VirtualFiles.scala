@@ -151,9 +151,8 @@ trait VirtualSerializedScalaJSIRFile
   override def info: ir.Infos.ClassInfo = {
     // Overridden to read only the necessary parts
     val stream = inputStream
-    try {
-      ir.InfoSerializers.deserialize(stream)
-    } catch {
+    try { ir.InfoSerializers.deserialize(stream) }
+    catch {
       case e: ir.IRVersionNotSupportedException =>
         throw new ir.IRVersionNotSupportedException(
           e.version,
@@ -164,9 +163,7 @@ trait VirtualSerializedScalaJSIRFile
 
       case e: IOException =>
         throw new IOException(s"Failed to deserialize info of $path", e)
-    } finally {
-      stream.close()
-    }
+    } finally { stream.close() }
   }
 
   /** Class info and IR tree of this file. */
@@ -181,9 +178,7 @@ trait VirtualSerializedScalaJSIRFile
     } catch {
       case e: IOException =>
         throw new IOException(s"Failed to deserialize $path", e)
-    } finally {
-      stream.close()
-    }
+    } finally { stream.close() }
   }
 }
 
@@ -227,9 +222,7 @@ trait VirtualJarFile extends VirtualBinaryFile {
         .filter(entry => cond(entry.getName))
         .map(entry => mkResult(entry, stream))
         .toList
-    } finally {
-      stream.close()
-    }
+    } finally { stream.close() }
   }
 
   private class JarEntryIRFile(outerPath: String, val relativePath: String)

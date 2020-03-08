@@ -39,7 +39,5 @@ case class Rayleigh(scale: Double)(implicit rand: RandBasis = Rand)
     -expm1(-(xs * xs) / 2)
   }
 
-  override def probability(x: Double, y: Double): Double = {
-    cdf(y) - cdf(x)
-  }
+  override def probability(x: Double, y: Double): Double = { cdf(y) - cdf(x) }
 }

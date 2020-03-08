@@ -1,8 +1,12 @@
 // that compiles
-class Test(myValue: String) { println(myValue) }
+class Test(myValue: String) {
+  println(myValue)
+}
 
 // that compiles too
-trait Other { val otherValue = "" }
+trait Other {
+  val otherValue = ""
+}
 class Test2(myValue: String) { self: Other =>
   println(otherValue)
 }

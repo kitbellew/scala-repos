@@ -336,9 +336,7 @@ private[serverset2] object ZkSession {
 
       // Upon initial connection, send auth info, then update `u`.
       zkSession.state.changes
-        .filter {
-          _ == WatchState.SessionState(SessionState.SyncConnected)
-        }
+        .filter { _ == WatchState.SessionState(SessionState.SyncConnected) }
         .toFuture
         .unit before zkSession.addAuthInfo(
         "digest",
@@ -351,9 +349,7 @@ private[serverset2] object ZkSession {
 
       // Kick off a delayed reconnection on session expiration.
       zkSession.state.changes
-        .filter {
-          _ == WatchState.SessionState(SessionState.Expired)
-        }
+        .filter { _ == WatchState.SessionState(SessionState.Expired) }
         .toFuture()
         .unit
         .before {

@@ -46,9 +46,7 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     try {
       rpcEnv.foreach(_.shutdown())
       server.foreach(_.stop())
-    } finally {
-      super.afterEach()
-    }
+    } finally { super.afterEach() }
   }
 
   test("construct submit request") {
@@ -450,9 +448,7 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
   }
 
   /** Start a smarter dummy server that keeps track of submitted driver states. */
-  private def startSmartServer(): String = {
-    startServer(new SmarterMaster(_))
-  }
+  private def startSmartServer(): String = { startServer(new SmarterMaster(_)) }
 
   /** Start a dummy server that is faulty in many ways... */
   private def startFaultyServer(): String = {
@@ -652,9 +648,7 @@ private class SmarterMaster(override val rpcEnv: RpcEnv)
 
     case RequestKillDriver(driverId) =>
       val success = submittedDrivers.contains(driverId)
-      if (success) {
-        submittedDrivers(driverId) = KILLED
-      }
+      if (success) { submittedDrivers(driverId) = KILLED }
       context.reply(KillDriverResponse(self, driverId, success, "killed"))
 
     case RequestDriverStatus(driverId) =>

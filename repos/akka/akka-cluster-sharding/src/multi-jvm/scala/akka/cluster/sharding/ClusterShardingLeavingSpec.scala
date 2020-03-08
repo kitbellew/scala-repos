@@ -30,9 +30,7 @@ object ClusterShardingLeavingSpec {
   case class Ping(id: String)
 
   class Entity extends Actor {
-    def receive = {
-      case Ping(_) ⇒ sender() ! self
-    }
+    def receive = { case Ping(_) ⇒ sender() ! self }
   }
 
   case object GetLocations
@@ -171,9 +169,7 @@ abstract class ClusterShardingLeavingSpec(
     "setup shared journal" in {
       // start the Persistence extension
       Persistence(system)
-      runOn(first) {
-        system.actorOf(Props[SharedLeveldbStore], "store")
-      }
+      runOn(first) { system.actorOf(Props[SharedLeveldbStore], "store") }
       enterBarrier("peristence-started")
 
       system.actorSelection(node(first) / "user" / "store") ! Identify(None)
@@ -207,9 +203,7 @@ abstract class ClusterShardingLeavingSpec(
     }
 
     "recover after leaving coordinator node" in within(30.seconds) {
-      runOn(third) {
-        cluster.leave(node(first).address)
-      }
+      runOn(third) { cluster.leave(node(first).address) }
 
       runOn(first) {
         watch(region)

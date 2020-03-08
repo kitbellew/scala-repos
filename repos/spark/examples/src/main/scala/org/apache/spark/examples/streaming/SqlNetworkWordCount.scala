@@ -94,9 +94,7 @@ object SQLContextSingleton {
   @transient private var instance: SQLContext = _
 
   def getInstance(sparkContext: SparkContext): SQLContext = {
-    if (instance == null) {
-      instance = new SQLContext(sparkContext)
-    }
+    if (instance == null) { instance = new SQLContext(sparkContext) }
     instance
   }
 }

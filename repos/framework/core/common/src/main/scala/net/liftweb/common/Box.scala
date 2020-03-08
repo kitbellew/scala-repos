@@ -89,13 +89,10 @@ object Box extends BoxTrait with Tryo {
     def toSingleBox(failureErrorMessage: String): Box[List[T]] = {
       if (theListOfBoxes.exists(_.isInstanceOf[Failure])) {
         val failureChain =
-          theListOfBoxes
-            .collect {
-              case fail: Failure => fail
-            }
-            .reduceRight { (topmostFailure, latestFailure) =>
+          theListOfBoxes.collect { case fail: Failure => fail }.reduceRight {
+            (topmostFailure, latestFailure) =>
               topmostFailure.copy(chain = Full(latestFailure))
-            }
+          }
 
         ParamFailure(
           failureErrorMessage,
@@ -103,9 +100,7 @@ object Box extends BoxTrait with Tryo {
           Full(failureChain),
           theListOfBoxes
         )
-      } else {
-        Full(theListOfBoxes.flatten)
-      }
+      } else { Full(theListOfBoxes.flatten) }
     }
   }
 
@@ -253,9 +248,7 @@ sealed trait BoxTrait {
     * res1: net.liftweb.common.Box[Int] = Full(5)
     * }}}
     */
-  def isA[A, B](in: A, clz: Class[B]): Box[B] = {
-    (Box !! in).isA(clz)
-  }
+  def isA[A, B](in: A, clz: Class[B]): Box[B] = { (Box !! in).isA(clz) }
 
   // NOTE: We use an existential type here so that you can invoke asA with
   // just one type parameter. To wit, this lets you do:
@@ -788,9 +781,7 @@ sealed abstract class Box[+A] extends Product with Serializable {
     * Although this function is different for true collections, because `Box` is
     * really a collection of 1, the two functions are identical.
     */
-  final def collectFirst[B](pf: PartialFunction[A, B]): Box[B] = {
-    collect(pf)
-  }
+  final def collectFirst[B](pf: PartialFunction[A, B]): Box[B] = { collect(pf) }
 }
 
 /**
@@ -951,9 +942,7 @@ sealed case class Failure(
     * Gets the deepest exception cause, if any, which is ostensibly the root
     * cause of this `Failure`.
     */
-  def rootExceptionCause: Box[Throwable] = {
-    exceptionChain.lastOption
-  }
+  def rootExceptionCause: Box[Throwable] = { exceptionChain.lastOption }
 
   /**
     * Flatten the `Failure` chain to a List where this Failure is at the head.

@@ -159,9 +159,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
   def isUpdateCall: Boolean = false
 
   protected override def innerType(ctx: TypingContext): TypeResult[ScType] = {
-    try {
-      tryToGetInnerType(ctx, useExpectedType = true)
-    } catch {
+    try { tryToGetInnerType(ctx, useExpectedType = true) }
+    catch {
       case _: SafeCheckException =>
         tryToGetInnerType(ctx, useExpectedType = false)
     }

@@ -116,11 +116,8 @@ object SizeEstimator extends Logging {
     objectSize =
       if (!is64bit) 8
       else {
-        if (!isCompressedOops) {
-          16
-        } else {
-          12
-        }
+        if (!isCompressedOops) { 16 }
+        else { 12 }
       }
     pointerSize = if (is64bit && !isCompressedOops) 8 else 4
     classInfos.clear()
@@ -209,17 +206,14 @@ object SizeEstimator extends Logging {
       visited: IdentityHashMap[AnyRef, AnyRef]): Long = {
     val state = new SearchState(visited)
     state.enqueue(obj)
-    while (!state.isFinished) {
-      visitSingleObject(state.dequeue(), state)
-    }
+    while (!state.isFinished) { visitSingleObject(state.dequeue(), state) }
     state.size
   }
 
   private def visitSingleObject(obj: AnyRef, state: SearchState) {
     val cls = obj.getClass
-    if (cls.isArray) {
-      visitArray(obj, cls, state)
-    } else if (obj.isInstanceOf[ClassLoader] || obj.isInstanceOf[Class[_]]) {
+    if (cls.isArray) { visitArray(obj, cls, state) }
+    else if (obj.isInstanceOf[ClassLoader] || obj.isInstanceOf[Class[_]]) {
       // Hadoop JobConfs created in the interpreter have a ClassLoader, which greatly confuses
       // the size estimator since it references the whole REPL. Do nothing in this case. In
       // general all ClassLoaders and Classes will be shared between objects anyway.
@@ -290,9 +284,7 @@ object SizeEstimator extends Logging {
     var size = 0L
     for (i <- 0 until ARRAY_SAMPLE_SIZE) {
       var index = 0
-      do {
-        index = rand.nextInt(length)
-      } while (drawn.contains(index))
+      do { index = rand.nextInt(length) } while (drawn.contains(index))
       drawn.add(index)
       val obj = ScalaRunTime.array_apply(array, index).asInstanceOf[AnyRef]
       if (obj != null) {
@@ -303,23 +295,15 @@ object SizeEstimator extends Logging {
   }
 
   private def primitiveSize(cls: Class[_]): Int = {
-    if (cls == classOf[Byte]) {
-      BYTE_SIZE
-    } else if (cls == classOf[Boolean]) {
-      BOOLEAN_SIZE
-    } else if (cls == classOf[Char]) {
-      CHAR_SIZE
-    } else if (cls == classOf[Short]) {
-      SHORT_SIZE
-    } else if (cls == classOf[Int]) {
-      INT_SIZE
-    } else if (cls == classOf[Long]) {
-      LONG_SIZE
-    } else if (cls == classOf[Float]) {
-      FLOAT_SIZE
-    } else if (cls == classOf[Double]) {
-      DOUBLE_SIZE
-    } else {
+    if (cls == classOf[Byte]) { BYTE_SIZE }
+    else if (cls == classOf[Boolean]) { BOOLEAN_SIZE }
+    else if (cls == classOf[Char]) { CHAR_SIZE }
+    else if (cls == classOf[Short]) { SHORT_SIZE }
+    else if (cls == classOf[Int]) { INT_SIZE }
+    else if (cls == classOf[Long]) { LONG_SIZE }
+    else if (cls == classOf[Float]) { FLOAT_SIZE }
+    else if (cls == classOf[Double]) { DOUBLE_SIZE }
+    else {
       throw new IllegalArgumentException(
         "Non-primitive class " + cls + " passed to primitiveSize()")
     }
@@ -331,9 +315,7 @@ object SizeEstimator extends Logging {
   private def getClassInfo(cls: Class[_]): ClassInfo = {
     // Check whether we've already cached a ClassInfo for this class
     val info = classInfos.get(cls)
-    if (info != null) {
-      return info
-    }
+    if (info != null) { return info }
 
     val parent = getClassInfo(cls.getSuperclass)
     var shellSize = parent.shellSize

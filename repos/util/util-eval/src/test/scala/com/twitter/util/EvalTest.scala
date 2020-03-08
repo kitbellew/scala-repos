@@ -15,9 +15,7 @@ import scala.tools.nsc.reporters.{AbstractReporter, Reporter}
 class EvalTest extends WordSpec {
   "Evaluator" should {
 
-    "apply('expression')" in {
-      assert((new Eval).apply[Int]("1 + 1") == 2)
-    }
+    "apply('expression')" in { assert((new Eval).apply[Int]("1 + 1") == 2) }
 
     "apply(new File(...))" in {
       assert(
@@ -127,9 +125,7 @@ class EvalTest extends WordSpec {
 
     "check" in {
       (new Eval).check("23")
-      intercept[Eval.CompilerException] {
-        (new Eval).check("invalid")
-      }
+      intercept[Eval.CompilerException] { (new Eval).check("invalid") }
     }
 
     "#include" in {
@@ -214,9 +210,7 @@ class EvalTest extends WordSpec {
         val ctx = new Ctx
         import ctx._
 
-        intercept[Throwable] {
-          eval[Int]("val a = 3; val b = q; a + b", true)
-        }
+        intercept[Throwable] { eval[Int]("val a = 3; val b = q; a + b", true) }
         assert(eval.errors.nonEmpty)
       }
 
@@ -224,9 +218,7 @@ class EvalTest extends WordSpec {
         val ctx = new Ctx
         import ctx._
 
-        intercept[Throwable] {
-          eval[Int]("val a = 3; val b = q; a + b", true)
-        }
+        intercept[Throwable] { eval[Int]("val a = 3; val b = q; a + b", true) }
         assert(eval.errors.nonEmpty)
         assert(eval[Int]("val d = 3; val e = 2; d + e", true) == 5)
         assert(eval.errors.isEmpty)

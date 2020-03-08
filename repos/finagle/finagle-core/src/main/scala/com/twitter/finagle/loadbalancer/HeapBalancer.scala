@@ -58,9 +58,7 @@ class HeapBalancer[Req, Rep](
   private[this] val HeapOps = Heap[Node](
     Ordering.by(_.load),
     new Heap.Indexer[Node] {
-      def apply(node: Node, i: Int) {
-        node.index = i
-      }
+      def apply(node: Node, i: Int) { node.index = i }
     }
   )
   import HeapOps._
@@ -150,9 +148,7 @@ class HeapBalancer[Req, Rep](
 
       // expand the heap again
       fixUp(heap, size)
-    } else {
-      fixUp(heap, n.index)
-    }
+    } else { fixUp(heap, n.index) }
   }
 
   @tailrec
@@ -193,9 +189,7 @@ class HeapBalancer[Req, Rep](
   private[this] class Wrapped(n: Node, underlying: Service[Req, Rep])
       extends ServiceProxy[Req, Rep](underlying) {
     override def close(deadline: Time) =
-      super.close(deadline) ensure {
-        put(n)
-      }
+      super.close(deadline) ensure { put(n) }
   }
 
   private[this] def updateGroup(newSnap: Set[ServiceFactory[Req, Rep]]): Unit =

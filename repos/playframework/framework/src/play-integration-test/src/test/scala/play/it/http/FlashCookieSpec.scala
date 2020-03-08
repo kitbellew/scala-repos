@@ -35,13 +35,9 @@ trait FlashCookieSpec
             )
           }
         case ("GET", "/set-cookie") =>
-          Action {
-            Ok.withCookies(Cookie("some-cookie", "some-value"))
-          }
+          Action { Ok.withCookies(Cookie("some-cookie", "some-value")) }
         case ("GET", "/landing") =>
-          Action {
-            Ok("ok")
-          }
+          Action { Ok("ok") }
       }
       .build()
 

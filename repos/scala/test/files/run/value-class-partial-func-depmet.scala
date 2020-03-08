@@ -1,5 +1,7 @@
 class C
-class A { class C }
+class A {
+  class C
+}
 
 object Test {
   def main(args: Array[String]) {

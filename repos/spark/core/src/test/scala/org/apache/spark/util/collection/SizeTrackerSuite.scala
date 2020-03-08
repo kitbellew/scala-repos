@@ -132,9 +132,7 @@ private object SizeTrackerSuite {
   def vectorSpeedTest(numElements: Int): Unit = {
     val baseTimes = for (i <- 0 until 10) yield time {
       val vector = new PrimitiveVector[LargeDummyClass]
-      for (i <- 0 until numElements) {
-        vector += new LargeDummyClass
-      }
+      for (i <- 0 until numElements) { vector += new LargeDummyClass }
     }
     val sampledTimes = for (i <- 0 until 10) yield time {
       val vector = new SizeTrackingVector[LargeDummyClass]
@@ -168,9 +166,7 @@ private object SizeTrackerSuite {
   def mapSpeedTest(numElements: Int): Unit = {
     val baseTimes = for (i <- 0 until 10) yield time {
       val map = new AppendOnlyMap[Int, LargeDummyClass]
-      for (i <- 0 until numElements) {
-        map(i) = new LargeDummyClass
-      }
+      for (i <- 0 until numElements) { map(i) = new LargeDummyClass }
     }
     val sampledTimes = for (i <- 0 until 10) yield time {
       val map = new SizeTrackingAppendOnlyMap[Int, LargeDummyClass]
@@ -213,9 +209,7 @@ private object SizeTrackerSuite {
     System.currentTimeMillis() - start
   }
 
-  def averageTime(v: Seq[Long]): Long = {
-    v.sum / v.size
-  }
+  def averageTime(v: Seq[Long]): Long = { v.sum / v.size }
 
   private class LargeDummyClass {
     val arr = new Array[Int](100)

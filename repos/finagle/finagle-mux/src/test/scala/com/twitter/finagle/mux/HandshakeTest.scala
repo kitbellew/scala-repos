@@ -79,9 +79,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       trans = trans,
       version = 0x0001,
       headers = Seq.empty,
-      negotiate = (_, trans) => {
-        trans.map(enc, dec)
-      }
+      negotiate = (_, trans) => { trans.map(enc, dec) }
     )
 
     assert(client.localAddress == local)
@@ -92,9 +90,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       trans = trans,
       version = 0x0001,
       headers = identity,
-      negotiate = (_, trans) => {
-        trans.map(enc, dec)
-      }
+      negotiate = (_, trans) => { trans.map(enc, dec) }
     )
 
     assert(server.localAddress == local)

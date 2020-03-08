@@ -250,7 +250,9 @@ class ExecutionTest extends WordSpec with Matchers {
   }
 
   "ExecutionApp" should {
-    val parser = new ExecutionApp { def job = Execution.from(()) }
+    val parser = new ExecutionApp {
+      def job = Execution.from(())
+    }
     "parse hadoop args correctly" in {
       val conf = parser.config(Array("-Dmapred.reduce.tasks=100", "--local"))._1
       conf.get("mapred.reduce.tasks") should contain("100")
@@ -434,9 +436,7 @@ class ExecutionTest extends WordSpec with Matchers {
           memoryWastingExecutionGenerator(numExecutions).flatMap { _ =>
             writeAll(numExecutions - 1)
           }
-        } else {
-          Execution.from(())
-        }
+        } else { Execution.from(()) }
       }
 
       writeAll(400).shouldSucceed()

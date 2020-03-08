@@ -112,8 +112,6 @@ class CSVTypeCastSuite extends SparkFunSuite {
       Locale.setDefault(locale)
       assert(CSVTypeCast.castTo("1,00", FloatType) == 1.0)
       assert(CSVTypeCast.castTo("1,00", DoubleType) == 1.0)
-    } finally {
-      Locale.setDefault(originalLocale)
-    }
+    } finally { Locale.setDefault(originalLocale) }
   }
 }

@@ -57,9 +57,7 @@ class EvalTests extends CatsSuite {
     (spooky, Eval.later { spooky.increment(); value })
   }
 
-  test("memoized: Eval.later(_)") {
-    runValue(999)(memoized)(n => min(n, 1))
-  }
+  test("memoized: Eval.later(_)") { runValue(999)(memoized)(n => min(n, 1)) }
 
   // has the semantics of val: 1 evaluation
   def eager[A](value: A): (Spooky, Eval[A]) = {
@@ -67,9 +65,7 @@ class EvalTests extends CatsSuite {
     (spooky, Eval.now { spooky.increment(); value })
   }
 
-  test("eager: Eval.now(_)") {
-    runValue(999)(eager)(n => 1)
-  }
+  test("eager: Eval.now(_)") { runValue(999)(eager)(n => 1) }
 
   // has the semantics of def: N evaluations
   def always[A](value: A): (Spooky, Eval[A]) = {
@@ -77,9 +73,7 @@ class EvalTests extends CatsSuite {
     (spooky, Eval.always { spooky.increment(); value })
   }
 
-  test("by-name: Eval.always(_)") {
-    runValue(999)(always)(n => n)
-  }
+  test("by-name: Eval.always(_)") { runValue(999)(always)(n => n) }
 
   test(".value should evaluate only once on the result of .memoize") {
     forAll { i: Eval[Int] =>

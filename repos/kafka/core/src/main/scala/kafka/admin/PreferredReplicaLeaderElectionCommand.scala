@@ -174,9 +174,8 @@ class PreferredReplicaLeaderElectionCommand(
     val partitionsOpt = zkUtils.getPartitionsForTopics(List(topic)).get(topic)
     partitionsOpt match {
       case Some(partitions) =>
-        if (partitions.contains(partition)) {
-          true
-        } else {
+        if (partitions.contains(partition)) { true }
+        else {
           error(
             "Skipping preferred replica leader election for partition [%s,%d] "
               .format(topic, partition) +

@@ -48,9 +48,8 @@ abstract class CharArrayReader extends CharArrayReaderData { self =>
 
   /** Advance one character; reducing CR;LF pairs to just LF */
   final def nextChar(): Unit = {
-    if (charOffset >= buf.length) {
-      ch = SU
-    } else {
+    if (charOffset >= buf.length) { ch = SU }
+    else {
       val c = buf(charOffset)
       ch = c
       charOffset += 1
@@ -67,9 +66,8 @@ abstract class CharArrayReader extends CharArrayReaderData { self =>
     *  "potential line ends" here.
     */
   final def nextRawChar() {
-    if (charOffset >= buf.length) {
-      ch = SU
-    } else {
+    if (charOffset >= buf.length) { ch = SU }
+    else {
       val c = buf(charOffset)
       ch = c
       charOffset += 1

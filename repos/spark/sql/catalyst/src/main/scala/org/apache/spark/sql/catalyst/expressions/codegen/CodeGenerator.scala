@@ -124,9 +124,7 @@ class CodegenContext {
       .mkString("\n")
   }
 
-  def initMutableStates(): String = {
-    mutableStates.map(_._3).mkString("\n")
-  }
+  def initMutableStates(): String = { mutableStates.map(_._3).mkString("\n") }
 
   /**
     * Holding all the functions those will be added into generated class.
@@ -193,11 +191,8 @@ class CodegenContext {
     * Returns a term name that is unique within this instance of a `CodegenContext`.
     */
   def freshName(name: String): String = synchronized {
-    val fullName = if (freshNamePrefix == "") {
-      name
-    } else {
-      s"${freshNamePrefix}_$name"
-    }
+    val fullName = if (freshNamePrefix == "") { name }
+    else { s"${freshNamePrefix}_$name" }
     if (freshNameIds.contains(fullName)) {
       val id = freshNameIds(fullName)
       freshNameIds(fullName) = id + 1
@@ -280,9 +275,7 @@ class CodegenContext {
            }
          """
       }
-    } else {
-      s"""${setColumn(row, dataType, ordinal, ev.value)};"""
-    }
+    } else { s"""${setColumn(row, dataType, ordinal, ev.value)};""" }
   }
 
   /**
@@ -486,9 +479,7 @@ class CodegenContext {
           $execute
         }
       """
-    } else {
-      "\n" + execute
-    }
+    } else { "\n" + execute }
   }
 
   /**
@@ -670,9 +661,7 @@ abstract class CodeGenerator[InType <: AnyRef, OutType <: AnyRef]
     * Create a new codegen context for expression evaluator, used to store those
     * expressions that don't support codegen
     */
-  def newCodeGenContext(): CodegenContext = {
-    new CodegenContext
-  }
+  def newCodeGenContext(): CodegenContext = { new CodegenContext }
 }
 
 object CodeGenerator extends Logging {
@@ -680,9 +669,7 @@ object CodeGenerator extends Logging {
   /**
     * Compile the Java source code into a Java class, using Janino.
     */
-  def compile(code: String): GeneratedClass = {
-    cache.get(code)
-  }
+  def compile(code: String): GeneratedClass = { cache.get(code) }
 
   /**
     * Compile the Java source code into a Java class, using Janino.
@@ -718,9 +705,8 @@ object CodeGenerator extends Logging {
       formatted
     })
 
-    try {
-      evaluator.cook("generated.java", code)
-    } catch {
+    try { evaluator.cook("generated.java", code) }
+    catch {
       case e: Exception =>
         val msg = s"failed to compile: $e\n$formatted"
         logError(msg, e)

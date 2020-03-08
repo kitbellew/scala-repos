@@ -28,9 +28,7 @@ class RFormulaSuite
     extends SparkFunSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
-  test("params") {
-    ParamsSuite.checkParams(new RFormula())
-  }
+  test("params") { ParamsSuite.checkParams(new RFormula()) }
 
   test("transform numeric data") {
     val formula = new RFormula().setFormula("id ~ v1 + v2")
@@ -57,12 +55,8 @@ class RFormulaSuite
     val formula = new RFormula().setFormula("y ~ x").setFeaturesCol("x")
     val original =
       sqlContext.createDataFrame(Seq((0, 1.0), (2, 2.0))).toDF("x", "y")
-    intercept[IllegalArgumentException] {
-      formula.fit(original)
-    }
-    intercept[IllegalArgumentException] {
-      formula.fit(original)
-    }
+    intercept[IllegalArgumentException] { formula.fit(original) }
+    intercept[IllegalArgumentException] { formula.fit(original) }
   }
 
   test("label column already exists") {
@@ -83,9 +77,7 @@ class RFormulaSuite
     intercept[IllegalArgumentException] {
       model.transformSchema(original.schema)
     }
-    intercept[IllegalArgumentException] {
-      model.transform(original)
-    }
+    intercept[IllegalArgumentException] { model.transform(original) }
   }
 
   test("allow missing label column for test datasets") {

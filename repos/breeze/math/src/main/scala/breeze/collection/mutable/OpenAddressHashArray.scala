@@ -58,9 +58,7 @@ final class OpenAddressHashArray[
 
   def this(size: Int, default: ConfigurableDefault[V])(implicit
       manElem: ClassTag[V],
-      zero: Zero[V]) = {
-    this(size, default, 16)
-  }
+      zero: Zero[V]) = { this(size, default, 16) }
 
   def this(size: Int)(implicit manElem: ClassTag[V], zero: Zero[V]) = {
     this(size, ConfigurableDefault.default[V])
@@ -106,9 +104,7 @@ final class OpenAddressHashArray[
       if (load * 4 > _index.length * 3) {
         rehash()
         update(i, v)
-      } else {
-        _index(pos) = i
-      }
+      } else { _index(pos) = i }
     }
   }
 
@@ -125,9 +121,7 @@ final class OpenAddressHashArray[
     var hash = hashCodeFor(i) & (len - 1)
     while (index(hash) != i && index(hash) >= 0) {
       hash += 1
-      if (hash >= len) {
-        hash = 0
-      }
+      if (hash >= len) { hash = 0 }
     }
     hash
   }
@@ -154,9 +148,7 @@ final class OpenAddressHashArray[
     load = 0
     var i = 0
     while (i < oldIndex.length) {
-      if (oldIndex(i) >= 0) {
-        update(oldIndex(i), oldValues(i))
-      }
+      if (oldIndex(i) >= 0) { update(oldIndex(i), oldValues(i)) }
       i += 1
     }
   }
@@ -213,9 +205,7 @@ object OpenAddressHashArray {
       values: T*) = {
     val rv = new OpenAddressHashArray[T](values.length)
     val zero = implicitly[Zero[T]].zero
-    for ((v, i) <- values.zipWithIndex if v != zero) {
-      rv(i) = v
-    }
+    for ((v, i) <- values.zipWithIndex if v != zero) { rv(i) = v }
     rv
   }
 

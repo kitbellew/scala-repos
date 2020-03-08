@@ -87,9 +87,7 @@ class CounterTest extends FunSuite with Checkers {
     assert(a + b === b, (a + b).toString + " not equal " + b)
   }
 
-  test("Mean") {
-    assert(mean(Counter(0 -> 0.0, 1 -> 3.0)) === 1.5)
-  }
+  test("Mean") { assert(mean(Counter(0 -> 0.0, 1 -> 3.0)) === 1.5) }
 
   test("assignment checks both domains") {
     val a = Counter[Int, Int]()
@@ -126,9 +124,7 @@ class CounterOps_IntTest
 
   implicit def genS: Arbitrary[Counter[Int, Int]] = {
     Arbitrary {
-      for { l <- Arbitrary.arbitrary[List[Int]] } yield {
-        Counter.count(l: _*)
-      }
+      for { l <- Arbitrary.arbitrary[List[Int]] } yield { Counter.count(l: _*) }
     }
   }
 

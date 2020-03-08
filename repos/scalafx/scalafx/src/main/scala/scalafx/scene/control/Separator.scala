@@ -45,19 +45,13 @@ class Separator(override val delegate: jfxsc.Separator = new jfxsc.Separator)
     with SFXDelegate[jfxsc.Separator] {
 
   def halignment: ObjectProperty[jfxg.HPos] = delegate.halignmentProperty
-  def halignment_=(v: HPos) {
-    halignment() = v
-  }
+  def halignment_=(v: HPos) { halignment() = v }
 
   def valignment: ObjectProperty[jfxg.VPos] = delegate.valignmentProperty
-  def valignment_=(v: VPos) {
-    valignment() = v
-  }
+  def valignment_=(v: VPos) { valignment() = v }
 
   def orientation: ObjectProperty[jfxg.Orientation] =
     delegate.orientationProperty
-  def orientation_=(v: Orientation) {
-    orientation() = v
-  }
+  def orientation_=(v: Orientation) { orientation() = v }
 
 }

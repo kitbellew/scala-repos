@@ -7,9 +7,7 @@ import org.jetbrains.plugins.scala.lang.psi.{PsiElementMock => Psi}
   * Pavel.Fatin, 11.05.2010
   */
 class PrevSiblingsIteratorTest extends IteratorTestCase {
-  def testEmpty() = {
-    assertIterates("", parse("0 (1.1)").getLastChild)
-  }
+  def testEmpty() = { assertIterates("", parse("0 (1.1)").getLastChild) }
 
   def testOneSibling() = {
     assertIterates("1.1", parse("0 (1.1, 1.2)").getLastChild)

@@ -210,9 +210,7 @@ object LimitPushDown extends Rule[LogicalPlan] {
             case (None, None) =>
               if (left.statistics.sizeInBytes >= right.statistics.sizeInBytes) {
                 join.copy(left = maybePushLimit(exp, left))
-              } else {
-                join.copy(right = maybePushLimit(exp, right))
-              }
+              } else { join.copy(right = maybePushLimit(exp, right)) }
             case (Some(_), Some(_)) => join
             case (Some(_), None)    => join.copy(left = maybePushLimit(exp, left))
             case (None, Some(_)) =>
@@ -258,9 +256,7 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
   private def pushToRight[A <: Expression](
       e: A,
       rewrites: AttributeMap[Attribute]) = {
-    val result = e transform {
-      case a: Attribute => rewrites(a)
-    }
+    val result = e transform { case a: Attribute => rewrites(a) }
 
     // We must promise the compiler that we did not discard the names in the case of project
     // expressions.  This is safe since the only transformation is from Attribute => Attribute.
@@ -295,9 +291,7 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
           Project(projectList.map(pushToRight(_, rewrites)), child)
         })
         Union(newFirstChild +: newOtherChildren)
-      } else {
-        p
-      }
+      } else { p }
 
     // Push down filter into union
     case Filter(condition, Union(children)) =>
@@ -414,9 +408,7 @@ object ColumnPruning extends Rule[LogicalPlan] {
           Project(selected, p)
         }
         p.copy(child = u.withNewChildren(newChildren))
-      } else {
-        p
-      }
+      } else { p }
 
     // Prune unnecessary window expressions
     case p @ Project(_, w: Window)
@@ -441,18 +433,14 @@ object ColumnPruning extends Rule[LogicalPlan] {
       if ((child.inputSet -- required).nonEmpty) {
         val newChildren = child.children.map(c => prunedChild(c, required))
         p.copy(child = child.withNewChildren(newChildren))
-      } else {
-        p
-      }
+      } else { p }
   }
 
   /** Applies a projection only when the child is producing unnecessary attributes */
   private def prunedChild(c: LogicalPlan, allReferences: AttributeSet) =
     if ((c.outputSet -- allReferences.filter(c.outputSet.contains)).nonEmpty) {
       Project(c.output.filter(allReferences.contains), c)
-    } else {
-      c
-    }
+    } else { c }
 }
 
 /**
@@ -475,17 +463,14 @@ object CollapseProject extends Rule[LogicalPlan] {
         case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
       }.exists(!_.deterministic))
 
-      if (hasNondeterministic) {
-        p
-      } else {
+      if (hasNondeterministic) { p }
+      else {
         // Substitute any attributes that are produced by the child projection, so that we safely
         // eliminate it.
         // e.g., 'SELECT c + 1 FROM (SELECT a + b AS C ...' produces 'SELECT a + b + 1 ...'
         // TODO: Fix TransformBase to avoid the cast below.
         val substitutedProjection = projectList1
-          .map(_.transform {
-            case a: Attribute => aliasMap.getOrElse(a, a)
-          })
+          .map(_.transform { case a: Attribute => aliasMap.getOrElse(a, a) })
           .asInstanceOf[Seq[NamedExpression]]
         // collapse 2 projects may introduce unnecessary Aliases, trim them here.
         val cleanedProjection = substitutedProjection.map(p =>
@@ -511,17 +496,14 @@ object CollapseProject extends Rule[LogicalPlan] {
         case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
       }.exists(!_.deterministic))
 
-      if (hasNondeterministic) {
-        p
-      } else {
+      if (hasNondeterministic) { p }
+      else {
         // Substitute any attributes that are produced by the child projection, so that we safely
         // eliminate it.
         // e.g., 'SELECT c + 1 FROM (SELECT a + b AS C ...' produces 'SELECT a + b + 1 ...'
         // TODO: Fix TransformBase to avoid the cast below.
         val substitutedProjection = projectList1
-          .map(_.transform {
-            case a: Attribute => aliasMap.getOrElse(a, a)
-          })
+          .map(_.transform { case a: Attribute => aliasMap.getOrElse(a, a) })
           .asInstanceOf[Seq[NamedExpression]]
         // collapse 2 projects may introduce unnecessary Aliases, trim them here.
         val cleanedProjection = substitutedProjection.map(p =>
@@ -615,13 +597,9 @@ object NullPropagation extends Rule[LogicalPlan] {
         // For Coalesce, remove null literals.
         case e @ Coalesce(children) =>
           val newChildren = children.filter(nonNullLiteral)
-          if (newChildren.length == 0) {
-            Literal.create(null, e.dataType)
-          } else if (newChildren.length == 1) {
-            newChildren.head
-          } else {
-            Coalesce(newChildren)
-          }
+          if (newChildren.length == 0) { Literal.create(null, e.dataType) }
+          else if (newChildren.length == 1) { newChildren.head }
+          else { Coalesce(newChildren) }
 
         case e @ Substring(Literal(null, _), _, _) =>
           Literal.create(null, e.dataType)
@@ -689,9 +667,7 @@ object InferFiltersFromConstraints
         (child.constraints ++ splitConjunctivePredicates(condition))
       if (newFilters.nonEmpty) {
         Filter(And(newFilters.reduce(And), condition), child)
-      } else {
-        filter
-      }
+      } else { filter }
 
     case join @ Join(left, right, joinType, conditionOpt) =>
       // Only consider constraints that can be pushed down completely to either the left or the
@@ -876,9 +852,7 @@ object SimplifyConditionals extends Rule[LogicalPlan] with PredicateHelper {
           val newBranches = branches.filter(_._1 != FalseLiteral)
           if (newBranches.isEmpty) {
             elseValue.getOrElse(Literal.create(null, e.dataType))
-          } else {
-            e.copy(branches = newBranches)
-          }
+          } else { e.copy(branches = newBranches) }
 
         case e @ CaseWhen(branches, _)
             if branches.headOption.map(_._1) == Some(TrueLiteral) =>
@@ -951,11 +925,9 @@ object PruneFilters extends Rule[LogicalPlan] with PredicateHelper {
         splitConjunctivePredicates(fc).partition { cond =>
           cond.deterministic && p.constraints.contains(cond)
         }
-      if (prunedPredicates.isEmpty) {
-        f
-      } else if (remainingPredicates.isEmpty) {
-        p
-      } else {
+      if (prunedPredicates.isEmpty) { f }
+      else if (remainingPredicates.isEmpty) { p }
+      else {
         val newCond = remainingPredicates.reduce(And)
         Filter(newCond, p)
       }
@@ -1000,9 +972,8 @@ object PushPredicateThroughProject
           Filter(replaceAlias(condition, aliasMap), grandChild))
       } else {
         // If they are all nondeterministic conditions, leave it un-changed.
-        if (deterministic.isEmpty) {
-          filter
-        } else {
+        if (deterministic.isEmpty) { filter }
+        else {
           // Push down the small conditions without nondeterministic expressions.
           val pushedCondition =
             deterministic.map(replaceAlias(_, aliasMap)).reduce(And)
@@ -1042,9 +1013,7 @@ object PushPredicateThroughGenerate
           Filter(pushDownPredicate, g.child))
         if (stayUp.isEmpty) newGenerate
         else Filter(stayUp.reduce(And), newGenerate)
-      } else {
-        filter
-      }
+      } else { filter }
   }
 }
 
@@ -1084,9 +1053,7 @@ object PushPredicateThroughAggregate
         // Otherwise, create "Filter(stayUp) <- Aggregate <- Filter(pushDownPredicate)".
         if (stayUp.isEmpty) newAggregate
         else Filter(stayUp.reduce(And), newAggregate)
-      } else {
-        filter
-      }
+      } else { filter }
   }
 }
 

@@ -17,15 +17,11 @@ object ReceivePipelineSpec {
       case "become" ⇒ context.become(justReply)
       case m ⇒ sender ! m
     }
-    def justReply: Actor.Receive = {
-      case m ⇒ sender ! m
-    }
+    def justReply: Actor.Receive = { case m ⇒ sender ! m }
   }
 
   class IntReplierActor(max: Int) extends Actor with ReceivePipeline {
-    def receive: Actor.Receive = {
-      case m: Int if (m <= max) ⇒ sender ! m
-    }
+    def receive: Actor.Receive = { case m: Int if (m <= max) ⇒ sender ! m }
   }
 
   class TotallerActor extends Actor with ReceivePipeline {
@@ -43,9 +39,7 @@ object ReceivePipelineSpec {
   trait ListBuilderInterceptor {
     this: ReceivePipeline ⇒
 
-    pipelineOuter {
-      case n: Int ⇒ Inner(IntList((n until n + 3).toList))
-    }
+    pipelineOuter { case n: Int ⇒ Inner(IntList((n until n + 3).toList)) }
   }
 
   trait AdderInterceptor {
@@ -71,17 +65,13 @@ object ReceivePipelineSpec {
   trait OddDoublerInterceptor {
     this: ReceivePipeline ⇒
 
-    pipelineInner {
-      case i: Int if (i % 2 != 0) ⇒ Inner(i * 2)
-    }
+    pipelineInner { case i: Int if (i % 2 != 0) ⇒ Inner(i * 2) }
   }
 
   trait EvenHalverInterceptor {
     this: ReceivePipeline ⇒
 
-    pipelineInner {
-      case i: Int if (i % 2 == 0) ⇒ Inner(i / 2)
-    }
+    pipelineInner { case i: Int if (i % 2 == 0) ⇒ Inner(i / 2) }
   }
 
   trait Timer {
@@ -196,9 +186,7 @@ object PersistentReceivePipelineSpec {
       case "become" ⇒ context.become(justReply)
       case m ⇒ sender ! m
     }
-    def justReply: Actor.Receive = {
-      case m ⇒ sender ! m
-    }
+    def justReply: Actor.Receive = { case m ⇒ sender ! m }
 
     override def receiveCommand: Receive = becomeAndReply
     override def receiveRecover: Receive = {
@@ -432,9 +420,7 @@ object InterceptorSamples {
   import ReceivePipeline._
 
   //#interceptor-sample1
-  val incrementInterceptor: Interceptor = {
-    case i: Int ⇒ Inner(i + 1)
-  }
+  val incrementInterceptor: Interceptor = { case i: Int ⇒ Inner(i + 1) }
   //#interceptor-sample1
 
   def logTimeTaken(time: Long) = ???

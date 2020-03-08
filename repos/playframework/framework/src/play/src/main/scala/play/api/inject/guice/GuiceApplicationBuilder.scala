@@ -219,9 +219,7 @@ final case class GuiceApplicationBuilder(
         case _ =>
           false
       }
-    } else {
-      false
-    }
+    } else { false }
   }
 }
 

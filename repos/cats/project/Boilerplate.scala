@@ -104,9 +104,7 @@ object Boilerplate {
       } mkString ", "
       val next = if (arity + 1 <= maxArity) {
         s"def |@|[Z](z: F[Z]) = new CartesianBuilder${arity + 1}(${`a..n`}, z)"
-      } else {
-        ""
-      }
+      } else { "" }
 
       val n = if (arity == 1) { "" }
       else { arity.toString }
@@ -131,9 +129,7 @@ object Boilerplate {
 
       val tupled = if (arity != 1) {
         s"def tupled(implicit invariant: Invariant[F], cartesian: Cartesian[F]): F[(${`A..N`})] = Cartesian.tuple$n(${`a..n`})"
-      } else {
-        ""
-      }
+      } else { "" }
 
       block"""
         |package cats

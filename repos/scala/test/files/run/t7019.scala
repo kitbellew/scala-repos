@@ -4,7 +4,5 @@ final class Foo(val i: Int) extends AnyVal {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
-    assert(new Foo(1).foo() == 2)
-  }
+  def main(args: Array[String]): Unit = { assert(new Foo(1).foo() == 2) }
 }

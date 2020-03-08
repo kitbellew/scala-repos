@@ -78,9 +78,7 @@ class TriangleMesh(
     *
     * @param a Integer array to replace the contents of the faces array.
     */
-  def faces_=(a: Array[Int]) {
-    delegate.getFaces.setAll(a, 0, a.length)
-  }
+  def faces_=(a: Array[Int]) { delegate.getFaces.setAll(a, 0, a.length) }
 
   /** Gets the ObservableIntegerArray of face smoothing groups of this TriangleMesh. */
   def faceSmoothingGroups: ObservableIntegerArray =
@@ -106,9 +104,7 @@ class TriangleMesh(
     *
     * @param a Float array to replace the contents of the points array.
     */
-  def points_=(a: Array[Float]) {
-    delegate.getPoints.setAll(a, 0, a.length)
-  }
+  def points_=(a: Array[Float]) { delegate.getPoints.setAll(a, 0, a.length) }
 
   /** Gets the number of array components representing a single text coordinate. */
   def texCoordElementSize = delegate.getTexCoordElementSize()

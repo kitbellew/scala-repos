@@ -49,17 +49,13 @@ trait ImageExtractor extends CanLog {
     ImageExtractor.critical(t, msg, refs: _*)
   }
 
-  def debug(msg: String, refs: Any*) {
-    ImageExtractor.debug(msg, refs: _*)
-  }
+  def debug(msg: String, refs: Any*) { ImageExtractor.debug(msg, refs: _*) }
 
   def debug(t: Throwable, msg: String, refs: Any*) {
     ImageExtractor.debug(t, msg, refs: _*)
   }
 
-  def info(msg: String, refs: Any*) {
-    ImageExtractor.info(msg, refs: _*)
-  }
+  def info(msg: String, refs: Any*) { ImageExtractor.info(msg, refs: _*) }
 
   def info(t: Throwable, msg: String, refs: Any*) {
     ImageExtractor.info(t, msg, refs: _*)
@@ -67,17 +63,13 @@ trait ImageExtractor extends CanLog {
 
   def logger = ImageExtractor.logger
 
-  def trace(msg: String, refs: Any*) {
-    ImageExtractor.trace(msg, refs: _*)
-  }
+  def trace(msg: String, refs: Any*) { ImageExtractor.trace(msg, refs: _*) }
 
   def trace(t: Throwable, msg: String, refs: Any*) {
     ImageExtractor.trace(t, msg, refs: _*)
   }
 
-  def warn(msg: String, refs: Any*) {
-    ImageExtractor.warn(msg, refs: _*)
-  }
+  def warn(msg: String, refs: Any*) { ImageExtractor.warn(msg, refs: _*) }
 
   def warn(t: Throwable, msg: String, refs: Any*) {
     ImageExtractor.warn(t, msg, refs: _*)

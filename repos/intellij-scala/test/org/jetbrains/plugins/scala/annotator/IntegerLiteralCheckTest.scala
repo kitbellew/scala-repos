@@ -15,9 +15,7 @@ import scala.util.Random
 class IntegerLiteralCheckTest extends SimpleTestCase {
   final val Header = ""
 
-  def randomIntValues(num: Int): List[Int] = {
-    List.fill(num)(Random.nextInt)
-  }
+  def randomIntValues(num: Int): List[Int] = { List.fill(num)(Random.nextInt) }
 
   def randomLongValues(num: Int): List[Long] = {
     Stream
@@ -58,18 +56,14 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
       .flatMap(expandIntegerLiteral)
       .flatMap(prependSign)
       .distinct
-    for (s <- intStrings) {
-      assertNothing(messages(s"val a = $s"))
-    }
+    for (s <- intStrings) { assertNothing(messages(s"val a = $s")) }
     val longStrings = (intStrings flatMap appendL) ++
       (longValues ++ randomLongValues(numOfGenInteger))
         .flatMap(expandIntegerLiteral)
         .flatMap(prependSign)
         .flatMap(appendL)
         .distinct
-    for (s <- longStrings) {
-      assertNothing(messages(s"val a = $s"))
-    }
+    for (s <- longStrings) { assertNothing(messages(s"val a = $s")) }
   }
 
   def testLiteralOverflowInt() {

@@ -14,9 +14,7 @@ class GetAllClassesTest_212
     extends GetAllClassesTestBase
     with ScalaVersion_2_12 {
 
-  override def testForStmt(): Unit = {
-    checkGetAllClasses("ForStmt$")
-  }
+  override def testForStmt(): Unit = { checkGetAllClasses("ForStmt$") }
 
   override def testByNameArgument(): Unit = {
     checkGetAllClasses("ByNameArgument$")
@@ -52,9 +50,7 @@ abstract class GetAllClassesTestBase extends PositionManagerTestBase {
     """.stripMargin.trim
   )
 
-  def testSimple(): Unit = {
-    checkGetAllClasses("Simple$")
-  }
+  def testSimple(): Unit = { checkGetAllClasses("Simple$") }
 
   setupFile(
     "SimpleClass.scala",
@@ -73,9 +69,7 @@ abstract class GetAllClassesTestBase extends PositionManagerTestBase {
        |}
     """.stripMargin.trim
   )
-  def testSimpleClass(): Unit = {
-    checkGetAllClasses("TestClass")
-  }
+  def testSimpleClass(): Unit = { checkGetAllClasses("TestClass") }
 
   setupFile(
     "SimpleClassWithComplexName.scala",
@@ -115,9 +109,7 @@ abstract class GetAllClassesTestBase extends PositionManagerTestBase {
        |}
     """.stripMargin.trim
   )
-  def testSimpleTrait(): Unit = {
-    checkGetAllClasses("Test$class")
-  }
+  def testSimpleTrait(): Unit = { checkGetAllClasses("Test$class") }
 
   setupFile(
     "InnerClassInObject.scala",
@@ -182,9 +174,7 @@ abstract class GetAllClassesTestBase extends PositionManagerTestBase {
        |}
     """.stripMargin.trim
   )
-  def testLocalObject(): Unit = {
-    checkGetAllClasses("LocalObject$A$2$")
-  }
+  def testLocalObject(): Unit = { checkGetAllClasses("LocalObject$A$2$") }
 
   setupFile(
     "LocalClassSymbolicName.scala",
@@ -288,9 +278,7 @@ abstract class GetAllClassesTestBase extends PositionManagerTestBase {
        |}
     """.stripMargin.trim
   )
-  def testAnonClass(): Unit = {
-    checkGetAllClasses("AnonClass$$anon$1")
-  }
+  def testAnonClass(): Unit = { checkGetAllClasses("AnonClass$$anon$1") }
 
   setupFile(
     "ByNameParamInBlock.scala",
@@ -330,9 +318,7 @@ abstract class GetAllClassesTestBase extends PositionManagerTestBase {
        |}
     """.stripMargin.trim
   )
-  def testClassInBlock(): Unit = {
-    checkGetAllClasses("ClassInBlock$A$1")
-  }
+  def testClassInBlock(): Unit = { checkGetAllClasses("ClassInBlock$A$1") }
 
   setupFile(
     "PartialFunctionArg.scala",

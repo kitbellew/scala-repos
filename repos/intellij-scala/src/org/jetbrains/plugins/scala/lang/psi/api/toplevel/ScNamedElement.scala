@@ -35,9 +35,7 @@ trait ScNamedElement
     }
   }
 
-  def name_=(it: String) {
-    setName(it)
-  }
+  def name_=(it: String) { setName(it) }
 
   def nameInner: String = nameId.getText
 

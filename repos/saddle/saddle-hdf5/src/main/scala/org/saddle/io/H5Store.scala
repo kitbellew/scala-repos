@@ -44,13 +44,9 @@ object H5Store {
 
   private def withMonitor[A](block: => A): A = {
     monitor.lock()
-    try {
-      block
-    } catch {
-      case e: HDF5LibraryException => throw wrapHdf5Exception(e)
-    } finally {
-      monitor.unlock()
-    }
+    try { block }
+    catch { case e: HDF5LibraryException => throw wrapHdf5Exception(e) }
+    finally { monitor.unlock() }
   }
 
   // *** Public API
@@ -65,9 +61,7 @@ object H5Store {
     * @tparam T Series values type
     */
   def readSeries[X: ST: ORD, T: ST](path: String, group: String): Series[X, T] =
-    withMonitor {
-      readPandasSeries[X, T](path, group)
-    }
+    withMonitor { readPandasSeries[X, T](path, group) }
 
   /**
     * Read a Series slice from an HDF5 file. Note that this still loads the entire series into
@@ -143,9 +137,7 @@ object H5Store {
     * @tparam T Series values type
     */
   def readSeries[X: ST: ORD, T: ST](fileid: Int, group: String): Series[X, T] =
-    withMonitor {
-      readPandasSeries[X, T](fileid, group)
-    }
+    withMonitor { readPandasSeries[X, T](fileid, group) }
 
   /**
     * Read a Series slice from an HDF5 file. Note that this still loads the entire series into
@@ -226,9 +218,7 @@ object H5Store {
       path: String,
       group: String,
       s: Series[X, T]) {
-    withMonitor {
-      writePandasSeries(path, group, s.index, s.values)
-    }
+    withMonitor { writePandasSeries(path, group, s.index, s.values) }
   }
 
   /**
@@ -242,11 +232,7 @@ object H5Store {
   def writeFrame[R: ST: ORD, C: ST: ORD, T: ST](
       path: String,
       group: String,
-      df: Frame[R, C, T]) {
-    withMonitor {
-      writePandasFrame(path, group, df)
-    }
-  }
+      df: Frame[R, C, T]) { withMonitor { writePandasFrame(path, group, df) } }
 
   /**
     * Write a Series to an already-open HDF5 file.
@@ -259,9 +245,7 @@ object H5Store {
       fileid: Int,
       group: String,
       s: Series[X, T]) {
-    withMonitor {
-      writePandasSeries(fileid, group, s.index, s.values)
-    }
+    withMonitor { writePandasSeries(fileid, group, s.index, s.values) }
   }
 
   /**
@@ -276,9 +260,7 @@ object H5Store {
       fileid: Int,
       group: String,
       df: Frame[R, C, T]) {
-    withMonitor {
-      writePandasFrame(fileid, group, df)
-    }
+    withMonitor { writePandasFrame(fileid, group, df) }
   }
 
   /**
@@ -381,11 +363,7 @@ object H5Store {
 
   // release resources / cleanup on JVM shutdown
   Runtime.getRuntime.addShutdownHook(new Thread() {
-    override def run() {
-      withMonitor {
-        H5Reg.closeAll()
-      }
-    }
+    override def run() { withMonitor { H5Reg.closeAll() } }
   })
 
   private val ic = classOf[Int]
@@ -1007,9 +985,7 @@ object H5Store {
         var i = 0
         while (i < arrlen) {
           var sz = sdim
-          while (sz - 1 >= 0 && byteBuff(j + sz - 1) == 0) {
-            sz -= 1
-          }
+          while (sz - 1 >= 0 && byteBuff(j + sz - 1) == 0) { sz -= 1 }
           val tmpBuf = Array.ofDim[Byte](sz)
           System.arraycopy(byteBuff, j, tmpBuf, 0, sz)
           result(i) = new String(tmpBuf, UTF8).asInstanceOf[X]
@@ -1113,9 +1089,7 @@ object H5Store {
 
     val (fileid, writeHeader) = if (Files.exists(Paths.get(file))) {
       openFile(file, readOnly = false) -> false
-    } else {
-      createFile(file) -> true
-    }
+    } else { createFile(file) -> true }
 
     assertException(
       fileid >= 0,
@@ -1124,9 +1098,7 @@ object H5Store {
     try {
       if (writeHeader) writePytablesHeader(fileid)
       writePandasSeries[X, T](fileid, name, index, values)
-    } finally {
-      closeFile(fileid)
-    }
+    } finally { closeFile(fileid) }
   }
 
   private def writePandasSeries[X: ST, T: ST](
@@ -1161,11 +1133,8 @@ object H5Store {
       fileid >= 0,
       "File ID : " + fileid + " does not belong to a valid file")
 
-    try {
-      readPandasSeries[X, T](fileid, group)
-    } finally {
-      closeFile(fileid)
-    }
+    try { readPandasSeries[X, T](fileid, group) }
+    finally { closeFile(fileid) }
   }
 
   private def readPandasSeries[X: ST: ORD, T: ST](
@@ -1242,9 +1211,7 @@ object H5Store {
 
     val (fileid, writeHeader) = if (Files.exists(Paths.get(file))) {
       openFile(file, readOnly = false) -> false
-    } else {
-      createFile(file) -> true
-    }
+    } else { createFile(file) -> true }
 
     assertException(
       fileid >= 0,
@@ -1257,9 +1224,7 @@ object H5Store {
         closeNode(grpid)
       }
       writePandasFrame[R, C, T](fileid, name, frame)
-    } finally {
-      closeFile(fileid)
-    }
+    } finally { closeFile(fileid) }
   }
 
   private def writePandasFrame[R: ST: ORD, C: ST: ORD, T: ST](
@@ -1386,11 +1351,8 @@ object H5Store {
       fileid >= 0,
       "File ID : " + fileid + " does not belong to a valid file")
 
-    try {
-      readPandasFrame[RX, CX, T](fileid, name)
-    } finally {
-      closeFile(fileid)
-    }
+    try { readPandasFrame[RX, CX, T](fileid, name) }
+    finally { closeFile(fileid) }
   }
 
   private def readPandasFrame[RX: ST: ORD, CX: ST: ORD, T: ST](
@@ -1598,11 +1560,7 @@ object H5Store {
     /**
       * Registers an open resource if it hasn't been registered already
       */
-    def save(v: Int, t: H5Resource) {
-      withMonitor {
-        registry += (v -> t)
-      }
-    }
+    def save(v: Int, t: H5Resource) { withMonitor { registry += (v -> t) } }
 
     /**
       * Closes / de-registers a resource in a thread-safe manner
@@ -1628,9 +1586,7 @@ object H5Store {
       * Releases all (open) resources
       */
     def closeAll() {
-      withMonitor {
-        registry.map { case (v, t) => close(v, t) }
-      }
+      withMonitor { registry.map { case (v, t) => close(v, t) } }
     }
   }
 }

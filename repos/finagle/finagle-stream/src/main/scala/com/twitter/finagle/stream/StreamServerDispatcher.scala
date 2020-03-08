@@ -16,9 +16,7 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
 ) extends GenSerialServerDispatcher[Req, StreamResponse, Any, Any](trans) {
   import Bijections._
 
-  trans.onClose ensure {
-    service.close()
-  }
+  trans.onClose ensure { service.close() }
 
   private[this] val RT = implicitly[RequestType[Req]]
 
@@ -60,15 +58,10 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
         HttpHeaders.Values.CLOSE)
     }
 
-    val f = trans
-      .write(httpRes)
-      .before {
-        writeChunks(rep)
-      }
-      .ensure {
-        rep.release()
-        trans.close()
-      }
+    val f = trans.write(httpRes).before { writeChunks(rep) }.ensure {
+      rep.release()
+      trans.close()
+    }
 
     val p = new Promise[Unit]()
     f.proxyTo(p)

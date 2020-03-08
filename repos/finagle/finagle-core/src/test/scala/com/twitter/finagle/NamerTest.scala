@@ -261,9 +261,7 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
               case exp.Address
                     .ServiceFactory(sf: ServiceFactory[Int, Int], _) =>
                 val svc = Await.result(sf())
-                intercept[ClassCastException] {
-                  val rsp = Await.result(svc(3))
-                }
+                intercept[ClassCastException] { val rsp = Await.result(svc(3)) }
 
               case addr =>
                 fail(s"$addr not a exp.Address.ServiceFactory")

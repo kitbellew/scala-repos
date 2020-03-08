@@ -112,9 +112,7 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
     val sorted = mutable.SortedSet()(
       Ordering.by[ScalaResolveResult, Int](
         _.getElement.getTextRange.getStartOffset))
-    inReadAction {
-      candidates.foreach(sorted += _)
-    }
+    inReadAction { candidates.foreach(sorted += _) }
     sorted.map(_.name)
   }
 
@@ -209,9 +207,7 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       val placesToSearch = ArrayBuffer[PsiElement]()
       contextClass.accept(new ScalaRecursiveElementVisitor() {
         override def visitFunctionDefinition(
-            fun: ScFunctionDefinition): Unit = {
-          placesToSearch += fun
-        }
+            fun: ScFunctionDefinition): Unit = { placesToSearch += fun }
 
         override def visitPatternDefinition(pat: ScPatternDefinition): Unit = {
           pat match {

@@ -20,7 +20,9 @@ private[process] trait ProcessImpl {
   private[process] object Spawn {
     def apply(f: => Unit): Thread = apply(f, daemon = false)
     def apply(f: => Unit, daemon: Boolean): Thread = {
-      val thread = new Thread() { override def run() = { f } }
+      val thread = new Thread() {
+        override def run() = { f }
+      }
       thread.setDaemon(daemon)
       thread.start()
       thread
@@ -162,9 +164,7 @@ private[process] trait ProcessImpl {
         // Since file redirection (e.g. #>) is implemented as a piped process,
         // we ignore its exit value so cmd #> file doesn't always return 0.
         if (b.hasExitValue) exit2 else exit1
-      } {
-        releaseResources(source, sink, first, second)
-      }
+      } { releaseResources(source, sink, first, second) }
     }
   }
 
@@ -177,9 +177,7 @@ private[process] trait ProcessImpl {
     private[process] def runloop(src: InputStream, dst: OutputStream): Unit = {
       try BasicIO.transferFully(src, dst)
       catch ioFailure(ioHandler)
-      finally BasicIO close {
-        if (isSink) dst else src
-      }
+      finally BasicIO close { if (isSink) dst else src }
     }
     private def ioHandler(e: IOException) {
       println("I/O error " + e.getMessage + " for process: " + labelFn())

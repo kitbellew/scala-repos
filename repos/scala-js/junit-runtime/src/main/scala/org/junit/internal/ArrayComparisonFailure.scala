@@ -14,9 +14,7 @@ class ArrayComparisonFailure(fMessage: String) extends AssertionError {
     addDimension(index)
   }
 
-  def addDimension(index: Int): Unit = {
-    fIndices = index :: fIndices
-  }
+  def addDimension(index: Int): Unit = { fIndices = index :: fIndices }
 
   override def getMessage(): String = {
     val message = if (fMessage != null) fMessage else ""

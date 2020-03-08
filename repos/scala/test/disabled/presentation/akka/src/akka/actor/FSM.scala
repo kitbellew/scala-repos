@@ -217,9 +217,7 @@ trait FSM[S, D] extends ListenerManagement {
   /**
     * Produce change descriptor to stop this FSM actor with reason "Normal".
     */
-  protected final def stop(): State = {
-    stop(Normal)
-  }
+  protected final def stop(): State = { stop(Normal) }
 
   /**
     * Produce change descriptor to stop this FSM actor including specified reason.
@@ -248,9 +246,7 @@ trait FSM[S, D] extends ListenerManagement {
       msg: AnyRef,
       timeout: Duration,
       repeat: Boolean): State = {
-    if (timers contains name) {
-      timers(name).cancel
-    }
+    if (timers contains name) { timers(name).cancel }
     val timer = Timer(name, msg, repeat, timerGen.next)
     timer.schedule(self, timeout)
     timers(name) = timer
@@ -341,9 +337,7 @@ trait FSM[S, D] extends ListenerManagement {
     * Verify existence of initial state and setup timers. This should be the
     * last call within the constructor.
     */
-  def initialize {
-    makeTransition(currentState)
-  }
+  def initialize { makeTransition(currentState) }
 
   /**
     * ****************************************************************
@@ -415,22 +409,17 @@ trait FSM[S, D] extends ListenerManagement {
     */
   override final protected def receive: Receive = {
     case TimeoutMarker(gen) =>
-      if (generation == gen) {
-        processEvent(StateTimeout)
-      }
+      if (generation == gen) { processEvent(StateTimeout) }
     case t @ Timer(name, msg, repeat, generation) =>
       if ((timers contains name) && (timers(name).generation == generation)) {
         processEvent(msg)
-        if (!repeat) {
-          timers -= name
-        }
+        if (!repeat) { timers -= name }
       }
     case SubscribeTransitionCallBack(actorRef) =>
       addListener(actorRef)
       // send current state back as reference point
-      try {
-        actorRef ! CurrentState(self, currentState.stateName)
-      } catch {
+      try { actorRef ! CurrentState(self, currentState.stateName) }
+      catch {
         case e: ActorInitializationException =>
           EventHandler.warning(this, "trying to register not running listener")
       }
@@ -449,9 +438,8 @@ trait FSM[S, D] extends ListenerManagement {
   private def processEvent(value: Any) = {
     val event = Event(value, currentState.stateData)
     val stateFunc = stateFunctions(currentState.stateName)
-    val nextState = if (stateFunc isDefinedAt event) {
-      stateFunc(event)
-    } else {
+    val nextState = if (stateFunc isDefinedAt event) { stateFunc(event) }
+    else {
       // handleEventDefault ensures that this is always defined
       handleEvent(event)
     }
@@ -508,9 +496,7 @@ trait FSM[S, D] extends ListenerManagement {
       * next state. This timeout overrides any default timeout set for the next
       * state.
       */
-    def forMax(timeout: Duration): State = {
-      copy(timeout = Some(timeout))
-    }
+    def forMax(timeout: Duration): State = { copy(timeout = Some(timeout)) }
 
     /**
       * Send reply to sender of the current message, if available.
@@ -529,9 +515,7 @@ trait FSM[S, D] extends ListenerManagement {
       * Modify state transition descriptor with new state data. The data will be
       * set when transitioning to the new state.
       */
-    def using(nextStateDate: D): State = {
-      copy(stateData = nextStateDate)
-    }
+    def using(nextStateDate: D): State = { copy(stateData = nextStateDate) }
 
     private[akka] var stopReason: Option[Reason] = None
 

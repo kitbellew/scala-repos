@@ -18,13 +18,9 @@ trait JavacOutputParsing extends Logger {
 
   protected def client: Client
 
-  abstract override def error(msg: F0[String]) {
-    process(msg(), Kind.ERROR)
-  }
+  abstract override def error(msg: F0[String]) { process(msg(), Kind.ERROR) }
 
-  abstract override def warn(msg: F0[String]) {
-    process(msg(), Kind.PROGRESS)
-  }
+  abstract override def warn(msg: F0[String]) { process(msg(), Kind.PROGRESS) }
 
   // Move Javac output parsing to SBT compiler
   private def process(line: String, kind: Kind) {
@@ -51,11 +47,8 @@ trait JavacOutputParsing extends Logger {
       case TotalsPattern() =>
       // do nothing
       case _ =>
-        if (header.isDefined) {
-          lines :+= line
-        } else {
-          client.message(kind, line)
-        }
+        if (header.isDefined) { lines :+= line }
+        else { client.message(kind, line) }
     }
   }
 }

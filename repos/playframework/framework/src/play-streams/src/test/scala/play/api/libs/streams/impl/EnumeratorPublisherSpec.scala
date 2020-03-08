@@ -121,9 +121,7 @@ class EnumeratorPublisherSpec extends Specification {
       val testEnv = new TestEnv[Int]
       val enumDone = Promise[Boolean]()
       val (broadcastEnum, channel) = Concurrent.broadcast[Int]
-      val enum = broadcastEnum.onDoneEnumerating {
-        enumDone.success(true)
-      }
+      val enum = broadcastEnum.onDoneEnumerating { enumDone.success(true) }
       val pubr = new EnumeratorPublisher(enum)
       pubr.subscribe(testEnv.subscriber)
       testEnv.next must_== OnSubscribe

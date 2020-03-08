@@ -47,9 +47,7 @@ object FSMActorSpec {
             doUnlock()
             goto(Open) using CodeState("", code) forMax timeout
           }
-          case wrong ⇒ {
-            stay using CodeState("", code)
-          }
+          case wrong ⇒ { stay using CodeState("", code) }
         }
       }
       case Event("hello", _) ⇒ stay replying "world"
@@ -72,9 +70,7 @@ object FSMActorSpec {
       }
     }
 
-    onTransition {
-      case Locked -> Open ⇒ transitionLatch.open
-    }
+    onTransition { case Locked -> Open ⇒ transitionLatch.open }
 
     // verify that old-style does still compile
     onTransition(transitionHandler _)
@@ -167,9 +163,7 @@ class FSMActorSpec
     "log termination" in {
       val fsm = TestActorRef(new Actor with FSM[Int, Null] {
         startWith(1, null)
-        when(1) {
-          case Event("go", _) ⇒ goto(2)
-        }
+        when(1) { case Event("go", _) ⇒ goto(2) }
       })
       val name = fsm.path.toString
       EventFilter.error(
@@ -194,9 +188,7 @@ class FSMActorSpec
         override def preStart = { started.countDown }
         startWith(1, null)
         when(1) { FSM.NullFunction }
-        onTermination {
-          case x ⇒ testActor ! x
-        }
+        onTermination { case x ⇒ testActor ! x }
       }
       val ref = system.actorOf(Props(fsm))
       Await.ready(started, timeout.duration)
@@ -208,9 +200,7 @@ class FSMActorSpec
       val expected = "pigdog"
       val actor = system.actorOf(Props(new Actor with FSM[Int, String] {
         startWith(1, null)
-        when(1) {
-          case Event(2, null) ⇒ stop(FSM.Normal, expected)
-        }
+        when(1) { case Event(2, null) ⇒ stop(FSM.Normal, expected) }
         onTermination {
           case StopEvent(FSM.Normal, 1, `expected`) ⇒ testActor ! "green"
         }
@@ -284,9 +274,7 @@ class FSMActorSpec
                   cancelTimer("t")
                   stop
               }
-              onTermination {
-                case StopEvent(r, _, _) ⇒ testActor ! r
-              }
+              onTermination { case StopEvent(r, _, _) ⇒ testActor ! r }
             })
             val name = fsm.path.toString
             val fsmClass = fsm.underlyingActor.getClass
@@ -320,9 +308,7 @@ class FSMActorSpec
             system.eventStream.unsubscribe(testActor)
           }
         }
-      } finally {
-        TestKit.shutdownActorSystem(fsmEventSystem)
-      }
+      } finally { TestKit.shutdownActorSystem(fsmEventSystem) }
     }
 
     "fill rolling event log and hand it out" in {
@@ -360,14 +346,10 @@ class FSMActorSpec
       import akka.actor.FSM._
       val fsmref = system.actorOf(Props(new Actor with FSM[Int, Int] {
         startWith(0, 0)
-        when(0)(transform {
-          case Event("go", _) ⇒ stay
-        } using {
+        when(0)(transform { case Event("go", _) ⇒ stay } using {
           case x ⇒ goto(1)
         })
-        when(1) {
-          case _ ⇒ stay
-        }
+        when(1) { case _ ⇒ stay }
       }))
       fsmref ! SubscribeTransitionCallBack(testActor)
       fsmref ! "go"
@@ -404,9 +386,7 @@ class FSMActorSpec
         fsm ! OverrideTimeoutToInf
         p.expectMsg(OverrideTimeoutToInf)
         p.expectNoMsg(3.seconds)
-      } finally {
-        TestKit.shutdownActorSystem(sys)
-      }
+      } finally { TestKit.shutdownActorSystem(sys) }
     }
 
   }

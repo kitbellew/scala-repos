@@ -44,9 +44,7 @@ private[io] class UdpConnection(
       case None ⇒
         context.become(resolving(), discardOld = true)
     }
-  } else {
-    doConnect(remoteAddress)
-  }
+  } else { doConnect(remoteAddress) }
 
   def resolving(): Receive = {
     case r: Dns.Resolved ⇒
@@ -153,9 +151,8 @@ private[io] class UdpConnection(
     }
 
   private def reportConnectFailure(thunk: ⇒ Unit): Unit = {
-    try {
-      thunk
-    } catch {
+    try { thunk }
+    catch {
       case NonFatal(e) ⇒
         log.debug(
           "Failure while connecting UDP channel to remote address [{}] local address [{}]: {}",

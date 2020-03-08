@@ -65,9 +65,7 @@ abstract class ImplicitProcessor(kinds: Set[Value], withoutPrecedence: Boolean)
     val iterator = levelMap.values().iterator()
     while (iterator.hasNext) {
       val setIterator = iterator.next().iterator()
-      while (setIterator.hasNext) {
-        candidatesSet += setIterator.next
-      }
+      while (setIterator.hasNext) { candidatesSet += setIterator.next }
     }
     qualifiedNamesSet.addAll(levelQualifiedNamesSet)
     levelMap.clear()
@@ -80,9 +78,7 @@ abstract class ImplicitProcessor(kinds: Set[Value], withoutPrecedence: Boolean)
     val iterator = levelMap.values().iterator()
     while (iterator.hasNext) {
       val setIterator = iterator.next().iterator()
-      while (setIterator.hasNext) {
-        candidatesSet += setIterator.next
-      }
+      while (setIterator.hasNext) { candidatesSet += setIterator.next }
     }
     res
   }

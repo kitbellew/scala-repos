@@ -62,9 +62,7 @@ object Database {
     ds
   }
 
-  private val db: SlickDatabase = {
-    SlickDatabase.forDataSource(dataSource)
-  }
+  private val db: SlickDatabase = { SlickDatabase.forDataSource(dataSource) }
 
   def apply(): SlickDatabase = db
 

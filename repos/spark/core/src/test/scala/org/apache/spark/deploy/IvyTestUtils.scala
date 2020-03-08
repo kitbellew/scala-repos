@@ -59,22 +59,16 @@ private[deploy] object IvyTestUtils {
       artifact: MavenCoordinate,
       useIvyLayout: Boolean,
       ext: String = ".jar"): String = {
-    if (!useIvyLayout) {
-      s"${artifact.artifactId}-${artifact.version}$ext"
-    } else {
-      s"${artifact.artifactId}$ext"
-    }
+    if (!useIvyLayout) { s"${artifact.artifactId}-${artifact.version}$ext" }
+    else { s"${artifact.artifactId}$ext" }
   }
 
   /** Returns the directory for the given groupId based on standard ivy or maven format. */
   private def getBaseGroupDirectory(
       artifact: MavenCoordinate,
       useIvyLayout: Boolean): String = {
-    if (!useIvyLayout) {
-      artifact.groupId.replace(".", File.separator)
-    } else {
-      artifact.groupId
-    }
+    if (!useIvyLayout) { artifact.groupId.replace(".", File.separator) }
+    else { artifact.groupId }
   }
 
   /** Write the contents to a file to the supplied directory. */
@@ -342,9 +336,7 @@ private[deploy] object IvyTestUtils {
       val descriptor =
         createDescriptor(tempPath, artifact, dependencies, useIvyLayout)
       assert(descriptor.exists(), "Problem creating Pom file")
-    } finally {
-      FileUtils.deleteDirectory(root)
-    }
+    } finally { FileUtils.deleteDirectory(root) }
     tempPath
   }
 
@@ -412,9 +404,8 @@ private[deploy] object IvyTestUtils {
       useIvyLayout,
       withPython,
       withR)
-    try {
-      f(repo.toURI.toString)
-    } finally {
+    try { f(repo.toURI.toString) }
+    finally {
       // Clean up
       if (repo.toString.contains(".m2") || repo.toString.contains(".ivy2")) {
         val groupDir = getBaseGroupDirectory(artifact, useIvyLayout)
@@ -426,9 +417,7 @@ private[deploy] object IvyTestUtils {
               new File(repo, getBaseGroupDirectory(dep, useIvyLayout)))
           }
         }
-      } else {
-        FileUtils.deleteDirectory(repo)
-      }
+      } else { FileUtils.deleteDirectory(repo) }
       purgeLocalIvyCache(artifact, deps, ivySettings)
     }
   }

@@ -26,9 +26,7 @@ object AtmosphereClient {
     val res: Broadcaster = BroadcasterFactory.getDefault.lookup(norm)
     if (res != null && res.isInstanceOf[ScalatraBroadcaster]) {
       Some(res.asInstanceOf[ScalatraBroadcaster])
-    } else {
-      None
-    }
+    } else { None }
   }
 
   def broadcast(
@@ -43,9 +41,7 @@ object AtmosphereClient {
       message: OutboundMessage,
       filter: ClientFilter = new Everyone)(
       implicit executionContext: ExecutionContext) = {
-    lookupAll() foreach {
-      _ broadcast (message, filter)
-    }
+    lookupAll() foreach { _ broadcast (message, filter) }
   }
 }
 

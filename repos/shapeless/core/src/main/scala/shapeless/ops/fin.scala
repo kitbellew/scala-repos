@@ -22,7 +22,9 @@ object fin {
   /**
     * Type class supporting conversion of type-level Nats to a Fin, only available if M < N
     */
-  trait FromNat[M <: Nat, N <: Succ[_]] extends DepFn0 { type Out <: Fin[N] }
+  trait FromNat[M <: Nat, N <: Succ[_]] extends DepFn0 {
+    type Out <: Fin[N]
+  }
 
   object FromNat {
     def apply[M <: Nat, N <: Succ[_]](

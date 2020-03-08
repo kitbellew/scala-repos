@@ -124,12 +124,8 @@ trait ScTypeDefinition
               val typeElement = ScalaPsiElementFactory
                 .createTypeElementFromText(typeElementText, getManager)
               s" extends ${typeElement.getText}"
-            } else {
-              ""
-            }
-          } catch {
-            case e: Exception => ""
-          }
+            } else { "" }
+          } catch { case e: Exception => "" }
         }
 
         s"""${accessModifier}object ${clazz.name}$extendsText{

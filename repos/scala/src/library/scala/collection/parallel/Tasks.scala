@@ -53,9 +53,7 @@ trait Task[R, +Tp] {
         leaf(lastres)
         result =
           result // ensure that effects of `leaf` are visible to readers of `result`
-      } catchBreak {
-        signalAbort()
-      }
+      } catchBreak { signalAbort() }
     } catch {
       case thr: Throwable =>
         result = result // ensure that effects of `leaf` are visible
@@ -279,9 +277,7 @@ trait ThreadPoolTasks extends Tasks {
     override def release() = synchronized {
       //println("releasing: " + this + ", body: " + this.body)
       completed = true
-      executor.synchronized {
-        decrTasks()
-      }
+      executor.synchronized { decrTasks() }
       this.notifyAll
     }
   }
@@ -293,13 +289,9 @@ trait ThreadPoolTasks extends Tasks {
   def queue = executor.getQueue.asInstanceOf[LinkedBlockingQueue[Runnable]]
   @volatile var totaltasks = 0
 
-  private def incrTasks() = synchronized {
-    totaltasks += 1
-  }
+  private def incrTasks() = synchronized { totaltasks += 1 }
 
-  private def decrTasks() = synchronized {
-    totaltasks -= 1
-  }
+  private def decrTasks() = synchronized { totaltasks -= 1 }
 
   def execute[R, Tp](task: Task[R, Tp]): () => R = {
     val t = newWrappedTask(task)
@@ -403,11 +395,8 @@ trait ForkJoinTasks extends Tasks with HavingForkJoinPool {
   def execute[R, Tp](task: Task[R, Tp]): () => R = {
     val fjtask = newWrappedTask(task)
 
-    if (Thread.currentThread.isInstanceOf[ForkJoinWorkerThread]) {
-      fjtask.fork
-    } else {
-      forkJoinPool.execute(fjtask)
-    }
+    if (Thread.currentThread.isInstanceOf[ForkJoinWorkerThread]) { fjtask.fork }
+    else { forkJoinPool.execute(fjtask) }
 
     () => {
       fjtask.sync()
@@ -426,11 +415,8 @@ trait ForkJoinTasks extends Tasks with HavingForkJoinPool {
   def executeAndWaitResult[R, Tp](task: Task[R, Tp]): R = {
     val fjtask = newWrappedTask(task)
 
-    if (Thread.currentThread.isInstanceOf[ForkJoinWorkerThread]) {
-      fjtask.fork
-    } else {
-      forkJoinPool.execute(fjtask)
-    }
+    if (Thread.currentThread.isInstanceOf[ForkJoinWorkerThread]) { fjtask.fork }
+    else { forkJoinPool.execute(fjtask) }
 
     fjtask.sync()
     // if (fjtask.body.throwable != null) println("throwing: " + fjtask.body.throwable + " at " + fjtask.body)
@@ -536,9 +522,7 @@ private[parallel] final class FutureTasks(executor: ExecutionContext)
     callback
   }
 
-  def executeAndWaitResult[R, Tp](task: Task[R, Tp]): R = {
-    execute(task)()
-  }
+  def executeAndWaitResult[R, Tp](task: Task[R, Tp]): R = { execute(task)() }
 
   def parallelismLevel = Runtime.getRuntime.availableProcessors
 }

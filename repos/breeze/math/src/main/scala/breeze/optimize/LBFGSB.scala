@@ -67,9 +67,7 @@ class LBFGSB(
   //initialize only is called once, so it can be used to init some arguments
   override protected def initialHistory(
       f: DiffFunction[DenseVector[Double]],
-      init: DenseVector[Double]): History = {
-    initialize(f, init)
-  }
+      init: DenseVector[Double]): History = { initialize(f, init) }
 
   override protected def updateHistory(
       newX: DenseVector[Double],
@@ -120,9 +118,7 @@ class LBFGSB(
   override protected def takeStep(
       state: State,
       dir: DenseVector[Double],
-      stepSize: Double) = {
-    state.x + (dir :* stepSize)
-  }
+      stepSize: Double) = { state.x + (dir :* stepSize) }
 
   private def initialize(
       f: DiffFunction[DenseVector[Double]],
@@ -156,14 +152,10 @@ class LBFGSB(
     val n = x.length
     val d = DenseVector.zeros[Double](n)
     val t = g.mapPairs { (i, gi) =>
-      if (0 == gi) {
-        (i, Double.MaxValue)
-      } else {
-        val ti = if (gi < 0) {
-          (x(i) - upperBounds(i)) / gi
-        } else {
-          (x(i) - lowerBounds(i)) / gi
-        }
+      if (0 == gi) { (i, Double.MaxValue) }
+      else {
+        val ti = if (gi < 0) { (x(i) - upperBounds(i)) / gi }
+        else { (x(i) - lowerBounds(i)) / gi }
         d(i) = if (0 == ti) 0 else -gi
         (i, ti)
       }
@@ -350,9 +342,7 @@ class LBFGSB(
         DenseMatrix.horzcat(L, STS :* newTheta))
       val newM = inv(MM) //MM-1 M is defined at formula 3.4
       newHistory.copy(newTheta, newW, newM)
-    } else {
-      history
-    }
+    } else { history }
   }
 
   //norm(P(xk-gk, l, u) - xk, INF) < 1E-5
@@ -386,13 +376,9 @@ object LBFGSB {
     val x = state.x
     val g = state.grad
     val pMinusX = (x - g).mapPairs { (i, v) =>
-      if (v <= lowerBounds(i)) {
-        lowerBounds(i) - x(i)
-      } else if (upperBounds(i) <= v) {
-        upperBounds(i) - x(i)
-      } else {
-        v - x(i)
-      }
+      if (v <= lowerBounds(i)) { lowerBounds(i) - x(i) }
+      else if (upperBounds(i) <= v) { upperBounds(i) - x(i) }
+      else { v - x(i) }
     }
     val normPMinusX = norm(pMinusX, Double.PositiveInfinity)
 

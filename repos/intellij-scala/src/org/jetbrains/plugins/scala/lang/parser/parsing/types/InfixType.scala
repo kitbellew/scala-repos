@@ -97,19 +97,15 @@ object InfixType {
     }
     //final ops closing
     if (count > 0) {
-      if (assoc == 1) {
-        infixTypeMarker.drop()
-      } else {
+      if (assoc == 1) { infixTypeMarker.drop() }
+      else {
         markerList.head.drop()
         for (x: PsiBuilder.Marker <- markerList.tail)
           x.done(ScalaElementTypes.INFIX_TYPE)
       }
     } else {
-      if (assoc == 1) {
-        infixTypeMarker.drop()
-      } else {
-        for (x: PsiBuilder.Marker <- markerList) x.drop()
-      }
+      if (assoc == 1) { infixTypeMarker.drop() }
+      else { for (x: PsiBuilder.Marker <- markerList) x.drop() }
     }
     true
   }

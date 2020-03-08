@@ -145,9 +145,7 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
     System.exit(exitCode)
   }
 
-  def inferDefaultCores(): Int = {
-    Runtime.getRuntime.availableProcessors()
-  }
+  def inferDefaultCores(): Int = { Runtime.getRuntime.availableProcessors() }
 
   def inferDefaultMemory(): Int = {
     val ibmVendor = System.getProperty("java.vendor").contains("IBM")

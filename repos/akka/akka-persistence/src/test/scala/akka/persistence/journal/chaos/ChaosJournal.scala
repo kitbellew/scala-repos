@@ -51,18 +51,14 @@ class ChaosJournal extends AsyncWriteJournal {
           a.payload.foreach(add)
           AsyncWriteJournal.successUnit
         }
-    } catch {
-      case NonFatal(e) ⇒ Future.failed(e)
-    }
+    } catch { case NonFatal(e) ⇒ Future.failed(e) }
 
   override def asyncDeleteMessagesTo(
       persistenceId: String,
       toSequenceNr: Long): Future[Unit] = {
     try Future.successful {
       (1L to toSequenceNr).foreach { snr ⇒ del(persistenceId, snr) }
-    } catch {
-      case NonFatal(e) ⇒ Future.failed(e)
-    }
+    } catch { case NonFatal(e) ⇒ Future.failed(e) }
   }
 
   def asyncReplayMessages(

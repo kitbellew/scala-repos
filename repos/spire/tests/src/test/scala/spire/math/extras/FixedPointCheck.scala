@@ -28,11 +28,8 @@ class FixedPointCheck
       implicit val scale = s
       val minV = FixedPoint.MinValue.toRational
       val maxV = FixedPoint.MaxValue.toRational
-      if (r < minV || maxV < r) {
-        Try(FixedPoint(r)).isSuccess shouldBe false
-      } else {
-        FixedPoint(r).toRational shouldBe r.roundTo(s.denom)
-      }
+      if (r < minV || maxV < r) { Try(FixedPoint(r)).isSuccess shouldBe false }
+      else { FixedPoint(r).toRational shouldBe r.roundTo(s.denom) }
     }
   }
 
@@ -93,9 +90,7 @@ class FixedPointCheck
           try {
             implicit val scale = FixedScale(denom)
             Some(f(fx, fy, scale))
-          } catch {
-            case _: FixedPointOverflow => None
-          }
+          } catch { case _: FixedPointOverflow => None }
 
         ofz match {
           case Some(fz) =>
@@ -142,9 +137,7 @@ class FixedPointCheck
           try {
             implicit val scale = FixedScale(denom)
             Some(f(fx, y, scale))
-          } catch {
-            case _: FixedPointOverflow => None
-          }
+          } catch { case _: FixedPointOverflow => None }
 
         ofz match {
           case Some(fz) =>
@@ -176,9 +169,7 @@ class FixedPointCheck
         try {
           implicit val scale = FixedScale(denom)
           Some(new FixedPoint(x).pow(k))
-        } catch {
-          case _: FixedPointOverflow => None
-        }
+        } catch { case _: FixedPointOverflow => None }
 
       ofz match {
         case Some(fz) =>

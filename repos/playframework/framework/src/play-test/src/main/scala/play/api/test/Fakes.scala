@@ -177,9 +177,7 @@ case class FakeRequest[A](
   /**
     * Adds a body to the request.
     */
-  def withBody[B](body: B): FakeRequest[B] = {
-    copyFakeRequest(body = body)
-  }
+  def withBody[B](body: B): FakeRequest[B] = { copyFakeRequest(body = body) }
 
   /**
     * Returns the current method

@@ -92,9 +92,8 @@ private[spark] class AppClient(
         "appclient-receive-and-reply-threadpool")
 
     override def onStart(): Unit = {
-      try {
-        registerWithMaster(1)
-      } catch {
+      try { registerWithMaster(1) }
+      catch {
         case e: Exception =>
           logWarning("Failed to connect to master", e)
           markDisconnected()
@@ -110,9 +109,7 @@ private[spark] class AppClient(
         registerMasterThreadPool.submit(new Runnable {
           override def run(): Unit =
             try {
-              if (registered.get) {
-                return
-              }
+              if (registered.get) { return }
               logInfo(
                 "Connecting to master " + masterAddress.toSparkURL + "...")
               val masterRef =
@@ -252,9 +249,8 @@ private[spark] class AppClient(
       // interrupted during shutdown, otherwise context must be notified of NonFatal errors.
       askAndReplyThreadPool.execute(new Runnable {
         override def run(): Unit = {
-          try {
-            context.reply(endpointRef.askWithRetry[Boolean](msg))
-          } catch {
+          try { context.reply(endpointRef.askWithRetry[Boolean](msg)) }
+          catch {
             case ie: InterruptedException => // Cancelled
             case NonFatal(t) =>
               context.sendFailure(t)

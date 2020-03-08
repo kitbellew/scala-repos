@@ -8,9 +8,7 @@ object ImplicitParameterOnlyFirstStep {
   object C {
     def foo[T]()(implicit a: A[T]) = a.x
 
-    def first {
-      foo()
-    }
+    def first { foo() }
 
     def second {
       implicit val a: A[String] = new A[String]("")

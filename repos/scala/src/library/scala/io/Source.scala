@@ -383,9 +383,7 @@ abstract class Source extends Iterator[Char] with Closeable {
   }
 
   /** The close() method closes the underlying resource. */
-  def close() {
-    if (closeFunction != null) closeFunction()
-  }
+  def close() { if (closeFunction != null) closeFunction() }
 
   /** The reset() method creates a fresh copy of this Source. */
   def reset(): Source =

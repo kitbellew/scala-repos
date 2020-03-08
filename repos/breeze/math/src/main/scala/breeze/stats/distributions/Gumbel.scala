@@ -37,11 +37,7 @@ case class Gumbel(location: Double, scale: Double)(
     -(z + exp(-z))
   }
 
-  def cdf(x: Double): Double = {
-    math.exp(-math.exp(-(x - location) / scale))
-  }
+  def cdf(x: Double): Double = { math.exp(-math.exp(-(x - location) / scale)) }
 
-  override def probability(x: Double, y: Double): Double = {
-    cdf(y) - cdf(x)
-  }
+  override def probability(x: Double, y: Double): Double = { cdf(y) - cdf(x) }
 }

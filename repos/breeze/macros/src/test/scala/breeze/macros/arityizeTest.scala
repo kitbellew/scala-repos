@@ -52,9 +52,7 @@ class arityizeTest extends FunSuite {
     @arityize(2)
     class CuKernel[@arityize.replicate T](fn: Any, blockDims: Array[Int]) {
       def apply(workSize1: Int = 1)(
-          @arityize.replicate t: T @arityize.relative(t)): Unit = {
-        ???
-      }
+          @arityize.replicate t: T @arityize.relative(t)): Unit = { ??? }
     }
 
     @arityize(2)

@@ -728,9 +728,7 @@ object ResolveUtils {
               }
               true
             } else true
-          } finally {
-            base.setClassKind(classKind = true)
-          }
+          } finally { base.setClassKind(classKind = true) }
         } else {
           try {
             if (base.getClassKindInner) {
@@ -762,9 +760,7 @@ object ResolveUtils {
                   pack.processDeclarations(processor, state, lastParent, place)
               }
             } else true
-          } finally {
-            base.setClassKind(classKind = true)
-          }
+          } finally { base.setClassKind(classKind = true) }
         }
       case _ => pack.processDeclarations(processor, state, lastParent, place)
     }

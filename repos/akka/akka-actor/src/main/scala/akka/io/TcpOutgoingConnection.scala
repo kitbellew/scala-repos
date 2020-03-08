@@ -42,9 +42,8 @@ private[io] class TcpOutgoingConnection(
     stopWith(CloseInformation(Set(commander), connect.failureMessage))
 
   private def reportConnectFailure(thunk: ⇒ Unit): Unit = {
-    try {
-      thunk
-    } catch {
+    try { thunk }
+    catch {
       case NonFatal(e) ⇒
         log.debug(
           "Could not establish connection to [{}] due to {}",
@@ -67,9 +66,7 @@ private[io] class TcpOutgoingConnection(
                 new InetSocketAddress(resolved.addr, remoteAddress.getPort),
                 registration)
           }
-        } else {
-          register(remoteAddress, registration)
-        }
+        } else { register(remoteAddress, registration) }
       }
   }
 

@@ -139,9 +139,7 @@ object CompilerBenchmark {
     }
     val coffees = TableQuery[Coffees]
 
-    val qa = for {
-      c <- coffees.take(3)
-    } yield (c.supID, (c.name, 42))
+    val qa = for { c <- coffees.take(3) } yield (c.supID, (c.name, 42))
     val qa2 = coffees.take(3).map(_.name).take(2)
     val qb = qa.take(2).map(_._2)
     val qb2 = qa.map(n => n).take(2).map(_._2)
@@ -201,9 +199,8 @@ object CompilerBenchmark {
       c1 <- q5_0
       c2 <- q5_0
     } yield (c1, c2)
-    val q5b = for {
-      t <- q5_0 join q5_0 on (_.name === _.name)
-    } yield (t._1, t._2)
+    val q5b =
+      for { t <- q5_0 join q5_0 on (_.name === _.name) } yield (t._1, t._2)
     val q6 = coffees.flatMap(c => suppliers)
     val q7a = for {
       c <- coffees.filter(_.price < 800) union coffees.filter(_.price > 950)
@@ -213,9 +210,11 @@ object CompilerBenchmark {
         .filter(_.price > 950)
         .map((_, 2))
     } yield (c._1.name, c._1.supID, c._2)
-    val q71 = for {
-      c <- coffees.filter(_.price < 800).map((_, 1))
-    } yield (c._1.name, c._1.supID, c._2)
+    val q71 =
+      for { c <- coffees.filter(_.price < 800).map((_, 1)) } yield (
+        c._1.name,
+        c._1.supID,
+        c._2)
     val q7b = q7 filter (_._1 =!= "Colombian")
     val q8 = for {
       (c1, c2) <- coffees.filter(_.price < 900) joinLeft coffees.filter(

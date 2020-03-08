@@ -52,14 +52,12 @@ private[spark] object MetadataUtils {
     */
   def getCategoricalFeatures(featuresSchema: StructField): Map[Int, Int] = {
     val metadata = AttributeGroup.fromStructField(featuresSchema)
-    if (metadata.attributes.isEmpty) {
-      HashMap.empty[Int, Int]
-    } else {
+    if (metadata.attributes.isEmpty) { HashMap.empty[Int, Int] }
+    else {
       metadata.attributes.get.zipWithIndex.flatMap {
         case (attr, idx) =>
-          if (attr == null) {
-            Iterator()
-          } else {
+          if (attr == null) { Iterator() }
+          else {
             attr match {
               case _: NumericAttribute | UnresolvedAttribute => Iterator()
               case binAttr: BinaryAttribute                  => Iterator(idx -> 2)

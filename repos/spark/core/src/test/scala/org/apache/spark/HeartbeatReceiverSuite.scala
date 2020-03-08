@@ -234,9 +234,8 @@ class HeartbeatReceiverSuite
         executorId,
         Array(1L -> metrics.accumulatorUpdates()),
         blockManagerId))
-    if (executorShouldReregister) {
-      assert(response.reregisterBlockManager)
-    } else {
+    if (executorShouldReregister) { assert(response.reregisterBlockManager) }
+    else {
       assert(!response.reregisterBlockManager)
       // Additionally verify that the scheduler callback is called with the correct parameters
       verify(scheduler).executorHeartbeatReceived(

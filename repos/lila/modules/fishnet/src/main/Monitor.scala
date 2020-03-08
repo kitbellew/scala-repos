@@ -128,16 +128,12 @@ private final class Monitor(
         .flatMap(_.instance)
         .map(_.version.value)
         .groupBy(identity)
-        .mapValues(_.size) foreach {
-        case (v, nb) => version(v)(nb)
-      }
+        .mapValues(_.size) foreach { case (v, nb) => version(v)(nb) }
       clients
         .flatMap(_.instance)
         .map(_.engine.name)
         .groupBy(identity)
-        .mapValues(_.size) foreach {
-        case (s, nb) => engine(s)(nb)
-      }
+        .mapValues(_.size) foreach { case (s, nb) => engine(s)(nb) }
     } andThenAnyway scheduleClients
 
   private def monitorWork: Unit = {

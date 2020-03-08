@@ -110,9 +110,7 @@ class BaseCharsetTest(val charset: Charset) {
       unmappableAction <- if (hasAnyUnmappable) AllErrorActions
       else ReportActions
       readOnly <- List(false, true)
-    } {
-      testOneConfig(malformedAction, unmappableAction, readOnly)
-    }
+    } { testOneConfig(malformedAction, unmappableAction, readOnly) }
   }
 
   protected def testEncode(in: CharBuffer)(
@@ -197,9 +195,7 @@ class BaseCharsetTest(val charset: Charset) {
       unmappableAction <- if (hasAnyUnmappable) AllErrorActions
       else ReportActions
       readOnly <- List(false, true)
-    } {
-      testOneConfig(malformedAction, unmappableAction, readOnly)
-    }
+    } { testOneConfig(malformedAction, unmappableAction, readOnly) }
   }
 }
 

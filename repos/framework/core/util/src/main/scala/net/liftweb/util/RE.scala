@@ -61,13 +61,9 @@ class REDoer[T](
     extends Function2[T, String, Box[T]] {
   val compiled = Pattern.compile(pattern)
 
-  def =~(other: String) = {
-    new REMatcher(other, compiled)
-  }
+  def =~(other: String) = { new REMatcher(other, compiled) }
 
-  def =~:(other: String) = {
-    new REMatcher(other, compiled)
-  }
+  def =~:(other: String) = { new REMatcher(other, compiled) }
 
   def apply(obj: T, other: String): Box[T] = {
     val ma = new REMatcher(other, compiled)

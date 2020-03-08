@@ -2,17 +2,13 @@ object Test {
   def testPermutations1(num: Int, stream: Stream[Int]): Unit = {
     val perm = stream.permutations
     print(num)
-    while (perm.hasNext) {
-      print(" " + perm.next().toList)
-    }
+    while (perm.hasNext) { print(" " + perm.next().toList) }
     println()
   }
   def testPermutations2(num: Int, stream: List[Int]): Unit = {
     val perm = stream.permutations
     print(num)
-    while (perm.hasNext) {
-      print(" " + perm.next().toList)
-    }
+    while (perm.hasNext) { print(" " + perm.next().toList) }
     println()
   }
 

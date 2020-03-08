@@ -143,9 +143,7 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
         }</td> ++ {
           outputOpStatusCell(outputOpData, numSparkJobRowsInOutputOp)
         }
-      } else {
-        Nil
-      }
+      } else { Nil }
     // scalastyle:on
 
     <tr>
@@ -210,9 +208,7 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
         }</td> ++ {
           outputOpStatusCell(outputOpData, numSparkJobRowsInOutputOp)
         }
-      } else {
-        Nil
-      }
+      } else { Nil }
     // scalastyle:on
 
     <tr>
@@ -235,11 +231,8 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
       outputOpData: OutputOperationUIData,
       sparkJobs: Seq[SparkJobIdWithUIData]): Seq[Node] = {
     val formattedOutputOpDuration =
-      if (outputOpData.duration.isEmpty) {
-        "-"
-      } else {
-        SparkUIUtils.formatDuration(outputOpData.duration.get)
-      }
+      if (outputOpData.duration.isEmpty) { "-" }
+      else { SparkUIUtils.formatDuration(outputOpData.duration.get) }
 
     val description = generateOutputOpDescription(outputOpData)
 
@@ -299,9 +292,7 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
       "Failed due to Spark job error\n" + failure
     } else {
       var nextLineIndex = failure.indexOf("\n")
-      if (nextLineIndex < 0) {
-        nextLineIndex = failure.length
-      }
+      if (nextLineIndex < 0) { nextLineIndex = failure.length }
       val firstLine = failure.substring(0, nextLineIndex)
       s"Failed due to error: $firstLine\n$failure"
     }
@@ -477,11 +468,8 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
           rowspan,
           includeFirstLineInExpandDetails = false)
       case None =>
-        if (outputOp.endTime.isEmpty) {
-          <td rowspan={rowspan.toString}>-</td>
-        } else {
-          <td rowspan={rowspan.toString}>Succeeded</td>
-        }
+        if (outputOp.endTime.isEmpty) { <td rowspan={rowspan.toString}>-</td> }
+        else { <td rowspan={rowspan.toString}>Succeeded</td> }
     }
   }
 }

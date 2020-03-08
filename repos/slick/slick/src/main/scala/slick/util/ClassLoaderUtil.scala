@@ -13,9 +13,7 @@ object ClassLoaderUtil {
           // Try the context classloader first. But, during macro compilation, it's probably wrong, so fallback to this
           // classloader.
           Thread.currentThread().getContextClassLoader.loadClass(name)
-        } catch {
-          case e: ClassNotFoundException => super.loadClass(name)
-        }
+        } catch { case e: ClassNotFoundException => super.loadClass(name) }
       }
     }
   }

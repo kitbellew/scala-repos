@@ -81,9 +81,8 @@ trait ZooKeeperTestHarness extends JUnitSuite with Logging {
 
     var isDown = false
     while (!isDown) {
-      try {
-        FourLetterWords.sendStat("127.0.0.1", zkPort, 3000)
-      } catch {
+      try { FourLetterWords.sendStat("127.0.0.1", zkPort, 3000) }
+      catch {
         case _: Throwable => {
           info("Server is down")
           isDown = true

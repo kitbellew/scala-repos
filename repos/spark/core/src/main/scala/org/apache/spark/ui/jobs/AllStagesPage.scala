@@ -80,9 +80,7 @@ private[ui] class AllStagesPage(parent: StagesTab) extends WebUIPage("") {
       val completedStageNumStr =
         if (numCompletedStages == completedStages.size) {
           s"$numCompletedStages"
-        } else {
-          s"$numCompletedStages, only showing ${completedStages.size}"
-        }
+        } else { s"$numCompletedStages, only showing ${completedStages.size}" }
 
       val summary: NodeSeq =
         <div>
@@ -125,9 +123,7 @@ private[ui] class AllStagesPage(parent: StagesTab) extends WebUIPage("") {
       var content = summary ++ {
         if (sc.isDefined && isFairScheduler) {
           <h4>{pools.size} Fair Scheduler Pools</h4> ++ poolTable.toNodeSeq
-        } else {
-          Seq[Node]()
-        }
+        } else { Seq[Node]() }
       }
       if (shouldShowActiveStages) {
         content ++= <h4 id="active">Active Stages ({activeStages.size})</h4> ++

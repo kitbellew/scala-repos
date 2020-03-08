@@ -50,9 +50,7 @@ private[master] class FileSystemPersistenceEngine(
 
   override def unpersist(name: String): Unit = {
     val f = new File(dir + File.separator + name)
-    if (!f.delete()) {
-      logWarning(s"Error deleting ${f.getPath()}")
-    }
+    if (!f.delete()) { logWarning(s"Error deleting ${f.getPath()}") }
   }
 
   override def read[T: ClassTag](prefix: String): Seq[T] = {
@@ -72,9 +70,7 @@ private[master] class FileSystemPersistenceEngine(
       out.writeObject(value)
     } {
       fileOut.close()
-      if (out != null) {
-        out.close()
-      }
+      if (out != null) { out.close() }
     }
   }
 
@@ -86,9 +82,7 @@ private[master] class FileSystemPersistenceEngine(
       in.readObject[T]()
     } finally {
       fileIn.close()
-      if (in != null) {
-        in.close()
-      }
+      if (in != null) { in.close() }
     }
   }
 

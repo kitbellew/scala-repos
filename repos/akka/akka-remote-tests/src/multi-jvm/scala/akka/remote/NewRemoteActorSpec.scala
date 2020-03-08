@@ -17,15 +17,11 @@ import scala.concurrent.duration._
 object NewRemoteActorMultiJvmSpec extends MultiNodeConfig {
 
   class SomeActor extends Actor {
-    def receive = {
-      case "identify" ⇒ sender() ! self
-    }
+    def receive = { case "identify" ⇒ sender() ! self }
   }
 
   class SomeActorWithParam(ignored: String) extends Actor {
-    def receive = {
-      case "identify" ⇒ sender() ! self
-    }
+    def receive = { case "identify" ⇒ sender() ! self }
   }
 
   commonConfig(debugConfig(on = false).withFallback(
@@ -126,9 +122,7 @@ class NewRemoteActorSpec
         expectMsgPF() { case Terminated(`actor`) ⇒ true }
       }
 
-      runOn(slave) {
-        enterBarrier("deployed")
-      }
+      runOn(slave) { enterBarrier("deployed") }
 
       // Important that this is the last test.
       // It should not be any barriers here.

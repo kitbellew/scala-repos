@@ -36,9 +36,7 @@ class AppTest extends FunSuite {
   }
 
   test("App: propagate underlying exception from fields in app") {
-    intercept[ExceptionInInitializerError] {
-      VeryBadApp.main(Array.empty)
-    }
+    intercept[ExceptionInInitializerError] { VeryBadApp.main(Array.empty) }
   }
 
   test("App: register on main call, last App wins") {

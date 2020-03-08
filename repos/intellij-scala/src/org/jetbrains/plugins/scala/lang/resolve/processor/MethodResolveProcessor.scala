@@ -148,9 +148,7 @@ class MethodResolveProcessor(
                   isForwardReference = forwardReference,
                   unresolvedTypeParameters = unresolvedTypeParameters)
             }
-            .filter {
-              case r => !accessibility || r.isAccessible
-            }
+            .filter { case r => !accessibility || r.isAccessible }
           if (seq.nonEmpty) addResults(seq)
           else
             addResult(
@@ -219,9 +217,7 @@ class MethodResolveProcessor(
     if (isDynamic) {
       collectCandidates(super.candidatesS.map(_.copy(isDynamic = true)))
         .filter(_.isApplicable())
-    } else {
-      collectCandidates(super.candidatesS)
-    }
+    } else { collectCandidates(super.candidatesS) }
   }
 
   private def collectCandidates(
@@ -470,9 +466,8 @@ object MethodResolveProcessor {
         val typeArgCount = typeArgElements.length
         val typeParamCount = tp.typeParameters.length
         if (typeArgCount > 0 && typeArgCount != typeParamCount) {
-          if (typeParamCount == 0) {
-            problems += DoesNotTakeTypeParameters
-          } else if (typeParamCount < typeArgCount) {
+          if (typeParamCount == 0) { problems += DoesNotTakeTypeParameters }
+          else if (typeParamCount < typeArgCount) {
             problems ++= typeArgElements
               .drop(typeParamCount)
               .map(ExcessTypeArgument)
@@ -500,9 +495,8 @@ object MethodResolveProcessor {
         val typeArgCount = typeArgElements.length
         val typeParamCount = tp.getTypeParameters.length
         if (typeArgCount > 0 && typeArgCount != typeParamCount) {
-          if (typeParamCount == 0) {
-            problems += DoesNotTakeTypeParameters
-          } else if (typeParamCount < typeArgCount) {
+          if (typeParamCount == 0) { problems += DoesNotTakeTypeParameters }
+          else if (typeParamCount < typeArgCount) {
             problems ++= typeArgElements
               .drop(typeParamCount)
               .map(ExcessTypeArgument)

@@ -682,9 +682,7 @@ class Dataset[T] private[sql] (
       }
     }
 
-    withPlan {
-      plan.copy(condition = cond)
-    }
+    withPlan { plan.copy(condition = cond) }
   }
 
   /**
@@ -1559,9 +1557,7 @@ class Dataset[T] private[sql] (
     */
   private[spark] def randomSplit(
       weights: List[Double],
-      seed: Long): Array[Dataset[T]] = {
-    randomSplit(weights.toArray, seed)
-  }
+      seed: Long): Array[Dataset[T]] = { randomSplit(weights.toArray, seed) }
 
   /**
     * :: Experimental ::
@@ -1670,16 +1666,11 @@ class Dataset[T] private[sql] (
     val shouldReplace = output.exists(f => resolver(f.name, colName))
     if (shouldReplace) {
       val columns = output.map { field =>
-        if (resolver(field.name, colName)) {
-          col.as(colName)
-        } else {
-          Column(field)
-        }
+        if (resolver(field.name, colName)) { col.as(colName) }
+        else { Column(field) }
       }
       select(columns: _*)
-    } else {
-      select(Column("*"), col.as(colName))
-    }
+    } else { select(Column("*"), col.as(colName)) }
   }
 
   /**
@@ -1694,16 +1685,11 @@ class Dataset[T] private[sql] (
     val shouldReplace = output.exists(f => resolver(f.name, colName))
     if (shouldReplace) {
       val columns = output.map { field =>
-        if (resolver(field.name, colName)) {
-          col.as(colName, metadata)
-        } else {
-          Column(field)
-        }
+        if (resolver(field.name, colName)) { col.as(colName, metadata) }
+        else { Column(field) }
       }
       select(columns: _*)
-    } else {
-      select(Column("*"), col.as(colName, metadata))
-    }
+    } else { select(Column("*"), col.as(colName, metadata)) }
   }
 
   /**
@@ -1719,16 +1705,11 @@ class Dataset[T] private[sql] (
     val shouldRename = output.exists(f => resolver(f.name, existingName))
     if (shouldRename) {
       val columns = output.map { col =>
-        if (resolver(col.name, existingName)) {
-          Column(col).as(newName)
-        } else {
-          Column(col)
-        }
+        if (resolver(col.name, existingName)) { Column(col).as(newName) }
+        else { Column(col) }
       }
       select(columns: _*)
-    } else {
-      toDF()
-    }
+    } else { toDF() }
   }
 
   /**
@@ -1738,9 +1719,7 @@ class Dataset[T] private[sql] (
     * @group untypedrel
     * @since 2.0.0
     */
-  def drop(colName: String): DataFrame = {
-    drop(Seq(colName): _*)
-  }
+  def drop(colName: String): DataFrame = { drop(Seq(colName): _*) }
 
   /**
     * Returns a new [[Dataset]] with columns dropped.
@@ -1756,11 +1735,8 @@ class Dataset[T] private[sql] (
       schema
         .filter(f => colNames.forall(n => !resolver(f.name, n)))
         .map(f => Column(f.name))
-    if (remainingCols.size == this.schema.size) {
-      toDF()
-    } else {
-      this.select(remainingCols: _*)
-    }
+    if (remainingCols.size == this.schema.size) { toDF() }
+    else { this.select(remainingCols: _*) }
   }
 
   /**
@@ -1806,11 +1782,8 @@ class Dataset[T] private[sql] (
     val groupCols = colNames.map(resolve)
     val groupColExprIds = groupCols.map(_.exprId)
     val aggCols = logicalPlan.output.map { attr =>
-      if (groupColExprIds.contains(attr.exprId)) {
-        attr
-      } else {
-        Alias(new First(attr).toAggregateExpression(), attr.name)()
-      }
+      if (groupColExprIds.contains(attr.exprId)) { attr }
+      else { Alias(new First(attr).toAggregateExpression(), attr.name)() }
     }
     Aggregate(groupCols, aggCols, logicalPlan)
   }
@@ -2045,9 +2018,7 @@ class Dataset[T] private[sql] (
     * @group action
     * @since 1.6.0
     */
-  def foreach(f: T => Unit): Unit = withNewExecutionId {
-    rdd.foreach(f)
-  }
+  def foreach(f: T => Unit): Unit = withNewExecutionId { rdd.foreach(f) }
 
   /**
     * (Java-specific)
@@ -2138,11 +2109,8 @@ class Dataset[T] private[sql] (
       queryExecution.executedPlan.executeCollect().map(boundTEncoder.fromRow)
     }
 
-    if (needCallback) {
-      withCallback("collect", toDF())(_ => execute())
-    } else {
-      execute()
-    }
+    if (needCallback) { withCallback("collect", toDF())(_ => execute()) }
+    else { execute() }
   }
 
   /**
@@ -2348,11 +2316,8 @@ class Dataset[T] private[sql] (
           gen.flush()
 
           val json = writer.toString
-          if (hasNext) {
-            writer.reset()
-          } else {
-            gen.close()
-          }
+          if (hasNext) { writer.reset() }
+          else { gen.close() }
 
           json
         }
@@ -2394,9 +2359,7 @@ class Dataset[T] private[sql] (
   }
 
   protected[sql] def collectToPython(): Int = {
-    withNewExecutionId {
-      PythonRDD.collectAndServe(javaToPython.rdd)
-    }
+    withNewExecutionId { PythonRDD.collectAndServe(javaToPython.rdd) }
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -2458,9 +2421,7 @@ class Dataset[T] private[sql] (
           SortOrder(expr, Ascending)
       }
     }
-    withTypedPlan {
-      Sort(sortOrder, global = global, logicalPlan)
-    }
+    withTypedPlan { Sort(sortOrder, global = global, logicalPlan) }
   }
 
   /** A convenient function to wrap a logical plan and produce a DataFrame. */

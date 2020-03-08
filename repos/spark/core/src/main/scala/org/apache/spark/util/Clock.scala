@@ -47,18 +47,14 @@ private[spark] class SystemClock extends Clock {
     currentTime = System.currentTimeMillis()
 
     var waitTime = targetTime - currentTime
-    if (waitTime <= 0) {
-      return currentTime
-    }
+    if (waitTime <= 0) { return currentTime }
 
     val pollTime = math.max(waitTime / 10.0, minPollTime).toLong
 
     while (true) {
       currentTime = System.currentTimeMillis()
       waitTime = targetTime - currentTime
-      if (waitTime <= 0) {
-        return currentTime
-      }
+      if (waitTime <= 0) { return currentTime }
       val sleepTime = math.min(waitTime, pollTime)
       Thread.sleep(sleepTime)
     }

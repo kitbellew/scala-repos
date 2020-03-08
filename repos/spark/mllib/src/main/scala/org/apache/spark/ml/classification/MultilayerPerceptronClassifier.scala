@@ -111,9 +111,7 @@ private object LabelConverter {
     * @param output label encoded with a vector
     * @return label
     */
-  def decodeLabel(output: Vector): Double = {
-    output.argmax.toDouble
-  }
+  def decodeLabel(output: Vector): Double = { output.argmax.toDouble }
 }
 
 /**
@@ -228,9 +226,7 @@ class MultilayerPerceptronClassificationModel private[ml] (
   /**
     * Returns layers in a Java List.
     */
-  private[ml] def javaLayers: java.util.List[Int] = {
-    layers.toList.asJava
-  }
+  private[ml] def javaLayers: java.util.List[Int] = { layers.toList.asJava }
 
   /**
     * Predict label for the given features.

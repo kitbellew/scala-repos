@@ -640,10 +640,7 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           scrutSym: Symbol = defaultSym,
           guard: Tree = EmptyTree,
           body: Tree = defaultBody): CaseDef = {
-        import CODE._;
-        atPos(body.pos) {
-          (DEFAULT IF guard) ==> body
-        }
+        import CODE._; atPos(body.pos) { (DEFAULT IF guard) ==> body }
       }
     }
 

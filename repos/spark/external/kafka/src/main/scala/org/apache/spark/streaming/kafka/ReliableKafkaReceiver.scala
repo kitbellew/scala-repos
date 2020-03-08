@@ -248,9 +248,7 @@ private[streaming] class ReliableKafkaReceiver[
     if (pushed) {
       Option(blockOffsetMap.get(blockId)).foreach(commitOffset)
       blockOffsetMap.remove(blockId)
-    } else {
-      stop("Error while storing block into Spark", exception)
-    }
+    } else { stop("Error while storing block into Spark", exception) }
   }
 
   /**

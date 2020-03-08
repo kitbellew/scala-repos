@@ -8,7 +8,9 @@
 //
 class C {
   def foo = {
-    class C { private def x = 0 }
+    class C {
+      private def x = 0
+    }
 
     {
       val a = 0

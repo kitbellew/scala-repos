@@ -150,9 +150,7 @@ object ConcurrentMapSpec extends Spec {
             do {
               if (ct.contains(new Wrap(i))) {
                 success = ct.remove(new Wrap(i)) != None
-              } else {
-                success = ct.putIfAbsent(new Wrap(i), i) == None
-              }
+              } else { success = ct.putIfAbsent(new Wrap(i), i) == None }
             } while (!success)
           }
         }

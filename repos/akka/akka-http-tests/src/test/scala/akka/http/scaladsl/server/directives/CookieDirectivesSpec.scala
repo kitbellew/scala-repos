@@ -20,9 +20,9 @@ class CookieDirectivesSpec extends RoutingSpec {
       } ~> check { responseAs[String] shouldEqual "fancy=pants" }
     }
     "reject the request if the cookie is not present" in {
-      Get() ~> {
-        cookie("fancy") { echoComplete }
-      } ~> check { rejection shouldEqual MissingCookieRejection("fancy") }
+      Get() ~> { cookie("fancy") { echoComplete } } ~> check {
+        rejection shouldEqual MissingCookieRejection("fancy")
+      }
     }
     "properly pass through inner rejections" in {
       Get() ~> addHeader(Cookie("fancy" -> "pants")) ~> {

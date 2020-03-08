@@ -123,9 +123,7 @@ class CaseClassGeneratorTest extends FunSuite {
     import generator.opts.ignoreCaseClassSubclasses
     import static._
     case class Other(x: Int)
-    implicit val pu = {
-      PicklingMacros.genPicklerUnpickler[OpenCaseClass]
-    }
+    implicit val pu = { PicklingMacros.genPicklerUnpickler[OpenCaseClass] }
     implicit val pu2 = PicklingMacros.genPicklerUnpickler[Other]
     val x = OpenCaseClass(1)
     // Because we ignore subclasses, we shouldn't freak about subclass tags, because we ignore them. Only the
@@ -142,7 +140,9 @@ final case class SimpleCaseClass(x: Int, y: String)
 // Case 3 - varags
 final case class MultipleParamListCaseClass(x: Int)(val y: String)
 // Case 4 - Nested public var
-final case class NestedVarCaseClass(x: Int) { var y: Int = 0 }
+final case class NestedVarCaseClass(x: Int) {
+  var y: Int = 0
+}
 // Case 5 - Embedded in class
 final class NestedCaseClassHolder {
   final case class NestedCaseClass(x: Int)

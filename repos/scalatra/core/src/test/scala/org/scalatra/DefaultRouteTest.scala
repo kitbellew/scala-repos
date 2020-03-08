@@ -10,25 +10,15 @@ object DefaultRouteTest {
 class DefaultRouteTestServlet extends ScalatraServlet {
   import org.scalatra.DefaultRouteTest._
 
-  get(existingRoute) {
-    "get"
-  }
+  get(existingRoute) { "get" }
 
-  post(existingRoute) {
-    "post"
-  }
+  post(existingRoute) { "post" }
 
-  put(existingRoute) {
-    "put"
-  }
+  put(existingRoute) { "put" }
 
-  delete(existingRoute) {
-    "delete"
-  }
+  delete(existingRoute) { "delete" }
 
-  options(existingRoute) {
-    "options"
-  }
+  options(existingRoute) { "options" }
 }
 
 class DefaultRouteTest extends ScalatraFunSuite {
@@ -37,62 +27,42 @@ class DefaultRouteTest extends ScalatraFunSuite {
   addServlet(classOf[DefaultRouteTestServlet], "/*")
 
   test("GET request to non-existent route should return 404") {
-    get(nonExistentRoute) {
-      status should equal(404)
-    }
+    get(nonExistentRoute) { status should equal(404) }
   }
 
   test("GET request to existing route should return 200") {
-    get(existingRoute) {
-      status should equal(200)
-    }
+    get(existingRoute) { status should equal(200) }
   }
 
   test("POST request to non-existent route should return 404") {
-    post(nonExistentRoute) {
-      status should equal(404)
-    }
+    post(nonExistentRoute) { status should equal(404) }
   }
 
   test("POST request to existing route should return 200") {
-    post(existingRoute) {
-      status should equal(200)
-    }
+    post(existingRoute) { status should equal(200) }
   }
 
   test("PUT request to non-existent route should return 404") {
-    put(nonExistentRoute) {
-      status should equal(404)
-    }
+    put(nonExistentRoute) { status should equal(404) }
   }
 
   test("PUT request to existing route should return 200") {
-    put(existingRoute) {
-      status should equal(200)
-    }
+    put(existingRoute) { status should equal(200) }
   }
 
   test("DELETE request to non-existent route should return 404") {
-    delete(nonExistentRoute) {
-      status should equal(404)
-    }
+    delete(nonExistentRoute) { status should equal(404) }
   }
 
   test("DELETE request to existing route should return 200") {
-    delete(existingRoute) {
-      status should equal(200)
-    }
+    delete(existingRoute) { status should equal(200) }
   }
 
   test("OPTIONS request to non-existent route should return 404") {
-    options(nonExistentRoute) {
-      status should equal(404)
-    }
+    options(nonExistentRoute) { status should equal(404) }
   }
 
   test("OPTIONS request to existing route should return 200") {
-    options(existingRoute) {
-      status should equal(200)
-    }
+    options(existingRoute) { status should equal(200) }
   }
 }

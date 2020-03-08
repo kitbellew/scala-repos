@@ -34,9 +34,7 @@ import com.twitter.util.Duration
   * This stops Storm's exception handling triggering an exit(1)
   */
 private[storm] class MySecurityManager extends SecurityManager {
-  override def checkExit(status: Int): Unit = {
-    throw new SecurityException();
-  }
+  override def checkExit(status: Int): Unit = { throw new SecurityException(); }
   override def checkAccess(t: Thread) = {}
   override def checkPermission(p: Permission) = {}
 }
@@ -71,9 +69,7 @@ object StormTestRun {
       cluster.killTopology("test topology")
       Thread.sleep(1500)
       cluster.shutdown
-    } finally {
-      System.setSecurityManager(oldSecManager)
-    }
+    } finally { System.setSecurityManager(oldSecManager) }
     require(
       InflightTuples.get == 0,
       "Inflight tuples is: %d".format(InflightTuples.get))
@@ -113,9 +109,8 @@ object StormTestRun {
 
   def apply(plannedTopology: PlannedTopology) {
     this.synchronized {
-      try {
-        tryRun(plannedTopology)
-      } catch {
+      try { tryRun(plannedTopology) }
+      catch {
         case _: Throwable =>
           Thread.sleep(3000)
           tryRun(plannedTopology)

@@ -26,11 +26,8 @@ class NaturalTest
   property("x - y") {
     forAll { (x: N, y: N) =>
       val z = Try(Natural(x.num) - Natural(y.num))
-      if (x.num >= y.num) {
-        z shouldBe Try(Natural(x.num - y.num))
-      } else {
-        z.isFailure shouldBe true
-      }
+      if (x.num >= y.num) { z shouldBe Try(Natural(x.num - y.num)) }
+      else { z.isFailure shouldBe true }
     }
   }
 

@@ -128,9 +128,7 @@ class Configuration {
   var additionalDataExtractor: AdditionalDataExtractor =
     new AdditionalDataExtractor
 
-  def getPublishDateExtractor: PublishDateExtractor = {
-    publishDateExtractor
-  }
+  def getPublishDateExtractor: PublishDateExtractor = { publishDateExtractor }
 
   def setContentExtractor(extractor: ContentExtractor) {
     if (extractor == null)

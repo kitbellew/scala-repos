@@ -164,9 +164,7 @@ trait ShardQueryExecutorPlatform[M[+_]]
                           "size: " + slice.size
                         }
                       }
-                    } else {
-                      eval(dag, evaluationContext, true)
-                    }
+                    } else { eval(dag, evaluationContext, true) }
                   }
                 }
               } getOrElse {
@@ -218,9 +216,7 @@ trait ShardQueryExecutorPlatform[M[+_]]
           }: _*)
 
           table flatMap { tbl => mn(tbl.sort(sortKey, opts.sortOrder)) }
-        } else {
-          table
-        }
+        } else { table }
 
       def page(table: N[Table]): N[Table] =
         opts.page map {

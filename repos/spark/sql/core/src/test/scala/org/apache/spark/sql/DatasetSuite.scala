@@ -566,9 +566,7 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
 
   test("verify mismatching field names fail with a good error") {
     val ds = Seq(ClassData("a", 1)).toDS()
-    val e = intercept[AnalysisException] {
-      ds.as[ClassData2]
-    }
+    val e = intercept[AnalysisException] { ds.as[ClassData2] }
     assert(
       e.getMessage.contains("cannot resolve '`c`' given input columns: [a, b]"),
       e.getMessage)

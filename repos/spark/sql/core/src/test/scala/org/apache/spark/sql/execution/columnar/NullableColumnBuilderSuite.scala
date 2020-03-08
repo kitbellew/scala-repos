@@ -57,9 +57,7 @@ class NullableColumnBuilderSuite extends SparkFunSuite {
     STRUCT(StructType(StructField("a", StringType) :: Nil)),
     ARRAY(ArrayType(IntegerType)),
     MAP(MapType(IntegerType, StringType))
-  ).foreach {
-      testNullableColumnBuilder(_)
-    }
+  ).foreach { testNullableColumnBuilder(_) }
 
   def testNullableColumnBuilder[JvmType](
       columnType: ColumnType[JvmType]): Unit = {

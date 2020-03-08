@@ -207,9 +207,7 @@ private[collection] trait Wrappers {
           case None    => null.asInstanceOf[B]
           case Some(v) => v
         }
-      } catch {
-        case ex: ClassCastException => null.asInstanceOf[B]
-      }
+      } catch { case ex: ClassCastException => null.asInstanceOf[B] }
 
     override def entrySet: ju.Set[ju.Map.Entry[A, B]] =
       new ju.AbstractSet[ju.Map.Entry[A, B]] {
@@ -262,9 +260,7 @@ private[collection] trait Wrappers {
         // contains to specific contains, which will throw a ClassCastException if the
         // wrong type is passed. This is why we need a type cast to A inside a try/catch.
         underlying.contains(key.asInstanceOf[A])
-      } catch {
-        case ex: ClassCastException => false
-      }
+      } catch { case ex: ClassCastException => false }
   }
 
   case class MutableMapWrapper[A, B](underlying: mutable.Map[A, B])
@@ -280,9 +276,7 @@ private[collection] trait Wrappers {
           case None    => null.asInstanceOf[B]
           case Some(v) => v
         }
-      } catch {
-        case ex: ClassCastException => null.asInstanceOf[B]
-      }
+      } catch { case ex: ClassCastException => null.asInstanceOf[B] }
 
     override def clear() = underlying.clear()
   }
@@ -349,9 +343,8 @@ private[collection] trait Wrappers {
     }
 
     def remove(k: AnyRef, v: AnyRef) =
-      try {
-        underlying.remove(k.asInstanceOf[A], v.asInstanceOf[B])
-      } catch {
+      try { underlying.remove(k.asInstanceOf[A], v.asInstanceOf[B]) }
+      catch {
         case ex: ClassCastException =>
           false
       }
@@ -402,9 +395,7 @@ private[collection] trait Wrappers {
           case None    => null.asInstanceOf[B]
           case Some(v) => v
         }
-      } catch {
-        case ex: ClassCastException => null.asInstanceOf[B]
-      }
+      } catch { case ex: ClassCastException => null.asInstanceOf[B] }
     def put(key: A, value: B): B = underlying.put(key, value) match {
       case Some(v) => v
       case None    => null.asInstanceOf[B]
@@ -415,9 +406,7 @@ private[collection] trait Wrappers {
           case None    => null.asInstanceOf[B]
           case Some(v) => v
         }
-      } catch {
-        case ex: ClassCastException => null.asInstanceOf[B]
-      }
+      } catch { case ex: ClassCastException => null.asInstanceOf[B] }
   }
 
   case class JDictionaryWrapper[A, B](underlying: ju.Dictionary[A, B])

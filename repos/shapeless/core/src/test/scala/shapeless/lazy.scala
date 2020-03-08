@@ -250,9 +250,13 @@ class LazyStrictTests {
     assertTrue(z1 eq z)
   }
 
-  trait Bar[A] { def foo(a: A): Unit }
+  trait Bar[A] {
+    def foo(a: A): Unit
+  }
   object Bar {
-    implicit val intBar = new Bar[Int] { def foo(x: Int) = () }
+    implicit val intBar = new Bar[Int] {
+      def foo(x: Int) = ()
+    }
   }
 
   @Test
@@ -272,7 +276,9 @@ class LazyStrictTests {
 
     type Aux[T, U0] = Baz[T] { type U = U0 }
 
-    implicit val bazIS: Aux[Int, String] = new Baz[Int] { type U = String }
+    implicit val bazIS: Aux[Int, String] = new Baz[Int] {
+      type U = String
+    }
     implicit val bazBD: Aux[Boolean, Double] = new Baz[Boolean] {
       type U = Double
     }

@@ -86,9 +86,7 @@ object PhysicalOperation extends PredicateHelper {
 
   private def collectAliases(
       fields: Seq[Expression]): Map[Attribute, Expression] =
-    fields.collect {
-      case a @ Alias(child, _) => a.toAttribute -> child
-    }.toMap
+    fields.collect { case a @ Alias(child, _) => a.toAttribute -> child }.toMap
 
   private def substitute(aliases: Map[Attribute, Expression])(
       expr: Expression): Expression = {
@@ -176,9 +174,7 @@ object ExtractEquiJoinKeys extends Logging with PredicateHelper {
             otherPredicates.reduceOption(And),
             left,
             right))
-      } else {
-        None
-      }
+      } else { None }
     case _ => None
   }
 }

@@ -32,9 +32,7 @@ private[spark] object BLAS extends Serializable with Logging {
 
   // For level-1 routines, we use Java implementation.
   private def f2jBLAS: NetlibBLAS = {
-    if (_f2jBLAS == null) {
-      _f2jBLAS = new F2jBLAS
-    }
+    if (_f2jBLAS == null) { _f2jBLAS = new F2jBLAS }
     _f2jBLAS
   }
 
@@ -167,9 +165,7 @@ private[spark] object BLAS extends Serializable with Logging {
     // y catching x
     while (kx < nnzx && ky < nnzy) {
       val ix = xIndices(kx)
-      while (ky < nnzy && yIndices(ky) < ix) {
-        ky += 1
-      }
+      while (ky < nnzy && yIndices(ky) < ix) { ky += 1 }
       if (ky < nnzy && yIndices(ky) == ix) {
         sum += xValues(kx) * yValues(ky)
         ky += 1
@@ -236,9 +232,7 @@ private[spark] object BLAS extends Serializable with Logging {
 
   // For level-3 routines, we use the native BLAS.
   private def nativeBLAS: NetlibBLAS = {
-    if (_nativeBLAS == null) {
-      _nativeBLAS = NativeBLAS
-    }
+    if (_nativeBLAS == null) { _nativeBLAS = NativeBLAS }
     _nativeBLAS
   }
 
@@ -495,9 +489,7 @@ private[spark] object BLAS extends Serializable with Logging {
       }
     } else {
       // Scale matrix first if `beta` is not equal to 1.0
-      if (beta != 1.0) {
-        f2jBLAS.dscal(C.values.length, beta, C.values, 1)
-      }
+      if (beta != 1.0) { f2jBLAS.dscal(C.values.length, beta, C.values, 1) }
       // Perform matrix multiplication and add to C. The rows of A are multiplied by the columns of
       // B, and added to C.
       var colCounterForB = 0 // the column to be updated in C
@@ -562,9 +554,8 @@ private[spark] object BLAS extends Serializable with Logging {
       s"The rows of A don't match the number of elements of y. A: ${A.numRows}, y:${y.size}")
     if (alpha == 0.0 && beta == 1.0) {
       logDebug("gemv: alpha is equal to 0 and beta is equal to 1. Returning y.")
-    } else if (alpha == 0.0) {
-      scal(beta, y)
-    } else {
+    } else if (alpha == 0.0) { scal(beta, y) }
+    else {
       (A, x) match {
         case (smA: SparseMatrix, dvx: DenseVector) =>
           gemv(alpha, smA, dvx, beta, y)

@@ -59,19 +59,13 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     import h._
 
     Time.withCurrentTimeFrozen { timeControl =>
-      intercept[Exception] {
-        Await.result(service(123))
-      }
-      intercept[Exception] {
-        Await.result(service(123))
-      }
+      intercept[Exception] { Await.result(service(123)) }
+      intercept[Exception] { Await.result(service(123)) }
       assert(factory.isAvailable)
       assert(service.isAvailable)
 
       // triggers markDead
-      intercept[Exception] {
-        Await.result(service(123))
-      }
+      intercept[Exception] { Await.result(service(123)) }
       assert(!factory.isAvailable)
       assert(!service.isAvailable)
       assert(broker.recv.sync().isDefined == false)
@@ -96,9 +90,7 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
       assert(Await.result(service(123)) == 123)
 
       // failures # is reset to 0
-      intercept[Exception] {
-        Await.result(service(456))
-      }
+      intercept[Exception] { Await.result(service(456)) }
       assert(factory.isAvailable)
       assert(service.isAvailable)
       verify(underlyingService, times(4))(123)
@@ -112,29 +104,21 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     import h._
 
     Time.withCurrentTimeFrozen { timeControl =>
-      intercept[Exception] {
-        Await.result(service(123))
-      }
-      intercept[Exception] {
-        Await.result(service(123))
-      }
+      intercept[Exception] { Await.result(service(123)) }
+      intercept[Exception] { Await.result(service(123)) }
       assert(!factory.isAvailable)
       assert(!service.isAvailable)
       // still dispatches
       verify(underlyingService, times(2))(123)
 
       // triggers markDead by the 3rd failure
-      intercept[Exception] {
-        Await.result(service(123))
-      }
+      intercept[Exception] { Await.result(service(123)) }
       assert(!factory.isAvailable)
       assert(!service.isAvailable)
       assert(broker.recv.sync().isDefined == false)
 
       // skips dispatch after consecutive failures
-      intercept[FailureAccrualException] {
-        Await.result(factory())
-      }
+      intercept[FailureAccrualException] { Await.result(factory()) }
       verify(underlyingService, times(3))(123)
     }
   }
@@ -144,19 +128,13 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     import h._
 
     Time.withCurrentTimeFrozen { timeControl =>
-      intercept[Exception] {
-        Await.result(service(123))
-      }
-      intercept[Exception] {
-        Await.result(service(123))
-      }
+      intercept[Exception] { Await.result(service(123)) }
+      intercept[Exception] { Await.result(service(123)) }
       assert(factory.isAvailable)
       assert(service.isAvailable)
 
       // triggers markDead
-      intercept[Exception] {
-        Await.result(service(123))
-      }
+      intercept[Exception] { Await.result(service(123)) }
       assert(!factory.isAvailable)
       assert(!service.isAvailable)
 

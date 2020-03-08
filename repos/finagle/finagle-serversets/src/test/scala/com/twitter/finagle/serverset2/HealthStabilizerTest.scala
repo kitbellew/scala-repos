@@ -20,9 +20,7 @@ class HealthStabilizerTest extends FunSuite with BeforeAndAfter {
   var closeMe = Closable.nop
   val stats = new InMemoryStatsReceiver()
 
-  after {
-    closeMe.close()
-  }
+  after { closeMe.close() }
 
   def stabilize(va: Var[ClientHealth]): AtomicReference[ClientHealth] = {
     val ref = new AtomicReference[ClientHealth](ClientHealth.Healthy)

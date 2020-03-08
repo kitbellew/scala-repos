@@ -83,9 +83,8 @@ object RawZipkinTracer {
       override def run() {
         val tracers = RawZipkinTracer.synchronized(map.values.toSeq)
         val joined = Future.join(tracers map (_.flush()))
-        try {
-          Await.result(joined, 100.milliseconds)
-        } catch {
+        try { Await.result(joined, 100.milliseconds) }
+        catch {
           case _: TimeoutException =>
             System.err.println("Failed to flush all traces before quitting")
         }
@@ -380,8 +379,6 @@ private[thrift] class RawZipkinTracer(
   */
 private class TracelessFilter[Req, Rep] extends SimpleFilter[Req, Rep] {
   def apply(request: Req, service: Service[Req, Rep]) = {
-    Trace.letClear {
-      service(request)
-    }
+    Trace.letClear { service(request) }
   }
 }

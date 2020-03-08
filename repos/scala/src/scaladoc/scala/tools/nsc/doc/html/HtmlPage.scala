@@ -232,9 +232,7 @@ abstract class HtmlPage extends Page { thisPage =>
         <a href={relativeLinkTo(dTpl)} class="extype" name={
           dTpl.qualifiedName
         }>{if (name eq null) dTpl.name else name}</a>
-      } else {
-        scala.xml.Text(if (name eq null) dTpl.name else name)
-      }
+      } else { scala.xml.Text(if (name eq null) dTpl.name else name) }
     case ndTpl: NoDocTemplate =>
       scala.xml.Text(if (name eq null) ndTpl.name else name)
   }

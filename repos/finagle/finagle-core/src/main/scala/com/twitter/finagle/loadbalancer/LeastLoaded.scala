@@ -38,9 +38,7 @@ private trait LeastLoaded[Req, Rep] { self: Balancer[Req, Rep] =>
         case Return(svc) =>
           Future.value(new ServiceProxy(svc) {
             override def close(deadline: Time) =
-              super.close(deadline).ensure {
-                counter.decrementAndGet()
-              }
+              super.close(deadline).ensure { counter.decrementAndGet() }
           })
 
         case t @ Throw(_) =>

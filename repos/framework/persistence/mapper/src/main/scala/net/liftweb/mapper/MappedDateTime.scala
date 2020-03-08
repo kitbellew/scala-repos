@@ -137,9 +137,7 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
   protected def i_was_! = orgData.get
   protected[mapper] def doneWithSave() { orgData.setFrom(data) }
 
-  protected def i_obscure_!(in: Date): Date = {
-    new Date(0L)
-  }
+  protected def i_obscure_!(in: Date): Date = { new Date(0L) }
 
   /**
     * Create an input field for the item

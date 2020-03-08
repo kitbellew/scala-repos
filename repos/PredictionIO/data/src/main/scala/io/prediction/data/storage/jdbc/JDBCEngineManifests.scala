@@ -92,9 +92,8 @@ class JDBCEngineManifests(
       where id = ${m.id} and version = ${m.version}""".update().apply()
     }
     if (r == 0) {
-      if (upsert) {
-        insert(m)
-      } else {
+      if (upsert) { insert(m) }
+      else {
         error("Cannot find a record to update, and upsert is not enabled.")
       }
     }

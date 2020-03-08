@@ -42,9 +42,7 @@ private[timer] class TimerTaskList(taskCounter: AtomicInteger) extends Delayed {
   }
 
   // Get the bucket's expiration time
-  def getExpiration(): Long = {
-    expiration.get()
-  }
+  def getExpiration(): Long = { expiration.get() }
 
   // Apply the supplied function to each of tasks in this list
   def foreach(f: (TimerTask) => Unit): Unit = {
@@ -144,9 +142,7 @@ private[timer] class TimerTaskEntry(val timerTask: TimerTask) {
   // setTimerTaskEntry will remove it.
   if (timerTask != null) timerTask.setTimerTaskEntry(this)
 
-  def cancelled: Boolean = {
-    timerTask.getTimerTaskEntry != this
-  }
+  def cancelled: Boolean = { timerTask.getTimerTaskEntry != this }
 
   def remove(): Unit = {
     var currentList = list

@@ -754,8 +754,18 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
   }
 }
 
-sealed trait PartitionState { def state: Byte }
-case object NewPartition extends PartitionState { val state: Byte = 0 }
-case object OnlinePartition extends PartitionState { val state: Byte = 1 }
-case object OfflinePartition extends PartitionState { val state: Byte = 2 }
-case object NonExistentPartition extends PartitionState { val state: Byte = 3 }
+sealed trait PartitionState {
+  def state: Byte
+}
+case object NewPartition extends PartitionState {
+  val state: Byte = 0
+}
+case object OnlinePartition extends PartitionState {
+  val state: Byte = 1
+}
+case object OfflinePartition extends PartitionState {
+  val state: Byte = 2
+}
+case object NonExistentPartition extends PartitionState {
+  val state: Byte = 3
+}

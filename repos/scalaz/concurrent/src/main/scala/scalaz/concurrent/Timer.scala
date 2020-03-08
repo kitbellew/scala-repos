@@ -67,20 +67,14 @@ case class Timer(
 
   private[this] def withWrite[T](expression: => T): T = {
     lock.writeLock().lock()
-    try {
-      expression
-    } finally {
-      lock.writeLock().unlock()
-    }
+    try { expression }
+    finally { lock.writeLock().unlock() }
   }
 
   private[this] def withRead[T](expression: => T): T = {
     lock.readLock().lock()
-    try {
-      expression
-    } finally {
-      lock.readLock().unlock()
-    }
+    try { expression }
+    finally { lock.readLock().unlock() }
   }
 
   private[this] def alignTimeResolution(time: Long): Long =
@@ -101,9 +95,7 @@ case class Timer(
               .getOrElse((waitTime, List(timedCallback)))
           }
         Future.async(listen)
-      } else {
-        Future.now(value)
-      }
+      } else { Future.now(value) }
     }
   }
 

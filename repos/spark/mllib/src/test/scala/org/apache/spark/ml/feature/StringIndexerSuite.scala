@@ -84,9 +84,7 @@ class StringIndexerSuite
       .setOutputCol("labelIndex")
       .fit(df)
     // Verify we throw by default with unseen values
-    intercept[SparkException] {
-      indexer.transform(df2).collect()
-    }
+    intercept[SparkException] { indexer.transform(df2).collect() }
     val indexerSkipInvalid = new StringIndexer()
       .setInputCol("label")
       .setOutputCol("labelIndex")
@@ -151,9 +149,7 @@ class StringIndexerSuite
       .setInputCol("input")
       .setOutputCol("output")
       .fit(df)
-    intercept[IllegalArgumentException] {
-      indexer.transform(df)
-    }
+    intercept[IllegalArgumentException] { indexer.transform(df) }
   }
 
   test("StringIndexer read/write") {

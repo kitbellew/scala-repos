@@ -140,9 +140,7 @@ trait ExecutionContext {
       }
 
       Success(flow)
-    } catch {
-      case err: Throwable => Failure(err)
-    }
+    } catch { case err: Throwable => Failure(err) }
 
   /**
     * Asynchronously execute the plan currently

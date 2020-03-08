@@ -52,11 +52,8 @@ abstract class EdgeRDD[ED](sc: SparkContext, deps: Seq[Dependency[_]])
       context: TaskContext): Iterator[Edge[ED]] = {
     val p =
       firstParent[(PartitionID, EdgePartition[ED, _])].iterator(part, context)
-    if (p.hasNext) {
-      p.next()._2.iterator.map(_.copy())
-    } else {
-      Iterator.empty
-    }
+    if (p.hasNext) { p.next()._2.iterator.map(_.copy()) }
+    else { Iterator.empty }
   }
 
   /**
@@ -124,7 +121,5 @@ object EdgeRDD {
     */
   private[graphx] def fromEdgePartitions[ED: ClassTag, VD: ClassTag](
       edgePartitions: RDD[(Int, EdgePartition[ED, VD])])
-      : EdgeRDDImpl[ED, VD] = {
-    new EdgeRDDImpl(edgePartitions)
-  }
+      : EdgeRDDImpl[ED, VD] = { new EdgeRDDImpl(edgePartitions) }
 }

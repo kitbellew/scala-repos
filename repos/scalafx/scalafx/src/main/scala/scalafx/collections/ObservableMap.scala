@@ -195,9 +195,7 @@ trait ObservableMap[K, V]
   /**
     * Removes all elements from the $MAP. After this operation has completed, the $MAP will be empty.
     */
-  override def clear() {
-    delegate.clear()
-  }
+  override def clear() { delegate.clear() }
 
   /**
     * Creates a new [[http://www.scala-lang.org/api/current/scala/collection/Iterator.html `Iterator`]] over all

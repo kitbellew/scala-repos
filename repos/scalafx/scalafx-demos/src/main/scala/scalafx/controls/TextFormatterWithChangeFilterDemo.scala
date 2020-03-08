@@ -62,9 +62,7 @@ object TextFormatterWithChangeFilterDemo extends JFXApp {
         else s
       Message(r)
     }
-    override def toString(v: Message): String = {
-      prompt + v.text
-    }
+    override def toString(v: Message): String = { prompt + v.text }
   }
 
   // Filter the change restoring prompt if it was removed and correcting caret position

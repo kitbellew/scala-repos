@@ -27,9 +27,7 @@ class SexpFormatUtilsSpec extends FormatSpec with SexpFormats {
       def read(o: Sexp) = o.asInstanceOf[SexpString]
     })
     foo.convertTo[SexpString](lifted) should ===(foo)
-    intercept[UnsupportedOperationException] {
-      foo.toSexp(lifted)
-    }
+    intercept[UnsupportedOperationException] { foo.toSexp(lifted) }
   }
 
   it should "combine readers and writers" in {

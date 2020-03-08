@@ -851,8 +851,6 @@ object ReallyRichPresentationCompilerFixture
     cc.askReloadFile(file)
     cc.askLoadedTyped(file)
     assert(points.nonEmpty)
-    for (pt <- points) {
-      testCode(new OffsetPosition(file, pt._1), pt._2, cc)
-    }
+    for (pt <- points) { testCode(new OffsetPosition(file, pt._1), pt._2, cc) }
   }
 }

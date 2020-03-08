@@ -29,9 +29,7 @@ class RouteConcurrencyServlet extends ScalatraServlet {
     Future.sequence(b map (kv => kv._1.flatMap(_ => kv._2))),
     5.seconds)
 
-  get("/count/:method") {
-    routes(HttpMethod(params("method"))).size.toString
-  }
+  get("/count/:method") { routes(HttpMethod(params("method"))).size.toString }
 }
 
 class RouteConcurrencySpec extends ScalatraWordSpec {
@@ -47,9 +45,7 @@ class RouteConcurrencySpec extends ScalatraWordSpec {
     }
 
     "support removing routes concurrently with adding routes" in {
-      eventually {
-        get("/count/post") { body should equal("500") }
-      }
+      eventually { get("/count/post") { body should equal("500") } }
     }
   }
 }

@@ -59,9 +59,7 @@ class BytecodeUtilsSuite extends SparkFunSuite {
   }
 
   test("closure calling a function that invokes a method") {
-    def zoo(e: TestClass) {
-      println(e.baz)
-    }
+    def zoo(e: TestClass) { println(e.baz) }
     val c1 = { e: TestClass => zoo(e) }
     assert(!BytecodeUtils.invokedMethod(c1, classOf[TestClass], "foo"))
     assert(!BytecodeUtils.invokedMethod(c1, classOf[TestClass], "bar"))
@@ -71,9 +69,7 @@ class BytecodeUtilsSuite extends SparkFunSuite {
   test(
     "closure calling a function that invokes a method which uses another closure") {
     val c2 = { e: TestClass => println(e.baz) }
-    def zoo(e: TestClass) {
-      c2(e)
-    }
+    def zoo(e: TestClass) { c2(e) }
     val c1 = { e: TestClass => zoo(e) }
     assert(!BytecodeUtils.invokedMethod(c1, classOf[TestClass], "foo"))
     assert(!BytecodeUtils.invokedMethod(c1, classOf[TestClass], "bar"))
@@ -82,9 +78,7 @@ class BytecodeUtilsSuite extends SparkFunSuite {
 
   test("nested closure") {
     val c2 = { e: TestClass => println(e.baz) }
-    def zoo(e: TestClass, c: TestClass => Unit) {
-      c(e)
-    }
+    def zoo(e: TestClass, c: TestClass => Unit) { c(e) }
     val c1 = { e: TestClass => zoo(e, c2) }
     assert(!BytecodeUtils.invokedMethod(c1, classOf[TestClass], "foo"))
     assert(!BytecodeUtils.invokedMethod(c1, classOf[TestClass], "bar"))

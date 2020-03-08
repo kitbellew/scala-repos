@@ -166,9 +166,7 @@ object Play {
     */
   @deprecated("inject the play.api.Environment instead", "2.5.0")
   def resource(name: String)(
-      implicit app: Application): Option[java.net.URL] = {
-    app.resource(name)
-  }
+      implicit app: Application): Option[java.net.URL] = { app.resource(name) }
 
   /**
     * @deprecated inject the [[play.api.Environment]] instead

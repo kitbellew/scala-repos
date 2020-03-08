@@ -336,16 +336,12 @@ object WiringUI {
     * if this is the first time
     */
   def addJsFunc[T](cell: Cell[T], f: (T, Boolean) => JsCmd) {
-    for {
-      cometActor <- S.currentCometActor
-    } cell.addDependent(cometActor)
+    for { cometActor <- S.currentCometActor } cell.addDependent(cometActor)
 
     val trc = TransientRequestCell(cell)
     var lastTime: Long = 0L
     var lastValue: T = null.asInstanceOf[T]
-    for {
-      sess <- S.session
-    } sess.addPostPageJavaScript(() => {
+    for { sess <- S.session } sess.addPostPageJavaScript(() => {
       val (value, ct) = trc.get
       val first = lastTime == 0L
       if (first || (ct > lastTime && value != lastValue)) {
@@ -366,16 +362,12 @@ object WiringUI {
     * if this is the first time
     */
   def addHistJsFunc[T](cell: Cell[T], f: (Box[T], T) => JsCmd) {
-    for {
-      cometActor <- S.currentCometActor
-    } cell.addDependent(cometActor)
+    for { cometActor <- S.currentCometActor } cell.addDependent(cometActor)
 
     val trc = TransientRequestCell(cell)
     var lastTime: Long = 0L
     var lastValue: Box[T] = Empty
-    for {
-      sess <- S.session
-    } sess.addPostPageJavaScript(() => {
+    for { sess <- S.session } sess.addPostPageJavaScript(() => {
       val (value, ct) = trc.get
       val first = lastTime == 0L
       if (first || (ct > lastTime && Full(value) != lastValue)) {

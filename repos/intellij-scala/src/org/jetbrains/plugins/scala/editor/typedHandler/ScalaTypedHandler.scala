@@ -93,27 +93,20 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
                      if !ScalaNamesUtil.isOperatorName(
                        i.getText) && i.getText != "=" =>
                    c == '>' || c == '/'; case _       => false
-               }) {
-      chooseXmlTask(withAttr = false)
-    } else if (element.getPrevSibling != null && element.getPrevSibling.getNode.getElementType == ScalaElementTypes.CASE_CLAUSES) {
+               }) { chooseXmlTask(withAttr = false) }
+    else if (element.getPrevSibling != null && element.getPrevSibling.getNode.getElementType == ScalaElementTypes.CASE_CLAUSES) {
       val ltIndex = element.getPrevSibling.getText.indexOf("<")
       if (ltIndex > "case ".length - 1 && element.getPrevSibling.getText
             .substring(0, ltIndex)
-            .trim() == "case") {
-        chooseXmlTask(withAttr = false)
-      }
+            .trim() == "case") { chooseXmlTask(withAttr = false) }
     } else if (c == '{' && (element.getParent match {
                  case l: ScInterpolatedStringLiteral => !l.isMultiLineString;
                  case _                              => false
-               })) {
-      myTask = completeInterpolatedStringBraces
-    } else if (c == '>' || c == '-') {
-      myTask = replaceArrowTask(file, editor)
-    } else if (c == '$') {
-      myTask = startAutopopupCompletion(file, editor)
-    } else if (c == '{') {
-      myTask = convertToInterpolated(file, editor)
-    } else if (c == '.') {
+               })) { myTask = completeInterpolatedStringBraces }
+    else if (c == '>' || c == '-') { myTask = replaceArrowTask(file, editor) }
+    else if (c == '$') { myTask = startAutopopupCompletion(file, editor) }
+    else if (c == '{') { myTask = convertToInterpolated(file, editor) }
+    else if (c == '.') {
       myTask = startAutopopupCompletionInInterpolatedString(file, editor)
     } else if (offset > 1) {
       val prevPositionElement = file.findElementAt(offset - 2)
@@ -288,9 +281,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
               doInsert(tag)
             case _ => check(tag)
           }
-        } else {
-          check(tag)
-        }
+        } else { check(tag) }
       case _ =>
     }
   }
@@ -366,9 +357,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
         wiki2LTagMatch.get(text.substring(offset - 2, offset)).get)
     } else if (text.substring(offset - 3, offset) == "{{{") {
       completeScalaDocWikiSyntax("}}}")
-    } else {
-      null
-    }
+    } else { null }
   }
 
   private def indentCase(file: PsiFile)(

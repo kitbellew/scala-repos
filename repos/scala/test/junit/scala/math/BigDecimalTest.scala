@@ -250,9 +250,7 @@ class BigDecimalTest {
 
   // Make sure hash code agrees with decimal representation of Double
   @Test
-  def test_SI8970() {
-    assert((0.1).## == BigDecimal(0.1).##)
-  }
+  def test_SI8970() { assert((0.1).## == BigDecimal(0.1).##) }
 
   // Motivated by the problem of MathContext lost
   @Test

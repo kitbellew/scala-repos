@@ -28,9 +28,7 @@ class JasmineTestReporter(
   private var currentSuite: Suite = _
 
   @JSExport
-  def reportRunnerStarting(): Unit = {
-    info("")
-  }
+  def reportRunnerStarting(): Unit = { info("") }
 
   @JSExport
   def reportSpecStarting(spec: Spec): Unit = {
@@ -94,9 +92,7 @@ class JasmineTestReporter(
   }
 
   @JSExport
-  def reportRunnerResults(): Unit = {
-    runnerDone()
-  }
+  def reportRunnerResults(): Unit = { runnerDone() }
 
   private val ErrorColor = "\u001b[31m"
   private val SuccessColor = "\u001b[32m"

@@ -232,9 +232,7 @@ private[akka] class Shard(
                 handOffStopMessage))))
 
         //During hand off we only care about watching for termination of the hand off stopper
-        context become {
-          case Terminated(ref) ⇒ receiveTerminated(ref)
-        }
+        context become { case Terminated(ref) ⇒ receiveTerminated(ref) }
       } else {
         replyTo ! ShardStopped(shardId)
         context stop self
@@ -255,9 +253,7 @@ private[akka] class Shard(
         "Starting entity [{}] again, there are buffered messages for it",
         id)
       sendMsgBuffer(EntityStarted(id))
-    } else {
-      processChange(EntityStopped(id))(passivateCompleted)
-    }
+    } else { processChange(EntityStopped(id))(passivateCompleted) }
 
     passivating = passivating - ref
   }
@@ -302,9 +298,7 @@ private[akka] class Shard(
 
       //Now there is no deliveryBuffer we can try to redeliver
       // and as the child exists, the message will be directly forwarded
-      messages foreach {
-        case (msg, snd) ⇒ deliverMessage(msg, snd)
-      }
+      messages foreach { case (msg, snd) ⇒ deliverMessage(msg, snd) }
     }
   }
 

@@ -32,9 +32,7 @@ object BalancingSpec {
       BalancingPool(2).props(routeeProps =
         Props(classOf[Worker], TestLatch(0)(context.system))))
 
-    def receive = {
-      case msg ⇒ pool.forward(msg)
-    }
+    def receive = { case msg ⇒ pool.forward(msg) }
   }
 }
 
@@ -62,16 +60,12 @@ class BalancingSpec extends AkkaSpec("""
   val poolSize =
     5 // must be less than fork-join parallelism-min, which is 8 in AkkaSpec
 
-  override def beforeEach(): Unit = {
-    counter.set(1)
-  }
+  override def beforeEach(): Unit = { counter.set(1) }
 
   def test(pool: ActorRef, latch: TestLatch): Unit = {
     val iterationCount = 100
 
-    for (i ← 1 to iterationCount) {
-      pool ! i
-    }
+    for (i ← 1 to iterationCount) { pool ! i }
 
     // all but one worker are blocked
     val replies1 = receiveN(iterationCount - poolSize + 1)

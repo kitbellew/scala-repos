@@ -153,9 +153,7 @@ class CachedSpec extends PlaySpecification {
   }
 
   val dummyAction = Action { request =>
-    Results.Ok {
-      Random.nextInt().toString
-    }
+    Results.Ok { Random.nextInt().toString }
   }
 
   val notFoundAction = Action { request =>

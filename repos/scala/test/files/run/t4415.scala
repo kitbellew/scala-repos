@@ -12,9 +12,7 @@
   */
 object Test {
 
-  def main(args: Array[String]) {
-    convert(new SubclassProperty)
-  }
+  def main(args: Array[String]) { convert(new SubclassProperty) }
 
   def convert(prop: TopProperty): MyProp[_] = {
     prop match {
@@ -47,9 +45,7 @@ object SubclassMatch {
     Some(new MyPropImpl)
   }
 
-  def apply(prop: MyProp[String]): SubclassProperty = {
-    new SubclassProperty()
-  }
+  def apply(prop: MyProp[String]): SubclassProperty = { new SubclassProperty() }
 }
 
 object StandardMatch {
@@ -58,9 +54,7 @@ object StandardMatch {
     Some(new MyPropImpl)
   }
 
-  def apply(prop: MyProp[String]): StandardProperty = {
-    new StandardProperty()
-  }
+  def apply(prop: MyProp[String]): StandardProperty = { new StandardProperty() }
 }
 
 object SubclassSecondMatch {
@@ -80,7 +74,5 @@ object SecondMatch {
     Some(new MyPropImpl)
   }
 
-  def apply(prop: MyProp[String]): SecondProperty = {
-    new SecondProperty()
-  }
+  def apply(prop: MyProp[String]): SecondProperty = { new SecondProperty() }
 }

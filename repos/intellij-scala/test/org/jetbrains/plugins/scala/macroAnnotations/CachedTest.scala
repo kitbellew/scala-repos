@@ -48,9 +48,7 @@ class CachedTest extends CachedTestBase {
         try {
           Assert.assertTrue(!cachedFunctionHasBeenRan)
           cachedFunctionHasBeenRan = true
-        } finally {
-          allThreadsStartedLock.unlock()
-        }
+        } finally { allThreadsStartedLock.unlock() }
       }
     }
 

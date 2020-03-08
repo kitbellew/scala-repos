@@ -122,41 +122,23 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test("sin") {
-    testOneToOneMathFunction(sin, math.sin)
-  }
+  test("sin") { testOneToOneMathFunction(sin, math.sin) }
 
-  test("asin") {
-    testOneToOneMathFunction(asin, math.asin)
-  }
+  test("asin") { testOneToOneMathFunction(asin, math.asin) }
 
-  test("sinh") {
-    testOneToOneMathFunction(sinh, math.sinh)
-  }
+  test("sinh") { testOneToOneMathFunction(sinh, math.sinh) }
 
-  test("cos") {
-    testOneToOneMathFunction(cos, math.cos)
-  }
+  test("cos") { testOneToOneMathFunction(cos, math.cos) }
 
-  test("acos") {
-    testOneToOneMathFunction(acos, math.acos)
-  }
+  test("acos") { testOneToOneMathFunction(acos, math.acos) }
 
-  test("cosh") {
-    testOneToOneMathFunction(cosh, math.cosh)
-  }
+  test("cosh") { testOneToOneMathFunction(cosh, math.cosh) }
 
-  test("tan") {
-    testOneToOneMathFunction(tan, math.tan)
-  }
+  test("tan") { testOneToOneMathFunction(tan, math.tan) }
 
-  test("atan") {
-    testOneToOneMathFunction(atan, math.atan)
-  }
+  test("atan") { testOneToOneMathFunction(atan, math.atan) }
 
-  test("tanh") {
-    testOneToOneMathFunction(tanh, math.tanh)
-  }
+  test("tanh") { testOneToOneMathFunction(tanh, math.tanh) }
 
   test("toDegrees") {
     testOneToOneMathFunction(toDegrees, math.toDegrees)
@@ -178,9 +160,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test("cbrt") {
-    testOneToOneMathFunction(cbrt, math.cbrt)
-  }
+  test("cbrt") { testOneToOneMathFunction(cbrt, math.cbrt) }
 
   test("ceil and ceiling") {
     testOneToOneMathFunction(ceil, (d: Double) => math.ceil(d).toLong)
@@ -219,9 +199,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test("rint") {
-    testOneToOneMathFunction(rint, math.rint)
-  }
+  test("rint") { testOneToOneMathFunction(rint, math.rint) }
 
   test("round") {
     val df = Seq(5, 55, 555).map(Tuple1(_)).toDF("a")
@@ -247,13 +225,9 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test("exp") {
-    testOneToOneMathFunction(exp, math.exp)
-  }
+  test("exp") { testOneToOneMathFunction(exp, math.exp) }
 
-  test("expm1") {
-    testOneToOneMathFunction(expm1, math.expm1)
-  }
+  test("expm1") { testOneToOneMathFunction(expm1, math.expm1) }
 
   test("signum / sign") {
     testOneToOneMathFunction[Double, Double](signum, math.signum)
@@ -299,13 +273,9 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
     checkAnswer(data.selectExpr("""unhex("G123")"""), Row(null))
   }
 
-  test("hypot") {
-    testTwoToOneMathFunction(hypot, hypot, math.hypot)
-  }
+  test("hypot") { testTwoToOneMathFunction(hypot, hypot, math.hypot) }
 
-  test("atan2") {
-    testTwoToOneMathFunction(atan2, atan2, math.atan2)
-  }
+  test("atan2") { testTwoToOneMathFunction(atan2, atan2, math.atan2) }
 
   test("log / ln") {
     testOneToOneNonNegativeMathFunction(
@@ -319,13 +289,9 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test("log10") {
-    testOneToOneNonNegativeMathFunction(log10, math.log10)
-  }
+  test("log10") { testOneToOneNonNegativeMathFunction(log10, math.log10) }
 
-  test("log1p") {
-    testOneToOneNonNegativeMathFunction(log1p, math.log1p)
-  }
+  test("log1p") { testOneToOneNonNegativeMathFunction(log1p, math.log1p) }
 
   test("shift left") {
     val df = Seq[(Long, Integer, Short, Byte, Integer, Integer)](

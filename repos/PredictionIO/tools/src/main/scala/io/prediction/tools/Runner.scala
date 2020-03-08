@@ -44,9 +44,7 @@ object Runner extends Logging {
     try {
       arguments(argumentIndex) // just to make it error out if index is -1
       Some(arguments(argumentIndex + 1))
-    } catch {
-      case e: IndexOutOfBoundsException => None
-    }
+    } catch { case e: IndexOutOfBoundsException => None }
   }
 
   def handleScratchFile(
@@ -79,16 +77,10 @@ object Runner extends Logging {
       args: Seq[String]): Seq[String] = {
     args map { arg =>
       val f =
-        try {
-          new File(new URI(arg))
-        } catch {
-          case e: Throwable => new File(arg)
-        }
-      if (f.exists()) {
-        handleScratchFile(fileSystem, uri, f)
-      } else {
-        arg
-      }
+        try { new File(new URI(arg)) }
+        catch { case e: Throwable => new File(arg) }
+      if (f.exists()) { handleScratchFile(fileSystem, uri, f) }
+      else { arg }
     }
   }
 
@@ -140,9 +132,7 @@ object Runner extends Logging {
     val driverClassPathPrefix =
       argumentValue(ca.common.sparkPassThrough, "--driver-class-path") map {
         v => Seq(v)
-      } getOrElse {
-        Nil
-      }
+      } getOrElse { Nil }
 
     val extraClasspaths =
       driverClassPathPrefix ++ WorkflowUtils.thirdPartyClasspaths
@@ -161,29 +151,21 @@ object Runner extends Logging {
 
     val sparkSubmitJars = if (extraJars.nonEmpty) {
       Seq("--jars", deployedJars.map(_.toString).mkString(","))
-    } else {
-      Nil
-    }
+    } else { Nil }
 
     val sparkSubmitFiles = if (extraFiles.nonEmpty) {
       Seq("--files", extraFiles.mkString(","))
-    } else {
-      Nil
-    }
+    } else { Nil }
 
     val sparkSubmitExtraClasspaths = if (extraClasspaths.nonEmpty) {
       Seq("--driver-class-path", extraClasspaths.mkString(":"))
-    } else {
-      Nil
-    }
+    } else { Nil }
 
     val sparkSubmitKryo = if (ca.common.sparkKryo) {
       Seq(
         "--conf",
         "spark.serializer=org.apache.spark.serializer.KryoSerializer")
-    } else {
-      Nil
-    }
+    } else { Nil }
 
     val verbose = if (ca.common.verbose) Seq("--verbose") else Nil
 

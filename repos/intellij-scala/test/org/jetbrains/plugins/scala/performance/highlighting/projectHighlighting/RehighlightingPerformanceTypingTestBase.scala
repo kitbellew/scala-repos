@@ -100,9 +100,7 @@ abstract class RehighlightingPerformanceTypingTestBase
         }
       })
       .assertTiming()
-    inWriteCommandAction(myProject) {
-      editor.getDocument.setText(initialText)
-    }
+    inWriteCommandAction(myProject) { editor.getDocument.setText(initialText) }
   }
 
   override def githubUsername: String

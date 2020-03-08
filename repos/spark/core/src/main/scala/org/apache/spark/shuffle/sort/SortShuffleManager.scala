@@ -179,9 +179,7 @@ private[spark] class SortShuffleManager(conf: SparkConf)
   }
 
   /** Shut down this ShuffleManager. */
-  override def stop(): Unit = {
-    shuffleBlockResolver.stop()
-  }
+  override def stop(): Unit = { shuffleBlockResolver.stop() }
 }
 
 private[spark] object SortShuffleManager extends Logging {

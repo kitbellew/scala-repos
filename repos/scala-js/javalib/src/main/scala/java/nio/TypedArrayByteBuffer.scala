@@ -241,9 +241,7 @@ private[nio] object TypedArrayByteBuffer {
     def newTypedArray(
         buffer: ArrayBuffer,
         byteOffset: Int,
-        length: Int): Int8Array = {
-      new Int8Array(buffer, byteOffset, length)
-    }
+        length: Int): Int8Array = { new Int8Array(buffer, byteOffset, length) }
   }
 
   def allocate(capacity: Int): ByteBuffer = {

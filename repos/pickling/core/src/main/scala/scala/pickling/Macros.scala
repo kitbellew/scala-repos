@@ -32,9 +32,7 @@ trait TypeAnalysis extends Macro {
           sym)} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym.isSealed} directSubclasses=${tools
           .directSubclasses(classSym)})")
       }
-    } else {
-      List(s"'${sym.fullName}' is not a class or trait")
-    }
+    } else { List(s"'${sym.fullName}' is not a class or trait") }
   }
 }
 

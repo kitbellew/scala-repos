@@ -27,7 +27,9 @@ class C1492 {
 object Test1579 {
   class Column
   class Query[E](val value: E)
-  class Invoker(q: Any) { val foo = null }
+  class Invoker(q: Any) {
+    val foo = null
+  }
 
   implicit def unwrap[C](q: Query[C]) = q.value
   implicit def invoker(q: Query[Column]) = new Invoker(q)

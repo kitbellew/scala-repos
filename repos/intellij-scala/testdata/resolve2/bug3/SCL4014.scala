@@ -1,7 +1,5 @@
 class O protected (s: String) {
-  def this() {
-    this("")
-  }
+  def this() { this("") }
 }
 
 class B extends /* line: 1 */ O("rwar")

@@ -51,9 +51,7 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
   override def findSmartStepTargets(
       position: SourcePosition): JList[SmartStepTarget] = {
     val line: Int = position.getLine
-    if (line < 0) {
-      return Collections.emptyList[SmartStepTarget]
-    }
+    if (line < 0) { return Collections.emptyList[SmartStepTarget] }
     val (element, doc) =
       (for {
         sf @ (_sf: ScalaFile) <- position.getFile.toOption

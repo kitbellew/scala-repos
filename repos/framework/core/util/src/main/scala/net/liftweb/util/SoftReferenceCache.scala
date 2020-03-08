@@ -53,9 +53,7 @@ object SoftReferenceCache {
     // A daemon thread is more approapriate here then an Actor as
     // we'll do blocking reads from the reference queue
     val thread = new Thread(new Runnable() {
-      def run() {
-        processQueue
-      }
+      def run() { processQueue }
     })
     thread.setDaemon(true)
     thread setContextClassLoader null
@@ -65,18 +63,14 @@ object SoftReferenceCache {
   /**
     * ShutDown the monitoring
     */
-  def shutDown = {
-    terminated = true;
-  }
+  def shutDown = { terminated = true; }
 
   private def processQueue {
     while (!terminated) {
       tryo {
         // Wait 30 seconds for something to appear in the queue.
         val sftVal = refQueue.remove(30000).asInstanceOf[SoftValue[_, _]];
-        if (sftVal != null) {
-          sftVal.cache.remove(sftVal.key);
-        }
+        if (sftVal != null) { sftVal.cache.remove(sftVal.key); }
       }
     }
   }
@@ -106,11 +100,8 @@ class SoftReferenceCache[K, V](cacheSize: Int) {
   private def lock[T](l: Lock)(block: => T): T = {
     l.lock
 
-    try {
-      block
-    } finally {
-      l.unlock
-    }
+    try { block }
+    finally { l.unlock }
   }
 
   /**

@@ -62,9 +62,7 @@ import JsCmds._
   * @see net.liftweb.http.LiftRules#noticesEffects
   */
 object Msg extends DispatchSnippet {
-  def dispatch: DispatchIt = {
-    case _ => render
-  }
+  def dispatch: DispatchIt = { case _ => render }
 
   /**
     * This method performs extraction of the CSS class attributes

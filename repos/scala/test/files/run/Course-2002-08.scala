@@ -88,9 +88,8 @@ object M1 {
 object M2 {
 
   def While(condition: => Boolean)(command: => Unit): Unit =
-    if (condition) {
-      command; While(condition)(command)
-    } else {}
+    if (condition) { command; While(condition)(command) }
+    else {}
 
   def power(x: Double, exp: Int): Double = {
     var r = 1.0;
@@ -155,9 +154,7 @@ object M5 {
         sigVal = s;
         actions.foreach(action => action());
       }
-    def addAction(a: Action) = {
-      actions = a :: actions; a()
-    }
+    def addAction(a: Action) = { actions = a :: actions; a() }
   }
 
   abstract class Simulation() {

@@ -60,9 +60,7 @@ private[ui] class StageTableBase(
   }
 
   def toNodeSeq: Seq[Node] = {
-    listener.synchronized {
-      stageTable(renderStageRow, stages)
-    }
+    listener.synchronized { stageTable(renderStageRow, stages) }
   }
 
   /** Special table that merges two header cells. */
@@ -124,9 +122,7 @@ private[ui] class StageTableBase(
     val stageDesc = for {
       stageData <- listener.stageIdToData.get((s.stageId, s.attemptId))
       desc <- stageData.description
-    } yield {
-      UIUtils.makeDescription(desc, basePathUri)
-    }
+    } yield { UIUtils.makeDescription(desc, basePathUri) }
     <div>{stageDesc.getOrElse("")} {killLink} {nameLink} {details}</div>
   }
 
@@ -147,9 +143,7 @@ private[ui] class StageTableBase(
 
   protected def stageRow(s: StageInfo): Seq[Node] = {
     val stageDataOption = listener.stageIdToData.get((s.stageId, s.attemptId))
-    if (stageDataOption.isEmpty) {
-      return missingStageRow(s.stageId)
-    }
+    if (stageDataOption.isEmpty) { return missingStageRow(s.stageId) }
 
     val stageData = stageDataOption.get
     val submissionTime = s.submissionTime match {
@@ -165,14 +159,9 @@ private[ui] class StageTableBase(
     val duration: Option[Long] =
       if (taskLaunchTimes.nonEmpty) {
         val startTime = taskLaunchTimes.min
-        if (finishTime > startTime) {
-          Some(finishTime - startTime)
-        } else {
-          Some(System.currentTimeMillis() - startTime)
-        }
-      } else {
-        None
-      }
+        if (finishTime > startTime) { Some(finishTime - startTime) }
+        else { Some(System.currentTimeMillis() - startTime) }
+      } else { None }
     val formattedDuration =
       duration.map(d => UIUtils.formatDuration(d)).getOrElse("Unknown")
 
@@ -190,11 +179,8 @@ private[ui] class StageTableBase(
       if (shuffleWrite > 0) Utils.bytesToString(shuffleWrite) else ""
 
     {
-      if (s.attemptId > 0) {
-        <td>{s.stageId} (retry {s.attemptId})</td>
-      } else {
-        <td>{s.stageId}</td>
-      }
+      if (s.attemptId > 0) { <td>{s.stageId} (retry {s.attemptId})</td> }
+      else { <td>{s.stageId}</td> }
     } ++ {
       if (isFairScheduler) {
         <td>
@@ -205,9 +191,7 @@ private[ui] class StageTableBase(
           {stageData.schedulingPool}
         </a>
       </td>
-      } else {
-        Seq.empty
-      }
+      } else { Seq.empty }
     } ++
       <td>{makeDescription(s)}</td>
     <td sorttable_customkey={s.submissionTime.getOrElse(0).toString} valign="middle">
@@ -259,9 +243,7 @@ private[ui] class FailedStageTable(
     // Display the first line by default
     val failureReasonSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
       failureReason.substring(0, failureReason.indexOf('\n'))
-    } else {
-      failureReason
-    })
+    } else { failureReason })
     val details = if (isMultiline) {
       // scalastyle:off
       <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
@@ -272,9 +254,7 @@ private[ui] class FailedStageTable(
           <pre>{failureReason}</pre>
         </div>
       // scalastyle:on
-    } else {
-      ""
-    }
+    } else { "" }
     val failureReasonHtml = <td valign="middle">{failureReasonSummary}{
       details
     }</td>

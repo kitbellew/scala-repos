@@ -38,9 +38,7 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     val classType = generator(tokens.last)
     val firstPackage = Ident(termNames.ROOTPKG)
     val others = (packages :+ classType)
-    others.foldLeft[Tree](firstPackage)((prev, elem) => {
-      Select(prev, elem)
-    })
+    others.foldLeft[Tree](firstPackage)((prev, elem) => { Select(prev, elem) })
   }
 
   /**
@@ -169,11 +167,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
       if (s.endsWith("##")) {
         val (str, bool) = decode(s.substring(0, s.length - 2))
         (str + "#", bool)
-      } else if (s.endsWith("#")) {
-        (s.substring(0, s.length - 1), true)
-      } else {
-        (s, false)
-      }
+      } else if (s.endsWith("#")) { (s.substring(0, s.length - 1), true) }
+      else { (s, false) }
     }
 
     /** Fuse adjacent string literals */

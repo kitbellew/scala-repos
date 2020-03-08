@@ -198,9 +198,7 @@ abstract class RDD[T: ClassTag](
       persist(
         LocalRDDCheckpointData.transformStorageLevel(newLevel),
         allowOverride = true)
-    } else {
-      persist(newLevel, allowOverride = false)
-    }
+    } else { persist(newLevel, allowOverride = false) }
   }
 
   /** Persist this RDD with the default storage level (`MEMORY_ONLY`). */
@@ -240,9 +238,7 @@ abstract class RDD[T: ClassTag](
     */
   final def dependencies: Seq[Dependency[_]] = {
     checkpointRDD.map(r => List(new OneToOneDependency(r))).getOrElse {
-      if (dependencies_ == null) {
-        dependencies_ = getDependencies
-      }
+      if (dependencies_ == null) { dependencies_ = getDependencies }
       dependencies_
     }
   }
@@ -288,11 +284,8 @@ abstract class RDD[T: ClassTag](
     * subclasses of RDD.
     */
   final def iterator(split: Partition, context: TaskContext): Iterator[T] = {
-    if (storageLevel != StorageLevel.NONE) {
-      getOrCompute(split, context)
-    } else {
-      computeOrReadCheckpoint(split, context)
-    }
+    if (storageLevel != StorageLevel.NONE) { getOrCompute(split, context) }
+    else { computeOrReadCheckpoint(split, context) }
   }
 
   /**
@@ -328,9 +321,7 @@ abstract class RDD[T: ClassTag](
       context: TaskContext): Iterator[T] = {
     if (isCheckpointedAndMaterialized) {
       firstParent[T].iterator(split, context)
-    } else {
-      compute(split, context)
-    }
+    } else { compute(split, context) }
   }
 
   /**
@@ -424,9 +415,7 @@ abstract class RDD[T: ClassTag](
   /**
     * Return a new RDD containing the distinct elements in this RDD.
     */
-  def distinct(): RDD[T] = withScope {
-    distinct(partitions.length)
-  }
+  def distinct(): RDD[T] = withScope { distinct(partitions.length) }
 
   /**
     * Return a new RDD that has exactly numPartitions partitions.
@@ -484,9 +473,7 @@ abstract class RDD[T: ClassTag](
           mapPartitionsWithIndex(distributePartition),
           new HashPartitioner(numPartitions)),
         numPartitions).values
-    } else {
-      new CoalescedRDD(this, numPartitions)
-    }
+    } else { new CoalescedRDD(this, numPartitions) }
   }
 
   /**
@@ -581,13 +568,11 @@ abstract class RDD[T: ClassTag](
       "Cannot support a sample size > Int.MaxValue - " +
         s"$numStDev * math.sqrt(Int.MaxValue)")
 
-    if (num == 0) {
-      new Array[T](0)
-    } else {
+    if (num == 0) { new Array[T](0) }
+    else {
       val initialCount = this.count()
-      if (initialCount == 0) {
-        new Array[T](0)
-      } else {
+      if (initialCount == 0) { new Array[T](0) }
+      else {
         val rand = new Random(seed)
         if (!withReplacement && num >= initialCount) {
           Utils.randomizeInPlace(this.collect(), rand)
@@ -620,18 +605,14 @@ abstract class RDD[T: ClassTag](
   def union(other: RDD[T]): RDD[T] = withScope {
     if (partitioner.isDefined && other.partitioner == partitioner) {
       new PartitionerAwareUnionRDD(sc, Array(this, other))
-    } else {
-      new UnionRDD(sc, Array(this, other))
-    }
+    } else { new UnionRDD(sc, Array(this, other)) }
   }
 
   /**
     * Return the union of this RDD and another one. Any identical elements will appear multiple
     * times (use `.distinct()` to eliminate them).
     */
-  def ++(other: RDD[T]): RDD[T] = withScope {
-    this.union(other)
-  }
+  def ++(other: RDD[T]): RDD[T] = withScope { this.union(other) }
 
   /**
     * Return this RDD sorted by the given key function.
@@ -724,9 +705,7 @@ abstract class RDD[T: ClassTag](
     * or [[PairRDDFunctions.reduceByKey]] will provide much better performance.
     */
   def groupBy[K](f: T => K)(implicit kt: ClassTag[K]): RDD[(K, Iterable[T])] =
-    withScope {
-      groupBy[K](f, defaultPartitioner(this))
-    }
+    withScope { groupBy[K](f, defaultPartitioner(this)) }
 
   /**
     * Return an RDD of grouped elements. Each group consists of a key and a sequence of elements
@@ -918,9 +897,7 @@ abstract class RDD[T: ClassTag](
       rdd2: RDD[B],
       rdd3: RDD[C])(
       f: (Iterator[T], Iterator[B], Iterator[C]) => Iterator[V]): RDD[V] =
-    withScope {
-      zipPartitions(rdd2, rdd3, preservesPartitioning = false)(f)
-    }
+    withScope { zipPartitions(rdd2, rdd3, preservesPartitioning = false)(f) }
 
   def zipPartitions[B: ClassTag, C: ClassTag, D: ClassTag, V: ClassTag](
       rdd2: RDD[B],
@@ -1050,11 +1027,8 @@ abstract class RDD[T: ClassTag](
   def reduce(f: (T, T) => T): T = withScope {
     val cleanF = sc.clean(f)
     val reducePartition: Iterator[T] => Option[T] = iter => {
-      if (iter.hasNext) {
-        Some(iter.reduceLeft(cleanF))
-      } else {
-        None
-      }
+      if (iter.hasNext) { Some(iter.reduceLeft(cleanF)) }
+      else { None }
     }
     var jobResult: Option[T] = None
     val mergeResult = (index: Int, taskResult: Option[T]) => {
@@ -1083,23 +1057,15 @@ abstract class RDD[T: ClassTag](
       s"Depth must be greater than or equal to 1 but got $depth.")
     val cleanF = context.clean(f)
     val reducePartition: Iterator[T] => Option[T] = iter => {
-      if (iter.hasNext) {
-        Some(iter.reduceLeft(cleanF))
-      } else {
-        None
-      }
+      if (iter.hasNext) { Some(iter.reduceLeft(cleanF)) }
+      else { None }
     }
     val partiallyReduced = mapPartitions(it => Iterator(reducePartition(it)))
     val op: (Option[T], Option[T]) => Option[T] = (c, x) => {
-      if (c.isDefined && x.isDefined) {
-        Some(cleanF(c.get, x.get))
-      } else if (c.isDefined) {
-        c
-      } else if (x.isDefined) {
-        x
-      } else {
-        None
-      }
+      if (c.isDefined && x.isDefined) { Some(cleanF(c.get, x.get)) }
+      else if (c.isDefined) { c }
+      else if (x.isDefined) { x }
+      else { None }
     }
     partiallyReduced
       .treeAggregate(Option.empty[T])(op, op, depth)
@@ -1244,9 +1210,7 @@ abstract class RDD[T: ClassTag](
     * returns an RDD[T, Long] instead of a map.
     */
   def countByValue()(implicit ord: Ordering[T] = null): Map[T, Long] =
-    withScope {
-      map(value => (value, null)).countByKey()
-    }
+    withScope { map(value => (value, null)).countByKey() }
 
   /**
     * Approximate version of countByValue().
@@ -1368,9 +1332,8 @@ abstract class RDD[T: ClassTag](
     * an exception if called on an RDD of `Nothing` or `Null`.
     */
   def take(num: Int): Array[T] = withScope {
-    if (num == 0) {
-      new Array[T](0)
-    } else {
+    if (num == 0) { new Array[T](0) }
+    else {
       val buf = new ArrayBuffer[T]
       val totalParts = this.partitions.length
       var partsScanned = 0
@@ -1382,9 +1345,8 @@ abstract class RDD[T: ClassTag](
           // If we didn't find any rows after the previous iteration, quadruple and retry.
           // Otherwise, interpolate the number of partitions we need to try, but overestimate
           // it by 50%. We also cap the estimation in the end.
-          if (buf.size == 0) {
-            numPartsToTry = partsScanned * 4
-          } else {
+          if (buf.size == 0) { numPartsToTry = partsScanned * 4 }
+          else {
             // the left side of max is >=1 whenever partsScanned >= 2
             numPartsToTry = Math.max(
               (1.5 * num * partsScanned / buf.size).toInt - partsScanned,
@@ -1459,18 +1421,16 @@ abstract class RDD[T: ClassTag](
     * @return an array of top elements
     */
   def takeOrdered(num: Int)(implicit ord: Ordering[T]): Array[T] = withScope {
-    if (num == 0) {
-      Array.empty
-    } else {
+    if (num == 0) { Array.empty }
+    else {
       val mapRDDs = mapPartitions { items =>
         // Priority keeps the largest elements, so let's reverse the ordering.
         val queue = new BoundedPriorityQueue[T](num)(ord.reverse)
         queue ++= util.collection.Utils.takeOrdered(items, num)(ord)
         Iterator.single(queue)
       }
-      if (mapRDDs.partitions.length == 0) {
-        Array.empty
-      } else {
+      if (mapRDDs.partitions.length == 0) { Array.empty }
+      else {
         mapRDDs
           .reduce { (queue1, queue2) =>
             queue1 ++= queue2
@@ -1486,17 +1446,13 @@ abstract class RDD[T: ClassTag](
     * Returns the max of this RDD as defined by the implicit Ordering[T].
     * @return the maximum element of the RDD
     * */
-  def max()(implicit ord: Ordering[T]): T = withScope {
-    this.reduce(ord.max)
-  }
+  def max()(implicit ord: Ordering[T]): T = withScope { this.reduce(ord.max) }
 
   /**
     * Returns the min of this RDD as defined by the implicit Ordering[T].
     * @return the minimum element of the RDD
     * */
-  def min()(implicit ord: Ordering[T]): T = withScope {
-    this.reduce(ord.min)
-  }
+  def min()(implicit ord: Ordering[T]): T = withScope { this.reduce(ord.min) }
 
   /**
     * @note due to complications in the internal implementation, this method will raise an
@@ -1794,9 +1750,7 @@ abstract class RDD[T: ClassTag](
             dependencies.foreach(_.rdd.doCheckpoint())
           }
           checkpointData.get.checkpoint()
-        } else {
-          dependencies.foreach(_.rdd.doCheckpoint())
-        }
+        } else { dependencies.foreach(_.rdd.doCheckpoint()) }
       }
     }
   }
@@ -1817,9 +1771,7 @@ abstract class RDD[T: ClassTag](
     * collected. Subclasses of RDD may override this method for implementing their own cleaning
     * logic. See [[org.apache.spark.rdd.UnionRDD]] for an example.
     */
-  protected def clearDependencies() {
-    dependencies_ = null
-  }
+  protected def clearDependencies() { dependencies_ = null }
 
   /** A description of this RDD and its recursive dependencies for debugging. */
   def toDebugString: String = {
@@ -1906,11 +1858,8 @@ abstract class RDD[T: ClassTag](
         prefix: String = "",
         isShuffle: Boolean = true,
         isLastChild: Boolean = false): Seq[String] = {
-      if (isShuffle) {
-        shuffleDebugString(rdd, prefix, isLastChild)
-      } else {
-        debugSelf(rdd).map(prefix + _) ++ debugChildren(rdd, prefix)
-      }
+      if (isShuffle) { shuffleDebugString(rdd, prefix, isLastChild) }
+      else { debugSelf(rdd).map(prefix + _) ++ debugChildren(rdd, prefix) }
     }
     firstDebugString(this).mkString("\n")
   }
@@ -1922,9 +1871,7 @@ abstract class RDD[T: ClassTag](
       id,
       getCreationSite)
 
-  def toJavaRDD(): JavaRDD[T] = {
-    new JavaRDD(this)(elementClassTag)
-  }
+  def toJavaRDD(): JavaRDD[T] = { new JavaRDD(this)(elementClassTag) }
 }
 
 /**
@@ -1951,9 +1898,7 @@ object RDD {
   }
 
   implicit def rddToAsyncRDDActions[T: ClassTag](
-      rdd: RDD[T]): AsyncRDDActions[T] = {
-    new AsyncRDDActions(rdd)
-  }
+      rdd: RDD[T]): AsyncRDDActions[T] = { new AsyncRDDActions(rdd) }
 
   implicit def rddToSequenceFileRDDFunctions[K, V](rdd: RDD[(K, V)])(implicit
       kt: ClassTag[K],
@@ -1975,9 +1920,7 @@ object RDD {
   }
 
   implicit def doubleRDDToDoubleRDDFunctions(
-      rdd: RDD[Double]): DoubleRDDFunctions = {
-    new DoubleRDDFunctions(rdd)
-  }
+      rdd: RDD[Double]): DoubleRDDFunctions = { new DoubleRDDFunctions(rdd) }
 
   implicit def numericRDDToDoubleRDDFunctions[T](rdd: RDD[T])(
       implicit num: Numeric[T]): DoubleRDDFunctions = {

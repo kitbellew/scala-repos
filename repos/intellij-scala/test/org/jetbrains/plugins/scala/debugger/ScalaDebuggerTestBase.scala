@@ -94,9 +94,7 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     if (testDataBasePath.exists())
       testDataBasePath
         .listFiles()
-        .find {
-          _.getName.endsWith(ModuleFileType.DOT_DEFAULT_EXTENSION)
-        }
+        .find { _.getName.endsWith(ModuleFileType.DOT_DEFAULT_EXTENSION) }
         .orNull
     else null
   }
@@ -138,9 +136,7 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     if (sourceFiles.exists {
           case (path, text) => !fileWithTextExists(new File(path), text)
         }) {}
-    sourceFiles.foreach {
-      case (path, text) => addFileToProject(path, text)
-    }
+    sourceFiles.foreach { case (path, text) => addFileToProject(path, text) }
   }
 
   protected def addFileToProject(fileText: String) {
@@ -185,9 +181,7 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
       val text =
         scala.io.Source.fromFile(file, "UTF-8").mkString.replace("\r", "")
       md.digest(text.getBytes("UTF8"))
-    } else {
-      md.digest(FileUtil.loadBytes(new FileInputStream(file)))
-    }
+    } else { md.digest(FileUtil.loadBytes(new FileInputStream(file))) }
   }
 
   private def computeChecksums(): mutable.HashMap[String, Array[Byte]] = {
@@ -215,18 +209,13 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     val file = new File(testDataBasePath, checksumsFileName)
     FileUtil.createIfDoesntExist(file)
     val oos = new ObjectOutputStream(new FileOutputStream(file))
-    try {
-      oos.writeObject(checksums)
-    } finally {
-      oos.close()
-    }
+    try { oos.writeObject(checksums) }
+    finally { oos.close() }
   }
 
   private def loadChecksums(): Boolean = {
     val file = new File(testDataBasePath, checksumsFileName)
-    if (!file.exists) {
-      return false
-    }
+    if (!file.exists) { return false }
     val ois = new ObjectInputStream(new FileInputStream(file))
     val result =
       try {

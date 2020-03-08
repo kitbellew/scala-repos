@@ -14,9 +14,7 @@ case class Uniform(low: Double, high: Double)(implicit rand: RandBasis = Rand)
   require(low <= high, "low <= high")
   def draw() = rand.uniform.get * (high - low) + low
 
-  def unnormalizedLogPdf(x: Double) = {
-    logI(x >= low && x <= high)
-  }
+  def unnormalizedLogPdf(x: Double) = { logI(x >= low && x <= high) }
 
   lazy val logNormalizer = entropy
 

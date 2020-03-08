@@ -495,9 +495,8 @@ abstract class TreeInfo {
       case tr => tr
     }
 
-    if (detectTypecheckedTree(tree)) {
-      recoverBody(filterBody(tbody))
-    } else tbody
+    if (detectTypecheckedTree(tree)) { recoverBody(filterBody(tbody)) }
+    else tbody
   }
 
   /** The first constructor definitions in `stats` */

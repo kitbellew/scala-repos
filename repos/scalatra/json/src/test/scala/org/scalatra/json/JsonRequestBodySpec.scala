@@ -14,16 +14,12 @@ trait JsonSupportServlet[T]
   post("/json") {
     parsedBody match {
       case JNothing ⇒ halt(400, "invalid json")
-      case json: JObject ⇒ {
-        (json \ "name").extract[String]
-      }
+      case json: JObject ⇒ { (json \ "name").extract[String] }
       case _ ⇒ halt(400, "unknown json")
     }
   }
 
-  post("/decimal") {
-    (parsedBody \ "number").extract[BigDecimal]
-  }
+  post("/decimal") { (parsedBody \ "number").extract[BigDecimal] }
 
 }
 

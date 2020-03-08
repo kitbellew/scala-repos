@@ -130,9 +130,7 @@ object ScalaAfterNewCompletionUtil {
       new AfterNewLookupElementRenderer(_, _, _),
       new ScalaConstructorInsertHandler,
       renamesMap)
-    if (undefines.nonEmpty) {
-      lookupElement.typeParametersProblem = true
-    }
+    if (undefines.nonEmpty) { lookupElement.typeParametersProblem = true }
     lookupElement
   }
 

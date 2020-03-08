@@ -66,9 +66,7 @@ class ApiController()(implicit val swagger: Swagger)
   /**
     * List all hackers.
     */
-  get("/", operation(listHackers)) {
-    List.empty[Hacker]
-  }
+  get("/", operation(listHackers)) { List.empty[Hacker] }
 
   val getHacker = (apiOperation[Hacker]("getHacker")
     summary "Retrieve a single hacker by id"
@@ -84,9 +82,7 @@ class ApiController()(implicit val swagger: Swagger)
   /**
     * Retrieve a specific hacker.
     */
-  get("/:id", operation(getHacker)) {
-    null
-  }
+  get("/:id", operation(getHacker)) { null }
 
   val createHacker = (apiOperation[Hacker]("createHacker")
     summary "Create a new hacker"
@@ -123,12 +119,8 @@ class ApiController()(implicit val swagger: Swagger)
   /**
     * Create a new hacker in the database.
     */
-  post("/", operation(createHacker)) {
-    null
-  }
+  post("/", operation(createHacker)) { null }
 
-  delete("/:id") {
-    null
-  }
+  delete("/:id") { null }
 
 }

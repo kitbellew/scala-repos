@@ -92,9 +92,7 @@ private[spark] abstract class YarnSchedulerBackend(
       // was Stopped by SchedulerBackend.
       requestTotalExecutors(0, 0, Map.empty)
       super.stop()
-    } finally {
-      services.stop()
-    }
+    } finally { services.stop() }
   }
 
   /**
@@ -268,9 +266,8 @@ private[spark] abstract class YarnSchedulerBackend(
       case RegisterClusterManager(am) =>
         logInfo(s"ApplicationMaster registered as $am")
         amEndpoint = Option(am)
-        if (!shouldResetOnAmRegister) {
-          shouldResetOnAmRegister = true
-        } else {
+        if (!shouldResetOnAmRegister) { shouldResetOnAmRegister = true }
+        else {
           // AM is already registered before, this potentially means that AM failed and
           // a new one registered after the failure. This will only happen in yarn-client mode.
           reset()
@@ -289,9 +286,7 @@ private[spark] abstract class YarnSchedulerBackend(
       case r: RequestExecutors =>
         amEndpoint match {
           case Some(am) =>
-            Future {
-              context.reply(am.askWithRetry[Boolean](r))
-            } onFailure {
+            Future { context.reply(am.askWithRetry[Boolean](r)) } onFailure {
               case NonFatal(e) =>
                 logError(s"Sending $r to AM was unsuccessful", e)
                 context.sendFailure(e)
@@ -305,9 +300,7 @@ private[spark] abstract class YarnSchedulerBackend(
       case k: KillExecutors =>
         amEndpoint match {
           case Some(am) =>
-            Future {
-              context.reply(am.askWithRetry[Boolean](k))
-            } onFailure {
+            Future { context.reply(am.askWithRetry[Boolean](k)) } onFailure {
               case NonFatal(e) =>
                 logError(s"Sending $k to AM was unsuccessful", e)
                 context.sendFailure(e)
@@ -326,9 +319,7 @@ private[spark] abstract class YarnSchedulerBackend(
       }
     }
 
-    override def onStop(): Unit = {
-      askAmThreadPool.shutdownNow()
-    }
+    override def onStop(): Unit = { askAmThreadPool.shutdownNow() }
   }
 }
 

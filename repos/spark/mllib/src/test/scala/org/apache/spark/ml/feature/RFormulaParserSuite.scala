@@ -29,11 +29,8 @@ class RFormulaParserSuite extends SparkFunSuite {
     val resolved = RFormulaParser.parse(formula).resolve(schema)
     assert(resolved.label == label)
     val simpleTerms = terms.map { t =>
-      if (t.contains(":")) {
-        t.split(":").toSeq
-      } else {
-        Seq(t)
-      }
+      if (t.contains(":")) { t.split(":").toSeq }
+      else { Seq(t) }
     }
     assert(resolved.terms == simpleTerms)
   }

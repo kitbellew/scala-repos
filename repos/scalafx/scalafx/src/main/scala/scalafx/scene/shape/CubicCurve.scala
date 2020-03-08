@@ -43,42 +43,26 @@ class CubicCurve(
     extends Shape(delegate)
     with SFXDelegate[jfxss.CubicCurve] {
   def controlX1: DoubleProperty = delegate.controlX1Property
-  def controlX1_=(v: Double) {
-    controlX1() = v
-  }
+  def controlX1_=(v: Double) { controlX1() = v }
 
   def controlX2: DoubleProperty = delegate.controlX2Property
-  def controlX2_=(v: Double) {
-    controlX2() = v
-  }
+  def controlX2_=(v: Double) { controlX2() = v }
 
   def controlY1: DoubleProperty = delegate.controlY1Property
-  def controlY1_=(v: Double) {
-    controlY1() = v
-  }
+  def controlY1_=(v: Double) { controlY1() = v }
 
   def controlY2: DoubleProperty = delegate.controlY2Property
-  def controlY2_=(v: Double) {
-    controlY2() = v
-  }
+  def controlY2_=(v: Double) { controlY2() = v }
 
   def endX: DoubleProperty = delegate.endXProperty
-  def endX_=(v: Double) {
-    endX() = v
-  }
+  def endX_=(v: Double) { endX() = v }
 
   def endY: DoubleProperty = delegate.endYProperty
-  def endY_=(v: Double) {
-    endY() = v
-  }
+  def endY_=(v: Double) { endY() = v }
 
   def startX: DoubleProperty = delegate.startXProperty
-  def startX_=(v: Double) {
-    startX() = v
-  }
+  def startX_=(v: Double) { startX() = v }
 
   def startY: DoubleProperty = delegate.startYProperty
-  def startY_=(v: Double) {
-    startY() = v
-  }
+  def startY_=(v: Double) { startY() = v }
 }

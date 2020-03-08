@@ -134,9 +134,7 @@ object StateChangeLogMerger extends Logging {
         .map(dirName + "/" + _.getName)
         .toList
     }
-    if (options.has(topicOpt)) {
-      topic = options.valueOf(topicOpt)
-    }
+    if (options.has(topicOpt)) { topic = options.valueOf(topicOpt) }
     if (options.has(partitionsOpt)) {
       partitions = options.valueOf(partitionsOpt).split(",").toList.map(_.toInt)
       val duplicatePartitions = CoreUtils.duplicates(partitions)

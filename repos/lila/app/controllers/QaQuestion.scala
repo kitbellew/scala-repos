@@ -19,9 +19,7 @@ object QaQuestion extends QaController {
 
   def search = Open { implicit ctx =>
     val query = (~get("q")).trim
-    if (query.isEmpty) fuccess {
-      Redirect(routes.QaQuestion.index())
-    }
+    if (query.isEmpty) fuccess { Redirect(routes.QaQuestion.index()) }
     else
       Env.qa search query zip fetchPopular map {
         case (questions, popular) =>

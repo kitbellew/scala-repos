@@ -82,11 +82,8 @@ trait Logging extends CanLog {
 object Logging {
 
   def loggerNameForClass(className: String) = {
-    if (className endsWith "$") {
-      className.substring(0, className.length - 1)
-    } else {
-      className
-    }
+    if (className endsWith "$") { className.substring(0, className.length - 1) }
+    else { className }
   }
 
   def getLogger(logging: AnyRef) =

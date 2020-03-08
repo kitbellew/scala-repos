@@ -89,9 +89,7 @@ class NonServerRunner(
               })
 
             processWaitFor.setTerminationCallback(new Consumer[Integer] {
-              override def consume(t: Integer) {
-                myCallbacks.foreach(c => c())
-              }
+              override def consume(t: Integer) { myCallbacks.foreach(c => c()) }
             })
           }
 
@@ -103,9 +101,7 @@ class NonServerRunner(
     }
   }
 
-  private def error(message: String) {
-    errorHandler.foreach(_.error(message))
-  }
+  private def error(message: String) { errorHandler.foreach(_.error(message)) }
 
   private class MyBase64StreamReader(
       private val reader: Reader,
@@ -120,16 +116,13 @@ class NonServerRunner(
       BaseOSProcessHandler.ExecutorServiceHolder.submit(runnable)
 
     def onTextAvailable(text: String) {
-      try {
-        listener(text)
-      } catch {
+      try { listener(text) }
+      catch {
         case e: Exception =>
       }
     }
 
-    override def close() {
-      reader.close()
-    }
+    override def close() { reader.close() }
 
     override def readAvailable() = {
       var read = false

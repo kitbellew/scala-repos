@@ -55,9 +55,7 @@ abstract class MultipleSelectionModel[T](
     */
   def selectionMode: ObjectProperty[jfxsc.SelectionMode] =
     delegate.selectionModeProperty
-  def selectionMode_=(v: SelectionMode) {
-    selectionMode() = v
-  }
+  def selectionMode_=(v: SelectionMode) { selectionMode() = v }
 
   /**
     * Returns a read-only ObservableList of all selected indices. The
@@ -114,8 +112,6 @@ abstract class MultipleSelectionModel[T](
   /**
     * Convenience method to select all available indices.
     */
-  def selectAll() {
-    delegate.selectAll()
-  }
+  def selectAll() { delegate.selectAll() }
 
 }

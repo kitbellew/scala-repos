@@ -66,9 +66,7 @@ class ScalaIntroduceFieldFromExpressionHandler
         project,
         editor,
         file,
-        "Choose class for Introduce Field") {
-        convertExpressionToField
-      }
+        "Choose class for Introduce Field") { convertExpressionToField }
     } catch {
       case _: IntroduceException =>
     }
@@ -121,9 +119,7 @@ class ScalaIntroduceFieldFromExpressionHandler
           ifc.editor)
       } else {
         val dialog = getDialog(ifc, settings)
-        if (dialog.isOK) {
-          runRefactoring(ifc, settings)
-        }
+        if (dialog.isOK) { runRefactoring(ifc, settings) }
       }
     }
 

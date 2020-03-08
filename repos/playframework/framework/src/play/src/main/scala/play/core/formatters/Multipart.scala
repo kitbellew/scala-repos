@@ -193,11 +193,8 @@ object Multipart {
           val f = new ByteStringFormatter(boundary.length + 4)
           renderFinalBoundary(f, boundary)
           ctx.pushAndFinish(Source.single(f.get))
-        } else if (finishing) {
-          ctx.finish()
-        } else {
-          ctx.pull()
-        }
+        } else if (finishing) { ctx.finish() }
+        else { ctx.pull() }
       }
 
       override def onUpstreamFinish(
@@ -230,8 +227,6 @@ object Multipart {
     f ~~ "Content-Type: " ~~ contentType ~~ CrLf
   }
 
-  private def renderBuffer(f: Formatter): Unit = {
-    f ~~ CrLf
-  }
+  private def renderBuffer(f: Formatter): Unit = { f ~~ CrLf }
 
 }

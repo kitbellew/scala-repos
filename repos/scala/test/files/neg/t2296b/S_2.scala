@@ -2,9 +2,7 @@ package s {
   import j.J_1
 
   trait S extends J_1 {
-    def bar() {
-      foo()
-    }
+    def bar() { foo() }
   }
 
   class SC extends J_1 with S

@@ -74,9 +74,7 @@ object RoutesFileParserSpec extends Specification {
       parseRoute("GET /s p.c.m").call.controller must_== "c"
     }
 
-    "parse a method" in {
-      parseRoute("GET /s p.c.m").call.method must_== "m"
-    }
+    "parse a method" in { parseRoute("GET /s p.c.m").call.method must_== "m" }
 
     "parse a parameterless method" in {
       parseRoute("GET /s p.c.m").call.parameters must beNone

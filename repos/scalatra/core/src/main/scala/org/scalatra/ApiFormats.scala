@@ -214,11 +214,8 @@ trait ApiFormats extends ScalatraBase {
     }
     request(MultiParamsKey) = originalParams ++ routeParams
 
-    try {
-      thunk
-    } finally {
-      request(MultiParamsKey) = originalParams
-    }
+    try { thunk }
+    finally { request(MultiParamsKey) = originalParams }
   }
 
   def requestFormat(implicit request: HttpServletRequest): String = {

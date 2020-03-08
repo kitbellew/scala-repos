@@ -44,13 +44,9 @@ class FutureTests extends MinimalScalaTest {
 
       class ThrowableTest(m: String) extends Throwable(m)
 
-      val f1 = Future[Any] {
-        throw new ThrowableTest("test")
-      }
+      val f1 = Future[Any] { throw new ThrowableTest("test") }
 
-      intercept[ThrowableTest] {
-        Await.result(f1, defaultTimeout)
-      }
+      intercept[ThrowableTest] { Await.result(f1, defaultTimeout) }
 
       val latch = new TestLatch
       val f2 = Future {
@@ -73,9 +69,7 @@ class FutureTests extends MinimalScalaTest {
 
       Await.result(f3, defaultTimeout) mustBe ("SUCCESS")
 
-      val waiting = Future {
-        Thread.sleep(1000)
-      }
+      val waiting = Future { Thread.sleep(1000) }
       Await.ready(waiting, 2000 millis)
 
       ms.size mustBe (4)
@@ -289,9 +283,7 @@ class FutureTests extends MinimalScalaTest {
 
     "compose with for-comprehensions" in {
       def async(x: Int) = Future { (x * 2).toString }
-      val future0 = Future[Any] {
-        "five!".length
-      }
+      val future0 = Future[Any] { "five!".length }
 
       val future1 = for {
         a <- future0.mapTo[Int] // returns 5
@@ -349,9 +341,7 @@ class FutureTests extends MinimalScalaTest {
         case e: ArithmeticException => 0
       } map (_.toString)
 
-      val future6 = future2 recover {
-        case e: MatchError => 0
-      } map (_.toString)
+      val future6 = future2 recover { case e: MatchError => 0 } map (_.toString)
 
       val future7 = future3 recover {
         case e: ArithmeticException => "You got ERROR"
@@ -364,9 +354,7 @@ class FutureTests extends MinimalScalaTest {
       val future10 = testAsync("Hello") recover {
         case e: RuntimeException => "FAIL!"
       }
-      val future11 = testAsync("Failure") recover {
-        case _ => "Oops!"
-      }
+      val future11 = testAsync("Failure") recover { case _ => "Oops!" }
 
       Await.result(future1, defaultTimeout) mustBe (5)
       intercept[ArithmeticException] { Await.result(future2, defaultTimeout) }
@@ -543,14 +531,10 @@ class FutureTests extends MinimalScalaTest {
     "andThen like a boss" in {
       val q = new java.util.concurrent.LinkedBlockingQueue[Int]
       for (i <- 1 to 1000) {
-        val chained = Future {
-          q.add(1); 3
-        } andThen {
-          case _ => q.add(2)
-        } andThen {
-          case Success(0) => q.add(Int.MaxValue)
-        } andThen {
-          case _ => q.add(3);
+        val chained = Future { q.add(1); 3 } andThen {
+          case _                    => q.add(2)
+        } andThen { case Success(0) => q.add(Int.MaxValue) } andThen {
+          case _                    => q.add(3);
         }
         Await.result(chained, defaultTimeout) mustBe (3)
         q.poll() mustBe (1)
@@ -562,9 +546,8 @@ class FutureTests extends MinimalScalaTest {
 
     "firstCompletedOf" in {
       def futures =
-        Vector.fill[Future[Int]](10) {
-          Promise[Int]().future
-        } :+ Future.successful[Int](5)
+        Vector.fill[Future[Int]](10) { Promise[Int]().future } :+ Future
+          .successful[Int](5)
 
       Await.result(Future.firstCompletedOf(futures), defaultTimeout) mustBe (5)
       Await.result(
@@ -573,9 +556,7 @@ class FutureTests extends MinimalScalaTest {
     }
 
     "find" in {
-      val futures = for (i <- 1 to 10) yield Future {
-        i
-      }
+      val futures = for (i <- 1 to 10) yield Future { i }
 
       val result = Future.find[Int](futures)(_ == 3)
       Await.result(result, defaultTimeout) mustBe (Some(3))
@@ -778,9 +759,7 @@ class FutureTests extends MinimalScalaTest {
         res + 9
       }
 
-      intercept[TimeoutException] {
-        Await.ready(f2, 100 millis)
-      }
+      intercept[TimeoutException] { Await.ready(f2, 100 millis) }
 
       latch.open()
 
@@ -791,9 +770,7 @@ class FutureTests extends MinimalScalaTest {
         5
       }
 
-      intercept[TimeoutException] {
-        Await.ready(f3, 0 millis)
-      }
+      intercept[TimeoutException] { Await.ready(f3, 0 millis) }
     }
 
     "run callbacks async" in {

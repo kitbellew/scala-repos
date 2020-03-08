@@ -30,15 +30,21 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   protected implicit val executor = ExecutionContext.fromExecutorService(exec)
 
   get("/barf") {
-    new AsyncResult { val is = Future { throw new RuntimeException } }
+    new AsyncResult {
+      val is = Future { throw new RuntimeException }
+    }
   }
 
   get("/happy-happy") {
-    new AsyncResult { val is = Future { "puppy dogs" } }
+    new AsyncResult {
+      val is = Future { "puppy dogs" }
+    }
   }
 
   get("/simple-template") {
-    new AsyncResult { val is = Future { layoutTemplate("/simple.jade") } }
+    new AsyncResult {
+      val is = Future { layoutTemplate("/simple.jade") }
+    }
   }
 
   get("/params") {
@@ -50,7 +56,9 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   }
 
   get("/jade-template") {
-    new AsyncResult { val is = Future { jade("simple") } }
+    new AsyncResult {
+      val is = Future { jade("simple") }
+    }
   }
 
   get("/jade-params") {
@@ -60,7 +68,9 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   }
 
   get("/scaml-template") {
-    new AsyncResult { val is = Future { scaml("simple") } }
+    new AsyncResult {
+      val is = Future { scaml("simple") }
+    }
   }
 
   get("/scaml-params") {
@@ -70,7 +80,9 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   }
 
   get("/ssp-template") {
-    new AsyncResult { val is = Future { ssp("simple") } }
+    new AsyncResult {
+      val is = Future { ssp("simple") }
+    }
   }
 
   get("/ssp-params") {
@@ -80,7 +92,9 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   }
 
   get("/mustache-template") {
-    new AsyncResult { val is = Future { mustache("simple") } }
+    new AsyncResult {
+      val is = Future { mustache("simple") }
+    }
   }
 
   get("/mustache-params") {
@@ -119,11 +133,15 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   }
 
   get("/legacy-view-path") {
-    new AsyncResult { val is = Future { jade("legacy") } }
+    new AsyncResult {
+      val is = Future { jade("legacy") }
+    }
   }
 
   get("/directory") {
-    new AsyncResult { val is = Future { jade("directory/index") } }
+    new AsyncResult {
+      val is = Future { jade("directory/index") }
+    }
   }
 
   get("/bindings/*") {
@@ -138,11 +156,15 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   }
 
   get("/bindings/params/:foo") {
-    new AsyncResult { val is = Future { jade("/bindings/params") } }
+    new AsyncResult {
+      val is = Future { jade("/bindings/params") }
+    }
   }
 
   get("/bindings/multiParams/*/*") {
-    new AsyncResult { val is = Future { jade("/bindings/multiParams") } }
+    new AsyncResult {
+      val is = Future { jade("/bindings/multiParams") }
+    }
   }
 
   get("/template-attributes") {
@@ -205,17 +227,11 @@ class ScalateFuturesSupportSpec extends MutableScalatraSpec {
     body must contain("id=\"scalate-error\"")
   }
 
-  def e2 = get("/happy-happy") {
-    body must_== "puppy dogs"
-  }
+  def e2 = get("/happy-happy") { body must_== "puppy dogs" }
 
-  def e3 = get("/simple-template") {
-    body must_== "<div>Jade template</div>\n"
-  }
+  def e3 = get("/simple-template") { body must_== "<div>Jade template</div>\n" }
 
-  def e4 = get("/params") {
-    body must_== "<div>Configurable template</div>\n"
-  }
+  def e4 = get("/params") { body must_== "<div>Configurable template</div>\n" }
 
   // Testing the default layouts is going to be hard, but we can at least
   // verify that it's looking in the right place.
@@ -236,9 +252,7 @@ class ScalateFuturesSupportSpec extends MutableScalatraSpec {
     ) mkString ";")
   }
 
-  def e6 = get("/url-generation") {
-    body must_== "/url-generation\n"
-  }
+  def e6 = get("/url-generation") { body must_== "/url-generation\n" }
 
   def e7 = {
     println("reverse route params")
@@ -247,9 +261,7 @@ class ScalateFuturesSupportSpec extends MutableScalatraSpec {
     }
   }
 
-  def e8 = get("/jade-template") {
-    body must_== "<div>Jade template</div>\n"
-  }
+  def e8 = get("/jade-template") { body must_== "<div>Jade template</div>\n" }
 
   def e9 = get("/jade-params") {
     body must_== "<div>Configurable template</div>\n"
@@ -263,9 +275,7 @@ class ScalateFuturesSupportSpec extends MutableScalatraSpec {
     body must_== "<div>Configurable template</div>\n"
   }
 
-  def e12 = get("/ssp-template") {
-    body must_== "<div>SSP template</div>"
-  }
+  def e12 = get("/ssp-template") { body must_== "<div>SSP template</div>" }
 
   def e13 = get("/ssp-params") {
     body must_== "<div>Configurable template</div>\n"
@@ -279,25 +289,17 @@ class ScalateFuturesSupportSpec extends MutableScalatraSpec {
     body must_== "<div>Configurable template</div>\n"
   }
 
-  def e16 = get("/legacy-view-path") {
-    body must_== "<p>legacy</p>\n"
-  }
+  def e16 = get("/legacy-view-path") { body must_== "<p>legacy</p>\n" }
 
-  def e17 = get("/directory") {
-    body must_== "<p>index</p>\n"
-  }
+  def e17 = get("/directory") { body must_== "<p>index</p>\n" }
 
-  def e18 = get("/bindings/flash") {
-    body must_== "<div>flash works</div>\n"
-  }
+  def e18 = get("/bindings/flash") { body must_== "<div>flash works</div>\n" }
 
   def e19 = get("/bindings/session") {
     body must_== "<div>session works</div>\n"
   }
 
-  def e20 = get("/bindings/params/bar") {
-    body must_== "<div>bar</div>\n"
-  }
+  def e20 = get("/bindings/params/bar") { body must_== "<div>bar</div>\n" }
 
   def e21 = get("/bindings/multiParams/bar/baz") {
     body must_== "<div>bar;baz</div>\n"

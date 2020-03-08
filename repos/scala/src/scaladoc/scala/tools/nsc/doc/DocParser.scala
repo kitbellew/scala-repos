@@ -25,9 +25,7 @@ class DocParser(settings: nsc.Settings, reporter: Reporter)
   locally { new Run() }
 
   override def forScaladoc = true
-  override protected def computeInternalPhases() {
-    phasesSet += syntaxAnalyzer
-  }
+  override protected def computeInternalPhases() { phasesSet += syntaxAnalyzer }
 
   /** Returns a list of `DocParser.Parseds`, which hold the DocDefs found
     *  in the given code along with the surrounding trees.

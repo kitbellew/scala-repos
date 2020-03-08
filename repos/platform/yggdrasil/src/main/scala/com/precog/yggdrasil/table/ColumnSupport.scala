@@ -143,9 +143,8 @@ class NConcatColumn[T <: Column](offsets: Array[Int], columns: Array[T]) {
   /** Returns the index info `offsets` and `columns` for row. */
   protected def indexOf(row: Int): Int = {
     val lastIdx = lastIndex
-    if (inBound(row, lastIdx)) {
-      lastIdx
-    } else {
+    if (inBound(row, lastIdx)) { lastIdx }
+    else {
       var idx = java.util.Arrays.binarySearch(offsets, row)
       idx = if (idx < 0) -idx - 2 else idx
       lastIndex = idx

@@ -146,9 +146,7 @@ object ShardServiceCombinators extends Logging {
         }
 
       onError <-: parsed
-    } getOrElse {
-      Validation.success[String, List[CPath]](Nil)
-    }
+    } getOrElse { Validation.success[String, List[CPath]](Nil) }
   }
 
   private def getSortOrder(

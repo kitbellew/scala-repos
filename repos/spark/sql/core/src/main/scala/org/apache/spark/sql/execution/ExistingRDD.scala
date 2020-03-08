@@ -192,15 +192,12 @@ private[sql] case class DataSourceScan(
         val bucketColumns = spec.bucketColumnNames.map(toAttribute)
         HashPartitioning(bucketColumns, numBuckets)
       }
-      .getOrElse {
-        UnknownPartitioning(0)
-      }
+      .getOrElse { UnknownPartitioning(0) }
   }
 
   protected override def doExecute(): RDD[InternalRow] = {
-    val unsafeRow = if (outputUnsafeRows) {
-      rdd
-    } else {
+    val unsafeRow = if (outputUnsafeRows) { rdd }
+    else {
       rdd.mapPartitionsInternal { iter =>
         val proj = UnsafeProjection.create(schema)
         iter.map(proj)
@@ -221,9 +218,7 @@ private[sql] case class DataSourceScan(
       .mkString("[", ",", "]")}${metadataEntries.mkString(" ", ", ", "")}"
   }
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
-    rdd :: Nil
-  }
+  override def upstreams(): Seq[RDD[InternalRow]] = { rdd :: Nil }
 
   // Support codegen so that we can avoid the UnsafeRow conversion in all cases. Codegen
   // never requires UnsafeRow as input.

@@ -45,9 +45,7 @@ object StringUtils {
             }
         }
         .mkString
-    } else {
-      v
-    }
+    } else { v }
   }
 
   private[this] val trueStrings =

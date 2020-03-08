@@ -74,9 +74,7 @@ class WrappedSerialization[T] extends HSerialization[T] with Configurable {
 
 class BinarySerializer[T](buf: Serialization[T]) extends Serializer[T] {
   private var out: OutputStream = _
-  def open(os: OutputStream): Unit = {
-    out = os
-  }
+  def open(os: OutputStream): Unit = { out = os }
   def close(): Unit = { out = null }
   def serialize(t: T): Unit = {
     if (out == null) throw new NullPointerException("OutputStream is null")

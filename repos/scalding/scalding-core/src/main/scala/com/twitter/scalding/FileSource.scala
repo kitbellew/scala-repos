@@ -135,9 +135,7 @@ object FileSource {
       .map {
         _.toIterable // convert java Array to scala Iterable
       }
-      .getOrElse {
-        Iterable.empty
-      }
+      .getOrElse { Iterable.empty }
   }
 
   /**
@@ -496,11 +494,8 @@ abstract class FixedPathSource(path: String*) extends FileSource {
   protected def stripTrailing(path: String): String = {
     assert(path != "*", "Path must not be *")
     assert(path != "/*", "Path must not be /*")
-    if (path.takeRight(2) == "/*") {
-      path.dropRight(2)
-    } else {
-      path
-    }
+    if (path.takeRight(2) == "/*") { path.dropRight(2) }
+    else { path }
   }
 }
 

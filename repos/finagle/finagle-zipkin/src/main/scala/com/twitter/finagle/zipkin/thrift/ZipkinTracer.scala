@@ -235,9 +235,7 @@ class SamplingTracer(
             objectVal = record.annotation,
             traceIdVal = traceId.traceId.self,
             spanIdVal = traceId.spanId.self)
-        } else {
-          sink.event(ZipkinTracer.Trace, objectVal = record.annotation)
-        }
+        } else { sink.event(ZipkinTracer.Trace, objectVal = record.annotation) }
       }
     }
   }

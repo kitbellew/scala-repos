@@ -76,9 +76,7 @@ object Identifiers {
     "macro"
   )
 
-  val AlphabetKeywords = P {
-    StringIn(alphaKeywords: _*) ~ !Letter
-  }
+  val AlphabetKeywords = P { StringIn(alphaKeywords: _*) ~ !Letter }
   val symbolKeywords = Seq(
     ":",
     ";",
@@ -93,9 +91,7 @@ object Identifiers {
     "\u21d2",
     "\u2190"
   )
-  val SymbolicKeywords = P {
-    StringIn(symbolKeywords: _*) ~ !OpChar
-  }
+  val SymbolicKeywords = P { StringIn(symbolKeywords: _*) ~ !OpChar }
 
   val keywords = alphaKeywords ++ symbolKeywords
 

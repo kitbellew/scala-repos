@@ -121,9 +121,7 @@ object BroadcastTracer {
   }
 
   private class N(tracers: Seq[Tracer]) extends Tracer {
-    def record(record: Record): Unit = {
-      tracers foreach { _.record(record) }
-    }
+    def record(record: Record): Unit = { tracers foreach { _.record(record) } }
 
     def sampleTrace(traceId: TraceId): Option[Boolean] = {
       if (tracers exists { _.sampleTrace(traceId) == Some(true) })
@@ -162,9 +160,7 @@ object DefaultTracer extends Tracer with Proxy {
 class BufferingTracer extends Tracer with Iterable[Record] {
   private[this] var buf: List[Record] = Nil
 
-  def record(record: Record): Unit = synchronized {
-    buf ::= record
-  }
+  def record(record: Record): Unit = synchronized { buf ::= record }
 
   def iterator: Iterator[Record] = synchronized(buf).reverseIterator
 
@@ -176,9 +172,7 @@ class BufferingTracer extends Tracer with Iterable[Record] {
 object ConsoleTracer extends Tracer {
   val factory: Tracer.Factory = () => this
 
-  def record(record: Record): Unit = {
-    println(record)
-  }
+  def record(record: Record): Unit = { println(record) }
 
   def sampleTrace(traceId: TraceId): Option[Boolean] = None
 }

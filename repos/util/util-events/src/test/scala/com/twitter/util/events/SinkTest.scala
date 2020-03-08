@@ -16,17 +16,11 @@ class SinkTest extends FunSuite {
   }
 
   test("newDefault") {
-    sinkEnabled.let(false) {
-      assert(Sink.newDefault == Sink.Null)
-    }
+    sinkEnabled.let(false) { assert(Sink.newDefault == Sink.Null) }
 
     sinkEnabled.let(true) {
-      approxNumEvents.let(0) {
-        assert(Sink.newDefault == Sink.Null)
-      }
-      approxNumEvents.let(1) {
-        assert(Sink.newDefault !== Sink.Null)
-      }
+      approxNumEvents.let(0) { assert(Sink.newDefault == Sink.Null) }
+      approxNumEvents.let(1) { assert(Sink.newDefault !== Sink.Null) }
     }
   }
 

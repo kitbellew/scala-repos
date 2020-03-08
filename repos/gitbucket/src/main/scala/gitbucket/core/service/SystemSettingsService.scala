@@ -109,9 +109,7 @@ trait SystemSettingsService {
               getOptionValue(props, SmtpFromAddress, None),
               getOptionValue(props, SmtpFromName, None)
             ))
-        } else {
-          None
-        },
+        } else { None },
         getValue(props, LdapAuthentication, false),
         if (getValue(props, LdapAuthentication, false)) {
           Some(
@@ -129,9 +127,7 @@ trait SystemSettingsService {
               getOptionValue[Boolean](props, LdapSsl, None),
               getOptionValue(props, LdapKeystore, None)
             ))
-        } else {
-          None
-        }
+        } else { None }
       )
     }
   }
@@ -161,9 +157,9 @@ object SystemSettingsService {
       baseUrl.fold(request.baseUrl)(_.stripSuffix("/"))
 
     def sshAddress: Option[SshAddress] =
-      for {
-        host <- sshHost if ssh
-      } yield SshAddress(host, sshPort.getOrElse(DefaultSshPort))
+      for { host <- sshHost if ssh } yield SshAddress(
+        host,
+        sshPort.getOrElse(DefaultSshPort))
   }
 
   case class Ldap(

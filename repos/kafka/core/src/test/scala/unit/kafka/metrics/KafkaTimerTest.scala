@@ -31,9 +31,7 @@ class KafkaTimerTest {
     val Epsilon = java.lang.Double.longBitsToDouble(0x3CA0000000000000L)
 
     val timer = new KafkaTimer(metric)
-    timer.time {
-      clock.addMillis(1000)
-    }
+    timer.time { clock.addMillis(1000) }
     assertEquals(1, metric.count())
     assertTrue((metric.max() - 1000).abs <= Epsilon)
     assertTrue((metric.min() - 1000).abs <= Epsilon)
@@ -43,13 +41,9 @@ class KafkaTimerTest {
 
     private var ticksInNanos = 0L
 
-    override def tick() = {
-      ticksInNanos
-    }
+    override def tick() = { ticksInNanos }
 
-    override def time() = {
-      TimeUnit.NANOSECONDS.toMillis(ticksInNanos)
-    }
+    override def time() = { TimeUnit.NANOSECONDS.toMillis(ticksInNanos) }
 
     def addMillis(millis: Long) {
       ticksInNanos += TimeUnit.MILLISECONDS.toNanos(millis)

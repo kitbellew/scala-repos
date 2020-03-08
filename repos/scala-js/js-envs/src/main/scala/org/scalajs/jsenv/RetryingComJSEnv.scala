@@ -39,15 +39,11 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
 
   def jsRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): JSRunner = {
-    baseEnv.jsRunner(libs, code)
-  }
+      code: VirtualJSFile): JSRunner = { baseEnv.jsRunner(libs, code) }
 
   def asyncRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): AsyncJSRunner = {
-    baseEnv.asyncRunner(libs, code)
-  }
+      code: VirtualJSFile): AsyncJSRunner = { baseEnv.asyncRunner(libs, code) }
 
   def comRunner(
       libs: Seq[ResolvedJSDependency],
@@ -143,9 +139,8 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
         val oldRunner = curRunner
 
         curRunner =
-          try {
-            baseEnv.comRunner(libs, code)
-          } catch {
+          try { baseEnv.comRunner(libs, code) }
+          catch {
             case NonFatal(t) =>
               _logger.error(
                 "Could not retry: creating an new runner failed: " +
@@ -170,9 +165,7 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
     private def logAndDo(task: LogItem) = {
       log += task
       try executeTask(task)
-      catch {
-        case NonFatal(t) => retry(t)
-      }
+      catch { case NonFatal(t) => retry(t) }
     }
 
     private def executeTask(task: LogItem) = task match {

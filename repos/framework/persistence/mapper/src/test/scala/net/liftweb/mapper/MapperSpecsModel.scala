@@ -35,11 +35,8 @@ import Helpers._
 object MapperSpecsModel {
   // These rules are common to all Mapper specs
   def snakify(connid: ConnectionIdentifier, name: String): String = {
-    if (connid.jndiName == "snake") {
-      StringHelpers.snakify(name)
-    } else {
-      name.toLowerCase
-    }
+    if (connid.jndiName == "snake") { StringHelpers.snakify(name) }
+    else { name.toLowerCase }
   }
 
   MapperRules.columnName = snakify
@@ -70,9 +67,7 @@ object MapperSpecsModel {
 
   def cleanup() {
     // Snake connection doesn't create FK constraints (put this here to be absolutely sure it gets set before Schemify)
-    MapperRules.createForeignKeys_? = c => {
-      c.jndiName != "snake"
-    }
+    MapperRules.createForeignKeys_? = c => { c.jndiName != "snake" }
 
     Schemifier.destroyTables_!!(
       DefaultConnectionIdentifier,
@@ -348,9 +343,7 @@ object Thing extends Thing with KeyedMetaMapper[String, Thing] {
 
   import java.util.UUID
   override def beforeCreate =
-    List((thing: Thing) => {
-      thing.thing_id(UUID.randomUUID().toString())
-    })
+    List((thing: Thing) => { thing.thing_id(UUID.randomUUID().toString()) })
 }
 
 class Thing extends KeyedMapper[String, Thing] {

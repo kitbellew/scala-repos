@@ -117,11 +117,8 @@ case class CategoricalNaiveBayesModel(
     val label = point.label
     val features = point.features
 
-    if (!priors.contains(label)) {
-      None
-    } else {
-      Some(logScoreInternal(label, features, defaultLikelihood))
-    }
+    if (!priors.contains(label)) { None }
+    else { Some(logScoreInternal(label, features, defaultLikelihood)) }
   }
 
   private def logScoreInternal(
@@ -179,8 +176,6 @@ case class LabeledPoint(label: String, features: Array[String]) {
     case _                  => false
   }
 
-  override def hashCode(): Int = {
-    this.toString.hashCode
-  }
+  override def hashCode(): Int = { this.toString.hashCode }
 
 }

@@ -117,9 +117,7 @@ package scalaguide.http.scalaresults {
 
       implicit val myCustomCharset = Codec.javaSupported("iso-8859-1")
 
-      def index = Action {
-        Ok(<h1>Hello World!</h1>).as(HTML)
-      }
+      def index = Action { Ok(<h1>Hello World!</h1>).as(HTML) }
 
     }
     //#full-application-set-myCustomCharset

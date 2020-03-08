@@ -32,9 +32,7 @@ final class HistoryApi(coll: Coll) {
         "classical" -> perfs.classical),
       (isStd && game.speed == Speed.Correspondence).option(
         "correspondence" -> perfs.correspondence)
-    ).flatten.map {
-      case (k, p) => k -> p.intRating
-    }
+    ).flatten.map { case (k, p) => k -> p.intRating }
     val days = daysBetween(user.createdAt, game.updatedAt | game.createdAt)
     coll
       .update(

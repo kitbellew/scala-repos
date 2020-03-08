@@ -14,9 +14,7 @@ class RulesTest extends FunSuite {
     else Nil
   }
 
-  private val neverRule = Rule.apply(Category.Performance, "R2", "Good") {
-    Nil
-  }
+  private val neverRule = Rule.apply(Category.Performance, "R2", "Good") { Nil }
 
   private val alwaysRule = Rule.apply(Category.Performance, "R3", "Nope") {
     Seq(Issue("lol"))

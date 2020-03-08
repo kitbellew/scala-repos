@@ -104,9 +104,7 @@ class KetamaClientTest extends FunSuite with MockitoSugar {
     try {
       Await.result(r)
       assert(false)
-    } catch {
-      case e: Throwable => Unit
-    }
+    } catch { case e: Throwable => Unit }
 
     // a second request must not be resolved yet
     val r2 = ketamaClient.incr("key")

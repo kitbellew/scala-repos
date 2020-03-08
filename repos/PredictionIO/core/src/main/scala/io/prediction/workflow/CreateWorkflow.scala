@@ -133,9 +133,8 @@ object CreateWorkflow extends Logging {
     WorkflowUtils.modifyLogging(wfc.verbose)
 
     val evaluation = wfc.evaluationClass.map { ec =>
-      try {
-        WorkflowUtils.getEvaluation(ec, getClass.getClassLoader)._2
-      } catch {
+      try { WorkflowUtils.getEvaluation(ec, getClass.getClassLoader)._2 }
+      catch {
         case e @ (_: ClassNotFoundException | _: NoSuchMethodException) =>
           error(s"Unable to obtain evaluation $ec. Aborting workflow.", e)
           sys.exit(1)
@@ -187,9 +186,8 @@ object CreateWorkflow extends Logging {
           sys.exit(1)
       }
       val (engineLanguage, engineFactoryObj) =
-        try {
-          WorkflowUtils.getEngine(engineFactory, getClass.getClassLoader)
-        } catch {
+        try { WorkflowUtils.getEngine(engineFactory, getClass.getClassLoader) }
+        catch {
           case e @ (_: ClassNotFoundException | _: NoSuchMethodException) =>
             error(
               s"Unable to obtain engine: ${e.getMessage}. Aborting workflow.")
@@ -216,9 +214,7 @@ object CreateWorkflow extends Logging {
 
       val engineParams = if (wfc.engineParamsKey == "") {
         trainableEngine.jValueToEngineParams(variantJson, wfc.jsonExtractor)
-      } else {
-        engineFactoryObj.engineParams(wfc.engineParamsKey)
-      }
+      } else { engineFactoryObj.engineParams(wfc.engineParamsKey) }
 
       val engineInstance = EngineInstance(
         id = "",

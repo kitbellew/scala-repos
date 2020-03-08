@@ -207,9 +207,7 @@ class ComplexFutureAction[T](run: JobSubmitter => Future[T])
           resultFunc)
         subActions = job :: subActions
         job
-      } else {
-        throw new SparkException("Action has been cancelled")
-      }
+      } else { throw new SparkException("Action has been cancelled") }
     }
   }
 

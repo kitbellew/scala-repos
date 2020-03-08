@@ -393,21 +393,15 @@ object ParserSpecs
     }
 
     "accept a 'new' expression" in {
-      parseSingle("new 1") must beLike {
-        case New(_, NumLit(_, "1")) => ok
-      }
+      parseSingle("new 1") must beLike { case New(_, NumLit(_, "1")) => ok }
     }
 
     "accept a 'new' expression followed by a let" in {
-      parseSingle("new foo := //foo foo") must beLike {
-        case New(_, _) => ok
-      }
+      parseSingle("new foo := //foo foo") must beLike { case New(_, _) => ok }
     }
 
     "accept a 'new' expression followed by a solve" in {
-      parseSingle("new solve 'a 'a") must beLike {
-        case New(_, _) => ok
-      }
+      parseSingle("new solve 'a 'a") must beLike { case New(_, _) => ok }
     }
 
     "accept a relate expression" in {
@@ -2504,9 +2498,7 @@ object ParserSpecs
 
     // Regression test for #39825209
     "ambiguous comment syntax" in {
-      parseSingle("(-- Test\n--) 1") must beLike {
-        case NumLit(_, "1") => ok
-      }
+      parseSingle("(-- Test\n--) 1") must beLike { case NumLit(_, "1") => ok }
     }
 
     "greedily terminate comment blocks" in {
@@ -2813,9 +2805,7 @@ object ParserSpecs
     }
 
     "prefer path literals in case of ambiguity" in {
-      parseSingle("//foo.bar") must beLike {
-        case PathLit("/foo.bar") => ok
-      }
+      parseSingle("//foo.bar") must beLike { case PathLit("/foo.bar") => ok }
     }
   }
 
@@ -2830,9 +2820,7 @@ object ParserSpecs
         }
       }
     }
-  } else {
-    "specification examples" >> skipped
-  }
+  } else { "specification examples" >> skipped }
 
   private def parseSingle(str: LineStream): Expr = {
     val set = parse(str)

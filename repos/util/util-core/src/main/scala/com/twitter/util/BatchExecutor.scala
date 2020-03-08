@@ -106,9 +106,7 @@ private[util] class BatchExecutor[In, Out](
 
   /** Immediately processes all unprocessed requests */
   def flushNow(): Unit = {
-    val doAfter = synchronized {
-      flushBatch()
-    }
+    val doAfter = synchronized { flushBatch() }
 
     doAfter()
   }
@@ -129,9 +127,8 @@ private[util] class BatchExecutor[In, Out](
     currentBufThreshold = newBufThreshold // set the next batch's size
 
     () =>
-      try {
-        executeBatch(prevBatch)
-      } catch {
+      try { executeBatch(prevBatch) }
+      catch {
         case e: Throwable =>
           log.log(
             WARNING,

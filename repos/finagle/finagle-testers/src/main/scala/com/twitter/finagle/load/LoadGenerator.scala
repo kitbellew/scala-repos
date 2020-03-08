@@ -22,9 +22,7 @@ class LoadGenerator[Req, Rep](
   val svc = filter andThen Service.mk[Event[Req, Rep], Rep] {
     evt: Event[Req, Rep] =>
       val p = Promise[Rep]()
-      timer.schedule(evt.finish) {
-        p.updateIfEmpty(evt())
-      }
+      timer.schedule(evt.finish) { p.updateIfEmpty(evt()) }
       p
   }
 
@@ -67,9 +65,7 @@ class LoadGenerator[Req, Rep](
     Time.withTimeAt(cur) { ctl =>
       history foreach { evt =>
         val diff = (evt.start - cur)
-        if (diff > Duration.Zero) {
-          removeInterstices(evt.start, ctl)
-        }
+        if (diff > Duration.Zero) { removeInterstices(evt.start, ctl) }
         cur = evt.start
         endTimes += (evt.finish)
         recorder(evt.length, svc(evt))

@@ -48,9 +48,7 @@ class LinkedHashMap[K, V] private (
         val old = remove(key)
         super.put(key, value)
         old
-      } else {
-        super.put(key, value)
-      }
+      } else { super.put(key, value) }
     }
     val iter = entrySet().iterator()
     if (iter.hasNext && removeEldestEntry(iter.next()))

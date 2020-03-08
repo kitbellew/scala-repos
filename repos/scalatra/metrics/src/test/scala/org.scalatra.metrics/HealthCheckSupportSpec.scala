@@ -15,8 +15,6 @@ class HealthCheckSupportSpec extends ScalatraFlatSpec {
   addServlet(new TestServlet, "/")
 
   "The HealthCheck support" should "not error out using a health check" in {
-    get("/") {
-      status should equal(200)
-    }
+    get("/") { status should equal(200) }
   }
 }

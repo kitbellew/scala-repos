@@ -112,9 +112,8 @@ class ScConstructorImpl(node: ASTNode)
       tp: ScType,
       clazz: PsiClass,
       subst: ScSubstitutor): ScType = {
-    if (clazz.getTypeParameters.isEmpty) {
-      tp
-    } else {
+    if (clazz.getTypeParameters.isEmpty) { tp }
+    else {
       ScParameterizedType(
         tp,
         clazz.getTypeParameters.map {

@@ -10,9 +10,7 @@ object GenProductTypes {
     val types = (1 to arity) map (typeName(_)) mkString ", "
     val specTypes = if (arity == 2) {
       (1 to arity) map { i => spec + typeName(i) } mkString ","
-    } else {
-      types
-    }
+    } else { types }
     val name = structure + "Product" + arity
   }
 
@@ -197,9 +195,7 @@ object ProductTypes {
             |%s
             |%s  }""".stripMargin format (indent, prefix, i, i, i, indent, gen(
           i + 1), indent)
-      } else {
-        indent + "  0"
-      }
+      } else { indent + "  0" }
     }
 
     """  def compare(x0: (%s), x1: (%s)): Int = {

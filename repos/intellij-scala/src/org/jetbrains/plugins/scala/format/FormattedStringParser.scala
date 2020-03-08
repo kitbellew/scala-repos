@@ -119,9 +119,7 @@ object FormattedStringParser extends StringParser {
           arguments.lift(position - 1).map { argument =>
             refferredArguments ::= argument
             Injection(argument, Some(specifier))
-          } getOrElse {
-            UnboundPositionalSpecifier(specifier, position)
-          }
+          } getOrElse { UnboundPositionalSpecifier(specifier, position) }
         } else {
           if (it.toString().equals("%n"))
             Injection(

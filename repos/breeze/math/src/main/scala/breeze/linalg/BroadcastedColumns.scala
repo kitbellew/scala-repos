@@ -131,9 +131,7 @@ object BroadcastedColumns {
       /** Maps all key-value pairs from the given collection. */
       override def foreach[U](
           from: BroadcastedColumns[T, ColumnType],
-          fn: (ColumnType) => U): Unit = {
-        iter(from.underlying, Axis._0)(fn)
-      }
+          fn: (ColumnType) => U): Unit = { iter(from.underlying, Axis._0)(fn) }
     }
 
   }

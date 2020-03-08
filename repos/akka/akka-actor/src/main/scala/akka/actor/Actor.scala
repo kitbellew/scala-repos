@@ -369,9 +369,7 @@ trait DiagnosticActorLogging extends Actor {
     try {
       log.mdc(mdc(msg))
       super.aroundReceive(receive, msg)
-    } finally {
-      log.clearMDC()
-    }
+    } finally { log.clearMDC() }
 }
 
 object Actor {
@@ -619,9 +617,7 @@ trait Actor {
     classOf[Exception]
   ) // when changing this you MUST also change UntypedActorDocTest
   //#lifecycle-hooks
-  def postRestart(reason: Throwable): Unit = {
-    preStart()
-  }
+  def postRestart(reason: Throwable): Unit = { preStart() }
   //#lifecycle-hooks
 
   /**

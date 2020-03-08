@@ -72,9 +72,8 @@ class InputStreamReader(
     if (off < 0 || len < 0 || len > cbuf.length - off)
       throw new IndexOutOfBoundsException
 
-    if (len == 0) {
-      0
-    } else if (outBuf.hasRemaining) {
+    if (len == 0) { 0 }
+    else if (outBuf.hasRemaining) {
       // Reuse chars decoded last time
       val available = Math.min(outBuf.remaining, len)
       outBuf.get(cbuf, off, available)
@@ -83,9 +82,8 @@ class InputStreamReader(
       // Try and decode directly into the destination array
       val directOut = CharBuffer.wrap(cbuf, off, len)
       val result = readImpl(directOut)
-      if (result != InputStreamReader.Overflow) {
-        result
-      } else {
+      if (result != InputStreamReader.Overflow) { result }
+      else {
         /* There's not enough space in the destination array to receive even
          * a tiny bit of output from the decoder. We need to decode to the
          * outBuf instead.
@@ -94,9 +92,7 @@ class InputStreamReader(
          */
         readMoreThroughOutBuf(cbuf, off, len)
       }
-    } else {
-      -1
-    }
+    } else { -1 }
   }
 
   // In a separate method because this is (hopefully) not a common case
@@ -155,9 +151,8 @@ class InputStreamReader(
             "returned a MalformedInput error instead."
         )
         // Flush
-        if (decoder.flush(out).isOverflow) {
-          InputStreamReader.Overflow
-        } else {
+        if (decoder.flush(out).isOverflow) { InputStreamReader.Overflow }
+        else {
           // Done
           if (out.position == initPos) -1
           else out.position - initPos
@@ -191,9 +186,8 @@ class InputStreamReader(
 
         readImpl(out)
       }
-    } else if (result.isOverflow) {
-      InputStreamReader.Overflow
-    } else {
+    } else if (result.isOverflow) { InputStreamReader.Overflow }
+    else {
       result.throwException()
       throw new AssertionError("should not get here")
     }

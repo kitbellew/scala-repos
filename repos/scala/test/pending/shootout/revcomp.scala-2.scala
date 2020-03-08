@@ -39,9 +39,7 @@ object revcomp {
           lines = new Stack
         }
         desc = line
-      } else {
-        if (c != ';') lines += line.getBytes
-      }
+      } else { if (c != ';') lines += line.getBytes }
       line = r.readLine
     }
     r.close

@@ -40,9 +40,7 @@ trait ManyToMany extends BaseKeyedMapper {
     * Returns false as soon as the parent or a one-to-many field returns false.
     * If they are all successful returns true.
     */
-  abstract override def save = {
-    super.save && manyToManyFields.forall(_.save)
-  }
+  abstract override def save = { super.save && manyToManyFields.forall(_.save) }
 
   /**
     * An override for delete_! to propogate the deletion to all children

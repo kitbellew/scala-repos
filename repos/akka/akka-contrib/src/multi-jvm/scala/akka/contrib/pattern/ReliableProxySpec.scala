@@ -56,9 +56,7 @@ class ReliableProxySpec
   def startTarget(): Unit = {
     target = system.actorOf(
       Props(new Actor {
-        def receive = {
-          case x ⇒ testActor ! x
-        }
+        def receive = { case x ⇒ testActor ! x }
       }).withDeploy(Deploy.local),
       "echo")
   }
@@ -91,9 +89,7 @@ class ReliableProxySpec
   "A ReliableProxy" must {
 
     "initialize properly" in {
-      runOn(remote) {
-        startTarget()
-      }
+      runOn(remote) { startTarget() }
 
       enterBarrier("initialize")
 
@@ -113,9 +109,7 @@ class ReliableProxySpec
         expectTransition(Active, Idle)
       }
 
-      runOn(remote) {
-        expectMsg(1.second, "hello")
-      }
+      runOn(remote) { expectMsg(1.second, "hello") }
 
       enterBarrier("initialize-done")
     }
@@ -126,11 +120,7 @@ class ReliableProxySpec
         expectTransition(Idle, Active)
         expectTransition(Active, Idle)
       }
-      runOn(remote) {
-        within(5 seconds) {
-          expectN(100)
-        }
-      }
+      runOn(remote) { within(5 seconds) { expectN(100) } }
 
       enterBarrier("test1a")
 
@@ -139,11 +129,7 @@ class ReliableProxySpec
         expectTransition(Idle, Active)
         expectTransition(Active, Idle)
       }
-      runOn(remote) {
-        within(5 seconds) {
-          expectN(100)
-        }
-      }
+      runOn(remote) { within(5 seconds) { expectN(100) } }
 
       enterBarrier("test1b")
     }
@@ -158,9 +144,7 @@ class ReliableProxySpec
 
       enterBarrier("test2a")
 
-      runOn(remote) {
-        expectNoMsg(0 seconds)
-      }
+      runOn(remote) { expectNoMsg(0 seconds) }
 
       enterBarrier("test2b")
 
@@ -168,11 +152,7 @@ class ReliableProxySpec
         testConductor.passThrough(local, remote, Direction.Send).await
         expectTransition(5 seconds, Active, Idle)
       }
-      runOn(remote) {
-        within(5 seconds) {
-          expectN(100)
-        }
-      }
+      runOn(remote) { within(5 seconds) { expectN(100) } }
 
       enterBarrier("test2c")
     }
@@ -184,11 +164,7 @@ class ReliableProxySpec
         expectTransition(1 second, Idle, Active)
         expectNoMsg(expectNoMsgTimeout)
       }
-      runOn(remote) {
-        within(5 second) {
-          expectN(100)
-        }
-      }
+      runOn(remote) { within(5 second) { expectN(100) } }
 
       enterBarrier("test3a")
 
@@ -218,9 +194,7 @@ class ReliableProxySpec
         }
       }
       runOn(remote) {
-        within(5 seconds) {
-          expectN(50)
-        }
+        within(5 seconds) { expectN(50) }
         expectNoMsg(expectNoMsgTimeout)
       }
 
@@ -246,9 +220,7 @@ class ReliableProxySpec
         }
       }
       runOn(remote) {
-        within(5 second) {
-          expectN(50)
-        }
+        within(5 second) { expectN(50) }
         expectNoMsg(1 seconds)
       }
 
@@ -263,9 +235,7 @@ class ReliableProxySpec
 
       runOn(local) {
         // After the target stops the proxy will change to Reconnecting
-        within(5 seconds) {
-          expectTransition(Idle, Connecting)
-        }
+        within(5 seconds) { expectTransition(Idle, Connecting) }
         // Send some messages while it's reconnecting
         sendN(50)
       }
@@ -293,9 +263,7 @@ class ReliableProxySpec
         expectTransition(Active, Idle)
       }
 
-      runOn(remote) {
-        expectN(50)
-      }
+      runOn(remote) { expectN(50) }
 
       enterBarrier("test6c")
     }
@@ -369,9 +337,7 @@ class ReliableProxySpec
 
       runOn(local) {
         // Wait for transition to Connecting, then send messages
-        within(5 seconds) {
-          expectTransition(Idle, Connecting)
-        }
+        within(5 seconds) { expectTransition(Idle, Connecting) }
         sendN(50)
       }
 

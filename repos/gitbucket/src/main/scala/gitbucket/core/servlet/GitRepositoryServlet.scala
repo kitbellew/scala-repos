@@ -77,9 +77,7 @@ class GitBucketRepositoryResolver(parent: FileResolver[HttpServletRequest])
           val path = urlPattern.r.replaceFirstIn(name, localPath)
           resolver.open(req, path)
       }
-      .getOrElse {
-        parent.open(req, name)
-      }
+      .getOrElse { parent.open(req, name) }
   }
 
 }
@@ -185,9 +183,8 @@ class CommitLogHook(
           implicit val apiContext = api.JsonFormat.Context(baseUrl)
           val refName = command.getRefName.split("/")
           val branchName = refName.drop(2).mkString("/")
-          val commits = if (refName(1) == "tags") {
-            Nil
-          } else {
+          val commits = if (refName(1) == "tags") { Nil }
+          else {
             command.getType match {
               case ReceiveCommand.Type.DELETE => Nil
               case _ =>

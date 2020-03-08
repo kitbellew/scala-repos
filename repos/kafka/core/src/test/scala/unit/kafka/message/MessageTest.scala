@@ -198,9 +198,7 @@ class MessageTest extends JUnitSuite {
   }
 
   @Test(expected = classOf[IllegalArgumentException])
-  def testInvalidMagicByte() {
-    new Message("hello".getBytes, 0L, 2.toByte)
-  }
+  def testInvalidMagicByte() { new Message("hello".getBytes, 0L, 2.toByte) }
 
   @Test
   def testIsHashable() {

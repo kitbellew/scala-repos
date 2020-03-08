@@ -334,9 +334,7 @@ class KMeansSummary private[clustering] (
     */
   @Since("2.0.0")
   lazy val size: Array[Int] = cluster.rdd
-    .map {
-      case Row(clusterIdx: Int) => (clusterIdx, 1)
-    }
+    .map { case Row(clusterIdx: Int) => (clusterIdx, 1) }
     .reduceByKey(_ + _)
     .collect()
     .sortBy(_._1)

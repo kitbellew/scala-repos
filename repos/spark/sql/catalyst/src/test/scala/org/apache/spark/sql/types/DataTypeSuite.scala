@@ -73,18 +73,14 @@ class DataTypeSuite extends SparkFunSuite {
 
     assert(StructField("b", LongType, false) === struct("b"))
 
-    intercept[IllegalArgumentException] {
-      struct("e")
-    }
+    intercept[IllegalArgumentException] { struct("e") }
 
     val expectedStruct = StructType(
       StructField("b", LongType, false) ::
         StructField("d", FloatType, true) :: Nil)
 
     assert(expectedStruct === struct(Set("b", "d")))
-    intercept[IllegalArgumentException] {
-      struct(Set("b", "d", "e", "f"))
-    }
+    intercept[IllegalArgumentException] { struct(Set("b", "d", "e", "f")) }
   }
 
   test("extract field index from a StructType") {
@@ -95,9 +91,7 @@ class DataTypeSuite extends SparkFunSuite {
     assert(struct.fieldIndex("a") === 0)
     assert(struct.fieldIndex("b") === 1)
 
-    intercept[IllegalArgumentException] {
-      struct.fieldIndex("non_existent")
-    }
+    intercept[IllegalArgumentException] { struct.fieldIndex("non_existent") }
   }
 
   test("fieldsMap returns map of name to StructField") {
@@ -175,9 +169,7 @@ class DataTypeSuite extends SparkFunSuite {
 
     val right = StructType(StructField("b", LongType) :: Nil)
 
-    intercept[SparkException] {
-      left.merge(right)
-    }
+    intercept[SparkException] { left.merge(right) }
   }
 
   test("existsRecursively") {

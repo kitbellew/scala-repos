@@ -71,9 +71,7 @@ class MatrixFactorizationModelSuite
       assert(newModel.rank === rank)
       assert(collect(newModel.userFeatures) === collect(userFeatures))
       assert(collect(newModel.productFeatures) === collect(prodFeatures))
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally { Utils.deleteRecursively(tempDir) }
   }
 
   test("batch predict API recommendProductsForUsers") {

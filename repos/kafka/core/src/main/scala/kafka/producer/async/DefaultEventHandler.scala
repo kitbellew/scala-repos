@@ -185,9 +185,8 @@ class DefaultEventHandler[K, V](
       } catch {
         case t: Throwable =>
           producerStats.serializationErrorRate.mark()
-          if (isSync) {
-            throw t
-          } else {
+          if (isSync) { throw t }
+          else {
             // currently, if in async mode, we just log the serialization error. We need to revisit
             // this when doing kafka-496
             error("Error serializing message for topic %s".format(e.topic), t)
@@ -404,9 +403,7 @@ class DefaultEventHandler[K, V](
                 .format(currentCorrelationId, errorString))
           }
           failedTopicPartitions
-        } else {
-          Seq.empty[TopicAndPartition]
-        }
+        } else { Seq.empty[TopicAndPartition] }
       } catch {
         case t: Throwable =>
           warn(
@@ -419,9 +416,7 @@ class DefaultEventHandler[K, V](
           )
           messagesPerTopic.keys.toSeq
       }
-    } else {
-      List.empty
-    }
+    } else { List.empty }
   }
 
   private def groupMessagesToSet(
@@ -486,9 +481,7 @@ class DefaultEventHandler[K, V](
             })
       }
       Some(messagesPerTopicPartition)
-    } catch {
-      case t: Throwable => error("Failed to group messages", t); None
-    }
+    } catch { case t: Throwable => error("Failed to group messages", t); None }
   }
 
   def close() {

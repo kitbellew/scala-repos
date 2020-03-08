@@ -167,9 +167,7 @@ private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
         case Return(svc) =>
           Future.value(new ServiceProxy(svc) {
             override def close(deadline: Time) =
-              super.close(deadline).ensure {
-                metric.end(ts)
-              }
+              super.close(deadline).ensure { metric.end(ts) }
           })
 
         case t @ Throw(_) =>

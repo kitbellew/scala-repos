@@ -10,9 +10,7 @@ class ImmediateStatsReceiverTest extends FunSuite with BeforeAndAfter {
 
   private[this] var registry: Metrics = _
 
-  before {
-    registry = Metrics.createDetached()
-  }
+  before { registry = Metrics.createDetached() }
 
   private[this] def metrics(name: String): Option[Long] = {
     val sample = registry.sample()

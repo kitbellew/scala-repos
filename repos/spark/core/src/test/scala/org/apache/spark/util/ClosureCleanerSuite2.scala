@@ -51,9 +51,7 @@ class ClosureCleanerSuite2
       sc.stop()
       sc = null
       closureSerializer = null
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   // Some fields and methods to reference in inner closures later
@@ -66,9 +64,8 @@ class ClosureCleanerSuite2
   private def assertSerializable(
       closure: AnyRef,
       serializable: Boolean): Unit = {
-    if (serializable) {
-      closureSerializer.serialize(closure)
-    } else {
+    if (serializable) { closureSerializer.serialize(closure) }
+    else {
       intercept[NotSerializableException] {
         closureSerializer.serialize(closure)
       }

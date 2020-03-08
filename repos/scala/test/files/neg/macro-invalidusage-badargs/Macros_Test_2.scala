@@ -1,4 +1,6 @@
-object Macros { def foo(x: Int): Int = macro Impls.foo }
+object Macros {
+  def foo(x: Int): Int = macro Impls.foo
+}
 import Macros._
 
 object Test extends App {

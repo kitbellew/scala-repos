@@ -113,12 +113,8 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
     val terminated = if (processAllReceivedData) {
       jobExecutor
         .awaitTermination(1, TimeUnit.HOURS) // just a very large period of time
-    } else {
-      jobExecutor.awaitTermination(2, TimeUnit.SECONDS)
-    }
-    if (!terminated) {
-      jobExecutor.shutdownNow()
-    }
+    } else { jobExecutor.awaitTermination(2, TimeUnit.SECONDS) }
+    if (!terminated) { jobExecutor.shutdownNow() }
     logDebug("Stopped job executor")
 
     // Stop everything else
@@ -139,17 +135,13 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
     }
   }
 
-  def getPendingTimes(): Seq[Time] = {
-    jobSets.asScala.keys.toSeq
-  }
+  def getPendingTimes(): Seq[Time] = { jobSets.asScala.keys.toSeq }
 
   def reportError(msg: String, e: Throwable) {
     eventLoop.post(ErrorReported(msg, e))
   }
 
-  def isStarted(): Boolean = synchronized {
-    eventLoop != null
-  }
+  def isStarted(): Boolean = synchronized { eventLoop != null }
 
   private def processEvent(event: JobSchedulerEvent) {
     try {

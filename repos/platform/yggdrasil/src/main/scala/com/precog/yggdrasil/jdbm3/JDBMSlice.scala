@@ -65,9 +65,7 @@ object JDBMSlice {
         valDecoder.decodeToRow(row, entry.getValue)
 
         consumeRows(source, row + 1)
-      } else {
-        row
-      }
+      } else { row }
     }
 
     val rows = {
@@ -76,9 +74,8 @@ object JDBMSlice {
       var finalCount = -1
       var tries = 0
       while (tries < JDBMProjection.MAX_SPINS && finalCount == -1) {
-        try {
-          finalCount = consumeRows(source().take(size), 0)
-        } catch {
+        try { finalCount = consumeRows(source().take(size), 0) }
+        catch {
           case t: Throwable =>
             logger.warn("Error during block read, retrying")
             Thread.sleep(50)
@@ -88,9 +85,7 @@ object JDBMSlice {
       if (finalCount == -1) {
         throw new VicciniException(
           "Block read failed with too many concurrent mods.")
-      } else {
-        finalCount
-      }
+      } else { finalCount }
     }
 
     (firstKey, lastKey, rows)

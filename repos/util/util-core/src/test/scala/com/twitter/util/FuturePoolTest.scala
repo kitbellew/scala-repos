@@ -39,9 +39,7 @@ class FuturePoolTest extends FunSuite with Eventually {
 
     val runCount = new atomic.AtomicInteger(0)
 
-    val result1 = pool {
-      runCount.incrementAndGet()
-    }
+    val result1 = pool { runCount.incrementAndGet() }
     Await.ready(result1)
 
     assert(runCount.get() == 0)
@@ -90,9 +88,7 @@ class FuturePoolTest extends FunSuite with Eventually {
         runCount.incrementAndGet()
         cancelledLatch.await()
         throw new RuntimeException()
-      } finally {
-        runCount.incrementAndGet()
-      }
+      } finally { runCount.incrementAndGet() }
       runCount.get
     }
 
@@ -136,9 +132,7 @@ class FuturePoolTest extends FunSuite with Eventually {
     val f = ipool {
       try {
         started.setDone()
-        while (true) {
-          Thread.sleep(Long.MaxValue)
-        }
+        while (true) { Thread.sleep(Long.MaxValue) }
       } catch {
         case _: InterruptedException =>
           interrupted.setDone()

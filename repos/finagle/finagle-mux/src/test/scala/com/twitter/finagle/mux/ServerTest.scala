@@ -469,9 +469,7 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
     val writep = new Promise[Unit]
 
     val transport = new QueueTransport(serverToClient, clientToServer) {
-      override def write(in: Message) = writep.before {
-        super.write(in)
-      }
+      override def write(in: Message) = writep.before { super.write(in) }
     }
 
     val sr = new InMemoryStatsReceiver

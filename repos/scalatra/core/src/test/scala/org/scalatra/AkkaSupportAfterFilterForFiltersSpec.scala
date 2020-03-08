@@ -24,15 +24,9 @@ class AkkaSupportAfterFilterFilter extends ScalatraFilter with FutureSupport {
     "async-two-afters"
   }
 
-  get("/sync") {
-    "sync"
-  }
+  get("/sync") { "sync" }
 
-  get("/future") {
-    Future({
-      "future"
-    })
-  }
+  get("/future") { Future({ "future" }) }
 
   after() {
     afterCount += 1
@@ -67,34 +61,26 @@ class AkkaSupportAfterFilterForFiltersSpec extends MutableScalatraSpec {
     "run after the action" in {
       filter.reset()
 
-      get("/async") {
-        filter.afterTime must beGreaterThan(filter.actionTime)
-      }
+      get("/async") { filter.afterTime must beGreaterThan(filter.actionTime) }
     }
 
     "run only once" in {
       filter.reset()
 
-      get("/async") {
-        filter.afterCount mustEqual 1
-      }
+      get("/async") { filter.afterCount mustEqual 1 }
     }
 
     "all execute" in {
       filter.reset()
 
-      get("/async-two-afters") {
-        filter.afterCount mustEqual 2
-      }
+      get("/async-two-afters") { filter.afterCount mustEqual 2 }
     }
 
     "work when contextPath != /" in {
       pending("Until we come up with a thread-safe solution to this")
       filter.reset()
 
-      get("/foo/async-two-afters") {
-        filter.afterCount mustEqual 2
-      }
+      get("/foo/async-two-afters") { filter.afterCount mustEqual 2 }
     }
   }
 
@@ -102,17 +88,13 @@ class AkkaSupportAfterFilterForFiltersSpec extends MutableScalatraSpec {
     "run after the action" in {
       filter.reset()
 
-      get("/future") {
-        filter.afterTime must beGreaterThan(filter.actionTime)
-      }
+      get("/future") { filter.afterTime must beGreaterThan(filter.actionTime) }
     }
 
     "run only once" in {
       filter.reset()
 
-      get("/future") {
-        filter.afterCount mustEqual 1
-      }
+      get("/future") { filter.afterCount mustEqual 1 }
     }
   }
 
@@ -120,9 +102,7 @@ class AkkaSupportAfterFilterForFiltersSpec extends MutableScalatraSpec {
     "run normally" in {
       filter.reset()
 
-      get("/sync") {
-        filter.afterCount mustEqual 1
-      }
+      get("/sync") { filter.afterCount mustEqual 1 }
     }
   }
 }

@@ -51,9 +51,7 @@ object HttpClient {
     val request2 = makeUnauthorizedRequest(client)
 
     // When both request1 and request2 have completed, close the TCP connection(s).
-    (request1 join request2) ensure {
-      client.close()
-    }
+    (request1 join request2) ensure { client.close() }
   }
 
   private[this] def makeAuthorizedRequest(

@@ -101,18 +101,15 @@ package object yggdrasil {
       type IA = (Identities, A)
       def order(x: IA, y: IA): Ordering = {
         val idComp = idOrder.order(x._1, y._1)
-        if (idComp == EQ) {
-          ord.order(x._2, y._2)
-        } else idComp
+        if (idComp == EQ) { ord.order(x._2, y._2) }
+        else idComp
       }
     }
 
   def valueOrder[A](implicit ord: Order[A]): Order[(Identities, A)] =
     new Order[(Identities, A)] {
       type IA = (Identities, A)
-      def order(x: IA, y: IA): Ordering = {
-        ord.order(x._2, y._2)
-      }
+      def order(x: IA, y: IA): Ordering = { ord.order(x._2, y._2) }
     }
 }
 

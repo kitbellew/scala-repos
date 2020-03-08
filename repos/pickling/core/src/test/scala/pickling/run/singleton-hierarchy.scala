@@ -4,7 +4,9 @@ import org.scalatest.FunSuite
 import scala.pickling._, scala.pickling.Defaults._, json._
 
 sealed abstract class C(val x: Int)
-object D extends C(42) { override def toString = "D" }
+object D extends C(42) {
+  override def toString = "D"
+}
 case class E(override val x: Int) extends C(x)
 
 class SingletonHierarchyTest extends FunSuite {

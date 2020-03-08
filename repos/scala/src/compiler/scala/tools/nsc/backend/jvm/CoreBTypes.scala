@@ -284,9 +284,7 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
       cls.info
     ) // the `transformInfo` method of specialization adds specialized subclasses to the `specializedClass` map
     specializeTypes.specializedClass
-      .collect({
-        case ((`cls`, _), specCls) => specCls
-      })
+      .collect({ case ((`cls`, _), specCls) => specCls })
       .toList
   }
 
@@ -305,9 +303,7 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     def ijfd = Iterator("I", "J", "F", "D")
     def ijfdzv = Iterator("I", "J", "F", "D", "Z", "V")
     def ijd = Iterator("I", "J", "D")
-    val classNames = Set.empty[String] ++ {
-      (0 to 22).map(base + _)
-    } ++ {
+    val classNames = Set.empty[String] ++ { (0 to 22).map(base + _) } ++ {
       primitives.map(base + "0$mc" + _ + "$sp") // Function0
     } ++ {
       // return type specializations appear first in the name string (alphabetical sorting)

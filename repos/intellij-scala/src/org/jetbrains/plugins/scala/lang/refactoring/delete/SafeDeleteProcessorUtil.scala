@@ -220,9 +220,7 @@ object SafeDeleteProcessorUtil {
       allElementsToDelete: Array[PsiElement]): Array[PsiMethod] = {
     val list: util.ArrayList[PsiMethod] = new util.ArrayList[PsiMethod]
     for (method <- methods) {
-      if (!allElementsToDelete.contains(method)) {
-        list.add(method)
-      }
+      if (!allElementsToDelete.contains(method)) { list.add(method) }
     }
     list.toArray(new Array[PsiMethod](list.size))
   }
@@ -376,9 +374,7 @@ object SafeDeleteProcessorUtil {
             allElementsToDelete,
             superMethod) < 0 && !MethodSignatureUtil.isSuperMethod(
             originalMethod,
-            superMethod)) {
-        return true
-      }
+            superMethod)) { return true }
     }
     false
   }
@@ -412,9 +408,7 @@ object SafeDeleteProcessorUtil {
       deleted: util.Collection[_ <: PsiElement],
       allElementsToDelete: Array[PsiElement]): Boolean = {
     val containingClass: PsiClass = method.containingClass
-    if (containingClass == null) {
-      return false
-    }
+    if (containingClass == null) { return false }
     val manager: PsiManager = method.getManager
     val facade: JavaPsiFacade = JavaPsiFacade.getInstance(manager.getProject)
     val factory: PsiElementFactory = facade.getElementFactory
@@ -438,9 +432,7 @@ object SafeDeleteProcessorUtil {
             privateModifierList,
             element,
             null,
-            null)) {
-        return false
-      }
+            null)) { return false }
     }
     true
   }
@@ -584,9 +576,7 @@ object SafeDeleteProcessorUtil {
                          .isInstanceOf[PsiSuperExpression]) {
               val superMethod: PsiMethod = call.resolveMethod
               if (superMethod != null && MethodSignatureUtil
-                    .isSuperMethod(superMethod, method)) {
-                isSafeDelete = true
-              }
+                    .isSuperMethod(superMethod, method)) { isSafeDelete = true }
             }
           case _ =>
         }
@@ -607,9 +597,7 @@ object SafeDeleteProcessorUtil {
   def isInside(
       place: PsiElement,
       ancestors: util.Collection[_ <: PsiElement]): Boolean = {
-    for (element <- ancestors) {
-      if (isInside(place, element)) return true
-    }
+    for (element <- ancestors) { if (isInside(place, element)) return true }
     false
   }
 
@@ -620,9 +608,7 @@ object SafeDeleteProcessorUtil {
       aClass.getParent match {
         case file: PsiJavaFile =>
           if (PsiTreeUtil.isAncestor(file, place, false)) {
-            if (file.getClasses.length == 1) {
-              return true
-            }
+            if (file.getClasses.length == 1) { return true }
           }
         case _ =>
       }

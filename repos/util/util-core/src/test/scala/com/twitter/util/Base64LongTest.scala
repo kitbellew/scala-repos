@@ -11,9 +11,7 @@ import com.twitter.util.Base64Long.toBase64
 @RunWith(classOf[JUnitRunner])
 class Base64LongTest extends WordSpec {
   "toBase64" should {
-    "properly convert zero" in {
-      assert(toBase64(0) == "A")
-    }
+    "properly convert zero" in { assert(toBase64(0) == "A") }
 
     "properly convert a large number" in {
       assert(toBase64(202128261025763330L) == "LOGpUdghAC")

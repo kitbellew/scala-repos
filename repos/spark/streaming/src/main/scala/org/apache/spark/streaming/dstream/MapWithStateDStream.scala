@@ -156,9 +156,7 @@ private[streaming] class InternalMapWithStateDStream[
             rdd.flatMap { _.stateMap.getAll() },
             partitioner,
             validTime)
-        } else {
-          rdd
-        }
+        } else { rdd }
       case None =>
         MapWithStateRDD.createFromPairRDD[K, V, S, E](
           spec

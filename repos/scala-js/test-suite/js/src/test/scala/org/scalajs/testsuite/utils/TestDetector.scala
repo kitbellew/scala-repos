@@ -40,17 +40,13 @@ object TestDetector {
     }
 
     def rec(item: js.Dynamic, fullName: String): List[(js.Dynamic, String)] = {
-      if (isBlacklisted(fullName)) {
-        Nil
-      } else if (js.typeOf(item) == "object") {
+      if (isBlacklisted(fullName)) { Nil }
+      else if (js.typeOf(item) == "object") {
         js.Object.properties(item).toList flatMap { prop =>
           rec(item.selectDynamic(prop), s"$fullName.$prop")
         }
-      } else if (isExportedModule(item)) {
-        List((item, fullName))
-      } else {
-        Nil
-      }
+      } else if (isExportedModule(item)) { List((item, fullName)) }
+      else { Nil }
     }
 
     val parts = basePackage.split('.')

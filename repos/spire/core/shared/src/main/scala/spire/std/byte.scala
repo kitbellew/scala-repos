@@ -27,13 +27,9 @@ trait ByteIsNRoot extends NRoot[Byte] {
       val next = prev | add
       val e = Math.pow(next, n)
 
-      if (e == x || add == 0) {
-        next.toByte
-      } else if (e <= 0 || e > x) {
-        findnroot(prev, add >> 1)
-      } else {
-        findnroot(next, add >> 1)
-      }
+      if (e == x || add == 0) { next.toByte }
+      else if (e <= 0 || e > x) { findnroot(prev, add >> 1) }
+      else { findnroot(next, add >> 1) }
     }
 
     findnroot(0, 1 << ((33 - n) / n))

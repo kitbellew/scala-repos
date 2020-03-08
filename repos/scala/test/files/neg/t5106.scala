@@ -1,5 +1,3 @@
 class A {
-  def f {
-    val (n, l): (String, Int) = (4, "")
-  }
+  def f { val (n, l): (String, Int) = (4, "") }
 }

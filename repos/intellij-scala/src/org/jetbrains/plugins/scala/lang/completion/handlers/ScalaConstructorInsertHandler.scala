@@ -143,9 +143,7 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
                       .replace(newRef)
                       .asInstanceOf[ScStableCodeReferenceElement]
                     replaced.bindToElement(clazz)
-                  } else {
-                    ref.bindToElement(clazz)
-                  }
+                  } else { ref.bindToElement(clazz) }
                 }
               }
             case _ =>

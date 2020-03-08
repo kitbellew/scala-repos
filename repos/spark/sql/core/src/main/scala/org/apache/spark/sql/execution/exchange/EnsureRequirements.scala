@@ -257,12 +257,8 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
           if (requiredOrdering != child.outputOrdering.take(
                 requiredOrdering.length)) {
             Sort(requiredOrdering, global = false, child = child)
-          } else {
-            child
-          }
-        } else {
-          child
-        }
+          } else { child }
+        } else { child }
     }
 
     operator.withNewChildren(children)

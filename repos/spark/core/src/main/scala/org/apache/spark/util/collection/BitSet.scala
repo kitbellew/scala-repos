@@ -203,9 +203,7 @@ class BitSet(numBits: Int) extends Serializable {
     */
   def nextSetBit(fromIndex: Int): Int = {
     var wordIndex = fromIndex >> 6
-    if (wordIndex >= numWords) {
-      return -1
-    }
+    if (wordIndex >= numWords) { return -1 }
 
     // Try to find the next set bit in the current word
     val subIndex = fromIndex & 0x3f

@@ -66,9 +66,7 @@ object Message extends LilaController {
   }
 
   def form = Auth { implicit ctx => implicit me =>
-    NotForKids {
-      renderForm(me, get("title"), identity) map { Ok(_) }
-    }
+    NotForKids { renderForm(me, get("title"), identity) map { Ok(_) } }
   }
 
   def create = AuthBody { implicit ctx => implicit me =>

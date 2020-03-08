@@ -227,15 +227,9 @@ class ScalaBlock(
     var lastChild = node.getLastChildNode
     while (lastChild != null &&
            (lastChild.getPsi.isInstanceOf[PsiWhiteSpace] || lastChild.getPsi
-             .isInstanceOf[PsiComment])) {
-      lastChild = lastChild.getTreePrev
-    }
-    if (lastChild == null) {
-      return false
-    }
-    if (lastChild.getPsi.isInstanceOf[PsiErrorElement]) {
-      return true
-    }
+             .isInstanceOf[PsiComment])) { lastChild = lastChild.getTreePrev }
+    if (lastChild == null) { return false }
+    if (lastChild.getPsi.isInstanceOf[PsiErrorElement]) { return true }
     isIncomplete(lastChild)
   }
 
@@ -295,7 +289,5 @@ object SubBlocksContext {
     new SubBlocksContext(
       Seq(),
       None,
-      Map({
-        node -> SubBlocksContext(childNodes, Some(alignment))
-      }))
+      Map({ node -> SubBlocksContext(childNodes, Some(alignment)) }))
 }

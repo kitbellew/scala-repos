@@ -121,11 +121,8 @@ object Server {
       block: Port => T)(implicit provider: ServerProvider): T = {
     Play.start(application)
     val server = provider.createServer(config, application)
-    try {
-      block(new Port((server.httpPort orElse server.httpsPort).get))
-    } finally {
-      server.stop()
-    }
+    try { block(new Port((server.httpPort orElse server.httpsPort).get)) }
+    finally { server.stop() }
   }
 
   /**

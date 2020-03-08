@@ -4,17 +4,29 @@ class Coll[+T] {
   type A1 <: T
   type A2 <: A1
 
-  def contains = new { def apply[T1 <: T](value: T1) = ??? }
-  def contains1 = new { def apply[T1 <: A1](value: T1) = ??? }
-  def contains2 = new { def apply[T1 <: A2](value: T1) = ??? }
+  def contains = new {
+    def apply[T1 <: T](value: T1) = ???
+  }
+  def contains1 = new {
+    def apply[T1 <: A1](value: T1) = ???
+  }
+  def contains2 = new {
+    def apply[T1 <: A2](value: T1) = ???
+  }
   def contains3 = {
     trait Bippy {
       type B1 <: T
       type B2 <: B1
     }
-    new Bippy { def apply[T1 <: T](value: T1) = ??? }
-    new Bippy { def apply[T1 <: B1](value: T1) = ??? }
-    new Bippy { def apply[T1 <: B2](value: T1) = ??? }
+    new Bippy {
+      def apply[T1 <: T](value: T1) = ???
+    }
+    new Bippy {
+      def apply[T1 <: B1](value: T1) = ???
+    }
+    new Bippy {
+      def apply[T1 <: B2](value: T1) = ???
+    }
     new Bippy {
       type B3 = B2
       type B4 = List[B2]
@@ -33,9 +45,15 @@ class Coll[+T] {
       type B1 <: AnyRef
       type B2 <: B1
     }
-    new Bippy { def apply[T1 <: AnyRef](value: T1) = ??? }
-    new Bippy { type B1 = String; def apply[T1 <: B1](value: T1) = ??? }
-    new Bippy { type B2 = String; def apply[T1 <: B2](value: T1) = ??? }
+    new Bippy {
+      def apply[T1 <: AnyRef](value: T1) = ???
+    }
+    new Bippy {
+      type B1 = String; def apply[T1 <: B1](value: T1) = ???
+    }
+    new Bippy {
+      type B2 = String; def apply[T1 <: B2](value: T1) = ???
+    }
   }
 }
 

@@ -52,18 +52,14 @@ class PerspectiveCamera(
     * Specifies the vertical angle of the camera's projection.
     */
   def fieldOfView: DoubleProperty = delegate.fieldOfViewProperty
-  def fieldOfView_=(v: Double) {
-    fieldOfView() = v
-  }
+  def fieldOfView_=(v: Double) { fieldOfView() = v }
 
   /**
     * Defines whether the `fieldOfView` property is to apply to the vertical dimension of the projection plane.
     */
   def verticalFieldOfView: BooleanProperty =
     delegate.verticalFieldOfViewProperty
-  def verticalFieldOfView_=(v: Boolean) {
-    verticalFieldOfView() = v
-  }
+  def verticalFieldOfView_=(v: Boolean) { verticalFieldOfView() = v }
 
   def isFixedEyeAtCameraZero = delegate.isFixedEyeAtCameraZero
 }

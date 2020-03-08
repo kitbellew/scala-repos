@@ -177,17 +177,13 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
 
     // Set0 should have same EI as Set1, since their dsp are the same instance.
     evalDataSet0.zip(evalDataSet1).foreach {
-      case (e0, e1) => {
-        e0._1 should be theSameInstanceAs (e1._1)
-      }
+      case (e0, e1) => { e0._1 should be theSameInstanceAs (e1._1) }
     }
 
     // Set1 should have different EI as Set2, since Set2's dsp is another
     // instance
     evalDataSet1.zip(evalDataSet2).foreach {
-      case (e1, e2) => {
-        e1._1 should not be theSameInstanceAs(e2._1)
-      }
+      case (e1, e2) => { e1._1 should not be theSameInstanceAs(e2._1) }
     }
   }
 }

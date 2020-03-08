@@ -35,9 +35,8 @@ object TypeUtils {
   }
 
   def checkForOrderingExpr(dt: DataType, caller: String): TypeCheckResult = {
-    if (RowOrdering.isOrderable(dt)) {
-      TypeCheckResult.TypeCheckSuccess
-    } else {
+    if (RowOrdering.isOrderable(dt)) { TypeCheckResult.TypeCheckSuccess }
+    else {
       TypeCheckResult.TypeCheckFailure(
         s"$caller does not support ordering on type $dt")
     }
@@ -50,9 +49,7 @@ object TypeUtils {
       TypeCheckResult.TypeCheckFailure(
         s"input to $caller should all be the same type, but it's " +
           types.map(_.simpleString).mkString("[", ", ", "]"))
-    } else {
-      TypeCheckResult.TypeCheckSuccess
-    }
+    } else { TypeCheckResult.TypeCheckSuccess }
   }
 
   def getNumeric(t: DataType): Numeric[Any] =

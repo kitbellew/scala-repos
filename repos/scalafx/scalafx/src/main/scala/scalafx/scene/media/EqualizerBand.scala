@@ -62,24 +62,18 @@ class EqualizerBand(
     * Bandwidth of the band in Hertz.
     */
   def bandwidth: DoubleProperty = delegate.bandwidthProperty
-  def bandwidth_=(v: Double) {
-    bandwidth() = v
-  }
+  def bandwidth_=(v: Double) { bandwidth() = v }
 
   /**
     * Center frequency of the band in Hertz.
     */
   def centerFrequency: DoubleProperty = delegate.centerFrequencyProperty
-  def centerFrequency_=(v: Double) {
-    centerFrequency() = v
-  }
+  def centerFrequency_=(v: Double) { centerFrequency() = v }
 
   /**
     * The gain to be applied to the frequencies of this band.
     */
   def gain: DoubleProperty = delegate.gainProperty
-  def gain_=(v: Double) {
-    gain() = v
-  }
+  def gain_=(v: Double) { gain() = v }
 
 }

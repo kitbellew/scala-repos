@@ -307,9 +307,7 @@ private[sql] class SQLListener(conf: SparkConf)
   }
 
   def getExecution(executionId: Long): Option[SQLExecutionUIData] =
-    synchronized {
-      _executionIdToData.get(executionId)
-    }
+    synchronized { _executionIdToData.get(executionId) }
 
   /**
     * Get all accumulator updates from all tasks which belong to this execution and merge them.
@@ -382,9 +380,7 @@ private[spark] class SQLHistoryListener(conf: SparkConf, sparkUI: SparkUI)
           val newValue = new LongSQLMetricValue(
             a.update.map(_.toString.toLong).getOrElse(0L))
           Some(a.copy(update = Some(newValue)))
-        } else {
-          None
-        }
+        } else { None }
       },
       finishTask = true
     )

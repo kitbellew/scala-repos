@@ -70,11 +70,8 @@ private[sql] object SparkSqlSerializer {
 
   private[this] def acquireRelease[O](fn: SerializerInstance => O): O = {
     val kryo = resourcePool.borrow
-    try {
-      fn(kryo)
-    } finally {
-      resourcePool.release(kryo)
-    }
+    try { fn(kryo) }
+    finally { resourcePool.release(kryo) }
   }
 
   def serialize[T: ClassTag](o: T): Array[Byte] =

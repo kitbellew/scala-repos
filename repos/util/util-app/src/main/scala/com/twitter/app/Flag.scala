@@ -338,9 +338,7 @@ class Flag[T: Flaggable] private[app] (
   }
 
   protected def getValue: Option[T] = {
-    if (registered.compareAndSet(false, true)) {
-      register()
-    }
+    if (registered.compareAndSet(false, true)) { register() }
     localValue match {
       case lv @ Some(_) => lv
       case None         => value
@@ -353,9 +351,8 @@ class Flag[T: Flaggable] private[app] (
   private lazy val default: Option[T] = defaultOrUsage match {
     case Right(_) => None
     case Left(d) =>
-      try {
-        Some(d())
-      } catch {
+      try { Some(d()) }
+      catch {
         case e: Throwable =>
           throw new RuntimeException(
             s"Could not run default function for flag $name",
@@ -379,9 +376,7 @@ class Flag[T: Flaggable] private[app] (
     val prev = localValue
     setLocalValue(Some(t))
     try f
-    finally {
-      setLocalValue(prev)
-    }
+    finally { setLocalValue(prev) }
   }
 
   /**
@@ -435,9 +430,8 @@ class Flag[T: Flaggable] private[app] (
 
   /** String representation of this flag's default value */
   def defaultString(): String = {
-    try {
-      flaggable.show(default getOrElse { throw flagNotFound })
-    } catch {
+    try { flaggable.show(default getOrElse { throw flagNotFound }) }
+    catch {
       case e: Throwable =>
         log.log(Level.SEVERE, s"Flag $name default cannot be read", e)
         throw e
@@ -453,9 +447,8 @@ class Flag[T: Flaggable] private[app] (
   }
 
   private[this] def runDefaultString = {
-    try {
-      defaultString
-    } catch {
+    try { defaultString }
+    catch {
       case e: Throwable =>
         s"Error in reading default value for flag=$name.  See logs for exception"
     }
@@ -485,9 +478,7 @@ class Flag[T: Flaggable] private[app] (
     _parsingDone = true
   }
 
-  private[app] def finishParsing() {
-    _parsingDone = true
-  }
+  private[app] def finishParsing() { _parsingDone = true }
 
   /** Indicates whether or not the flag is valid without an argument. */
   def noArgumentOk: Boolean = flaggable.default.isDefined
@@ -565,9 +556,7 @@ class Flags(
   // Add a help flag by default
   private[this] val helpFlag = this("help", false, "Show this help")
 
-  def reset() = synchronized {
-    flags foreach { case (_, f) => f.reset() }
-  }
+  def reset() = synchronized { flags foreach { case (_, f) => f.reset() } }
 
   private[app] def finishParsing(): Unit = {
     flags.values.foreach { _.finishParsing() }
@@ -663,9 +652,7 @@ class Flags(
                 )
             }
         }
-      } else {
-        remaining += a
-      }
+      } else { remaining += a }
     }
     finishParsing()
 
@@ -799,9 +786,7 @@ class Flags(
     * Set the flags' command usage; this is a message printed
     * before the flag definitions in the usage string.
     */
-  def setCmdUsage(u: String) {
-    cmdUsage = u
-  }
+  def setCmdUsage(u: String) { cmdUsage = u }
 
   def usage: String = synchronized {
     val lines =
@@ -847,9 +832,7 @@ class Flags(
     var flags =
       TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this.flags.valuesIterator
 
-    if (includeGlobal) {
-      flags ++= GlobalFlag.getAll(classLoader).iterator
-    }
+    if (includeGlobal) { flags ++= GlobalFlag.getAll(classLoader).iterator }
 
     flags
   }
@@ -980,9 +963,8 @@ private object GlobalFlag {
   private[this] val log = java.util.logging.Logger.getLogger("")
 
   def getAllOrEmptyArray(loader: ClassLoader): Seq[Flag[_]] = {
-    try {
-      getAll(loader)
-    } catch {
+    try { getAll(loader) }
+    catch {
       //NOTE: We catch Throwable as ExceptionInInitializerError and any errors really so that
       //we don't hide the real issue that a developer just added an unparseable arg.
       case e: Throwable =>

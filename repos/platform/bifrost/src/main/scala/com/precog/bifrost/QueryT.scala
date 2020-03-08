@@ -58,9 +58,7 @@ final case class QueryT[Q[+_], M[+_], +A](run: M[Q[A]]) {
 trait QueryTCompanion[Q[+_]] extends QueryTInstances[Q] with QueryTHoist[Q] {
   def apply[Q[+_], M[+_], A](a: M[A])(implicit
       M: Functor[M],
-      Q: SwappableMonad[Q]): QueryT[Q, M, A] = {
-    QueryT(M.map(a)(Q.point(_)))
-  }
+      Q: SwappableMonad[Q]): QueryT[Q, M, A] = { QueryT(M.map(a)(Q.point(_))) }
 }
 
 trait QueryTInstances0[Q[+_]] {

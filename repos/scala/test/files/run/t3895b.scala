@@ -24,7 +24,5 @@ class DryRun {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    new DryRun().test
-  }
+  def main(args: Array[String]) { new DryRun().test }
 }

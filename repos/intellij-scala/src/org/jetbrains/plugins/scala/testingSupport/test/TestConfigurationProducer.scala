@@ -46,9 +46,8 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
       configuration: AbstractTestRunConfiguration,
       context: ConfigurationContext,
       sourceElement: Ref[PsiElement]): Boolean = {
-    if (sourceElement.isNull) {
-      false
-    } else {
+    if (sourceElement.isNull) { false }
+    else {
       createConfigurationByElement(context.getLocation, context) match {
         case Some((testElement, resConfig))
             if testElement != null && resConfig != null =>

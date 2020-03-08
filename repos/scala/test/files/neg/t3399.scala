@@ -15,9 +15,7 @@ object Nats {
   trait Fold[-Elem, Value] {
     type Apply[N <: Elem, Acc <: Value] <: Value
   }
-  type Inc = Fold[Any, Nat] {
-    type Apply[N <: Any, Acc <: Nat] = Succ[Acc]
-  }
+  type Inc = Fold[Any, Nat] { type Apply[N <: Any, Acc <: Nat] = Succ[Acc] }
 
   type _1 = Succ[_0]
   implicitly[Add[_1, _1] =:= _1]

@@ -19,10 +19,7 @@ object ScalaSirdRouter extends Specification {
     "allow a simple match" in {
       //#simple
       val router = Router.from {
-        case GET(p"/hello/$to") =>
-          Action {
-            Results.Ok(s"Hello $to")
-          }
+        case GET(p"/hello/$to") => Action { Results.Ok(s"Hello $to") }
       }
       //#simple
 
@@ -47,10 +44,7 @@ object ScalaSirdRouter extends Specification {
     "allow a regex match" in {
       //#regexp
       val router = Router.from {
-        case GET(p"/items/$id<[0-9]+>") =>
-          Action {
-            Results.Ok(s"Item $id")
-          }
+        case GET(p"/items/$id<[0-9]+>") => Action { Results.Ok(s"Item $id") }
       }
       //#regexp
 
@@ -62,9 +56,7 @@ object ScalaSirdRouter extends Specification {
       //#required
       val router = Router.from {
         case GET(p"/search" ? q"query=$query") =>
-          Action {
-            Results.Ok(s"Searching for $query")
-          }
+          Action { Results.Ok(s"Searching for $query") }
       }
       //#required
 
@@ -128,10 +120,7 @@ object ScalaSirdRouter extends Specification {
     "allow sub extractor" in {
       //#int
       val router = Router.from {
-        case GET(p"/items/${int(id)}") =>
-          Action {
-            Results.Ok(s"Item $id")
-          }
+        case GET(p"/items/${int(id)}") => Action { Results.Ok(s"Item $id") }
       }
       //#int
 
@@ -162,9 +151,7 @@ object ScalaSirdRouter extends Specification {
         case rh @ GET(
               p"/items/${idString @ int(id)}" ?
                 q"price=${int(price)}") if price > 200 =>
-          Action {
-            Results.Ok(s"Expensive item $id")
-          }
+          Action { Results.Ok(s"Expensive item $id") }
       }
       //#complex
 

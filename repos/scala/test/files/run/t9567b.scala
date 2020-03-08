@@ -58,7 +58,5 @@ object Test {
     }
     assert(result)
   }
-  def main(args: Array[String]) {
-    testMethodLocalCaseClass
-  }
+  def main(args: Array[String]) { testMethodLocalCaseClass }
 }

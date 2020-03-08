@@ -59,9 +59,7 @@ object WorksheetSourceProcessor {
         try {
           val (a, b) = (Integer parseInt nums(0), Integer parseInt nums(1))
           if (a > -1 && b > -1) Some((a, b)) else None
-        } catch {
-          case _: NumberFormatException => None
-        }
+        } catch { case _: NumberFormatException => None }
       } else None
     } else None
   }
@@ -342,9 +340,8 @@ object WorksheetSourceProcessor {
     rootChildren foreach {
       case tpe: ScTypeAlias =>
         withPrecomputeLines(
-          tpe, {
-            objectRes append withPrint(s"defined type alias ${tpe.name}")
-          })
+          tpe,
+          { objectRes append withPrint(s"defined type alias ${tpe.name}") })
       case fun: ScFunction =>
         val hadMods =
           fun.getModifierList.accessModifier map (_.modifierFormattedText) getOrElse ""

@@ -86,9 +86,7 @@ object Scheduler extends Scheduler {
     * @param sched the other Scheduler to swap in for the one that is
     * currently set
     */
-  def setUnsafe(sched: Scheduler): Unit = {
-    self = sched
-  }
+  def setUnsafe(sched: Scheduler): Unit = { self = sched }
 
   def submit(r: Runnable) = self.submit(r)
   def flush() = self.flush()
@@ -146,15 +144,11 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
       } else if (r1 != null) {
         r2 = r1
         r1 = r0
-      } else if (r0 != null) {
-        r1 = r0
-      }
+      } else if (r0 != null) { r1 = r0 }
       r0 = r
     }
 
-    def flush(): Unit = {
-      if (running) run()
-    }
+    def flush(): Unit = { if (running) run() }
 
     @inline def hasNext: Boolean = running && r0 != null
 
@@ -177,9 +171,7 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
       try {
         while (hasNext)
           next().run()
-      } finally {
-        running = save
-      }
+      } finally { running = save }
     }
 
     def blocking[T](f: => T)(implicit perm: CanAwait): T = f
@@ -296,13 +288,9 @@ class BridgedThreadPoolScheduler(
       local.submit(r)
     else
       try executor.execute(new Runnable {
-        def run() {
-          BridgedThreadPoolScheduler.this.submit(r)
-        }
+        def run() { BridgedThreadPoolScheduler.this.submit(r) }
       })
-      catch {
-        case _: RejectedExecutionException => local.submit(r)
-      }
+      catch { case _: RejectedExecutionException => local.submit(r) }
   }
 
   override def flush() =

@@ -49,9 +49,7 @@ object Line {
         }
     }
 
-    loop(lines collect {
-      case Node(move, _) => List(move)
-    })
+    loop(lines collect { case Node(move, _) => List(move) })
   }
 
   def toString(lines: Lines, level: Int = 0): String = {

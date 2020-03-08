@@ -114,9 +114,8 @@ class BernoulliCellSampler[T](
   override def setSeed(seed: Long): Unit = rng.setSeed(seed)
 
   override def sample(items: Iterator[T]): Iterator[T] = {
-    if (ub - lb <= 0.0) {
-      if (complement) items else Iterator.empty
-    } else {
+    if (ub - lb <= 0.0) { if (complement) items else Iterator.empty }
+    else {
       if (complement) {
         items.filter { item =>
           {
@@ -168,15 +167,11 @@ class BernoulliSampler[T: ClassTag](fraction: Double)
   override def setSeed(seed: Long): Unit = rng.setSeed(seed)
 
   override def sample(items: Iterator[T]): Iterator[T] = {
-    if (fraction <= 0.0) {
-      Iterator.empty
-    } else if (fraction >= 1.0) {
-      items
-    } else if (fraction <= RandomSampler.defaultMaxGapSamplingFraction) {
+    if (fraction <= 0.0) { Iterator.empty }
+    else if (fraction >= 1.0) { items }
+    else if (fraction <= RandomSampler.defaultMaxGapSamplingFraction) {
       new GapSamplingIterator(items, fraction, rng, RandomSampler.rngEpsilon)
-    } else {
-      items.filter { _ => rng.nextDouble() <= fraction }
-    }
+    } else { items.filter { _ => rng.nextDouble() <= fraction } }
   }
 
   override def clone: BernoulliSampler[T] = new BernoulliSampler[T](fraction)
@@ -215,10 +210,9 @@ class PoissonSampler[T: ClassTag](
   }
 
   override def sample(items: Iterator[T]): Iterator[T] = {
-    if (fraction <= 0.0) {
-      Iterator.empty
-    } else if (useGapSamplingIfPossible &&
-               fraction <= RandomSampler.defaultMaxGapSamplingFraction) {
+    if (fraction <= 0.0) { Iterator.empty }
+    else if (useGapSamplingIfPossible &&
+             fraction <= RandomSampler.defaultMaxGapSamplingFraction) {
       new GapSamplingReplacementIterator(
         items,
         fraction,

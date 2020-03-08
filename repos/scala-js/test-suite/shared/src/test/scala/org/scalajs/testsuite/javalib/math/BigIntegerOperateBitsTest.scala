@@ -102,9 +102,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -119,9 +117,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -162,9 +158,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -179,9 +173,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -196,9 +188,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -213,9 +203,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -230,9 +218,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -247,9 +233,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -264,9 +248,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -281,9 +263,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -298,9 +278,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -313,9 +291,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -328,9 +304,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(0, result.signum())
   }
 
@@ -343,9 +317,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.clearBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(0, result.signum())
   }
 
@@ -367,9 +339,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -382,9 +352,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -399,9 +367,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -416,9 +382,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -460,9 +424,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -477,9 +439,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -494,9 +454,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -511,9 +469,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -528,9 +484,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -545,9 +499,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -560,9 +512,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -575,9 +525,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -590,9 +538,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.flipBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -622,9 +568,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -639,9 +583,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -656,9 +598,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -698,9 +638,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -715,9 +653,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -732,9 +668,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -749,9 +683,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -766,9 +698,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -783,9 +713,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -800,9 +728,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -817,9 +743,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -832,9 +756,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -847,9 +769,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -862,9 +782,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.setBit(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -879,9 +797,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftLeft(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -895,9 +811,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftLeft(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -912,9 +826,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftLeft(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -929,9 +841,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftLeft(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -946,9 +856,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftLeft(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -963,9 +871,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftRight(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -980,9 +886,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftRight(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -996,9 +900,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftRight(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -1012,9 +914,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftRight(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -1028,9 +928,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftRight(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(0, result.signum())
   }
 
@@ -1044,9 +942,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftRight(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -1060,9 +956,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftRight(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -1076,9 +970,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftRight(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -1092,9 +984,7 @@ class BigIntegerOperateBitsTest {
     val result = aNumber.shiftRight(number)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 

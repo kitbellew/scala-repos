@@ -61,9 +61,8 @@ private[concurrent] trait BatchingExecutor extends Executor {
             case Nil => ()
             case head :: tail =>
               _tasksLocal set tail
-              try {
-                head.run()
-              } catch {
+              try { head.run() }
+              catch {
                 case t: Throwable =>
                   // if one task throws, move the
                   // remaining tasks to another thread

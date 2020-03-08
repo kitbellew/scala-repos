@@ -206,9 +206,7 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
       }
       outputStream.output.asScala.map(_.flatten).toSeq
 
-    } finally {
-      ssc.stop(stopSparkContext = stopSparkContext)
-    }
+    } finally { ssc.stop(stopSparkContext = stopSparkContext) }
   }
 
   private def assertOutput[V: ClassTag](
@@ -217,9 +215,7 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
       beforeRestart: Boolean): Unit = {
     val expectedPartialOutput = if (beforeRestart) {
       expectedOutput.take(output.size)
-    } else {
-      expectedOutput.takeRight(output.size)
-    }
+    } else { expectedOutput.takeRight(output.size) }
     val setComparison = output.zip(expectedPartialOutput).forall {
       case (o, e) => o.toSet === e.toSet
     }
@@ -255,9 +251,7 @@ class CheckpointSuite
     try {
       if (ssc != null) { ssc.stop() }
       Utils.deleteRecursively(new File(checkpointDir))
-    } finally {
-      super.afterFunction()
-    }
+    } finally { super.afterFunction() }
   }
 
   test("basic rdd checkpoints + dstream graph checkpoint recovery") {
@@ -412,9 +406,7 @@ class CheckpointSuite
         newCpConf.get("spark.app.name") === originalConf.get("spark.app.name"))
       ssc = new StreamingContext(null, newCp, null)
       assert(ssc.sparkContext.master === newMaster)
-    } finally {
-      System.clearProperty("spark.master")
-    }
+    } finally { System.clearProperty("spark.master") }
   }
 
   // This tests if "spark.driver.host" and "spark.driver.port" is set by user, can be recovered
@@ -535,9 +527,7 @@ class CheckpointSuite
           Seq()),
         3
       )
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally { Utils.deleteRecursively(tempDir) }
   }
 
   test("recovery with saveAsNewAPIHadoopFiles operation") {
@@ -570,9 +560,7 @@ class CheckpointSuite
           Seq()),
         3
       )
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally { Utils.deleteRecursively(tempDir) }
   }
 
   test("recovery with saveAsHadoopFile inside transform operation") {
@@ -621,9 +609,7 @@ class CheckpointSuite
           Seq()),
         3
       )
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally { Utils.deleteRecursively(tempDir) }
   }
 
   // This tests whether the StateDStream's RDD checkpoints works correctly such
@@ -845,9 +831,7 @@ class CheckpointSuite
         val expectedOutput = Seq(1, 3, 6, 10, 15, 21, 28, 36, 45)
         assert(outputBuffer.asScala.flatten.toSet === expectedOutput.toSet)
       }
-    } finally {
-      Utils.deleteRecursively(testDir)
-    }
+    } finally { Utils.deleteRecursively(testDir) }
   }
 
   test("DStreamCheckpointData.restore invoking times") {
@@ -1000,11 +984,8 @@ class CheckpointSuite
         def findAllMarkedRDDs(rdd: RDD[_]): List[RDD[_]] = {
           val markedRDDs =
             rdd.dependencies.flatMap(dep => findAllMarkedRDDs(dep.rdd)).toList
-          if (rdd.checkpointData.isDefined) {
-            rdd :: markedRDDs
-          } else {
-            markedRDDs
-          }
+          if (rdd.checkpointData.isDefined) { rdd :: markedRDDs }
+          else { markedRDDs }
         }
 
         shouldCheckpointAllMarkedRDDs = Option(

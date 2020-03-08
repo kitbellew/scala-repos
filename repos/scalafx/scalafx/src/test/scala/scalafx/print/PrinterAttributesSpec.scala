@@ -54,9 +54,7 @@ class PrinterAttributesSpec
     if (jfxp.Printer.getDefaultPrinter == null
         || jfxp.Printer.getDefaultPrinter.getPrinterAttributes == null) {
       "Neither Default Printer nor Printer Attributes defined."
-    } else {
-      ""
-    }
+    } else { "" }
 
   override val skipJfxToSfxCause = skipingMessage
 

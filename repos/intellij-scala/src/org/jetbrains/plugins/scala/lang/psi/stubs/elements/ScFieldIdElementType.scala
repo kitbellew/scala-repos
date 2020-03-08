@@ -27,9 +27,7 @@ class ScFieldIdElementType[Func <: ScFieldId]
     dataStream.writeName(stub.getName)
   }
 
-  def createPsi(stub: ScFieldIdStub): ScFieldId = {
-    new ScFieldIdImpl(stub)
-  }
+  def createPsi(stub: ScFieldIdStub): ScFieldId = { new ScFieldIdImpl(stub) }
 
   def deserializeImpl(
       dataStream: StubInputStream,

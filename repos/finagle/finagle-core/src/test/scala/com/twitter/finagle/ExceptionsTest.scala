@@ -75,16 +75,12 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
     val writeEx = WriteException(rootCause)
     assert(writeEx.getCause == rootCause)
 
-    writeEx match {
-      case WriteException(cause) => assert(cause == rootCause)
-    }
+    writeEx match { case WriteException(cause) => assert(cause == rootCause) }
   }
 
   test("WriteException should no cause") {
     val writeEx = WriteException(null)
-    writeEx match {
-      case WriteException(cause) => assert(cause == null)
-    }
+    writeEx match { case WriteException(cause) => assert(cause == null) }
   }
 
   test(

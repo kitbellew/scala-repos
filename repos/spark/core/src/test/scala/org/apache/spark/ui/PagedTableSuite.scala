@@ -34,16 +34,12 @@ class PagedDataSourceSuite extends SparkFunSuite {
     assert(dataSource3.pageData(3) === PageData(3, Seq(5)))
 
     val dataSource4 = new SeqPagedDataSource[Int](1 to 5, pageSize = 2)
-    val e1 = intercept[IndexOutOfBoundsException] {
-      dataSource4.pageData(4)
-    }
+    val e1 = intercept[IndexOutOfBoundsException] { dataSource4.pageData(4) }
     assert(
       e1.getMessage === "Page 4 is out of range. Please select a page number between 1 and 3.")
 
     val dataSource5 = new SeqPagedDataSource[Int](1 to 5, pageSize = 2)
-    val e2 = intercept[IndexOutOfBoundsException] {
-      dataSource5.pageData(0)
-    }
+    val e2 = intercept[IndexOutOfBoundsException] { dataSource5.pageData(0) }
     assert(
       e2.getMessage === "Page 0 is out of range. Please select a page number between 1 and 3.")
 

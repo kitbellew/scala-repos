@@ -21,9 +21,7 @@ class HttpMessageMatchingBenchmark {
 
   @Benchmark
   def res_matching: HttpResponse = {
-    res match {
-      case r @ HttpResponse(status, headers, entity, protocol) => r
-    }
+    res match { case r @ HttpResponse(status, headers, entity, protocol) => r }
   }
 
   @Benchmark

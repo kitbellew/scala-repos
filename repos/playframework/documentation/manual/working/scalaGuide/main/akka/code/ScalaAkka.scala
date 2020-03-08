@@ -19,9 +19,8 @@ package scalaguide.akka {
 
     def withActorSystem[T](block: ActorSystem => T) = {
       val system = ActorSystem()
-      try {
-        block(system)
-      } finally {
+      try { block(system) }
+      finally {
         system.terminate()
         Await.result(system.whenTerminated, Duration.Inf)
       }
@@ -107,9 +106,7 @@ package scalaguide.akka {
         file.mkdirs()
         //#schedule-callback
         import play.api.libs.concurrent.Execution.Implicits.defaultContext
-        system.scheduler.scheduleOnce(10.milliseconds) {
-          file.delete()
-        }
+        system.scheduler.scheduleOnce(10.milliseconds) { file.delete() }
         //#schedule-callback
         Thread.sleep(200)
         file.exists() must beFalse
@@ -171,9 +168,7 @@ package scalaguide.akka {
     import actors.ConfiguredActor
 
     class MyModule extends AbstractModule with AkkaGuiceSupport {
-      def configure = {
-        bindActor[ConfiguredActor]("configured-actor")
-      }
+      def configure = { bindActor[ConfiguredActor]("configured-actor") }
     }
 //#binding
   }

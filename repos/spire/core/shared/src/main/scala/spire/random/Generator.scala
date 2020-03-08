@@ -83,9 +83,8 @@ abstract class Generator {
     */
   def nextInt(from: Int, to: Int): Int = {
     val width = UInt(to - from + 1)
-    if (width == UInt(0)) {
-      nextInt()
-    } else {
+    if (width == UInt(0)) { nextInt() }
+    else {
       val cap = if (width > UInt(Int.MinValue)) width else retryCap(width)
       if (cap == UInt(0)) {
         val x = UInt(nextInt())
@@ -131,9 +130,8 @@ abstract class Generator {
     */
   def nextLong(from: Long, to: Long): Long = {
     val width = ULong(to - from + 1)
-    if (width == ULong(0)) {
-      nextLong()
-    } else {
+    if (width == ULong(0)) { nextLong() }
+    else {
       val cap = if (width > ULong(Long.MinValue)) width else retryCap(width)
       if (cap == ULong(0)) {
         val x = ULong(nextLong())
@@ -329,9 +327,8 @@ abstract class Generator {
     } else if (size < as.length) {
       var i = 0
       while (i < as.length) {
-        if (i < size) {
-          chosen(i) = as(i)
-        } else {
+        if (i < size) { chosen(i) = as(i) }
+        else {
           val n: Int = gen.nextInt(i + 1)
           if (n < size) chosen(n) = as(i)
         }
@@ -353,9 +350,8 @@ abstract class Generator {
     val chosen: Array[A] = new Array[A](size)
     var i: Int = 0
     as.foreach { a =>
-      if (i < size) {
-        chosen(i) = a
-      } else {
+      if (i < size) { chosen(i) = a }
+      else {
         val n: Int = gen.nextInt(i + 1)
         if (n < size) chosen(n) = a
       }

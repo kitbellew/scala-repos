@@ -131,9 +131,7 @@ class Word2VecSuite
       .sort("word")
       .select("vector")
       .rdd
-      .map {
-        case Row(v: Vector) => v
-      }
+      .map { case Row(v: Vector) => v }
       .collect()
     // These expectations are just magic values, characterizing the current
     // behavior.  The test needs to be updated to be more general, see SPARK-11502
@@ -175,9 +173,7 @@ class Word2VecSuite
     val (synonyms, similarity) = model
       .findSynonyms("a", 2)
       .rdd
-      .map {
-        case Row(w: String, sim: Double) => (w, sim)
-      }
+      .map { case Row(w: String, sim: Double) => (w, sim) }
       .collect()
       .unzip
 
@@ -209,9 +205,7 @@ class Word2VecSuite
     val (synonyms, similarity) = model
       .findSynonyms("a", 6)
       .rdd
-      .map {
-        case Row(w: String, sim: Double) => (w, sim)
-      }
+      .map { case Row(w: String, sim: Double) => (w, sim) }
       .collect()
       .unzip
 
@@ -227,9 +221,7 @@ class Word2VecSuite
     val (synonymsLarger, similarityLarger) = model
       .findSynonyms("a", 6)
       .rdd
-      .map {
-        case Row(w: String, sim: Double) => (w, sim)
-      }
+      .map { case Row(w: String, sim: Double) => (w, sim) }
       .collect()
       .unzip
     // The similarity score should be very different with the larger window

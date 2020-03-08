@@ -79,9 +79,7 @@ class IsotonicRegressionSuite
       .transform(features)
       .select("prediction")
       .rdd
-      .map {
-        case Row(pred) => pred
-      }
+      .map { case Row(pred) => pred }
       .collect()
 
     assert(predictions === Array(7, 7, 6, 5.5, 5, 4, 1))
@@ -182,9 +180,7 @@ class IsotonicRegressionSuite
       .transform(features)
       .select("prediction")
       .rdd
-      .map {
-        case Row(pred) => pred
-      }
+      .map { case Row(pred) => pred }
       .collect()
 
     assert(predictions === Array(3.5, 5.0, 5.0, 5.0))

@@ -18,7 +18,9 @@ import scala.concurrent.duration._
 
 object EndToEndEventAdapterSpec {
 
-  trait AppModel { def payload: Any }
+  trait AppModel {
+    def payload: Any
+  }
   case class A(payload: Any) extends AppModel
   case class B(payload: Any) extends AppModel
   case class NewA(payload: Any) extends AppModel

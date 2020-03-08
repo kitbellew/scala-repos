@@ -58,9 +58,7 @@ object DesktopShardServer
       accountFinder,
       jobManager)
 
-    val stoppable = Stoppable.fromFuture {
-      platform.shutdown
-    }
+    val stoppable = Stoppable.fromFuture { platform.shutdown }
 
     (platform, stoppable)
   }

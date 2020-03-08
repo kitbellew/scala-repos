@@ -26,9 +26,7 @@ object ArgumentExprs {
         Expr parse builder
         while (builder.getTokenType == ScalaTokenTypes.tCOMMA) {
           builder.advanceLexer()
-          if (!Expr.parse(builder)) {
-            builder error ErrMsg("wrong.expression")
-          }
+          if (!Expr.parse(builder)) { builder error ErrMsg("wrong.expression") }
         }
         builder.getTokenType match {
           case ScalaTokenTypes.tRPARENTHESIS =>

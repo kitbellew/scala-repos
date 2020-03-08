@@ -88,9 +88,7 @@ object Cross {
           Keys.forcegc in Global) getOrElse GCUtil.defaultForceGarbageCollection
         // This is how to get the interval, but ignore it, and just forcegc
         // val gcInterval = getOpt(Keys.minForcegcInterval in Global) getOrElse GCUtil.defaultMinForcegcInterval
-        if (isForceGc) {
-          GCUtil.forceGc(state.log)
-        }
+        if (isForceGc) { GCUtil.forceGc(state.log) }
 
         // TODO - Track delegates and avoid regenerating.
         val delegates: Seq[Setting[_]] = session.mergeSettings collect {

@@ -76,16 +76,13 @@ trait WsTestClient {
       def url(url: String) = {
         if (url.startsWith("/") && port.value != -1) {
           client.url(s"http://localhost:$port$url")
-        } else {
-          client.url(url)
-        }
+        } else { client.url(url) }
       }
       def close() = ()
     }
 
-    try {
-      block(wrappedClient)
-    } finally {
+    try { block(wrappedClient) }
+    finally {
       client.close()
       system.terminate()
     }

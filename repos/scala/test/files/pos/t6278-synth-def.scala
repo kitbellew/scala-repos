@@ -23,7 +23,5 @@ object test {
     //lazy
     val j = 2
   }
-  def main(args: Array[String]) {
-    ok(); nope()
-  }
+  def main(args: Array[String]) { ok(); nope() }
 }

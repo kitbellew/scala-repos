@@ -49,11 +49,8 @@ case class BroadcastExchange(mode: BroadcastMode, child: SparkPlan)
   @transient
   private val timeout: Duration = {
     val timeoutValue = sqlContext.conf.broadcastTimeout
-    if (timeoutValue < 0) {
-      Duration.Inf
-    } else {
-      timeoutValue.seconds
-    }
+    if (timeoutValue < 0) { Duration.Inf }
+    else { timeoutValue.seconds }
   }
 
   @transient

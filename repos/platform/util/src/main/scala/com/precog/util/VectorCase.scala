@@ -93,9 +93,7 @@ private[precog] object VectorCase {
           builder = new VectorBuilder[A]
           builder ++= small
         }
-      } else {
-        builder += a
-      }
+      } else { builder += a }
       this
     }
 
@@ -107,9 +105,7 @@ private[precog] object VectorCase {
           builder = new VectorBuilder[A]
           builder ++= small
         }
-      } else {
-        builder ++= seq
-      }
+      } else { builder ++= seq }
       this
     }
 
@@ -122,9 +118,7 @@ private[precog] object VectorCase {
           case 3 => Vector3(small(0), small(1), small(2))
           case 4 => Vector4(small(0), small(1), small(2), small(3))
         }
-      } else {
-        VectorN(builder.result())
-      }
+      } else { VectorN(builder.result()) }
     }
 
     def clear() = this
@@ -194,9 +188,7 @@ private[precog] case class Vector1[+A](_1: A) extends VectorCase[A] {
       VectorN(_1 +: that.toVector)
   }
 
-  override def foreach[U](f: A => U) {
-    f(_1)
-  }
+  override def foreach[U](f: A => U) { f(_1) }
 
   // TODO more methods
 
@@ -333,9 +325,8 @@ private[precog] case class VectorN[+A](vector: Vector[A])
   def ++[B >: A](that: VectorCase[B]) = VectorN(vector ++ that.toVector)
 
   override def drop(n: Int) = {
-    if (n <= 0) {
-      this
-    } else {
+    if (n <= 0) { this }
+    else {
       (vector.length - n) match {
         case x if x <= 0 => Vector0
         case 1           => Vector1(vector(vector.length - 1))
@@ -357,9 +348,8 @@ private[precog] case class VectorN[+A](vector: Vector[A])
   }
 
   override def dropRight(n: Int) = {
-    if (n <= 0) {
-      this
-    } else {
+    if (n <= 0) { this }
+    else {
       (vector.length - n) match {
         case x if x <= 0 => Vector0
         case 1           => Vector1(vector(0))
@@ -394,9 +384,8 @@ private[precog] case class VectorN[+A](vector: Vector[A])
   }
 
   override def take(n: Int) = {
-    if (n >= length) {
-      this
-    } else {
+    if (n >= length) { this }
+    else {
       n match {
         case x if x <= 0 => Vector0
         case 1           => Vector1(vector(0))
@@ -409,9 +398,8 @@ private[precog] case class VectorN[+A](vector: Vector[A])
   }
 
   override def takeRight(n: Int) = {
-    if (n >= length) {
-      this
-    } else {
+    if (n >= length) { this }
+    else {
       n match {
         case x if x <= 0 => Vector0
         case 1           => Vector1(vector(vector.length - 1))

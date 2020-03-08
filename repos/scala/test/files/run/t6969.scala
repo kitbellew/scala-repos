@@ -21,9 +21,7 @@ object Test {
       }
       choke()
     }
-    override def run() {
-      1 to 50 foreach g
-    }
+    override def run() { 1 to 50 foreach g }
   }
 
   def main(args: Array[String]): Unit = {

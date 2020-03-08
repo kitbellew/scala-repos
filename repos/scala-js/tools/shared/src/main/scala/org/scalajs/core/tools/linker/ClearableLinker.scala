@@ -50,9 +50,7 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
   def link(
       irFiles: Seq[VirtualScalaJSIRFile],
       output: WritableVirtualJSFile,
-      logger: Logger): Unit = {
-    linkerOp(_.link(irFiles, output, logger))
-  }
+      logger: Logger): Unit = { linkerOp(_.link(irFiles, output, logger)) }
 
   def clear(): Unit =
     _linker = null
@@ -61,9 +59,8 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
   private[this] def linkerOp[T](op: GenLinker => T): T = {
     ensureLinker()
 
-    try {
-      op(_linker)
-    } catch {
+    try { op(_linker) }
+    catch {
       // Clear if we throw
       case t: Throwable =>
         clear()

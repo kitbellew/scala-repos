@@ -67,9 +67,7 @@ object hist extends UFunc {
             val ad = a.toDouble
             val i: Int =
               math.floor(bins * ((ad - minima) / (maxima - minima))).toInt
-            if ((i >= 0) && (i < bins)) {
-              result(i) += 1
-            }
+            if ((i >= 0) && (i < bins)) { result(i) += 1 }
             if (ad == maxima) { //Include the endpoint
               result(bins - 1) += 1
             }
@@ -77,9 +75,7 @@ object hist extends UFunc {
           def zeros(numZero: Int, zeroValue: S): Unit = {
             val i =
               math.floor(bins * ((zeroValue.toDouble - minima) / maxima)).toInt
-            if ((i >= 0) && (i < bins)) {
-              result(i) += numZero
-            }
+            if ((i >= 0) && (i < bins)) { result(i) += numZero }
           }
         }
         iter.traverse(v, visitor)
@@ -142,9 +138,7 @@ object hist extends UFunc {
             val ad = a.toDouble
             val i: Int =
               math.floor(bins * ((ad - minima) / (maxima - minima))).toInt
-            if ((i >= 0) && (i < bins)) {
-              result(i) += w
-            }
+            if ((i >= 0) && (i < bins)) { result(i) += w }
             if (ad == maxima) { //Include the endpoint
               result(bins - 1) += w
             }

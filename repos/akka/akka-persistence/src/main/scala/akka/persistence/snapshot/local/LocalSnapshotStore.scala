@@ -81,9 +81,9 @@ private[persistence] class LocalSnapshotStore
       criteria: SnapshotSelectionCriteria): Future[Unit] = {
     val metadatas = snapshotMetadatas(persistenceId, criteria)
     Future
-      .sequence {
-        metadatas.map(deleteAsync)
-      }(collection.breakOut, streamDispatcher)
+      .sequence { metadatas.map(deleteAsync) }(
+        collection.breakOut,
+        streamDispatcher)
       .map(_ ⇒ ())(streamDispatcher)
   }
 

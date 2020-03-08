@@ -56,9 +56,7 @@ object Servlet30AsyncProvider extends AsyncProviderMeta {
     }
   }
 
-  def suspendResumeSupport_? : Boolean = {
-    hasContinuations_?
-  }
+  def suspendResumeSupport_? : Boolean = { hasContinuations_? }
 
   /**
     * return a function that vends the ServletAsyncProvider

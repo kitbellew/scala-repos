@@ -30,33 +30,23 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
 
     withClue(
       "Getting numNonzeros from empty summarizer should throw exception.") {
-      intercept[IllegalArgumentException] {
-        summarizer.numNonzeros
-      }
+      intercept[IllegalArgumentException] { summarizer.numNonzeros }
     }
 
     withClue("Getting variance from empty summarizer should throw exception.") {
-      intercept[IllegalArgumentException] {
-        summarizer.variance
-      }
+      intercept[IllegalArgumentException] { summarizer.variance }
     }
 
     withClue("Getting mean from empty summarizer should throw exception.") {
-      intercept[IllegalArgumentException] {
-        summarizer.mean
-      }
+      intercept[IllegalArgumentException] { summarizer.mean }
     }
 
     withClue("Getting max from empty summarizer should throw exception.") {
-      intercept[IllegalArgumentException] {
-        summarizer.max
-      }
+      intercept[IllegalArgumentException] { summarizer.max }
     }
 
     withClue("Getting min from empty summarizer should throw exception.") {
-      intercept[IllegalArgumentException] {
-        summarizer.min
-      }
+      intercept[IllegalArgumentException] { summarizer.min }
     }
 
     summarizer
@@ -81,9 +71,7 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
       (new MultivariateOnlineSummarizer).add(Vectors.dense(1.0, -2.0, 0.0, 4.0))
     withClue(
       "Merging a new summarizer with different dimensions should throw exception.") {
-      intercept[IllegalArgumentException] {
-        summarizer.merge(summarizer2)
-      }
+      intercept[IllegalArgumentException] { summarizer.merge(summarizer2) }
     }
   }
 

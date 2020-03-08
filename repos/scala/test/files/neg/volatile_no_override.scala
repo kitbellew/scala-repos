@@ -2,7 +2,9 @@ class B
 class C(x: String) extends B
 
 abstract class A {
-  class D { type T >: C <: B }
+  class D {
+    type T >: C <: B
+  }
   val x: D
   var y: x.T = new C("abc")
 }

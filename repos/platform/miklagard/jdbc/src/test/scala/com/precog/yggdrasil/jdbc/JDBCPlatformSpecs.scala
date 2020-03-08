@@ -90,9 +90,7 @@ object JDBCPlatformSpecEngine extends Logging {
   def release: Unit = lock.synchronized {
     refcount -= 1
 
-    if (refcount == 0) {
-      scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
-    }
+    if (refcount == 0) { scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS) }
 
     logger.debug("DB released, refcount = " + refcount)
   }
@@ -182,9 +180,7 @@ object JDBCPlatformSpecEngine extends Logging {
                   }
 
                   stmt.close()
-                } finally {
-                  conn.close()
-                }
+                } finally { conn.close() }
 
                 // Make sure we have the right amount of data
                 val conn2 = DriverManager.getConnection(dbURL)
@@ -204,9 +200,7 @@ object JDBCPlatformSpecEngine extends Logging {
 
               case Failure(error) => logger.error("Error loading: " + error)
             }
-          } catch {
-            case t: Throwable => logger.error("Error loading: " + t)
-          }
+          } catch { case t: Throwable => logger.error("Error loading: " + t) }
         }
       }
     }
@@ -285,13 +279,9 @@ trait JDBCPlatformSpecs
 
   def userMetadataView(apiKey: APIKey) = null
 
-  def startup() {
-    JDBCPlatformSpecEngine.acquire
-  }
+  def startup() { JDBCPlatformSpecEngine.acquire }
 
-  def shutdown() {
-    JDBCPlatformSpecEngine.release
-  }
+  def shutdown() { JDBCPlatformSpecEngine.release }
 
   override def map(fs: => Fragments): Fragments =
     Step { startup() } ^ fs ^ Step { shutdown() }
@@ -345,9 +335,7 @@ class JDBCLoadSpecs extends EvalStackSpecs with JDBCPlatformSpecs {
     }
 
     "count the campaigns dataset" >> {
-      "<root>" >> {
-        eval("count(//campaigns)") mustEqual Set(SDecimal(100))
-      }
+      "<root>" >> { eval("count(//campaigns)") mustEqual Set(SDecimal(100)) }
 
       "gender" >> {
         eval("count((//campaigns).gender)") mustEqual Set(SDecimal(100))
@@ -361,9 +349,7 @@ class JDBCLoadSpecs extends EvalStackSpecs with JDBCPlatformSpecs {
         eval("count((//campaigns).campaign)") mustEqual Set(SDecimal(100))
       }
 
-      "cpm" >> {
-        eval("count((//campaigns).cpm)") mustEqual Set(SDecimal(100))
-      }
+      "cpm" >> { eval("count((//campaigns).cpm)") mustEqual Set(SDecimal(100)) }
     }
 
     "reduce the obnoxiously large dataset" >> {

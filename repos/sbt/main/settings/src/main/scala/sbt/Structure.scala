@@ -19,7 +19,9 @@ import sbt.internal.util.{~>, AList, AttributeKey, Settings, SourcePosition}
 import language.experimental.macros
 import reflect.internal.annotations.compileTimeOnly
 
-sealed trait Scoped { def scope: Scope; val key: AttributeKey[_] }
+sealed trait Scoped {
+  def scope: Scope; val key: AttributeKey[_]
+}
 
 /** A common type for SettingKey and TaskKey so that both can be used as inputs to tasks.*/
 sealed trait ScopedTaskable[T] extends Scoped {
@@ -200,11 +202,17 @@ object Scoped {
   }
 
   def scopedSetting[T](s: Scope, k: AttributeKey[T]): SettingKey[T] =
-    new SettingKey[T] { val scope = s; val key = k }
+    new SettingKey[T] {
+      val scope = s; val key = k
+    }
   def scopedInput[T](s: Scope, k: AttributeKey[InputTask[T]]): InputKey[T] =
-    new InputKey[T] { val scope = s; val key = k }
+    new InputKey[T] {
+      val scope = s; val key = k
+    }
   def scopedTask[T](s: Scope, k: AttributeKey[Task[T]]): TaskKey[T] =
-    new TaskKey[T] { val scope = s; val key = k }
+    new TaskKey[T] {
+      val scope = s; val key = k
+    }
 
   /**
     * Mixin trait for adding convenience vocabulary associated with applying a setting to a configuration item.
@@ -999,7 +1007,9 @@ object InputKey {
         rank))
 
   def apply[T](akey: AttributeKey[InputTask[T]]): InputKey[T] =
-    new InputKey[T] { val key = akey; def scope = Scope.ThisScope }
+    new InputKey[T] {
+      val key = akey; def scope = Scope.ThisScope
+    }
 }
 
 /** Constructs TaskKeys, which are associated with tasks to define a setting.*/
@@ -1032,7 +1042,9 @@ object TaskKey {
         rank))
 
   def apply[T](akey: AttributeKey[Task[T]]): TaskKey[T] =
-    new TaskKey[T] { val key = akey; def scope = Scope.ThisScope }
+    new TaskKey[T] {
+      val key = akey; def scope = Scope.ThisScope
+    }
 
   def local[T: Manifest]: TaskKey[T] = apply[T](AttributeKey.local[Task[T]])
 }
@@ -1062,7 +1074,9 @@ object SettingKey {
       AttributeKey[T](label, description, extendScoped(extend1, extendN), rank))
 
   def apply[T](akey: AttributeKey[T]): SettingKey[T] =
-    new SettingKey[T] { val key = akey; def scope = Scope.ThisScope }
+    new SettingKey[T] {
+      val key = akey; def scope = Scope.ThisScope
+    }
 
   def local[T: Manifest]: SettingKey[T] = apply[T](AttributeKey.local[T])
 }

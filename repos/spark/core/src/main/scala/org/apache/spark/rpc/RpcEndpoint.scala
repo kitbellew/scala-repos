@@ -129,9 +129,7 @@ private[spark] trait RpcEndpoint {
     */
   final def stop(): Unit = {
     val _self = self
-    if (_self != null) {
-      rpcEnv.stop(_self)
-    }
+    if (_self != null) { rpcEnv.stop(_self) }
   }
 }
 

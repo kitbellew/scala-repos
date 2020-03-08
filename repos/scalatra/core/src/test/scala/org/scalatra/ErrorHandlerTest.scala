@@ -32,31 +32,21 @@ class ErrorHandlerTest extends ScalatraFunSuite {
   addServlet(new HaltServlet, "/halt/*")
 
   test("result of error handler should be rendered") {
-    get("/base/1") {
-      body should equal("base")
-    }
+    get("/base/1") { body should equal("base") }
   }
 
   test("error handlers are composable") {
-    get("/child/2") {
-      body should equal("child")
-    }
+    get("/child/2") { body should equal("child") }
 
-    get("/child/1") {
-      body should equal("base")
-    }
+    get("/child/1") { body should equal("base") }
   }
 
   test("response status should not be set on error") {
-    get("/base/1") {
-      status should equal(418)
-    }
+    get("/base/1") { status should equal(418) }
   }
 
   test("rethrows uncaught exceptions") {
-    get("/base/uncaught") {
-      status should equal(500)
-    }
+    get("/base/uncaught") { status should equal(500) }
   }
 
   test("halt() can be used from error handler") {

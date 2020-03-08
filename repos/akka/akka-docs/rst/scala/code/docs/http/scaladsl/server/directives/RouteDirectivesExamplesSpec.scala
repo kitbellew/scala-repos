@@ -13,9 +13,7 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
 
   "complete-examples" in {
     val route =
-      path("a") {
-        complete(HttpResponse(entity = "foo"))
-      } ~
+      path("a") { complete(HttpResponse(entity = "foo")) } ~
         path("b") {
           complete((StatusCodes.Created, "bar"))
         } ~
@@ -45,9 +43,7 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
       path("a") {
         reject // don't handle here, continue on
       } ~
-        path("a") {
-          complete("foo")
-        } ~
+        path("a") { complete("foo") } ~
         path("b") {
           // trigger a ValidationRejection explicitly
           // rather than through the `validate` directive
@@ -55,9 +51,7 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
         }
 
     // tests:
-    Get("/a") ~> route ~> check {
-      responseAs[String] shouldEqual "foo"
-    }
+    Get("/a") ~> route ~> check { responseAs[String] shouldEqual "foo" }
 
     Get("/b") ~> route ~> check {
       rejection shouldEqual ValidationRejection("Restricted!")
@@ -67,18 +61,12 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
   "redirect-examples" in {
     val route =
       pathPrefix("foo") {
-        pathSingleSlash {
-          complete("yes")
-        } ~
-          pathEnd {
-            redirect("/foo/", StatusCodes.PermanentRedirect)
-          }
+        pathSingleSlash { complete("yes") } ~
+          pathEnd { redirect("/foo/", StatusCodes.PermanentRedirect) }
       }
 
     // tests:
-    Get("/foo/") ~> route ~> check {
-      responseAs[String] shouldEqual "yes"
-    }
+    Get("/foo/") ~> route ~> check { responseAs[String] shouldEqual "yes" }
 
     Get("/foo") ~> route ~> check {
       status shouldEqual StatusCodes.PermanentRedirect
@@ -90,9 +78,7 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
     start = "Error during processing of request",
     occurrences = 1).intercept {
     val route =
-      path("foo") {
-        failWith(new RuntimeException("Oops."))
-      }
+      path("foo") { failWith(new RuntimeException("Oops.")) }
 
     // tests:
     Get("/foo") ~> Route.seal(route) ~> check {

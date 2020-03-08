@@ -44,9 +44,8 @@ object Def {
         null)
       //parse modifiers
       val modifierMarker = builder.mark
-      if (isMod) {
-        while (Modifier.parse(builder)) {}
-      } else {
+      if (isMod) { while (Modifier.parse(builder)) {} }
+      else {
         while (builder.getTokenType == ScalaTokenTypes.kIMPLICIT || builder.getTokenType == ScalaTokenTypes.kLAZY) {
           builder.advanceLexer()
         }

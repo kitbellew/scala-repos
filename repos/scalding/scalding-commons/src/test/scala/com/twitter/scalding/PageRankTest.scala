@@ -33,9 +33,7 @@ class PageRankTest extends WordSpec with Matchers {
       //Don't check the tempBuffer:
       .sink[(Long, String, Double)](Tsv("tempBuffer")) { ob => () }
       .sink[Double](TypedTsv[Double]("error")) { ob =>
-        "have low error" in {
-          ob.head should be <= 0.05
-        }
+        "have low error" in { ob.head should be <= 0.05 }
       }
       .sink[(Long, String, Double)](Tsv("outputFile")) { outputBuffer =>
         val pageRank = outputBuffer.map { res => (res._1, res._3) }.toMap

@@ -290,34 +290,25 @@ trait AbstractScreen extends Factory with Loggable {
       * Convert the field builder into a field
       */
     def make: Field { type ValueType = T } = {
-      val paramFieldId: Box[String] = (stuff.collect {
-        case FormFieldId(id) => id
-      }).headOption
+      val paramFieldId: Box[String] =
+        (stuff.collect { case FormFieldId(id) => id }).headOption
 
       val confirmInfo = stuff.collect {
         case NotOnConfirmScreen => false
       }.headOption orElse
-        stuff.collect {
-          case OnConfirmScreen => true
-        }.headOption
+        stuff.collect { case OnConfirmScreen => true }.headOption
 
-      val newBinding: Box[FieldBinding] = (stuff.collect {
-        case AFieldBinding(i) => i
-      }).headOption
+      val newBinding: Box[FieldBinding] =
+        (stuff.collect { case AFieldBinding(i) => i }).headOption
 
-      val newHelp: Box[NodeSeq] = help or (stuff.collect {
-        case Help(ns) => ns
-      }).headOption
+      val newHelp: Box[NodeSeq] =
+        help or (stuff.collect { case Help(ns) => ns }).headOption
 
-      val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-        .collect({
-          case FieldTransform(func) => func
-        })
-        .toList
+      val newTransforms: List[BaseField => NodeSeq => NodeSeq] =
+        stuff.collect({ case FieldTransform(func) => func }).toList
 
-      val newShow: Box[BaseField => Boolean] = (stuff.collect {
-        case DisplayIf(func) => func
-      }).headOption
+      val newShow: Box[BaseField => Boolean] =
+        (stuff.collect { case DisplayIf(func) => func }).headOption
 
       new Field {
         type ValueType = T
@@ -397,9 +388,7 @@ trait AbstractScreen extends Factory with Loggable {
       stuff.toList.collect {
         case AVal(v: Function1[_, _]) => v.asInstanceOf[T => List[FieldError]]
       },
-      stuff.toList.collect {
-        case AFilter(v) => v.asInstanceOf[T => T]
-      },
+      stuff.toList.collect { case AFilter(v) => v.asInstanceOf[T => T] },
       stuff)
   }
 
@@ -461,34 +450,25 @@ trait AbstractScreen extends Factory with Loggable {
       underlying: => BaseField { type ValueType = T },
       stuff: FilterOrValidate[T]*)(
       implicit man: Manifest[T]): Field { type ValueType = T } = {
-    val paramFieldId: Box[String] = (stuff.collect {
-      case FormFieldId(id) => id
-    }).headOption
+    val paramFieldId: Box[String] =
+      (stuff.collect { case FormFieldId(id) => id }).headOption
 
     val confirmInfo = stuff.collect {
       case NotOnConfirmScreen => false
     }.headOption orElse
-      stuff.collect {
-        case OnConfirmScreen => true
-      }.headOption
+      stuff.collect { case OnConfirmScreen => true }.headOption
 
-    val newBinding: Box[FieldBinding] = (stuff.collect {
-      case AFieldBinding(i) => i
-    }).headOption
+    val newBinding: Box[FieldBinding] =
+      (stuff.collect { case AFieldBinding(i) => i }).headOption
 
-    val newHelp: Box[NodeSeq] = (stuff.collect {
-      case Help(ns) => ns
-    }).headOption
+    val newHelp: Box[NodeSeq] =
+      (stuff.collect { case Help(ns) => ns }).headOption
 
-    val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-      .collect({
-        case FieldTransform(func) => func
-      })
-      .toList
+    val newTransforms: List[BaseField => NodeSeq => NodeSeq] =
+      stuff.collect({ case FieldTransform(func) => func }).toList
 
-    val newShow: Box[BaseField => Boolean] = (stuff.collect {
-      case DisplayIf(func) => func
-    }).headOption
+    val newShow: Box[BaseField => Boolean] =
+      (stuff.collect { case DisplayIf(func) => func }).headOption
 
     new Field {
       type ValueType = T
@@ -573,34 +553,25 @@ trait AbstractScreen extends Factory with Loggable {
       stuff: FilterOrValidate[T]*)(implicit
       man: Manifest[T],
       marker: BoxMarker): Field { type ValueType = T } = {
-    val paramFieldId: Box[String] = (stuff.collect {
-      case FormFieldId(id) => id
-    }).headOption
+    val paramFieldId: Box[String] =
+      (stuff.collect { case FormFieldId(id) => id }).headOption
 
-    val newBinding: Box[FieldBinding] = (stuff.collect {
-      case AFieldBinding(i) => i
-    }).headOption
+    val newBinding: Box[FieldBinding] =
+      (stuff.collect { case AFieldBinding(i) => i }).headOption
 
-    val newHelp: Box[NodeSeq] = (stuff.collect {
-      case Help(ns) => ns
-    }).headOption
+    val newHelp: Box[NodeSeq] =
+      (stuff.collect { case Help(ns) => ns }).headOption
 
-    val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-      .collect({
-        case FieldTransform(func) => func
-      })
-      .toList
+    val newTransforms: List[BaseField => NodeSeq => NodeSeq] =
+      stuff.collect({ case FieldTransform(func) => func }).toList
 
-    val newShow: Box[BaseField => Boolean] = (stuff.collect {
-      case DisplayIf(func) => func
-    }).headOption
+    val newShow: Box[BaseField => Boolean] =
+      (stuff.collect { case DisplayIf(func) => func }).headOption
 
     val confirmInfo = stuff.collect {
       case NotOnConfirmScreen => false
     }.headOption orElse
-      stuff.collect {
-        case OnConfirmScreen => true
-      }.headOption
+      stuff.collect { case OnConfirmScreen => true }.headOption
 
     new Field {
       type ValueType = T
@@ -838,23 +809,17 @@ trait AbstractScreen extends Factory with Loggable {
       otherValue: OtherValueInitializer[OV],
       stuff: FilterOrValidate[T]*)
       : Field { type ValueType = T; type OtherValueType = OV } = {
-    val newBinding: Box[FieldBinding] = (stuff.collect {
-      case AFieldBinding(i) => i
-    }).headOption
+    val newBinding: Box[FieldBinding] =
+      (stuff.collect { case AFieldBinding(i) => i }).headOption
 
-    val newHelp: Box[NodeSeq] = (stuff.collect {
-      case Help(ns) => ns
-    }).headOption
+    val newHelp: Box[NodeSeq] =
+      (stuff.collect { case Help(ns) => ns }).headOption
 
-    val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-      .collect({
-        case FieldTransform(func) => func
-      })
-      .toList
+    val newTransforms: List[BaseField => NodeSeq => NodeSeq] =
+      stuff.collect({ case FieldTransform(func) => func }).toList
 
-    val newShow: Box[BaseField => Boolean] = (stuff.collect {
-      case DisplayIf(func) => func
-    }).headOption
+    val newShow: Box[BaseField => Boolean] =
+      (stuff.collect { case DisplayIf(func) => func }).headOption
 
     otherValue match {
       case OtherValueInitializerImpl(otherValueInitFunc) => {
@@ -1099,14 +1064,10 @@ trait AbstractScreen extends Factory with Loggable {
   protected def grabParams(
       in: Seq[FilterOrValidate[_]]): List[SHtml.ElemAttr] = {
     val sl = in.toList
-    in.collect {
-        case FormFieldId(id) => ("id" -> id): SHtml.ElemAttr
-      }
+    in.collect { case FormFieldId(id) => ("id" -> id): SHtml.ElemAttr }
       .headOption
       .toList :::
-      sl.collect {
-        case FormParam(fp) => fp
-      }
+      sl.collect { case FormParam(fp) => fp }
   }
 
   /**
@@ -1323,11 +1284,8 @@ trait ScreenWizardRendered extends Loggable {
           val f = Helpers.deepEnsureUniqueId(fe)
           val id =
             Helpers.findBox(f)(_.attribute("id").map(_.text).filter(_ == curId))
-          if (id.isEmpty) {
-            Helpers.ensureId(f, curId)
-          } else {
-            f
-          }
+          if (id.isEmpty) { Helpers.ensureId(f, curId) }
+          else { f }
         }
       }
 
@@ -1420,11 +1378,7 @@ trait ScreenWizardRendered extends Loggable {
             val res = nextId._2();
             if (!ajax_?) {
               val localSnapshot = createSnapshot
-              S.seeOther(
-                url,
-                () => {
-                  localSnapshot.restore
-                })
+              S.seeOther(url, () => { localSnapshot.restore })
             }
             res
           })) % liftScreenAttr("nextAction")
@@ -1450,18 +1404,13 @@ trait ScreenWizardRendered extends Loggable {
               val res =
                 cancelId
                   ._2() // WizardRules.deregisterWizardSession(CurrentSession.is)
-              if (!ajax_?) {
-                S.seeOther(Referer.get)
-              }
+              if (!ajax_?) { S.seeOther(Referer.get) }
               res
             }) % liftScreenAttr("restoreAction")
           }</form>
 
-      if (ajax_?) {
-        SHtml.makeFormsAjax(ret)
-      } else {
-        ret
-      }
+      if (ajax_?) { SHtml.makeFormsAjax(ret) }
+      else { ret }
     }
 
     def bindScreenInfo: CssBindFunc = (currentScreenNumber, screenCount) match {
@@ -1603,11 +1552,8 @@ trait ScreenWizardRendered extends Loggable {
     S.attr("ajax").flatMap(Helpers.asBoolean) openOr defaultToAjax_?
 
   protected def redirectBack(): JsCmd = {
-    if (ajaxForms_?) {
-      AjaxOnDone.get
-    } else {
-      S.seeOther(Referer.get)
-    }
+    if (ajaxForms_?) { AjaxOnDone.get }
+    else { S.seeOther(Referer.get) }
   }
 
   /**
@@ -1829,9 +1775,7 @@ trait LiftScreen
   protected def mapLocalAction[T](func: () => JsCmd)(f: String => T): T = {
     val name = randomString(20)
     val ref = LocalActions.get
-    ref.synchronized {
-      ref.set(ref.get + (name -> func))
-    }
+    ref.synchronized { ref.set(ref.get + (name -> func)) }
     f(name)
   }
 
@@ -1882,17 +1826,13 @@ trait LiftScreen
       ("onclick" ->
         (if (ajaxForms_?) {
            SHtml.makeAjaxCall(LiftRules.jsArtifacts.serialize(finishId)).toJsCmd
-         } else {
-           "document.getElementById(" + finishId.encJs + ").submit()"
-         }))
+         } else { "document.getElementById(" + finishId.encJs + ").submit()" }))
 
     val cancelButton: Elem = theScreen.cancelButton %
       ("onclick" ->
         (if (ajaxForms_?) {
            SHtml.makeAjaxCall(LiftRules.jsArtifacts.serialize(cancelId)).toJsCmd
-         } else {
-           "document.getElementById(" + cancelId.encJs + ").submit()"
-         }))
+         } else { "document.getElementById(" + cancelId.encJs + ").submit()" }))
 
     val url = S.uri
 
@@ -1937,9 +1877,7 @@ trait LiftScreen
       Empty, //wizardBottom: Box[Elem],
       finishId -> doFinish _,
       Empty,
-      cancelId -> (() => {
-        redirectBack()
-      }), //cancelId: (String, () => Unit),
+      cancelId -> (() => { redirectBack() }), //cancelId: (String, () => Unit),
       theScreen,
       ajaxForms_?
     )
@@ -1978,11 +1916,8 @@ trait LiftScreen
           redirectBack()
         case xs => {
           S.error(xs)
-          if (ajaxForms_?) {
-            replayForm
-          } else {
-            Noop
-          }
+          if (ajaxForms_?) { replayForm }
+          else { Noop }
         }
       }
     }

@@ -8,9 +8,7 @@ package sbt
 private final class TrapExitSecurityException(val exitCode: Int)
     extends SecurityException {
   private var accessAllowed = false
-  def allowAccess(): Unit = {
-    accessAllowed = true
-  }
+  def allowAccess(): Unit = { accessAllowed = true }
   override def printStackTrace = ifAccessAllowed(super.printStackTrace)
   override def toString = ifAccessAllowed(super.toString)
   override def getCause = ifAccessAllowed(super.getCause)

@@ -116,9 +116,7 @@ object ParquetReadBenchmark {
                   i += 1
                 }
               }
-            } finally {
-              reader.close()
-            }
+            } finally { reader.close() }
           }
         }
 
@@ -138,9 +136,7 @@ object ParquetReadBenchmark {
                     if (!record.isNullAt(0)) sum += record.getInt(0)
                   }
                 }
-              } finally {
-                reader.close()
-              }
+              } finally { reader.close() }
             }
         }
 
@@ -327,9 +323,7 @@ object ParquetReadBenchmark {
                     sum += value.numBytes()
                 }
               }
-            } finally {
-              reader.close()
-            }
+            } finally { reader.close() }
           }
         }
 
@@ -348,9 +342,7 @@ object ParquetReadBenchmark {
                   sum += rowIterator.next().getUTF8String(0).numBytes()
                 }
               }
-            } finally {
-              reader.close()
-            }
+            } finally { reader.close() }
           }
         }
 

@@ -83,9 +83,7 @@ object VersionLog {
                 }
             }
           } yield version
-        } else {
-          \/.left(NotFound("No data found for path %s.".format(dir)))
-        }
+        } else { \/.left(NotFound("No data found for path %s.".format(dir))) }
       }
     }
   }
@@ -116,9 +114,7 @@ object VersionLog {
             case other                    => other.validated[VersionEntry].map(Some(_))
           }
         } yield version
-      } else {
-        Success(None)
-      }
+      } else { Success(None) }
 
     val allVersions: Validation[Error, List[VersionEntry]] =
       if (logFile.exists) {
@@ -128,9 +124,7 @@ object VersionLog {
             .traverse[({ type λ[α] = Validation[Error, α] })#λ, VersionEntry](
               _.validated[VersionEntry])
         } yield versions
-      } else {
-        Success(Nil)
-      }
+      } else { Success(Nil) }
 
     val completedVersions: Validation[Error, Set[UUID]] =
       if (completedFile.exists) {
@@ -140,9 +134,7 @@ object VersionLog {
             .traverse[({ type λ[α] = Validation[Error, α] })#λ, UUID](
               _.validated[UUID])
         } yield versions.toSet
-      } else {
-        Success(Set.empty)
-      }
+      } else { Success(Set.empty) }
 
     (currentVersion |@| allVersions |@| completedVersions) {
       new VersionLog(logFiles, _, _, _)
@@ -173,9 +165,7 @@ class VersionLog(
     allVersions.find(_.id == version)
   def isCompleted(version: UUID) = completedVersions.contains(version)
 
-  def close = {
-    workLock.release
-  }
+  def close = { workLock.release }
 
   def addVersion(entry: VersionEntry): IO[PrecogUnit] =
     allVersions.find(_ == entry) map { _ => IO(PrecogUnit) } getOrElse {

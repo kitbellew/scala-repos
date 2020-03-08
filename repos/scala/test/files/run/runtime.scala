@@ -50,9 +50,7 @@ package test1.bar {
   }
 
   class PrintStream() {
-    def println(): Unit = {
-      Console.println;
-    }
+    def println(): Unit = { Console.println; }
   }
 
 }
@@ -125,7 +123,9 @@ object Test2Test {
 
 object Test3Test {
 
-  class Foo { override def equals(that: Any) = sys.error("abort"); }
+  class Foo {
+    override def equals(that: Any) = sys.error("abort");
+  }
 
   def check(expected: Boolean, actual1: Boolean, actual2: Boolean): Unit =
     Console.println(
@@ -170,9 +170,8 @@ object Test {
   var errors: Int = 0;
   def test(name: String, test: => Unit): Unit = {
     Console.println("<<< " + name);
-    try {
-      test;
-    } catch {
+    try { test; }
+    catch {
       case exception: Throwable => {
         //val name: String = Thread.currentThread().getName();
         Console.print("Exception in thread \"" + name + "\" " + exception);

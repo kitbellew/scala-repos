@@ -143,9 +143,7 @@ case class Game(
 
   def pgnMoves(color: Color): PgnMoves = {
     val pivot = if (color == startColor) 0 else 1
-    pgnMoves.zipWithIndex.collect {
-      case (e, i) if (i % 2) == pivot => e
-    }
+    pgnMoves.zipWithIndex.collect { case (e, i) if (i % 2) == pivot => e }
   }
 
   lazy val toChess: ChessGame = {

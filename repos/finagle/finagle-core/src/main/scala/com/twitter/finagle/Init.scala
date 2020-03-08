@@ -36,9 +36,7 @@ private[twitter] object Init {
             val p = new Properties
             p.load(resource)
             Some(p)
-          } finally {
-            resource.close()
-          }
+          } finally { resource.close() }
       }
     } catch {
       case NonFatal(exc) =>

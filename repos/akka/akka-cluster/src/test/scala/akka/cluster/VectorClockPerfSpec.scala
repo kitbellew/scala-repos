@@ -58,9 +58,7 @@ class VectorClockPerfSpec extends WordSpec with Matchers {
       times: Int): Unit = {
     val vcc1 = copyVectorClock(vc1)
     val vcc2 = copyVectorClock(vc2)
-    for (i ← 1 to times) {
-      thunk(vcc1, vcc2)
-    }
+    for (i ← 1 to times) { thunk(vcc1, vcc2) }
   }
 
   def compareTo(order: Ordering)(vc1: VectorClock, vc2: VectorClock): Unit = {

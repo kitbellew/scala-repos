@@ -16,9 +16,8 @@ object ProdServerStartSpec extends Specification {
 
   def withTempDir[T](block: File => T) = {
     val temp = Files.createTempDir()
-    try {
-      block(temp)
-    } finally {
+    try { block(temp) }
+    finally {
       def rm(file: File): Unit = file match {
         case dir if dir.isDirectory =>
           dir.listFiles().foreach(rm)
@@ -57,12 +56,8 @@ object ProdServerStartSpec extends Specification {
     for ((k, v) <- propertyMap) { properties.put(k, v) }
 
     private var hooks = Seq.empty[() => Unit]
-    def addShutdownHook(hook: => Unit) = {
-      hooks = hooks :+ (() => hook)
-    }
-    def shutdown(): Unit = {
-      for (h <- hooks) h.apply()
-    }
+    def addShutdownHook(hook: => Unit) = { hooks = hooks :+ (() => hook) }
+    def shutdown(): Unit = { for (h <- hooks) h.apply() }
 
     def exit(
         message: String,
@@ -115,9 +110,7 @@ object ProdServerStartSpec extends Specification {
           fakeServer.stopCallCount must_== 0
           fakeServer.httpPort must_== Some(9000)
           fakeServer.httpsPort must_== None
-        } finally {
-          process.shutdown()
-        }
+        } finally { process.shutdown() }
         pidFile.exists must beFalse
         fakeServer.stopCallCount must_== 1
     }
@@ -144,9 +137,7 @@ object ProdServerStartSpec extends Specification {
         fakeServer.config.port must_== None
         fakeServer.config.sslPort must_== Some(443)
         fakeServer.config.address must_== "localhost"
-      } finally {
-        process.shutdown()
-      }
+      } finally { process.shutdown() }
       pidFile.exists must beFalse
       fakeServer.stopCallCount must_== 1
     }
@@ -173,18 +164,14 @@ object ProdServerStartSpec extends Specification {
         fakeServer.config.port must_== Some(80)
         fakeServer.config.sslPort must_== None
         fakeServer.config.address must_== "localhost"
-      } finally {
-        process.shutdown()
-      }
+      } finally { process.shutdown() }
       pidFile.exists must beFalse
       fakeServer.stopCallCount must_== 1
     }
 
     "exit with an error if no root dir defined" in withTempDir { tempDir =>
       val process = new FakeServerProcess()
-      exitResult {
-        ProdServerStart.start(process)
-      } must beLeft
+      exitResult { ProdServerStart.start(process) } must beLeft
     }
 
   }

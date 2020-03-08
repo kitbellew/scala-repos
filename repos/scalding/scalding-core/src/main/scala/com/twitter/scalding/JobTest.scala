@@ -29,9 +29,7 @@ object JobTest {
   def apply(jobName: String) = {
     new JobTest((args: Args) => Job(jobName, args))
   }
-  def apply(cons: (Args) => Job) = {
-    new JobTest(cons)
-  }
+  def apply(cons: (Args) => Job) = { new JobTest(cons) }
   def apply[T <: Job: Manifest] = {
     val cons = { (args: Args) =>
       manifest[T].runtimeClass
@@ -204,9 +202,7 @@ class JobTest(cons: (Args) => Job) {
           "mapred.local.dir",
           "/tmp/hadoop/%s/mapred/local".format(java.util.UUID.randomUUID))
         HadoopTest(conf, sourceMap)
-      } else {
-        Test(sourceMap)
-      }
+      } else { Test(sourceMap) }
     testMode.registerTestFiles(fileSet)
     val args = new Args(argsMap)
 
@@ -234,9 +230,7 @@ class JobTest(cons: (Args) => Job) {
         "target/test/cascading/traceplan/" + job.name + "/stats")
     }
 
-    if (validateJob) {
-      job.validate
-    }
+    if (validateJob) { job.validate }
     job.run
     // Make sure to clean the state:
     job.clear

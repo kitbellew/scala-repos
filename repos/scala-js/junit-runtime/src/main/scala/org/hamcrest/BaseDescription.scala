@@ -44,9 +44,8 @@ abstract class BaseDescription extends Description {
   }
 
   private def descriptionOf(value: AnyRef): String = {
-    try {
-      String.valueOf(value)
-    } catch {
+    try { String.valueOf(value) }
+    catch {
       case _: Exception =>
         s"${value.getClass.getName}@${Integer.toHexString(value.hashCode)}"
     }
@@ -107,9 +106,7 @@ abstract class BaseDescription extends Description {
     this
   }
 
-  protected def append(str: String): Unit = {
-    str.foreach(append)
-  }
+  protected def append(str: String): Unit = { str.foreach(append) }
 
   protected def append(c: Char): Unit
 

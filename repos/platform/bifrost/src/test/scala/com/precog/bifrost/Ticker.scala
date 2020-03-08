@@ -64,9 +64,7 @@ class Ticker(ticks: AtomicLong) extends Actor {
       schedule get t map { thunks =>
         schedule = schedule - t
         thunks.reverse foreach { t => t() }
-      } getOrElse {
-        ticks.getAndIncrement()
-      }
+      } getOrElse { ticks.getAndIncrement() }
 
     case Schedule(n, thunk) =>
       val t = ticks.get() + n
@@ -112,19 +110,14 @@ trait SchedulableFuturesModule {
   def ticker: ActorRef
 
   def await[A, B](f: Future[A], atMost: Duration)(g: A => B): Future[B] = {
-    schedule(0) {
-      g(Await.result(f, atMost))
-    }
+    schedule(0) { g(Await.result(f, atMost)) }
   }
 
   def schedule[A](n: Long)(f: => A): Future[A] = {
     val promise = Promise[A]()
     val thunk: () => Any = { () =>
-      try {
-        promise.success(f)
-      } catch {
-        case ex => promise.failure(ex)
-      }
+      try { promise.success(f) }
+      catch { case ex => promise.failure(ex) }
     }
 
     ticker ! Schedule(n, thunk)

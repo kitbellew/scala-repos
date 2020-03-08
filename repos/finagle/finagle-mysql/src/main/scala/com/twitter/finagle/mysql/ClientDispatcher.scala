@@ -152,9 +152,7 @@ class ClientDispatcher(
     * This leaves room for implementing streaming results.
     */
   protected def dispatch(req: Request, rep: Promise[Result]): Future[Unit] =
-    trans.write(req.toPacket) rescue {
-      wrapWriteException
-    } before {
+    trans.write(req.toPacket) rescue { wrapWriteException } before {
       val signal = new Promise[Unit]
       if (req.cmd == Command.COM_STMT_CLOSE) {
         // synthesize COM_STMT_CLOSE response

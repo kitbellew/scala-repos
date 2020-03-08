@@ -197,9 +197,7 @@ trait Collections {
 
   // @inline
   final def findOrElse[A](xs: TraversableOnce[A])(p: A => Boolean)(
-      orElse: => A): A = {
-    xs find p getOrElse orElse
-  }
+      orElse: => A): A = { xs find p getOrElse orElse }
 
   final def mapFrom[A, A1 >: A, B](xs: List[A])(f: A => B): Map[A1, B] = {
     Map[A1, B](xs map (x => (x, f(x))): _*)
@@ -311,11 +309,8 @@ trait Collections {
   }
 
   final def transposeSafe[A](ass: List[List[A]]): Option[List[List[A]]] =
-    try {
-      Some(ass.transpose)
-    } catch {
-      case _: IllegalArgumentException => None
-    }
+    try { Some(ass.transpose) }
+    catch { case _: IllegalArgumentException => None }
 }
 
 object Collections extends Collections

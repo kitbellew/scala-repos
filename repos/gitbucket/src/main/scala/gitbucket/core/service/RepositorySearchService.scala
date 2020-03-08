@@ -43,9 +43,8 @@ trait RepositorySearchService { self: IssuesService =>
       repository: String,
       query: String): List[FileSearchResult] =
     using(Git.open(getRepositoryDir(owner, repository))) { git =>
-      if (JGitUtil.isEmpty(git)) {
-        Nil
-      } else {
+      if (JGitUtil.isEmpty(git)) { Nil }
+      else {
         val files = searchRepositoryFiles(git, query)
         val commits =
           JGitUtil.getLatestCommitFromPaths(git, files.map(_._1), "HEAD")
@@ -116,9 +115,7 @@ object RepositorySearchService {
           "(?i)(" + keywords.map("\\Q" + _ + "\\E").mkString("|") + ")",
           "<span class=\"highlight\">$1</span>")
       (highlightText, lineNumber + 1)
-    } else {
-      (content.split("\n").take(5).mkString("\n"), 1)
-    }
+    } else { (content.split("\n").take(5).mkString("\n"), 1) }
   }
 
   case class SearchResult(

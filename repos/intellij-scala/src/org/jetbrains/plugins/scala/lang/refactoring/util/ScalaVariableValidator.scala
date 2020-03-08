@@ -190,9 +190,7 @@ class ScalaVariableValidator(
       var from = {
         var parent: PsiElement = if (allOcc) {
           selectedElement //todo:
-        } else {
-          selectedElement
-        }
+        } else { selectedElement }
         if (PsiTreeUtil.isAncestor(container, parent, true))
           while (parent.getParent != null && parent.getParent != container)
             parent = parent.getParent

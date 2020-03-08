@@ -399,11 +399,8 @@ private[scala] class SerializedTypeTag(
   @throws(classOf[ObjectStreamException])
   private def readResolve(): AnyRef = {
     val loader: ClassLoader =
-      try {
-        Thread.currentThread().getContextClassLoader()
-      } catch {
-        case se: SecurityException => null
-      }
+      try { Thread.currentThread().getContextClassLoader() }
+      catch { case se: SecurityException => null }
     val m = runtimeMirror(loader)
     if (concrete) TypeTag(m, tpec)
     else WeakTypeTag(m, tpec)

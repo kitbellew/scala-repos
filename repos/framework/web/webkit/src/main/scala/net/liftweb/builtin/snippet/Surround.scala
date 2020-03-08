@@ -27,14 +27,10 @@ import Helpers._
 
 object Surround extends DispatchSnippet {
 
-  def dispatch: DispatchIt = {
-    case _ => render _
-  }
+  def dispatch: DispatchIt = { case _ => render _ }
 
   def render(kids: NodeSeq): NodeSeq =
-    (for {
-      ctx <- S.session ?~ ("FIX" + "ME: Invalid session")
-    } yield {
+    (for { ctx <- S.session ?~ ("FIX" + "ME: Invalid session") } yield {
       def eatDiv(in: NodeSeq): NodeSeq =
         if (S.attr("eat").isDefined) in.flatMap {
           case e: Elem => e.child

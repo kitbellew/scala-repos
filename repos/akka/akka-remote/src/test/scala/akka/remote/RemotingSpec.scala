@@ -43,9 +43,7 @@ object RemotingSpec {
       target ! "preRestart"
     }
     override def postRestart(cause: Throwable) {}
-    override def postStop() {
-      target ! "postStop"
-    }
+    override def postStop() { target ! "postStop" }
   }
 
   class Echo2 extends Actor {
@@ -191,9 +189,7 @@ class RemotingSpec
       s"akka.test://remote-sys@localhost:12346/user/$bigBounceId")
 
     val eventForwarder = system.actorOf(Props(new Actor {
-      def receive = {
-        case x ⇒ testActor ! x
-      }
+      def receive = { case x ⇒ testActor ! x }
     }).withDeploy(Deploy.local))
     system.eventStream.subscribe(eventForwarder, classOf[AssociationErrorEvent])
     system.eventStream.subscribe(eventForwarder, classOf[DisassociatedEvent])
@@ -589,9 +585,7 @@ class RemotingSpec
       val maxProtocolOverhead =
         500 // Make sure we're still under size after the message is serialized, etc
       val big = byteStringOfSize(maxPayloadBytes - maxProtocolOverhead)
-      verifySend(big) {
-        expectMsg(3.seconds, big)
-      }
+      verifySend(big) { expectMsg(3.seconds, big) }
     }
 
     "drop sent messages over payload size" in {
@@ -654,9 +648,7 @@ class RemotingSpec
             proxySsl ! otherGuy
             expectMsg(3.seconds, ("pong", otherGuyRemoteTest))
           }(otherSystem)
-      } finally {
-        shutdown(otherSystem)
-      }
+      } finally { shutdown(otherSystem) }
     }
 
     "should not publish AddressTerminated even on InvalidAssociationExecptions" in {
@@ -950,12 +942,8 @@ class RemotingSpec
                   ._1 == "pong")
             }
           }
-        } finally {
-          shutdown(otherSystem)
-        }
-      } finally {
-        shutdown(thisSystem)
-      }
+        } finally { shutdown(otherSystem) }
+      } finally { shutdown(thisSystem) }
     }
 
     "allow other system to connect even if it's not there at first" in {
@@ -995,12 +983,8 @@ class RemotingSpec
                   ._1 == "pong")
             }
           }
-        } finally {
-          shutdown(otherSystem)
-        }
-      } finally {
-        shutdown(thisSystem)
-      }
+        } finally { shutdown(otherSystem) }
+      } finally { shutdown(thisSystem) }
     }
   }
 }

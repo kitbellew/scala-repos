@@ -140,16 +140,12 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
       sorter.writePartitionedFile(ShuffleBlockId(0, 0, 0), outputFile)
     } {
       // Clean up
-      if (sc != null) {
-        sc.stop()
-      }
+      if (sc != null) { sc.stop() }
 
       // restore the spark env
       SparkEnv.set(oldEnv)
 
-      if (outputFile != null) {
-        outputFile.delete()
-      }
+      if (outputFile != null) { outputFile.delete() }
     }
   }
 

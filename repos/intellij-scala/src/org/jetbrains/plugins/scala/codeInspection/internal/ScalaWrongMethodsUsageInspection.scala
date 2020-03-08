@@ -69,9 +69,8 @@ class ScalaWrongMethodsUsageInspection extends LocalInspectionTool {
                       if (cachedClass == containingClass || instance
                             .cachedDeepIsInheritor(
                               cachedClass,
-                              containingClass)) {
-                        true
-                      } else false
+                              containingClass)) { true }
+                      else false
                     } else false
                 } match {
                   case Some(clazz) =>

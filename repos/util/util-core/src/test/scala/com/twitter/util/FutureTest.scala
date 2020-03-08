@@ -28,9 +28,7 @@ class FutureTest
     def mustProduce(expected: Try[A]) {
       expected match {
         case Throw(ex) =>
-          val t = intercept[Throwable] {
-            Await.result(future, 1.second)
-          }
+          val t = intercept[Throwable] { Await.result(future, 1.second) }
           assert(t == ex)
         case Return(v) =>
           assert(Await.result(future, 1.second) == v)
@@ -127,18 +125,10 @@ class FutureTest
       "when" in {
         var i = 0
 
-        Await.result {
-          Future.when(false) {
-            Future { i += 1 }
-          }
-        }
+        Await.result { Future.when(false) { Future { i += 1 } } }
         assert(i == 0)
 
-        Await.result {
-          Future.when(true) {
-            Future { i += 1 }
-          }
-        }
+        Await.result { Future.when(true) { Future { i += 1 } } }
         assert(i == 1)
       }
 
@@ -445,9 +435,7 @@ class FutureTest
 
           when(f(Seq(1, 2, 3))) thenAnswer {
             new Answer[Unit] {
-              def answer(invocation: InvocationOnMock) = {
-                throw new Exception
-              }
+              def answer(invocation: InvocationOnMock) = { throw new Exception }
             }
           }
 
@@ -598,9 +586,7 @@ class FutureTest
             "2" -> Future.exception(new Exception)
           )
 
-          intercept[Exception] {
-            Await.result(Future.collect(map))
-          }
+          intercept[Exception] { Await.result(Future.collect(map)) }
         }
       }
 
@@ -694,9 +680,7 @@ class FutureTest
         val inner = const.value(123)
         val exc = new Exception("a raw exception")
 
-        val f = Future.monitored {
-          inner ensure { throw exc }
-        }
+        val f = Future.monitored { inner ensure { throw exc } }
 
         assert(f.poll == Some(Throw(exc)))
       }
@@ -855,17 +839,12 @@ class FutureTest
             val inner1 = new Promise[Int]
             var ran = false
             val f = Future.monitored {
-              inner1 ensure {
-                throw exc
-              } ensure {
+              inner1 ensure { throw exc } ensure {
                 // Note that these are sequenced so that interrupts
                 // will be delivered before inner's handler is cleared.
                 ran = true
-                try {
-                  inner.update(Return(1))
-                } catch {
-                  case e: Throwable => assert(true == false)
-                }
+                try { inner.update(Return(1)) }
+                catch { case e: Throwable => assert(true == false) }
               }
               inner
             }
@@ -947,9 +926,7 @@ class FutureTest
             throw e
             x + 1
           }
-          val actual = intercept[Exception] {
-            Await.result(f)
-          }
+          val actual = intercept[Exception] { Await.result(f) }
           assert(actual == e)
         }
       }
@@ -988,9 +965,7 @@ class FutureTest
               case Throw(t) => const.value(0)
             }
             assert(f.poll.isDefined)
-            val e = intercept[FutureNonLocalReturnControl] {
-              f.poll.get.get
-            }
+            val e = intercept[FutureNonLocalReturnControl] { f.poll.get.get }
 
             val g = e.getCause match {
               case t: NonLocalReturnControl[_] =>
@@ -1115,9 +1090,7 @@ class FutureTest
                 val exc = new Exception
                 val f3 = new Promise[Unit]
                 var didInterrupt = false
-                f3.setInterruptHandler {
-                  case `exc` => didInterrupt = true
-                }
+                f3.setInterruptHandler { case `exc` => didInterrupt = true }
                 val f = seqop(f1, () => seqop(f2, () => f3))
                 f.raise(exc)
                 assert(didInterrupt == false)
@@ -1138,9 +1111,7 @@ class FutureTest
               assert(actual == e)
             }
 
-            "respond" in {
-              g mustProduce Throw(e)
-            }
+            "respond" in { g mustProduce Throw(e) }
 
             "when there is an exception in the passed in function" in {
               val e = new Exception
@@ -1158,13 +1129,9 @@ class FutureTest
       "flatMap (values)" should {
         val f = Future(1) flatMap { x => Future(x + 1) }
 
-        "apply" which {
-          assert(Await.result(f) == 2)
-        }
+        "apply" which { assert(Await.result(f) == 2) }
 
-        "respond" which {
-          f mustProduce Return(2)
-        }
+        "respond" which { f mustProduce Return(2) }
       }
 
       "flatten" should {
@@ -1211,25 +1178,17 @@ class FutureTest
         "successes" which {
           val f = Future(1) rescue { case e => Future(2) }
 
-          "apply" in {
-            assert(Await.result(f) == 1)
-          }
+          "apply" in { assert(Await.result(f) == 1) }
 
-          "respond" in {
-            f mustProduce Return(1)
-          }
+          "respond" in { f mustProduce Return(1) }
         }
 
         "failures" which {
           val g = Future[Int](throw e) rescue { case e => Future(2) }
 
-          "apply" in {
-            assert(Await.result(g) == 2)
-          }
+          "apply" in { assert(Await.result(g) == 2) }
 
-          "respond" in {
-            g mustProduce Return(2)
-          }
+          "respond" in { g mustProduce Return(2) }
 
           "when the error handler errors" in {
             val g = Future[Int](throw e) rescue { case e => throw e; Future(2) }
@@ -1303,15 +1262,9 @@ class FutureTest
         "runs callbacks just once and in order" in {
           var i, j, k, h = 0
           val p = new Promise[Int]
-          p ensure {
-            i = i + j + k + h + 1
-          } ensure {
+          p ensure { i = i + j + k + h + 1 } ensure {
             j = i + j + k + h + 1
-          } ensure {
-            k = i + j + k + h + 1
-          } ensure {
-            h = i + j + k + h + 1
-          }
+          } ensure { k = i + j + k + h + 1 } ensure { h = i + j + k + h + 1 }
 
           assert(i == 0)
           assert(j == 0)
@@ -1331,9 +1284,7 @@ class FutureTest
 
           assert(m.handled == null)
 
-          Monitor.using(m) {
-            const.value(1) ensure { throw exc }
-          }
+          Monitor.using(m) { const.value(1) ensure { throw exc } }
 
           assert(m.handled == exc)
         }
@@ -1561,12 +1512,8 @@ class FutureTest
 
         "do conditional interruption" in {
           val p = new HandledPromise[Unit]
-          val f1 = p.mask {
-            case _: TimeoutException => true
-          }
-          val f2 = p.mask {
-            case _: TimeoutException => true
-          }
+          val f1 = p.mask { case _: TimeoutException => true }
+          val f2 = p.mask { case _: TimeoutException => true }
           f1.raise(new TimeoutException("bang!"))
           assert(p.handled == None)
           f2.raise(new Exception())
@@ -1624,26 +1571,28 @@ class FutureTest
       "throw result" in {
         val task = new FutureTask[String](throw new IllegalStateException)
         task.run()
-        intercept[IllegalStateException] {
-          Await.result(task)
-        }
+        intercept[IllegalStateException] { Await.result(task) }
       }
     }
   }
 
-  test("ConstFuture", new MkConst { def apply[A](r: Try[A]) = Future.const(r) })
-  test("Promise", new MkConst { def apply[A](r: Try[A]) = new Promise(r) })
+  test(
+    "ConstFuture",
+    new MkConst {
+      def apply[A](r: Try[A]) = Future.const(r)
+    })
+  test(
+    "Promise",
+    new MkConst {
+      def apply[A](r: Try[A]) = new Promise(r)
+    })
 
   "Future.apply" should {
     "fail on NLRC" in {
       def ok(): String = {
         val f = Future(return "OK")
-        val t = intercept[FutureNonLocalReturnControl] {
-          f.poll.get.get
-        }
-        val nlrc = intercept[NonLocalReturnControl[String]] {
-          throw t.getCause
-        }
+        val t = intercept[FutureNonLocalReturnControl] { f.poll.get.get }
+        val nlrc = intercept[NonLocalReturnControl[String]] { throw t.getCause }
         assert(nlrc.value == "OK")
         "NOK"
       }
@@ -1652,30 +1601,18 @@ class FutureTest
   }
 
   "Future.None" should {
-    "always be defined" in {
-      assert(Future.None.isDefined == true)
-    }
-    "but still None" in {
-      assert(Await.result(Future.None) == None)
-    }
+    "always be defined" in { assert(Future.None.isDefined == true) }
+    "but still None" in { assert(Await.result(Future.None) == None) }
   }
 
   "Future.True" should {
-    "always be defined" in {
-      assert(Future.True.isDefined == true)
-    }
-    "but still True" in {
-      assert(Await.result(Future.True) == true)
-    }
+    "always be defined" in { assert(Future.True.isDefined == true) }
+    "but still True" in { assert(Await.result(Future.True) == true) }
   }
 
   "Future.False" should {
-    "always be defined" in {
-      assert(Future.False.isDefined == true)
-    }
-    "but still False" in {
-      assert(Await.result(Future.False) == false)
-    }
+    "always be defined" in { assert(Future.False.isDefined == true) }
+    "but still False" in { assert(Await.result(Future.False) == false) }
   }
 
   "Future.never" should {

@@ -58,9 +58,7 @@ class ScalaFieldNameAdjuster extends NodeDescriptorNameAdjuster {
           }
         }
 
-        def isScalaObject: Boolean = {
-          name.endsWith(objectSuffix)
-        }
+        def isScalaObject: Boolean = { name.endsWith(objectSuffix) }
 
         def lastPart(name: String) = {
           val stripped = name.stripSuffix(objectSuffix)

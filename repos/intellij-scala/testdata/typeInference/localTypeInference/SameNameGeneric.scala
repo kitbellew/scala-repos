@@ -4,8 +4,6 @@ object SameNameGeneric {
     foo(x, y, 34) /*end*/
   }
 
-  def foo[T, F, Z](x: T, y: F, z: Z) = {
-    (x, y, z)
-  }
+  def foo[T, F, Z](x: T, y: F, z: Z) = { (x, y, z) }
 }
 //(T, F, Int)

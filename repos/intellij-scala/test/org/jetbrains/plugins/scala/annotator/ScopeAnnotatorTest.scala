@@ -15,9 +15,7 @@ class ScopeAnnotatorTest extends SimpleTestCase {
 
   final val Header = "class Foo; class Bar; "
 
-  def testEmpty() {
-    assertFine("")
-  }
+  def testEmpty() { assertFine("") }
 
   def testSingleDefinition() {
     assertFine("class C")
@@ -227,9 +225,7 @@ class ScopeAnnotatorTest extends SimpleTestCase {
     assertClashes("class X; { class X; { class C; class C } }", "C")
   }
 
-  def testSameLeveScopeBoundary() {
-    assertFine("{ class C }; { class C }")
-  }
+  def testSameLeveScopeBoundary() { assertFine("{ class C }; { class C }") }
 
   def testMembers() {
     assertClashes("class C(p: Any) { val p = null }", "p")
@@ -557,9 +553,7 @@ class ScopeAnnotatorTest extends SimpleTestCase {
     val annotator = new ScopeAnnotator() {}
     val mock = new AnnotatorHolderMock
 
-    psi.depthFirst.foreach {
-      annotator.annotateScope(_, mock)
-    }
+    psi.depthFirst.foreach { annotator.annotateScope(_, mock) }
 
     mock.annotations
   }

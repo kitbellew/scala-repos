@@ -56,9 +56,7 @@ class LiftServlet extends Loggable {
     try {
       LiftRules.ending = true
 
-      tryo {
-        SessionMaster.shutDownAllSessions()
-      }
+      tryo { SessionMaster.shutDownAllSessions() }
 
       val cur = millis
 
@@ -67,28 +65,18 @@ class LiftServlet extends Loggable {
         Thread.sleep(20)
       }
 
-      tryo {
-        Schedule.shutdown
-      }
-      tryo {
-        LAScheduler.shutdown()
-      }
+      tryo { Schedule.shutdown }
+      tryo { LAScheduler.shutdown() }
 
-      tryo {
-        LAPinger.shutdown
-      }
+      tryo { LAPinger.shutdown }
 
       LiftRules.runUnloadHooks()
       logger.debug("Destroyed Lift handler.")
       // super.destroy
-    } catch {
-      case e: Exception => logger.error("Destruction failure", e)
-    }
+    } catch { case e: Exception => logger.error("Destruction failure", e) }
   }
 
-  def init = {
-    LiftRules.ending = false
-  }
+  def init = { LiftRules.ending = false }
 
   def getLiftSession(request: Req): LiftSession =
     LiftRules.getLiftSession(request)
@@ -125,9 +113,7 @@ class LiftServlet extends Loggable {
       runFunction(liftResponse => {
         // do the actual write on a separate thread
         Schedule.schedule(
-          () => {
-            reqOrg.request.resume(reqOrg, liftResponse)
-          },
+          () => { reqOrg.request.resume(reqOrg, liftResponse) },
           0.seconds)
       })
 
@@ -168,9 +154,7 @@ class LiftServlet extends Loggable {
               "Service request (" + req.request.method + ") " + req.request.uri + " returned " + resp.getStatus + ","
             (msg, ret)
           }
-        } else {
-          doService(req, resp)
-        }
+        } else { doService(req, resp) }
       }
 
       req.request.resumeInfo match {
@@ -323,9 +307,7 @@ class LiftServlet extends Loggable {
 
           Full(new JsCommands(cmd :: Nil).toResponse)
         }
-      } else {
-        Empty
-      }
+      } else { Empty }
     }
 
     def reqHasSession(req: Req): Boolean = {
@@ -348,18 +330,16 @@ class LiftServlet extends Loggable {
       val pathLen = wp.length
 
       def isComet: Boolean = {
-        if (pathLen < 3) {
-          false
-        } else {
+        if (pathLen < 3) { false }
+        else {
           val kindaComet = wp.take(2) == cometPath
 
           kindaComet && req.acceptsJavaScript_?
         }
       }
       def isAjax: Boolean = {
-        if (pathLen < 3) {
-          false
-        } else {
+        if (pathLen < 3) { false }
+        else {
           val kindaAjax = wp.take(2) == ajaxPath
 
           kindaAjax && req.acceptsJavaScript_?
@@ -394,9 +374,7 @@ class LiftServlet extends Loggable {
           case Empty                         => LiftRules.notFoundOrIgnore(req, Empty)
           case f: net.liftweb.common.Failure => Full(req.createNotFound(f))
         }
-      } else {
-        Empty
-      }
+      } else { Empty }
     }
   }
 
@@ -454,9 +432,7 @@ class LiftServlet extends Loggable {
     */
   def doService(req: Req, response: HTTPResponse): Boolean = {
 
-    tryo {
-      LiftRules.onBeginServicing.toList.foreach(_(req))
-    }
+    tryo { LiftRules.onBeginServicing.toList.foreach(_(req)) }
 
     def stepThroughPipeline(steps: Seq[ProcessingStep]): Box[LiftResponse] = {
       //Seems broken but last step always hits
@@ -468,17 +444,14 @@ class LiftServlet extends Loggable {
 
     /* Go through the pipeline and send response if full **/
     val resp: Box[LiftResponse] =
-      try {
-        stepThroughPipeline(processingPipeline)
-      } catch {
+      try { stepThroughPipeline(processingPipeline) }
+      catch {
         case foc: LiftFlowOfControlException => throw foc
         case e: Exception if !e.getClass.getName.endsWith("RetryRequest") =>
           S.runExceptionHandlers(req, e)
       }
 
-    tryo {
-      LiftRules.onEndServicing.toList.foreach(_(req, resp))
-    }
+    tryo { LiftRules.onEndServicing.toList.foreach(_(req, resp)) }
 
     resp match {
       case Full(EmptyResponse) =>
@@ -488,9 +461,7 @@ class LiftServlet extends Loggable {
         sendResponse(cresp, response, req)
         true
 
-      case _ => {
-        false
-      }
+      case _ => { false }
     }
   }
 
@@ -587,18 +558,14 @@ class LiftServlet extends Loggable {
     val (comet_?, ajax_?) = SessionLossCheck.cometOrAjax_?(req)
 
     val toReturn: () => Box[LiftResponse] =
-      if (dispatch._1) {
-        respToFunc(dispatch._2)
-      } else if (comet_?) {
+      if (dispatch._1) { respToFunc(dispatch._2) }
+      else if (comet_?) {
         handleComet(req, liftSession, originalRequest) match {
           case Left(x)  => respToFunc(x)
           case Right(x) => x
         }
-      } else if (ajax_?) {
-        respToFunc(handleAjax(liftSession, req))
-      } else {
-        respToFunc(liftSession.processRequest(req, continuation))
-      }
+      } else if (ajax_?) { respToFunc(handleAjax(liftSession, req)) }
+      else { respToFunc(liftSession.processRequest(req, continuation)) }
 
     toReturn
   }
@@ -675,9 +642,8 @@ class LiftServlet extends Loggable {
 
         case _ =>
           try {
-            val what = flatten(try {
-              liftSession.runParams(requestState)
-            } catch {
+            val what = flatten(try { liftSession.runParams(requestState) }
+            catch {
               case ResponseShortcutException(_, Full(to), _) =>
                 import net.liftweb.http.js.JsCmds._
                 List(RedirectTo(to))
@@ -924,9 +890,7 @@ class LiftServlet extends Loggable {
       LAPinger.schedule(cont, BreakOut(), TimeSpan(cometTimeout))
 
       request.request.suspend(cometTimeout + 2000L)
-    } finally {
-      cont ! BeginContinuation
-    }
+    } finally { cont ! BeginContinuation }
   }
 
   private def handleComet(
@@ -1033,9 +997,7 @@ class LiftServlet extends Loggable {
       Full(S.init(Box !! originalRequest, session) {
         convertAnswersToCometResponse(session, ret2, actors)
       })
-    } finally {
-      session.exitComet(cont)
-    }
+    } finally { session.exitComet(cont) }
   }
 
   val dumpRequestResponse = Props.getBool("dump.request.response", false)
@@ -1170,9 +1132,7 @@ class LiftServlet extends Loggable {
               }
             }
             response.outputStream.flush()
-          } finally {
-            endFunc()
-          }
+          } finally { endFunc() }
 
         case OutputStreamResponse(out, _, _, _, _) =>
           out(response.outputStream)

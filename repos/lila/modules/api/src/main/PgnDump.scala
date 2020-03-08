@@ -16,9 +16,7 @@ final class PgnDump(
     val pgn = dumper(game, initialFen)
     game.tournamentId
       .flatMap(tournamentName)
-      .orElse {
-        game.simulId.flatMap(simulName)
-      }
+      .orElse { game.simulId.flatMap(simulName) }
       .fold(pgn)(pgn.withEvent)
   }
 

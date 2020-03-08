@@ -108,9 +108,7 @@ object ExpressionEncoder {
       case (e, i) =>
         val (dataType, nullable) = if (e.flat) {
           e.schema.head.dataType -> e.schema.head.nullable
-        } else {
-          e.schema -> true
-        }
+        } else { e.schema -> true }
         StructField(s"_${i + 1}", dataType, nullable)
     })
 
@@ -338,9 +336,7 @@ case class ExpressionEncoder[T](
     exprToMaxOrdinal.foreach {
       case (expr, maxOrdinal) =>
         val schema = expr.dataType.asInstanceOf[StructType]
-        if (maxOrdinal != schema.length - 1) {
-          fail(schema, maxOrdinal)
-        }
+        if (maxOrdinal != schema.length - 1) { fail(schema, maxOrdinal) }
     }
   }
 

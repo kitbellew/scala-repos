@@ -6,21 +6,15 @@ class RouteMetadataSpec extends MutableScalatraSpec {
   addServlet(RouteMetadataSpec.servlet, "/*")
 
   "A route without metadata transformers" should {
-    "not have any metadata" in {
-      get("/zero/size") { body must_== "0" }
-    }
+    "not have any metadata" in { get("/zero/size") { body must_== "0" } }
   }
 
   "A route with a metadata transformer" should {
-    "record the metadata" in {
-      get("/one/foo") { body must_== "bar" }
-    }
+    "record the metadata" in { get("/one/foo") { body must_== "bar" } }
   }
 
   "A route with two metadata transformers" should {
-    "apply left to right" in {
-      get("/two/foo") { body must_== "baz" }
-    }
+    "apply left to right" in { get("/two/foo") { body must_== "baz" } }
   }
 }
 
@@ -30,9 +24,7 @@ object RouteMetadataSpec {
   }
 
   def servlet = new ScalatraServlet {
-    val zero: Route = get("/zero/:key") {
-      zero.metadata.size.toString
-    }
+    val zero: Route = get("/zero/:key") { zero.metadata.size.toString }
 
     val one: Route = get("/one/:key", meta('foo, "bar")) {
       renderMeta(one, Symbol(params("key")))

@@ -25,14 +25,9 @@ object Test extends App {
   println(byteSwitch('b'))
   println(charSwitch('z'))
 
-  def implicitDefault(x: Int) = x match {
-    case 0 => 0
-  }
+  def implicitDefault(x: Int) = x match { case 0 => 0 }
 
-  try {
-    implicitDefault(5)
-  } catch {
-    case e: MatchError => println(e)
-  }
+  try { implicitDefault(5) }
+  catch { case e: MatchError => println(e) }
 
 }

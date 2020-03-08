@@ -31,14 +31,10 @@ class ThrottledResponseExpirationTest {
     Collections.emptyList(),
     time)
 
-  def callback(delayTimeMs: Int) {
-    numCallbacks += 1
-  }
+  def callback(delayTimeMs: Int) { numCallbacks += 1 }
 
   @Before
-  def beforeMethod() {
-    numCallbacks = 0
-  }
+  def beforeMethod() { numCallbacks = 0 }
 
   @Test
   def testExpire() {
@@ -68,9 +64,7 @@ class ThrottledResponseExpirationTest {
       Assert.assertEquals(0, delayQueue.size())
       reaper.doWork()
       Assert.assertEquals(4, numCallbacks)
-    } finally {
-      clientMetrics.shutdown()
-    }
+    } finally { clientMetrics.shutdown() }
   }
 
   @Test

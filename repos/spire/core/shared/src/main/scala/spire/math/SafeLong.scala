@@ -218,11 +218,8 @@ object SafeLong extends SafeLongInstances {
     else SafeLongBigInteger(x.bigInteger)
 
   private[math] def apply(s: String): SafeLong =
-    try {
-      SafeLong(java.lang.Long.parseLong(s))
-    } catch {
-      case _: Exception => SafeLong(new BigInteger(s))
-    }
+    try { SafeLong(java.lang.Long.parseLong(s)) }
+    catch { case _: Exception => SafeLong(new BigInteger(s)) }
 
   def longGcd(x: Long, y: Long): SafeLong = {
     def absWrap(x: Long): SafeLong =
@@ -244,11 +241,9 @@ object SafeLong extends SafeLongInstances {
       if (x >= 0) SafeLongLong(x)
       else if (x == Long.MinValue) SafeLong.safe64
       else SafeLongLong(-x)
-    } else if (x == 0L) {
-      SafeLong(y.abs)
-    } else if (x == Long.MinValue) {
-      SafeLong(SafeLong.big64 gcd y)
-    } else {
+    } else if (x == 0L) { SafeLong(y.abs) }
+    else if (x == Long.MinValue) { SafeLong(SafeLong.big64 gcd y) }
+    else {
       SafeLongLong(
         spire.math.gcd(x, (y remainder BigInteger.valueOf(x)).longValue))
     }

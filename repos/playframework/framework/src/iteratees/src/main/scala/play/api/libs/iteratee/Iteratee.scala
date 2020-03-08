@@ -796,16 +796,14 @@ private sealed trait StepIteratee[E, A] extends Iteratee[E, A] with Step[E, A] {
 
   final override def fold[B](folder: Step[E, A] => Future[B])(
       implicit ec: ExecutionContext): Future[B] = {
-    executeFuture {
-      folder(immediateUnflatten)
-    }(ec /* executeFuture handles preparation */ )
+    executeFuture { folder(immediateUnflatten) }(
+      ec /* executeFuture handles preparation */ )
   }
 
   final override def pureFold[B](folder: Step[E, A] => B)(
       implicit ec: ExecutionContext): Future[B] = {
-    Future {
-      folder(immediateUnflatten)
-    }(ec /* Future.apply handles preparation */ )
+    Future { folder(immediateUnflatten) }(
+      ec /* Future.apply handles preparation */ )
   }
 
   protected[play] final override def foldNoEC[B](

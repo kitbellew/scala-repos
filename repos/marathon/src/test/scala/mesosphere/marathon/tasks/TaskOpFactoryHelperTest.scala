@@ -20,9 +20,7 @@ class TaskOpFactoryHelperTest
     val taskInfo = Mesos.TaskInfo.getDefaultInstance
 
     When("We create a launch operation")
-    val error = intercept[AssertionError] {
-      f.helper.launch(taskInfo, task)
-    }
+    val error = intercept[AssertionError] { f.helper.launch(taskInfo, task) }
 
     Then("An exception is thrown")
     error.getMessage shouldEqual "assumption failed: marathon task id and mesos task id must be equal"

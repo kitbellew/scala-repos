@@ -76,9 +76,7 @@ private[finagle] object MultiReaderHelper {
             v
           }
         )
-      } else {
-        msg
-      }
+      } else { msg }
     }
 
     def exposeNumReadHandles(handles: Set[ReadHandle]) {
@@ -140,9 +138,7 @@ private[finagle] object MultiReaderHelper {
 
     // Wait until the ReadHandles set is populated before initializing.
     val readHandlesPopulatedFuture = readHandles.changes
-      .collect[Try[Set[ReadHandle]]] {
-        case r @ Return(x) if x.nonEmpty => r
-      }
+      .collect[Try[Set[ReadHandle]]] { case r @ Return(x) if x.nonEmpty => r }
       .toFuture()
 
     val closeWitness: Future[Closable] = readHandlesPopulatedFuture flatMap {
@@ -492,9 +488,7 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
 
   protected[kestrel] def withConfig(
       f: MultiReaderConfig[Req, Rep] => MultiReaderConfig[Req, Rep])
-      : Builder = {
-    copy(f(config))
-  }
+      : Builder = { copy(f(config)) }
 
   protected[kestrel] def defaultClientBuilder: ClientBuilderBase
 
@@ -658,9 +652,7 @@ class ClusterMultiReaderBuilder private[kestrel] (
 
   protected[kestrel] def withConfig(
       f: ClusterMultiReaderConfig => ClusterMultiReaderConfig)
-      : ClusterMultiReaderBuilder = {
-    copy(f(config))
-  }
+      : ClusterMultiReaderBuilder = { copy(f(config)) }
 }
 
 /**

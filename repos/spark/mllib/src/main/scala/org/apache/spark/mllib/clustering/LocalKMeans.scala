@@ -68,9 +68,7 @@ private[mllib] object LocalKMeans extends Logging {
           "kMeansPlusPlus initialization ran out of distinct points for centers." +
             s" Using duplicate point for center k = $i.")
         centers(i) = points(0).toDense
-      } else {
-        centers(i) = points(j - 1).toDense
-      }
+      } else { centers(i) = points(j - 1).toDense }
     }
 
     // Run up to maxIterations iterations of Lloyd's algorithm
@@ -111,9 +109,7 @@ private[mllib] object LocalKMeans extends Logging {
     if (iteration == maxIterations) {
       logInfo(
         s"Local KMeans++ reached the max number of iterations: $maxIterations.")
-    } else {
-      logInfo(s"Local KMeans++ converged in $iteration iterations.")
-    }
+    } else { logInfo(s"Local KMeans++ converged in $iteration iterations.") }
 
     centers
   }

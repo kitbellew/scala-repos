@@ -114,11 +114,8 @@ abstract class ArrayData extends SpecializedGetters with Serializable {
     val values = new Array[T](size)
     var i = 0
     while (i < size) {
-      if (isNullAt(i)) {
-        values(i) = null.asInstanceOf[T]
-      } else {
-        values(i) = get(i, elementType).asInstanceOf[T]
-      }
+      if (isNullAt(i)) { values(i) = null.asInstanceOf[T] }
+      else { values(i) = get(i, elementType).asInstanceOf[T] }
       i += 1
     }
     values
@@ -129,11 +126,8 @@ abstract class ArrayData extends SpecializedGetters with Serializable {
     val size = numElements()
     var i = 0
     while (i < size) {
-      if (isNullAt(i)) {
-        f(i, null)
-      } else {
-        f(i, get(i, elementType))
-      }
+      if (isNullAt(i)) { f(i, null) }
+      else { f(i, get(i, elementType)) }
       i += 1
     }
   }

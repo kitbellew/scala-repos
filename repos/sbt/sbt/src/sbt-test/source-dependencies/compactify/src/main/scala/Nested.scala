@@ -3,7 +3,9 @@ package test
 object TopLevelModule1 {
   object InnerModule1 {
     object InnerModule2 {
-      trait Z { def q = 3 }
+      trait Z {
+        def q = 3
+      }
       def x = 3
     }
   }
@@ -12,7 +14,9 @@ object TopLevelModule1 {
       val z = new TopLevelModule1.InnerClass2
     }
     object InnerModule3 {
-      val y = new TopLevel1 with InnerModule1.InnerModule2.Z { val x = 4 }
+      val y = new TopLevel1 with InnerModule1.InnerModule2.Z {
+        val x = 4
+      }
     }
   }
   class InnerClass2

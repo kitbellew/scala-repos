@@ -21,9 +21,7 @@ trait LongIsEuclideanRing extends EuclideanRing[Long] {
         val e = b >> 1
         val c = if ((b & 1) == 1) a else 1
         c * pow(a, e) * pow(a, e)
-      } else {
-        0
-      }
+      } else { 0 }
   }
   override def times(a: Long, b: Long): Long = a * b
   def zero: Long = 0L
@@ -42,13 +40,9 @@ trait LongIsNRoot extends NRoot[Long] {
       val next = prev | add
       val e = spire.math.pow(next, n)
 
-      if (e == x || add == 0) {
-        next
-      } else if (e <= 0 || e > x) {
-        findnroot(prev, add >> 1)
-      } else {
-        findnroot(next, add >> 1)
-      }
+      if (e == x || add == 0) { next }
+      else if (e <= 0 || e > x) { findnroot(prev, add >> 1) }
+      else { findnroot(next, add >> 1) }
     }
 
     if (n < 1) throw new IllegalArgumentException(s"nroot($n)")

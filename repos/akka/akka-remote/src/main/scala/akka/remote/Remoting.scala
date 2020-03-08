@@ -810,9 +810,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           shutdown: T ⇒ Future[Boolean]): Future[Boolean] = {
         (Future sequence resources.map(shutdown)) map {
           _.forall(identity)
-        } recover {
-          case NonFatal(_) ⇒ false
-        }
+        } recover { case NonFatal(_) ⇒ false }
       }
 
       (for {

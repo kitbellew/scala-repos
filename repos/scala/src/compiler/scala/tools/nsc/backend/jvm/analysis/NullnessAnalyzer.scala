@@ -129,9 +129,7 @@ final class NullnessInterpreter(bTypes: BTypes)
   def binaryOperation(
       insn: AbstractInsnNode,
       value1: NullnessValue,
-      value2: NullnessValue): NullnessValue = {
-    NullnessValue.unknown(insn)
-  }
+      value2: NullnessValue): NullnessValue = { NullnessValue.unknown(insn) }
 
   def ternaryOperation(
       insn: AbstractInsnNode,

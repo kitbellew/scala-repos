@@ -80,9 +80,7 @@ class ReplicatorSpec
   }
 
   def join(from: RoleName, to: RoleName): Unit = {
-    runOn(from) {
-      cluster join node(to).address
-    }
+    runOn(from) { cluster join node(to).address }
     enterBarrier(from.name + "-joined")
   }
 
@@ -272,9 +270,7 @@ class ReplicatorSpec
 
   "be replicated after succesful update" in {
     val changedProbe = TestProbe()
-    runOn(first, second) {
-      replicator ! Subscribe(KeyC, changedProbe.ref)
-    }
+    runOn(first, second) { replicator ! Subscribe(KeyC, changedProbe.ref) }
 
     runOn(first) {
       replicator ! Update(KeyC, GCounter(), writeTwo)(_ + 30)

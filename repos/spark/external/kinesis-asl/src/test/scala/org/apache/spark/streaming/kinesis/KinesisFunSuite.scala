@@ -28,9 +28,8 @@ trait KinesisFunSuite extends SparkFunSuite {
 
   /** Run the test if environment variable is set or ignore the test */
   def testIfEnabled(testName: String)(testBody: => Unit) {
-    if (shouldRunTests) {
-      test(testName)(testBody)
-    } else {
+    if (shouldRunTests) { test(testName)(testBody) }
+    else {
       ignore(
         s"$testName [enable by setting env var $envVarNameForEnablingTests=1]")(
         testBody)
@@ -39,9 +38,8 @@ trait KinesisFunSuite extends SparkFunSuite {
 
   /** Run the give body of code only if Kinesis tests are enabled */
   def runIfTestsEnabled(message: String)(body: => Unit): Unit = {
-    if (shouldRunTests) {
-      body
-    } else {
+    if (shouldRunTests) { body }
+    else {
       ignore(
         s"$message [enable by setting env var $envVarNameForEnablingTests=1]")(
         ())

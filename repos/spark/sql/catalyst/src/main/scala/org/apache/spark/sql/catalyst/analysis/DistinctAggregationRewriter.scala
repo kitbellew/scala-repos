@@ -117,9 +117,7 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
     // Collect all aggregate expressions.
     val aggExpressions = a.aggregateExpressions.flatMap { e =>
-      e.collect {
-        case ae: AggregateExpression => ae
-      }
+      e.collect { case ae: AggregateExpression => ae }
     }
 
     // Extract distinct aggregate expressions.
@@ -143,9 +141,7 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
         If(EqualTo(gid, id), e, nullify(e))
       def patchAggregateFunctionChildren(af: AggregateFunction)(
           attrs: Expression => Expression): AggregateFunction = {
-        af.withNewChildren(af.children.map {
-            case afc => attrs(afc)
-          })
+        af.withNewChildren(af.children.map { case afc => attrs(afc) })
           .asInstanceOf[AggregateFunction]
       }
 
@@ -224,9 +220,7 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
             distinctAggChildren.map(nullify) ++
             Seq(regularGroupId) ++
             regularAggChildren)
-      } else {
-        Seq.empty[Seq[Expression]]
-      }
+      } else { Seq.empty[Seq[Expression]] }
 
       // Construct the distinct aggregate input projections.
       val regularAggNulls = regularAggChildren.map(nullify)
@@ -271,9 +265,7 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
           .asInstanceOf[NamedExpression]
       }
       Aggregate(groupByAttrs, patchedAggExpressions, firstAggregate)
-    } else {
-      a
-    }
+    } else { a }
   }
 
   private def nullify(e: Expression) = Literal.create(null, e.dataType)

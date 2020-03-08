@@ -83,9 +83,7 @@ object PairingRepo {
       .sort(recentSort)
       .cursor[BSONDocument]()
       .collect[List](nb)
-      .map {
-        _.flatMap(_.getAs[String]("_id"))
-      }
+      .map { _.flatMap(_.getAs[String]("_id")) }
 
   def byTourUserNb(
       tourId: String,

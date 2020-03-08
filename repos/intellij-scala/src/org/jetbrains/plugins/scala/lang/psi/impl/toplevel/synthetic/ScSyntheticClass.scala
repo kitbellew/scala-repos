@@ -217,9 +217,7 @@ class ScSyntheticFunction(
   override def toString = "Synthetic method"
 
   protected def findChildrenByClassScala[T >: Null <: ScalaPsiElement](
-      clazz: Class[T]): Array[T] = {
-    findChildrenByClass[T](clazz)
-  }
+      clazz: Class[T]): Array[T] = { findChildrenByClass[T](clazz) }
 
   protected def findChildByClassScala[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): T = {
@@ -254,9 +252,7 @@ class SyntheticClasses(project: Project)
     StartupManager
       .getInstance(project)
       .registerPostStartupActivity(new Runnable {
-        def run() {
-          registerClasses()
-        }
+        def run() { registerClasses() }
       })
   }
 
@@ -609,9 +605,7 @@ object Unit
         case _       =>
       }
     }
-    for (obj <- syntheticObjects) {
-      if (obj.qualifiedName == qName) return obj
-    }
+    for (obj <- syntheticObjects) { if (obj.qualifiedName == qName) return obj }
     null
   }
 
@@ -619,9 +613,7 @@ object Unit
     val res: ArrayBuffer[PsiClass] = new ArrayBuffer[PsiClass]
     val c = findClass(qName, scope)
     if (c != null) res += c
-    for (obj <- syntheticObjects) {
-      if (obj.qualifiedName == qName) res += obj
-    }
+    for (obj <- syntheticObjects) { if (obj.qualifiedName == qName) res += obj }
     res.toArray
   }
 

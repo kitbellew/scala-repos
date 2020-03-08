@@ -46,9 +46,7 @@ object Test {
         it.next
         it.next
         false
-      } catch {
-        case _: NoSuchElementException => true
-      }
+      } catch { case _: NoSuchElementException => true }
     assert(thrown)
   }
 }

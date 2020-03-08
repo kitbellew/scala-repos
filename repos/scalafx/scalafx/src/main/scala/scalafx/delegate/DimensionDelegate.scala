@@ -58,16 +58,12 @@ trait DimensionDelegate[J <: Object with Dimensioned] extends SFXDelegate[J] {
     * Indicates the height of object.
     */
   def height: DoubleProperty = delegate.heightProperty()
-  def height_=(h: Double) {
-    height() = h
-  }
+  def height_=(h: Double) { height() = h }
 
   /**
     * Indicates the width of object.
     */
   def width: DoubleProperty = delegate.widthProperty()
-  def width_=(w: Double) {
-    width() = w
-  }
+  def width_=(w: Double) { width() = w }
 
 }

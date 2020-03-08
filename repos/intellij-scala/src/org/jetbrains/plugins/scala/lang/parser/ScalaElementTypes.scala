@@ -301,9 +301,7 @@ object ScalaElementTypes {
       new ScBlockExprImpl(text)
     }
 
-    @NotNull def createCompositeNode: ASTNode = {
-      new ScBlockExprImpl(null)
-    }
+    @NotNull def createCompositeNode: ASTNode = { new ScBlockExprImpl(null) }
 
     def getErrorsCount(
         seq: CharSequence,
@@ -320,11 +318,8 @@ object ScalaElementTypes {
         val tp: IElementType = lexer.getTokenType
         if (tp == null) flag = true
         else if (balance == 0) return FATAL_ERROR
-        else if (tp == ScalaTokenTypes.tLBRACE) {
-          balance += 1
-        } else if (tp == ScalaTokenTypes.tRBRACE) {
-          balance -= 1
-        }
+        else if (tp == ScalaTokenTypes.tLBRACE) { balance += 1 }
+        else if (tp == ScalaTokenTypes.tRBRACE) { balance -= 1 }
         lexer.advance()
       }
       balance

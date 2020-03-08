@@ -46,22 +46,14 @@ class TitledPane(override val delegate: jfxsc.TitledPane = new jfxsc.TitledPane)
     with SFXDelegate[jfxsc.TitledPane] {
 
   def animated: BooleanProperty = delegate.animatedProperty
-  def animated_=(v: Boolean) {
-    animated() = v
-  }
+  def animated_=(v: Boolean) { animated() = v }
 
   def collapsible: BooleanProperty = delegate.collapsibleProperty
-  def collapsible_=(v: Boolean) {
-    collapsible() = v
-  }
+  def collapsible_=(v: Boolean) { collapsible() = v }
 
   def content: ObjectProperty[jfxs.Node] = delegate.contentProperty
-  def content_=(v: Node) {
-    content() = v
-  }
+  def content_=(v: Node) { content() = v }
 
   def expanded: BooleanProperty = delegate.expandedProperty
-  def expanded_=(v: Boolean) {
-    expanded() = v
-  }
+  def expanded_=(v: Boolean) { expanded() = v }
 }

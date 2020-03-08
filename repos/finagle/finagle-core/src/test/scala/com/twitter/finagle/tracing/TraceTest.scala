@@ -84,18 +84,14 @@ class TraceTest
   test("Trace.letId: not set additional terminal id") {
     Trace.letId(Trace.nextId, true) {
       val topId = Trace.id
-      Trace.letId(Trace.nextId, true) {
-        assert(Trace.id == topId)
-      }
+      Trace.letId(Trace.nextId, true) { assert(Trace.id == topId) }
     }
   }
 
   test("Trace.letId: not set id when terminal id exists") {
     Trace.letId(Trace.nextId, true) {
       val topId = Trace.id
-      Trace.letId(Trace.nextId) {
-        assert(Trace.id == topId)
-      }
+      Trace.letId(Trace.nextId) { assert(Trace.id == topId) }
     }
   }
 
@@ -190,9 +186,7 @@ class TraceTest
           }
         }
       }
-    } finally {
-      Trace.enable()
-    }
+    } finally { Trace.enable() }
   }
 
   /* TODO temporarily disabled until we can mock stopwatches
@@ -343,16 +337,12 @@ class TraceTest
     assert(!Trace.isActivelyTracing)
 
     // only the null tracer, still false
-    Trace.letTracerAndId(NullTracer, id) {
-      assert(!Trace.isActivelyTracing)
-    }
+    Trace.letTracerAndId(NullTracer, id) { assert(!Trace.isActivelyTracing) }
 
     // tracer/id is None/None, default to trace
     when(tracer.sampleTrace(any[TraceId])).thenReturn(None)
     Trace.letTracer(tracer) {
-      Trace.letId(id) {
-        assert(Trace.isActivelyTracing)
-      }
+      Trace.letId(id) { assert(Trace.isActivelyTracing) }
 
       // tracer/id is None/false, don't trace
       // false/false, better not

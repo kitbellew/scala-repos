@@ -90,9 +90,7 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
     * Define the alias set for a given value.
     */
   private def setAliasSet(assignee: Int, set: AliasSet): Unit = {
-    if (aliases(assignee) != null) {
-      aliases(assignee) -= assignee
-    }
+    if (aliases(assignee) != null) { aliases(assignee) -= assignee }
     aliases(assignee) = set
   }
 
@@ -147,9 +145,8 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
       case DUP2 =>
         val isSize2 = peekStack(0).getSize == 2
         val top = stackTop
-        if (isSize2) {
-          newAlias(assignee = top, source = top - 1)
-        } else {
+        if (isSize2) { newAlias(assignee = top, source = top - 1) }
+        else {
           newAlias(assignee = top - 1, source = top - 3)
           newAlias(assignee = top, source = top - 2)
         }
@@ -380,9 +377,8 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
       if (set != null) {
         // size cannot be 0 - alias sets are always at least singletons.
         // for sets of size 1-4, don't use the `newSets` map - lookup / update is slow
-        if (set.size == 1) {
-          aliases(i) = null
-        } else if (set.size <= 4) {
+        if (set.size == 1) { aliases(i) = null }
+        else if (set.size <= 4) {
           val small = set.set.asInstanceOf[AliasSet.SmallBitSet]
           val firstOfSet = i == min(small)
           if (firstOfSet) {
@@ -691,11 +687,8 @@ object AliasSet {
 
     def next(): Int = {
       if (hasNext) {
-        if (abcdNext != -1) {
-          val r = abcdNext; abcdNext = -1; r
-        } else {
-          val r = i; i += 1; iValid = false; r
-        }
+        if (abcdNext != -1) { val r = abcdNext; abcdNext = -1; r }
+        else { val r = i; i += 1; iValid = false; r }
       } else Iterator.empty.next()
     }
   }

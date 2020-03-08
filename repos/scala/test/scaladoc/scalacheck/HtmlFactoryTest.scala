@@ -139,11 +139,8 @@ object Test extends Properties("HtmlFactory") {
   def shortComments(root: scala.xml.Node) =
     XMLUtil.stripGroup(root).descendant.flatMap {
       case e: scala.xml.Elem => {
-        if (e.attribute("class").toString.contains("shortcomment")) {
-          Some(e)
-        } else {
-          None
-        }
+        if (e.attribute("class").toString.contains("shortcomment")) { Some(e) }
+        else { None }
       }
       case _ => None
     }
@@ -182,16 +179,12 @@ object Test extends Properties("HtmlFactory") {
   property("Trac #4358") = {
     createTemplate("Trac4358.scala") match {
       case node: scala.xml.Node =>
-        !shortComments(node).exists {
-          _.toString.contains("<em>i.</em>")
-        }
+        !shortComments(node).exists { _.toString.contains("<em>i.</em>") }
       case _ => false
     }
   }
 
-  property("Trac #4180") = {
-    createTemplate("Trac4180.scala") != None
-  }
+  property("Trac #4180") = { createTemplate("Trac4180.scala") != None }
 
   property("Trac #4372") = {
     createTemplate("Trac4372.scala") match {
@@ -363,10 +356,8 @@ object Test extends Properties("HtmlFactory") {
     val files = createTemplates("SI_4287.scala")
 
     files("ClassWithSugar.html") match {
-      case node: scala.xml.Node => {
-        node.toString.contains(">123<")
-      }
-      case _ => false
+      case node: scala.xml.Node => { node.toString.contains(">123<") }
+      case _                    => false
     }
   }
 

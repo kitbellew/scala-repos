@@ -151,9 +151,7 @@ object ScalaMacroDebuggingUtil {
     MARKERS_CACHE get fileName match {
       case Some(oldCount) =>
         if (oldCount == markersCount) { false }
-        else {
-          MARKERS_CACHE += (fileName -> markersCount); true
-        }
+        else { MARKERS_CACHE += (fileName -> markersCount); true }
       case None => MARKERS_CACHE += (fileName -> markersCount); true
     }
 
@@ -199,9 +197,7 @@ object ScalaMacroDebuggingUtil {
            a.getTextOffset > b.getTextOffset)) {
       var macroCall = macrosheetFile.findElementAt(elt.getTextOffset)
       while (macroCall != null && !ScalaMacroDebuggingUtil.isMacroCall(
-               macroCall)) {
-        macroCall = macroCall.getParent
-      }
+               macroCall)) { macroCall = macroCall.getParent }
       if (macroCall != null) {
         //        extensions.inWriteAction {
         WriteCommandAction.runWriteCommandAction(

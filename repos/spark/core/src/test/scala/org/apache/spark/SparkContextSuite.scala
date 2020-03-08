@@ -55,9 +55,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
     val conf =
       new SparkConf().set("spark.driver.allowMultipleContexts", "false")
     // This is an invalid configuration (no app name or master URL)
-    intercept[SparkException] {
-      new SparkContext(conf)
-    }
+    intercept[SparkException] { new SparkContext(conf) }
     // Even though those earlier calls failed, we should still be able to create a new context
     sc = new SparkContext(conf.setMaster("local").setAppName("test"))
   }
@@ -72,9 +70,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
         .set("spark.driver.allowMultipleContexts", "true")
       sc = new SparkContext(conf)
       secondSparkContext = new SparkContext(conf)
-    } finally {
-      Option(secondSparkContext).foreach(_.stop())
-    }
+    } finally { Option(secondSparkContext).foreach(_.stop()) }
   }
 
   test("Test getOrCreate") {
@@ -171,9 +167,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
           x
         })
         .count()
-    } finally {
-      sc.stop()
-    }
+    } finally { sc.stop() }
   }
 
   test("addFile recursive works") {
@@ -208,9 +202,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
           x
         })
         .count()
-    } finally {
-      sc.stop()
-    }
+    } finally { sc.stop() }
   }
 
   test("addFile recursive can't add directories by default") {
@@ -219,12 +211,8 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
     try {
       sc =
         new SparkContext(new SparkConf().setAppName("test").setMaster("local"))
-      intercept[SparkException] {
-        sc.addFile(dir.getAbsolutePath)
-      }
-    } finally {
-      sc.stop()
-    }
+      intercept[SparkException] { sc.addFile(dir.getAbsolutePath) }
+    } finally { sc.stop() }
   }
 
   test(
@@ -240,9 +228,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       // In SPARK-6414, sc.cancelJobGroup will cause NullPointerException and cause
       // SparkContext to shutdown, so the following assertion will fail.
       assert(sc.parallelize(1 to 10).count() == 10L)
-    } finally {
-      sc.stop()
-    }
+    } finally { sc.stop() }
   }
 
   test(
@@ -334,9 +320,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       assert(sc.wholeTextFiles(dirpath1 + "," + dirpath2).count() == 5L)
       assert(sc.binaryFiles(dirpath1 + "," + dirpath2).count() == 5L)
 
-    } finally {
-      sc.stop()
-    }
+    } finally { sc.stop() }
   }
 
   test("Default path for file based RDDs is properly set (SPARK-12517)") {

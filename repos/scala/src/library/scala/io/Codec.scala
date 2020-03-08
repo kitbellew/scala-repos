@@ -112,7 +112,9 @@ object Codec extends LowPriorityCodecImplicits {
   def apply(charSet: Charset): Codec = new Codec(charSet)
   def apply(decoder: CharsetDecoder): Codec = {
     val _decoder = decoder
-    new Codec(decoder.charset()) { override def decoder = _decoder }
+    new Codec(decoder.charset()) {
+      override def decoder = _decoder
+    }
   }
 
   @migration(

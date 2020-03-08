@@ -55,19 +55,16 @@ trait SelectLike extends Any with Select {
       stride: Int,
       k: Int): Unit = {
     val length = (right - left + stride - 1) / stride
-    if (length < 10) {
-      sort(data, left, right, stride)
-
-    } else {
+    if (length < 10) { sort(data, left, right, stride) }
+    else {
       val c = partition(data, left, right, stride)(
         approxMedian(data, left, right, stride))
       val span = equalSpan(data, c, stride)
 
       if (c <= k && k < (c + span)) {
         // Spin.
-      } else if (k < c) {
-        select(data, left, c, stride, k)
-      } else {
+      } else if (k < c) { select(data, left, c, stride, k) }
+      else {
         val newLeft = c + span * stride
         select(data, newLeft, right, stride, k)
       }

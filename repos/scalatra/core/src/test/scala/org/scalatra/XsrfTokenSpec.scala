@@ -10,13 +10,9 @@ class XsrfTokenServlet extends ScalatraServlet with XsrfTokenSupport {
 
   xsrfGuard()
 
-  get("/renderForm") {
-    "GO"
-  }
+  get("/renderForm") { "GO" }
 
-  post("/renderForm") {
-    "SUCCESS"
-  }
+  post("/renderForm") { "SUCCESS" }
 }
 
 object XsrfTokenSpec extends MutableScalatraSpec {
@@ -58,9 +54,7 @@ object XsrfTokenSpec extends MutableScalatraSpec {
 
   "the post should be invalid when it uses a different csrf token" in {
     session {
-      get("/renderForm") {
-        body must beMatching("GO")
-      }
+      get("/renderForm") { body must beMatching("GO") }
       post(
         "/renderForm",
         headers =
@@ -78,9 +72,7 @@ object XsrfTokenSpec extends MutableScalatraSpec {
         token = tokenFromCookie
         body must beMatching("GO")
       }
-      get("/renderForm") {
-        body must beMatching("GO")
-      }
+      get("/renderForm") { body must beMatching("GO") }
       post(
         "/renderForm",
         headers = Map(XsrfTokenSupport.HeaderNames.head -> token)) {

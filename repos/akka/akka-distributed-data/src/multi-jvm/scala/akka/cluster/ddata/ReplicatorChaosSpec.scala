@@ -65,9 +65,7 @@ class ReplicatorChaosSpec
   val KeyX = GCounterKey("X")
 
   def join(from: RoleName, to: RoleName): Unit = {
-    runOn(from) {
-      cluster join node(to).address
-    }
+    runOn(from) { cluster join node(to).address }
     enterBarrier(from.name + "-joined")
   }
 
@@ -216,9 +214,7 @@ class ReplicatorChaosSpec
       }
       enterBarrier("update-during-split-verified")
 
-      runOn(first) {
-        testConductor.exit(fourth, 0).await
-      }
+      runOn(first) { testConductor.exit(fourth, 0).await }
 
       enterBarrier("after-2")
     }

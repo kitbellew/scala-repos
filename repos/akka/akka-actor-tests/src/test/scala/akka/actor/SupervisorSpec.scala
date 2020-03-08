@@ -50,9 +50,7 @@ object SupervisorSpec {
         throw e
     }
 
-    override def postRestart(reason: Throwable) {
-      sendTo ! reason.getMessage
-    }
+    override def postRestart(reason: Throwable) { sendTo ! reason.getMessage }
   }
 
   class Master(sendTo: ActorRef) extends Actor {
@@ -76,9 +74,7 @@ object SupervisorSpec {
         target ! ((self, sender(), ex))
         SupervisorStrategy.Stop
     }
-    def receive = {
-      case p: Props ⇒ sender() ! context.actorOf(p)
-    }
+    def receive = { case p: Props ⇒ sender() ! context.actorOf(p) }
   }
 
   def creator(target: ActorRef, fail: Boolean = false) = {
@@ -253,9 +249,7 @@ class SupervisorSpec
         override val supervisorStrategy =
           OneForOneStrategy(maxNrOfRetries = restarts)(List(classOf[Exception]))
         val child = context.actorOf(Props(childInstance))
-        def receive = {
-          case msg ⇒ child forward msg
-        }
+        def receive = { case msg ⇒ child forward msg }
       }))
 
       expectMsg("preStart1")

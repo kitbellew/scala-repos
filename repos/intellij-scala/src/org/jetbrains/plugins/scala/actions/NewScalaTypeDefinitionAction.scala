@@ -69,9 +69,7 @@ class NewScalaTypeDefinitionAction
         null
       }
 
-      def checkInput(inputString: String): Boolean = {
-        true
-      }
+      def checkInput(inputString: String): Boolean = { true }
 
       def canClose(inputString: String): Boolean = {
         !StringUtil.isEmptyOrSpaces(inputString) && getErrorText(
@@ -114,9 +112,7 @@ class NewScalaTypeDefinitionAction
   private def isUnderSourceRoots(dataContext: DataContext): Boolean = {
     val module: Module =
       dataContext.getData(LangDataKeys.MODULE.getName).asInstanceOf[Module]
-    if (!Option(module).exists(_.hasScala)) {
-      return false
-    }
+    if (!Option(module).exists(_.hasScala)) { return false }
     val view =
       dataContext.getData(LangDataKeys.IDE_VIEW.getName).asInstanceOf[IdeView]
     val project =
@@ -128,9 +124,7 @@ class NewScalaTypeDefinitionAction
       for (dir <- dirs) {
         val aPackage = JavaDirectoryService.getInstance.getPackage(dir)
         if (projectFileIndex.isInSourceContent(
-              dir.getVirtualFile) && aPackage != null) {
-          return true
-        }
+              dir.getVirtualFile) && aPackage != null) { return true }
       }
     }
     false
@@ -180,15 +174,12 @@ object NewScalaTypeDefinitionAction {
 
     var i: Int = 0
     while (i < parameters.length) {
-      {
-        properties.setProperty(parameters(i), parameters(i + 1))
-      }
+      { properties.setProperty(parameters(i), parameters(i + 1)) }
       i += 2
     }
     var text: String = null
-    try {
-      text = template.getText(properties)
-    } catch {
+    try { text = template.getText(properties) }
+    catch {
       case e: Exception =>
         throw new RuntimeException(
           "Unable to load template for " + FileTemplateManager.getInstance

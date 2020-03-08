@@ -19,12 +19,8 @@ class SamplerTest extends FunSuite with MockitoSugar {
 
   test("Sampler should throw exception if illegal sample rate") {
     val sampler = new Sampler
-    intercept[IllegalArgumentException] {
-      sampler.setSampleRate(-1)
-    }
-    intercept[IllegalArgumentException] {
-      sampler.setSampleRate(1.1f)
-    }
+    intercept[IllegalArgumentException] { sampler.setSampleRate(-1) }
+    intercept[IllegalArgumentException] { sampler.setSampleRate(1.1f) }
   }
 
   test("Sampler should check if valid sample rate") {

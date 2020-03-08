@@ -278,9 +278,7 @@ trait ColumnarTableModuleSpec[M[+_]]
               JField("baz", JNum(2)) :: Nil) :: Nil)
       }
 
-      "fully undefined object" >> {
-        testRenderJson(JObject(Map.empty) :: Nil)
-      }
+      "fully undefined object" >> { testRenderJson(JObject(Map.empty) :: Nil) }
 
       "undefined row" >> {
         testRenderJson(
@@ -555,9 +553,7 @@ trait ColumnarTableModuleSpec[M[+_]]
       "create a single column given heterogeneous data" in testToArrayHeterogeneous
     }
 
-    "in concat" >> {
-      "concat two tables" in testConcat
-    }
+    "in concat" >> { "concat two tables" in testConcat }
 
     "in canonicalize" >> {
       "return the correct slice sizes using scalacheck" in checkCanonicalize

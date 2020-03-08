@@ -35,9 +35,7 @@ class CompileServerLauncher extends ApplicationComponent {
 
   def initComponent() {}
 
-  def disposeComponent() {
-    if (running) stop()
-  }
+  def disposeComponent() { if (running) stop() }
 
   def tryToStart(project: Project): Boolean = {
     if (!running) {
@@ -172,9 +170,7 @@ class CompileServerLauncher extends ApplicationComponent {
   }
 
   // TODO stop server more gracefully
-  def stop() {
-    serverInstance.foreach { it => it.destroyProcess() }
-  }
+  def stop() { serverInstance.foreach { it => it.destroyProcess() } }
 
   def stop(project: Project) {
     stop()

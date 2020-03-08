@@ -139,9 +139,7 @@ case class TakeOrderedAndProject(
     if (projectList.isDefined) {
       val proj = UnsafeProjection.create(projectList.get, child.output)
       data.map(r => proj(r).copy())
-    } else {
-      data
-    }
+    } else { data }
   }
 
   private val serializer: Serializer = new UnsafeRowSerializer(
@@ -166,9 +164,7 @@ case class TakeOrderedAndProject(
       if (projectList.isDefined) {
         val proj = UnsafeProjection.create(projectList.get, child.output)
         topK.map(r => proj(r))
-      } else {
-        topK
-      }
+      } else { topK }
     }
   }
 

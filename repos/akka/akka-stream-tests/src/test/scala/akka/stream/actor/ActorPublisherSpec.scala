@@ -335,9 +335,7 @@ class ActorPublisherSpec
           Sink.actorSubscriber(receiverProps(probe.ref))
 
         val (snd, rcv) = source
-          .collect {
-            case n if n % 2 == 0 ⇒ "elem-" + n
-          }
+          .collect { case n if n % 2 == 0 ⇒ "elem-" + n }
           .toMat(sink)(Keep.both)
           .run()
 

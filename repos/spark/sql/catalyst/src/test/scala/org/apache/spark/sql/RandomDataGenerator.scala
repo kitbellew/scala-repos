@@ -62,9 +62,7 @@ object RandomDataGenerator {
     val f = () => {
       if (rand.nextFloat() <= PROBABILITY_OF_INTERESTING_VALUE) {
         interestingValues(rand.nextInt(interestingValues.length))
-      } else {
-        uniformRand(rand)
-      }
+      } else { uniformRand(rand) }
     }
     Some(f)
   }
@@ -274,9 +272,7 @@ object RandomDataGenerator {
         if (maybeFieldGenerators.forall(_.isDefined)) {
           val fieldGenerators: Seq[() => Any] = maybeFieldGenerators.map(_.get)
           Some(() => Row.fromSeq(fieldGenerators.map(_.apply())))
-        } else {
-          None
-        }
+        } else { None }
       }
       case udt: UserDefinedType[_] => {
         val maybeSqlTypeGenerator = forType(udt.sqlType, nullable, rand)
@@ -289,16 +285,11 @@ object RandomDataGenerator {
           val sqlTypeGenerator = maybeSqlTypeGenerator.get
           val generator = () => {
             val generatedScalaValue = sqlTypeGenerator.apply()
-            if (generatedScalaValue == null) {
-              null
-            } else {
-              udt.deserialize(toCatalystType(generatedScalaValue))
-            }
+            if (generatedScalaValue == null) { null }
+            else { udt.deserialize(toCatalystType(generatedScalaValue)) }
           }
           Some(generator)
-        } else {
-          None
-        }
+        } else { None }
       }
       case unsupportedType => None
     }
@@ -306,15 +297,10 @@ object RandomDataGenerator {
     valueGenerator.map { valueGenerator =>
       if (nullable) { () =>
         {
-          if (rand.nextFloat() <= PROBABILITY_OF_NULL) {
-            null
-          } else {
-            valueGenerator()
-          }
+          if (rand.nextFloat() <= PROBABILITY_OF_NULL) { null }
+          else { valueGenerator() }
         }
-      } else {
-        valueGenerator
-      }
+      } else { valueGenerator }
     }
   }
 
@@ -325,9 +311,8 @@ object RandomDataGenerator {
       f.dataType match {
         case ArrayType(childType, nullable) => {
           val data =
-            if (f.nullable && rand.nextFloat() <= PROBABILITY_OF_NULL) {
-              null
-            } else {
+            if (f.nullable && rand.nextFloat() <= PROBABILITY_OF_NULL) { null }
+            else {
               val arr = mutable.ArrayBuffer.empty[Any]
               val n = 1 // rand.nextInt(10)
               var i = 0

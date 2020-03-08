@@ -57,9 +57,7 @@ object Implicits {
           case None    => sb.append(m.matched)
         }
       }
-      if (i < value.length) {
-        sb.append(value.substring(i))
-      }
+      if (i < value.length) { sb.append(value.substring(i)) }
       sb.toString
     }
 
@@ -104,9 +102,7 @@ object Implicits {
 
     def getAndRemove[T](key: String): Option[T] = {
       val value = session.getAttribute(key).asInstanceOf[T]
-      if (value == null) {
-        session.removeAttribute(key)
-      }
+      if (value == null) { session.removeAttribute(key) }
       Option(value)
     }
   }

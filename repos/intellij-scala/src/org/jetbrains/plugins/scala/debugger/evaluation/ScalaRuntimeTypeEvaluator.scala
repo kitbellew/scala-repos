@@ -87,9 +87,7 @@ object ScalaRuntimeTypeEvaluator {
     val unwrapped = DebuggerUtil.unwrapScalaRuntimeObjectRef(value)
     val jdiType: Type = unwrapped.asInstanceOf[Value].`type`
     var psiClass: PsiClass = findPsiClass(project, jdiType)
-    if (psiClass != null) {
-      return psiClass
-    }
+    if (psiClass != null) { return psiClass }
     jdiType match {
       case classType: ClassType =>
         val superclass: ClassType = classType.superclass
@@ -97,9 +95,7 @@ object ScalaRuntimeTypeEvaluator {
           Seq("java.lang.Object", "scala.Any", "scala.AnyRef", "scala.AnyVal")
         if (superclass != null && !stdTypeNames.contains(superclass.name)) {
           psiClass = findPsiClass(project, superclass)
-          if (psiClass != null) {
-            return psiClass
-          }
+          if (psiClass != null) { return psiClass }
         }
         import scala.collection.JavaConversions._
         classType.interfaces
@@ -117,9 +113,7 @@ object ScalaRuntimeTypeEvaluator {
         .instance(project)
         .getCachedClass(GlobalSearchScope.allScope(project), jdiType.name())
         .orNull
-    } finally {
-      token.finish()
-    }
+    } finally { token.finish() }
   }
 
   def isSubtypeable(scType: ScType): Boolean = {

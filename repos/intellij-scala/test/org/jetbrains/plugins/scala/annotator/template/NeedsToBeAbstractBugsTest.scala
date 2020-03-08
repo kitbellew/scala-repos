@@ -74,8 +74,6 @@ class B extends A {
       assertMatches(messages(code)) {
         case Nil =>
       }
-    } finally {
-      extensionPoint.unregisterExtension(injector)
-    }
+    } finally { extensionPoint.unregisterExtension(injector) }
   }
 }

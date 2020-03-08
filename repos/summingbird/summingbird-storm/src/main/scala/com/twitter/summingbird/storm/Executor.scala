@@ -31,9 +31,7 @@ object Executor {
 
     val storm = if (args.boolean("local")) {
       Storm.local(config.getNamedOptions)
-    } else {
-      Storm.remote(config.getNamedOptions)
-    }
+    } else { Storm.remote(config.getNamedOptions) }
 
     storm
       .withRegistrars(config.registrars)

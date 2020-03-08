@@ -220,9 +220,7 @@ class MyTaggingEventAdapter(system: ExtendedActorSystem) extends EventAdapter {
   override def manifest(event: Any): String = ""
 
   override def fromJournal(event: Any, manifest: String): EventSeq =
-    event match {
-      case j: MyTaggingJournalModel => EventSeq.single(j)
-    }
+    event match { case j: MyTaggingJournalModel => EventSeq.single(j) }
 
   override def toJournal(event: Any): Any = {
     event match {

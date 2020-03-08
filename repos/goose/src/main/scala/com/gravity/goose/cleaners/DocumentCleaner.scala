@@ -111,16 +111,12 @@ trait DocumentCleaner {
   private def removeScriptsAndStyles(doc: Document): Document = {
 
     val scripts: Elements = doc.getElementsByTag("script")
-    for (item <- scripts) {
-      item.remove()
-    }
+    for (item <- scripts) { item.remove() }
     trace(scripts.size + " script tags removed")
 
     val styles: Elements = doc.getElementsByTag("style")
     import scala.collection.JavaConversions._
-    for (style <- styles) {
-      style.remove()
-    }
+    for (style <- styles) { style.remove() }
     trace(styles.size + " style tags removed")
     doc
   }
@@ -178,22 +174,14 @@ trait DocumentCleaner {
 
       trace(naughtyList.size + " ID elements found against pattern: " + pattern)
 
-      for (node <- naughtyList) {
-        removeNode(node)
-      }
+      for (node <- naughtyList) { removeNode(node) }
       val naughtyList3: Elements =
         doc.getElementsByAttributeValueMatching("class", pattern)
       trace(
         naughtyList3.size + " CLASS elements found against pattern: " + pattern)
 
-      for (node <- naughtyList3) {
-        removeNode(node)
-      }
-    } catch {
-      case e: IllegalArgumentException => {
-        warn(e, e.toString)
-      }
-    }
+      for (node <- naughtyList3) { removeNode(node) }
+    } catch { case e: IllegalArgumentException => { warn(e, e.toString) } }
     doc
   }
 
@@ -226,9 +214,8 @@ trait DocumentCleaner {
         val replacements = getReplacementNodes(doc, elem)
         elem.children().foreach(_.remove())
         replacements.foreach(n => {
-          try {
-            elem.appendChild(n)
-          } catch {
+          try { elem.appendChild(n) }
+          catch {
             case ex: Exception => info(ex, "Failed to append cleaned child!")
           }
         })
@@ -260,19 +247,12 @@ trait DocumentCleaner {
           div.children().foreach(_.remove())
           replaceNodes.foreach(node => {
 
-            try {
-              div.appendChild(node)
-            } catch {
-              case e: Exception => info(e, e.toString)
-            }
+            try { div.appendChild(node) }
+            catch { case e: Exception => info(e, e.toString) }
 
           })
         }
-      } catch {
-        case e: NullPointerException => {
-          logger.error(e.toString)
-        }
-      }
+      } catch { case e: NullPointerException => { logger.error(e.toString) } }
       divIndex += 1
     }
 
@@ -302,10 +282,7 @@ trait DocumentCleaner {
 
     val nodesToRemove = new ListBuffer[Node]()
 
-    for {
-
-      kid <- div.childNodes()
-    } {
+    for { kid <- div.childNodes() } {
 
       if (kid.nodeName() == "p" && replacementText.size > 0) {
 
@@ -356,9 +333,7 @@ trait DocumentCleaner {
         }
         nodesToRemove += kid
 
-      } else {
-        nodesToReturn += kid
-      }
+      } else { nodesToReturn += kid }
 
     }
     // flush out anything still remaining

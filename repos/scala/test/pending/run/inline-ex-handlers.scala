@@ -77,9 +77,8 @@ object TestInlineHandlersFinallyInline {
       if (nextInt % 2 == 0)
         throw new IllegalArgumentException("something")
       result = 1
-    } catch {
-      case e: Exception => throw e
-    } finally {
+    } catch { case e: Exception => throw e }
+    finally {
       println("finally")
       result = (result - 1) / 2
     }
@@ -101,9 +100,7 @@ object TestInlineHandlersCaseClassExceptionInline {
       if (nextInt % 2 == 0)
         throw new MyException("something")
       result = 1
-    } catch {
-      case MyException(message) => println(message)
-    }
+    } catch { case MyException(message) => println(message) }
 
     result
   }
@@ -121,9 +118,7 @@ object TestInlineHandlersNestedHandlerInnerInline {
         if (nextInt % 2 == 0)
           throw new MyException("something")
         result = 1
-      } catch {
-        case MyException(message) => println(message)
-      }
+      } catch { case MyException(message) => println(message) }
     } catch {
       case e: IllegalArgumentException => println("IllegalArgumentException")
     }
@@ -147,9 +142,7 @@ object TestInlineHandlersNestedHandlerOuterInline {
       } catch {
         case e: IllegalArgumentException => println("IllegalArgumentException")
       }
-    } catch {
-      case MyException(message) => println(message)
-    }
+    } catch { case MyException(message) => println(message) }
 
     result
   }
@@ -220,9 +213,7 @@ object TestInlineHandlersSynchronized {
     var result = "hello"
 
     // any exception thrown here will be caught by a default handler that does MONTIOR_EXIT on result :)
-    result.synchronized {
-      throw MyException(result)
-    }
+    result.synchronized { throw MyException(result) }
 
     result.length
   }
@@ -236,9 +227,7 @@ object TestInlineHandlersSynchronizedWithStack {
     var result = "hello"
 
     // any exception thrown here will be caught by a default handler that does MONTIOR_EXIT on result :)
-    result = "abc" + result.synchronized {
-      throw MyException(result)
-    }
+    result = "abc" + result.synchronized { throw MyException(result) }
 
     result.length
   }
@@ -295,14 +284,8 @@ object TestInlineHandlersDoubleNoLocal {
     println("TestInlineHandlersDoubleNoLocal")
 
     try {
-      a1.synchronized {
-        a2.synchronized {
-          throw new MyException("crash")
-        }
-      }
-    } catch {
-      case t: Throwable => println("Caught crash: " + t.toString)
-    }
+      a1.synchronized { a2.synchronized { throw new MyException("crash") } }
+    } catch { case t: Throwable => println("Caught crash: " + t.toString) }
 
     /*        try {
       val exception: Throwable =

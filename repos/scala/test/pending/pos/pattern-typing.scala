@@ -11,8 +11,12 @@ package p1 {
 }
 
 package p2 {
-  trait Traversable[+A] { def head: A = ??? }
-  trait Seq[+A] extends Traversable[A] { def length: Int = ??? }
+  trait Traversable[+A] {
+    def head: A = ???
+  }
+  trait Seq[+A] extends Traversable[A] {
+    def length: Int = ???
+  }
 
   case class SubHK[B <: Bound[B], CC[X] <: Traversable[X]](xs: CC[B])
   class MyBound extends Bound[MyBound]

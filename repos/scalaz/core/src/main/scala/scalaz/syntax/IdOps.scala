@@ -42,9 +42,7 @@ final class IdOps[A](val self: A) extends AnyVal {
   /** Repeatedly apply `f`, seeded with `self`, checking before each iteration whether the predicate `p` holds. */
   final def whileDo(f: A => A, p: A => Boolean): A = {
     @tailrec
-    def loop(value: A): A = {
-      if (p(value)) loop(f(value)) else value
-    }
+    def loop(value: A): A = { if (p(value)) loop(f(value)) else value }
     loop(self)
   }
 

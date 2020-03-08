@@ -9,8 +9,6 @@ abstract class Origin {
 }
 
 object main extends Origin with App {
-  val delegate: Component {
-    def sayHey: Unit
-  } = new Button
+  val delegate: Component { def sayHey: Unit } = new Button
   delegate.sayHey
 }

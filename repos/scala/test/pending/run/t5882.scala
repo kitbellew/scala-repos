@@ -2,7 +2,9 @@
 // This test checks that their basic functionality.
 
 class NodeOps(val n: Any) extends AnyVal { self =>
-  class Foo() { def show = self.show(n) }
+  class Foo() {
+    def show = self.show(n)
+  }
   def show(x: Any) = x.toString
 }
 

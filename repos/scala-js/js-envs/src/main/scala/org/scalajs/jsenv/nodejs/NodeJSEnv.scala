@@ -67,21 +67,15 @@ class NodeJSEnv private (
 
   override def jsRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): JSRunner = {
-    new NodeRunner(libs, code)
-  }
+      code: VirtualJSFile): JSRunner = { new NodeRunner(libs, code) }
 
   override def asyncRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): AsyncJSRunner = {
-    new AsyncNodeRunner(libs, code)
-  }
+      code: VirtualJSFile): AsyncJSRunner = { new AsyncNodeRunner(libs, code) }
 
   override def comRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): ComJSRunner = {
-    new ComNodeRunner(libs, code)
-  }
+      code: VirtualJSFile): ComJSRunner = { new ComNodeRunner(libs, code) }
 
   protected class NodeRunner(
       libs: Seq[ResolvedJSDependency],
@@ -219,9 +213,7 @@ class NodeJSEnv private (
         case e: SocketTimeoutException =>
           js2jvm.reset()
           throw new TimeoutException("Timeout expired")
-      } finally {
-        comSocket.setSoTimeout(savedSoTimeout)
-      }
+      } finally { comSocket.setSoTimeout(savedSoTimeout) }
     }
 
     def close(): Unit = {

@@ -44,26 +44,18 @@ private[spark] class CompactBuffer[T: ClassTag]
     if (position < 0 || position >= curSize) {
       throw new IndexOutOfBoundsException
     }
-    if (position == 0) {
-      element0
-    } else if (position == 1) {
-      element1
-    } else {
-      otherElements(position - 2)
-    }
+    if (position == 0) { element0 }
+    else if (position == 1) { element1 }
+    else { otherElements(position - 2) }
   }
 
   private def update(position: Int, value: T): Unit = {
     if (position < 0 || position >= curSize) {
       throw new IndexOutOfBoundsException
     }
-    if (position == 0) {
-      element0 = value
-    } else if (position == 1) {
-      element1 = value
-    } else {
-      otherElements(position - 2) = value
-    }
+    if (position == 0) { element0 = value }
+    else if (position == 1) { element1 = value }
+    else { otherElements(position - 2) = value }
   }
 
   def +=(value: T): CompactBuffer[T] = {
@@ -90,9 +82,8 @@ private[spark] class CompactBuffer[T: ClassTag]
         val itsSize = compactBuf.curSize
         val itsElements = compactBuf.otherElements
         growToSize(curSize + itsSize)
-        if (itsSize == 1) {
-          this(oldSize) = compactBuf.element0
-        } else if (itsSize == 2) {
+        if (itsSize == 1) { this(oldSize) = compactBuf.element0 }
+        else if (itsSize == 2) {
           this(oldSize) = compactBuf.element0
           this(oldSize + 1) = compactBuf.element1
         } else if (itsSize > 2) {
@@ -118,9 +109,7 @@ private[spark] class CompactBuffer[T: ClassTag]
     private var pos = 0
     override def hasNext: Boolean = pos < curSize
     override def next(): T = {
-      if (!hasNext) {
-        throw new NoSuchElementException
-      }
+      if (!hasNext) { throw new NoSuchElementException }
       pos += 1
       apply(pos - 1)
     }

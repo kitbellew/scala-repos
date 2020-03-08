@@ -27,9 +27,7 @@ class SchemeDirectivesExamplesSpec extends RoutingSpec {
           redirect(uri.copy(scheme = "https"), MovedPermanently)
         }
       } ~
-        scheme("https") {
-          complete(s"Safe and secure!")
-        }
+        scheme("https") { complete(s"Safe and secure!") }
 
     // tests:
     Get("http://www.example.com/hello") ~> route ~> check {

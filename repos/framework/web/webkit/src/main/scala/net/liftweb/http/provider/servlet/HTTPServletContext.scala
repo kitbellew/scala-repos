@@ -51,12 +51,8 @@ class HTTPServletContext(val ctx: ServletContext) extends HTTPContext {
       ctx.getAttributeNames.asInstanceOf[java.util.Enumeration[String]]).map(
       n => (n, attribute(n) openOr ""))
 
-  def setAttribute(name: String, value: Any) {
-    ctx.setAttribute(name, value)
-  }
+  def setAttribute(name: String, value: Any) { ctx.setAttribute(name, value) }
 
-  def removeAttribute(name: String) {
-    ctx.removeAttribute(name)
-  }
+  def removeAttribute(name: String) { ctx.removeAttribute(name) }
 
 }

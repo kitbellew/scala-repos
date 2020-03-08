@@ -1,5 +1,3 @@
 class GenericsCompilerCrashTest {
-  def test() {
-    Methods.acceptGenericInterface(Methods.getGenericInterface())
-  }
+  def test() { Methods.acceptGenericInterface(Methods.getGenericInterface()) }
 }

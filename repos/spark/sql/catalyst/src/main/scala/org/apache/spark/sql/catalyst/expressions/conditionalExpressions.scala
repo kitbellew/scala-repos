@@ -40,9 +40,7 @@ case class If(
     } else if (trueValue.dataType.asNullable != falseValue.dataType.asNullable) {
       TypeCheckResult.TypeCheckFailure(s"differing types in '$sql' " +
         s"(${trueValue.dataType.simpleString} and ${falseValue.dataType.simpleString}).")
-    } else {
-      TypeCheckResult.TypeCheckSuccess
-    }
+    } else { TypeCheckResult.TypeCheckSuccess }
   }
 
   override def dataType: DataType = trueValue.dataType
@@ -50,9 +48,7 @@ case class If(
   override def eval(input: InternalRow): Any = {
     if (java.lang.Boolean.TRUE.equals(predicate.eval(input))) {
       trueValue.eval(input)
-    } else {
-      falseValue.eval(input)
-    }
+    } else { falseValue.eval(input) }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -139,11 +135,8 @@ case class CaseWhen(
       }
       i += 1
     }
-    if (elseValue.isDefined) {
-      return elseValue.get.eval(input)
-    } else {
-      return null
-    }
+    if (elseValue.isDefined) { return elseValue.get.eval(input) }
+    else { return null }
   }
 
   def shouldCodegen: Boolean = {
@@ -304,9 +297,7 @@ case class Least(children: Seq[Expression]) extends Expression {
       val evalc = c.eval(input)
       if (evalc != null) {
         if (r == null || ordering.lt(evalc, r)) evalc else r
-      } else {
-        r
-      }
+      } else { r }
     })
   }
 
@@ -364,9 +355,7 @@ case class Greatest(children: Seq[Expression]) extends Expression {
       val evalc = c.eval(input)
       if (evalc != null) {
         if (r == null || ordering.gt(evalc, r)) evalc else r
-      } else {
-        r
-      }
+      } else { r }
     })
   }
 

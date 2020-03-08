@@ -218,9 +218,7 @@ final class SetClientIntegrationSuite extends RedisClientTest {
       assert(fooMembers forall (m => fooInter.contains(m)))
 
       // At least one non-empty key is required
-      intercept[ClientError] {
-        Await.result(client.sInter(Seq()))
-      }
+      intercept[ClientError] { Await.result(client.sInter(Seq())) }
 
       intercept[ClientError] {
         Await.result(client.sInter(Seq(StringToChannelBuffer(""))))

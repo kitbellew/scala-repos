@@ -8,9 +8,7 @@ object FunnyBusiness {
 
   object MyConverter extends Converter {
     protected class Foo {
-      def hello() {
-        println("Hello!")
-      }
+      def hello() { println("Hello!") }
     }
     def newFoo = new Foo
   }

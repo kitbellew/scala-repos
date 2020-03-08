@@ -35,7 +35,9 @@ trait HeapBackend extends RelationalBackend with Logging {
       extends super.DatabaseDef {
     protected[this] def createDatabaseActionContext[T](
         _useSameThread: Boolean): Context =
-      new BasicActionContext { val useSameThread = _useSameThread }
+      new BasicActionContext {
+        val useSameThread = _useSameThread
+      }
 
     protected[this] def createStreamingDatabaseActionContext[T](
         s: Subscriber[_ >: T],

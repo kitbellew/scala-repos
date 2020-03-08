@@ -162,9 +162,7 @@ class BitSet(protected final var elems: Array[Long])
     this
   }
 
-  override def clear() {
-    elems = new Array[Long](elems.length)
-  }
+  override def clear() { elems = new Array[Long](elems.length) }
 
   /** Wraps this bitset as an immutable bitset backed by the array of bits
     *  of this bitset.

@@ -7,16 +7,11 @@ import scalaz.syntax.either._
 object TimerTest extends SpecLite {
   def withTimer[T](expression: Timer => T): T = {
     val timer = new Timer(10)
-    try {
-      expression(timer)
-    } finally {
-      timer.stop()
-    }
+    try { expression(timer) }
+    finally { timer.stop() }
   }
   "Timer" should {
-    "stop normally" in {
-      withTimer(timer => ())
-    }
+    "stop normally" in { withTimer(timer => ()) }
     "handle stop being called repeatedly" in {
       withTimer { timer => timer.stop() }
     }
@@ -33,17 +28,13 @@ object TimerTest extends SpecLite {
       withTimer { timer =>
         val future =
           timer.withTimeout(Future { Thread.sleep(500); "Test" }, 100)
-        withTimeout(5000) {
-          future.unsafePerformSync must_== Timeout.left
-        }
+        withTimeout(5000) { future.unsafePerformSync must_== Timeout.left }
       }
     }
     "produces the result of the Future if the timeout is not exceeded" in {
       withTimer { timer =>
         val future = timer.withTimeout(Future { Thread.sleep(50); "Test" }, 200)
-        withTimeout(5000) {
-          future.unsafePerformSync must_== "Test".right
-        }
+        withTimeout(5000) { future.unsafePerformSync must_== "Test".right }
       }
     }
   }

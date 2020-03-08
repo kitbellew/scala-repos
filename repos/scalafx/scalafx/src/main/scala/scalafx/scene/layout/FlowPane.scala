@@ -43,9 +43,7 @@ object FlowPane {
   /**
     * Removes all flowpane constraints from the child node.
     */
-  def clearConstraints(child: Node) {
-    jfxsl.FlowPane.clearConstraints(child)
-  }
+  def clearConstraints(child: Node) { jfxsl.FlowPane.clearConstraints(child) }
 
   /**
     * Added just for satisfy tests.
@@ -98,52 +96,40 @@ class FlowPane(override val delegate: jfxsl.FlowPane = new jfxsl.FlowPane)
     */
   def columnHalignment: ObjectProperty[jfxg.HPos] =
     delegate.columnHalignmentProperty
-  def columnHalignment_=(v: HPos) {
-    columnHalignment() = v
-  }
+  def columnHalignment_=(v: HPos) { columnHalignment() = v }
 
   /**
     * The amount of horizontal space between each node in a horizontal flowpane or the space between columns in a
     * vertical flowpane.
     */
   def hgap: DoubleProperty = delegate.hgapProperty
-  def hgap_=(v: Double) {
-    hgap() = v
-  }
+  def hgap_=(v: Double) { hgap() = v }
 
   /**
     * The orientation of this flowpane.
     */
   def orientation: ObjectProperty[jfxg.Orientation] =
     delegate.orientationProperty
-  def orientation_=(v: Orientation) {
-    orientation() = v
-  }
+  def orientation_=(v: Orientation) { orientation() = v }
 
   /**
     * The preferred width where content should wrap in a horizontal flowpane or the preferred height where content
     * should wrap in a vertical flowpane.
     */
   def prefWrapLength: DoubleProperty = delegate.prefWrapLengthProperty
-  def prefWrapLength_=(v: Double) {
-    prefWrapLength() = v
-  }
+  def prefWrapLength_=(v: Double) { prefWrapLength() = v }
 
   /**
     * The vertical alignment of nodes within each row of a horizontal flowpane.
     */
   def rowValignment: ObjectProperty[jfxg.VPos] = delegate.rowValignmentProperty
-  def rowValignment_=(v: VPos) {
-    rowValignment() = v
-  }
+  def rowValignment_=(v: VPos) { rowValignment() = v }
 
   /**
     * The amount of vertical space between each node in a vertical flowpane or the space between rows in a horizontal
     * flowpane.
     */
   def vgap: DoubleProperty = delegate.vgapProperty
-  def vgap_=(v: Double) {
-    vgap() = v
-  }
+  def vgap_=(v: Double) { vgap() = v }
 
 }

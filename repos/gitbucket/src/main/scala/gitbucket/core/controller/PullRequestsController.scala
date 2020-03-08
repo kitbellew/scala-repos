@@ -100,9 +100,7 @@ trait PullRequestsControllerBase extends ControllerBase {
       redirect(
         s"/${repository.owner}/${repository.name}/issues?q=" + StringUtil
           .urlEncode(q))
-    } else {
-      searchPullRequests(None, repository)
-    }
+    } else { searchPullRequests(None, repository) }
   })
 
   get("/:owner/:repository/pull/:id")(referrersOnly { repository =>
@@ -257,9 +255,7 @@ trait PullRequestsControllerBase extends ControllerBase {
             val alias =
               if (pullreq.repositoryName == pullreq.requestRepositoryName && pullreq.userName == pullreq.requestUserName) {
                 pullreq.branch
-              } else {
-                s"${pullreq.userName}:${pullreq.branch}"
-              }
+              } else { s"${pullreq.userName}:${pullreq.branch}" }
             val existIds =
               using(Git.open(Directory.getRepositoryDir(owner, name))) { git =>
                 JGitUtil.getAllCommitIds(git)
@@ -785,9 +781,7 @@ trait PullRequestsControllerBase extends ControllerBase {
     if (value.contains(':')) {
       val array = value.split(":")
       (array(0), array(1))
-    } else {
-      (defaultOwner, value)
-    }
+    } else { (defaultOwner, value) }
 
   private def getRequestCompareInfo(
       userName: String,
@@ -849,9 +843,7 @@ trait PullRequestsControllerBase extends ControllerBase {
           page,
           if (!getAccountByUserName(owner).exists(_.isGroupAccount)) {
             (getCollaborators(owner, repoName) :+ owner).sorted
-          } else {
-            getCollaborators(owner, repoName)
-          },
+          } else { getCollaborators(owner, repoName) },
           getMilestones(owner, repoName),
           getLabels(owner, repoName),
           countIssue(condition.copy(state = "open"), true, owner -> repoName),

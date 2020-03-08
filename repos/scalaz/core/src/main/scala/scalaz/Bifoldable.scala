@@ -64,15 +64,21 @@ trait Bifoldable[F[_, _]] { self =>
 
   /** Extract the Foldable on the first parameter. */
   def leftFoldable[X]: Foldable[F[?, X]] =
-    new LeftFoldable[F, X] { val F = self }
+    new LeftFoldable[F, X] {
+      val F = self
+    }
 
   /** Extract the Foldable on the second parameter. */
   def rightFoldable[X]: Foldable[F[X, ?]] =
-    new RightFoldable[F, X] { val F = self }
+    new RightFoldable[F, X] {
+      val F = self
+    }
 
   /** Unify the foldable over both params. */
   def uFoldable: Foldable[λ[α => F[α, α]]] =
-    new UFoldable[F] { val F = self }
+    new UFoldable[F] {
+      val F = self
+    }
 
   /** Embed one Foldable at each side of this Bifoldable */
   def embed[G[_], H[_]](implicit

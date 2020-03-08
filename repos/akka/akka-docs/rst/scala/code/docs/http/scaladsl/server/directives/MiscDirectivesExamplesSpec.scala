@@ -46,12 +46,8 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
   }
   "requestEntityEmptyPresent-example" in {
     val route =
-      requestEntityEmpty {
-        complete("request entity empty")
-      } ~
-        requestEntityPresent {
-          complete("request entity present")
-        }
+      requestEntityEmpty { complete("request entity empty") } ~
+        requestEntityPresent { complete("request entity present") }
 
     // tests:
     Post("/", "text") ~> Route.seal(route) ~> check {

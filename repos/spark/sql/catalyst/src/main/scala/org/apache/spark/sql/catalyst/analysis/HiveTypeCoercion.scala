@@ -574,17 +574,15 @@ object HiveTypeCoercion {
             var changed = false
             val newBranches = c.branches.map {
               case (condition, value) =>
-                if (value.dataType.sameType(commonType)) {
-                  (condition, value)
-                } else {
+                if (value.dataType.sameType(commonType)) { (condition, value) }
+                else {
                   changed = true
                   (condition, Cast(value, commonType))
                 }
             }
             val newElseValue = c.elseValue.map { value =>
-              if (value.dataType.sameType(commonType)) {
-                value
-              } else {
+              if (value.dataType.sameType(commonType)) { value }
+              else {
                 changed = true
                 Cast(value, commonType)
               }
@@ -690,9 +688,7 @@ object HiveTypeCoercion {
           case (in, expected) =>
             if (in.dataType == NullType && !expected.acceptsType(NullType)) {
               Literal.create(null, expected.defaultConcreteType)
-            } else {
-              in
-            }
+            } else { in }
         }
         e.withNewChildren(children)
     }

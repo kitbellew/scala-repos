@@ -150,9 +150,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
         if (classEnabled) {
           s"Entity class storing rows of table ${TableValue.name}\n" +
             columns.map(c => "@param " + c.name + " " + c.doc).mkString("\n")
-        } else {
-          s"Row type of table ${TableValue.name}\n"
-        }
+        } else { s"Row type of table ${TableValue.name}\n" }
       def rawName: String = entityName(model.name.table)
     }
 

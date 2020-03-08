@@ -171,9 +171,8 @@ abstract class MessageDispatcher(
   final override protected def unbatchedExecute(r: Runnable): Unit = {
     val invocation = TaskInvocation(eventStream, r, taskCleanup)
     addInhabitants(+1)
-    try {
-      executeTask(invocation)
-    } catch {
+    try { executeTask(invocation) }
+    catch {
       case t: Throwable ⇒
         addInhabitants(-1)
         throw t
@@ -208,9 +207,7 @@ abstract class MessageDispatcher(
         override def reportFailure(t: Throwable): Unit =
           MessageDispatcher.this.reportFailure(t)
       })
-    catch {
-      case _: IllegalStateException ⇒ shutdown()
-    }
+    catch { case _: IllegalStateException ⇒ shutdown() }
   }
 
   private final val taskCleanup: () ⇒ Unit = () ⇒

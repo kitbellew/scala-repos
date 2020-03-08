@@ -238,9 +238,7 @@ private[akka] class UnstartedCell(
         // drain sysmsgQueue in case a msg enqueues a sys msg
         drainSysmsgQueue()
       }
-    } finally {
-      self.swapCell(cell)
-    }
+    } finally { self.swapCell(cell) }
   }
 
   def system: ActorSystem = systemImpl
@@ -263,9 +261,8 @@ private[akka] class UnstartedCell(
     if (lock.tryLock(timeout.length, timeout.unit)) {
       try {
         val cell = self.underlying
-        if (cellIsReady(cell)) {
-          cell.sendMessage(msg)
-        } else if (!queue.offer(msg)) {
+        if (cellIsReady(cell)) { cell.sendMessage(msg) }
+        else if (!queue.offer(msg)) {
           system.eventStream.publish(
             Warning(
               self.path.toString,

@@ -13,9 +13,8 @@ class JUnitMixinTestCheck {
   @Test def jUnitMixinTest(): Unit = {
     val boot =
       JUnitUtil.loadBootstrapper("org.scalajs.testsuite.junit.JUnitMixinTest")
-    try {
-      boot.invoke(boot.newInstance(), "mixinTest")
-    } catch {
+    try { boot.invoke(boot.newInstance(), "mixinTest") }
+    catch {
       case _: Throwable =>
         fail("Could not invoke JUnitMixinTest.mixinTest as a test.")
     }

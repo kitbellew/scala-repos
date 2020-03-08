@@ -22,7 +22,9 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class DurationTest extends { val ops = Duration } with TimeLikeSpec[Duration] {
+class DurationTest extends {
+  val ops = Duration
+} with TimeLikeSpec[Duration] {
   import ops._
 
   "Duration" should {
@@ -162,9 +164,7 @@ class DurationTest extends { val ops = Duration } with TimeLikeSpec[Duration] {
       }
     }
 
-    "- delta" in {
-      assert(10.seconds - 5.seconds == 5.seconds)
-    }
+    "- delta" in { assert(10.seconds - 5.seconds == 5.seconds) }
 
     "max" in {
       assert((10.seconds max 5.seconds) == 10.seconds)
@@ -284,12 +284,8 @@ class DurationTest extends { val ops = Duration } with TimeLikeSpec[Duration] {
       assert(Duration.Top * 100 == Duration.Top)
     }
 
-    "-Top == Bottom" in {
-      assert(-Duration.Top == Duration.Bottom)
-    }
+    "-Top == Bottom" in { assert(-Duration.Top == Duration.Bottom) }
 
-    "--Top == Top" in {
-      assert(-(-Duration.Top) == Duration.Top)
-    }
+    "--Top == Top" in { assert(-(-Duration.Top) == Duration.Top) }
   }
 }

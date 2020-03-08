@@ -70,9 +70,7 @@ private[netty] class NettyRpcEnv(
           "",
           securityManager,
           securityManager.isSaslEncryptionEnabled()))
-    } else {
-      java.util.Collections.emptyList[TransportClientBootstrap]
-    }
+    } else { java.util.Collections.emptyList[TransportClientBootstrap] }
   }
 
   private val clientFactory =
@@ -114,9 +112,7 @@ private[netty] class NettyRpcEnv(
     */
   private[netty] def removeOutbox(address: RpcAddress): Unit = {
     val outbox = outboxes.remove(address)
-    if (outbox != null) {
-      outbox.stop()
-    }
+    if (outbox != null) { outbox.stop() }
   }
 
   def startServer(port: Int): Unit = {
@@ -124,9 +120,7 @@ private[netty] class NettyRpcEnv(
       if (securityManager.isAuthenticationEnabled()) {
         java.util.Arrays
           .asList(new SaslServerBootstrap(transportConf, securityManager))
-      } else {
-        java.util.Collections.emptyList()
-      }
+      } else { java.util.Collections.emptyList() }
     server = transportContext.createServer(host, port, bootstraps)
     dispatcher.registerRpcEndpoint(
       RpcEndpointVerifier.NAME,
@@ -154,11 +148,8 @@ private[netty] class NettyRpcEnv(
     verifier
       .ask[Boolean](RpcEndpointVerifier.CheckExistence(endpointRef.name))
       .flatMap { find =>
-        if (find) {
-          Future.successful(endpointRef)
-        } else {
-          Future.failed(new RpcEndpointNotFoundException(uri))
-        }
+        if (find) { Future.successful(endpointRef) }
+        else { Future.failed(new RpcEndpointNotFoundException(uri)) }
       }(ThreadUtils.sameThread)
   }
 
@@ -170,9 +161,8 @@ private[netty] class NettyRpcEnv(
   private def postToOutbox(
       receiver: NettyRpcEndpointRef,
       message: OutboxMessage): Unit = {
-    if (receiver.client != null) {
-      message.sendWith(receiver.client)
-    } else {
+    if (receiver.client != null) { message.sendWith(receiver.client) }
+    else {
       require(
         receiver.address != null,
         "Cannot send message to client endpoint with no listen address.")
@@ -181,22 +171,15 @@ private[netty] class NettyRpcEnv(
         if (outbox == null) {
           val newOutbox = new Outbox(this, receiver.address)
           val oldOutbox = outboxes.putIfAbsent(receiver.address, newOutbox)
-          if (oldOutbox == null) {
-            newOutbox
-          } else {
-            oldOutbox
-          }
-        } else {
-          outbox
-        }
+          if (oldOutbox == null) { newOutbox }
+          else { oldOutbox }
+        } else { outbox }
       }
       if (stopped.get) {
         // It's possible that we put `targetOutbox` after stopping. So we need to clean it.
         outboxes.remove(receiver.address)
         targetOutbox.stop()
-      } else {
-        targetOutbox.send(message)
-      }
+      } else { targetOutbox.send(message) }
     }
   }
 
@@ -204,11 +187,8 @@ private[netty] class NettyRpcEnv(
     val remoteAddr = message.receiver.address
     if (remoteAddr == address) {
       // Message to a local RPC endpoint.
-      try {
-        dispatcher.postOneWayMessage(message)
-      } catch {
-        case e: RpcEnvStoppedException => logWarning(e.getMessage)
-      }
+      try { dispatcher.postOneWayMessage(message) }
+      catch { case e: RpcEnvStoppedException => logWarning(e.getMessage) }
     } else {
       // Message to a remote RPC endpoint.
       postToOutbox(message.receiver, OneWayOutboxMessage(serialize(message)))
@@ -226,9 +206,7 @@ private[netty] class NettyRpcEnv(
     val remoteAddr = message.receiver.address
 
     def onFailure(e: Throwable): Unit = {
-      if (!promise.tryFailure(e)) {
-        logWarning(s"Ignored failure: $e")
-      }
+      if (!promise.tryFailure(e)) { logWarning(s"Ignored failure: $e") }
     }
 
     def onSuccess(reply: Any): Unit = reply match {
@@ -297,18 +275,12 @@ private[netty] class NettyRpcEnv(
     dispatcher.getRpcEndpointRef(endpoint)
   }
 
-  override def shutdown(): Unit = {
-    cleanup()
-  }
+  override def shutdown(): Unit = { cleanup() }
 
-  override def awaitTermination(): Unit = {
-    dispatcher.awaitTermination()
-  }
+  override def awaitTermination(): Unit = { dispatcher.awaitTermination() }
 
   private def cleanup(): Unit = {
-    if (!stopped.compareAndSet(false, true)) {
-      return
-    }
+    if (!stopped.compareAndSet(false, true)) { return }
 
     val iter = outboxes.values().iterator()
     while (iter.hasNext()) {
@@ -316,30 +288,18 @@ private[netty] class NettyRpcEnv(
       outboxes.remove(outbox.address)
       outbox.stop()
     }
-    if (timeoutScheduler != null) {
-      timeoutScheduler.shutdownNow()
-    }
-    if (server != null) {
-      server.close()
-    }
-    if (clientFactory != null) {
-      clientFactory.close()
-    }
-    if (dispatcher != null) {
-      dispatcher.stop()
-    }
+    if (timeoutScheduler != null) { timeoutScheduler.shutdownNow() }
+    if (server != null) { server.close() }
+    if (clientFactory != null) { clientFactory.close() }
+    if (dispatcher != null) { dispatcher.stop() }
     if (clientConnectionExecutor != null) {
       clientConnectionExecutor.shutdownNow()
     }
-    if (fileDownloadFactory != null) {
-      fileDownloadFactory.close()
-    }
+    if (fileDownloadFactory != null) { fileDownloadFactory.close() }
   }
 
   override def deserialize[T](deserializationAction: () => T): T = {
-    NettyRpcEnv.currentEnv.withValue(this) {
-      deserializationAction()
-    }
+    NettyRpcEnv.currentEnv.withValue(this) { deserializationAction() }
   }
 
   override def fileServer: RpcEnvFileServer = streamManager
@@ -410,11 +370,8 @@ private[netty] class NettyRpcEnv(
       Try(source.read(dst)) match {
         case Success(bytesRead) => bytesRead
         case Failure(readErr) =>
-          if (error != null) {
-            throw error
-          } else {
-            throw readErr
-          }
+          if (error != null) { throw error }
+          else { throw readErr }
       }
     }
 
@@ -431,14 +388,10 @@ private[netty] class NettyRpcEnv(
       extends StreamCallback {
 
     override def onData(streamId: String, buf: ByteBuffer): Unit = {
-      while (buf.remaining() > 0) {
-        sink.write(buf)
-      }
+      while (buf.remaining() > 0) { sink.write(buf) }
     }
 
-    override def onComplete(streamId: String): Unit = {
-      sink.close()
-    }
+    override def onComplete(streamId: String): Unit = { sink.close() }
 
     override def onFailure(streamId: String, cause: Throwable): Unit = {
       logDebug(s"Error downloading stream $streamId.", cause)

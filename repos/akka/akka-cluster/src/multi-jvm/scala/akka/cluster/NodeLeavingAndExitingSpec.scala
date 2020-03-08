@@ -61,9 +61,7 @@ abstract class NodeLeavingAndExitingSpec
         )
         enterBarrier("registered-listener")
 
-        runOn(third) {
-          cluster.leave(second)
-        }
+        runOn(third) { cluster.leave(second) }
         enterBarrier("second-left")
 
         // Verify that 'second' node is set to EXITING

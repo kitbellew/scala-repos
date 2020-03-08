@@ -20,25 +20,19 @@ object Sorting {
       x: Array[Int],
       off: Int,
       len: Int,
-      order: Array[Int]): Array[Int] = {
-    indexSort_Int(x, off, len, order)
-  }
+      order: Array[Int]): Array[Int] = { indexSort_Int(x, off, len, order) }
 
   def indexSort(
       x: Array[Int],
       off: Int,
       len: Int,
-      order: Array[Long]): Array[Int] = {
-    indexSort_Long(x, off, len, order)
-  }
+      order: Array[Long]): Array[Int] = { indexSort_Long(x, off, len, order) }
 
   def indexSort(
       x: Array[Int],
       off: Int,
       len: Int,
-      order: Array[Float]): Array[Int] = {
-    indexSort_Float(x, off, len, order)
-  }
+      order: Array[Float]): Array[Int] = { indexSort_Float(x, off, len, order) }
 
   def indexSort(
       x: Array[Int],
@@ -130,9 +124,8 @@ object Sorting {
             }
             c -= 1
           }
-          if (b > c) {
-            done = true
-          } else {
+          if (b > c) { done = true }
+          else {
             swap(b, c)
             c -= 1
             b += 1

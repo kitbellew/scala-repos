@@ -71,9 +71,7 @@ object AtomSpecs extends Specification with ScalaCheck {
     }
 
     "detect recursive self-population" in {
-      lazy val a: Atom[Int] = atom[Int] {
-        a() += 42
-      }
+      lazy val a: Atom[Int] = atom[Int] { a() += 42 }
 
       a() must throwA[RuntimeException]
     }
@@ -139,9 +137,7 @@ object AtomSpecs extends Specification with ScalaCheck {
 
   "aggregate atoms" should {
     "self-populate once on access using =" in check { xs: Set[Int] =>
-      lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-        a() = xs
-      }
+      lazy val a: Atom[Set[Int]] = atom[Set[Int]] { a() = xs }
 
       a() mustEqual xs
     }
@@ -156,9 +152,7 @@ object AtomSpecs extends Specification with ScalaCheck {
     }
 
     "self-populate once on access using ++=" in check { xs: Set[Int] =>
-      lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-        a ++= xs
-      }
+      lazy val a: Atom[Set[Int]] = atom[Set[Int]] { a ++= xs }
 
       a() mustEqual xs
     }
@@ -167,9 +161,7 @@ object AtomSpecs extends Specification with ScalaCheck {
       xs: Set[Int] =>
         val marker = Stream from 0 dropWhile xs head
 
-        lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-          a += marker
-        }
+        lazy val a: Atom[Set[Int]] = atom[Set[Int]] { a += marker }
 
         a() = xs
         a() mustEqual xs
@@ -179,9 +171,7 @@ object AtomSpecs extends Specification with ScalaCheck {
       xs: Set[Int] =>
         val marker = Stream from 0 dropWhile xs head
 
-        lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-          a += marker
-        }
+        lazy val a: Atom[Set[Int]] = atom[Set[Int]] { a += marker }
 
         xs foreach { x => a += x }
         a() mustEqual (xs + marker)
@@ -191,18 +181,14 @@ object AtomSpecs extends Specification with ScalaCheck {
       xs: Set[Int] =>
         val marker = Stream from 0 dropWhile xs head
 
-        lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-          a += marker
-        }
+        lazy val a: Atom[Set[Int]] = atom[Set[Int]] { a += marker }
 
         a ++= xs
         a() mustEqual (xs + marker)
     }
 
     "store all values and return" in check { xs: Set[Int] =>
-      lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-        a ++= Set[Int]()
-      }
+      lazy val a: Atom[Set[Int]] = atom[Set[Int]] { a ++= Set[Int]() }
 
       xs foreach { x => a += x }
 
@@ -211,9 +197,7 @@ object AtomSpecs extends Specification with ScalaCheck {
     }
 
     "concatenate values and return" in check { (i: Int, xs: Set[Int]) =>
-      lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-        a ++= Set[Int]()
-      }
+      lazy val a: Atom[Set[Int]] = atom[Set[Int]] { a ++= Set[Int]() }
 
       a += i
       a ++= xs
@@ -223,9 +207,7 @@ object AtomSpecs extends Specification with ScalaCheck {
     }
 
     "silently fail for mutation following force" in {
-      lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-        a ++= Set[Int]()
-      }
+      lazy val a: Atom[Set[Int]] = atom[Set[Int]] { a ++= Set[Int]() }
 
       a += 42
       a() mustEqual Set(42)

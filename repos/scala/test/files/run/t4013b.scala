@@ -9,7 +9,5 @@ class Sub3[@specialized(Int) B](override val data: M[B]) extends Base[B] {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    new Sub3[Int](new M[Int])
-  }
+  def main(args: Array[String]) { new Sub3[Int](new M[Int]) }
 }

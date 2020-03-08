@@ -22,9 +22,8 @@ object HashArrayEqualsWrapperLaws {
 
       val lenCmp = java.lang.Integer
         .compare(leftWrapped.wrapped.length, rightWrapped.wrapped.length)
-      if (lenCmp != 0) {
-        cmp.signum == lenCmp.signum
-      } else {
+      if (lenCmp != 0) { cmp.signum == lenCmp.signum }
+      else {
         cmp.signum == slowOrd
           .compare(leftWrapped.wrapped.toSeq, rightWrapped.wrapped.toSeq)
           .signum
@@ -42,11 +41,8 @@ object HashArrayEqualsWrapperLaws {
       val cmp = ordToTest.compare(left, right)
 
       val lenCmp = java.lang.Integer.compare(left.length, right.length)
-      if (lenCmp != 0) {
-        cmp.signum == lenCmp.signum
-      } else {
-        cmp.signum == slowOrd.compare(left.toSeq, right.toSeq).signum
-      }
+      if (lenCmp != 0) { cmp.signum == lenCmp.signum }
+      else { cmp.signum == slowOrd.compare(left.toSeq, right.toSeq).signum }
     }
 }
 

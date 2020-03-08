@@ -135,9 +135,7 @@ abstract class SymbolTable
   }
 
   @inline final def findSymbol(xs: TraversableOnce[Symbol])(
-      p: Symbol => Boolean): Symbol = {
-    xs find p getOrElse NoSymbol
-  }
+      p: Symbol => Boolean): Symbol = { xs find p getOrElse NoSymbol }
 
   // For too long have we suffered in order to sort NAMES.
   // I'm pretty sure there's a reasonable default for that.
@@ -254,9 +252,7 @@ abstract class SymbolTable
 
   final def findPhaseWithName(phaseName: String): Phase = {
     var ph = phase
-    while (ph != NoPhase && ph.name != phaseName) {
-      ph = ph.prev
-    }
+    while (ph != NoPhase && ph.name != phaseName) { ph = ph.prev }
     if (ph eq NoPhase) phase else ph
   }
   final def enteringPhaseWithName[T](phaseName: String)(body: => T): T = {
@@ -318,9 +314,7 @@ abstract class SymbolTable
     }
     // enter decls of parent classes
     for (p <- container.parentSymbols) {
-      if (p != definitions.ObjectClass) {
-        openPackageModule(p, dest)
-      }
+      if (p != definitions.ObjectClass) { openPackageModule(p, dest) }
     }
   }
 

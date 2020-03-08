@@ -151,11 +151,8 @@ package object time {
 
     protected def extractor(unit: Long, range: Long): Vec[Int] = times.map {
       (t: Long) =>
-        if (t >= 0L) {
-          ((t / unit) % range).toInt
-        } else {
-          (range - 1L + (((t + 1L) / unit) % range)).toInt
-        }
+        if (t >= 0L) { ((t / unit) % range).toInt }
+        else { (range - 1L + (((t + 1L) / unit) % range)).toInt }
     }
 
     /**

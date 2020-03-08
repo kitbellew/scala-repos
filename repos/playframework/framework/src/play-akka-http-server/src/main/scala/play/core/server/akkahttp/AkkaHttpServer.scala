@@ -242,9 +242,7 @@ class AkkaHttpServer(
         .map(source =>
           Source.fromPublisher(new MaterializeOnDemandPublisher(source)))
         .orElse(Some(Source.empty))
-    } else {
-      requestBodySource
-    }
+    } else { requestBodySource }
 
     val resultFuture: Future[Result] = source match {
       case None    => actionAccumulator.run()
@@ -286,11 +284,8 @@ class AkkaHttpServer(
     httpsServerBinding.foreach(unbind)
     applicationProvider.current.foreach(Play.stop)
 
-    try {
-      super.stop()
-    } catch {
-      case NonFatal(e) => logger.error("Error while stopping logger", e)
-    }
+    try { super.stop() }
+    catch { case NonFatal(e) => logger.error("Error while stopping logger", e) }
 
     system.terminate()
 

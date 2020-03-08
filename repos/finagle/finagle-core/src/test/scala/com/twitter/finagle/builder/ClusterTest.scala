@@ -106,9 +106,7 @@ class ClusterTest extends FunSuite {
       .timeout(1.seconds) //global time out
       .build()
 
-    intercept[GlobalRequestTimeoutException] {
-      Await.result(client("hello1"))
-    }
+    intercept[GlobalRequestTimeoutException] { Await.result(client("hello1")) }
 
     // It also should honor timeout specified with the request
     intercept[com.twitter.util.TimeoutException] {

@@ -295,9 +295,7 @@ private[persistence] trait Eventsourced
     }
   }
 
-  private def changeState(state: State): Unit = {
-    currentState = state
-  }
+  private def changeState(state: State): Unit = { currentState = state }
 
   private def updateLastSequenceNr(persistent: PersistentRepr): Unit =
     if (persistent.sequenceNr > _lastSequenceNr)
@@ -496,9 +494,8 @@ private[persistence] trait Eventsourced
     * @param handler handler for the given `event`
     */
   def deferAsync[A](event: A)(handler: A ⇒ Unit): Unit = {
-    if (pendingInvocations.isEmpty) {
-      handler(event)
-    } else {
+    if (pendingInvocations.isEmpty) { handler(event) }
+    else {
       pendingInvocations addLast AsyncHandlerInvocation(
         event,
         handler.asInstanceOf[Any ⇒ Unit])

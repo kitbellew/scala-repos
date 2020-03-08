@@ -94,9 +94,7 @@ object EvaluatePython {
       val values = new java.util.ArrayList[Any](a.numElements())
       a.foreach(
         array.elementType,
-        (_, e) => {
-          values.add(toJava(e, array.elementType))
-        })
+        (_, e) => { values.add(toJava(e, array.elementType)) })
       values
 
     case (map: MapData, mt: MapType) =>
@@ -104,9 +102,7 @@ object EvaluatePython {
       map.foreach(
         mt.keyType,
         mt.valueType,
-        (k, v) => {
-          jmap.put(toJava(k, mt.keyType), toJava(v, mt.valueType))
-        })
+        (k, v) => { jmap.put(toJava(k, mt.keyType), toJava(v, mt.valueType)) })
       jmap
 
     case (ud, udt: UserDefinedType[_]) => toJava(ud, udt.sqlType)
@@ -180,9 +176,8 @@ object EvaluatePython {
             s"${fields.length} fields are required while ${array.length} values are provided."
         )
       }
-      new GenericInternalRow(array.zip(fields).map {
-        case (e, f) => fromJava(e, f.dataType)
-      })
+      new GenericInternalRow(
+        array.zip(fields).map { case (e, f) => fromJava(e, f.dataType) })
 
     case (_, udt: UserDefinedType[_]) => fromJava(obj, udt.sqlType)
 
@@ -200,9 +195,7 @@ object EvaluatePython {
 
     private val cls = classOf[StructType]
 
-    def register(): Unit = {
-      Pickler.registerCustomPickler(cls, this)
-    }
+    def register(): Unit = { Pickler.registerCustomPickler(cls, this) }
 
     def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit = {
       out.write(Opcodes.GLOBAL)

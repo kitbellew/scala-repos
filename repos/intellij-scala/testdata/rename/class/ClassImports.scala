@@ -1,7 +1,5 @@
 package a {
-  package b {
-    class BB
-  }
+  package b { class BB }
   import b.BB
 
   class C extends /*caret*/ BB

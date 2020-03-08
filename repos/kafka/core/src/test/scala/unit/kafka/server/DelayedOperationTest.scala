@@ -30,9 +30,7 @@ class DelayedOperationTest {
   }
 
   @After
-  def tearDown() {
-    purgatory.shutdown()
-  }
+  def tearDown() { purgatory.shutdown() }
 
   @Test
   def testRequestSatisfaction() {
@@ -146,11 +144,7 @@ class DelayedOperationTest {
   class MockDelayedOperation(delayMs: Long) extends DelayedOperation(delayMs) {
     var completable = false
 
-    def awaitExpiration() {
-      synchronized {
-        wait()
-      }
-    }
+    def awaitExpiration() { synchronized { wait() } }
 
     override def tryComplete() = {
       if (completable)
@@ -161,11 +155,7 @@ class DelayedOperationTest {
 
     override def onExpiration() {}
 
-    override def onComplete() {
-      synchronized {
-        notify()
-      }
-    }
+    override def onComplete() { synchronized { notify() } }
   }
 
 }

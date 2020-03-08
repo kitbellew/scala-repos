@@ -134,9 +134,7 @@ abstract class MBeanSpec
 
     "format cluster status as JSON with full reachability info" taggedAs LongRunningTest in within(
       30 seconds) {
-      runOn(first) {
-        testConductor.exit(fourth, 0).await
-      }
+      runOn(first) { testConductor.exit(fourth, 0).await }
       enterBarrier("fourth-shutdown")
 
       runOn(first, second, third) {

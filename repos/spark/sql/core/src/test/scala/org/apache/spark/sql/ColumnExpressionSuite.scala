@@ -159,9 +159,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     checkAnswer(df.select(df("a") + df("b").as("c")), Seq(Row(3)))
   }
 
-  test("star") {
-    checkAnswer(testData.select($"*"), testData.collect().toSeq)
-  }
+  test("star") { checkAnswer(testData.select($"*"), testData.collect().toSeq) }
 
   test("star qualified by data frame object") {
     val df = testData.toDF
@@ -459,9 +457,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
 
     val df2 = Seq((1, Seq(1)), (2, Seq(2)), (3, Seq(3))).toDF("a", "b")
 
-    intercept[AnalysisException] {
-      df2.filter($"a".isin($"b"))
-    }
+    intercept[AnalysisException] { df2.filter($"a".isin($"b")) }
   }
 
   test("&&") {

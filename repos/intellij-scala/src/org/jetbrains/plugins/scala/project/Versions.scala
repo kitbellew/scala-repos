@@ -37,11 +37,7 @@ trait Versions {
   protected val releaseVersionLine: Regex
 
   protected def loadVersionsOf(entity: Entity): Array[String] = {
-    loadVersionsFrom(
-      entity.url,
-      {
-        case releaseVersionLine(number) => number
-      })
+    loadVersionsFrom(entity.url, { case releaseVersionLine(number) => number })
       .getOrElse(entity.hardcodedVersions)
       .map(Version(_))
       .filter(_ >= entity.minVersion)
@@ -61,9 +57,7 @@ trait Versions {
       connection =>
         try {
           Source.fromInputStream(connection.getInputStream).getLines().toVector
-        } finally {
-          connection.disconnect()
-        }
+        } finally { connection.disconnect() }
     }
   }
 

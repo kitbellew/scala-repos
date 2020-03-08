@@ -133,11 +133,8 @@ private[hive] case class CreateMetastoreDataSource(
     val hiveContext = sqlContext.asInstanceOf[HiveContext]
 
     if (hiveContext.sessionState.catalog.tableExists(tableIdent)) {
-      if (allowExisting) {
-        return Seq.empty[Row]
-      } else {
-        throw new AnalysisException(s"Table $tableName already exists.")
-      }
+      if (allowExisting) { return Seq.empty[Row] }
+      else { throw new AnalysisException(s"Table $tableName already exists.") }
     }
 
     var isExternal = true
@@ -146,9 +143,7 @@ private[hive] case class CreateMetastoreDataSource(
         isExternal = false
         options + ("path" -> hiveContext.sessionState.catalog
           .hiveDefaultTableFilePath(tableIdent))
-      } else {
-        options
-      }
+      } else { options }
 
     // Create the relation to validate the arguments before writing the metadata to the metastore.
     DataSource(
@@ -208,9 +203,7 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
         isExternal = false
         options + ("path" -> hiveContext.sessionState.catalog
           .hiveDefaultTableFilePath(tableIdent))
-      } else {
-        options
-      }
+      } else { options }
 
     var existingSchema = None: Option[StructType]
     if (sqlContext.sessionState.catalog.tableExists(tableIdent)) {

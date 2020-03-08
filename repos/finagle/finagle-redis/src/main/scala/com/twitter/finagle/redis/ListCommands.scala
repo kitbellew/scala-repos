@@ -16,9 +16,7 @@ trait Lists { self: BaseClient =>
     * lists, and return 0.
     */
   def lLen(key: ChannelBuffer): Future[JLong] =
-    doRequest(LLen(key)) {
-      case IntegerReply(n) => Future.value(n)
-    }
+    doRequest(LLen(key)) { case IntegerReply(n) => Future.value(n) }
 
   /**
     * Gets the value of the element at the indexth position in the list.
@@ -92,9 +90,7 @@ trait Lists { self: BaseClient =>
     * @return the length of the list
     */
   def lPush(key: ChannelBuffer, value: List[ChannelBuffer]): Future[JLong] =
-    doRequest(LPush(key, value)) {
-      case IntegerReply(n) => Future.value(n)
-    }
+    doRequest(LPush(key, value)) { case IntegerReply(n) => Future.value(n) }
 
   /**
     * Removes count elements matching value from the list.
@@ -166,9 +162,7 @@ trait Lists { self: BaseClient =>
     * @return the length of the list
     */
   def rPush(key: ChannelBuffer, value: List[ChannelBuffer]): Future[JLong] =
-    doRequest(RPush(key, value)) {
-      case IntegerReply(n) => Future.value(n)
-    }
+    doRequest(RPush(key, value)) { case IntegerReply(n) => Future.value(n) }
 
   /**
     * Removes all of the elements from the list except for those in the range.

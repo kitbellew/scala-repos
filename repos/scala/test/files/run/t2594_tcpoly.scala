@@ -5,7 +5,9 @@ trait Monad[M[_]] {
 }
 
 class Bar[A, B]
-class Bar1[A] { type And[B] = Bar[A, B] }
+class Bar1[A] {
+  type And[B] = Bar[A, B]
+}
 
 object Test {
   // the combination of partial applications and anonymous class is essential to reproduce the bug

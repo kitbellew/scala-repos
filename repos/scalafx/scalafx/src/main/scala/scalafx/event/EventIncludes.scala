@@ -119,9 +119,7 @@ trait EventIncludes {
     * @return JavaFX EventHandler which will wrap the input code `handler`.
     */
   def handle[J <: jfxe.Event, R](handler: => R) = new jfxe.EventHandler[J] {
-    def handle(event: J) {
-      handler
-    }
+    def handle(event: J) { handler }
   }
 
   /**
@@ -142,9 +140,7 @@ trait EventIncludes {
   implicit def eventClosureWrapperWithZeroParam[T <: jfxe.Event, R](
       handler: () => R): jfxe.EventHandler[T] =
     new jfxe.EventHandler[T] {
-      def handle(event: T) {
-        handler()
-      }
+      def handle(event: T) { handler() }
     }
 
   /**
@@ -167,9 +163,7 @@ trait EventIncludes {
       S <: SFXDelegate[J],
       R](handler: (S) => R)(implicit jfx2sfx: J => S): jfxe.EventHandler[J] =
     new jfxe.EventHandler[J] {
-      def handle(event: J) {
-        handler(event)
-      }
+      def handle(event: J) { handler(event) }
     }
 
 }

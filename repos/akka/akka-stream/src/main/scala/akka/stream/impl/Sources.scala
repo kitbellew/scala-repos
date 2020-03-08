@@ -65,9 +65,8 @@ final private[stream] class QueueSource[T](
       }
 
       private def bufferElem(offer: Offer[T]): Unit = {
-        if (!buffer.isFull) {
-          enqueueAndSuccess(offer)
-        } else
+        if (!buffer.isFull) { enqueueAndSuccess(offer) }
+        else
           overflowStrategy match {
             case DropHead ⇒
               buffer.dropHead()
@@ -192,9 +191,7 @@ final private[stream] class QueueSource[T](
           stageLogic.invoke(Offer(element, p))
           p.future
         }
-        override def complete(): Unit = {
-          stageLogic.invoke(Completion)
-        }
+        override def complete(): Unit = { stageLogic.invoke(Completion) }
         override def fail(ex: Throwable): Unit = {
           stageLogic.invoke(Failure(ex))
         }

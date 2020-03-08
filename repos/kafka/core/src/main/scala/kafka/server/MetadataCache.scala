@@ -158,27 +158,19 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
   }
 
   def hasTopicMetadata(topic: String): Boolean = {
-    inReadLock(partitionMetadataLock) {
-      cache.contains(topic)
-    }
+    inReadLock(partitionMetadataLock) { cache.contains(topic) }
   }
 
   def getAllTopics(): Set[String] = {
-    inReadLock(partitionMetadataLock) {
-      cache.keySet.toSet
-    }
+    inReadLock(partitionMetadataLock) { cache.keySet.toSet }
   }
 
   def getNonExistingTopics(topics: Set[String]): Set[String] = {
-    inReadLock(partitionMetadataLock) {
-      topics -- cache.keySet
-    }
+    inReadLock(partitionMetadataLock) { topics -- cache.keySet }
   }
 
   def getAliveBrokers: Seq[Broker] = {
-    inReadLock(partitionMetadataLock) {
-      aliveBrokers.values.toBuffer
-    }
+    inReadLock(partitionMetadataLock) { aliveBrokers.values.toBuffer }
   }
 
   private def addOrUpdatePartitionInfo(
@@ -264,9 +256,7 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
   }
 
   def contains(topic: String): Boolean = {
-    inReadLock(partitionMetadataLock) {
-      cache.contains(topic)
-    }
+    inReadLock(partitionMetadataLock) { cache.contains(topic) }
   }
 
   private def removePartitionInfo(topic: String, partitionId: Int): Boolean = {

@@ -60,9 +60,7 @@ class MarathonSchedulerActorTest
       schedulerActor ! LocalLeadershipEvent.ElectedAsLeader
       awaitAssert(verify(hcManager).reconcileWith(app.id), 5.seconds, 10.millis)
       verify(deploymentRepo, times(1)).all()
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("ReconcileTasks") {
@@ -84,14 +82,10 @@ class MarathonSchedulerActorTest
       expectMsg(5.seconds, TasksReconciled)
 
       awaitAssert(
-        {
-          verify(driver).killTask(TaskID("task_a"))
-        },
+        { verify(driver).killTask(TaskID("task_a")) },
         5.seconds,
         10.millis)
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("ScaleApps") {
@@ -114,9 +108,7 @@ class MarathonSchedulerActorTest
       schedulerActor ! ScaleApps
 
       awaitAssert(verify(queue).add(app, 1), 5.seconds, 10.millis)
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("ScaleApp") {
@@ -137,9 +129,7 @@ class MarathonSchedulerActorTest
       awaitAssert(verify(queue).add(app, 1), 5.seconds, 10.millis)
 
       expectMsg(5.seconds, AppScaled(app.id))
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("Kill tasks with scaling") {
@@ -197,9 +187,7 @@ class MarathonSchedulerActorTest
 
       // KillTasks does no longer scale
       verify(repo, times(0)).store(any[AppDefinition])
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("Kill tasks") {
@@ -248,9 +236,7 @@ class MarathonSchedulerActorTest
       expectMsg(5.seconds, TasksKilled(app.id, Set(taskA.taskId)))
 
       awaitAssert(verify(queue).add(app, 1), 5.seconds, 10.millis)
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("Deployment") {
@@ -287,9 +273,7 @@ class MarathonSchedulerActorTest
       answer.id should be(plan.id)
 
       system.eventStream.unsubscribe(probe.ref)
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("Deployment resets rate limiter for affected apps") {
@@ -349,9 +333,7 @@ class MarathonSchedulerActorTest
       Mockito.verify(queue, timeout(1000)).resetDelay(app.copy(instances = 0))
 
       system.eventStream.unsubscribe(probe.ref)
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("Deployment fail to acquire lock") {
@@ -386,9 +368,7 @@ class MarathonSchedulerActorTest
 
       answer.cmd should equal(Deploy(plan))
       answer.reason.isInstanceOf[AppLockedException] should be(true)
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("Restart deployments after failover") {
@@ -434,9 +414,7 @@ class MarathonSchedulerActorTest
       val answer = expectMsgType[CommandFailed]
       answer.cmd should equal(Deploy(plan))
       answer.reason.isInstanceOf[AppLockedException] should be(true)
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("Forced deployment") {
@@ -466,9 +444,7 @@ class MarathonSchedulerActorTest
 
       val answer = expectMsgType[DeploymentStarted]
 
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("Cancellation timeout") {
@@ -515,9 +491,7 @@ class MarathonSchedulerActorTest
 
       answer.reason.isInstanceOf[TimeoutException] should be(true)
       answer.reason.getMessage should be
-    } finally {
-      stopActor(schedulerActor)
-    }
+    } finally { stopActor(schedulerActor) }
   }
 
   test("Do not run reconciliation concurrently") {

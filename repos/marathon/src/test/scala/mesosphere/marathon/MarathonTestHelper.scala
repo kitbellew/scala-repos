@@ -134,9 +134,7 @@ object MarathonTestHelper {
             Seq(Range(beginPort.toLong, endPort.toLong)),
             role
           )))
-    } else {
-      None
-    }
+    } else { None }
     val offerBuilder = Offer.newBuilder
       .setId(OfferID("1"))
       .setFrameworkId(frameworkID)

@@ -313,9 +313,7 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
                   val isInferred = tpt.wasEmpty
                   if (refersToLocalSymbols || isInferred) {
                     tpt.duplicate.clearType()
-                  } else {
-                    tpt
-                  }
+                  } else { tpt }
                 }
               // If one of the type arguments of a TypeApply gets reset to an empty TypeTree, then this means that:
               // 1) It isn't empty now (tpt.tpe != null), but it was empty before (tpt.wasEmpty).

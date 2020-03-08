@@ -37,9 +37,7 @@ trait JavaResultsHandlingSpec
     def makeRequest[T](controller: MockController)(block: WSResponse => T) = {
       implicit val port = testServerPort
       lazy val app: Application = GuiceApplicationBuilder()
-        .routes {
-          case _ => JAction(app, controller)
-        }
+        .routes { case _ => JAction(app, controller) }
         .build()
 
       running(TestServer(port, app)) {

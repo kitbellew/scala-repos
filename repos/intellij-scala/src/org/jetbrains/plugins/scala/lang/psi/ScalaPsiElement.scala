@@ -64,18 +64,14 @@ trait ScalaPsiElement
 
   def findLastChildByType[T <: PsiElement](t: IElementType): T = {
     var node = getNode.getLastChildNode
-    while (node != null && node.getElementType != t) {
-      node = node.getTreePrev
-    }
+    while (node != null && node.getElementType != t) { node = node.getTreePrev }
     if (node == null) null.asInstanceOf[T]
     else node.getPsi.asInstanceOf[T]
   }
 
   def findFirstChildByType(t: IElementType) = {
     var node = getNode.getFirstChildNode
-    while (node != null && node.getElementType != t) {
-      node = node.getTreeNext
-    }
+    while (node != null && node.getElementType != t) { node = node.getTreeNext }
     if (node == null) null else node.getPsi
   }
 
@@ -111,9 +107,7 @@ trait ScalaPsiElement
   /**
     * Override in inheritors
     */
-  def accept(visitor: ScalaElementVisitor) {
-    visitor.visitElement(this)
-  }
+  def accept(visitor: ScalaElementVisitor) { visitor.visitElement(this) }
 
   /**
     * Override in inheritors

@@ -124,22 +124,16 @@ sealed abstract class Rational
     * @param max A positive integer.
     */
   def limitTo(max: SafeLong): Rational =
-    if (this.signum < 0) {
-      -((-this).limitTo(max))
-    } else {
+    if (this.signum < 0) { -((-this).limitTo(max)) }
+    else {
       require(max.signum > 0, "Limit must be a positive integer.")
 
       val half = max >> 1
       val floor = SafeLong(this.toBigInt)
-      if (floor >= max) {
-        Rational(max)
-      } else if (floor >= (max >> 1)) {
-        Rational(floor.toLong)
-      } else if (this.compareToOne < 0) {
-        limitDenominatorTo(max)
-      } else {
-        limitDenominatorTo(max * denominator / numerator)
-      }
+      if (floor >= max) { Rational(max) }
+      else if (floor >= (max >> 1)) { Rational(floor.toLong) }
+      else if (this.compareToOne < 0) { limitDenominatorTo(max) }
+      else { limitDenominatorTo(max * denominator / numerator) }
     }
 
   /**
@@ -175,13 +169,9 @@ sealed abstract class Rational
 
       if (mediant.denominator > limit) {
         if ((this - l).abs > (u - this).abs) u else l
-      } else if (mediant == this) {
-        mediant
-      } else if (mediant < this) {
-        closest(mediant, u)
-      } else {
-        closest(l, mediant)
-      }
+      } else if (mediant == this) { mediant }
+      else if (mediant < this) { closest(mediant, u) }
+      else { closest(l, mediant) }
     }
 
     // note: a rational with a zero denominator is not allowed. But for this algorithm it is quite convenient. So we
@@ -234,9 +224,7 @@ object Rational extends RationalInstances {
         val addBit =
           if (nShared < dShared || (nShared == dShared && d.toBigInteger.getLowestSetBit < dLowerLength)) {
             1
-          } else {
-            0
-          }
+          } else { 0 }
 
         val e = d.bitLength - n.bitLength + addBit
         val ln = n << (53 + e) // We add 1 bit for rounding.
@@ -273,9 +261,7 @@ object Rational extends RationalInstances {
       lden: Long): Rational = {
     val n = num / ngcd
     val d = rd / ngcd
-    Checked.tryOrReturn {
-      apply(n, lden * d)
-    } {
+    Checked.tryOrReturn { apply(n, lden * d) } {
       Rational(SafeLong(n), SafeLong(lden) * d)
     }
   }
@@ -306,30 +292,24 @@ object Rational extends RationalInstances {
   implicit def apply(x: Float): Rational = apply(x.toDouble)
 
   implicit def apply(x: Double): Rational =
-    if (x == 0d) {
-      zero
-    } else {
+    if (x == 0d) { zero }
+    else {
       val bits = java.lang.Double.doubleToLongBits(x)
       val value =
         if ((bits >> 63) < 0)
           -(bits & 0x000FFFFFFFFFFFFFL | 0x0010000000000000L)
         else (bits & 0x000FFFFFFFFFFFFFL | 0x0010000000000000L)
       val exp = ((bits >> 52) & 0x7FF).toInt - 1075 // 1023 + 52
-      if (exp > 10) {
-        apply(SafeLong(value) << exp, SafeLong.one)
-      } else if (exp >= 0) {
-        apply(value << exp, 1L)
-      } else if (exp >= -52 && (~((-1L) << (-exp)) & value) == 0L) {
+      if (exp > 10) { apply(SafeLong(value) << exp, SafeLong.one) }
+      else if (exp >= 0) { apply(value << exp, 1L) }
+      else if (exp >= -52 && (~((-1L) << (-exp)) & value) == 0L) {
         apply(value >> (-exp), 1L)
-      } else {
-        apply(SafeLong(value), SafeLong.one << (-exp))
-      }
+      } else { apply(SafeLong(value), SafeLong.one << (-exp)) }
     }
 
   implicit def apply(x: BigDecimal): Rational = {
-    if (x.ulp >= 1) {
-      apply(x.toBigInt, 1)
-    } else {
+    if (x.ulp >= 1) { apply(x.toBigInt, 1) }
+    else {
       val n = (x / x.ulp).toBigInt
       val d = (BigDecimal(1.0) / x.ulp).toBigInt
       apply(n, d)
@@ -340,9 +320,8 @@ object Rational extends RationalInstances {
     case RationalString(n, d) => Rational(SafeLong(n), SafeLong(d))
     case IntegerString(n)     => Rational(SafeLong(n))
     case s =>
-      try {
-        Rational(BigDecimal(s))
-      } catch {
+      try { Rational(BigDecimal(s)) }
+      catch {
         case nfe: NumberFormatException =>
           throw new NumberFormatException("For input string: " + s)
       }
@@ -542,9 +521,7 @@ object Rational extends RationalInstances {
             val n2 = r.n / b
             val d1 = d / b
             val d2 = r.d / a
-            Checked.tryOrReturn[Rational] {
-              longRational(n1 * n2, d1 * d2)
-            } {
+            Checked.tryOrReturn[Rational] { longRational(n1 * n2, d1 * d2) } {
               // we know that the result does not fit into a LongRational, and also that the denominators are positive.
               // so we can just call BigRational.apply directly
               bigRational(SafeLong(n1) * n2, SafeLong(d1) * d2)
@@ -573,9 +550,7 @@ object Rational extends RationalInstances {
           d1 = -d1
           d2 = -d2
         }
-        Checked.tryOrReturn[Rational] {
-          longRational(n1 * d2, d1 * n2)
-        } {
+        Checked.tryOrReturn[Rational] { longRational(n1 * d2, d1 * n2) } {
           // we know that the result does not fit into a LongRational, and we have made sure that the product of d1
           // and n2 is positive. So we can just call BigRational.apply directly
           bigRational(SafeLong(n1) * d2, SafeLong(d1) * n2)
@@ -655,9 +630,7 @@ object Rational extends RationalInstances {
 
     def compare(r: Rational): Int = r match {
       case r: LongRational =>
-        Checked.tryOrElse {
-          LongAlgebra.compare(n * r.d, r.n * d)
-        } {
+        Checked.tryOrElse { LongAlgebra.compare(n * r.d, r.n * d) } {
           val dgcd = spire.math.gcd(d, r.d)
           if (dgcd == 1L)
             (SafeLong(n) * r.d) compare (SafeLong(r.n) * d)
@@ -735,9 +708,8 @@ object Rational extends RationalInstances {
       case r: LongRational => r + this
       case r: BigRational =>
         val dgcd: SafeLong = d.gcd(r.d)
-        if (dgcd.isOne) {
-          Rational(r.d * n + r.n * d, r.d * d)
-        } else {
+        if (dgcd.isOne) { Rational(r.d * n + r.n * d, r.d * d) }
+        else {
           val lden: SafeLong = d / dgcd
           val rden: SafeLong = r.d / dgcd
           val num: SafeLong = rden * n + r.n * lden
@@ -753,9 +725,8 @@ object Rational extends RationalInstances {
       case r: LongRational => (-r) + this
       case r: BigRational =>
         val dgcd: SafeLong = d.gcd(r.d)
-        if (dgcd.isOne) {
-          Rational(r.d * n - r.n * d, r.d * d)
-        } else {
+        if (dgcd.isOne) { Rational(r.d * n - r.n * d, r.d * d) }
+        else {
           val lden: SafeLong = d / dgcd
           val rden: SafeLong = r.d / dgcd
           val num: SafeLong = rden * n - r.n * lden
@@ -789,9 +760,8 @@ object Rational extends RationalInstances {
       case r: LongRational => r gcd this
       case r: BigRational =>
         val dgcd: SafeLong = d.gcd(r.d)
-        if (dgcd.isOne) {
-          Rational(n.abs gcd r.n.abs, d * r.d)
-        } else {
+        if (dgcd.isOne) { Rational(n.abs gcd r.n.abs, d * r.d) }
+        else {
           val lm = d / dgcd
           val rm = r.d / dgcd
           Rational((n * rm).abs gcd (r.n * lm).abs, dgcd * lm * rm)

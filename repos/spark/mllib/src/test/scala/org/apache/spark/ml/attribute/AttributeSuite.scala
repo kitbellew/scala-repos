@@ -40,9 +40,7 @@ class AttributeSuite extends SparkFunSuite {
     assert(attr.toMetadataImpl(withType = true) === metadataWithType)
     assert(attr === Attribute.fromMetadata(metadata))
     assert(attr === Attribute.fromMetadata(metadataWithType))
-    intercept[NoSuchElementException] {
-      attr.toStructField()
-    }
+    intercept[NoSuchElementException] { attr.toStructField() }
   }
 
   test("customized numeric attribute") {
@@ -118,9 +116,7 @@ class AttributeSuite extends SparkFunSuite {
     assert(attr.toMetadataImpl(withType = false) === metadataWithoutType)
     assert(attr === Attribute.fromMetadata(metadata))
     assert(attr === NominalAttribute.fromMetadata(metadataWithoutType))
-    intercept[NoSuchElementException] {
-      attr.toStructField()
-    }
+    intercept[NoSuchElementException] { attr.toStructField() }
   }
 
   test("customized nominal attribute") {
@@ -185,9 +181,7 @@ class AttributeSuite extends SparkFunSuite {
     assert(attr.toMetadataImpl(withType = false) === metadataWithoutType)
     assert(attr === Attribute.fromMetadata(metadata))
     assert(attr === BinaryAttribute.fromMetadata(metadataWithoutType))
-    intercept[NoSuchElementException] {
-      attr.toStructField()
-    }
+    intercept[NoSuchElementException] { attr.toStructField() }
   }
 
   test("customized binary attribute") {

@@ -47,9 +47,7 @@ class SourceTest {
     }
     val s = new CapitalReporting(in)
     // skip to next line and report an error
-    do {
-      val c = s.next()
-    } while (s.ch != '\n')
+    do { val c = s.next() } while (s.ch != '\n')
     s.next()
     val out = new ByteArrayOutputStream
     val ps = new PrintStream(out, true, charSet)
@@ -79,9 +77,7 @@ class SourceTest {
     }
     val s = new CapitalReporting(in)
     // skip to next line and report an error
-    do {
-      val c = s.next()
-    } while (s.ch != '\n')
+    do { val c = s.next() } while (s.ch != '\n')
     s.next()
     val out = new ByteArrayOutputStream
     val ps = new PrintStream(out, true, charSet)

@@ -142,11 +142,8 @@ class StressTest {
         if (n >= 0) loop(parser)
       }
 
-      try {
-        loop(AsyncParser.stream())
-      } finally {
-        ch.close()
-      }
+      try { loop(AsyncParser.stream()) }
+      finally { ch.close() }
       timeit("  finished ingesting")
 
       while (fromFuture(nihdb.status).pending > 0) Thread.sleep(100)
@@ -188,11 +185,7 @@ class StressTest {
           println(
             "total rows: %dM, total time: %.3fs" format (i, (t - t0) / 1000.0))
         }
-      } finally {
-        ctxt.finish()
-      }
-    } finally {
-      shutdown()
-    }
+      } finally { ctxt.finish() }
+    } finally { shutdown() }
   }
 }

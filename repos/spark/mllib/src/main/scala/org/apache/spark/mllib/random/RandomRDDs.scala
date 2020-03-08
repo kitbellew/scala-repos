@@ -477,9 +477,7 @@ object RandomRDDs {
   def randomJavaRDD[T](
       jsc: JavaSparkContext,
       generator: RandomDataGenerator[T],
-      size: Long): JavaRDD[T] = {
-    randomJavaRDD(jsc, generator, size, 0);
-  }
+      size: Long): JavaRDD[T] = { randomJavaRDD(jsc, generator, size, 0); }
 
   // TODO Generate RDD[Vector] from multivariate distributions.
 

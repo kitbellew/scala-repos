@@ -142,9 +142,7 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
       // assign new value
       rowIndices(insertPos) = row
       data(insertPos) = v
-      for (c <- (col + 1) to cols) {
-        colPtrs(c) += 1
-      }
+      for (c <- (col + 1) to cols) { colPtrs(c) += 1 }
     }
   }
 
@@ -155,9 +153,7 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
     }
   }
 
-  def compact() {
-    reserve(used)
-  }
+  def compact() { reserve(used) }
 
   def activeKeysIterator: Iterator[(Int, Int)] = {
     for (c <- Iterator.range(0, cols);
@@ -269,9 +265,7 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
 
   override def toDenseMatrix(implicit
       cm: ClassTag[V],
-      zero: Zero[V]): DenseMatrix[V] = {
-    toDense
-  }
+      zero: Zero[V]): DenseMatrix[V] = { toDense }
 
   def toDense: DenseMatrix[V] = {
     implicit val ctg =
@@ -291,9 +285,8 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
 
   override def equals(p1: Any): Boolean = p1 match {
     case y: CSCMatrix[_] =>
-      if (this.rows != y.rows || this.cols != y.cols) {
-        return false
-      } else {
+      if (this.rows != y.rows || this.cols != y.cols) { return false }
+      else {
         val xIter = this.activeIterator
         val yIter = y.activeIterator
 
@@ -354,9 +347,7 @@ object CSCMatrix
     for (c <- 0 until cols; r <- 0 until rows) {
       val v = data(i)
       i += 1
-      if (v != z) {
-        res(r, c) = v
-      }
+      if (v != z) { res(r, c) = v }
     }
     // TODO: res.compact()
     res
@@ -364,9 +355,7 @@ object CSCMatrix
 
   class CanCopyCSCMatrix[@spec(Double, Int, Float, Long) V: ClassTag: Zero]
       extends CanCopy[CSCMatrix[V]] {
-    def apply(v1: CSCMatrix[V]) = {
-      v1.copy
-    }
+    def apply(v1: CSCMatrix[V]) = { v1.copy }
   }
 
   implicit def canCopySparse[@spec(
@@ -378,9 +367,7 @@ object CSCMatrix
   implicit def canCreateZerosLike[V: ClassTag: Zero]
       : CanCreateZerosLike[CSCMatrix[V], CSCMatrix[V]] =
     new CanCreateZerosLike[CSCMatrix[V], CSCMatrix[V]] {
-      def apply(v1: CSCMatrix[V]): CSCMatrix[V] = {
-        zeros[V](v1.rows, v1.cols)
-      }
+      def apply(v1: CSCMatrix[V]): CSCMatrix[V] = { zeros[V](v1.rows, v1.cols) }
     }
 
   implicit def canMapValues[V, R: ClassTag: Zero: Semiring]
@@ -404,9 +391,7 @@ object CSCMatrix
             lastI += 1
             val v = from.data(ip)
             val r = fn(v)
-            if (r != z) {
-              builder.add(i, j, r)
-            }
+            if (r != z) { builder.add(i, j, r) }
             ip += 1
           }
 
@@ -586,9 +571,7 @@ object CSCMatrix
 
       val order: Array[Int] = if (keysAlreadySorted) {
         VectorBuilder.range(nnz)
-      } else {
-        sortedIndices(indices)
-      }
+      } else { sortedIndices(indices) }
 
       val outRows = new Array[Int](nnz)
       val outData = new Array[T](nnz)
@@ -626,9 +609,7 @@ object CSCMatrix
       }
       outDataIndex += 1
 
-      if (keysAlreadyUnique) {
-        assert(outDataIndex == nnz)
-      }
+      if (keysAlreadyUnique) { assert(outDataIndex == nnz) }
 
       while (lastCol < _cols) {
         outCols(lastCol + 1) = outDataIndex

@@ -4,7 +4,9 @@ object Test extends App {
 
   class C {
     type D
-    trait E { type T >: B <: A; val x: T }
+    trait E {
+      type T >: B <: A; val x: T
+    }
     // This is currently correctly disallowed
     // val y : (D with E)#T = y
     val y: D with E = y
@@ -14,7 +16,9 @@ object Test extends App {
 
   class F extends C {
     trait G
-    trait H { type T = G }
+    trait H {
+      type T = G
+    }
     type D = H
     def frob(arg: G): G = arg
     frob(sneak())

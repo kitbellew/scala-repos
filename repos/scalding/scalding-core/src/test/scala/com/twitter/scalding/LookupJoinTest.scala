@@ -77,9 +77,7 @@ class LookupJoinedTest extends WordSpec with Matchers {
         in1s
           .filter { case (t1, _, _) => Ordering[T].lt(t1, t) }
           .reduceOption(ord.max(_, _))
-          .map {
-            _._3
-          }
+          .map { _._3 }
       }
     }
     in0.map {
@@ -91,9 +89,7 @@ class LookupJoinedTest extends WordSpec with Matchers {
   def lookupSumJoin[T: Ordering, K, V, W: Semigroup](
       in0: Iterable[(T, K, V)],
       in1: Iterable[(T, K, W)]) = {
-    implicit val ord: Ordering[(T, K, W)] = Ordering.by {
-      _._1
-    }
+    implicit val ord: Ordering[(T, K, W)] = Ordering.by { _._1 }
     val serv = in1
       .groupBy(_._2)
       .mapValues {
@@ -106,12 +102,8 @@ class LookupJoinedTest extends WordSpec with Matchers {
               }
               .orElse(Some(newer))
           }
-          .filter {
-            _.isDefined
-          }
-          .map {
-            _.get
-          }
+          .filter { _.isDefined }
+          .map { _.get }
       }
       .toMap // Force the map
 
@@ -121,9 +113,7 @@ class LookupJoinedTest extends WordSpec with Matchers {
         in1s
           .filter { case (t1, _, _) => Ordering[T].lt(t1, t) }
           .reduceOption(ord.max(_, _))
-          .map {
-            _._3
-          }
+          .map { _._3 }
       }
     }
     in0.map {
@@ -200,9 +190,7 @@ class WindowLookupJoinedTest extends WordSpec with Matchers {
               (t1 < t) && ((t.toLong - t1.toLong) < win)
           }
           .reduceOption(ord.max(_, _))
-          .map {
-            _._3
-          }
+          .map { _._3 }
       }
     }
     in0.map {

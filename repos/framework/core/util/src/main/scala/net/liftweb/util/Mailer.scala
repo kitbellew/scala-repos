@@ -185,11 +185,8 @@ trait Mailer extends SimpleInjector {
   protected class MsgSender extends SpecializedLiftActor[MessageInfo] {
     protected def messageHandler = {
       case MessageInfo(from, subject, info) =>
-        try {
-          msgSendImpl(from, subject, info)
-        } catch {
-          case e: Exception => logger.error("Couldn't send mail", e)
-        }
+        try { msgSendImpl(from, subject, info) }
+        catch { case e: Exception => logger.error("Couldn't send mail", e) }
     }
   }
 
@@ -317,9 +314,7 @@ trait Mailer extends SimpleInjector {
   protected def firstNode(in: NodeSeq): Node = in match {
     case n: Node => n
     case ns =>
-      ns.toList.collect {
-        case e: Elem => e
-      } match {
+      ns.toList.collect { case e: Elem => e } match {
         case Nil     => if (ns.length == 0) Text("") else ns(0)
         case x :: xs => x
       }
@@ -356,9 +351,8 @@ trait Mailer extends SimpleInjector {
           relatedMultipart.addBodyPart(buildAttachment(image))
         }
 
-        if (attachments.isEmpty) {
-          bp.setContent(relatedMultipart)
-        } else {
+        if (attachments.isEmpty) { bp.setContent(relatedMultipart) }
+        else {
           // Some old versions of Exchange server will not behave correclty without
           // a mixed multipart wrapping file attachments. This appears to be linked to
           // specific versions of Exchange and Outlook. See the discussion at

@@ -19,9 +19,7 @@ class UpdateTaskTrackerStepImplTest
     with ScalaFutures
     with Mockito
     with GivenWhenThen {
-  test("name") {
-    new Fixture().step.name should equal("updateTaskTracker")
-  }
+  test("name") { new Fixture().step.name should equal("updateTaskTracker") }
 
   test("processing update succeeds") {
     val f = new Fixture

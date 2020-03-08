@@ -73,17 +73,13 @@ object TriangularArray {
 
   def tabulate[T: ClassTag](dim: Int)(fill: (Int, Int) => T) = {
     val array = new TriangularArray[T](dim)
-    for (c <- 0 until dim; r <- 0 to c) {
-      array.data(index(r, c)) = fill(r, c)
-    }
+    for (c <- 0 until dim; r <- 0 to c) { array.data(index(r, c)) = fill(r, c) }
     array
   }
 
   def fill[T: ClassTag](dim: Int)(fill: => T) = {
     val array = new TriangularArray[T](dim)
-    for (c <- 0 until dim; r <- 0 to c) {
-      array.data(index(r, c)) = fill
-    }
+    for (c <- 0 until dim; r <- 0 to c) { array.data(index(r, c)) = fill }
     array
   }
 
@@ -99,7 +95,5 @@ object TriangularArray {
     data
   }
 
-  def arraySize(dim: Int): Int = {
-    dim * (dim + 1) / 2
-  }
+  def arraySize(dim: Int): Int = { dim * (dim + 1) / 2 }
 }

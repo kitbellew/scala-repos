@@ -268,9 +268,8 @@ class JavaCopyPastePostProcessor
     settings.KEEP_BLANK_LINES_IN_DECLARATIONS = 0
     settings.KEEP_BLANK_LINES_BEFORE_RBRACE = 0
 
-    try {
-      block
-    } finally {
+    try { block }
+    finally {
       settings.KEEP_BLANK_LINES_IN_CODE = keep_blank_lines_in_code
       settings.KEEP_BLANK_LINES_IN_DECLARATIONS =
         keep_blank_lines_in_declarations

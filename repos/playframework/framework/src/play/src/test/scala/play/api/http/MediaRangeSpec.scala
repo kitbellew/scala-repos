@@ -46,9 +46,7 @@ object MediaRangeSpec extends Specification {
       mediaType.parameters must_== Seq(
         "profile" -> Some("http://www.w3.org/ns/json-ld#compacted"))
     }
-    "not choke on invalid media types" in {
-      MediaType.parse("foo") must beNone
-    }
+    "not choke on invalid media types" in { MediaType.parse("foo") must beNone }
     "allow anything in a quoted string" in {
       MediaRange.parse(
         """foo/bar, foo2/bar2; p="v,/\"\\vv"; p2=v2""") must_== Seq(

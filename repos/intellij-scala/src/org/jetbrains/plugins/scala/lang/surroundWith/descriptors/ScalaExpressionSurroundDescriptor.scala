@@ -148,11 +148,8 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
           findAllInRange(file, element.getTextRange.getEndOffset, endOffset)
         if (res == null) return null
         result ++ res
-      } else if (element.getTextRange.getEndOffset > endOffset) {
-        null
-      } else {
-        result
-      }
+      } else if (element.getTextRange.getEndOffset > endOffset) { null }
+      else { result }
     }
     val result = findAllInRange(file, startOffset, endOffset)
     if (result == null) return null

@@ -70,9 +70,7 @@ class ShardingServiceTest extends FunSuite with MockitoSugar {
 
     when(distributor.nodeForHash(1L)) thenReturn serviceForA
     when(serviceForA.status) thenReturn Status.Closed
-    intercept[ShardNotAvailableException] {
-      Await.result(service(reqA))
-    }
+    intercept[ShardNotAvailableException] { Await.result(service(reqA)) }
     verify(serviceForA, times(0)).apply(reqA)
   }
 
@@ -81,9 +79,7 @@ class ShardingServiceTest extends FunSuite with MockitoSugar {
     val h = new ShardingServiceHelper
     import h._
 
-    intercept[NotShardableException] {
-      Await.result(service(unshardableReq))
-    }
+    intercept[NotShardableException] { Await.result(service(unshardableReq)) }
     verify(distributor, times(0)).nodeForHash(anyLong)
   }
 

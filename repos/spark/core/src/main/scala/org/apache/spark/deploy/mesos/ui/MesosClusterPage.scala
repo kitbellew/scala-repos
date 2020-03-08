@@ -100,27 +100,15 @@ private[mesos] class MesosClusterPage(parent: MesosClusterUI)
   }
 
   private def stateString(status: Option[TaskStatus]): String = {
-    if (status.isEmpty) {
-      return ""
-    }
+    if (status.isEmpty) { return "" }
     val sb = new StringBuilder
     val s = status.get
     sb.append(s"State: ${s.getState}")
-    if (status.get.hasMessage) {
-      sb.append(s", Message: ${s.getMessage}")
-    }
-    if (status.get.hasHealthy) {
-      sb.append(s", Healthy: ${s.getHealthy}")
-    }
-    if (status.get.hasSource) {
-      sb.append(s", Source: ${s.getSource}")
-    }
-    if (status.get.hasReason) {
-      sb.append(s", Reason: ${s.getReason}")
-    }
-    if (status.get.hasTimestamp) {
-      sb.append(s", Time: ${s.getTimestamp}")
-    }
+    if (status.get.hasMessage) { sb.append(s", Message: ${s.getMessage}") }
+    if (status.get.hasHealthy) { sb.append(s", Healthy: ${s.getHealthy}") }
+    if (status.get.hasSource) { sb.append(s", Source: ${s.getSource}") }
+    if (status.get.hasReason) { sb.append(s", Reason: ${s.getReason}") }
+    if (status.get.hasTimestamp) { sb.append(s", Time: ${s.getTimestamp}") }
     sb.toString()
   }
 }

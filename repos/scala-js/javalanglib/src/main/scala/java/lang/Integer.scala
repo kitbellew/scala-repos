@@ -100,13 +100,9 @@ object Integer {
           else res > 0xFFFFFFFFL || res < 0
         }
 
-        if (res.isNaN || isOutOfBounds) {
-          fail
-        } else if (signed) {
-          res.toInt
-        } else {
-          asInt(res)
-        }
+        if (res.isNaN || isOutOfBounds) { fail }
+        else if (signed) { res.toInt }
+        else { asInt(res) }
       }
     }
   }
@@ -188,9 +184,8 @@ object Integer {
   def numberOfLeadingZeros(i: scala.Int): scala.Int = {
     // See Hacker's Delight, Section 5-3
     var x = i
-    if (x == 0) {
-      32
-    } else {
+    if (x == 0) { 32 }
+    else {
       var r = 1
       if ((x & 0xffff0000) == 0) { x <<= 16; r += 16 }
       if ((x & 0xff000000) == 0) { x <<= 8; r += 8 }

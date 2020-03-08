@@ -23,9 +23,8 @@ trait InfoTransformers {
     def insert(that: InfoTransformer) {
       assert(this.pid != that.pid, this.pid)
 
-      if (that.pid < this.pid) {
-        prev insert that
-      } else if (next.pid <= that.pid && next.pid != NoPhase.id) {
+      if (that.pid < this.pid) { prev insert that }
+      else if (next.pid <= that.pid && next.pid != NoPhase.id) {
         next insert that
       } else {
         log(

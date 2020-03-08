@@ -56,9 +56,7 @@ class RandomizationTest[L](
           l2 += a;
         }
       }
-      if (baseDiff < diff(l1, l2)) {
-        numBetter += 1;
-      }
+      if (baseDiff < diff(l1, l2)) { numBetter += 1; }
     }
     (numBetter + 1.0) / (numSamples + 1.0);
   }

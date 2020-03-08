@@ -137,9 +137,7 @@ private object PartitionAssignorTest extends Logging {
           "pattern" -> "static",
           "timestamp" -> 1234.toString))
 
-    override def toString = {
-      "Stream counts: " + streamCounts
-    }
+    override def toString = { "Stream counts: " + streamCounts }
   }
 
   private case class WildcardSubscriptionInfo(

@@ -109,9 +109,7 @@ private[spark] object Benchmark {
         Utils.executeAndGetOutput(
           Seq(grepPath, "-m", "1", "model name", "/proc/cpuinfo"))
       }.getOrElse("Unknown processor")
-    } else {
-      System.getenv("PROCESSOR_IDENTIFIER")
-    }
+    } else { System.getenv("PROCESSOR_IDENTIFIER") }
   }
 
   /**
@@ -128,9 +126,7 @@ private[spark] object Benchmark {
 
       val end = System.nanoTime()
       val runTime = end - start
-      if (i > 0) {
-        runTimes += runTime
-      }
+      if (i > 0) { runTimes += runTime }
 
       if (outputPerIteration) {
         // scalastyle:off

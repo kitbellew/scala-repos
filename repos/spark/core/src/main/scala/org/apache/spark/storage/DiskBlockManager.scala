@@ -67,9 +67,8 @@ private[spark] class DiskBlockManager(
     // Create the subdirectory if it doesn't already exist
     val subDir = subDirs(dirId).synchronized {
       val old = subDirs(dirId)(subDirId)
-      if (old != null) {
-        old
-      } else {
+      if (old != null) { old }
+      else {
         val newDir = new File(localDirs(dirId), "%02x".format(subDirId))
         if (!newDir.exists() && !newDir.mkdir()) {
           throw new IOException(s"Failed to create local dir in $newDir.")
@@ -161,9 +160,8 @@ private[spark] class DiskBlockManager(
   /** Cleanup local dirs and stop shuffle sender. */
   private[spark] def stop() {
     // Remove the shutdown hook.  It causes memory leaks if we leave it around.
-    try {
-      ShutdownHookManager.removeShutdownHook(shutdownHook)
-    } catch {
+    try { ShutdownHookManager.removeShutdownHook(shutdownHook) }
+    catch {
       case e: Exception =>
         logError(s"Exception while removing shutdown hook.", e)
     }

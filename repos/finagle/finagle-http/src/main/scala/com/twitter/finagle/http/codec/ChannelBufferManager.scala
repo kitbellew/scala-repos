@@ -60,9 +60,7 @@ class ChannelBufferUsageTracker(
       throw new ChannelBufferUsageException(
         "invalid ChannelBufferUsageTracker decrease operation ("
           + size + " vs. " + currentUsage + ")")
-    } else {
-      state.currentUsage -= size
-    }
+    } else { state.currentUsage -= size }
   }
 }
 

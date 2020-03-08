@@ -59,9 +59,7 @@ class ScalaArrangementParseInfo {
     currentDependentMethods += callee
     var callerDependent = if (!methodDependencies.contains(caller)) {
       immutable.HashSet[ScFunction]()
-    } else {
-      methodDependencies(caller)
-    }
+    } else { methodDependencies(caller) }
     if (!callerDependent.contains(callee)) {
       callerDependent = callerDependent + callee
     }
@@ -100,9 +98,7 @@ class ScalaArrangementParseInfo {
         case Some(dependencies) =>
           usedMethods += depenenceSource
           for (dependentMethod <- dependencies.toList) {
-            if (usedMethods.contains(dependentMethod)) {
-              return None
-            }
+            if (usedMethods.contains(dependentMethod)) { return None }
             methodToEntry
               .get(dependentMethod)
               .foreach(dependentEntry =>
@@ -110,9 +106,7 @@ class ScalaArrangementParseInfo {
                   val dependentMethodInfo =
                     if (cache.contains(dependentMethod)) {
                       cache(dependentMethod)
-                    } else {
-                      new ScalaArrangementDependency(dependentEntry)
-                    }
+                    } else { new ScalaArrangementDependency(dependentEntry) }
                   cache.put(dependentMethod, dependentMethodInfo)
                   dependency.addDependentMethodInfo(dependentMethodInfo)
                   toProcess =

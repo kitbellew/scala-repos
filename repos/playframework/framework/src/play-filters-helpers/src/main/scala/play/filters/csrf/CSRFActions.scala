@@ -57,9 +57,8 @@ class CSRFAction(
     if (config.checkMethod(request.method) && config.checkContentType(
           request.contentType)) {
 
-      if (!requiresCsrfCheck(request, config)) {
-        continue
-      } else {
+      if (!requiresCsrfCheck(request, config)) { continue }
+      else {
 
         // Only proceed with checks if there is an incoming token in the header, otherwise there's no point
         getTokenToValidate(request, config, tokenSigner).map { headerToken =>
@@ -210,9 +209,8 @@ class CSRFAction(
     } else {
       val andTokenEquals = ByteString('&') ++ tokenEquals
       val index = body.indexOfSlice(andTokenEquals)
-      if (index == -1) {
-        None
-      } else {
+      if (index == -1) { None }
+      else {
         Some(URLDecoder.decode(
           body.drop(index + andTokenEquals.size).takeWhile(_ != '&').utf8String,
           "utf-8"))
@@ -244,9 +242,8 @@ class CSRFAction(
       */
     def extractHeaders(position: Int): (Int, List[(String, String)]) = {
       // If it starts with CRLF, we've reached the end of the headers
-      if (prefixedBody.startsWith(crlf, position)) {
-        (position + 2) -> Nil
-      } else {
+      if (prefixedBody.startsWith(crlf, position)) { (position + 2) -> Nil }
+      else {
         // Read up to the next CRLF
         val nextCrlf = prefixedBody.indexOfSlice(crlf, position)
         if (nextCrlf == -1) {
@@ -282,9 +279,8 @@ class CSRFAction(
           // Progress past the CRLF at the end of the boundary
           val nextCrlf =
             prefixedBody.indexOfSlice(crlf, nextBoundary + boundaryLine.size)
-          if (nextCrlf == -1) {
-            None
-          } else {
+          if (nextCrlf == -1) { None }
+          else {
             val startOfNextPart = nextCrlf + 2
             // Extract the headers
             val (startOfPartData, headers) = extractHeaders(startOfNextPart)
@@ -293,9 +289,8 @@ class CSRFAction(
                 // This part is the token, find the next boundary
                 val endOfData =
                   prefixedBody.indexOfSlice(boundaryLine, startOfPartData)
-                if (endOfData == -1) {
-                  None
-                } else {
+                if (endOfData == -1) { None }
+                else {
                   // Extract the token value
                   Some(
                     prefixedBody.slice(startOfPartData, endOfData).utf8String)
@@ -331,9 +326,8 @@ private class BodyHandler(config: CSRFConfig, checkBody: ByteString => Boolean)
   def onPush(elem: ByteString, ctx: DetachedContext[ByteString]) = {
     if (continue) {
       // Standard contract for forwarding as is in DetachedStage
-      if (ctx.isHoldingDownstream) {
-        ctx.pushAndPull(elem)
-      } else {
+      if (ctx.isHoldingDownstream) { ctx.pushAndPull(elem) }
+      else {
         next = elem
         ctx.holdUpstream()
       }
@@ -371,17 +365,11 @@ private class BodyHandler(config: CSRFConfig, checkBody: ByteString => Boolean)
       if (next != null) {
         val toPush = next
         next = null
-        if (ctx.isFinishing) {
-          ctx.pushAndFinish(toPush)
-        } else {
-          ctx.pushAndPull(toPush)
-        }
+        if (ctx.isFinishing) { ctx.pushAndFinish(toPush) }
+        else { ctx.pushAndPull(toPush) }
       } else {
-        if (ctx.isFinishing) {
-          ctx.finish()
-        } else {
-          ctx.holdDownstream()
-        }
+        if (ctx.isFinishing) { ctx.finish() }
+        else { ctx.holdDownstream() }
       }
     } else {
       // Otherwise hold because we're buffering
@@ -391,11 +379,8 @@ private class BodyHandler(config: CSRFConfig, checkBody: ByteString => Boolean)
 
   override def onUpstreamFinish(ctx: DetachedContext[ByteString]) = {
     if (continue) {
-      if (next != null) {
-        ctx.absorbTermination()
-      } else {
-        ctx.finish()
-      }
+      if (next != null) { ctx.absorbTermination() }
+      else { ctx.finish() }
     } else {
       // CSRF check
       if (checkBody(buffer)) {
@@ -405,9 +390,7 @@ private class BodyHandler(config: CSRFConfig, checkBody: ByteString => Boolean)
         buffer = null
         continue = true
         ctx.absorbTermination()
-      } else {
-        ctx.fail(CSRFAction.NoTokenInBody)
-      }
+      } else { ctx.fail(CSRFAction.NoTokenInBody) }
     }
   }
 }
@@ -453,9 +436,7 @@ object CSRFAction {
             .map(tokenSigner.signToken)
           newTokenValue.fold(newReq)(
             newReq.withTag(Token.ReSignedRequestTag, _))
-        } else {
-          newReq
-        }
+        } else { newReq }
     }
   }
 
@@ -500,9 +481,7 @@ object CSRFAction {
       filterLogger.trace(
         "[CSRF] Bypassing check because CORSFilter request tag found")
       false
-    } else {
-      config.shouldProtect(request)
-    }
+    } else { config.shouldProtect(request) }
   }
 
   private[csrf] def addTokenToResponse(
@@ -593,9 +572,8 @@ case class CSRFCheck @Inject() (
 
       // Maybe bypass
       if (!CSRFAction.requiresCsrfCheck(request, config) || !config
-            .checkContentType(request.contentType)) {
-        wrapped(request)
-      } else {
+            .checkContentType(request.contentType)) { wrapped(request) }
+      else {
         // Get token from header
         CSRFAction
           .getTokenToValidate(request, config, tokenSigner)
@@ -699,9 +677,7 @@ case class CSRFAddToken @Inject() (
         import play.api.libs.iteratee.Execution.Implicits.trampoline
         wrapped(requestWithNewToken).map(result =>
           CSRFAction.addTokenToResponse(config, newToken, request, result))
-      } else {
-        wrapped(request)
-      }
+      } else { wrapped(request) }
     }
   }
 

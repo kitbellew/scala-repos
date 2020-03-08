@@ -10,8 +10,12 @@ trait C[@specialized U] {
 object Test extends App {
   val declared = classOf[C[_]].getDeclaredMethods.sortBy(_.getName)
   println(declared.mkString("\n"))
-  object CInt extends C[Int] { def foo(i: Int) = i }
-  object CAny extends C[Any] { def foo(a: Any) = a }
+  object CInt extends C[Int] {
+    def foo(i: Int) = i
+  }
+  object CAny extends C[Any] {
+    def foo(a: Any) = a
+  }
   assert(CInt.foo(1) == 1)
   assert(CAny.foo("") == "")
 }

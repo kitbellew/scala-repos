@@ -42,9 +42,7 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
         totalSize: Int,
         es: Entry): IterRepr
 
-    def hasNext = {
-      es ne null
-    }
+    def hasNext = { es ne null }
 
     def next(): T = {
       val res = es

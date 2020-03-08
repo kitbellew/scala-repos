@@ -127,9 +127,8 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
           val l1regValue = l1reg(i)
           require(l1regValue >= 0.0)
 
-          if (l1regValue == 0.0) {
-            v
-          } else {
+          if (l1regValue == 0.0) { v }
+          else {
             adjValue += Math.abs(l1regValue * xv)
             xv match {
               case 0.0 => {

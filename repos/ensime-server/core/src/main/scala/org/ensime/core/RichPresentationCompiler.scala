@@ -73,9 +73,8 @@ trait RichCompilerControl
   def charset: Charset = Charset.forName(settings.encoding.value)
 
   def askOption[A](op: => A): Option[A] =
-    try {
-      Some(ask(() => op))
-    } catch {
+    try { Some(ask(() => op)) }
+    catch {
       case fi: FailedInterrupt =>
         fi.getCause match {
           case e: InterruptedException =>
@@ -149,9 +148,7 @@ trait RichCompilerControl
   def askPackageByPath(path: String): Option[PackageInfo] =
     askOption(PackageInfo.fromPath(path))
 
-  def askReloadFile(f: SourceFile): Unit = {
-    askReloadFiles(List(f))
-  }
+  def askReloadFile(f: SourceFile): Unit = { askReloadFiles(List(f)) }
 
   def askReloadFiles(files: Iterable[SourceFile]): Either[Unit, Throwable] = {
     val x = new Response[Unit]()
@@ -311,9 +308,7 @@ class RichPresentationCompiler(
     symsByFile(sym.sourceFile) += sym
   }
 
-  def unloadAllFiles(): Unit = {
-    allSources.foreach(removeUnitOf)
-  }
+  def unloadAllFiles(): Unit = { allSources.foreach(removeUnitOf) }
 
   /**
     * Remove symbols defined by files that no longer exist.
@@ -324,17 +319,13 @@ class RichPresentationCompiler(
   def removeAllDeleted(): Unit = {
     allSources = allSources.filter { _.file.exists }
     val deleted = symsByFile.keys.filter { !_.exists }
-    for (f <- deleted) {
-      removeDeleted(f)
-    }
+    for (f <- deleted) { removeDeleted(f) }
   }
 
   /** Remove symbols defined by file that no longer exist. */
   def removeDeleted(f: AbstractFile): Unit = {
     val syms = symsByFile(f)
-    for (s <- syms) {
-      s.owner.info.decls unlink s
-    }
+    for (s <- syms) { s.owner.info.decls unlink s }
     symsByFile.remove(f)
     unitOfFile.remove(f)
   }
@@ -376,9 +367,8 @@ class RichPresentationCompiler(
       typePublicMembers(typeOrArrowTypeResult(tpe))
     } else {
       val members: Iterable[Member] =
-        try {
-          wrapTypeMembers(p)
-        } catch {
+        try { wrapTypeMembers(p) }
+        catch {
           case e: Throwable =>
             logger.error("Error retrieving type members:", e)
             List.empty
@@ -387,9 +377,7 @@ class RichPresentationCompiler(
       // Filter out synthetic things
       val bySym = new mutable.LinkedHashMap[Symbol, Member]
       for (m <- members ++ typePublicMembers(tpe)) {
-        if (!m.sym.nameString.contains("$")) {
-          bySym(m.sym) = m
-        }
+        if (!m.sym.nameString.contains("$")) { bySym(m.sym) = m }
       }
       bySym.values
     }
@@ -595,18 +583,14 @@ class RichPresentationCompiler(
     super.isOutOfDate
   }
 
-  protected def setNotifyWhenReady(): Unit = {
-    notifyWhenReady = true
-  }
+  protected def setNotifyWhenReady(): Unit = { notifyWhenReady = true }
 
   protected def reloadAndTypeFiles(sources: Iterable[SourceFile]) = {
     wrapReloadSources(sources.toList)
     sources.foreach { s => wrapTypedTree(s, forceReload = true) }
   }
 
-  override def askShutdown(): Unit = {
-    super.askShutdown()
-  }
+  override def askShutdown(): Unit = { super.askShutdown() }
 
   /*
    * The following functions wrap up operations that interact with

@@ -26,7 +26,6 @@ private[i18n] case class I18nPool(val langs: Set[Lang], val default: Lang) {
 
   def domainLang(req: RequestHeader) =
     cache.getOrElseUpdate(
-      req.domain, {
-        I18nDomain(req.domain).lang filter langs.contains
-      })
+      req.domain,
+      { I18nDomain(req.domain).lang filter langs.contains })
 }

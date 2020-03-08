@@ -112,9 +112,7 @@ trait FindMembers {
                   refinementParents)) {
               if (shortCircuit(sym)) return false
               else addMemberIfNew(sym)
-            } else if (excl == DEFERRED) {
-              deferredSeen = true
-            }
+            } else if (excl == DEFERRED) { deferredSeen = true }
           }
           entry = if (findAll) entry.next else decls lookupNextEntry entry
         }

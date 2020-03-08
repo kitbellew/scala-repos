@@ -31,23 +31,17 @@ object ServerResultUtils {
                    .exists(_.equalsIgnoreCase(CLOSE))) {
         // We need to close the connection and set the header
         SendClose
-      } else {
-        DefaultKeepAlive
-      }
+      } else { DefaultKeepAlive }
     } else {
       if (result.header.headers
             .get(CONNECTION)
-            .exists(_.equalsIgnoreCase(CLOSE))) {
-        DefaultClose
-      } else if ((result.body.isInstanceOf[
-                   HttpEntity.Streamed] && result.body.contentLength.isEmpty) ||
-                 request.headers
-                   .get(CONNECTION)
-                   .forall(!_.equalsIgnoreCase(KEEP_ALIVE))) {
-        DefaultClose
-      } else {
-        SendKeepAlive
-      }
+            .exists(_.equalsIgnoreCase(CLOSE))) { DefaultClose }
+      else if ((result.body.isInstanceOf[
+                 HttpEntity.Streamed] && result.body.contentLength.isEmpty) ||
+               request.headers
+                 .get(CONNECTION)
+                 .forall(!_.equalsIgnoreCase(KEEP_ALIVE))) { DefaultClose }
+      else { SendKeepAlive }
     }
   }
 
@@ -71,9 +65,7 @@ object ServerResultUtils {
       cancelEntity(result.body)
       result.copy(body =
         HttpEntity.Strict(ByteString.empty, result.body.contentType))
-    } else {
-      result
-    }
+    } else { result }
   }
 
   private def mayHaveEntity(status: Int) =

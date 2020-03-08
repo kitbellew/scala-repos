@@ -61,16 +61,12 @@ abstract class ButtonBase(override val delegate: jfxsc.ButtonBase)
   /**
     * Arms the button.
     */
-  def arm() {
-    delegate.arm()
-  }
+  def arm() { delegate.arm() }
 
   /**
     * Disarms the button.
     */
-  def disarm() {
-    delegate.disarm()
-  }
+  def disarm() { delegate.disarm() }
 
   // for now only a few examples
 
@@ -79,9 +75,7 @@ abstract class ButtonBase(override val delegate: jfxsc.ButtonBase)
       jfxsi.MouseEvent.MOUSE_ENTERED,
       new jfxe.EventHandler[jfxsi.MouseEvent]() {
         @Override
-        def handle(me: jfxsi.MouseEvent) {
-          handler(new MouseEvent(me))
-        }
+        def handle(me: jfxsi.MouseEvent) { handler(new MouseEvent(me)) }
       })
   }
 
@@ -90,9 +84,7 @@ abstract class ButtonBase(override val delegate: jfxsc.ButtonBase)
       jfxsi.MouseEvent.MOUSE_EXITED,
       new jfxe.EventHandler[jfxsi.MouseEvent]() {
         @Override
-        def handle(me: jfxsi.MouseEvent) {
-          handler(new MouseEvent(me))
-        }
+        def handle(me: jfxsi.MouseEvent) { handler(new MouseEvent(me)) }
       })
   }
 

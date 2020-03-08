@@ -63,11 +63,8 @@ private[hive] object HiveShim {
     var first: Boolean = old.isEmpty
 
     for (col <- cols) {
-      if (first) {
-        first = false
-      } else {
-        result.append(',')
-      }
+      if (first) { first = false }
+      else { result.append(',') }
       result.append(col)
     }
     conf.set(ColumnProjectionUtils.READ_COLUMN_NAMES_CONF_STR, result.toString)
@@ -83,9 +80,7 @@ private[hive] object HiveShim {
     if (ids != null && ids.nonEmpty) {
       ColumnProjectionUtils.appendReadColumns(conf, ids.asJava)
     }
-    if (names != null && names.nonEmpty) {
-      appendReadColumnNames(conf, names)
-    }
+    if (names != null && names.nonEmpty) { appendReadColumnNames(conf, names) }
   }
 
   /*
@@ -150,9 +145,7 @@ private[hive] object HiveShim {
         Objects.hashCode(
           functionClassName,
           instance.asInstanceOf[GenericUDFMacro].getBody())
-      } else {
-        functionClassName.hashCode()
-      }
+      } else { functionClassName.hashCode() }
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -161,9 +154,7 @@ private[hive] object HiveShim {
         if (functionClassName == HIVE_GENERIC_UDF_MACRO_CLS) {
           a.instance.asInstanceOf[GenericUDFMacro].getBody() ==
             instance.asInstanceOf[GenericUDFMacro].getBody()
-        } else {
-          true
-        }
+        } else { true }
       case _ => false
     }
 
@@ -240,9 +231,8 @@ private[hive] object HiveShim {
     }
 
     def createFunction[UDFType <: AnyRef](): UDFType = {
-      if (instance != null) {
-        instance.asInstanceOf[UDFType]
-      } else {
+      if (instance != null) { instance.asInstanceOf[UDFType] }
+      else {
         val func = Utils.getContextOrSparkClassLoader
           .loadClass(functionClassName)
           .newInstance
@@ -284,19 +274,13 @@ private[hive] object HiveShim {
     var compressType: String = _
     var destTableId: Int = _
 
-    def setCompressed(compressed: Boolean) {
-      this.compressed = compressed
-    }
+    def setCompressed(compressed: Boolean) { this.compressed = compressed }
 
     def getDirName(): String = dir
 
-    def setDestTableId(destTableId: Int) {
-      this.destTableId = destTableId
-    }
+    def setDestTableId(destTableId: Int) { this.destTableId = destTableId }
 
-    def setTableInfo(tableInfo: TableDesc) {
-      this.tableInfo = tableInfo
-    }
+    def setTableInfo(tableInfo: TableDesc) { this.tableInfo = tableInfo }
 
     def setCompressCodec(intermediateCompressorCodec: String) {
       compressCodec = intermediateCompressorCodec

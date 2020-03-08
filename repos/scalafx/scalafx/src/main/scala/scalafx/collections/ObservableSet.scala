@@ -176,9 +176,7 @@ trait ObservableSet[T]
   /**
     * Removes all elements from the $SET. After this operation has completed, the $SET will be empty.
     */
-  override def clear() {
-    delegate.clear()
-  }
+  override def clear() { delegate.clear() }
 
   /**
     * Creates a new iterator over elements of this set
@@ -234,9 +232,7 @@ trait ObservableSet[T]
     */
   def onChange(op: => Unit) {
     delegate.addListener(new jfxc.SetChangeListener[T] {
-      def onChanged(change: jfxc.SetChangeListener.Change[_ <: T]) {
-        op
-      }
+      def onChanged(change: jfxc.SetChangeListener.Change[_ <: T]) { op }
     })
   }
 

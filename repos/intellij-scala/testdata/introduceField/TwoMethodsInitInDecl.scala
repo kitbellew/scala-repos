@@ -1,9 +1,7 @@
 /*initInDeclaration*/
 /*replaceAll*/
 class Test {
-  def foo() {
-    1
-  }
+  def foo() { 1 }
 
   def bar() {
     /*start*/

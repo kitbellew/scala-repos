@@ -235,9 +235,7 @@ final class Emitter private (
       if (endOfLine != -1) {
         builder.addLine(str.substring(index, endOfLine))
         emitNextLine(endOfLine + 1)
-      } else {
-        builder.addLine(str.substring(index, str.length))
-      }
+      } else { builder.addLine(str.substring(index, str.length)) }
     }
     if (str != "")
       emitNextLine(0)
@@ -264,9 +262,7 @@ final class Emitter private (
         statsClassesInvalidated += 1
         _lastVersion = version
         _cache = new DesugaredClassCache
-      } else {
-        statsClassesReused += 1
-      }
+      } else { statsClassesReused += 1 }
       _cacheUsed = true
       _cache
     }
@@ -300,9 +296,7 @@ final class Emitter private (
         statsMethodsInvalidated += 1
         _tree = v
         _lastVersion = version
-      } else {
-        statsMethodsReused += 1
-      }
+      } else { statsMethodsReused += 1 }
       _cacheUsed = true
       _tree
     }

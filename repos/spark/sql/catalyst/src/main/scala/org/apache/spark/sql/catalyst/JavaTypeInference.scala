@@ -320,9 +320,8 @@ object JavaTypeInference {
           val (_, nullable) = inferDataType(fieldType)
           val constructor =
             constructorFor(fieldType, Some(addToPath(fieldName)))
-          val setter = if (nullable) {
-            constructor
-          } else {
+          val setter = if (nullable) { constructor }
+          else {
             AssertNotNull(
               constructor,
               Seq("currently no type path record in java"))
@@ -340,9 +339,7 @@ object JavaTypeInference {
             expressions.Literal.create(null, ObjectType(other)),
             result
           )
-        } else {
-          result
-        }
+        } else { result }
     }
   }
 
@@ -376,9 +373,8 @@ object JavaTypeInference {
       }
     }
 
-    if (!inputObject.dataType.isInstanceOf[ObjectType]) {
-      inputObject
-    } else {
+    if (!inputObject.dataType.isInstanceOf[ObjectType]) { inputObject }
+    else {
       typeToken.getRawType match {
         case c if c == classOf[String] =>
           StaticInvoke(

@@ -51,9 +51,7 @@ class RingBuffer[A: ClassTag](val maxSize: Int) extends Seq[A] {
     * buffer can hold, then only the last maxSize elements will end up in
     * the buffer.
     */
-  def ++=(iter: Iterable[A]) {
-    for (elem <- iter) this += elem
-  }
+  def ++=(iter: Iterable[A]) { for (elem <- iter) this += elem }
 
   /**
     * Removes the next element from the buffer

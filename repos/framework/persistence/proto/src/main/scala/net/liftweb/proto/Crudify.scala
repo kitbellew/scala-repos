@@ -150,9 +150,7 @@ trait Crudify {
 
   def pageWrapper(body: NodeSeq): NodeSeq =
     <lift:surround with="default" at="content">
-    {
-      body
-    }
+    {body}
   </lift:surround>
 
   /**
@@ -656,9 +654,7 @@ trait Crudify {
       for {
         pointer <- fieldsForList
         field <- computeFieldFromPointer(c, pointer).toList
-      } yield {
-        ".value *" #> field.asHtml
-      }
+      } yield { ".value *" #> field.asHtml }
     }
   }
 
@@ -680,9 +676,8 @@ trait Crudify {
     * generated
     */
   protected def crudAllPrev(first: Long): (NodeSeq) => NodeSeq = {
-    if (first < rowsPerPage) {
-      ClearNodes
-    } else {
+    if (first < rowsPerPage) { ClearNodes }
+    else {
       "^ <*>" #>
         <a href={
           listPathString +
@@ -698,9 +693,8 @@ trait Crudify {
   protected def crudAllNext(
       first: Long,
       list: List[TheCrudType]): (NodeSeq) => NodeSeq = {
-    if (first < rowsPerPage) {
-      ClearNodes
-    } else {
+    if (first < rowsPerPage) { ClearNodes }
+    else {
       "^ <*>" #>
         <a href={
           listPathString + "?first=" + (first +
@@ -764,11 +758,8 @@ trait Crudify {
     * to "required_field".
     */
   def wrapNameInRequired(fieldName: NodeSeq, required: Boolean): NodeSeq = {
-    if (required) {
-      <span class="required_field">{fieldName}</span>
-    } else {
-      fieldName
-    }
+    if (required) { <span class="required_field">{fieldName}</span> }
+    else { fieldName }
   }
 
   def crudDoForm(item: TheCrudType, noticeMsg: String)(in: NodeSeq): NodeSeq = {

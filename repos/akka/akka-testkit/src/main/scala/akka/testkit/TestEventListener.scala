@@ -542,9 +542,7 @@ final case class DebugFilter(
 final case class CustomEventFilter(test: PartialFunction[LogEvent, Boolean])(
     occurrences: Int)
     extends EventFilter(occurrences) {
-  def matches(event: LogEvent) = {
-    test.isDefinedAt(event) && test(event)
-  }
+  def matches(event: LogEvent) = { test.isDefinedAt(event) && test(event) }
 }
 
 object DeadLettersFilter {

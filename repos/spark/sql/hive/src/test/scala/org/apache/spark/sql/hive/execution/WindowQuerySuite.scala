@@ -51,9 +51,7 @@ class WindowQuerySuite
       """.stripMargin)
   }
 
-  override def afterAll(): Unit = {
-    sql("DROP TABLE IF EXISTS part")
-  }
+  override def afterAll(): Unit = { sql("DROP TABLE IF EXISTS part") }
 
   test("windowing.q -- 15. testExpressions") {
     // Moved because:

@@ -8,37 +8,21 @@ class ActionResultServlet extends ScalatraServlet with ActionResultTestBase
 
 trait ActionResultTestBase {
   self: ScalatraBase =>
-  error {
-    case e => BadRequest("something went wrong")
-  }
+  error { case e => BadRequest("something went wrong") }
 
-  get("/ok") {
-    Ok("Hello, world!")
-  }
+  get("/ok") { Ok("Hello, world!") }
 
-  get("/ok-no-body") {
-    Ok()
-  }
+  get("/ok-no-body") { Ok() }
 
-  get("/bad") {
-    BadRequest("Hello")
-  }
+  get("/bad") { BadRequest("Hello") }
 
-  get("/headers") {
-    Ok("Hello, World!", Map("X-Something" -> "Something"))
-  }
+  get("/headers") { Ok("Hello, World!", Map("X-Something" -> "Something")) }
 
-  get("/bytes") {
-    Ok("Hello, world!".getBytes)
-  }
+  get("/bytes") { Ok("Hello, world!".getBytes) }
 
-  get("/error") {
-    throw new RuntimeException()
-  }
+  get("/error") { throw new RuntimeException() }
 
-  get("/redirect") {
-    Found("/ok")
-  }
+  get("/redirect") { Found("/ok") }
 
   get("/contentType") {
     val headerName =
@@ -54,9 +38,7 @@ trait ActionResultTestBase {
       ))
   }
 
-  get("/custom-reason") {
-    BadRequest(body = "abc", reason = "Bad Bad Bad")
-  }
+  get("/custom-reason") { BadRequest(body = "abc", reason = "Bad Bad Bad") }
 
   get("/input-stream") {
     contentType = "image/png"
@@ -66,9 +48,7 @@ trait ActionResultTestBase {
   get("/defaults-to-call-by-value") {
     var state = "open"
     // close over mutable state
-    def x: String = {
-      state
-    }
+    def x: String = { state }
 
     val res = Ok(x)
 
@@ -85,22 +65,12 @@ class ActionResultServletSpec extends ActionResultsSpec {
 abstract class ActionResultsSpec extends MutableScalatraSpec {
 
   "returning ActionResult from action with status and body" should {
-    "set the status code" in {
-      get("/bad") {
-        status mustEqual 400
-      }
-    }
+    "set the status code" in { get("/bad") { status mustEqual 400 } }
 
-    "render the body" in {
-      get("/ok") {
-        body mustEqual "Hello, world!"
-      }
-    }
+    "render the body" in { get("/ok") { body mustEqual "Hello, world!" } }
 
     "set default reason" in {
-      get("/bad") {
-        response.getReason mustEqual "Bad Request"
-      }
+      get("/bad") { response.getReason mustEqual "Bad Request" }
     }
 
     "infer contentType for String" in {
@@ -132,9 +102,7 @@ abstract class ActionResultsSpec extends MutableScalatraSpec {
 
   "returning ActionResult with additional headers" should {
     "set the headers" in {
-      get("/headers") {
-        header("X-Something") mustEqual "Something"
-      }
+      get("/headers") { header("X-Something") mustEqual "Something" }
     }
 
     "set the Content-Type header if it exists in the headers map" in {
@@ -154,67 +122,41 @@ abstract class ActionResultsSpec extends MutableScalatraSpec {
 
   "returing ActionResult with Array[Byte] as body" should {
     "render the body using render pipe line" in {
-      get("/bytes") {
-        body mustEqual "Hello, world!"
-      }
+      get("/bytes") { body mustEqual "Hello, world!" }
     }
   }
 
   "returning ActionResult from error handler" should {
-    "set the status" in {
-      get("/error") {
-        status mustEqual 400
-      }
-    }
+    "set the status" in { get("/error") { status mustEqual 400 } }
 
     "render the body" in {
-      get("/error") {
-        body mustEqual "something went wrong"
-      }
+      get("/error") { body mustEqual "something went wrong" }
     }
   }
 
   "returning Found" should {
-    "set status to 302" in {
-      get("/redirect") {
-        status mustEqual 302
-      }
-    }
+    "set status to 302" in { get("/redirect") { status mustEqual 302 } }
 
     "set the Location header" in {
-      get("/redirect") {
-        header("Location") mustEqual "/ok"
-      }
+      get("/redirect") { header("Location") mustEqual "/ok" }
     }
 
-    "keep body empty" in {
-      get("/redirect") {
-        body mustEqual ""
-      }
-    }
+    "keep body empty" in { get("/redirect") { body mustEqual "" } }
   }
 
   "return Ok without body" should {
-    "keep body empty" in {
-      get("/ok-no-body") {
-        body mustEqual ""
-      }
-    }
+    "keep body empty" in { get("/ok-no-body") { body mustEqual "" } }
   }
 
   "returning ActionResult with custom reason" should {
     "set a custom reason on status line" in {
-      get("/custom-reason") {
-        response.getReason mustEqual "Bad Bad Bad"
-      }
+      get("/custom-reason") { response.getReason mustEqual "Bad Bad Bad" }
     }
   }
 
   "returning ActionResult" should {
     "defaults to call by value" in {
-      get("/defaults-to-call-by-value") {
-        body mustEqual "open"
-      }
+      get("/defaults-to-call-by-value") { body mustEqual "open" }
     }
   }
 }

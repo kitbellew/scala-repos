@@ -266,9 +266,7 @@ trait ParSeqLike[
       tasksupport.executeAndWaitResult(
         ((copystart parallel copymiddle) { _ combine _ } parallel copyend) {
           _ combine _
-        } mapResult {
-          _.resultWithTaskSupport
-        })
+        } mapResult { _.resultWithTaskSupport })
     } else patch_sequential(from, patch.seq, replaced)
   }
 
@@ -294,9 +292,7 @@ trait ParSeqLike[
           index,
           elem,
           combinerFactory(() => bf(repr).asCombiner),
-          splitter) mapResult {
-          _.resultWithTaskSupport
-        }
+          splitter) mapResult { _.resultWithTaskSupport }
       )
     } else setTaskSupport(seq.updated(index, elem)(bf2seq(bf)), tasksupport)
   /*bf ifParallel { pbf =>
@@ -328,9 +324,7 @@ trait ParSeqLike[
           length min thatseq.length,
           combinerFactory(() => bf(repr).asCombiner),
           splitter,
-          thatseq.splitter) mapResult {
-          _.resultWithTaskSupport
-        }
+          thatseq.splitter) mapResult { _.resultWithTaskSupport }
       )
     } else super.zip(that)(bf)
 
@@ -353,9 +347,7 @@ trait ParSeqLike[
         new Corresponds(p, splitter assign ctx, pthat.splitter))
     } otherwise seq.corresponds(that)(p)
 
-  def diff[U >: T](that: GenSeq[U]): Repr = sequentially {
-    _ diff that
-  }
+  def diff[U >: T](that: GenSeq[U]): Repr = sequentially { _ diff that }
 
   /** Computes the multiset intersection between this $coll and another sequence.
     *
@@ -378,18 +370,14 @@ trait ParSeqLike[
     *                  ''n'' times in `that`, then the first ''n'' occurrences of `x` will be retained
     *                  in the result, but any following occurrences will be omitted.
     */
-  def intersect[U >: T](that: GenSeq[U]) = sequentially {
-    _ intersect that
-  }
+  def intersect[U >: T](that: GenSeq[U]) = sequentially { _ intersect that }
 
   /** Builds a new $coll from this $coll without any duplicate elements.
     *  $willNotTerminateInf
     *
     *  @return  A new $coll which contains the first occurrence of every element of this $coll.
     */
-  def distinct: Repr = sequentially {
-    _.distinct
-  }
+  def distinct: Repr = sequentially { _.distinct }
 
   override def toString = seq.mkString(stringPrefix + "(", ", ", ")")
 
@@ -459,9 +447,7 @@ trait ParSeqLike[
     override def merge(that: IndexWhere) =
       result =
         if (result == -1) that.result
-        else {
-          if (that.result != -1) result min that.result else result
-        }
+        else { if (that.result != -1) result min that.result else result }
     override def requiresStrictSplitters = true
   }
 
@@ -488,9 +474,7 @@ trait ParSeqLike[
     override def merge(that: LastIndexWhere) =
       result =
         if (result == -1) that.result
-        else {
-          if (that.result != -1) result max that.result else result
-        }
+        else { if (that.result != -1) result max that.result else result }
     override def requiresStrictSplitters = true
   }
 

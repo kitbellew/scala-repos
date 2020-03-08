@@ -43,19 +43,13 @@ class ScalaCodeFragment(project: Project, text: String) extends {
 
   def getThisType: PsiType = thisType
 
-  def setThisType(psiType: PsiType) {
-    thisType = psiType
-  }
+  def setThisType(psiType: PsiType) { thisType = psiType }
 
   def getSuperType: PsiType = superType
 
-  def setSuperType(superType: PsiType) {
-    this.superType = superType
-  }
+  def setSuperType(superType: PsiType) { this.superType = superType }
 
-  def importsToString(): String = {
-    imports.mkString(",")
-  }
+  def importsToString(): String = { imports.mkString(",") }
 
   def addImportsFromString(imports: String) {
     this.imports ++= imports.split(',').filter(_.nonEmpty)
@@ -72,9 +66,7 @@ class ScalaCodeFragment(project: Project, text: String) extends {
 
   def getExceptionHandler: ExceptionHandler = exceptionHandler
 
-  def forceResolveScope(scope: GlobalSearchScope) {
-    resolveScope = scope
-  }
+  def forceResolveScope(scope: GlobalSearchScope) { resolveScope = scope }
 
   def getForcedResolveScope: GlobalSearchScope = resolveScope
 
@@ -165,13 +157,9 @@ object ScalaCodeFragment {
       document: Document,
       imports: mutable.HashSet[String])
       extends BasicUndoableAction {
-    def undo() {
-      imports -= path
-    }
+    def undo() { imports -= path }
 
-    def redo() {
-      imports += path
-    }
+    def redo() { imports += path }
   }
 
 }

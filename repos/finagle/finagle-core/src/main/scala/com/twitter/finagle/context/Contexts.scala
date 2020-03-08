@@ -34,10 +34,6 @@ object Contexts {
     * not capture these request scoped values.
     */
   def letClear[R](fn: => R): R =
-    local.letClear() {
-      broadcast.letClear() {
-        fn
-      }
-    }
+    local.letClear() { broadcast.letClear() { fn } }
 
 }

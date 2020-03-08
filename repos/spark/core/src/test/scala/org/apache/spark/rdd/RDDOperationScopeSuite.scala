@@ -30,13 +30,9 @@ class RDDOperationScopeSuite extends SparkFunSuite with BeforeAndAfter {
   private val scope2 = new RDDOperationScope("scope2", Some(scope1))
   private val scope3 = new RDDOperationScope("scope3", Some(scope2))
 
-  before {
-    sc = new SparkContext("local", "test")
-  }
+  before { sc = new SparkContext("local", "test") }
 
-  after {
-    sc.stop()
-  }
+  after { sc.stop() }
 
   test("equals and hashCode") {
     val opScope1 = new RDDOperationScope("scope1", id = "1")
@@ -86,9 +82,7 @@ class RDDOperationScopeSuite extends SparkFunSuite with BeforeAndAfter {
           sc,
           "scope3",
           allowNesting = false,
-          ignoreParent = false) {
-          rdd3 = new MyCoolRDD(sc)
-        }
+          ignoreParent = false) { rdd3 = new MyCoolRDD(sc) }
       }
     }
     assert(rdd0.scope.isEmpty)
@@ -123,9 +117,7 @@ class RDDOperationScopeSuite extends SparkFunSuite with BeforeAndAfter {
           sc,
           "scope3",
           allowNesting = false,
-          ignoreParent = false) {
-          rdd3 = new MyCoolRDD(sc)
-        }
+          ignoreParent = false) { rdd3 = new MyCoolRDD(sc) }
       }
     }
     assert(rdd0.scope.isEmpty)
@@ -158,9 +150,7 @@ class RDDOperationScopeSuite extends SparkFunSuite with BeforeAndAfter {
           sc,
           "scope3",
           allowNesting = true,
-          ignoreParent = false) {
-          rdd3 = new MyCoolRDD(sc)
-        }
+          ignoreParent = false) { rdd3 = new MyCoolRDD(sc) }
       }
     }
     assert(rdd0.scope.isEmpty)

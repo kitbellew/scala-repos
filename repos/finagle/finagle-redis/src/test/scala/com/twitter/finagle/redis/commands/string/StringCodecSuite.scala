@@ -12,16 +12,10 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test(
     "Throw a ClientError if APPEND is called with no key or value",
-    CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("APPEND\r\n"))
-    }
-  }
+    CodecTest) { intercept[ClientError] { codec(wrap("APPEND\r\n")) } }
 
   test("Throw a ClientError if APPEND is called with no value", CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("APPEND foo\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("APPEND foo\r\n")) }
   }
 
   test("Correctly encode APPEND") {
@@ -41,11 +35,7 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test(
     "Throw a ClientError if BITCOUNT is called with start but no end",
-    CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("BITCOUNT foo 0\r\n"))
-    }
-  }
+    CodecTest) { intercept[ClientError] { codec(wrap("BITCOUNT foo 0\r\n")) } }
 
   test("Correctly encode BITCOUNT with start and end") {
     assert(
@@ -54,9 +44,7 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if BITOP is called with no arguments") {
-    intercept[ClientError] {
-      codec(wrap("BITOP\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("BITOP\r\n")) }
   }
 
   test("Correctly encode BITOP AND") {
@@ -71,9 +59,7 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if BITOP NOT is called with three arguments") {
-    intercept[ClientError] {
-      codec(wrap("BITOP NOT foo bar baz\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("BITOP NOT foo bar baz\r\n")) }
   }
 
   test("Correctly encode BITOP NOT") {
@@ -96,9 +82,7 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if DECR is called with two arguments") {
-    intercept[ClientError] {
-      codec(wrap("DECR foo 1\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("DECR foo 1\r\n")) }
   }
 
   test("Correctly encode DECRBY") {
@@ -111,9 +95,7 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if DECRBY is called with one argument") {
-    intercept[ClientError] {
-      codec(wrap("DECRBY foo\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("DECRBY foo\r\n")) }
   }
 
   test("Correctly encode GET") {
@@ -122,15 +104,11 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if GETBIT is called with no arguments") {
-    intercept[ClientError] {
-      codec(wrap("GETBIT\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("GETBIT\r\n")) }
   }
 
   test("Throw a ClientError if GETBIT is called with one argument") {
-    intercept[ClientError] {
-      codec(wrap("GETBIT foo\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("GETBIT foo\r\n")) }
   }
 
   test("Correctly encode GETBIT") {
@@ -140,21 +118,15 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if GETRANGE is called with no arguments") {
-    intercept[ClientError] {
-      codec(wrap("GETRANGE\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("GETRANGE\r\n")) }
   }
 
   test("Throw a ClientError if GETRANGE is called with one argument") {
-    intercept[ClientError] {
-      codec(wrap("GETRANGE key\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("GETRANGE key\r\n")) }
   }
 
   test("Throw a ClientError if GETRANGE is called with two arguments") {
-    intercept[ClientError] {
-      codec(wrap("GETRANGE key 0\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("GETRANGE key 0\r\n")) }
   }
 
   test("Correctly encode GETRANGE") {
@@ -164,15 +136,11 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if GETSET is called with no arguments") {
-    intercept[ClientError] {
-      codec(wrap("GETSET\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("GETSET\r\n")) }
   }
 
   test("Throw a ClientError if GETSET is called with one argument") {
-    intercept[ClientError] {
-      codec(wrap("GETSET key\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("GETSET key\r\n")) }
   }
 
   test("Correctly encode GETSET") {
@@ -197,9 +165,7 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if INCR is called with two arguments") {
-    intercept[ClientError] {
-      codec(wrap("INCR foo 1\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("INCR foo 1\r\n")) }
   }
 
   test("Correctly encode INCRBY") {
@@ -212,9 +178,7 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if INCRBY is called with one argument") {
-    intercept[ClientError] {
-      codec(wrap("INCRBY foo\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("INCRBY foo\r\n")) }
   }
 
   test("Correctly encode MGET") {
@@ -224,15 +188,11 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if MSETNX is called with no arguments") {
-    intercept[ClientError] {
-      codec(wrap("MSETNX\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("MSETNX\r\n")) }
   }
 
   test("Throw a ClientError if MSETNX is called with one argument") {
-    intercept[ClientError] {
-      codec(wrap("MSETNX foo\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("MSETNX foo\r\n")) }
   }
 
   test("Correctly encode MSETNX") {
@@ -244,9 +204,7 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if PSETEX is called with no arguments") {
-    intercept[ClientError] {
-      codec(wrap("PSETEX\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("PSETEX\r\n")) }
   }
 
   test("Correctly encode PSETEX") {
@@ -267,21 +225,15 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if SETBIT is called with no arguments") {
-    intercept[ClientError] {
-      codec(wrap("SETBIT\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SETBIT\r\n")) }
   }
 
   test("Throw a ClientError if SETBIT is called with one argument") {
-    intercept[ClientError] {
-      codec(wrap("SETBIT foo\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SETBIT foo\r\n")) }
   }
 
   test("Throw a ClientError if SETBIT is called with two arguments") {
-    intercept[ClientError] {
-      codec(wrap("SETBIT foo 0\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SETBIT foo 0\r\n")) }
   }
 
   test("Correctly encode SETBIT") {
@@ -291,21 +243,15 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if SETEX is called with no arguments") {
-    intercept[ClientError] {
-      codec(wrap("SETEX\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SETEX\r\n")) }
   }
 
   test("Throw a ClientError if SETEX is called with one argument") {
-    intercept[ClientError] {
-      codec(wrap("SETEX key\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SETEX key\r\n")) }
   }
 
   test("Throw a ClientError if SETEX is called with two arguments") {
-    intercept[ClientError] {
-      codec(wrap("SETEX key 30\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SETEX key 30\r\n")) }
   }
 
   test("Correctly encode SETEX") {
@@ -316,15 +262,11 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if SETNX is called with no arguments") {
-    intercept[ClientError] {
-      codec(wrap("SETNX\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SETNX\r\n")) }
   }
 
   test("Throw a ClientError if SETNX is called with one argument") {
-    intercept[ClientError] {
-      codec(wrap("SETNX key\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SETNX key\r\n")) }
   }
 
   test("Correctly encode SETNX") {
@@ -336,23 +278,17 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test(
     "Throw a ClientError if the new SET syntax is called with two strings and an integer") {
-    intercept[ClientError] {
-      codec(wrap("SET foo bar 100\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SET foo bar 100\r\n")) }
   }
 
   test(
     "Throw a ClientError if the new SET syntax is called with two strings and EX NX") {
-    intercept[ClientError] {
-      codec(wrap("SET foo bar EX NX\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SET foo bar EX NX\r\n")) }
   }
 
   test(
     "Throw a ClientError if the new SET syntax is called with two strings and PX NX") {
-    intercept[ClientError] {
-      codec(wrap("SET foo bar PX NX\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SET foo bar PX NX\r\n")) }
   }
 
   test("Correctly encode the new SET syntax with EX") {
@@ -384,21 +320,15 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if SETRANGE is called with no arguments") {
-    intercept[ClientError] {
-      codec(wrap("SETRANGE\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SETRANGE\r\n")) }
   }
 
   test("Throw a ClientError if SETRANGE is called with one argument") {
-    intercept[ClientError] {
-      codec(wrap("SETRANGE key\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SETRANGE key\r\n")) }
   }
 
   test("Throw a ClientError if SETRANGE is called with two arguments") {
-    intercept[ClientError] {
-      codec(wrap("SETRANGE key 0\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("SETRANGE key 0\r\n")) }
   }
 
   test("Correctly encode SETRANGE") {
@@ -409,9 +339,7 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if STRLEN is called with no arguments") {
-    intercept[ClientError] {
-      codec(wrap("STRLEN\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("STRLEN\r\n")) }
   }
 
   test("Correctly encode STRLEN") {
@@ -427,9 +355,7 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test(
     "Correctly encode command string size in unified GET requests",
-    CodecTest) {
-    assert(codec(wrap("$3\r\n")) == Nil)
-  }
+    CodecTest) { assert(codec(wrap("$3\r\n")) == Nil) }
 
   test("Correctly encode the command in unified GET requests", CodecTest) {
     assert(codec(wrap("GET\r\n")) == Nil)
@@ -450,9 +376,7 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test(
     "Correctly encode command string size in unified MGET requests",
-    CodecTest) {
-    assert(codec(wrap("$4\r\n")) == Nil)
-  }
+    CodecTest) { assert(codec(wrap("$4\r\n")) == Nil) }
 
   test("Correctly encode the command in unified MGET requests", CodecTest) {
     assert(codec(wrap("MGET\r\n")) == Nil)
@@ -483,9 +407,7 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test(
     "Correctly encode command string size in unified MSET requests",
-    CodecTest) {
-    assert(codec(wrap("$4\r\n")) == Nil)
-  }
+    CodecTest) { assert(codec(wrap("$4\r\n")) == Nil) }
 
   test("Correctly encode the command in unified MSET requests", CodecTest) {
     assert(codec(wrap("MSET\r\n")) == Nil)

@@ -27,11 +27,8 @@ class AtomicStateTransformer[T](initState: T) {
   final def updateWithState[S](oper: T => (S, T)): (S, T) = {
     val oldState = curState.get
     val (s, newState) = oper(oldState)
-    if (curState.compareAndSet(oldState, newState)) {
-      (s, newState)
-    } else {
-      updateWithState(oper)
-    }
+    if (curState.compareAndSet(oldState, newState)) { (s, newState) }
+    else { updateWithState(oper) }
   }
 
   final def update(oper: T => T): T =
@@ -98,9 +95,7 @@ case class InputState[T](state: T) {
     if (newState.doAck) {
       InflightTuples.decr
       Some(fn(state))
-    } else {
-      None
-    }
+    } else { None }
   }
 
   def fail[U](fn: (T => U)): U = {

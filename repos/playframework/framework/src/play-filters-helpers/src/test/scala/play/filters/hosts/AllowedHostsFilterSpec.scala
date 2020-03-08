@@ -55,9 +55,7 @@ object AllowedHostsFilterSpec extends PlaySpecification {
   }
 
   def withApplication[T](result: RequestHeader => Result, config: String)(
-      block: => T): T = {
-    running(newApplication(result, config))(block)
-  }
+      block: => T): T = { running(newApplication(result, config))(block) }
 
   val TestServerPort = 8192
   def withServer[T](result: RequestHeader => Result, config: String)(

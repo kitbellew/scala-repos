@@ -61,9 +61,7 @@ class ScalaCompositeTypeValidator(
     }
 
     for (file <- filesToSearchIn) {
-      if (buf.isEmpty) {
-        buf ++= getForbiddenNamesInBlock(file, name)
-      }
+      if (buf.isEmpty) { buf ++= getForbiddenNamesInBlock(file, name) }
     }
 
     for (validator <- validators) {

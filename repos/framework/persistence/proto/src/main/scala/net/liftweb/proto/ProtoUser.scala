@@ -678,11 +678,7 @@ trait ProtoUser {
     * for some stack frames.  Here's how to do it.
     */
   def doWithUser[T](u: Box[TheUserType])(f: => T): T =
-    curUserId.doWith(u.map(_.userIdAsString)) {
-      curUser.doWith(u) {
-        f
-      }
-    }
+    curUserId.doWith(u.map(_.userIdAsString)) { curUser.doWith(u) { f } }
 
   private object curUserId extends SessionVar[Box[String]](Empty) {
     override lazy val __nameSalt = Helpers.nextFuncName

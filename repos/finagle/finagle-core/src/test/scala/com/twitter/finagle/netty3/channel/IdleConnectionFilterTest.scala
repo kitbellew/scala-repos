@@ -67,9 +67,7 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
     open(filter)
     assert(filter.openConnections == threshold.highWaterMark)
 
-    closeFutures foreach {
-      _.setDone()
-    }
+    closeFutures foreach { _.setDone() }
     assert(filter.openConnections == 0)
   }
 

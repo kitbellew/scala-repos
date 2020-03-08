@@ -127,9 +127,7 @@ class FlagTest extends FunSuite {
 
       assert(flag.parseArgs(Array()) == Flags.Ok(Nil))
       flag.finishParsing()
-      intercept[IllegalArgumentException] {
-        bazFlag()
-      }
+      intercept[IllegalArgumentException] { bazFlag() }
       assert(
         naive.toSet == Set(
           Entry(Seq("flags", "baz"), Flag.EmptyRequired),
@@ -327,9 +325,7 @@ class FlagTest extends FunSuite {
     try {
       flag.parseArgs(Array("-com.twitter.app.MyGlobalFlag", "supplied"))
       assert(MyGlobalFlag.get == Some("supplied"))
-    } finally {
-      MyGlobalFlag.reset()
-    }
+    } finally { MyGlobalFlag.reset() }
   }
 
   test("GlobalFlag.getWithDefault") {
@@ -341,9 +337,7 @@ class FlagTest extends FunSuite {
     try {
       flag.parseArgs(Array("-com.twitter.app.MyGlobalFlag", "supplied"))
       assert(MyGlobalFlag.getWithDefault == Some("supplied"))
-    } finally {
-      MyGlobalFlag.reset()
-    }
+    } finally { MyGlobalFlag.reset() }
   }
 
   test("GlobalFlag: no default usage") {
@@ -367,9 +361,7 @@ class FlagTest extends FunSuite {
     assert(MyGlobalFlag() == "okay")
     MyGlobalFlag.reset()
     assert(MyGlobalFlag() == "a test flag")
-    MyGlobalFlag.let("not okay") {
-      assert(MyGlobalFlag() == "not okay")
-    }
+    MyGlobalFlag.let("not okay") { assert(MyGlobalFlag() == "not okay") }
   }
 
   test("formatFlagValues") {

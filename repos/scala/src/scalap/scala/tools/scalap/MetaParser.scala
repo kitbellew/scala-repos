@@ -19,9 +19,7 @@ class MetaParser(meta: String) {
   val res = new StringBuffer
 
   private def nextToken: String = {
-    do {
-      token = scanner.nextToken().trim()
-    } while (token.length() == 0)
+    do { token = scanner.nextToken().trim() } while (token.length() == 0)
     token
   }
 
@@ -58,9 +56,7 @@ class MetaParser(meta: String) {
           Some(parseConstrField)
         else
           None
-      } catch {
-        case _: Exception => None
-      }
+      } catch { case _: Exception => None }
     } else
       None
 
@@ -105,9 +101,8 @@ class MetaParser(meta: String) {
     nextToken
     if (token == "[") {
       nextToken
-      if (token == "]") {
-        nextToken
-      } else {
+      if (token == "]") { nextToken }
+      else {
         var loop = true
         res.append("[")
         while (loop) {

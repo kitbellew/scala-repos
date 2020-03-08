@@ -13,9 +13,7 @@ object List {
     case Cons(_, _) => None
   }
 
-  def foo[a](xs: List[a]) = xs match {
-    case List(x, xs) => 7
-  }
+  def foo[a](xs: List[a]) = xs match { case List(x, xs) => 7 }
 
   def bar(xs: Any) = xs match { // test error message OverloadedUnapplyError
     case List(x, xs) => 7

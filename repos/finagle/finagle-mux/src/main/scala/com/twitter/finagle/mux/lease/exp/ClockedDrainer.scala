@@ -272,18 +272,14 @@ private[finagle] class ClockedDrainer(
     // a client joins while we're draining.
   }
 
-  def unregister(lessee: Lessee) {
-    lessees.remove(lessee)
-  }
+  def unregister(lessee: Lessee) { lessees.remove(lessee) }
 
   def observe(d: Duration) {
     requestCount.incrementAndGet()
     rSnooper.observe(d)
   }
 
-  def observeArrival() {
-    narrival.incrementAndGet()
-  }
+  def observeArrival() { narrival.incrementAndGet() }
 }
 
 object drainerDiscountRange

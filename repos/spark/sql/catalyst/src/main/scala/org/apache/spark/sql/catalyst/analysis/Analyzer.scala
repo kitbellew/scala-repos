@@ -64,11 +64,8 @@ class Analyzer(
     with CheckAnalysis {
 
   def resolver: Resolver = {
-    if (conf.caseSensitiveAnalysis) {
-      caseSensitiveResolution
-    } else {
-      caseInsensitiveResolution
-    }
+    if (conf.caseSensitiveAnalysis) { caseSensitiveResolution }
+    else { caseInsensitiveResolution }
   }
 
   val fixedPoint = FixedPoint(maxIterations)
@@ -343,11 +340,8 @@ class Analyzer(
                 case e =>
                   val index =
                     groupByAliases.indexWhere(_.child.semanticEquals(e))
-                  if (index == -1) {
-                    e
-                  } else {
-                    groupByAttributes(index)
-                  }
+                  if (index == -1) { e }
+                  else { groupByAttributes(index) }
               }
               .asInstanceOf[NamedExpression]
         }
@@ -404,9 +398,8 @@ class Analyzer(
     */
   object ResolveRelations extends Rule[LogicalPlan] {
     private def getTable(u: UnresolvedRelation): LogicalPlan = {
-      try {
-        catalog.lookupRelation(u.tableIdentifier, u.alias)
-      } catch {
+      try { catalog.lookupRelation(u.tableIdentifier, u.alias) }
+      catch {
         case _: NoSuchTableException =>
           u.failAnalysis(s"Table not found: ${u.tableName}")
       }
@@ -416,9 +409,8 @@ class Analyzer(
       case i @ InsertIntoTable(u: UnresolvedRelation, _, _, _, _) =>
         i.copy(table = EliminateSubqueryAliases(getTable(u)))
       case u: UnresolvedRelation =>
-        try {
-          getTable(u)
-        } catch {
+        try { getTable(u) }
+        catch {
           case _: AnalysisException if u.tableIdentifier.database.isDefined =>
             // delay the exception into CheckAnalysis, then it could be resolved as data source.
             u
@@ -600,9 +592,8 @@ class Analyzer(
 
       case g @ Generate(generator, join, outer, qualifier, output, child) =>
         val newG = resolveExpression(generator, child, throws = true)
-        if (newG.fastEquals(generator)) {
-          g
-        } else {
+        if (newG.fastEquals(generator)) { g }
+        else {
           Generate(
             newG.asInstanceOf[Generator],
             join,
@@ -715,9 +706,7 @@ class Analyzer(
         case UnresolvedExtractValue(child, fieldName) if child.resolved =>
           ExtractValue(child, fieldName, resolver)
       }
-    } catch {
-      case a: AnalysisException if !throws => expr
-    }
+    } catch { case a: AnalysisException if !throws => expr }
   }
 
   /**
@@ -767,11 +756,8 @@ class Analyzer(
             Project(
               child.output,
               Sort(newOrder, s.global, addMissingAttr(child, missingAttrs)))
-          } else if (newOrder != order) {
-            s.copy(order = newOrder)
-          } else {
-            s
-          }
+          } else if (newOrder != order) { s.copy(order = newOrder) }
+          else { s }
         } catch {
           // Attempting to resolve it might fail. When this happens, return the original plan.
           // Users will see an AnalysisException for resolution failure of missing attributes
@@ -787,9 +773,7 @@ class Analyzer(
     private def addMissingAttr(
         plan: LogicalPlan,
         missingAttrs: AttributeSet): LogicalPlan = {
-      if (missingAttrs.isEmpty) {
-        return plan
-      }
+      if (missingAttrs.isEmpty) { return plan }
       plan match {
         case p: Project =>
           val missing = missingAttrs -- p.child.outputSet
@@ -828,9 +812,8 @@ class Analyzer(
         expr: Expression,
         plan: LogicalPlan): Expression = {
       val resolved = resolveExpression(expr, plan)
-      if (resolved.resolved) {
-        resolved
-      } else {
+      if (resolved.resolved) { resolved }
+      else {
         plan match {
           case u: UnaryNode if !u.isInstanceOf[SubqueryAlias] =>
             resolveExpressionRecursively(resolved, u.child)
@@ -908,9 +891,7 @@ class Analyzer(
     def containsAggregates(exprs: Seq[Expression]): Boolean = {
       // Collect all Windowed Aggregate Expressions.
       val windowedAggExprs = exprs.flatMap { expr =>
-        expr.collect {
-          case WindowExpression(ae: AggregateExpression, _) => ae
-        }
+        expr.collect { case WindowExpression(ae: AggregateExpression, _) => ae }
       }.toSet
 
       // Find the first Aggregate Expression that is not Windowed.
@@ -956,9 +937,7 @@ class Analyzer(
             Filter(
               resolvedAggregateFilter.toAttribute,
               aggregate.copy(aggregateExpressions = aggExprsWithHaving)))
-        } else {
-          filter
-        }
+        } else { filter }
 
       case sort @ Sort(sortOrder, global, aggregate: Aggregate)
           if aggregate.resolved =>
@@ -1000,9 +979,7 @@ class Analyzer(
               if (index == -1) {
                 needsPushDown += evaluated
                 order.copy(child = evaluated.toAttribute)
-              } else {
-                order.copy(child = originalAggExprs(index).toAttribute)
-              }
+              } else { order.copy(child = originalAggExprs(index).toAttribute) }
           }
 
           val sortOrdersMap = unresolvedSortOrders
@@ -1014,9 +991,8 @@ class Analyzer(
 
           // Since we don't rely on sort.resolved as the stop condition for this rule,
           // we need to check this and prevent applying this rule multiple times
-          if (sortOrder == finalSortOrders) {
-            sort
-          } else {
+          if (sortOrder == finalSortOrders) { sort }
+          else {
             Project(
               aggregate.output,
               Sort(
@@ -1091,9 +1067,7 @@ class Analyzer(
 
         if (resolvedGenerator != null) {
           Project(newProjectList, resolvedGenerator)
-        } else {
-          p
-        }
+        } else { p }
     }
 
     /** Extracts a [[Generator]] expression and any names assigned by aliases to their output. */
@@ -1203,9 +1177,7 @@ class Analyzer(
           val missingExpr =
             AttributeSet(
               Seq(expr)) -- (regularExpressions ++ extractedExprBuffer)
-          if (missingExpr.nonEmpty) {
-            extractedExprBuffer += ne
-          }
+          if (missingExpr.nonEmpty) { extractedExprBuffer += ne }
           // alias will be cleaned in the rule CleanupAliases
           ne
         case e: Expression if e.foldable =>
@@ -1548,9 +1520,7 @@ class Analyzer(
         if ((lCols.length == usingCols.length) && (rCols.length == usingCols.length)) {
           val joinNames = lCols.map(exp => exp.name)
           commonNaturalJoinProcessing(left, right, joinType, joinNames, None)
-        } else {
-          j
-        }
+        } else { j }
       case j @ Join(left, right, NaturalJoin(joinType), condition)
           if j.resolvedExceptNatural =>
         // find common column names from both sides

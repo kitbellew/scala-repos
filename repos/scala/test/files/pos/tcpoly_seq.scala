@@ -116,9 +116,7 @@ trait HOSeq {
       def next: t =
         if (!hasNext)
           throw new NoSuchElementException("next on empty Iterator")
-        else {
-          val result = these.head; these = these.tail; result
-        }
+        else { val result = these.head; these = these.tail; result }
     }
     // construct an empty accumulator that will produce the same structure as this iterable, with elements of type t
     def accumulator[t]: Accumulator[List, t] = listAccumulator[t]

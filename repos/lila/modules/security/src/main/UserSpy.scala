@@ -49,9 +49,7 @@ object UserSpy {
       infos ← Store.findInfoByUser(user.id)
       ips = infos.map(_.ip).distinct
       blockedIps ← (ips map firewall.blocksIp).sequenceFu
-      locations <- scala.concurrent.Future {
-        ips map geoIP.orUnknown
-      }
+      locations <- scala.concurrent.Future { ips map geoIP.orUnknown }
       sharingIp ← exploreSimilar("ip")(user)
       sharingFingerprint ← exploreSimilar("fp")(user)
     } yield UserSpy(
@@ -76,9 +74,7 @@ object UserSpy {
         BSONDocument(field -> true)
       )
       .cursor[BSONDocument]()
-      .collect[List]() map {
-      _.flatMap(_.getAs[Value](field)).toSet
-    }
+      .collect[List]() map { _.flatMap(_.getAs[Value](field)).toSet }
 
   private def nextUsers(
       field: String)(values: Set[Value], user: User): Fu[Set[User]] =

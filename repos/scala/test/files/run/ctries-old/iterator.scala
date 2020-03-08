@@ -31,53 +31,29 @@ object IteratorSpec extends Spec {
       tracker shouldEqual (ct)
     }
 
-    "work for a 1 element trie" in {
-      nonEmptyIteratorCheck(1)
-    }
+    "work for a 1 element trie" in { nonEmptyIteratorCheck(1) }
 
-    "work for a 2 element trie" in {
-      nonEmptyIteratorCheck(2)
-    }
+    "work for a 2 element trie" in { nonEmptyIteratorCheck(2) }
 
-    "work for a 3 element trie" in {
-      nonEmptyIteratorCheck(3)
-    }
+    "work for a 3 element trie" in { nonEmptyIteratorCheck(3) }
 
-    "work for a 5 element trie" in {
-      nonEmptyIteratorCheck(5)
-    }
+    "work for a 5 element trie" in { nonEmptyIteratorCheck(5) }
 
-    "work for a 10 element trie" in {
-      nonEmptyIteratorCheck(10)
-    }
+    "work for a 10 element trie" in { nonEmptyIteratorCheck(10) }
 
-    "work for a 20 element trie" in {
-      nonEmptyIteratorCheck(20)
-    }
+    "work for a 20 element trie" in { nonEmptyIteratorCheck(20) }
 
-    "work for a 50 element trie" in {
-      nonEmptyIteratorCheck(50)
-    }
+    "work for a 50 element trie" in { nonEmptyIteratorCheck(50) }
 
-    "work for a 100 element trie" in {
-      nonEmptyIteratorCheck(100)
-    }
+    "work for a 100 element trie" in { nonEmptyIteratorCheck(100) }
 
-    "work for a 1k element trie" in {
-      nonEmptyIteratorCheck(1000)
-    }
+    "work for a 1k element trie" in { nonEmptyIteratorCheck(1000) }
 
-    "work for a 5k element trie" in {
-      nonEmptyIteratorCheck(5000)
-    }
+    "work for a 5k element trie" in { nonEmptyIteratorCheck(5000) }
 
-    "work for a 75k element trie" in {
-      nonEmptyIteratorCheck(75000)
-    }
+    "work for a 75k element trie" in { nonEmptyIteratorCheck(75000) }
 
-    "work for a 250k element trie" in {
-      nonEmptyIteratorCheck(500000)
-    }
+    "work for a 250k element trie" in { nonEmptyIteratorCheck(500000) }
 
     def nonEmptyCollideCheck(sz: Int) {
       val ct = new TrieMap[DumbHash, Int]

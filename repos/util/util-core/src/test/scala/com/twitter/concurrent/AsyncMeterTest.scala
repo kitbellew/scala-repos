@@ -139,9 +139,7 @@ class AsyncMeterTest extends FunSuite {
     val meter = new AsyncMeter(2, 1.second, 100)(timer)
     val greedy = meter.await(3)
     assert(greedy.isDefined)
-    intercept[IllegalArgumentException] {
-      Await.result(greedy, 5.seconds)
-    }
+    intercept[IllegalArgumentException] { Await.result(greedy, 5.seconds) }
   }
 
   test("AsyncMeter should not allow small queue jumpers") {
@@ -196,9 +194,7 @@ class AsyncMeterTest extends FunSuite {
       val first = meter.await(6)
       assert(greedy.isDefined)
       assert(!first.isDefined)
-      intercept[RejectedExecutionException] {
-        Await.result(greedy, 5.seconds)
-      }
+      intercept[RejectedExecutionException] { Await.result(greedy, 5.seconds) }
       ctl.advance(1.second)
       timer.tick()
       assert(first.isDone)

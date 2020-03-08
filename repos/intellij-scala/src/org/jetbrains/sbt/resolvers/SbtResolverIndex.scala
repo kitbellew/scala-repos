@@ -134,9 +134,8 @@ class SbtResolverIndex private (
       new EnumeratorStringDescriptor,
       new SetDescriptor) {
       def getOrEmpty(key: String): Set[String] =
-        try {
-          Option(get(key)).getOrElse(Set.empty)
-        } catch {
+        try { Option(get(key)).getOrElse(Set.empty) }
+        catch {
           case _: PersistentEnumeratorBase.CorruptedException |
               _: EOFException =>
             throw new CorruptedIndexException(file)

@@ -152,9 +152,7 @@ class StreamingContextSuite
     assert(ssc.getState() === StreamingContextState.STOPPED)
 
     // Make sure that the SparkContext is also stopped by default
-    intercept[Exception] {
-      ssc.sparkContext.makeRDD(1 to 10)
-    }
+    intercept[Exception] { ssc.sparkContext.makeRDD(1 to 10) }
   }
 
   test("start with non-serializable DStream checkpoints") {
@@ -168,9 +166,7 @@ class StreamingContextSuite
     }
 
     // Test whether start() fails early when checkpointing is enabled
-    val exception = intercept[NotSerializableException] {
-      ssc.start()
-    }
+    val exception = intercept[NotSerializableException] { ssc.start() }
     assert(
       exception
         .getMessage()
@@ -187,9 +183,7 @@ class StreamingContextSuite
     }
     inputStream.map(x => (x, 1)).updateStateByKey[Int](updateFunc)
     // Require that the start fails because checkpoint directory was not set
-    intercept[Exception] {
-      ssc.start()
-    }
+    intercept[Exception] { ssc.start() }
     assert(ssc.getState() === StreamingContextState.STOPPED)
     assert(ssc.scheduler.isStarted === false)
   }
@@ -302,9 +296,7 @@ class StreamingContextSuite
     assert(ssc.sc.makeRDD(1 to 100).collect().size === 100)
     ssc.stop(stopSparkContext = true)
     // Check that the SparkContext is actually stopped:
-    intercept[Exception] {
-      ssc.sc.makeRDD(1 to 100).collect()
-    }
+    intercept[Exception] { ssc.sc.makeRDD(1 to 100).collect() }
   }
 
   test("stop gracefully") {
@@ -406,14 +398,10 @@ class StreamingContextSuite
     inputStream.map(x => x).register()
 
     // test whether start() blocks indefinitely or not
-    failAfter(2000 millis) {
-      ssc.start()
-    }
+    failAfter(2000 millis) { ssc.start() }
 
     // test whether awaitTermination() exits after give amount of time
-    failAfter(1000 millis) {
-      ssc.awaitTerminationOrTimeout(500)
-    }
+    failAfter(1000 millis) { ssc.awaitTerminationOrTimeout(500) }
 
     // test whether awaitTermination() does not exit if not time is given
     val exception = intercept[Exception] {
@@ -530,12 +518,9 @@ class StreamingContextSuite
     // Call ssc.stop after a body of code
     def testGetOrCreate(body: => Unit): Unit = {
       newContextCreated = false
-      try {
-        body
-      } finally {
-        if (ssc != null) {
-          ssc.stop()
-        }
+      try { body }
+      finally {
+        if (ssc != null) { ssc.stop() }
         ssc = null
       }
     }
@@ -616,13 +601,10 @@ class StreamingContextSuite
 
     def testGetActiveOrCreate(body: => Unit): Unit = {
       newContextCreated = false
-      try {
-        body
-      } finally {
+      try { body }
+      finally {
 
-        if (ssc != null) {
-          ssc.stop(stopSparkContext = false)
-        }
+        if (ssc != null) { ssc.stop(stopSparkContext = false) }
         ssc = null
       }
     }
@@ -680,12 +662,9 @@ class StreamingContextSuite
     def testGetActiveOrCreate(body: => Unit): Unit = {
       require(StreamingContext.getActive().isEmpty) // no active context
       newContextCreated = false
-      try {
-        body
-      } finally {
-        if (ssc != null) {
-          ssc.stop()
-        }
+      try { body }
+      finally {
+        if (ssc != null) { ssc.stop() }
         ssc = null
       }
     }
@@ -767,17 +746,13 @@ class StreamingContextSuite
     val anotherInput = addInputStream(anotherSsc)
     anotherInput.foreachRDD { rdd => rdd.count }
 
-    val exception = intercept[IllegalStateException] {
-      anotherSsc.start()
-    }
+    val exception = intercept[IllegalStateException] { anotherSsc.start() }
     assert(
       exception.getMessage.contains("StreamingContext"),
       "Did not get the right exception")
   }
 
-  test("DStream and generated RDD creation sites") {
-    testPackage.test()
-  }
+  test("DStream and generated RDD creation sites") { testPackage.test() }
 
   test("throw exception on using active or stopped context") {
     val conf = new SparkConf()
@@ -793,9 +768,7 @@ class StreamingContextSuite
     def testForException(clue: String, expectedErrorMsg: String)(
         body: => Unit): Unit = {
       withClue(clue) {
-        val ex = intercept[IllegalStateException] {
-          body
-        }
+        val ex = intercept[IllegalStateException] { body }
         assert(ex.getMessage.toLowerCase().contains(expectedErrorMsg))
       }
     }
@@ -810,9 +783,7 @@ class StreamingContextSuite
     }
     testForException(
       "no error on adding output operation after start",
-      "start") {
-      transformed.foreachRDD { rdd => rdd.collect() }
-    }
+      "start") { transformed.foreachRDD { rdd => rdd.collect() } }
 
     ssc.stop()
     require(ssc.getState() === StreamingContextState.STOPPED)
@@ -914,9 +885,7 @@ class TestReceiver
     val thread = new Thread() {
       override def run() {
         logInfo("Receiving started")
-        while (!isStopped) {
-          store(TestReceiver.counter.getAndIncrement)
-        }
+        while (!isStopped) { store(TestReceiver.counter.getAndIncrement) }
         logInfo(
           "Receiving stopped at count value of " + TestReceiver.counter.get())
       }
@@ -960,9 +929,7 @@ class SlowTestReceiver(totalRecords: Int, recordsPerSecond: Int)
 
   def onStop() {
     // Simulate slow receiver by waiting for all records to be produced
-    while (!SlowTestReceiver.receivedAllRecords) {
-      Thread.sleep(100)
-    }
+    while (!SlowTestReceiver.receivedAllRecords) { Thread.sleep(100) }
     // no clean to be done, the receiving thread should stop on it own
   }
 }
@@ -1010,9 +977,7 @@ package object testPackage extends Assertions {
           rddGenerated && foreachCallSiteCorrect,
           "Call site in foreachRDD was not correct")
       }
-    } finally {
-      ssc.stop()
-    }
+    } finally { ssc.stop() }
   }
 }
 

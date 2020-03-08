@@ -418,9 +418,7 @@ final class BaseLinker(
     } else if (targetName.endsWith("__V")) {
       // Materialize an `undefined` result for void methods
       Block(call, Undefined())
-    } else {
-      call
-    }
+    } else { call }
 
     MethodDef(static = false, proxyIdent, params, AnyType, body)(
       OptimizerHints.empty,
@@ -471,9 +469,7 @@ final class BaseLinker(
       val inherited = ancestorInfo.methodInfos.get(methodName)
       if (inherited.exists(p)) {
         findMethodDef(ancestorInfo, methodName, getTree)
-      } else {
-        loop(ancestorInfo.superClass)
-      }
+      } else { loop(ancestorInfo.superClass) }
     }
 
     loop(classInfo)

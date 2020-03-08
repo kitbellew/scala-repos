@@ -140,9 +140,8 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         }
 
         // one JType-with-numeric-leaves per schema
-        val jtypes: M[Seq[JType]] = jtypes0 map (_ collect {
-          case opt if opt.isDefined => opt.get
-        })
+        val jtypes: M[Seq[JType]] =
+          jtypes0 map (_ collect { case opt if opt.isDefined => opt.get })
 
         val specs: M[Seq[TransSpec1]] = jtypes map {
           _ map { trans.Typed(TransSpec1.Id, _) }
@@ -156,9 +155,7 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         val tablesWithType: M[Seq[(Table, JType)]] = for {
           tbls <- tables
           schemas <- jtypes
-        } yield {
-          tbls zip schemas
-        }
+        } yield { tbls zip schemas }
 
         val resultTables: M[Seq[Table]] = tablesWithType flatMap {
           _.map {

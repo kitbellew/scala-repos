@@ -618,9 +618,7 @@ class HDFSFileCatalog(
       }
 
       selected
-    } else {
-      partitions
-    }
+    } else { partitions }
   }
 
   def allFiles(): Seq[FileStatus] = leafFiles.values.toSeq
@@ -644,9 +642,7 @@ class HDFSFileCatalog(
           val pathFilter = FileInputFormat.getInputPathFilter(jobConf)
           if (pathFilter != null) {
             Try(fs.listStatus(path, pathFilter)).getOrElse(Array.empty)
-          } else {
-            Try(fs.listStatus(path)).getOrElse(Array.empty)
-          }
+          } else { Try(fs.listStatus(path)).getOrElse(Array.empty) }
         }
         .filterNot { status =>
           val name = status.getPath.getName
@@ -656,9 +652,8 @@ class HDFSFileCatalog(
       val (dirs, files) = statuses.partition(_.isDirectory)
 
       // It uses [[LinkedHashSet]] since the order of files can affect the results. (SPARK-11500)
-      if (dirs.isEmpty) {
-        mutable.LinkedHashSet(files: _*)
-      } else {
+      if (dirs.isEmpty) { mutable.LinkedHashSet(files: _*) }
+      else {
         mutable.LinkedHashSet(files: _*) ++ listLeafFiles(dirs.map(_.getPath))
       }
     }
@@ -768,9 +763,8 @@ private[sql] object HadoopFsRelation extends Logging {
   def listLeafFiles(fs: FileSystem, status: FileStatus): Array[FileStatus] = {
     logInfo(s"Listing ${status.getPath}")
     val name = status.getPath.getName.toLowerCase
-    if (shouldFilterOut(name)) {
-      Array.empty
-    } else {
+    if (shouldFilterOut(name)) { Array.empty }
+    else {
       // Dummy jobconf to get to the pathFilter defined in configuration
       val jobConf = new JobConf(fs.getConf, this.getClass())
       val pathFilter = FileInputFormat.getInputPathFilter(jobConf)

@@ -74,9 +74,7 @@ object LocalALS {
       Xty = Xty.add(u.mapMultiply(R.getEntry(i, j)))
     }
     // Add regularization coefficients to diagonal terms
-    for (d <- 0 until F) {
-      XtX.addToEntry(d, d, LAMBDA * U)
-    }
+    for (d <- 0 until F) { XtX.addToEntry(d, d, LAMBDA * U) }
     // Solve it with Cholesky
     new CholeskyDecomposition(XtX).getSolver.solve(Xty)
   }
@@ -97,9 +95,7 @@ object LocalALS {
       Xty = Xty.add(m.mapMultiply(R.getEntry(i, j)))
     }
     // Add regularization coefficients to diagonal terms
-    for (d <- 0 until F) {
-      XtX.addToEntry(d, d, LAMBDA * M)
-    }
+    for (d <- 0 until F) { XtX.addToEntry(d, d, LAMBDA * M) }
     // Solve it with Cholesky
     new CholeskyDecomposition(XtX).getSolver.solve(Xty)
   }

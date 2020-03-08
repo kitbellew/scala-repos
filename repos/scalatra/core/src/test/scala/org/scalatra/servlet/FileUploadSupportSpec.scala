@@ -52,9 +52,7 @@ class FileUploadSupportSpecServlet
     "post(/passUpload/*)"
   }
 
-  post("/passUpload/file") {
-    pass()
-  }
+  post("/passUpload/file") { pass() }
 
   post("/uploadFileMultiParams") {
     fileMultiParams.foreach(file => {
@@ -79,9 +77,7 @@ class FileUploadSupportSpecServlet
     "post(/uploadFileMultiParams)"
   }
 
-  post("/regular") {
-    paramsToHeaders()
-  }
+  post("/regular") { paramsToHeaders() }
 
   post("/file-item-write") {
     val document = fileParams("document")
@@ -91,9 +87,7 @@ class FileUploadSupportSpecServlet
     "file size: " + tempFile.length
   }
 
-  error {
-    case e => e.printStackTrace()
-  }
+  error { case e => e.printStackTrace() }
 }
 
 class FileUploadSupportMaxSizeTestServlet
@@ -113,9 +107,7 @@ class FileUploadSupportMaxSizeTestServlet
     }
   }
 
-  post("/upload") {
-    "ok"
-  }
+  post("/upload") { "ok" }
 }
 
 class FileUploadSupportSpec extends MutableScalatraSpec {
@@ -137,9 +129,7 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
       "X-Header2" -> "I'm another header"
     )
 
-    post("/upload?qsparam1=three&qsparam2=four", params, files, headers) {
-      f
-    }
+    post("/upload?qsparam1=three&qsparam2=four", params, files, headers) { f }
   }
 
   def postMultiExample[A](f: => A): A = {
@@ -153,9 +143,7 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
           new File(
             "core/src/test/resources/org/scalatra/servlet/smiley.png")) :: Nil
 
-    post("/uploadFileMultiParams", Map(), files) {
-      f
-    }
+    post("/uploadFileMultiParams", Map(), files) { f }
   }
 
   def postPass[A](f: => A): A = {
@@ -164,9 +152,7 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
       "text" -> new File(
         "core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt"))
 
-    post("/passUpload/file", params, files) {
-      f
-    }
+    post("/passUpload/file", params, files) { f }
   }
 
   def multipartHeaders = {
@@ -326,9 +312,7 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
         "document" -> new File(
           "core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt"))
 
-      post("/file-item-write", params, files) {
-        body must_== "file size: 651"
-      }
+      post("/file-item-write", params, files) { body must_== "file size: 651" }
     }
   }
 }

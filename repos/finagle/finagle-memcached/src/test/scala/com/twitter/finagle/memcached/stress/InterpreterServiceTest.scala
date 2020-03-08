@@ -29,9 +29,7 @@ class InterpreterServiceTest extends FunSuite with BeforeAndAfter {
       .build()
   }
 
-  after {
-    server.stop()
-  }
+  after { server.stop() }
 
   test("set & get") {
     val _key = "key"

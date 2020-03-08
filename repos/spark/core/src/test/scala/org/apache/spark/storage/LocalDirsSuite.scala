@@ -29,9 +29,7 @@ import org.apache.spark.util.{SparkConfWithEnv, Utils}
   */
 class LocalDirsSuite extends SparkFunSuite with BeforeAndAfter {
 
-  before {
-    Utils.clearLocalRootDirs()
-  }
+  before { Utils.clearLocalRootDirs() }
 
   test(
     "Utils.getLocalDir() returns a valid directory, even if some local dirs are missing") {

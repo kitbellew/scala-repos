@@ -90,15 +90,12 @@ object CharEncoding {
               charBuffer.clear()
               process(charBuffer)
             }
-          } else {
-            result
-          }
+          } else { result }
         }
         val result = process(charBuffer)
 
-        if (result.isUnmappable || last && result.isMalformed) {
-          Left(result)
-        } else {
+        if (result.isUnmappable || last && result.isMalformed) { Left(result) }
+        else {
           val remaining =
             if (result.isError) bytes.drop(byteBuffer.position) else empty
           Right((out.toString, remaining))
@@ -139,14 +136,11 @@ object CharEncoding {
               byteBuffer.clear()
               process(byteBuffer)
             }
-          } else {
-            result
-          }
+          } else { result }
         }
         val result = process(byteBuffer)
-        if (result.isUnmappable || last && result.isMalformed) {
-          Left(result)
-        } else {
+        if (result.isUnmappable || last && result.isMalformed) { Left(result) }
+        else {
           val remaining =
             if (result.isError) chars.drop(charBuffer.position) else ""
           val bytes = out.toByteArray
@@ -154,9 +148,7 @@ object CharEncoding {
             if (charset.name.startsWith("UTF-") && bytes.length >= 2 && bytes(
                   0) == 0xfe.toByte && bytes(1) == 0xff.toByte) {
               bytes.drop(2)
-            } else {
-              bytes
-            }
+            } else { bytes }
           Right((bytesWithoutBom, remaining))
         }
       }

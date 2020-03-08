@@ -6,9 +6,7 @@ object Test extends App {
   trait C {
     type T
     implicit val tt: TypeTag[T]
-    lazy val code = reify {
-      List[T](2.asInstanceOf[T])
-    }
+    lazy val code = reify { List[T](2.asInstanceOf[T]) }
   }
 
   class D extends C {

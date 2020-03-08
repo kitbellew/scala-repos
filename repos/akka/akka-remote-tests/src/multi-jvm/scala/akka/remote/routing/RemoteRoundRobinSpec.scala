@@ -28,9 +28,7 @@ import scala.concurrent.duration._
 object RemoteRoundRobinMultiJvmSpec extends MultiNodeConfig {
 
   class SomeActor extends Actor {
-    def receive = {
-      case "hit" ⇒ sender() ! self
-    }
+    def receive = { case "hit" ⇒ sender() ! self }
   }
 
   class TestResizer extends Resizer {

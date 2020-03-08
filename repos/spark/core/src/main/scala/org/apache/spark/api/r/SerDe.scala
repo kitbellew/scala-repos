@@ -52,9 +52,7 @@ private[spark] object SerDe {
   // environment -> Map[String, T], where T is a native type
   // jobj -> Object, where jobj is an object created in the backend
 
-  def readObjectType(dis: DataInputStream): Char = {
-    dis.readByte().toChar
-  }
+  def readObjectType(dis: DataInputStream): Char = { dis.readByte().toChar }
 
   def readObject(dis: DataInputStream): Object = {
     val dataType = readObjectType(dis)
@@ -82,9 +80,7 @@ private[spark] object SerDe {
           val obj = (sqlSerDe._1)(dis, dataType)
           if (obj == null) {
             throw new IllegalArgumentException(s"Invalid type $dataType")
-          } else {
-            obj
-          }
+          } else { obj }
         }
     }
   }
@@ -96,13 +92,9 @@ private[spark] object SerDe {
     out
   }
 
-  def readInt(in: DataInputStream): Int = {
-    in.readInt()
-  }
+  def readInt(in: DataInputStream): Int = { in.readInt() }
 
-  def readDouble(in: DataInputStream): Double = {
-    in.readDouble()
-  }
+  def readDouble(in: DataInputStream): Double = { in.readDouble() }
 
   def readStringBytes(in: DataInputStream, len: Int): String = {
     val bytes = new Array[Byte](len)
@@ -122,9 +114,7 @@ private[spark] object SerDe {
     if (intVal == 0) false else true
   }
 
-  def readDate(in: DataInputStream): Date = {
-    Date.valueOf(readString(in))
-  }
+  def readDate(in: DataInputStream): Date = { Date.valueOf(readString(in)) }
 
   def readTime(in: DataInputStream): Timestamp = {
     val seconds = in.readDouble()
@@ -184,9 +174,7 @@ private[spark] object SerDe {
             val obj = (sqlSerDe._1)(dis, arrType)
             if (obj == null) {
               throw new IllegalArgumentException(s"Invalid array type $arrType")
-            } else {
-              obj
-            }
+            } else { obj }
           }.toArray
         }
     }
@@ -207,9 +195,7 @@ private[spark] object SerDe {
       val values = readList(in)
 
       keys.zip(values).toMap.asJava
-    } else {
-      new java.util.HashMap[Object, Object]()
-    }
+    } else { new java.util.HashMap[Object, Object]() }
   }
 
   // Methods to write out data from Java to R
@@ -267,18 +253,15 @@ private[spark] object SerDe {
   }
 
   def writeObject(dos: DataOutputStream, obj: Object): Unit = {
-    if (obj == null) {
-      writeType(dos, "void")
-    } else {
+    if (obj == null) { writeType(dos, "void") }
+    else {
       // Convert ArrayType collected from DataFrame to Java array
       // Collected data of ArrayType from a DataFrame is observed to be of
       // type "scala.collection.mutable.WrappedArray"
       val value =
         if (obj.isInstanceOf[WrappedArray[_]]) {
           obj.asInstanceOf[WrappedArray[_]].toArray
-        } else {
-          obj
-        }
+        } else { obj }
 
       value match {
         case v: java.lang.Character =>

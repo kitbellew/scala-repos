@@ -111,9 +111,7 @@ object Printers {
         print(": ")
         print(resultType)
         print(" = ")
-      } else {
-        print(' ')
-      }
+      } else { print(' ') }
     }
 
     protected def printArgs(args: List[Tree]): Unit = {
@@ -684,9 +682,8 @@ object Printers {
           print(if (value) "true" else "false")
 
         case IntLiteral(value) =>
-          if (value >= 0) {
-            print(value.toString)
-          } else {
+          if (value >= 0) { print(value.toString) }
+          else {
             print('(')
             print(value.toString)
             print(')')
@@ -701,9 +698,8 @@ object Printers {
             print(')')
 
         case FloatLiteral(value) =>
-          if (value == 0.0f && 1.0f / value < 0.0f) {
-            print("(-0f)")
-          } else {
+          if (value == 0.0f && 1.0f / value < 0.0f) { print("(-0f)") }
+          else {
             if (value < 0.0f)
               print('(')
             print(value.toString)
@@ -713,9 +709,8 @@ object Printers {
           }
 
         case DoubleLiteral(value) =>
-          if (value == 0.0 && 1.0 / value < 0.0) {
-            print("(-0d)")
-          } else {
+          if (value == 0.0 && 1.0 / value < 0.0) { print("(-0d)") }
+          else {
             if (value < 0.0)
               print('(')
             print(value.toString)

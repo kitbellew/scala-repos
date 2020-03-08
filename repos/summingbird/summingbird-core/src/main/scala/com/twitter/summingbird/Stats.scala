@@ -97,9 +97,7 @@ object JobCounters {
     if (v == null) {
       map.putIfAbsent(k, default)
       getOrElseUpdate(map, k, default)
-    } else {
-      v
-    }
+    } else { v }
   }
 
   private val registeredCountersForJob

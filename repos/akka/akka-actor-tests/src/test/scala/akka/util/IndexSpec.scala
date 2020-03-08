@@ -106,15 +106,11 @@ class IndexSpec extends AkkaSpec with Matchers with DefaultTimeout {
       def removeTask1() = Future {
         index.remove(Random.nextInt(nrOfKeys / 2), Random.nextInt(nrOfValues))
       }
-      def removeTask2() = Future {
-        index.remove(Random.nextInt(nrOfKeys / 2))
-      }
+      def removeTask2() = Future { index.remove(Random.nextInt(nrOfKeys / 2)) }
       def readTask() = Future {
         val key = Random.nextInt(nrOfKeys)
         val values = index.valueIterator(key)
-        if (key >= nrOfKeys / 2) {
-          values.isEmpty should ===(false)
-        }
+        if (key >= nrOfKeys / 2) { values.isEmpty should ===(false) }
       }
 
       def executeRandomTask() = Random.nextInt(4) match {

@@ -33,9 +33,7 @@ object ScalaWebSockets extends PlaySpecification {
           .fold[(List[Message], Int), Message]((Nil, expectOut)) {
             (state, out) =>
               val (result, remaining) = state
-              if (remaining == 1) {
-                promise.success(result :+ out)
-              }
+              if (remaining == 1) { promise.success(result :+ out) }
               (result :+ out, remaining - 1)
           }
         import play.api.libs.iteratee.Execution.Implicits.trampoline
@@ -67,9 +65,7 @@ object ScalaWebSockets extends PlaySpecification {
           def receive = PartialFunction.empty
 
           //#actor-post-stop
-          override def postStop() = {
-            someResource.close()
-          }
+          override def postStop() = { someResource.close() }
           //#actor-post-stop
         }
 

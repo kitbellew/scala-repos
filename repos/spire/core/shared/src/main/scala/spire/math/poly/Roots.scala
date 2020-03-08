@@ -56,9 +56,8 @@ object Roots {
     * Returns a polynomial with the same roots as `poly`, but only integer coefficients.
     */
   final def removeDecimal(poly: Polynomial[BigDecimal]): Polynomial[BigInt] = {
-    if (poly == Polynomial.zero[BigDecimal]) {
-      Polynomial.zero[BigInt]
-    } else {
+    if (poly == Polynomial.zero[BigDecimal]) { Polynomial.zero[BigInt] }
+    else {
       val terms = poly.terms.map {
         case Term(c, e) =>
           Term(c.bigDecimal.stripTrailingZeros, e)
@@ -86,11 +85,8 @@ object Roots {
         maxBound = max(maxBound, bound.toDouble)
       }
     }
-    if (maxBound.isValidInt) {
-      maxBound.toInt
-    } else {
-      throw new ArithmeticException("bound too large")
-    }
+    if (maxBound.isValidInt) { maxBound.toInt }
+    else { throw new ArithmeticException("bound too large") }
   }
 
   /**
@@ -110,9 +106,8 @@ private[poly] class BigDecimalSimpleRoots(
   def count: Int = isolated.size
 
   def get(i: Int): BigDecimal =
-    if (i < 0 || i >= count) {
-      throw new IndexOutOfBoundsException(i.toString)
-    } else {
+    if (i < 0 || i >= count) { throw new IndexOutOfBoundsException(i.toString) }
+    else {
       isolated(i) match {
         case Point(value) =>
           value.toBigDecimal(scale, RoundingMode.HALF_EVEN)
@@ -137,9 +132,8 @@ private[poly] class BigDecimalRelativeRoots(
   def count: Int = isolated.size
 
   def get(i: Int): BigDecimal =
-    if (i < 0 || i >= count) {
-      throw new IndexOutOfBoundsException(i.toString)
-    } else {
+    if (i < 0 || i >= count) { throw new IndexOutOfBoundsException(i.toString) }
+    else {
       isolated(i) match {
         case Point(value) =>
           value.toBigDecimal(mc)
@@ -164,9 +158,8 @@ private[poly] class FixedRealRoots(
   def count: Int = isolated.size
 
   def get(i: Int): Real =
-    if (i < 0 || i >= count) {
-      throw new IndexOutOfBoundsException(i.toString)
-    } else {
+    if (i < 0 || i >= count) { throw new IndexOutOfBoundsException(i.toString) }
+    else {
       isolated(i) match {
         case Point(value) =>
           Real(value)

@@ -102,9 +102,7 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
   /**
     * Called after the field is saved to the database
     */
-  override protected[mapper] def doneWithSave() {
-    orgData = data
-  }
+  override protected[mapper] def doneWithSave() { orgData = data }
 
   /**
     * Get the source field metadata for the field
@@ -352,9 +350,7 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
   /**
     * Called after the field is saved to the database
     */
-  override protected[mapper] def doneWithSave() {
-    orgData = data
-  }
+  override protected[mapper] def doneWithSave() { orgData = data }
 
   protected def real_i_set_!(value: Box[Long]): Box[Long] = {
     if (value != data) {
@@ -529,9 +525,7 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
   /**
     * Called after the field is saved to the database
     */
-  override protected[mapper] def doneWithSave() {
-    orgData = data
-  }
+  override protected[mapper] def doneWithSave() { orgData = data }
 
   protected def real_i_set_!(value: Long): Long = {
     if (value != data) {

@@ -122,8 +122,6 @@ trait ExecutionApp extends java.io.Serializable {
   }
 
   def main(args: Array[String]) {
-    config(args) match {
-      case (conf, mode) => job.waitFor(conf, mode).get
-    }
+    config(args) match { case (conf, mode) => job.waitFor(conf, mode).get }
   }
 }

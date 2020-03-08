@@ -27,17 +27,11 @@ class FilterTestServlet extends ScalatraServlet {
 
   get("/") {}
 
-  get("/before-counter") {
-    beforeCount.toString
-  }
+  get("/before-counter") { beforeCount.toString }
 
-  get("/after-counter") {
-    afterCount.toString
-  }
+  get("/after-counter") { afterCount.toString }
 
-  get("/demons-be-here") {
-    throw new ScalatraExpectedFilterException
-  }
+  get("/demons-be-here") { throw new ScalatraExpectedFilterException }
 
   post("/reset-counters") {
     beforeCount = 0
@@ -63,25 +57,15 @@ class FilterTestFilter extends ScalatraFilter {
 }
 
 class MultipleFilterTestServlet extends ScalatraServlet {
-  before() {
-    response.writer.print("one\n")
-  }
+  before() { response.writer.print("one\n") }
 
-  before() {
-    response.writer.print("two\n")
-  }
+  before() { response.writer.print("two\n") }
 
-  get("/") {
-    response.writer.print("three\n")
-  }
+  get("/") { response.writer.print("three\n") }
 
-  after() {
-    response.writer.print("four\n")
-  }
+  after() { response.writer.print("four\n") }
 
-  after() {
-    response.writer.print("five\n")
-  }
+  after() { response.writer.print("five\n") }
 
 }
 
@@ -90,9 +74,7 @@ class FilterTest extends ScalatraFunSuite with BeforeAndAfterEach {
   addServlet(classOf[MultipleFilterTestServlet], "/multiple-filters/*")
   addFilter(classOf[FilterTestFilter], "/*")
 
-  override def beforeEach() {
-    post("/reset-counters") {}
-  }
+  override def beforeEach() { post("/reset-counters") {} }
 
   test("before is called exactly once per request to a servlet") {
     get("/before-counter") { body should equal("1") }
@@ -115,9 +97,7 @@ class FilterTest extends ScalatraFunSuite with BeforeAndAfterEach {
   }
 
   test("before can see query parameters") {
-    get("/", "before" -> "foo") {
-      body should equal("foo")
-    }
+    get("/", "before" -> "foo") { body should equal("foo") }
   }
 
   test("supports multiple before and after filters") {
@@ -142,15 +122,11 @@ class FilterTest extends ScalatraFunSuite with BeforeAndAfterEach {
   }
 
   test("after can see query parameters") {
-    get("/", "after" -> "foo") {
-      body should equal("foo")
-    }
+    get("/", "after" -> "foo") { body should equal("foo") }
   }
 
   test("after is called even if route handler throws exception") {
     get("/demons-be-here") {}
-    get("/after-counter") {
-      body should equal("2")
-    }
+    get("/after-counter") { body should equal("2") }
   }
 }

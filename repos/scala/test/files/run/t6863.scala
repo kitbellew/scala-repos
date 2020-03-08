@@ -24,7 +24,9 @@ object Test {
     assert({ () => x }.apply == "42")
   }
   def select() = {
-    object Foo { val bar = "42" }
+    object Foo {
+      val bar = "42"
+    }
     var x = Foo.bar
     assert({ () => x }.apply == "42")
   }

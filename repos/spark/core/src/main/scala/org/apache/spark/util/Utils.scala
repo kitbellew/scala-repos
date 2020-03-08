@@ -132,11 +132,8 @@ private[spark] object Utils extends Logging {
       override def write(b: Array[Byte], off: Int, len: Int): Unit =
         os.write(b, off, len)
     })
-    try {
-      f(osWrapper)
-    } finally {
-      osWrapper.close()
-    }
+    try { f(osWrapper) }
+    finally { osWrapper.close() }
   }
 
   /** Deserialize via nested stream using specific serializer */
@@ -147,11 +144,8 @@ private[spark] object Utils extends Logging {
       override def read(b: Array[Byte], off: Int, len: Int): Int =
         is.read(b, off, len)
     })
-    try {
-      f(isWrapper)
-    } finally {
-      isWrapper.close()
-    }
+    try { f(isWrapper) }
+    finally { isWrapper.close() }
   }
 
   /**
@@ -242,9 +236,7 @@ private[spark] object Utils extends Logging {
       }
       try {
         dir = new File(root, namePrefix + "-" + UUID.randomUUID.toString)
-        if (dir.exists() || !dir.mkdirs()) {
-          dir = null
-        }
+        if (dir.exists() || !dir.mkdirs()) { dir = null }
       } catch { case e: SecurityException => dir = null; }
     }
 
@@ -317,11 +309,8 @@ private[spark] object Utils extends Logging {
       count
     } {
       if (closeStreams) {
-        try {
-          in.close()
-        } finally {
-          out.close()
-        }
+        try { in.close() }
+        finally { out.close() }
       }
     }
   }
@@ -455,9 +444,7 @@ private[spark] object Utils extends Logging {
 
     // Windows does not grant read permission by default to non-admin users
     // Add read permission to owner explicitly
-    if (isWindows) {
-      FileUtil.chmod(targetFile.getAbsolutePath, "u+r")
-    }
+    if (isWindows) { FileUtil.chmod(targetFile.getAbsolutePath, "u+r") }
   }
 
   /**
@@ -492,9 +479,7 @@ private[spark] object Utils extends Logging {
     } finally {
       // Catch-all for the couple of cases where for some reason we didn't move `tempFile` to
       // `destFile`.
-      if (tempFile.exists()) {
-        tempFile.delete()
-      }
+      if (tempFile.exists()) { tempFile.delete() }
     }
   }
 
@@ -554,9 +539,8 @@ private[spark] object Utils extends Logging {
     }
 
     // The file does not exist in the target directory. Copy or move it there.
-    if (removeSourceFile) {
-      Files.move(sourceFile.toPath, destFile.toPath)
-    } else {
+    if (removeSourceFile) { Files.move(sourceFile.toPath, destFile.toPath) }
+    else {
       logInfo(
         s"Copying ${sourceFile.getAbsolutePath} to ${destFile.getAbsolutePath}")
       copyRecursive(sourceFile, destFile)
@@ -567,17 +551,12 @@ private[spark] object Utils extends Logging {
     if (file1.isDirectory && file2.isDirectory) {
       val subfiles1 = file1.listFiles()
       val subfiles2 = file2.listFiles()
-      if (subfiles1.size != subfiles2.size) {
-        return false
-      }
+      if (subfiles1.size != subfiles2.size) { return false }
       subfiles1.sortBy(_.getName).zip(subfiles2.sortBy(_.getName)).forall {
         case (f1, f2) => filesEqualRecursive(f1, f2)
       }
-    } else if (file1.isFile && file2.isFile) {
-      GFiles.equal(file1, file2)
-    } else {
-      false
-    }
+    } else if (file1.isFile && file2.isFile) { GFiles.equal(file1, file2) }
+    else { false }
   }
 
   private def copyRecursive(source: File, dest: File): Unit = {
@@ -587,9 +566,7 @@ private[spark] object Utils extends Logging {
       }
       val subfiles = source.listFiles()
       subfiles.foreach(f => copyRecursive(f, new File(dest, f.getName)))
-    } else {
-      Files.copy(source.toPath, dest.toPath)
-    }
+    } else { Files.copy(source.toPath, dest.toPath) }
   }
 
   /**
@@ -679,11 +656,8 @@ private[spark] object Utils extends Logging {
     val dest = new File(targetDir, filename.getOrElse(path.getName))
     if (fs.isFile(path)) {
       val in = fs.open(path)
-      try {
-        downloadFile(path.toString, in, dest, fileOverwrite)
-      } finally {
-        in.close()
-      }
+      try { downloadFile(path.toString, in, dest, fileOverwrite) }
+      finally { in.close() }
     } else {
       fs.listStatus(path).foreach { fileStatus =>
         fetchHcfsFile(
@@ -812,9 +786,7 @@ private[spark] object Utils extends Logging {
   }
 
   /** Used by unit tests. Do not call from other places. */
-  private[spark] def clearLocalRootDirs(): Unit = {
-    localRootDirs = null
-  }
+  private[spark] def clearLocalRootDirs(): Unit = { localRootDirs = null }
 
   /**
     * Shuffle the elements of a collection into a random order, returning the
@@ -849,9 +821,8 @@ private[spark] object Utils extends Logging {
 
   private def findLocalInetAddress(): InetAddress = {
     val defaultIpOverride = System.getenv("SPARK_LOCAL_IP")
-    if (defaultIpOverride != null) {
-      InetAddress.getByName(defaultIpOverride)
-    } else {
+    if (defaultIpOverride != null) { InetAddress.getByName(defaultIpOverride) }
+    else {
       val address = InetAddress.getLocalHost
       if (address.isLoopbackAddress) {
         // Address resolves to something like 127.0.1.1, which happens on Debian; try to find
@@ -938,9 +909,7 @@ private[spark] object Utils extends Logging {
   def parseHostPort(hostPort: String): (String, Int) = {
     // Check cache first.
     val cached = hostPortParseResults.get(hostPort)
-    if (cached != null) {
-      return cached
-    }
+    if (cached != null) { return cached }
 
     val indx: Int = hostPort.lastIndexOf(':')
     // This is potentially broken - when dealing with ipv6 addresses for example, sigh ...
@@ -973,9 +942,7 @@ private[spark] object Utils extends Logging {
         throw new IOException("Failed to list files for dir: " + file)
       }
       files
-    } else {
-      List()
-    }
+    } else { List() }
   }
 
   /**
@@ -989,16 +956,13 @@ private[spark] object Utils extends Logging {
         if (file.isDirectory && !isSymlink(file)) {
           var savedIOException: IOException = null
           for (child <- listFilesSafely(file)) {
-            try {
-              deleteRecursively(child)
-            } catch {
+            try { deleteRecursively(child) }
+            catch {
               // In case of multiple exceptions, only last one will be thrown
               case ioe: IOException => savedIOException = ioe
             }
           }
-          if (savedIOException != null) {
-            throw savedIOException
-          }
+          if (savedIOException != null) { throw savedIOException }
           ShutdownHookManager.removeShutdownDeleteDir(file)
         }
       } finally {
@@ -1018,11 +982,8 @@ private[spark] object Utils extends Logging {
   def isSymlink(file: File): Boolean = {
     if (file == null) throw new NullPointerException("File must not be null")
     if (isWindows) return false
-    val fileInCanonicalDir = if (file.getParent() == null) {
-      file
-    } else {
-      new File(file.getParentFile().getCanonicalFile(), file.getName())
-    }
+    val fileInCanonicalDir = if (file.getParent() == null) { file }
+    else { new File(file.getParentFile().getCanonicalFile(), file.getName()) }
 
     !fileInCanonicalDir
       .getCanonicalFile()
@@ -1053,9 +1014,7 @@ private[spark] object Utils extends Logging {
     * Convert a time parameter such as (50s, 100ms, or 250us) to microseconds for internal use. If
     * no suffix is provided, the passed number is assumed to be in ms.
     */
-  def timeStringAsMs(str: String): Long = {
-    JavaUtils.timeStringAsMs(str)
-  }
+  def timeStringAsMs(str: String): Long = { JavaUtils.timeStringAsMs(str) }
 
   /**
     * Convert a time parameter such as (50s, 100ms, or 250us) to seconds for internal use. If
@@ -1079,27 +1038,21 @@ private[spark] object Utils extends Logging {
     *
     * If no suffix is provided, the passed number is assumed to be in kibibytes.
     */
-  def byteStringAsKb(str: String): Long = {
-    JavaUtils.byteStringAsKb(str)
-  }
+  def byteStringAsKb(str: String): Long = { JavaUtils.byteStringAsKb(str) }
 
   /**
     * Convert a passed byte string (e.g. 50b, 100k, or 250m) to mebibytes for internal use.
     *
     * If no suffix is provided, the passed number is assumed to be in mebibytes.
     */
-  def byteStringAsMb(str: String): Long = {
-    JavaUtils.byteStringAsMb(str)
-  }
+  def byteStringAsMb(str: String): Long = { JavaUtils.byteStringAsMb(str) }
 
   /**
     * Convert a passed byte string (e.g. 50b, 100k, or 250m, 500g) to gibibytes for internal use.
     *
     * If no suffix is provided, the passed number is assumed to be in gibibytes.
     */
-  def byteStringAsGb(str: String): Long = {
-    JavaUtils.byteStringAsGb(str)
-  }
+  def byteStringAsGb(str: String): Long = { JavaUtils.byteStringAsGb(str) }
 
   /**
     * Convert a Java memory parameter passed to -Xmx (such as 300m or 1g) to a number of mebibytes.
@@ -1120,17 +1073,11 @@ private[spark] object Utils extends Logging {
     val KB = 1L << 10
 
     val (value, unit) = {
-      if (size >= 2 * TB) {
-        (size.asInstanceOf[Double] / TB, "TB")
-      } else if (size >= 2 * GB) {
-        (size.asInstanceOf[Double] / GB, "GB")
-      } else if (size >= 2 * MB) {
-        (size.asInstanceOf[Double] / MB, "MB")
-      } else if (size >= 2 * KB) {
-        (size.asInstanceOf[Double] / KB, "KB")
-      } else {
-        (size.asInstanceOf[Double], "B")
-      }
+      if (size >= 2 * TB) { (size.asInstanceOf[Double] / TB, "TB") }
+      else if (size >= 2 * GB) { (size.asInstanceOf[Double] / GB, "GB") }
+      else if (size >= 2 * MB) { (size.asInstanceOf[Double] / MB, "MB") }
+      else if (size >= 2 * KB) { (size.asInstanceOf[Double] / KB, "KB") }
+      else { (size.asInstanceOf[Double], "B") }
     }
     "%.1f %s".formatLocal(Locale.US, value, unit)
   }
@@ -1172,9 +1119,7 @@ private[spark] object Utils extends Logging {
       redirectStderr: Boolean = true): Process = {
     val builder = new ProcessBuilder(command: _*).directory(workingDir)
     val environment = builder.environment()
-    for ((key, value) <- extraEnvironment) {
-      environment.put(key, value)
-    }
+    for ((key, value) <- extraEnvironment) { environment.put(key, value) }
     val process = builder.start()
     if (redirectStderr) {
       val threadName = "redirect stderr for command " + command(0)
@@ -1234,9 +1179,8 @@ private[spark] object Utils extends Logging {
     * NOTE: This method is to be called by the spark-started JVM process.
     */
   def tryOrExit(block: => Unit) {
-    try {
-      block
-    } catch {
+    try { block }
+    catch {
       case e: ControlThrowable => throw e
       case t: Throwable        => SparkUncaughtExceptionHandler.uncaughtException(t)
     }
@@ -1251,9 +1195,8 @@ private[spark] object Utils extends Logging {
     * spark-started JVM process .
     */
   def tryOrStopSparkContext(sc: SparkContext)(block: => Unit) {
-    try {
-      block
-    } catch {
+    try { block }
+    catch {
       case e: ControlThrowable => throw e
       case t: Throwable =>
         val currentThreadName = Thread.currentThread().getName
@@ -1279,9 +1222,8 @@ private[spark] object Utils extends Logging {
     * see SPARK-4080 for more context.
     */
   def tryOrIOException(block: => Unit) {
-    try {
-      block
-    } catch {
+    try { block }
+    catch {
       case e: IOException => throw e
       case NonFatal(t)    => throw new IOException(t)
     }
@@ -1294,9 +1236,8 @@ private[spark] object Utils extends Logging {
     * see SPARK-4080 for more context.
     */
   def tryOrIOException[T](block: => T): T = {
-    try {
-      block
-    } catch {
+    try { block }
+    catch {
       case e: IOException => throw e
       case NonFatal(t)    => throw new IOException(t)
     }
@@ -1304,9 +1245,8 @@ private[spark] object Utils extends Logging {
 
   /** Executes the given block. Log non-fatal errors if any, and only throw fatal errors */
   def tryLogNonFatalError(block: => Unit) {
-    try {
-      block
-    } catch {
+    try { block }
+    catch {
       case NonFatal(t) =>
         logError(
           s"Uncaught exception in thread ${Thread.currentThread().getName}",
@@ -1326,26 +1266,22 @@ private[spark] object Utils extends Logging {
     */
   def tryWithSafeFinally[T](block: => T)(finallyBlock: => Unit): T = {
     var originalThrowable: Throwable = null
-    try {
-      block
-    } catch {
+    try { block }
+    catch {
       case t: Throwable =>
         // Purposefully not using NonFatal, because even fatal exceptions
         // we don't want to have our finallyBlock suppress
         originalThrowable = t
         throw originalThrowable
     } finally {
-      try {
-        finallyBlock
-      } catch {
+      try { finallyBlock }
+      catch {
         case t: Throwable =>
           if (originalThrowable != null) {
             originalThrowable.addSuppressed(t)
             logWarning(s"Suppressing exception in finally: " + t.getMessage, t)
             throw originalThrowable
-          } else {
-            throw t
-          }
+          } else { throw t }
       }
     }
   }
@@ -1364,9 +1300,8 @@ private[spark] object Utils extends Logging {
   def tryWithSafeFinallyAndFailureCallbacks[T](block: => T)(
       finallyBlock: => Unit): T = {
     var originalThrowable: Throwable = null
-    try {
-      block
-    } catch {
+    try { block }
+    catch {
       case t: Throwable =>
         // Purposefully not using NonFatal, because even fatal exceptions
         // we don't want to have our finallyBlock suppress
@@ -1374,17 +1309,14 @@ private[spark] object Utils extends Logging {
         TaskContext.get().asInstanceOf[TaskContextImpl].markTaskFailed(t)
         throw originalThrowable
     } finally {
-      try {
-        finallyBlock
-      } catch {
+      try { finallyBlock }
+      catch {
         case t: Throwable =>
           if (originalThrowable != null) {
             originalThrowable.addSuppressed(t)
             logWarning(s"Suppressing exception in finally: " + t.getMessage, t)
             throw originalThrowable
-          } else {
-            throw t
-          }
+          } else { throw t }
       }
     }
   }
@@ -1435,9 +1367,7 @@ private[spark] object Utils extends Logging {
             lastSparkMethod = if (ste.getMethodName == "<init>") {
               // Spark method is a constructor; get its class name
               ste.getClassName.substring(ste.getClassName.lastIndexOf('.') + 1)
-            } else {
-              ste.getMethodName
-            }
+            } else { ste.getMethodName }
             callStack(0) =
               ste.toString // Put last Spark method on top of the stack trace.
           } else {
@@ -1446,9 +1376,7 @@ private[spark] object Utils extends Logging {
             callStack += ste.toString
             insideSpark = false
           }
-        } else {
-          callStack += ste.toString
-        }
+        } else { callStack += ste.toString }
       }
     }
 
@@ -1458,9 +1386,7 @@ private[spark] object Utils extends Logging {
         // To be more user friendly, show a nicer string for queries submitted from the JDBC
         // server.
         "Spark JDBC Server Query"
-      } else {
-        s"$lastSparkMethod at $firstUserFile:$firstUserLine"
-      }
+      } else { s"$lastSparkMethod at $firstUserFile:$firstUserLine" }
     val longForm = callStack.take(callStackDepth).mkString("\n")
 
     CallSite(shortForm, longForm)
@@ -1478,9 +1404,7 @@ private[spark] object Utils extends Logging {
     try {
       ByteStreams.skipFully(stream, effectiveStart)
       ByteStreams.readFully(stream, buff)
-    } finally {
-      stream.close()
-    }
+    } finally { stream.close() }
     Source.fromBytes(buff).mkString
   }
 
@@ -1554,9 +1478,7 @@ private[spark] object Utils extends Logging {
     serializer.deserialize[T](serializer.serialize(value))
   }
 
-  private def isSpace(c: Char): Boolean = {
-    " \t\r\n".indexOf(c) != -1
-  }
+  private def isSpace(c: Char): Boolean = { " \t\r\n".indexOf(c) != -1 }
 
   /**
     * Split a string of potentially quoted arguments from the command line the way that a shell
@@ -1577,24 +1499,18 @@ private[spark] object Utils extends Logging {
     while (i < s.length) {
       val nextChar = s.charAt(i)
       if (inDoubleQuote) {
-        if (nextChar == '"') {
-          inDoubleQuote = false
-        } else if (nextChar == '\\') {
+        if (nextChar == '"') { inDoubleQuote = false }
+        else if (nextChar == '\\') {
           if (i < s.length - 1) {
             // Append the next character directly, because only " and \ may be escaped in
             // double quotes after the shell's own expansion
             curWord.append(s.charAt(i + 1))
             i += 1
           }
-        } else {
-          curWord.append(nextChar)
-        }
+        } else { curWord.append(nextChar) }
       } else if (inSingleQuote) {
-        if (nextChar == '\'') {
-          inSingleQuote = false
-        } else {
-          curWord.append(nextChar)
-        }
+        if (nextChar == '\'') { inSingleQuote = false }
+        else { curWord.append(nextChar) }
         // Backslashes are not treated specially in single quotes
       } else if (nextChar == '"') {
         inWord = true
@@ -1611,9 +1527,7 @@ private[spark] object Utils extends Logging {
       }
       i += 1
     }
-    if (inWord || inDoubleQuote || inSingleQuote) {
-      endWord()
-    }
+    if (inWord || inDoubleQuote || inSingleQuote) { endWord() }
     buf
   }
 
@@ -1741,9 +1655,7 @@ private[spark] object Utils extends Logging {
     * @param dst relative path for the destination
     */
   def symlink(src: File, dst: File): Unit = {
-    if (!src.isAbsolute()) {
-      throw new IOException("Source must be absolute")
-    }
+    if (!src.isAbsolute()) { throw new IOException("Source must be absolute") }
     if (dst.isAbsolute()) {
       throw new IOException("Destination must be relative")
     }
@@ -1814,9 +1726,7 @@ private[spark] object Utils extends Logging {
   /**
     * Strip the directory from a path name
     */
-  def stripDirectory(path: String): String = {
-    new File(path).getName
-  }
+  def stripDirectory(path: String): String = { new File(path).getName }
 
   /**
     * Terminates a process waiting for at most the specified duration. Returns whether
@@ -1835,11 +1745,8 @@ private[spark] object Utils extends Logging {
         }
         process.destroy()
     }
-    if (waitForProcess(process, timeoutMs)) {
-      Option(process.exitValue())
-    } else {
-      None
-    }
+    if (waitForProcess(process, timeoutMs)) { Option(process.exitValue()) }
+    else { None }
   }
 
   /**
@@ -1856,9 +1763,7 @@ private[spark] object Utils extends Logging {
       } catch {
         case e: IllegalThreadStateException =>
           // Process not terminated yet
-          if (System.currentTimeMillis - startTime > timeoutMs) {
-            return false
-          }
+          if (System.currentTimeMillis - startTime > timeoutMs) { return false }
           Thread.sleep(100)
       }
     }
@@ -1877,9 +1782,7 @@ private[spark] object Utils extends Logging {
           .fromInputStream(process.getErrorStream)
           .getLines()
           .mkString("\n"))
-    } else {
-      None
-    }
+    } else { None }
   }
 
   /**
@@ -1888,9 +1791,8 @@ private[spark] object Utils extends Logging {
     * that exceptions are printed, and to avoid having to catch Throwable.
     */
   def logUncaughtExceptions[T](f: => T): T = {
-    try {
-      f
-    } catch {
+    try { f }
+    catch {
       case ct: ControlThrowable =>
         throw ct
       case t: Throwable =>
@@ -1937,9 +1839,7 @@ private[spark] object Utils extends Logging {
   def resolveURI(path: String): URI = {
     try {
       val uri = new URI(path)
-      if (uri.getScheme() != null) {
-        return uri
-      }
+      if (uri.getScheme() != null) { return uri }
       // make sure to handle if the path has a fragment (applies to yarn
       // distributed cache)
       if (uri.getFragment() != null) {
@@ -1958,11 +1858,8 @@ private[spark] object Utils extends Logging {
 
   /** Resolve a comma-separated list of paths. */
   def resolveURIs(paths: String): String = {
-    if (paths == null || paths.trim.isEmpty) {
-      ""
-    } else {
-      paths.split(",").map { p => Utils.resolveURI(p) }.mkString(",")
-    }
+    if (paths == null || paths.trim.isEmpty) { "" }
+    else { paths.split(",").map { p => Utils.resolveURI(p) }.mkString(",") }
   }
 
   /** Return all non-local paths from a comma-separated list of paths. */
@@ -1970,9 +1867,8 @@ private[spark] object Utils extends Logging {
       paths: String,
       testWindows: Boolean = false): Array[String] = {
     val windows = isWindows || testWindows
-    if (paths == null || paths.trim.isEmpty) {
-      Array.empty
-    } else {
+    if (paths == null || paths.trim.isEmpty) { Array.empty }
+    else {
       paths.split(",").filter { p =>
         val uri = resolveURI(p)
         Option(uri.getScheme).getOrElse("file") match {
@@ -2030,9 +1926,7 @@ private[spark] object Utils extends Logging {
         throw new SparkException(
           s"Failed when loading Spark properties from $filename",
           e)
-    } finally {
-      inReader.close()
-    }
+    } finally { inReader.close() }
   }
 
   /** Return the path of the default Spark properties file. */
@@ -2051,9 +1945,8 @@ private[spark] object Utils extends Logging {
     * recursively generate the stack trace including the exception and its causes.
     */
   def exceptionString(e: Throwable): String = {
-    if (e == null) {
-      ""
-    } else {
+    if (e == null) { "" }
+    else {
       // Use e.printStackTrace here because e.getStackTrace doesn't include the cause
       val stringWriter = new StringWriter()
       e.printStackTrace(new PrintWriter(stringWriter))
@@ -2098,9 +1991,7 @@ private[spark] object Utils extends Logging {
     if (conf.contains("spark.testing")) {
       // Set a higher number of retries for tests...
       maxRetries.getOrElse(100)
-    } else {
-      maxRetries.getOrElse(16)
-    }
+    } else { maxRetries.getOrElse(16) }
   }
 
   /**
@@ -2128,9 +2019,8 @@ private[spark] object Utils extends Logging {
     val maxRetries = portMaxRetries(conf)
     for (offset <- 0 to maxRetries) {
       // Do not increment port if startPort is 0, which is treated as a special port
-      val tryPort = if (startPort == 0) {
-        startPort
-      } else {
+      val tryPort = if (startPort == 0) { startPort }
+      else {
         // If the new port wraps around, do not try a privilege port
         ((startPort + offset - 1024) % (65536 - 1024)) + 1024
       }
@@ -2167,9 +2057,7 @@ private[spark] object Utils extends Logging {
   def isBindCollision(exception: Throwable): Boolean = {
     exception match {
       case e: BindException =>
-        if (e.getMessage != null) {
-          return true
-        }
+        if (e.getMessage != null) { return true }
         isBindCollision(e.getCause)
       case e: MultiException =>
         e.getThrowables.asScala.exists(isBindCollision)
@@ -2236,13 +2124,9 @@ private[spark] object Utils extends Logging {
     * Return the current system LD_LIBRARY_PATH name
     */
   def libraryPathEnvName: String = {
-    if (isWindows) {
-      "PATH"
-    } else if (isMac) {
-      "DYLD_LIBRARY_PATH"
-    } else {
-      "LD_LIBRARY_PATH"
-    }
+    if (isWindows) { "PATH" }
+    else if (isMac) { "DYLD_LIBRARY_PATH" }
+    else { "LD_LIBRARY_PATH" }
   }
 
   /**
@@ -2251,20 +2135,14 @@ private[spark] object Utils extends Logging {
     * this returns the string LD_LIBRARY_PATH="path1:path2:$LD_LIBRARY_PATH".
     */
   def libraryPathEnvPrefix(libraryPaths: Seq[String]): String = {
-    val libraryPathScriptVar = if (isWindows) {
-      s"%${libraryPathEnvName}%"
-    } else {
-      "$" + libraryPathEnvName
-    }
+    val libraryPathScriptVar = if (isWindows) { s"%${libraryPathEnvName}%" }
+    else { "$" + libraryPathEnvName }
     val libraryPath = (libraryPaths :+ libraryPathScriptVar).mkString(
       "\"",
       File.pathSeparator,
       "\"")
-    val ampersand = if (Utils.isWindows) {
-      " &"
-    } else {
-      ""
-    }
+    val ampersand = if (Utils.isWindows) { " &" }
+    else { "" }
     s"$libraryPathEnvName=$libraryPath$ampersand"
   }
 
@@ -2280,9 +2158,7 @@ private[spark] object Utils extends Logging {
     val sparkValue = conf.get(key, default)
     if (SparkHadoopUtil.get.isYarnMode) {
       SparkHadoopUtil.get.newConfiguration(conf).get(key, sparkValue)
-    } else {
-      sparkValue
-    }
+    } else { sparkValue }
   }
 
   /**
@@ -2362,15 +2238,11 @@ private[spark] object Utils extends Logging {
     */
   @tailrec
   def isInDirectory(parent: File, child: File): Boolean = {
-    if (child == null || parent == null) {
-      return false
-    }
+    if (child == null || parent == null) { return false }
     if (!child.exists() || !parent.exists() || !parent.isDirectory()) {
       return false
     }
-    if (parent.equals(child)) {
-      return true
-    }
+    if (parent.equals(child)) { return true }
     isInDirectory(parent, child.getParentFile)
   }
 
@@ -2456,11 +2328,7 @@ private[spark] class RedirectThread(
           out.flush()
           len = in.read(buf)
         }
-      } {
-        if (propagateEof) {
-          out.close()
-        }
-      }
+      } { if (propagateEof) { out.close() } }
     }
   }
 }

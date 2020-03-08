@@ -77,83 +77,63 @@ class Text(override val delegate: jfxst.Text = new jfxst.Text)
     */
   def boundsType: ObjectProperty[jfxst.TextBoundsType] =
     delegate.boundsTypeProperty
-  def boundsType_=(v: TextBoundsType) {
-    boundsType() = v
-  }
+  def boundsType_=(v: TextBoundsType) { boundsType() = v }
 
   /**
     * Defines the font of text.
     */
   def font: ObjectProperty[jfxst.Font] = delegate.fontProperty
-  def font_=(v: Font) {
-    font() = v
-  }
+  def font_=(v: Font) { font() = v }
 
   /**
     * Specifies a requested font smoothing type : gray or LCD.
     */
   def fontSmoothingType: ObjectProperty[jfxst.FontSmoothingType] =
     delegate.fontSmoothingTypeProperty
-  def fontSmoothingType_=(v: FontSmoothingType) {
-    fontSmoothingType() = v
-  }
+  def fontSmoothingType_=(v: FontSmoothingType) { fontSmoothingType() = v }
 
   /**
     * Defines the vertical space in pixel between lines.
     */
   def lineSpacing: DoubleProperty = delegate.lineSpacingProperty
-  def lineSpacing_=(v: Double) {
-    lineSpacing() = v
-  }
+  def lineSpacing_=(v: Double) { lineSpacing() = v }
 
   /**
     * Defines if each line of text should have a line through it.
     */
   def strikethrough: BooleanProperty = delegate.strikethroughProperty
-  def strikethrough_=(v: Boolean) {
-    strikethrough = v
-  }
+  def strikethrough_=(v: Boolean) { strikethrough = v }
 
   /**
     * Defines text string that is to be displayed.
     */
   def text: StringProperty = delegate.textProperty
-  def text_=(v: String) {
-    text() = v
-  }
+  def text_=(v: String) { text() = v }
 
   /**
     * Defines horizontal text alignment in the bounding box.
     */
   def textAlignment: ObjectProperty[jfxst.TextAlignment] =
     delegate.textAlignmentProperty
-  def textAlignment_=(v: TextAlignment) {
-    textAlignment() = v
-  }
+  def textAlignment_=(v: TextAlignment) { textAlignment() = v }
 
   /**
     * Defines the origin of text coordinate system in local coordinates.
     */
   def textOrigin: ObjectProperty[VPos] = delegate.textOriginProperty
-  def textOrigin_=(v: VPos) {
-    textOrigin() = v
-  }
+  def textOrigin_=(v: VPos) { textOrigin() = v }
 
   /**
     * Defines if each line of text should have a line below it.
     */
   def underline: BooleanProperty = delegate.underlineProperty
-  def underline_=(v: Boolean) {
-    underline() = v
-  }
+  def underline_=(v: Boolean) { underline() = v }
 
   /**
     * Defines a width constraint for the text in user space coordinates, e.g. pixels, not glyph or
     * character count.
     */
   def wrappingWidth: DoubleProperty = delegate.wrappingWidthProperty
-  def wrappingWidth_=(v: Double) {
-    wrappingWidth() = v
-  }
+  def wrappingWidth_=(v: Double) { wrappingWidth() = v }
 
 }

@@ -35,9 +35,7 @@ private[graphx] class EdgePartitionBuilder[@specialized(
   private[this] val edges = new PrimitiveVector[Edge[ED]](size)
 
   /** Add a new edge to the partition. */
-  def add(src: VertexId, dst: VertexId, d: ED) {
-    edges += Edge(src, dst, d)
-  }
+  def add(src: VertexId, dst: VertexId, d: ED) { edges += Edge(src, dst, d) }
 
   def toEdgePartition: EdgePartition[ED, VD] = {
     val edgeArray = edges.trim().array
@@ -177,9 +175,7 @@ private[impl] object EdgeWithLocalIds {
     new SortDataFormat[EdgeWithLocalIds[ED], Array[EdgeWithLocalIds[ED]]] {
       override def getKey(
           data: Array[EdgeWithLocalIds[ED]],
-          pos: Int): EdgeWithLocalIds[ED] = {
-        data(pos)
-      }
+          pos: Int): EdgeWithLocalIds[ED] = { data(pos) }
 
       override def swap(
           data: Array[EdgeWithLocalIds[ED]],
@@ -194,18 +190,14 @@ private[impl] object EdgeWithLocalIds {
           src: Array[EdgeWithLocalIds[ED]],
           srcPos: Int,
           dst: Array[EdgeWithLocalIds[ED]],
-          dstPos: Int) {
-        dst(dstPos) = src(srcPos)
-      }
+          dstPos: Int) { dst(dstPos) = src(srcPos) }
 
       override def copyRange(
           src: Array[EdgeWithLocalIds[ED]],
           srcPos: Int,
           dst: Array[EdgeWithLocalIds[ED]],
           dstPos: Int,
-          length: Int) {
-        System.arraycopy(src, srcPos, dst, dstPos, length)
-      }
+          length: Int) { System.arraycopy(src, srcPos, dst, dstPos, length) }
 
       override def allocate(length: Int): Array[EdgeWithLocalIds[ED]] = {
         new Array[EdgeWithLocalIds[ED]](length)

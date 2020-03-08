@@ -59,9 +59,7 @@ class DataMap(
     * @param name The property name
     * @return Return true if the property exists, else false.
     */
-  def contains(name: String): Boolean = {
-    fields.contains(name)
-  }
+  def contains(name: String): Boolean = { fields.contains(name) }
 
   /** Get the value of a mandatory property. Exception is thrown if the property
     * does not exist.
@@ -185,9 +183,7 @@ class DataMap(
     *
     * @return the object of type T.
     */
-  def extract[T: Manifest]: T = {
-    toJObject().extract[T]
-  }
+  def extract[T: Manifest]: T = { toJObject().extract[T] }
 
   override def toString: String = s"DataMap($fields)"
 
@@ -223,11 +219,8 @@ object DataMap {
     * @return a new DataMap initialized by a JObject
     */
   def apply(jObj: JObject): DataMap = {
-    if (jObj == null) {
-      apply()
-    } else {
-      new DataMap(jObj.obj.toMap)
-    }
+    if (jObj == null) { apply() }
+    else { new DataMap(jObj.obj.toMap) }
   }
 
   /** Create an DataMap from a JSON String

@@ -92,9 +92,7 @@ object OptionalTest extends SpecLite {
     undefinedTests[VStringNel, Int](failureNel("oO"), 0, successNel(0))
   }
 
-  "Id instance tests" in {
-    definedTests[Id, Int](1, 1, 0, 0)
-  }
+  "Id instance tests" in { definedTests[Id, Int](1, 1, 0, 0) }
 
   "Maybe instance tests" in {
     definedTests(Maybe.just(1), 1, 0, Maybe.just(0))

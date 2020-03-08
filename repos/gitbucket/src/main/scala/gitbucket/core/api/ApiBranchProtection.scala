@@ -35,14 +35,9 @@ object ApiBranchProtection {
         enabled: Boolean,
         includeAdministrators: Boolean): EnforcementLevel =
       if (enabled) {
-        if (includeAdministrators) {
-          Everyone
-        } else {
-          NonAdmins
-        }
-      } else {
-        Off
-      }
+        if (includeAdministrators) { Everyone }
+        else { NonAdmins }
+      } else { Off }
   }
 
   implicit val enforcementLevelSerializer =
@@ -53,8 +48,6 @@ object ApiBranchProtection {
           case JString("non_admins") => NonAdmins
           case JString("everyone")   => Everyone
         },
-        {
-          case x: EnforcementLevel => JString(x.name)
-        }
+        { case x: EnforcementLevel => JString(x.name) }
       ))
 }

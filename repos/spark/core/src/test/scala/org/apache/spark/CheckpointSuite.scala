@@ -217,11 +217,8 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
 
   /** Checkpoint the RDD either locally or reliably. */
   protected def checkpoint(rdd: RDD[_], reliableCheckpoint: Boolean): Unit = {
-    if (reliableCheckpoint) {
-      rdd.checkpoint()
-    } else {
-      rdd.localCheckpoint()
-    }
+    if (reliableCheckpoint) { rdd.checkpoint() }
+    else { rdd.localCheckpoint() }
   }
 
   /** Run a test twice, once for local checkpointing and once for reliable checkpointing. */
@@ -271,11 +268,8 @@ class CheckpointSuite
   }
 
   override def afterEach(): Unit = {
-    try {
-      Utils.deleteRecursively(checkpointDir)
-    } finally {
-      super.afterEach()
-    }
+    try { Utils.deleteRecursively(checkpointDir) }
+    finally { super.afterEach() }
   }
 
   override def sparkContext: SparkContext = sc
@@ -598,9 +592,7 @@ class CheckpointSuite
       rdd2.count()
       assert(rdd1.isCheckpointed === checkpointAllMarkedAncestors)
       assert(rdd2.isCheckpointed === true)
-    } finally {
-      sc.setLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS, null)
-    }
+    } finally { sc.setLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS, null) }
   }
 }
 

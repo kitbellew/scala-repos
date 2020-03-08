@@ -27,9 +27,7 @@ class ScalatraBroadcasterFactory(
   override def configure(
       clazz: Class[_ <: Broadcaster],
       broadcasterLifeCyclePolicy: String,
-      c: AtmosphereConfig) {
-    this.cfg = c
-  }
+      c: AtmosphereConfig) { this.cfg = c }
 
   private def createBroadcaster[T <: Broadcaster](c: Class[T], id: Any): T = {
     try {
@@ -38,9 +36,7 @@ class ScalatraBroadcasterFactory(
           .getConstructor(classOf[WireFormat], classOf[ActorSystem])
           .newInstance(wireFormat, system)
           .asInstanceOf[T]
-      } else {
-        cfg.framework().newClassInstance(c, c)
-      }
+      } else { cfg.framework().newClassInstance(c, c) }
       b.initialize(id.toString, bCfg.uri, cfg)
       bCfg.extraSetup(b)
       b.setSuspendPolicy(-1, Broadcaster.POLICY.FIFO)
@@ -164,10 +160,6 @@ class ScalatraBroadcasterFactory(
           case ex: IllegalStateException => logger.debug(ex.getMessage, ex)
         }
       }
-    } catch {
-      case ex: Exception => {
-        logger.warn(ex.getMessage, ex)
-      }
-    }
+    } catch { case ex: Exception => { logger.warn(ex.getMessage, ex) } }
   }
 }

@@ -270,9 +270,7 @@ trait DefDeconstruction { self: QuasiquoteProperties =>
 
 trait ImportDeconstruction { self: QuasiquoteProperties =>
   property("exhaustive import matcher") = test {
-    def matches(line: String) = {
-      val q"import $ref.{..$sels}" = parse(line)
-    }
+    def matches(line: String) = { val q"import $ref.{..$sels}" = parse(line) }
     matches("import foo.bar")
     matches("import foo.{bar, baz}")
     matches("import foo.{a => b, c => d}")

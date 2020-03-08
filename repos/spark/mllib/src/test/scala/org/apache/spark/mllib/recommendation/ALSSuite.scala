@@ -66,9 +66,7 @@ object ALSSuite {
     def randomMatrix(m: Int, n: Int) = {
       if (negativeFactors) {
         new BDM(m, n, Array.fill(m * n)(rand.nextDouble() * 2 - 1))
-      } else {
-        new BDM(m, n, Array.fill(m * n)(rand.nextDouble()))
-      }
+      } else { new BDM(m, n, Array.fill(m * n)(rand.nextDouble())) }
     }
 
     val userMatrix = randomMatrix(users, features)
@@ -84,9 +82,7 @@ object ALSSuite {
         val prefs =
           new BDM(users, products, raw.data.map(v => if (v > 0) 1.0 else 0.0))
         (raw, prefs)
-      } else {
-        (userMatrix * productMatrix, null)
-      }
+      } else { (userMatrix * productMatrix, null) }
 
     val sampledRatings = {
       for (u <- 0 until users; p <- 0 until products
@@ -100,33 +96,25 @@ object ALSSuite {
 
 class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
 
-  test("rank-1 matrices") {
-    testALS(50, 100, 1, 15, 0.7, 0.3)
-  }
+  test("rank-1 matrices") { testALS(50, 100, 1, 15, 0.7, 0.3) }
 
   test("rank-1 matrices bulk") {
     testALS(50, 100, 1, 15, 0.7, 0.3, false, true)
   }
 
-  test("rank-2 matrices") {
-    testALS(100, 200, 2, 15, 0.7, 0.3)
-  }
+  test("rank-2 matrices") { testALS(100, 200, 2, 15, 0.7, 0.3) }
 
   test("rank-2 matrices bulk") {
     testALS(100, 200, 2, 15, 0.7, 0.3, false, true)
   }
 
-  test("rank-1 matrices implicit") {
-    testALS(80, 160, 1, 15, 0.7, 0.4, true)
-  }
+  test("rank-1 matrices implicit") { testALS(80, 160, 1, 15, 0.7, 0.4, true) }
 
   test("rank-1 matrices implicit bulk") {
     testALS(80, 160, 1, 15, 0.7, 0.4, true, true)
   }
 
-  test("rank-2 matrices implicit") {
-    testALS(100, 200, 2, 15, 0.7, 0.4, true)
-  }
+  test("rank-2 matrices implicit") { testALS(100, 200, 2, 15, 0.7, 0.4, true) }
 
   test("rank-2 matrices implicit bulk") {
     testALS(100, 200, 2, 15, 0.7, 0.4, true, true)
@@ -277,9 +265,7 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
           allRatings(elem.user, elem.product) = elem.rating
         }
         allRatings
-      } else {
-        predictedU * predictedP.t
-      }
+      } else { predictedU * predictedP.t }
 
     if (!implicitPrefs) {
       for (u <- 0 until users; p <- 0 until products) {

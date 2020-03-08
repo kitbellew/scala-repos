@@ -58,9 +58,7 @@ package object util {
         }
       }
       outStream.flush()
-    } finally {
-      inStream.close()
-    }
+    } finally { inStream.close() }
     new String(outStream.toByteArray, encoding)
   }
 
@@ -78,9 +76,7 @@ package object util {
         }
       }
       outStream.flush()
-    } finally {
-      inStream.close()
-    }
+    } finally { inStream.close() }
     outStream.toByteArray
   }
 

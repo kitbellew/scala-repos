@@ -362,9 +362,8 @@ private[kafka] class ZookeeperConsumerConnector(
 
   def autoCommit() {
     trace("auto committing")
-    try {
-      commitOffsets(isAutoCommit = false)
-    } catch {
+    try { commitOffsets(isAutoCommit = false) }
+    catch {
       case t: Throwable =>
         // log it and let it go
         error("exception during autoCommit: ", t)
@@ -731,9 +730,7 @@ private[kafka] class ZookeeperConsumerConnector(
     @throws(classOf[Exception])
     def handleChildChange(
         parentPath: String,
-        curChilds: java.util.List[String]) {
-      rebalanceEventTriggered()
-    }
+        curChilds: java.util.List[String]) { rebalanceEventTriggered() }
 
     def rebalanceEventTriggered() {
       inLock(lock) {
@@ -764,17 +761,13 @@ private[kafka] class ZookeeperConsumerConnector(
       allTopicsOwnedPartitionsCount = 0
     }
 
-    def resetState() {
-      topicRegistry.clear
-    }
+    def resetState() { topicRegistry.clear }
 
     def syncedRebalance() {
       rebalanceLock synchronized {
         rebalanceTimer.time {
           for (i <- 0 until config.rebalanceMaxRetries) {
-            if (isShuttingDown.get()) {
-              return
-            }
+            if (isShuttingDown.get()) { return }
             info(
               "begin rebalancing consumer " + consumerIdString + " try #" + i)
             var done = false
@@ -791,9 +784,8 @@ private[kafka] class ZookeeperConsumerConnector(
                 info("exception during rebalance ", e)
             }
             info("end rebalancing consumer " + consumerIdString + " try #" + i)
-            if (done) {
-              return
-            } else {
+            if (done) { return }
+            else {
               /* Here the cache is at a risk of being stale. To take future rebalancing decisions correctly, we should
                * clear the cache */
               info(
@@ -949,9 +941,7 @@ private[kafka] class ZookeeperConsumerConnector(
             }
             updateFetcher(cluster)
             true
-          } else {
-            false
-          }
+          } else { false }
         }
       }
     }

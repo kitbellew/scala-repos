@@ -193,9 +193,7 @@ trait Context {
     * Unbind the passed-in keys, in the scope of `fn`.
     */
   def letClear[R](keys: Key[_]*)(fn: => R): R = {
-    val newEnv = keys.foldLeft(env) {
-      case (e, k) => e.cleared(k)
-    }
+    val newEnv = keys.foldLeft(env) { case (e, k) => e.cleared(k) }
     local.let(newEnv)(fn)
   }
 
@@ -217,9 +215,7 @@ trait Context {
     * }}}
     */
   def letClear[R]()(fn: => R): R =
-    local.let(Empty) {
-      fn
-    }
+    local.let(Empty) { fn }
 
 }
 

@@ -121,9 +121,7 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     "part-%05d".format(partitionIndex)
   }
 
-  private def checkpointPartitionerFileName(): String = {
-    "_partitioner"
-  }
+  private def checkpointPartitionerFileName(): String = { "_partitioner" }
 
   /**
     * Write RDD to checkpoint files and return a ReliableCheckpointRDD representing the RDD.
@@ -208,9 +206,7 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     }
     val serializer = env.serializer.newInstance()
     val serializeStream = serializer.serializeStream(fileOutputStream)
-    Utils.tryWithSafeFinally {
-      serializeStream.writeAll(iterator)
-    } {
+    Utils.tryWithSafeFinally { serializeStream.writeAll(iterator) } {
       serializeStream.close()
     }
 
@@ -248,9 +244,7 @@ private[spark] object ReliableCheckpointRDD extends Logging {
       val fileOutputStream = fs.create(partitionerFilePath, false, bufferSize)
       val serializer = SparkEnv.get.serializer.newInstance()
       val serializeStream = serializer.serializeStream(fileOutputStream)
-      Utils.tryWithSafeFinally {
-        serializeStream.writeObject(partitioner)
-      } {
+      Utils.tryWithSafeFinally { serializeStream.writeObject(partitioner) } {
         serializeStream.close()
       }
       logDebug(s"Written partitioner to $partitionerFilePath")
@@ -280,9 +274,7 @@ private[spark] object ReliableCheckpointRDD extends Logging {
         val deserializeStream = serializer.deserializeStream(fileInputStream)
         val partitioner = Utils.tryWithSafeFinally[Partitioner] {
           deserializeStream.readObject[Partitioner]
-        } {
-          deserializeStream.close()
-        }
+        } { deserializeStream.close() }
         logDebug(s"Read partitioner from $partitionerFilePath")
         Some(partitioner)
       } else {

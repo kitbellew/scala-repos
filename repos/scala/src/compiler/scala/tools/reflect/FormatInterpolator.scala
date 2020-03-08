@@ -136,9 +136,8 @@ abstract class FormatInterpolator {
           if (e.index == s0.length - 1) {
             c.error(errPoint, """Trailing '\' escapes nothing.""")
             s0
-          } else if (octalOf(s0(e.index + 1)) >= 0) {
-            badOctal
-          } else {
+          } else if (octalOf(s0(e.index + 1)) >= 0) { badOctal }
+          else {
             c.error(errPoint, e.getMessage)
             s0
           }
@@ -196,9 +195,7 @@ abstract class FormatInterpolator {
       fstring append s
     }
 
-    parts.zipWithIndex foreach {
-      case (part, n) => copyPart(part, n)
-    }
+    parts.zipWithIndex foreach { case (part, n) => copyPart(part, n) }
 
     //q"{..$evals; new StringOps(${fstring.toString}).format(..$ids)}"
     val format = fstring.toString
@@ -231,7 +228,9 @@ abstract class FormatInterpolator {
     val Spec, Index, Flags, Width, Precision, CC = Value
   }
 
-  val stdContextTags = new { val tc: c.type = c } with StdContextTags
+  val stdContextTags = new {
+    val tc: c.type = c
+  } with StdContextTags
   import stdContextTags._
   val tagOfFormattable = typeTag[Formattable]
 

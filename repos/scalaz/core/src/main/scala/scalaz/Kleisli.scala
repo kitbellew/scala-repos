@@ -432,14 +432,10 @@ private trait KleisliStrong[F[_]] extends Strong[Kleisli[F, ?, ?]] {
   implicit def F: Functor[F]
 
   def first[A, B, C](f: Kleisli[F, A, B]): Kleisli[F, (A, C), (B, C)] =
-    Kleisli {
-      case (a, c) => F.map(f.run(a))((b: B) => (b, c))
-    }
+    Kleisli { case (a, c) => F.map(f.run(a))((b: B) => (b, c)) }
 
   def second[A, B, C](f: Kleisli[F, A, B]): Kleisli[F, (C, A), (C, B)] =
-    Kleisli {
-      case (c, a) => F.map(f.run(a))((b: B) => (c, b))
-    }
+    Kleisli { case (c, a) => F.map(f.run(a))((b: B) => (c, b)) }
 
   override def mapfst[A, B, C](fa: Kleisli[F, A, B])(f: C => A) = fa local f
 

@@ -316,9 +316,7 @@ class FPGrowth private (
     while (i >= 0) {
       val item = filtered(i)
       val part = partitioner.getPartition(item)
-      if (!output.contains(part)) {
-        output(part) = filtered.slice(0, i + 1)
-      }
+      if (!output.contains(part)) { output(part) = filtered.slice(0, i + 1) }
       i -= 1
     }
     output
@@ -346,8 +344,6 @@ object FPGrowth {
       *
       */
     @Since("1.3.0")
-    def javaItems: java.util.List[Item] = {
-      items.toList.asJava
-    }
+    def javaItems: java.util.List[Item] = { items.toList.asJava }
   }
 }

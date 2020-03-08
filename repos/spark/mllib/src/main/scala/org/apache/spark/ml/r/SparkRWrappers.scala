@@ -92,11 +92,8 @@ private[r] object SparkRWrappers {
         }
       }
       case m: LogisticRegressionModel => {
-        if (m.getFitIntercept) {
-          Array(m.intercept) ++ m.coefficients.toArray
-        } else {
-          m.coefficients.toArray
-        }
+        if (m.getFitIntercept) { Array(m.intercept) ++ m.coefficients.toArray }
+        else { m.coefficients.toArray }
       }
       case m: KMeansModel =>
         m.clusterCenters.flatMap(_.toArray)
@@ -128,9 +125,8 @@ private[r] object SparkRWrappers {
         if (method == "centers") {
           // Drop the assembled vector for easy-print to R side.
           m.summary.predictions.drop(m.summary.featuresCol)
-        } else if (method == "classes") {
-          m.summary.cluster
-        } else {
+        } else if (method == "classes") { m.summary.cluster }
+        else {
           throw new UnsupportedOperationException(
             s"Method (centers or classes) required but $method found.")
         }
@@ -147,17 +143,13 @@ private[r] object SparkRWrappers {
           m.summary.predictions.schema(m.summary.featuresCol))
         if (m.getFitIntercept) {
           Array("(Intercept)") ++ attrs.attributes.get.map(_.name.get)
-        } else {
-          attrs.attributes.get.map(_.name.get)
-        }
+        } else { attrs.attributes.get.map(_.name.get) }
       case m: LogisticRegressionModel =>
         val attrs = AttributeGroup.fromStructField(
           m.summary.predictions.schema(m.summary.featuresCol))
         if (m.getFitIntercept) {
           Array("(Intercept)") ++ attrs.attributes.get.map(_.name.get)
-        } else {
-          attrs.attributes.get.map(_.name.get)
-        }
+        } else { attrs.attributes.get.map(_.name.get) }
       case m: KMeansModel =>
         val attrs = AttributeGroup.fromStructField(
           m.summary.predictions.schema(m.summary.featuresCol))

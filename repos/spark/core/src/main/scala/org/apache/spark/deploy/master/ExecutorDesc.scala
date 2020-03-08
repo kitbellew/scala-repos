@@ -29,9 +29,7 @@ private[master] class ExecutorDesc(
   var state = ExecutorState.LAUNCHING
 
   /** Copy all state (non-val) variables from the given on-the-wire ExecutorDescription. */
-  def copyState(execDesc: ExecutorDescription) {
-    state = execDesc.state
-  }
+  def copyState(execDesc: ExecutorDescription) { state = execDesc.state }
 
   def fullId: String = application.id + "/" + id
 

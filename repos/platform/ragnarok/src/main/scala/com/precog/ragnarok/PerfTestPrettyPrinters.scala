@@ -113,9 +113,7 @@ trait PrettyPrinters {
             case Nil => Nil
             case head :: tail =>
               ("-> " + head) :: (tail.foldRight(
-                List(" ' " + prettyResult(result), "")) {
-                " | " + _ :: _
-              })
+                List(" ' " + prettyResult(result), "")) { " | " + _ :: _ })
           }
       }
     }

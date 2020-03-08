@@ -37,9 +37,7 @@ case class Dirichlet[T, @specialized(Int) I](params: T)(implicit
   /**
     * Returns a Multinomial distribution over the iterator
     */
-  def draw(): T = {
-    normalize(unnormalizedDraw(), 1.0)
-  }
+  def draw(): T = { normalize(unnormalizedDraw(), 1.0) }
 
   /**
     * Returns unnormalized probabilities for a Multinomial distribution.
@@ -137,8 +135,6 @@ object Dirichlet {
       }
     }
 
-    def distribution(p: Parameter) = {
-      new Dirichlet(p)
-    }
+    def distribution(p: Parameter) = { new Dirichlet(p) }
   }
 }

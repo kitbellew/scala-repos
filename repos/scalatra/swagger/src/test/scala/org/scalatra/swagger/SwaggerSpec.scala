@@ -103,11 +103,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
   }
 
   def parseInt(i: String): Option[Int] =
-    try {
-      Some(Integer.parseInt(i))
-    } catch {
-      case _: Throwable ⇒ None
-    }
+    try { Some(Integer.parseInt(i)) }
+    catch { case _: Throwable ⇒ None }
 
   val propOrder =
     "category" :: "name" :: "id" :: "tags" :: "status" :: "photoUrls" :: Nil
@@ -386,9 +383,7 @@ class SwaggerTestServlet(protected val swagger: Swagger)
 
   val data = new PetData
 
-  get("/undocumented") {
-    BadRequest("This should not show up")
-  }
+  get("/undocumented") { BadRequest("This should not show up") }
   //
   //  val rootOperation =
   //    (apiOperation[List[Pet]]("allPets")
@@ -507,9 +502,7 @@ class StoreApi(val swagger: Swagger)
         StringResponseMessage(404, "Order not found")
   ))
 
-  get("/order/:orderId", operation(getOrderOperation)) {
-    ""
-  }
+  get("/order/:orderId", operation(getOrderOperation)) { "" }
 
   val deleteOrderOperation =
     (apiOperation[Unit]("deleteOrder")
@@ -520,9 +513,7 @@ class StoreApi(val swagger: Swagger)
         StringResponseMessage(404, "Order not found")
   ))
 
-  delete("/order/:orderId", operation(deleteOrderOperation)) {
-    NoContent()
-  }
+  delete("/order/:orderId", operation(deleteOrderOperation)) { NoContent() }
 
   val placeOrderOperation =
     (apiOperation[Unit]("placeOrder")
@@ -530,9 +521,7 @@ class StoreApi(val swagger: Swagger)
       responseMessage StringResponseMessage(400, "Invalid order")
       parameter bodyParam[Order].description(
         "order placed for purchasing the pet"))
-  post("/order", operation(placeOrderOperation)) {
-    ""
-  }
+  post("/order", operation(placeOrderOperation)) { "" }
 }
 
 class UserApi(val swagger: Swagger)
@@ -547,9 +536,7 @@ class UserApi(val swagger: Swagger)
     DefaultWriters.StringWriter)
 
   val createUserOperation = apiOperation[User]("createUser")
-  post("/", operation(createUserOperation)) {
-    ""
-  }
+  post("/", operation(createUserOperation)) { "" }
 }
 
 class SwaggerResourcesServlet(val swagger: Swagger)

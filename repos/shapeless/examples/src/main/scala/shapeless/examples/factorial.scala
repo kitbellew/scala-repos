@@ -27,7 +27,9 @@ object FactorialExamples {
   import ops.nat._
   import test._
 
-  trait Factorial[I <: Nat] { type Out <: Nat }
+  trait Factorial[I <: Nat] {
+    type Out <: Nat
+  }
 
   object Factorial {
     def factorial[N <: Nat](
@@ -36,11 +38,15 @@ object FactorialExamples {
 
     type Aux[I <: Nat, Out0 <: Nat] = Factorial[I] { type Out = Out0 }
 
-    implicit def fact0: Aux[_0, _1] = new Factorial[_0] { type Out = _1 }
+    implicit def fact0: Aux[_0, _1] = new Factorial[_0] {
+      type Out = _1
+    }
     implicit def factN[N <: Nat, F <: Nat, F1 <: Nat](implicit
         f: Factorial.Aux[N, F1],
         t: Prod.Aux[Succ[N], F1, F]): Aux[Succ[N], F] =
-      new Factorial[Succ[N]] { type Out = F }
+      new Factorial[Succ[N]] {
+        type Out = F
+      }
   }
 
   import Factorial._

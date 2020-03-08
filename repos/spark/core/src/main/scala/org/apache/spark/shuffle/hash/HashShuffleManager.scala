@@ -85,7 +85,5 @@ private[spark] class HashShuffleManager(conf: SparkConf)
   }
 
   /** Shut down this ShuffleManager. */
-  override def stop(): Unit = {
-    shuffleBlockResolver.stop()
-  }
+  override def stop(): Unit = { shuffleBlockResolver.stop() }
 }

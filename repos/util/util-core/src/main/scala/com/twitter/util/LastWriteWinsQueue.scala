@@ -9,9 +9,7 @@ import java.util.concurrent.atomic.AtomicReference
 class LastWriteWinsQueue[A] extends java.util.Queue[A] {
   val item = new AtomicReference[Option[A]](None)
 
-  def clear() {
-    item.set(None)
-  }
+  def clear() { item.set(None) }
 
   def retainAll(p1: Collection[_]) = throw new UnsupportedOperationException
 
@@ -25,9 +23,7 @@ class LastWriteWinsQueue[A] extends java.util.Queue[A] {
   def remove(candidate: AnyRef) = {
     val contained = item.get
     val containsCandidate = contained.map(_ == candidate).getOrElse(false)
-    if (containsCandidate) {
-      item.compareAndSet(contained, None)
-    }
+    if (containsCandidate) { item.compareAndSet(contained, None) }
     containsCandidate
   }
 

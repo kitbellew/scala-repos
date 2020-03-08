@@ -206,9 +206,7 @@ private[history] class ApplicationCache(
       log.debug(
         s"Probing at time $now for updated application $cacheKey -> $entry")
       metrics.updateProbeCount.inc()
-      updated = time(metrics.updateProbeTimer) {
-        entry.updateProbe()
-      }
+      updated = time(metrics.updateProbeTimer) { entry.updateProbe() }
       if (updated) {
         logDebug(s"refreshing $cacheKey")
         metrics.updateTriggeredCount.inc()
@@ -273,11 +271,8 @@ private[history] class ApplicationCache(
     */
   private def time[T](t: Timer)(f: => T): T = {
     val timeCtx = t.time()
-    try {
-      f
-    } finally {
-      timeCtx.close()
-    }
+    try { f }
+    finally { timeCtx.close() }
   }
 
   /**
@@ -598,9 +593,7 @@ private[history] class ApplicationCacheCheckFilter()
         Option(httpRequest.getQueryString).map("?" + _).getOrElse("")
       val redirectUrl = httpResponse.encodeRedirectURL(requestURI + queryStr)
       httpResponse.sendRedirect(redirectUrl)
-    } else {
-      chain.doFilter(request, response)
-    }
+    } else { chain.doFilter(request, response) }
   }
 
   override def destroy(): Unit = {}
@@ -658,9 +651,7 @@ private[history] object ApplicationCacheCheckFilterRelay extends Logging {
   /**
     * Reset the application cache
     */
-  def resetApplicationCache(): Unit = {
-    applicationCache = None
-  }
+  def resetApplicationCache(): Unit = { applicationCache = None }
 
   /**
     * Check to see if there has been an update
@@ -677,9 +668,8 @@ private[history] object ApplicationCacheCheckFilterRelay extends Logging {
     logDebug(s"Checking $appId/$attemptId from $requestURI")
     applicationCache match {
       case Some(cache) =>
-        try {
-          cache.checkForUpdates(appId, attemptId)
-        } catch {
+        try { cache.checkForUpdates(appId, attemptId) }
+        catch {
           case ex: Exception =>
             // something went wrong. Keep going with the existing UI
             logWarning(

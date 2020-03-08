@@ -106,9 +106,7 @@ object OrderedSerialization {
       val a = Serialization.read[T](as)
       val b = Serialization.read[T](bs)
       compare(a.get, b.get)
-    } catch {
-      case NonFatal(e) => CompareFailure(e)
-    }
+    } catch { case NonFatal(e) => CompareFailure(e) }
 
   private[this] def internalTransformer[T, U, V](
       packFn: T => U,
@@ -123,9 +121,7 @@ object OrderedSerialization {
           val u = packFn(t)
           cache = (t, u)
           u
-        } else {
-          readCache._2
-        }
+        } else { readCache._2 }
       }
 
       override def hash(t: T) = otherOrdSer.hash(packCache(t))
@@ -229,9 +225,7 @@ final case class DeserializingOrderedSerialization[T](
   final override def compareBinary(a: InputStream, b: InputStream) =
     try OrderedSerialization.resultFrom {
       compare(read(a).get, read(b).get)
-    } catch {
-      case NonFatal(e) => OrderedSerialization.CompareFailure(e)
-    }
+    } catch { case NonFatal(e) => OrderedSerialization.CompareFailure(e) }
   final override def staticSize = serialization.staticSize
   final override def dynamicSize(t: T) = serialization.dynamicSize(t)
 }

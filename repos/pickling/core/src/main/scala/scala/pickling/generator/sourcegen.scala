@@ -273,9 +273,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
       sys.error(s"Unable to reflectively call constructors, currently.")
     else {
       if (cons.constructor.parameterNames.isEmpty) q"""new ${tpe}"""
-      else {
-        q"new $tpe(...$argss)"
-      }
+      else { q"new $tpe(...$argss)" }
     }
   }
   def genCallModuleFactory(cons: CallModuleFactory): c.Tree = {

@@ -118,9 +118,7 @@ object PlayReload {
                     }
                   case JavacErrorPosition(pos) =>
                     parsed = parsed._1 -> Some(pos.size)
-                    if (first == ((None, None))) {
-                      first = parsed
-                    }
+                    if (first == ((None, None))) { first = parsed }
                 }
               first
             }

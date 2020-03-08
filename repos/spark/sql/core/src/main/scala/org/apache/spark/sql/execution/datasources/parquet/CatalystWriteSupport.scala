@@ -103,9 +103,7 @@ private[parquet] class CatalystWriteSupport
   }
 
   override def write(row: InternalRow): Unit = {
-    consumeMessage {
-      writeFields(row, schema, rootFieldWriters)
-    }
+    consumeMessage { writeFields(row, schema, rootFieldWriters) }
   }
 
   private def writeFields(
@@ -115,9 +113,7 @@ private[parquet] class CatalystWriteSupport
     var i = 0
     while (i < row.numFields) {
       if (!row.isNullAt(i)) {
-        consumeField(schema(i).name, i) {
-          fieldWriters(i).apply(row, i)
-        }
+        consumeField(schema(i).name, i) { fieldWriters(i).apply(row, i) }
       }
       i += 1
     }
@@ -411,15 +407,11 @@ private[parquet] class CatalystWriteSupport
             var i = 0
             while (i < map.numElements()) {
               consumeGroup {
-                consumeField("key", 0) {
-                  keyWriter.apply(keyArray, i)
-                }
+                consumeField("key", 0) { keyWriter.apply(keyArray, i) }
 
                 // Only creates the "value" field if the value if non-empty
                 if (!map.valueArray().isNullAt(i)) {
-                  consumeField("value", 1) {
-                    valueWriter.apply(valueArray, i)
-                  }
+                  consumeField("value", 1) { valueWriter.apply(valueArray, i) }
                 }
               }
               i += 1

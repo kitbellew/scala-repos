@@ -191,8 +191,6 @@ class MetricsConfigSuite extends SparkFunSuite with BeforeAndAfter {
   private def setMetricsProperty(
       conf: SparkConf,
       name: String,
-      value: String): Unit = {
-    conf.set(s"spark.metrics.conf.$name", value)
-  }
+      value: String): Unit = { conf.set(s"spark.metrics.conf.$name", value) }
 
 }

@@ -45,9 +45,7 @@ object TestSource {
       if (dateRangeOpt.isDefined) {
         val valid = dateRangeOpt.get.contains(dr)
         new LocalIterableSource(iter, valid)
-      } else {
-        src
-      }
+      } else { src }
     }
     (Map(src -> iter.map { tset(_) }.toBuffer), prod)
   }

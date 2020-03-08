@@ -43,9 +43,7 @@ class VotingServiceSpec
   val cluster = Cluster(system)
 
   def join(from: RoleName, to: RoleName): Unit = {
-    runOn(from) {
-      cluster join node(to).address
-    }
+    runOn(from) { cluster join node(to).address }
     enterBarrier(from.name + "-joined")
   }
 
@@ -69,9 +67,7 @@ class VotingServiceSpec
       val N = 1000
       runOn(node1) {
         votingService ! VotingService.OPEN
-        for (n ← 1 to N) {
-          votingService ! new Vote("#" + ((n % 20) + 1))
-        }
+        for (n ← 1 to N) { votingService ! new Vote("#" + ((n % 20) + 1)) }
       }
       runOn(node2, node3) {
         // wait for it to open
@@ -80,14 +76,10 @@ class VotingServiceSpec
           votingService.tell(VotingService.GET_VOTES, p.ref)
           p.expectMsgType[Votes](3.seconds).open should be(true)
         }
-        for (n ← 1 to N) {
-          votingService ! new Vote("#" + ((n % 20) + 1))
-        }
+        for (n ← 1 to N) { votingService ! new Vote("#" + ((n % 20) + 1)) }
       }
       enterBarrier("voting-done")
-      runOn(node3) {
-        votingService ! VotingService.CLOSE
-      }
+      runOn(node3) { votingService ! VotingService.CLOSE }
 
       val expected =
         (1 to 20).map(n ⇒ "#" + n -> BigInteger.valueOf(3L * N / 20)).toMap

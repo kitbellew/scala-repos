@@ -220,11 +220,8 @@ class MigrationTo0_11(
     def loadApp(
         id: PathId,
         version: Timestamp): Future[Option[AppDefinition]] = {
-      if (appInGroup.version == version) {
-        Future.successful(Some(appInGroup))
-      } else {
-        appRepository.app(id, version)
-      }
+      if (appInGroup.version == version) { Future.successful(Some(appInGroup)) }
+      else { appRepository.app(id, version) }
     }
 
     val sortedVersions = appRepository.listVersions(id).map(_.to[SortedSet])
@@ -273,9 +270,7 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
           case e: com.google.protobuf.InvalidProtocolBufferException =>
             None
         }
-      } else {
-        None
-      }
+      } else { None }
     }
 
     store

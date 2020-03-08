@@ -148,9 +148,7 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
                 }
               }
           }
-      } getOrElse {
-        None.point[M]
-      }
+      } getOrElse { None.point[M] }
     }
 
   def validGrants(
@@ -162,9 +160,7 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
         _.grants.toList.traverse(findValidGrant(_, at)) map {
           _.flatMap(_.toSet)(collection.breakOut): Set[Grant]
         }
-      } getOrElse {
-        Set.empty.point[M]
-      }
+      } getOrElse { Set.empty.point[M] }
     }
   }
 
@@ -179,9 +175,8 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
       else {
         val minimized =
           Grant.coveringGrants(grants, perms, expiration).map(_.grantId)
-        if (minimized.isEmpty) {
-          none[Grant].point[M]
-        } else {
+        if (minimized.isEmpty) { none[Grant].point[M] }
+        else {
           createGrant(
             name,
             description,
@@ -257,9 +252,7 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
             issuerKey,
             newGrants.flatMap(_.map(_.grantId))(collection.breakOut))
         } yield some(newKey)
-      } else {
-        none[APIKeyRecord].point[M]
-      }
+      } else { none[APIKeyRecord].point[M] }
     }
   }
 

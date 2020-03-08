@@ -230,9 +230,8 @@ private[niflheim] object NIHDBActor extends Logging {
       implicit actorSystem: ActorSystem): IO[Validation[Error, ActorRef]] = {
     val descriptorFile = new File(baseDir, descriptorFilename)
     val currentState: IO[Validation[Error, ProjectionState]] =
-      if (descriptorFile.exists) {
-        ProjectionState.fromFile(descriptorFile)
-      } else {
+      if (descriptorFile.exists) { ProjectionState.fromFile(descriptorFile) }
+      else {
         val state = ProjectionState.empty(authorities)
         for {
           _ <- IO {
@@ -240,9 +239,7 @@ private[niflheim] object NIHDBActor extends Logging {
               "No current descriptor found for " + baseDir + "; " + authorities + ", creating fresh descriptor")
           }
           _ <- ProjectionState.toFile(state, descriptorFile)
-        } yield {
-          success(state)
-        }
+        } yield { success(state) }
       }
 
     currentState map {
@@ -333,9 +330,7 @@ private[niflheim] class NIHDBActor private (
 
   private def initDirs(f: File) = IO {
     if (!f.isDirectory) {
-      if (!f.mkdirs) {
-        throw new Exception("Failed to create dir: " + f)
-      }
+      if (!f.mkdirs) { throw new Exception("Failed to create dir: " + f) }
     }
   }
 
@@ -418,13 +413,9 @@ private[niflheim] class NIHDBActor private (
   } except {
     case t: Throwable =>
       IO { logger.error("Error during close", t) }
-  } ensuring {
-    IO { workLock.release }
-  }
+  } ensuring { IO { workLock.release } }
 
-  override def postStop() = {
-    close.unsafePerformIO
-  }
+  override def postStop() = { close.unsafePerformIO }
 
   def getSnapshot(): NIHDBSnapshot = NIHDBSnapshot(state.currentBlocks)
 

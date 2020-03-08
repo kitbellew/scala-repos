@@ -184,9 +184,7 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
         SourceTreeToPsiMap.psiElementToTree(expr),
         SourceTreeToPsiMap.psiElementToTree(newExpr))
       CodeStyleManager.getInstance(project).reformat(parent, true)
-    } finally {
-      updateResultRange(oldTextLength, parent.getTextLength)
-    }
+    } finally { updateResultRange(oldTextLength, parent.getTextLength) }
   }
 
   protected def checkElementContainsRange(element: PsiElement): Boolean = {

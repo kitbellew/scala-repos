@@ -13,11 +13,7 @@ object UrlContextSpec extends Specification {
   "path interpolation" should {
 
     "match a plain path" in {
-      "match" in {
-        "/foo/bar" must beLike {
-          case p"/foo/bar" => ok
-        }
-      }
+      "match" in { "/foo/bar" must beLike { case p"/foo/bar" => ok } }
       "no match" in {
         "/foo/notbar" must beLike {
           case p"/foo/bar" => ko
@@ -123,9 +119,7 @@ object UrlContextSpec extends Specification {
 
     "allow required parameter extraction" in {
       "match" in {
-        qs("foo" -> "bar") must beLike {
-          case q"foo=$foo" => foo must_== "bar"
-        }
+        qs("foo" -> "bar") must beLike { case q"foo=$foo" => foo must_== "bar" }
       }
       "no match" in {
         qs("foo" -> "bar") must beLike {
@@ -149,11 +143,7 @@ object UrlContextSpec extends Specification {
     }
 
     "allow seq parameter extraction" in {
-      "none" in {
-        qs() must beLike {
-          case q_s"foo=$foo" => foo must beEmpty
-        }
-      }
+      "none" in { qs() must beLike { case q_s"foo=$foo" => foo must beEmpty } }
       "one" in {
         qs("foo" -> "bar") must beLike {
           case q_s"foo=$foo" => Seq("bar") must_== Seq("bar")

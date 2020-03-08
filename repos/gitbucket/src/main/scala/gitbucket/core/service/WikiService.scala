@@ -223,9 +223,7 @@ trait WikiService {
                     Seq(
                       RevertInfo("DELETE", fh.getOldPath, ""),
                       RevertInfo("ADD", fh.getNewPath, applied))
-                  } else {
-                    Seq(RevertInfo("DELETE", fh.getOldPath, ""))
-                  }
+                  } else { Seq(RevertInfo("DELETE", fh.getOldPath, "")) }
                 }
                 case _ => Nil
               }
@@ -340,16 +338,10 @@ trait WikiService {
               committer.fullName,
               committer.mailAddress,
               if (message.trim.length == 0) {
-                if (removed) {
-                  s"Rename ${currentPageName} to ${newPageName}"
-                } else if (created) {
-                  s"Created ${newPageName}"
-                } else {
-                  s"Updated ${newPageName}"
-                }
-              } else {
-                message
-              }
+                if (removed) { s"Rename ${currentPageName} to ${newPageName}" }
+                else if (created) { s"Created ${newPageName}" }
+                else { s"Updated ${newPageName}" }
+              } else { message }
             )
 
             Some(newHeadId.getName)
@@ -383,9 +375,7 @@ trait WikiService {
                   path,
                   tree.getEntryFileMode,
                   tree.getEntryObjectId))
-            } else {
-              removed = true
-            }
+            } else { removed = true }
           }
           if (removed) {
             builder.finish()

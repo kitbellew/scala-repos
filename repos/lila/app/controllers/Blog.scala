@@ -40,9 +40,9 @@ object Blog extends LilaController {
 
   def atom(ref: Option[String]) = Action.async { implicit req =>
     blogApi context ref flatMap { implicit prismic =>
-      blogApi.recent(prismic.api, ref, 50) map {
-        _ ?? (_.results)
-      } map { docs => Ok(views.xml.blog.atom(docs)) as XML }
+      blogApi.recent(prismic.api, ref, 50) map { _ ?? (_.results) } map {
+        docs => Ok(views.xml.blog.atom(docs)) as XML
+      }
     }
   }
 

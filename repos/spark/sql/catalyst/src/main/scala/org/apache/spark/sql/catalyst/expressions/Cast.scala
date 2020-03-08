@@ -159,13 +159,9 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       buildCast[UTF8String](
         _,
         s => {
-          if (StringUtils.isTrueString(s)) {
-            true
-          } else if (StringUtils.isFalseString(s)) {
-            false
-          } else {
-            null
-          }
+          if (StringUtils.isTrueString(s)) { true }
+          else if (StringUtils.isFalseString(s)) { false }
+          else { null }
         })
     case TimestampType =>
       buildCast[Long](_, t => t != 0)
@@ -230,9 +226,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
   private[this] def timestampToLong(ts: Long): Long =
     math.floor(ts.toDouble / 1000000L).toLong
   // converting us to seconds in double
-  private[this] def timestampToDouble(ts: Long): Double = {
-    ts / 1000000.0
-  }
+  private[this] def timestampToDouble(ts: Long): Double = { ts / 1000000.0 }
 
   // DateConverter
   private[this] def castToDate(from: DataType): Any => Any = from match {
@@ -263,9 +257,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         _,
         s =>
           try s.toString.toLong
-          catch {
-            case _: NumberFormatException => null
-          })
+          catch { case _: NumberFormatException => null })
     case BooleanType =>
       buildCast[Boolean](_, b => if (b) 1L else 0L)
     case DateType =>
@@ -283,9 +275,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         _,
         s =>
           try s.toString.toInt
-          catch {
-            case _: NumberFormatException => null
-          })
+          catch { case _: NumberFormatException => null })
     case BooleanType =>
       buildCast[Boolean](_, b => if (b) 1 else 0)
     case DateType =>
@@ -303,9 +293,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         _,
         s =>
           try s.toString.toShort
-          catch {
-            case _: NumberFormatException => null
-          })
+          catch { case _: NumberFormatException => null })
     case BooleanType =>
       buildCast[Boolean](_, b => if (b) 1.toShort else 0.toShort)
     case DateType =>
@@ -323,9 +311,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         _,
         s =>
           try s.toString.toByte
-          catch {
-            case _: NumberFormatException => null
-          })
+          catch { case _: NumberFormatException => null })
     case BooleanType =>
       buildCast[Boolean](_, b => if (b) 1.toByte else 0.toByte)
     case DateType =>
@@ -358,9 +344,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         s =>
           try {
             changePrecision(Decimal(new JavaBigDecimal(s.toString)), target)
-          } catch {
-            case _: NumberFormatException => null
-          })
+          } catch { case _: NumberFormatException => null })
     case BooleanType =>
       buildCast[Boolean](
         _,
@@ -385,9 +369,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
           changePrecision(
             Decimal(x.fractional.asInstanceOf[Fractional[Any]].toDouble(b)),
             target)
-        } catch {
-          case _: NumberFormatException => null
-        }
+        } catch { case _: NumberFormatException => null }
   }
 
   // DoubleConverter
@@ -397,9 +379,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         _,
         s =>
           try s.toString.toDouble
-          catch {
-            case _: NumberFormatException => null
-          })
+          catch { case _: NumberFormatException => null })
     case BooleanType =>
       buildCast[Boolean](_, b => if (b) 1d else 0d)
     case DateType =>
@@ -417,9 +397,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         _,
         s =>
           try s.toString.toFloat
-          catch {
-            case _: NumberFormatException => null
-          })
+          catch { case _: NumberFormatException => null })
     case BooleanType =>
       buildCast[Boolean](_, b => if (b) 1f else 0f)
     case DateType =>
@@ -442,11 +420,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         array.foreach(
           fromType,
           (i, e) => {
-            if (e == null) {
-              values(i) = null
-            } else {
-              values(i) = elementCast(e)
-            }
+            if (e == null) { values(i) = null }
+            else { values(i) = elementCast(e) }
           })
         new GenericArrayData(values)
       }

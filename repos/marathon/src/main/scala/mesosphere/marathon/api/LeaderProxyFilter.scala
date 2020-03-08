@@ -299,9 +299,7 @@ class JavaUrlConnectionRequestForwarder @Inject() (
       if (fields != null) {
         for ((name, values) <- fields.asScala) {
           if (name != null && values != null) {
-            for (value <- values.asScala) {
-              response.addHeader(name, value)
-            }
+            for (value <- values.asScala) { response.addHeader(name, value) }
           }
         }
       }

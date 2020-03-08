@@ -10,7 +10,9 @@ import Types.Coll
 
 import lila.common.LilaException
 
-trait InColl[A] { implicit def coll: Types.Coll }
+trait InColl[A] {
+  implicit def coll: Types.Coll
+}
 
 trait Tube[Doc] extends BSONDocumentReader[Option[Doc]]
 
@@ -28,7 +30,9 @@ case class BsTube[Doc](handler: BSONHandler[BSONDocument, Doc])
   def write(doc: Doc): BSONDocument = handler write doc
 
   def inColl(c: Coll): BsTubeInColl[Doc] =
-    new BsTube[Doc](handler) with InColl[Doc] { def coll = c }
+    new BsTube[Doc](handler) with InColl[Doc] {
+      def coll = c
+    }
 }
 
 case class JsTube[Doc](
@@ -74,7 +78,9 @@ case class JsTube[Doc](
   )
 
   def inColl(c: Coll): JsTubeInColl[Doc] =
-    new JsTube[Doc](reader, writer, flags) with InColl[Doc] { def coll = c }
+    new JsTube[Doc](reader, writer, flags) with InColl[Doc] {
+      def coll = c
+    }
 
   private lazy val flagSet = flags.map(_(JsTube.Flag)).toSet
 

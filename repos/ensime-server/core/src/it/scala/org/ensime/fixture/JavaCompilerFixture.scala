@@ -43,9 +43,7 @@ trait JavaCompilerFixture {
     val file = SourceFileInfo(f, Some(contents.replaceAll(re, "")), None)
     cc.askTypecheckFiles(List(file))
     assert(points.nonEmpty)
-    for (pt <- points) {
-      testCode(file, pt._1, pt._2, cc)
-    }
+    for (pt <- points) { testCode(file, pt._1, pt._2, cc) }
   }
 }
 

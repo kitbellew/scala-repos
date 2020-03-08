@@ -33,9 +33,7 @@ package scalaguide.http.scalabodyparsers {
           // Expecting json body
           jsonBody
             .map { json => Ok("Got: " + (json \ "name").as[String]) }
-            .getOrElse {
-              BadRequest("Expecting application/json request body")
-            }
+            .getOrElse { BadRequest("Expecting application/json request body") }
         }
         //#access-json-body
         testAction(save, helloRequest)
@@ -201,9 +199,7 @@ package scalaguide.http.scalabodyparsers {
         request.session
           .get("username")
           .map { user => file(to = new File("/tmp/" + user + ".upload")) }
-          .getOrElse {
-            sys.error("You don't have the right to upload here")
-          }
+          .getOrElse { sys.error("You don't have the right to upload here") }
       }
 
       def save = Action(storeInUserFile) { request =>

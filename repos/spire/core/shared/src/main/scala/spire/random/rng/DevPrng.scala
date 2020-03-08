@@ -37,9 +37,8 @@ class CycledFile(f: File) extends Generator { self =>
   else
     reinit()
 
-  try {
-    nextLong()
-  } catch {
+  try { nextLong() }
+  catch {
     case e: EOFException =>
       throw new IllegalArgumentException(
         "%s contains less than 8 bytes" format f)
@@ -59,18 +58,16 @@ class CycledFile(f: File) extends Generator { self =>
     throw new UnsupportedOperationException("setSeedBytes")
 
   def nextInt(): Int =
-    try {
-      dis.readInt()
-    } catch {
+    try { dis.readInt() }
+    catch {
       case e: EOFException =>
         reinit()
         dis.readInt()
     }
 
   def nextLong(): Long =
-    try {
-      dis.readLong()
-    } catch {
+    try { dis.readLong() }
+    catch {
       case e: EOFException =>
         reinit()
         dis.readInt()

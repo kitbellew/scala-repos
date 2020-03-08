@@ -3,13 +3,9 @@ package org.scalatra
 import org.scalatra.test.specs2.ScalatraSpec
 
 class EnvironmentFilter extends ScalatraFilter {
-  get("/*/environment") {
-    environment
-  }
+  get("/*/environment") { environment }
 
-  get("/*/is-development-mode") {
-    isDevelopmentMode
-  }
+  get("/*/is-development-mode") { isDevelopmentMode }
 }
 
 class EnvironmentFilterSpec extends ScalatraSpec {

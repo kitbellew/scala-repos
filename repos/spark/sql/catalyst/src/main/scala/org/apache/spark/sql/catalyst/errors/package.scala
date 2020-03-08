@@ -47,8 +47,6 @@ package object errors {
   def attachTree[TreeType <: TreeNode[_], A](tree: TreeType, msg: String = "")(
       f: => A): A = {
     try f
-    catch {
-      case e: Exception => throw new TreeNodeException(tree, msg, e)
-    }
+    catch { case e: Exception => throw new TreeNodeException(tree, msg, e) }
   }
 }

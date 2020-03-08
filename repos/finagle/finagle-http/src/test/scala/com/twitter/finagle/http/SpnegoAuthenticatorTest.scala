@@ -19,21 +19,15 @@ class SpnegoAuthenticatorTest extends FunSuite with MockitoSugar {
   def builder = RequestBuilder().url("http://0.0.0.0/arbitrary")
   def anyAuthenticated = any[Authenticated[Request]]
 
-  test("no header") {
-    negative(builder.buildGet())
-  }
+  test("no header") { negative(builder.buildGet()) }
 
   test("bad header") {
-    negative {
-      builder.setHeader(Fields.Authorization, "foobar").buildGet()
-    }
+    negative { builder.setHeader(Fields.Authorization, "foobar").buildGet() }
   }
 
   test("malformed token") {
     // TODO: c.t.u.Base64StringEncoder is crazy permissive: the only way to win is not to play
-    negative {
-      builder.setHeader(Fields.Authorization, AuthScheme).buildGet()
-    }
+    negative { builder.setHeader(Fields.Authorization, AuthScheme).buildGet() }
   }
 
   test("success") {
@@ -59,9 +53,7 @@ class SpnegoAuthenticatorTest extends FunSuite with MockitoSugar {
       val resp = Await.result(client(req))
       assert(resp.status == Status.Ok)
       verify(service).apply(anyAuthenticated)
-    } finally {
-      server.close(Time.Bottom)
-    }
+    } finally { server.close(Time.Bottom) }
   }
 
   /**
@@ -76,9 +68,7 @@ class SpnegoAuthenticatorTest extends FunSuite with MockitoSugar {
       val rsp = Await.result(client.apply(req))
       assert(rsp.status == Status.Unauthorized)
       rsp
-    } finally {
-      client.close().before(server.close())
-    }
+    } finally { client.close().before(server.close()) }
   }
 
   def serve(
@@ -94,9 +84,7 @@ class SpnegoAuthenticatorTest extends FunSuite with MockitoSugar {
     val client =
       clientSrc
         .map { src => new ClientFilter(src) andThen rawClient }
-        .getOrElse {
-          rawClient
-        }
+        .getOrElse { rawClient }
     (client, server, service)
   }
 }

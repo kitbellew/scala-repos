@@ -1,9 +1,7 @@
 import scala.reflect.macros.blackbox.Context
 
 object Impls {
-  def myprintln(xs: Int*) = {
-    println(xs)
-  }
+  def myprintln(xs: Int*) = { println(xs) }
 
   def foo(c: Context)(xs: c.Expr[Int]*) = {
     import c.universe._

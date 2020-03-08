@@ -30,21 +30,15 @@ package com.gravity.goose.images
 class ImageDetails {
   def getWidth: Int = width
 
-  def setWidth(width: Int) {
-    this.width = width
-  }
+  def setWidth(width: Int) { this.width = width }
 
   def getHeight: Int = height
 
-  def setHeight(height: Int) {
-    this.height = height
-  }
+  def setHeight(height: Int) { this.height = height }
 
   def getMimeType: String = mimeType
 
-  def setMimeType(mimeType: String) {
-    this.mimeType = mimeType
-  }
+  def setMimeType(mimeType: String) { this.mimeType = mimeType }
 
   /**
     * the width of the image

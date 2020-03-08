@@ -107,9 +107,7 @@ class SerialServerDispatcher[Req, Rep](
     service: Service[Req, Rep])
     extends GenSerialServerDispatcher[Req, Rep, Rep, Req](trans) {
 
-  trans.onClose ensure {
-    service.close()
-  }
+  trans.onClose ensure { service.close() }
 
   protected def dispatch(req: Req, eos: Promise[Unit]) =
     service(req) ensure eos.setDone()

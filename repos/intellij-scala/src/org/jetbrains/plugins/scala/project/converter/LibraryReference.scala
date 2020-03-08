@@ -88,9 +88,7 @@ private case class LibraryReference(level: Level, name: String) {
 
     // We have to resort to this workaround because IDEA's converter "restores" the file otherwise
     invokeLater {
-      inWriteAction {
-        VfsUtil.findFileByIoFile(libraryFile, true).delete(this)
-      }
+      inWriteAction { VfsUtil.findFileByIoFile(libraryFile, true).delete(this) }
     }
 
     libraryFile

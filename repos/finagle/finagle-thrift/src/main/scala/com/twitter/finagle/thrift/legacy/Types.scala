@@ -93,9 +93,8 @@ object ThriftTypes
   def add(c: ThriftCallFactory[_, _]): Unit = put(c.method, c)
 
   override def apply(method: String) = {
-    try {
-      super.apply(method)
-    } catch {
+    try { super.apply(method) }
+    catch {
       case e: NoSuchElementException =>
         throw new TApplicationException(
           TApplicationException.UNKNOWN_METHOD,

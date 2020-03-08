@@ -120,17 +120,13 @@ trait ObservableValue[@specialized(Int, Long, Float, Double, Boolean) T, J]
       def changed(
           observable: jfxbv.ObservableValue[_ <: J1],
           oldValue: J1,
-          newValue: J1) {
-        op(ObservableValue.this, oldValue, newValue)
-      }
+          newValue: J1) { op(ObservableValue.this, oldValue, newValue) }
     }
 
     delegate.addListener(listener)
 
     new Subscription {
-      def cancel() {
-        delegate.removeListener(listener)
-      }
+      def cancel() { delegate.removeListener(listener) }
     }
   }
 
@@ -145,17 +141,13 @@ trait ObservableValue[@specialized(Int, Long, Float, Double, Boolean) T, J]
       def changed(
           observable: jfxbv.ObservableValue[_ <: J1],
           oldValue: J1,
-          newValue: J1) {
-        op
-      }
+          newValue: J1) { op }
     }
 
     delegate.addListener(listener)
 
     new Subscription {
-      def cancel() {
-        delegate.removeListener(listener)
-      }
+      def cancel() { delegate.removeListener(listener) }
     }
   }
 }

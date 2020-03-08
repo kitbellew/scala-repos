@@ -62,9 +62,7 @@ trait MongoTestKit extends Specification with BeforeAfterEach {
         }
         true
       }
-    } catch {
-      case _: Exception => false
-    }
+    } catch { case _: Exception => false }
 
   def checkMongoIsRunning =
     isMongoRunning must beEqualTo(true).orSkip

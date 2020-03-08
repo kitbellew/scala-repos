@@ -24,9 +24,7 @@ abstract class BinaryInput {
   // Derived operations //
   ////////////////////////
 
-  def getBoolean(): Boolean = {
-    getByte() != 0
-  }
+  def getBoolean(): Boolean = { getByte() != 0 }
 
   def getString(): String = {
     val array = getByteArray
@@ -82,9 +80,7 @@ abstract class BinaryInput {
 
   protected var lookahead: Option[Byte] = None
 
-  def setLookahead(b: Byte) {
-    lookahead = Some(b)
-  }
+  def setLookahead(b: Byte) { lookahead = Some(b) }
 
   def getIntWithLookahead() = {
     lookahead match {

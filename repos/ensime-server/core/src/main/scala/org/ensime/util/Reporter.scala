@@ -29,9 +29,7 @@ class PresentationReporter(handler: ReportHandler)
 
   override def reset(): Unit = {
     super.reset()
-    if (enabled) {
-      handler.clearAllScalaNotes()
-    }
+    if (enabled) { handler.clearAllScalaNotes() }
   }
 
   override def info0(
@@ -41,18 +39,14 @@ class PresentationReporter(handler: ReportHandler)
       force: Boolean): Unit = {
     severity.count += 1
     try {
-      if (severity.id == 0) {
-        log.info(msg)
-      } else {
+      if (severity.id == 0) { log.info(msg) }
+      else {
         if (enabled) {
           if (pos.isDefined) {
             val source = pos.source
             val f = source.file.absolute.path
-            val posColumn = if (pos.point == -1) {
-              0
-            } else {
-              pos.column
-            }
+            val posColumn = if (pos.point == -1) { 0 }
+            else { pos.column }
 
             val note = new Note(
               f,

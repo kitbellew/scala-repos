@@ -1,6 +1,8 @@
 object A1 {
   object A2 {
-    class X { def unapply(v: Int) = Some(v + 1) }
+    class X {
+      def unapply(v: Int) = Some(v + 1)
+    }
   }
 }
 

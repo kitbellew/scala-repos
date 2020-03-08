@@ -63,9 +63,7 @@ object EvactorKryoBench extends scala.pickling.testing.PicklingBenchmark {
 
   val time: Int = System.currentTimeMillis.toInt
 
-  override def tearDown() {
-    ser = null
-  }
+  override def tearDown() { ser = null }
 
   override def run() {
     // random events

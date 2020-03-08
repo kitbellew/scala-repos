@@ -215,9 +215,8 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
           f += 1
         }
 
-        if (minIdx < 0) {
-          growTree(orders, tries + 1)
-        } else {
+        if (minIdx < 0) { growTree(orders, tries + 1) }
+        else {
           val featureOrder = orders(minVar)
           val leftSplit = featureOrder take (minIdx + 1)
           val rightSplit = featureOrder drop (minIdx + 1)
@@ -303,11 +302,8 @@ class ClassificationTreeMaker[K] extends TreeMaker[K] {
     def -=(k: K) {
       if (m containsKey k) {
         val cnt = m.get(k) - 1
-        if (cnt == 0) {
-          m.remove(k)
-        } else {
-          m.put(k, cnt)
-        }
+        if (cnt == 0) { m.remove(k) }
+        else { m.put(k, cnt) }
         n -= 1
       }
     }
@@ -415,11 +411,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         val xs = new Array[A](slice.size)
         var i = 0
         while (i < xs.length) {
-          if (c.isDefinedAt(i)) {
-            xs(i) = extract(i)
-          } else {
-            xs(i) = zero
-          }
+          if (c.isDefinedAt(i)) { xs(i) = extract(i) }
+          else { xs(i) = zero }
           i += 1
         }
         xs
@@ -492,9 +485,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           values: Array[RValue]): Map[ColumnRef, Column] = {
         var i = 0
         while (i < values.length) {
-          if (!defined(i)) {
-            values(i) = CUndefined
-          }
+          if (!defined(i)) { values(i) = CUndefined }
           i += 1
         }
 
@@ -626,9 +617,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           table: Table,
           tpe: JType,
           prev: F = Monoid[F].zero): M[F] = {
-        if (prev.trees.size > maxForestSize) {
-          M.point(prev)
-        } else {
+        if (prev.trees.size > maxForestSize) { M.point(prev) }
+        else {
           val numTrainingSamples = chunkSize * numChunks
           val numOfSamples = numTrainingSamples + numChunks
 
@@ -688,11 +678,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
               errors map (variance) flatMap { s2 =>
                 val forest = forests.last
-                if (s2 < varianceThreshold) {
-                  M.point(forest)
-                } else {
-                  makeForest(table, tpe, forest)
-                }
+                if (s2 < varianceThreshold) { M.point(forest) }
+                else { makeForest(table, tpe, forest) }
               }
             }
           }
@@ -770,11 +757,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             })
           }
 
-          val predictions = if (forests.isEmpty) {
-            Table.empty
-          } else {
-            Table(predict(objectTable.slices), objectTable.size)
-          }
+          val predictions = if (forests.isEmpty) { Table.empty }
+          else { Table(predict(objectTable.slices), objectTable.size) }
 
           M.point(predictions)
         }

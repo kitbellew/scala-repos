@@ -48,11 +48,8 @@ private[v1] class EventLogDownloadResource(
       val stream = new StreamingOutput {
         override def write(output: OutputStream): Unit = {
           val zipStream = new ZipOutputStream(output)
-          try {
-            uIRoot.writeEventLogs(appId, attemptId, zipStream)
-          } finally {
-            zipStream.close()
-          }
+          try { uIRoot.writeEventLogs(appId, attemptId, zipStream) }
+          finally { zipStream.close() }
 
         }
       }

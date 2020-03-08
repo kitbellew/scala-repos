@@ -50,9 +50,7 @@ class Path(override val delegate: jfxss.Path = new jfxss.Path())
     * The filling rule constant for determining the interior of the path.
     */
   def fillRule: ObjectProperty[jfxss.FillRule] = delegate.fillRuleProperty
-  def fillRule_=(v: FillRule) {
-    fillRule() = v
-  }
+  def fillRule_=(v: FillRule) { fillRule() = v }
 
   /**
     * Observable list of path elements of this path.

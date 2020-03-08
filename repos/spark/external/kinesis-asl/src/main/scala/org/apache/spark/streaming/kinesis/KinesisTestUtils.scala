@@ -69,9 +69,8 @@ private[kinesis] class KinesisTestUtils extends Logging {
   }
 
   protected def getProducer(aggregate: Boolean): KinesisDataGenerator = {
-    if (!aggregate) {
-      new SimpleDataGenerator(kinesisClient)
-    } else {
+    if (!aggregate) { new SimpleDataGenerator(kinesisClient) }
+    else {
       throw new UnsupportedOperationException(
         "Aggregation is not supported through this code path")
     }
@@ -125,11 +124,8 @@ private[kinesis] class KinesisTestUtils extends Logging {
   }
 
   def deleteStream(): Unit = {
-    try {
-      if (streamCreated) {
-        kinesisClient.deleteStream(streamName)
-      }
-    } catch {
+    try { if (streamCreated) { kinesisClient.deleteStream(streamName) } }
+    catch {
       case e: Exception =>
         logWarning(s"Could not delete stream $streamName")
     }
@@ -179,9 +175,7 @@ private[kinesis] class KinesisTestUtils extends Logging {
       describeStream(streamNameToWaitFor).foreach { description =>
         val streamStatus = description.getStreamStatus()
         logDebug(s"\t- current state: $streamStatus\n")
-        if ("ACTIVE".equals(streamStatus)) {
-          return
-        }
+        if ("ACTIVE".equals(streamStatus)) { return }
       }
     }
     require(false, s"Stream $streamName never became active")

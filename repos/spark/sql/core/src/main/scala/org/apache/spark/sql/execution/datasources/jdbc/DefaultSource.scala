@@ -49,9 +49,8 @@ class DefaultSource extends RelationProvider with DataSourceRegister {
       sys.error("Partitioning incompletely specified")
     }
 
-    val partitionInfo = if (partitionColumn == null) {
-      null
-    } else {
+    val partitionInfo = if (partitionColumn == null) { null }
+    else {
       JDBCPartitioningInfo(
         partitionColumn,
         lowerBound.toLong,

@@ -39,9 +39,7 @@ private[spark] class ConsoleProgressBar(sc: SparkContext) extends Logging {
   // The width of terminal
   val TerminalWidth = if (!sys.env.getOrElse("COLUMNS", "").isEmpty) {
     sys.env.get("COLUMNS").get.toInt
-  } else {
-    80
-  }
+  } else { 80 }
 
   var lastFinishTime = 0L
   var lastUpdateTime = 0L
@@ -51,9 +49,7 @@ private[spark] class ConsoleProgressBar(sc: SparkContext) extends Logging {
   private val timer = new Timer("refresh progress", true)
   timer.schedule(
     new TimerTask {
-      override def run() {
-        refresh()
-      }
+      override def run() { refresh() }
     },
     FIRST_DELAY,
     UPDATE_PERIOD)
@@ -63,9 +59,7 @@ private[spark] class ConsoleProgressBar(sc: SparkContext) extends Logging {
     */
   private def refresh(): Unit = synchronized {
     val now = System.currentTimeMillis()
-    if (now - lastFinishTime < FIRST_DELAY) {
-      return
-    }
+    if (now - lastFinishTime < FIRST_DELAY) { return }
     val stageIds = sc.statusTracker.getActiveStageIds()
     val stages = stageIds
       .flatMap(sc.statusTracker.getStageInfo)
@@ -98,9 +92,7 @@ private[spark] class ConsoleProgressBar(sc: SparkContext) extends Logging {
               if (i < percent) "=" else if (i == percent) ">" else " "
             }
             .mkString("")
-        } else {
-          ""
-        }
+        } else { "" }
         header + bar + tailer
       }
       .mkString("")

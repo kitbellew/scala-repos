@@ -287,9 +287,7 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     val attrs = templateAttributes ++ (defaultLayoutPath map (p =>
       Map("layout" -> p) ++ Map(attributes: _*)) getOrElse Map(attributes: _*))
 
-    attrs foreach {
-      case (k, v) => context.attributes(k) = v
-    }
+    attrs foreach { case (k, v) => context.attributes(k) = v }
     templateEngine.layout(uri, context)
     buffer.toString
   }

@@ -38,9 +38,8 @@ object Helpers {
     * ClassCastException and return None in that case.
     */
   def narrowSilently[T: ClassTag](o: Option[Any]): Option[T] =
-    try {
-      narrow(o)
-    } catch {
+    try { narrow(o) }
+    catch {
       case e: ClassCastException =>
         None
     }
@@ -82,11 +81,8 @@ object Helpers {
 
     def update(value: => R) = {
       contents =
-        try {
-          Left(value)
-        } catch {
-          case (error: Throwable) => Right(error)
-        }
+        try { Left(value) }
+        catch { case (error: Throwable) => Right(error) }
     }
 
     def apply() = contents match {

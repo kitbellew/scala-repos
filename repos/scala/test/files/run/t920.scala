@@ -1,6 +1,8 @@
 object Test {
   trait A;
-  trait Foo0 { def foo: A; }
+  trait Foo0 {
+    def foo: A;
+  }
   trait Baz extends Foo0;
   trait B extends A {
     def initialize = {
@@ -14,7 +16,5 @@ object Test {
     }
   }
   object b extends B;
-  def main(args: Array[String]): Unit = {
-    b.initialize;
-  }
+  def main(args: Array[String]): Unit = { b.initialize; }
 }

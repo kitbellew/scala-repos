@@ -54,9 +54,7 @@ class ConnectionPoolSpec
       serverSideChannel.close()
       clientSocket.read(ByteBuffer.allocate(1))
       null
-    } catch {
-      case NonFatal(e) ⇒ e.getMessage
-    }
+    } catch { case NonFatal(e) ⇒ e.getMessage }
   }
 
   "The host-level client infrastructure" should {

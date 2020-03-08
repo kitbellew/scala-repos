@@ -42,8 +42,6 @@ class LatencyHistogramBench extends StdBenchAnnotations {
   }
 
   @Benchmark
-  def quantile(): Long = {
-    histo.quantile(95)
-  }
+  def quantile(): Long = { histo.quantile(95) }
 
 }

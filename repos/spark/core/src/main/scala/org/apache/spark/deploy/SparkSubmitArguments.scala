@@ -99,9 +99,8 @@ private[deploy] class SparkSubmitArguments(
   }
 
   // Set parameters from command line arguments
-  try {
-    parse(args.asJava)
-  } catch {
+  try { parse(args.asJava) }
+  catch {
     case e: IllegalArgumentException =>
       SparkSubmit.printErrorAndExit(e.getMessage())
   }
@@ -125,9 +124,7 @@ private[deploy] class SparkSubmitArguments(
     // Honor --conf before the defaults file
     defaultSparkProperties.foreach {
       case (k, v) =>
-        if (!sparkProperties.contains(k)) {
-          sparkProperties(k) = v
-        }
+        if (!sparkProperties.contains(k)) { sparkProperties(k) = v }
     }
   }
 
@@ -250,9 +247,7 @@ private[deploy] class SparkSubmitArguments(
   }
 
   private def validateSubmitArguments(): Unit = {
-    if (args.length == 0) {
-      printUsageAndExit(-1)
-    }
+    if (args.length == 0) { printUsageAndExit(-1) }
     if (primaryResource == null) {
       SparkSubmit.printErrorAndExit(
         "Must specify a primary resource (JAR or Python or R file)")
@@ -482,9 +477,7 @@ private[deploy] class SparkSubmitArguments(
     primaryResource =
       if (!SparkSubmit.isShell(opt) && !SparkSubmit.isInternal(opt)) {
         Utils.resolveURI(opt).toString
-      } else {
-        opt
-      }
+      } else { opt }
     isPython = SparkSubmit.isPython(opt)
     isR = SparkSubmit.isR(opt)
     false
@@ -632,9 +625,7 @@ private[deploy] class SparkSubmitArguments(
       } catch {
         case e: InvocationTargetException =>
           // Ignore SecurityException, since we throw it above.
-          if (!e.getCause().isInstanceOf[SecurityException]) {
-            throw e
-          }
+          if (!e.getCause().isInstanceOf[SecurityException]) { throw e }
       }
 
       stream.flush()

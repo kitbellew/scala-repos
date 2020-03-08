@@ -27,9 +27,8 @@ trait Connector {
     val stateEvent = StateEvent(event)
     listening.foreach { listener =>
       if (listener.isDefinedAt(stateEvent)) {
-        try {
-          listener(stateEvent)
-        } catch {
+        try { listener(stateEvent) }
+        catch {
           case e: Throwable =>
             log.error(e, "Exception in connection event listener")
         }
@@ -66,9 +65,7 @@ object Connector {
     private[this] var index = 0
     protected[this] def nextConnector() = {
       val i = synchronized {
-        if (index == Int.MaxValue) {
-          index = 0
-        }
+        if (index == Int.MaxValue) { index = 0 }
         index = index + 1
         index % connectors.length
       }

@@ -40,10 +40,7 @@ abstract class JavaEvaluation extends Evaluation {
     */
   def setEngineMetric[EI, Q, P, A](
       baseEngine: BaseEngine[EI, Q, P, A],
-      metric: Metric[EI, Q, P, A, _]) {
-
-    engineMetric = (baseEngine, metric)
-  }
+      metric: Metric[EI, Q, P, A, _]) { engineMetric = (baseEngine, metric) }
 
   /** Set the [[BaseEngine]] and [[Metric]]s for this [[JavaEvaluation]]
     *

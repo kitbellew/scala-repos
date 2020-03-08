@@ -23,9 +23,7 @@ trait BootableActorLoaderService extends Bootable {
       if (HOME.isDefined) {
         val DEPLOY = HOME.get + "/deploy"
         val DEPLOY_DIR = new File(DEPLOY)
-        if (!DEPLOY_DIR.exists) {
-          System.exit(-1)
-        }
+        if (!DEPLOY_DIR.exists) { System.exit(-1) }
         val filesToDeploy = DEPLOY_DIR.listFiles.toArray.toList
           .asInstanceOf[List[File]]
           .filter(_.getName.endsWith(".jar"))

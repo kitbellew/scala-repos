@@ -27,7 +27,9 @@ trait Importers { to: SymbolTable =>
         assert(
           from0.isInstanceOf[SymbolTable],
           "`from` should be an instance of scala.reflect.internal.SymbolTable")
-        new StandardImporter { val from = from0.asInstanceOf[SymbolTable] }
+        new StandardImporter {
+          val from = from0.asInstanceOf[SymbolTable]
+        }
       }
     ).asInstanceOf[Importer { val from: from0.type }]
 
@@ -92,9 +94,7 @@ trait Importers { to: SymbolTable =>
             markAllCompleted(my)
           }
         }
-      } finally {
-        my resetFlag Flags.LOCKED
-      }
+      } finally { my resetFlag Flags.LOCKED }
     }
 
     protected def recreateSymbol(their: from.Symbol): to.Symbol = {
@@ -215,9 +215,7 @@ trait Importers { to: SymbolTable =>
                   if (their.isMethod) {
                     val localCopy = cachedRecreateSymbol(their)
                     my filter (_.tpe matches localCopy.tpe)
-                  } else {
-                    my filter (!_.isMethod)
-                  }
+                  } else { my filter (!_.isMethod) }
                 assert(
                   !result.isOverloaded,
                   "import failure: cannot determine unique overloaded method alternative from\n " +
@@ -513,9 +511,7 @@ trait Importers { to: SymbolTable =>
         tryFixup()
         // we have to be careful with position import as some shared trees
         // like EmptyTree, noSelfType don't support position assignment
-        if (their.pos != NoPosition) {
-          my.setPos(importPosition(their.pos))
-        }
+        if (their.pos != NoPosition) { my.setPos(importPosition(their.pos)) }
       }
       importAttachments(their.attachments.all).foreach {
         my.updateAttachment(_)

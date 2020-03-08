@@ -32,13 +32,9 @@ private[round] final class Round(
 
   context setReceiveTimeout activeTtl
 
-  override def preStart() {
-    context.system.lilaBus.subscribe(self, 'deploy)
-  }
+  override def preStart() { context.system.lilaBus.subscribe(self, 'deploy) }
 
-  override def postStop() {
-    context.system.lilaBus unsubscribe self
-  }
+  override def postStop() { context.system.lilaBus unsubscribe self }
 
   object lags { // player lag in millis
     var white = 0
@@ -52,10 +48,7 @@ private[round] final class Round(
 
   def process = {
 
-    case ReceiveTimeout =>
-      fuccess {
-        self ! SequentialActor.Terminate
-      }
+    case ReceiveTimeout => fuccess { self ! SequentialActor.Terminate }
 
     case p: HumanPlay =>
       lila.mon.since(_.round.move.segment.queue)(p.atNanos)
@@ -264,9 +257,8 @@ private[round] final class Round(
 
   private def handleGame(game: Fu[Option[Game]])(
       op: Game => Fu[Events]): Funit =
-    publish {
-      game flatten "game not found" flatMap op
-    } recover errorHandler("handleGame")
+    publish { game flatten "game not found" flatMap op } recover errorHandler(
+      "handleGame")
 
   private def publish[A](op: Fu[Events]): Funit =
     op.addEffect { events =>

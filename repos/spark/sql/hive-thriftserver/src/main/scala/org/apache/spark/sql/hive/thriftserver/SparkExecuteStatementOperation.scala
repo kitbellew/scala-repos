@@ -121,9 +121,8 @@ private[hive] class SparkExecuteStatementOperation(
     setHasResultSet(true)
     val resultRowSet: RowSet =
       RowSetFactory.create(getResultSetSchema, getProtocolVersion)
-    if (!iter.hasNext) {
-      resultRowSet
-    } else {
+    if (!iter.hasNext) { resultRowSet }
+    else {
       // maxRowsL here typically maps to java.sql.Statement.getFetchSize, which is an int
       val maxRows = maxRowsL.toInt
       var curRow = 0
@@ -132,11 +131,8 @@ private[hive] class SparkExecuteStatementOperation(
         val row = ArrayBuffer[Any]()
         var curCol = 0
         while (curCol < sparkRow.length) {
-          if (sparkRow.isNullAt(curCol)) {
-            row += null
-          } else {
-            addNonNullColumnValue(sparkRow, row, curCol)
-          }
+          if (sparkRow.isNullAt(curCol)) { row += null }
+          else { addNonNullColumnValue(sparkRow, row, curCol) }
           curCol += 1
         }
         resultRowSet.addRow(row.toArray.asInstanceOf[Array[Object]])
@@ -152,9 +148,8 @@ private[hive] class SparkExecuteStatementOperation(
     setState(OperationState.PENDING)
     setHasResultSet(true) // avoid no resultset for async run
 
-    if (!runInBackground) {
-      execute()
-    } else {
+    if (!runInBackground) { execute() }
+    else {
       val sparkServiceUGI = Utils.getUGI()
 
       // Runnable impl to call runInternal asynchronously,
@@ -164,9 +159,8 @@ private[hive] class SparkExecuteStatementOperation(
         override def run(): Unit = {
           val doAsAction = new PrivilegedExceptionAction[Unit]() {
             override def run(): Unit = {
-              try {
-                execute()
-              } catch {
+              try { execute() }
+              catch {
                 case e: HiveSQLException =>
                   setOperationException(e)
                   log.error("Error running hive query: ", e)
@@ -174,9 +168,8 @@ private[hive] class SparkExecuteStatementOperation(
             }
           }
 
-          try {
-            sparkServiceUGI.doAs(doAsAction)
-          } catch {
+          try { sparkServiceUGI.doAs(doAsAction) }
+          catch {
             case e: Exception =>
               setOperationException(new HiveSQLException(e))
               logError(
@@ -244,18 +237,14 @@ private[hive] class SparkExecuteStatementOperation(
           hiveContext
             .getConf("spark.sql.thriftServer.incrementalCollect", "false")
             .toBoolean
-        if (useIncrementalCollect) {
-          result.rdd.toLocalIterator
-        } else {
-          result.collect().iterator
-        }
+        if (useIncrementalCollect) { result.rdd.toLocalIterator }
+        else { result.collect().iterator }
       }
       dataTypes = result.queryExecution.analyzed.output.map(_.dataType).toArray
     } catch {
       case e: HiveSQLException =>
-        if (getStatus().getState() == OperationState.CANCELED) {
-          return
-        } else {
+        if (getStatus().getState() == OperationState.CANCELED) { return }
+        else {
           setState(OperationState.ERROR)
           throw e
         }
@@ -287,9 +276,7 @@ private[hive] class SparkExecuteStatementOperation(
     setState(state)
     if (runInBackground) {
       val backgroundHandle = getBackgroundHandle()
-      if (backgroundHandle != null) {
-        backgroundHandle.cancel(true)
-      }
+      if (backgroundHandle != null) { backgroundHandle.cancel(true) }
     }
   }
 }

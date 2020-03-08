@@ -39,9 +39,8 @@ package scala.collection.immutable.redblacktree {
         level: Int,
         parentIsBlack: Boolean = false,
         label: String = ""): Gen[Tree[String, Int]] =
-      if (level == 0) {
-        const(null)
-      } else {
+      if (level == 0) { const(null) }
+      else {
         for {
           oddOrEven <- choose(0, 2)
           tryRed = oddOrEven.sample.get % 2 == 0 // work around arbitrary[Boolean] bug

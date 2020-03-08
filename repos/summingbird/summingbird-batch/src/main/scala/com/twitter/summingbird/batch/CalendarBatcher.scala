@@ -55,9 +55,7 @@ object CalendarBatcher {
           if (v < 0) {
             // max is towards zero
             Int.MinValue.toLong max v
-          } else {
-            Int.MaxValue.toLong min v
-          }
+          } else { Int.MaxValue.toLong min v }
         }
         val thisCnt = next(toCnt)
         toCnt -= thisCnt

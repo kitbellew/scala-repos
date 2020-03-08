@@ -175,9 +175,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
       def apply(a: HashVector[T], b: HashVector[T]): HashVector[T] = {
         require(b.length == a.length, "Vectors must be the same length!")
         val result = a.copy
-        for ((k, v) <- b.activeIterator) {
-          result(k) = op(a(k), v)
-        }
+        for ((k, v) <- b.activeIterator) { result(k) = op(a(k), v) }
         result
       }
     }
@@ -324,9 +322,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
     new Op.InPlaceImpl2[HashVector[T], HashVector[T]] {
       def apply(a: HashVector[T], b: HashVector[T]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
-        for ((k, v) <- b.activeIterator) {
-          a(k) = op(a(k), v)
-        }
+        for ((k, v) <- b.activeIterator) { a(k) = op(a(k), v) }
       }
     }
 
@@ -371,13 +367,10 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
       def apply(a: HashVector[T], b: HashVector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
 
-        if (a.iterableSize > b.iterableSize) {
-          apply(b, a)
-        } else {
+        if (a.iterableSize > b.iterableSize) { apply(b, a) }
+        else {
           var result: T = zero
-          for ((k, v) <- a.activeIterator) {
-            result += v * b(k)
-          }
+          for ((k, v) <- a.activeIterator) { result += v * b(k) }
           result
         }
       }
@@ -631,9 +624,7 @@ trait SparseVector_HashVector_Ops
           aoff += 1
         }
 
-        for ((k, v) <- b.activeIterator) {
-          builder.add(k, v)
-        }
+        for ((k, v) <- b.activeIterator) { builder.add(k, v) }
 
         builder.toSparseVector
       }
@@ -649,9 +640,7 @@ trait SparseVector_HashVector_Ops
       SparseVector[T],
       HashVector[T],
       T] {
-      def apply(a: SparseVector[T], b: HashVector[T]) = {
-        b dot a
-      }
+      def apply(a: SparseVector[T], b: HashVector[T]) = { b dot a }
     }
   }
 
@@ -773,9 +762,7 @@ trait HashVector_GenericOps { this: HashVector.type =>
     def mapActive(
         from: HashVector[V],
         from2: HashVector[V],
-        fn: (V, V) => RV) = {
-      map(from, from2, fn)
-    }
+        fn: (V, V) => RV) = { map(from, from2, fn) }
 
   }
   implicit def zipMap[V, R: ClassTag: Zero] =
@@ -811,9 +798,7 @@ trait HashVector_GenericOps { this: HashVector.type =>
     override def mapActive(
         from: HashVector[V],
         from2: HashVector[V],
-        fn: (Int, V, V) => RV): HashVector[RV] = {
-      map(from, from2, fn)
-    }
+        fn: (Int, V, V) => RV): HashVector[RV] = { map(from, from2, fn) }
   }
   implicit def zipMapKV[V, R: ClassTag: Zero] =
     new CanZipMapKeyValuesHashVector[V, R]
@@ -965,9 +950,7 @@ trait HashVector_GenericOps { this: HashVector.type =>
     new OpMulInner.Impl2[HashVector[T], HashVector[T], T] {
       override def apply(v: HashVector[T], v2: HashVector[T]): T = {
         var acc = field.zero
-        for (i <- 0 until v.length) {
-          acc = field.+(acc, field.*(v(i), v2(i)))
-        }
+        for (i <- 0 until v.length) { acc = field.+(acc, field.*(v(i), v2(i))) }
         acc
       }
     }
@@ -994,9 +977,7 @@ trait HashVector_GenericOps { this: HashVector.type =>
       def apply(a: HashVector[V], b: HashVector[V]): Unit = {
         require(b.length == a.length, "HashVectors must be the same length!")
 
-        for (i <- 0 until a.length) {
-          a(i) = b(i)
-        }
+        for (i <- 0 until a.length) { a(i) = b(i) }
 
       }
     }

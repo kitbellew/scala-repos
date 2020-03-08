@@ -48,7 +48,5 @@ class HLineTo(override val delegate: jfxss.HLineTo = new jfxss.HLineTo())
     * Defines the X coordinate.
     */
   def x: DoubleProperty = delegate.xProperty
-  def x_=(v: Double) {
-    x() = v
-  }
+  def x_=(v: Double) { x() = v }
 }

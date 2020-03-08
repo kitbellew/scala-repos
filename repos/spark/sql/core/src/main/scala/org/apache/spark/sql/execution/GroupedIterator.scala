@@ -37,9 +37,7 @@ object GroupedIterator {
       : Iterator[(InternalRow, Iterator[InternalRow])] = {
     if (input.hasNext) {
       new GroupedIterator(input.buffered, keyExpressions, inputSchema)
-    } else {
-      Iterator.empty
-    }
+    } else { Iterator.empty }
   }
 }
 
@@ -116,9 +114,7 @@ class GroupedIterator private (
   private def fetchNextGroupIterator(): Boolean = {
     assert(currentIterator == null)
 
-    if (currentRow == null && input.hasNext) {
-      currentRow = input.next()
-    }
+    if (currentRow == null && input.hasNext) { currentRow = input.next() }
 
     if (currentRow == null) {
       // These is no data left, return false.
@@ -128,9 +124,7 @@ class GroupedIterator private (
       // currentRow may be overwritten by `hasNext`, so we should compare them first.
       while (keyOrdering.compare(
                currentGroup,
-               currentRow) == 0 && input.hasNext) {
-        currentRow = input.next()
-      }
+               currentRow) == 0 && input.hasNext) { currentRow = input.next() }
 
       if (keyOrdering.compare(currentGroup, currentRow) == 0) {
         // We are in the last group, there is no more groups, return false.

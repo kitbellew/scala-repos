@@ -18,9 +18,7 @@ object WorksheetProcessManager {
     processes.put(file, process)
   }
 
-  def remove(file: VirtualFile) {
-    processes.remove(file)
-  }
+  def remove(file: VirtualFile) { processes.remove(file) }
 
   def stop(file: VirtualFile) {
     val p = processes.get(file)

@@ -1,4 +1,6 @@
-trait Foo[T] { val foo: T }
+trait Foo[T] {
+  val foo: T
+}
 
 class A extends Foo[Unit] {
   lazy val foo = println("Unit: called A.foo")
@@ -8,7 +10,9 @@ class B extends Foo[Unit] {
   val foo = println("Unit: called B.foo")
 }
 
-trait Bar[T] { def foo: T }
+trait Bar[T] {
+  def foo: T
+}
 
 class C extends Bar[Unit] {
   lazy val foo = println("Unit: called C.foo")

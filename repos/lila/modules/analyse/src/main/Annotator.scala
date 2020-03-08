@@ -14,11 +14,10 @@ private[analyse] final class Annotator(netDomain: String) {
       status: Status,
       clock: Option[Clock]): Pgn =
     annotateStatus(winner, status) {
-      annotateOpening(opening) {
-        annotateTurns(p, analysis ?? (_.advices))
-      }.copy(
-        tags = p.tags :+ Tag("Annotator", netDomain)
-      )
+      annotateOpening(opening) { annotateTurns(p, analysis ?? (_.advices)) }
+        .copy(
+          tags = p.tags :+ Tag("Annotator", netDomain)
+        )
     }
 
   import chess.{Status => S}

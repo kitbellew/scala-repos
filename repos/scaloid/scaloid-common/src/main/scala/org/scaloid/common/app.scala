@@ -66,13 +66,10 @@ trait TraitActivity[+This <: Activity] {
   def find[V <: View](id: Int): V = basis.findViewById(id).asInstanceOf[V]
 
   def runOnUiThread(f: => Unit) {
-    if (uiThread == Thread.currentThread) {
-      f
-    } else {
+    if (uiThread == Thread.currentThread) { f }
+    else {
       handler.post(new Runnable() {
-        def run() {
-          f
-        }
+        def run() { f }
       })
     }
   }
@@ -147,9 +144,7 @@ trait SActivity
 
   protected override def onCreate(b: Bundle) {
     super.onCreate(b)
-    AppHelpers.createBundle.withValue(Option(b)) {
-      onCreateBodies.foreach(_())
-    }
+    AppHelpers.createBundle.withValue(Option(b)) { onCreateBodies.foreach(_()) }
   }
 
   def onCreate(body: Option[Bundle] => Any) = {
@@ -288,11 +283,7 @@ class AlertDialogBuilder(
   @inline def positiveButton(
       name: CharSequence = android.R.string.yes,
       onClick: => Unit = {}): AlertDialogBuilder =
-    positiveButton(
-      name,
-      (_, _) => {
-        onClick
-      })
+    positiveButton(name, (_, _) => { onClick })
 
   @inline def positiveButton(
       name: CharSequence,
@@ -304,11 +295,7 @@ class AlertDialogBuilder(
   @inline def neutralButton(
       name: CharSequence = android.R.string.ok,
       onClick: => Unit = {}): AlertDialogBuilder =
-    neutralButton(
-      name,
-      (_, _) => {
-        onClick
-      })
+    neutralButton(name, (_, _) => { onClick })
 
   @inline def neutralButton(
       name: CharSequence,
@@ -320,17 +307,12 @@ class AlertDialogBuilder(
   @inline def negativeButton(
       name: CharSequence,
       onClick: => Unit): AlertDialogBuilder =
-    negativeButton(
-      name,
-      (_, _) => {
-        onClick
-      })
+    negativeButton(name, (_, _) => { onClick })
 
   @inline def negativeButton(
       name: CharSequence = android.R.string.no,
-      onClick: (DialogInterface, Int) => Unit = (d, _) => {
-        d.cancel()
-      }): AlertDialogBuilder = {
+      onClick: (DialogInterface, Int) => Unit = (d, _) => { d.cancel() })
+      : AlertDialogBuilder = {
     setNegativeButton(name, func2DialogOnClickListener(onClick))
     this
   }

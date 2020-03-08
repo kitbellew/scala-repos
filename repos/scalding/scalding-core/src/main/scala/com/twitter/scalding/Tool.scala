@@ -31,11 +31,8 @@ class Tool extends Configured with HTool {
 
   //  Allows you to set the job for the Tool to run
   def setJobConstructor(jobc: (Args) => Job) {
-    if (rootJob.isDefined) {
-      sys.error("Job is already defined")
-    } else {
-      rootJob = Some(jobc)
-    }
+    if (rootJob.isDefined) { sys.error("Job is already defined") }
+    else { rootJob = Some(jobc) }
   }
 
   protected def getJob(args: Args): Job = rootJob match {
@@ -152,9 +149,8 @@ class Tool extends Configured with HTool {
 
 object Tool {
   def main(args: Array[String]) {
-    try {
-      ToolRunner.run(new JobConf, new Tool, ExpandLibJarsGlobs(args))
-    } catch {
+    try { ToolRunner.run(new JobConf, new Tool, ExpandLibJarsGlobs(args)) }
+    catch {
       case t: Throwable => {
         //re-throw the exception with extra info
         throw new Throwable(RichXHandler(t), t)

@@ -34,9 +34,7 @@ class LauncherBackendSuite extends SparkFunSuite with Matchers {
 
   tests.foreach {
     case (name, master) =>
-      test(s"$name: launcher handle") {
-        testWithMaster(master)
-      }
+      test(s"$name: launcher handle") { testWithMaster(master) }
   }
 
   private def testWithMaster(master: String): Unit = {
@@ -66,9 +64,7 @@ class LauncherBackendSuite extends SparkFunSuite with Matchers {
       eventually(timeout(30 seconds), interval(100 millis)) {
         handle.getState() should be(SparkAppHandle.State.KILLED)
       }
-    } finally {
-      handle.kill()
-    }
+    } finally { handle.kill() }
   }
 
 }

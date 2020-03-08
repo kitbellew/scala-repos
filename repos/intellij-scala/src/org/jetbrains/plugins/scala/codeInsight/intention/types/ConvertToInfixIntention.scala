@@ -55,9 +55,8 @@ class ConvertToInfixIntention extends PsiElementBaseIntentionAction {
       element.getManager)
     if (paramTypeElement.isValid) {
       val replaced =
-        try {
-          paramTypeElement.replace(newTypeElement)
-        } catch {
+        try { paramTypeElement.replace(newTypeElement) }
+        catch {
           case npe: NullPointerException =>
             throw new RuntimeException(
               "Unable to replace: %s with %s"

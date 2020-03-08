@@ -61,13 +61,9 @@ abstract class PipelineStage extends Params with Logging {
   protected def transformSchema(
       schema: StructType,
       logging: Boolean): StructType = {
-    if (logging) {
-      logDebug(s"Input schema: ${schema.json}")
-    }
+    if (logging) { logDebug(s"Input schema: ${schema.json}") }
     val outputSchema = transformSchema(schema)
-    if (logging) {
-      logDebug(s"Expected output schema: ${outputSchema.json}")
-    }
+    if (logging) { logDebug(s"Expected output schema: ${outputSchema.json}") }
     outputSchema
   }
 
@@ -159,9 +155,7 @@ class Pipeline @Since("1.4.0") (@Since("1.4.0") override val uid: String)
             curDataset = transformer.transform(curDataset)
           }
           transformers += transformer
-        } else {
-          transformers += stage.asInstanceOf[Transformer]
-        }
+        } else { transformers += stage.asInstanceOf[Transformer] }
     }
 
     new PipelineModel(uid, transformers.toArray).setParent(this)

@@ -126,9 +126,7 @@ trait GroupSolver
           forestErrors filter {
             case Error(tpe) => tpe == ConstraintsWithinInnerSolve
           }
-        } else {
-          forestErrors
-        }
+        } else { forestErrors }
 
         childErrors ++ specErrors ++ forestErrors2 ++ constrErrors ++ finalErrors
       }
@@ -215,9 +213,7 @@ trait GroupSolver
             else
               (None, errors) // TODO emit a new error
           } getOrElse (None, errors)
-        } else {
-          (None, Set[Error]())
-        }
+        } else { (None, Set[Error]()) }
       }
     }
 
@@ -261,9 +257,7 @@ trait GroupSolver
         Set(Error(constraint, UnableToSolveCriticalCondition(vars.head)))
       else
         Set(Error(constraint, InseparablePairedTicVariables(vars)))
-    } else {
-      Set()
-    }
+    } else { Set() }
 
     (back, errors ++ contribErrors)
   }
@@ -286,9 +280,7 @@ trait GroupSolver
         vertices.toList ::: bfs(vertices2)
     }
 
-    val leaves = edges filter {
-      case (_, targets) => targets.isEmpty
-    } keySet
+    val leaves = edges filter { case (_, targets) => targets.isEmpty } keySet
 
     bfs(leaves).reverse
   }
@@ -811,19 +803,13 @@ trait GroupSolver
           Kernel(nodes3, sigma2, k.seen ++ nodes3)
         }
 
-        if (kernels2 forall { _.nodes.isEmpty }) {
-          Set()
-        } else {
-          bfs(kernels2)
-        }
-      } else {
-        results
-      }
+        if (kernels2 forall { _.nodes.isEmpty }) { Set() }
+        else { bfs(kernels2) }
+      } else { results }
     }
 
-    if (nodes.size == 1) {
-      nodes.headOption
-    } else {
+    if (nodes.size == 1) { nodes.headOption }
+    else {
       val kernels = nodes map { n =>
         Kernel(Set(ExprWrapper(n)), sigma, Set(ExprWrapper(n)))
       }

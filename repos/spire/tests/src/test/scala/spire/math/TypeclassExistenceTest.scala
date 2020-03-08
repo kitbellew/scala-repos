@@ -96,41 +96,31 @@ class TypeclassExistenceTest extends FunSuite {
   }
 
   test("Numeric is ConvertableTo") {
-    def check[A: Numeric: ClassTag]: Unit = {
-      hasConvertableTo[A]
-    }
+    def check[A: Numeric: ClassTag]: Unit = { hasConvertableTo[A] }
 
     check[Int]
   }
 
   test("Numeric is ConvertableFrom") {
-    def check[A: Numeric: ClassTag]: Unit = {
-      hasConvertableFrom[A]
-    }
+    def check[A: Numeric: ClassTag]: Unit = { hasConvertableFrom[A] }
 
     check[Int]
   }
 
   test("Rings are Rigs") {
-    def check[A: Ring: ClassTag]: Unit = {
-      hasRig[A]
-    }
+    def check[A: Ring: ClassTag]: Unit = { hasRig[A] }
 
     check[Int]
   }
 
   test("EuclideanRings are Rings") {
-    def check[A: EuclideanRing: ClassTag]: Unit = {
-      hasRing[A]
-    }
+    def check[A: EuclideanRing: ClassTag]: Unit = { hasRing[A] }
 
     check[Int]
   }
 
   test("Fields are EuclideanRings") {
-    def check[A: Field: ClassTag]: Unit = {
-      hasEuclideanRing[A]
-    }
+    def check[A: Field: ClassTag]: Unit = { hasEuclideanRing[A] }
 
     check[Double]
   }
@@ -269,9 +259,7 @@ class TypeclassExistenceTest extends FunSuite {
   }
 
   test("NRoot[Rational] requires implicit ApproximationContext") {
-    def check[A](implicit e: NRoot[A] = null): Unit = {
-      assert(e == null)
-    }
+    def check[A](implicit e: NRoot[A] = null): Unit = { assert(e == null) }
 
     check[Rational]
   }

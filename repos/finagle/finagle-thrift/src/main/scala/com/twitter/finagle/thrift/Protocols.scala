@@ -19,9 +19,8 @@ object Protocols {
 
   // based on guava's UnsignedBytes.getUnsafe()
   private[this] def getUnsafe: sun.misc.Unsafe = {
-    try {
-      sun.misc.Unsafe.getUnsafe()
-    } catch {
+    try { sun.misc.Unsafe.getUnsafe() }
+    catch {
       case NonFatal(_) => // try reflection instead
         try {
           AccessController.doPrivileged(
@@ -31,9 +30,7 @@ object Protocols {
                 for (f <- k.getDeclaredFields) {
                   f.setAccessible(true)
                   val x = f.get(null)
-                  if (k.isInstance(x)) {
-                    return k.cast(x)
-                  }
+                  if (k.isInstance(x)) { return k.cast(x) }
                 }
                 throw new NoSuchFieldException(
                   "the Unsafe"
@@ -80,9 +77,7 @@ object Protocols {
             largerThanTlOutBuffer,
             strictRead,
             strictWrite)
-          if (readLength != 0) {
-            proto.setReadLength(readLength)
-          }
+          if (readLength != 0) { proto.setReadLength(readLength) }
           proto
         }
       }
@@ -104,9 +99,7 @@ object Protocols {
 
     /** Only valid if unsafe is defined */
     private val StringValueOffset: Long = unsafe
-      .map {
-        _.objectFieldOffset(classOf[String].getDeclaredField("value"))
-      }
+      .map { _.objectFieldOffset(classOf[String].getDeclaredField("value")) }
       .getOrElse(Long.MinValue)
 
     /**
@@ -115,11 +108,8 @@ object Protocols {
       */
     private val OffsetValueOffset: Long = unsafe
       .map { u =>
-        try {
-          u.objectFieldOffset(classOf[String].getDeclaredField("offset"))
-        } catch {
-          case NonFatal(_) => Long.MinValue
-        }
+        try { u.objectFieldOffset(classOf[String].getDeclaredField("offset")) }
+        catch { case NonFatal(_) => Long.MinValue }
       }
       .getOrElse(Long.MinValue)
 
@@ -129,11 +119,8 @@ object Protocols {
       */
     private val CountValueOffset: Long = unsafe
       .map { u =>
-        try {
-          u.objectFieldOffset(classOf[String].getDeclaredField("count"))
-        } catch {
-          case NonFatal(_) => Long.MinValue
-        }
+        try { u.objectFieldOffset(classOf[String].getDeclaredField("count")) }
+        catch { case NonFatal(_) => Long.MinValue }
       }
       .getOrElse(Long.MinValue)
 
@@ -180,14 +167,10 @@ object Protocols {
       val chars = u.getObject(str, StringValueOffset).asInstanceOf[Array[Char]]
       val offset =
         if (OffsetValueOffset == Long.MinValue) 0
-        else {
-          u.getInt(str, OffsetValueOffset)
-        }
+        else { u.getInt(str, OffsetValueOffset) }
       val count =
         if (CountValueOffset == Long.MinValue) chars.length
-        else {
-          u.getInt(str, CountValueOffset)
-        }
+        else { u.getInt(str, CountValueOffset) }
       val charBuffer = CharBuffer.wrap(chars, offset, count)
 
       val out = if (count * MultiByteMultiplierEstimate <= OutBufferSize) {

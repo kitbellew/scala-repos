@@ -62,9 +62,7 @@ class DefaultDBApi(
     }
   }
 
-  def shutdown(): Unit = {
-    databases foreach (_.shutdown())
-  }
+  def shutdown(): Unit = { databases foreach (_.shutdown()) }
 
 }
 

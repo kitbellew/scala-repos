@@ -71,5 +71,7 @@ trait TraverseLaws[F[_]] extends FunctorLaws[F] with FoldableLaws[F] {
 
 object TraverseLaws {
   def apply[F[_]](implicit ev: Traverse[F]): TraverseLaws[F] =
-    new TraverseLaws[F] { def F: Traverse[F] = ev }
+    new TraverseLaws[F] {
+      def F: Traverse[F] = ev
+    }
 }

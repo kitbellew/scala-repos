@@ -12,7 +12,9 @@ object NilJvm extends Jvm {
   val snapCounters: Map[String, String] = Map()
   val snap: Snapshot = Snapshot(Time.epoch, Heap(0, 0, Seq()), Seq())
 
-  val edenPool: Pool = new Pool { def state() = PoolState(0, 0.bytes, 0.bytes) }
+  val edenPool: Pool = new Pool {
+    def state() = PoolState(0, 0.bytes, 0.bytes)
+  }
 
   val metaspaceUsage: Option[Jvm.MetaspaceUsage] = None
 

@@ -36,11 +36,8 @@ final class FreeGroup[A] private (val terms: Vector[Either[A, A]])
     def loop(acc: Vector[Either[A, A]]): Vector[Either[A, A]] =
       if (it.hasNext) {
         val cand = it.next()
-        if (acc.nonEmpty && annihilated(acc.last, cand)) {
-          loop(acc.init)
-        } else {
-          loop(acc :+ cand)
-        }
+        if (acc.nonEmpty && annihilated(acc.last, cand)) { loop(acc.init) }
+        else { loop(acc :+ cand) }
       } else acc
 
     new FreeGroup(loop(Vector.empty))

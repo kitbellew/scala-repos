@@ -170,9 +170,7 @@ class TestTransport(
     */
   val writeBehavior =
     new SwitchableLoggedBehavior[(TestAssociationHandle, ByteString), Boolean](
-      defaultBehavior = {
-        defaultWrite _
-      },
+      defaultBehavior = { defaultWrite _ },
       logCallback = {
         case (handle, payload) ⇒
           registry.logActivity(
@@ -185,9 +183,7 @@ class TestTransport(
     */
   val disassociateBehavior =
     new SwitchableLoggedBehavior[TestAssociationHandle, Unit](
-      defaultBehavior = {
-        defaultDisassociate _
-      },
+      defaultBehavior = { defaultDisassociate _ },
       logCallback = { (handle) ⇒
         registry.logActivity(
           DisassociateAttempt(handle.localAddress, handle.remoteAddress))
@@ -286,9 +282,7 @@ object TestTransport {
       * Restores the previous behavior.
       */
     def pop(): Unit = {
-      if (behaviorStack.size > 1) {
-        behaviorStack.remove(0)
-      }
+      if (behaviorStack.size > 1) { behaviorStack.remove(0) }
     }
 
     private def currentBehavior = behaviorStack.get(0)
@@ -360,9 +354,7 @@ object TestTransport {
       *
       * @param activity Activity to be logged.
       */
-    def logActivity(activity: Activity): Unit = {
-      activityLog.add(activity)
-    }
+    def logActivity(activity: Activity): Unit = { activityLog.add(activity) }
 
     /**
       * Takes a thread-safe snapshot of the current state of the activity log.
@@ -381,9 +373,7 @@ object TestTransport {
     /**
       * Clears the activity log.
       */
-    def clearLog(): Unit = {
-      activityLog.clear()
-    }
+    def clearLog(): Unit = { activityLog.clear() }
 
     /**
       * Records a mapping between an address and the corresponding (transport, associationEventListener) pair.
@@ -412,9 +402,7 @@ object TestTransport {
       *   True if all transports are successfully registered.
       */
     def transportsReady(addresses: Address*): Boolean = {
-      addresses forall {
-        transportTable.containsKey(_)
-      }
+      addresses forall { transportTable.containsKey(_) }
     }
 
     /**

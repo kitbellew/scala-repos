@@ -36,9 +36,7 @@ abstract class ScalaValidator(
     for {
       (namedElem, message) <- findConflicts(name, allOcc)
       if namedElem != selectedElement
-    } {
-      result.putValue(namedElem, message)
-    }
+    } { result.putValue(namedElem, message) }
     result
   }
 
@@ -55,9 +53,7 @@ abstract class ScalaValidator(
     res = name + i
     if (!ScalaNamesUtil.isIdentifier(res)) {
       res = name + name.last
-      while (!isOKImpl(res, allOcc = true).isEmpty) {
-        res = name + name.last
-      }
+      while (!isOKImpl(res, allOcc = true).isEmpty) { res = name + name.last }
     } else {
       while (!isOKImpl(res, allOcc = true).isEmpty) {
         i = i + 1

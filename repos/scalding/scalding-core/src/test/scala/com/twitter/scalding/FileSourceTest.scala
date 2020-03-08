@@ -25,9 +25,7 @@ class MultiTsvInputJob(args: Args) extends Job(args) {
   try {
     MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats)).read
       .write(Tsv("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 
 }
 
@@ -36,17 +34,12 @@ class SequenceFileInputJob(args: Args) extends Job(args) {
     SequenceFile("input0").read.write(SequenceFile("output0"))
     WritableSequenceFile("input1", ('query, 'queryStats)).read
       .write(WritableSequenceFile("output1", ('query, 'queryStats)))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 class MultipleTextLineFilesJob(args: Args) extends Job(args) {
-  try {
-    MultipleTextLineFiles(args.list("input"): _*).write(Tsv("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  try { MultipleTextLineFiles(args.list("input"): _*).write(Tsv("output0")) }
+  catch { case e: Exception => e.printStackTrace() }
 
 }
 

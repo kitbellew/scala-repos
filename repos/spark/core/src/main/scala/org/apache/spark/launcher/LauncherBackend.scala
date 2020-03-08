@@ -51,20 +51,13 @@ private[spark] abstract class LauncherBackend {
 
   def close(): Unit = {
     if (connection != null) {
-      try {
-        connection.close()
-      } finally {
-        if (clientThread != null) {
-          clientThread.join()
-        }
-      }
+      try { connection.close() }
+      finally { if (clientThread != null) { clientThread.join() } }
     }
   }
 
   def setAppId(appId: String): Unit = {
-    if (connection != null) {
-      connection.send(new SetAppId(appId))
-    }
+    if (connection != null) { connection.send(new SetAppId(appId)) }
   }
 
   def setState(state: SparkAppHandle.State): Unit = {
@@ -90,9 +83,7 @@ private[spark] abstract class LauncherBackend {
 
   private def fireStopRequest(): Unit = {
     val thread = LauncherBackend.threadFactory.newThread(new Runnable() {
-      override def run(): Unit = Utils.tryLogNonFatalError {
-        onStopRequest()
-      }
+      override def run(): Unit = Utils.tryLogNonFatalError { onStopRequest() }
     })
     thread.start()
   }
@@ -109,9 +100,8 @@ private[spark] abstract class LauncherBackend {
     }
 
     override def close(): Unit = {
-      try {
-        super.close()
-      } finally {
+      try { super.close() }
+      finally {
         onDisconnected()
         _isConnected = false
       }

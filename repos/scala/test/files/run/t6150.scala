@@ -28,9 +28,7 @@ object Test {
     assert(v == Vector(1, 2, 3, 4))
     assert(v.isInstanceOf[Vector[_]])
   }
-  def checkRealMccoy(x: AnyRef) = {
-    assert(x eq TheOneTrueCBF, cbf1)
-  }
+  def checkRealMccoy(x: AnyRef) = { assert(x eq TheOneTrueCBF, cbf1) }
 
   val v = immutable.Vector(1, 2, 3)
   val iiv: immutable.IndexedSeq[Int] = immutable.Vector(1, 2, 3)

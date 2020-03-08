@@ -72,9 +72,8 @@ object ReliableProxy {
           target.tell(msg, snd)
           sender() ! Ack(serial)
           lastSerial = serial
-        } else if (compare(serial, lastSerial) <= 0) {
-          sender() ! Ack(serial)
-        } else {
+        } else if (compare(serial, lastSerial) <= 0) { sender() ! Ack(serial) }
+        else {
           logDebug("Received message from {} with wrong serial: {}", snd, msg)
         }
       case Terminated(`target`) ⇒ context stop self

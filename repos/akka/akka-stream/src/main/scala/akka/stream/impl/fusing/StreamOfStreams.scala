@@ -81,9 +81,7 @@ final class FlattenMerge[T, M](breadth: Int)
           if (isAvailable(out)) {
             push(out, sinkIn.grab())
             sinkIn.pull()
-          } else {
-            q.enqueue(sinkIn)
-          }
+          } else { q.enqueue(sinkIn) }
         }
         override def onUpstreamFinish(): Unit =
           if (!sinkIn.isAvailable) removeSource(sinkIn)
@@ -182,9 +180,8 @@ final class PrefixAndTail[T](n: Int)
     }
 
     override def onPush(): Unit = {
-      if (prefixComplete) {
-        tailSource.push(grab(in))
-      } else {
+      if (prefixComplete) { tailSource.push(grab(in)) }
+      else {
         builder += grab(in)
         left -= 1
         if (left == 0) {
@@ -387,9 +384,8 @@ final class Split[T](
 
         override def onDownstreamFinish(): Unit = {
           substreamCancelled = true
-          if (isClosed(in) || propagateSubstreamCancel) {
-            completeStage()
-          } else {
+          if (isClosed(in) || propagateSubstreamCancel) { completeStage() }
+          else {
             // Start draining
             if (!hasBeenPulled(in)) pull(in)
           }
@@ -407,9 +403,7 @@ final class Split[T](
               if (substreamCancelled) pull(in)
               else substreamSource.push(elem)
             }
-          } catch {
-            case NonFatal(ex) ⇒ onUpstreamFailure(ex)
-          }
+          } catch { case NonFatal(ex) ⇒ onUpstreamFailure(ex) }
         }
 
         override def onUpstreamFinish(): Unit =

@@ -70,9 +70,7 @@ object MavenRepositoryResolver {
   val LAST_UPDATE_FORMAT = new java.text.SimpleDateFormat("yyyyMMddhhmmss")
   def parseTimeString(in: String): Option[Long] =
     try Some(LAST_UPDATE_FORMAT.parse(in).getTime)
-    catch {
-      case _: java.text.ParseException => None
-    }
+    catch { case _: java.text.ParseException => None }
   val DEFAULT_ARTIFACT_CONFIGURATION = "master"
 }
 
@@ -629,9 +627,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       case None => currentTransaction = Some(PublishTransaction(module, Nil))
     }
   }
-  override def abortPublishTransaction(): Unit = {
-    currentTransaction = None
-  }
+  override def abortPublishTransaction(): Unit = { currentTransaction = None }
 
   def getClassifier(art: Artifact): Option[String] =
     // TODO - Do we need to look anywere else?

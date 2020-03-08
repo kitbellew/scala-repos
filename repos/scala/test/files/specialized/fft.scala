@@ -109,9 +109,7 @@ object Test {
     }
   }
 
-  def run() {
-    FFT(1, 16, data)
-  }
+  def run() { FFT(1, 16, data) }
   var data: Array[Complex] = null
 
   def inputFileName = {

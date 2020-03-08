@@ -57,9 +57,7 @@ abstract class JoinSeedNodeSpec
     }
 
     "join the seed nodes" taggedAs LongRunningTest in {
-      runOn(ordinary1, ordinary2) {
-        cluster.joinSeedNodes(seedNodes)
-      }
+      runOn(ordinary1, ordinary2) { cluster.joinSeedNodes(seedNodes) }
       awaitMembersUp(roles.size)
       enterBarrier("after-2")
     }

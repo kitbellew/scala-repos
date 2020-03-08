@@ -169,9 +169,7 @@ class ReplicaManager(
   val leaderCount = newGauge(
     "LeaderCount",
     new Gauge[Int] {
-      def value = {
-        getLeaderPartitions().size
-      }
+      def value = { getLeaderPartitions().size }
     }
   )
   val partitionCount = newGauge(
@@ -1317,9 +1315,8 @@ class ReplicaManager(
       val hwms = reps
         .map(r => new TopicAndPartition(r) -> r.highWatermark.messageOffset)
         .toMap
-      try {
-        highWatermarkCheckpoints(dir).write(hwms)
-      } catch {
+      try { highWatermarkCheckpoints(dir).write(hwms) }
+      catch {
         case e: IOException =>
           fatal("Error writing to highwatermark file: ", e)
           Runtime.getRuntime().halt(1)

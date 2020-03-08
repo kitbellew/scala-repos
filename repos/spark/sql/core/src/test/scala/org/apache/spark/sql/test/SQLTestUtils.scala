@@ -68,9 +68,7 @@ private[sql] trait SQLTestUtils
 
     // This must live here to preserve binary compatibility with Spark < 1.5.
     implicit class StringToColumn(val sc: StringContext) {
-      def $(args: Any*): ColumnName = {
-        new ColumnName(sc.s(args: _*))
-      }
+      def $(args: Any*): ColumnName = { new ColumnName(sc.s(args: _*)) }
     }
   }
 
@@ -78,15 +76,11 @@ private[sql] trait SQLTestUtils
     * Materialize the test data immediately after the [[SQLContext]] is set up.
     * This is necessary if the data is accessed by name but not through direct reference.
     */
-  protected def setupTestData(): Unit = {
-    loadTestDataBeforeTests = true
-  }
+  protected def setupTestData(): Unit = { loadTestDataBeforeTests = true }
 
   protected override def beforeAll(): Unit = {
     super.beforeAll()
-    if (loadTestDataBeforeTests) {
-      loadTestData()
-    }
+    if (loadTestDataBeforeTests) { loadTestData() }
   }
 
   /**
@@ -187,9 +181,8 @@ private[sql] trait SQLTestUtils
   protected def withTempDatabase(f: String => Unit): Unit = {
     val dbName = s"db_${UUID.randomUUID().toString.replace('-', '_')}"
 
-    try {
-      sqlContext.sql(s"CREATE DATABASE $dbName")
-    } catch {
+    try { sqlContext.sql(s"CREATE DATABASE $dbName") }
+    catch {
       case cause: Throwable =>
         fail("Failed to create temporary database", cause)
     }
@@ -227,9 +220,7 @@ private[sql] trait SQLTestUtils
     * way to construct [[DataFrame]] directly out of local data without relying on implicits.
     */
   protected implicit def logicalPlanToSparkQuery(
-      plan: LogicalPlan): DataFrame = {
-    Dataset.newDataFrame(sqlContext, plan)
-  }
+      plan: LogicalPlan): DataFrame = { Dataset.newDataFrame(sqlContext, plan) }
 
   /**
     * Disable stdout and stderr when running the test. To not output the logs to the console,
@@ -238,11 +229,7 @@ private[sql] trait SQLTestUtils
     * we change System.out and System.err.
     */
   protected def testQuietly(name: String)(f: => Unit): Unit = {
-    test(name) {
-      quietly {
-        f
-      }
-    }
+    test(name) { quietly { f } }
   }
 }
 
@@ -266,11 +253,8 @@ private[sql] object SQLTestUtils {
           case o                       => o
         })
       }
-      if (sort) {
-        converted.sortBy(_.toString())
-      } else {
-        converted
-      }
+      if (sort) { converted.sortBy(_.toString()) }
+      else { converted }
     }
     if (prepareAnswer(expectedAnswer) != prepareAnswer(sparkAnswer)) {
       val errorMessage =
@@ -284,8 +268,6 @@ private[sql] object SQLTestUtils {
            ).mkString("\n")}
       """.stripMargin
       Some(errorMessage)
-    } else {
-      None
-    }
+    } else { None }
   }
 }

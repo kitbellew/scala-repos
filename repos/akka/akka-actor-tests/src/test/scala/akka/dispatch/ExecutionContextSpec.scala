@@ -35,9 +35,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         val jExecutorService: ExecutionContextExecutorService =
           ExecutionContexts.fromExecutorService(es)
         jExecutorService should not be (null)
-      } finally {
-        es.shutdown
-      }
+      } finally { es.shutdown }
     }
 
     "be able to use Batching" in {
@@ -127,13 +125,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       import system.dispatcher
 
       val f = Future(()).flatMap { _ ⇒
-        blocking {
-          blocking {
-            blocking {
-              Future.successful(42)
-            }
-          }
-        }
+        blocking { blocking { blocking { Future.successful(42) } } }
       }
       Await.result(f, 3.seconds) should be(42)
     }
@@ -144,9 +136,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       ec.execute(new Runnable {
         override def run = {
           ec.execute(new Runnable {
-            override def run = blocking {
-              x = 1
-            }
+            override def run = blocking { x = 1 }
           })
         }
       })
@@ -157,15 +147,11 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       val a = TestActorRef(Props(new Actor {
         def receive = {
           case msg ⇒
-            blocking {
-              sender() ! msg
-            }
+            blocking { sender() ! msg }
         }
       }))
       val b = TestActorRef(Props(new Actor {
-        def receive = {
-          case msg ⇒ a forward msg
-        }
+        def receive = { case msg ⇒ a forward msg }
       }))
       val p = TestProbe()
       p.send(b, "hello")
@@ -182,14 +168,10 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         override def run = {
           // enqueue a task to the batch
           ec.execute(new RunBatch {
-            override def run = blocking {
-              x = 1
-            }
+            override def run = blocking { x = 1 }
           })
           // now run it
-          blocking {
-            ()
-          }
+          blocking { () }
         }
       })
       x should be(1)

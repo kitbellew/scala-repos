@@ -20,7 +20,9 @@ trait AsyncJSEnv extends JSEnv {
     asyncRunner(Nil, code)
 
   override def loadLibs(libs: Seq[ResolvedJSDependency]): AsyncJSEnv =
-    new AsyncLoadedLibs { val loadedLibs = libs }
+    new AsyncLoadedLibs {
+      val loadedLibs = libs
+    }
 
   private[jsenv] trait AsyncLoadedLibs extends LoadedLibs with AsyncJSEnv {
     def asyncRunner(

@@ -82,12 +82,8 @@ class Beta(a: Double, b: Double)(implicit rand: RandBasis = Rand)
           //        val Y = math.pow(V, 1.0 / b)
           val logY = math.log(V) / b
           val logSum = softmax(logX, logY)
-          if (logSum <= 0.0) {
-            return math.exp(logX - logSum)
-          }
-        } else {
-          throw new RuntimeException("Underflow!")
-        }
+          if (logSum <= 0.0) { return math.exp(logX - logSum) }
+        } else { throw new RuntimeException("Underflow!") }
       }
       throw new RuntimeException("Shouldn't be here.")
     } else if (a <= 1 && b <= 1) {
@@ -100,12 +96,8 @@ class Beta(a: Double, b: Double)(implicit rand: RandBasis = Rand)
           val X = math.pow(U, 1.0 / a)
           val Y = math.pow(V, 1.0 / b)
           val sum = X + Y
-          if (sum <= 1.0) {
-            return X / sum
-          }
-        } else {
-          throw new RuntimeException("Underflow!")
-        }
+          if (sum <= 1.0) { return X / sum }
+        } else { throw new RuntimeException("Underflow!") }
       }
       throw new RuntimeException("Shouldn't be here.")
     } else {

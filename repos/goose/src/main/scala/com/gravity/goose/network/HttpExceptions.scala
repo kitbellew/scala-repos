@@ -13,9 +13,7 @@ class LoggableException(msg: String, innerEx: Exception = null)
       "%n\tand inner Exception of type %s:%n\t\tmessage: %s".format(
         innerEx.getClass.getName,
         innerEx.getMessage)
-    } else {
-      ""
-    }
+    } else { "" }
     getClass.getName + " ==> " + msg + innerMessage
   }
 }

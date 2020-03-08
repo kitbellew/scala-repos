@@ -82,26 +82,20 @@ class Pagination(override val delegate: jfxsc.Pagination = new jfxsc.Pagination)
     * The current page index to display for this pagination control.
     */
   def currentPageIndex: IntegerProperty = delegate.currentPageIndexProperty
-  def currentPageIndex_=(value: Int) {
-    currentPageIndex() = value
-  }
+  def currentPageIndex_=(value: Int) { currentPageIndex() = value }
 
   /**
     * The maximum number of page indicators to use for this pagination control.
     */
   def maxPageIndicatorCount: IntegerProperty =
     delegate.maxPageIndicatorCountProperty
-  def maxPageIndicatorCount_=(value: Int) {
-    maxPageIndicatorCount() = value
-  }
+  def maxPageIndicatorCount_=(value: Int) { maxPageIndicatorCount() = value }
 
   /**
     * The number of pages for this pagination control.
     */
   def pageCount: IntegerProperty = delegate.pageCountProperty
-  def pageCount_=(value: Int) {
-    pageCount() = value
-  }
+  def pageCount_=(value: Int) { pageCount() = value }
 
   /**
     * The pageFactory callback function that is called when a page has been selected by the application or the user.

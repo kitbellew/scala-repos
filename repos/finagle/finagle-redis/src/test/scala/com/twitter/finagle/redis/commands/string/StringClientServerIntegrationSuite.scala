@@ -103,9 +103,7 @@ final class StringClientServerIntegrationSuite
       assert(Await.result(client(Get("thing"))).isInstanceOf[EmptyBulkReply])
       assertBulkReply(client(Get(foo)), "bar")
 
-      intercept[ClientError] {
-        Await.result(client(Get(null: ChannelBuffer)))
-      }
+      intercept[ClientError] { Await.result(client(Get(null: ChannelBuffer))) }
 
       intercept[ClientError] {
         Await.result(client(Get(null: List[Array[Byte]])))
@@ -251,17 +249,11 @@ final class StringClientServerIntegrationSuite
 
   test("SET should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
-      intercept[ClientError] {
-        Await.result(client(Set(null, null)))
-      }
+      intercept[ClientError] { Await.result(client(Set(null, null))) }
 
-      intercept[ClientError] {
-        Await.result(client(Set("key1", null)))
-      }
+      intercept[ClientError] { Await.result(client(Set("key1", null))) }
 
-      intercept[ClientError] {
-        Await.result(client(Set(null, "value1")))
-      }
+      intercept[ClientError] { Await.result(client(Set(null, "value1"))) }
     }
   }
 

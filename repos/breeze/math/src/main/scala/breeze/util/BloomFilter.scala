@@ -41,18 +41,14 @@ class BloomFilter[@specialized(Int, Long) T](
     val hash1 = key.##
     val hash2 = math.abs(MurmurHash3.mixLast(0, hash1))
 
-    for {
-      i <- 0 to numHashFunctions
-    } yield {
+    for { i <- 0 to numHashFunctions } yield {
       val h = hash1 + i * hash2
       val nextHash = if (h < 0) ~h else h
       nextHash % numBuckets
     }
   }
 
-  def apply(o: T): Boolean = {
-    activeBuckets(o).forall(i => bits.get(i))
-  }
+  def apply(o: T): Boolean = { activeBuckets(o).forall(i => bits.get(i)) }
 
   def contains(o: T) = apply(o)
 

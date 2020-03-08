@@ -73,9 +73,7 @@ class JdbcRDDSuite
         // table exists
       }
 
-    } finally {
-      conn.close()
-    }
+    } finally { conn.close() }
   }
 
   test("basic functionality") {

@@ -29,9 +29,7 @@ final class FreshAtomicIdSource extends IdSource {
   def nextId() = source.getAndIncrement
   def nextIdBlock(n: Int): Long = {
     var nextId = source.get()
-    while (!source.compareAndSet(nextId, nextId + n)) {
-      nextId = source.get()
-    }
+    while (!source.compareAndSet(nextId, nextId + n)) { nextId = source.get() }
     nextId
   }
 }

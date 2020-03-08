@@ -352,9 +352,7 @@ private[ui] class StreamingPage(parent: StreamingTab)
                       <strong>Input Rate</strong>
                     </a>
                   </span>
-        } else {
-          <strong>Input Rate</strong>
-        }
+        } else { <strong>Input Rate</strong> }
       }
               </div>
               {
@@ -645,13 +643,9 @@ private[ui] class JsCollector {
     */
   private val statements = ArrayBuffer[String]()
 
-  def addPreparedStatement(js: String): Unit = {
-    preparedStatements += js
-  }
+  def addPreparedStatement(js: String): Unit = { preparedStatements += js }
 
-  def addStatement(js: String): Unit = {
-    statements += js
-  }
+  def addStatement(js: String): Unit = { statements += js }
 
   /**
     * Generate a html snippet that will execute all scripts when the DOM has finished loading.

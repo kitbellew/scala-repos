@@ -35,9 +35,7 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
   override def setName(_name: String): this.type = {
     if (partitionsRDD.name != null) {
       partitionsRDD.setName(partitionsRDD.name + ", " + _name)
-    } else {
-      partitionsRDD.setName(_name)
-    }
+    } else { partitionsRDD.setName(_name) }
     this
   }
   setName("EdgeRDD")
@@ -75,9 +73,7 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
 
   override def getStorageLevel: StorageLevel = partitionsRDD.getStorageLevel
 
-  override def checkpoint(): Unit = {
-    partitionsRDD.checkpoint()
-  }
+  override def checkpoint(): Unit = { partitionsRDD.checkpoint() }
 
   override def isCheckpointed: Boolean = {
     firstParent[(PartitionID, EdgePartition[ED, VD])].isCheckpointed
@@ -128,9 +124,7 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
           if (iter.hasNext) {
             val (pid, ep) = iter.next()
             Iterator(Tuple2(pid, f(pid, ep)))
-          } else {
-            Iterator.empty
-          }
+          } else { Iterator.empty }
         },
         preservesPartitioning = true))
   }

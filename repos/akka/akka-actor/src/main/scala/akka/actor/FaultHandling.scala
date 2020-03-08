@@ -182,9 +182,7 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
     * terminated (one-for-one).
     */
   final val stoppingStrategy: SupervisorStrategy = {
-    def stoppingDecider: Decider = {
-      case _: Exception ⇒ Stop
-    }
+    def stoppingDecider: Decider = { case _: Exception ⇒ Stop }
     OneForOneStrategy()(stoppingDecider)
   }
 

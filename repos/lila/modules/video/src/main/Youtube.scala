@@ -38,9 +38,7 @@ private[video] final class Youtube(
               }
             )
           )
-          .recover {
-            case e: Exception => logger.warn("update all youtube", e)
-          }
+          .recover { case e: Exception => logger.warn("update all youtube", e) }
       }
       .sequenceFu
       .void

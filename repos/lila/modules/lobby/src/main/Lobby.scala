@@ -62,19 +62,12 @@ private[lobby] final class Lobby(
       HookRepo save msg.hook
       socket ! msg
 
-    case SaveSeek(msg) =>
-      (seekApi insert msg.seek) >>- {
-        socket ! msg
-      }
+    case SaveSeek(msg) => (seekApi insert msg.seek) >>- { socket ! msg }
 
-    case CancelHook(uid) => {
-      HookRepo byUid uid foreach remove
-    }
+    case CancelHook(uid) => { HookRepo byUid uid foreach remove }
 
     case CancelSeek(seekId, user) =>
-      seekApi.removeBy(seekId, user.id) >>- {
-        socket ! RemoveSeek(seekId)
-      }
+      seekApi.removeBy(seekId, user.id) >>- { socket ! RemoveSeek(seekId) }
 
     case BiteHook(hookId, uid, user) =>
       NoPlayban(user) {
@@ -101,9 +94,7 @@ private[lobby] final class Lobby(
     case msg @ JoinSeek(_, seek, game, _) =>
       onStart(game.id)
       socket ! msg
-      seekApi.archive(seek, game.id) >>- {
-        socket ! RemoveSeek(seek.id)
-      }
+      seekApi.archive(seek, game.id) >>- { socket ! RemoveSeek(seek.id) }
 
     case Broom =>
       HookRepo.truncateIfNeeded
@@ -157,9 +148,7 @@ private[lobby] final class Lobby(
               GameRepo.lastGameBetween(
                 u1.id,
                 u2.id,
-                DateTime.now minusHours 1) map {
-                _ ?? (_.aborted)
-              }
+                DateTime.now minusHours 1) map { _ ?? (_.aborted) }
           }
         } flatMap {
           case true  => fuccess(h.some)
@@ -168,9 +157,7 @@ private[lobby] final class Lobby(
     }
 
   private def findCompatible(seek: Seek): Fu[Option[Seek]] =
-    seekApi forUser seek.user map {
-      _ find (_ compatibleWith seek)
-    }
+    seekApi forUser seek.user map { _ find (_ compatibleWith seek) }
 
   private def remove(hook: Hook) = {
     HookRepo remove hook

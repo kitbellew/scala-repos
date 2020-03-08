@@ -48,27 +48,17 @@ class WeightedRouteesSpec
     "check boundaries" in {
       val empty = new WeightedRoutees(Vector(), a1, Map.empty)
       empty.isEmpty should ===(true)
-      intercept[IllegalArgumentException] {
-        empty.total
-      }
+      intercept[IllegalArgumentException] { empty.total }
 
       val empty2 = new WeightedRoutees(Vector(routeeA), a1, Map(a1 -> 0))
       empty2.isEmpty should ===(true)
-      intercept[IllegalArgumentException] {
-        empty2.total
-      }
-      intercept[IllegalArgumentException] {
-        empty2(0)
-      }
+      intercept[IllegalArgumentException] { empty2.total }
+      intercept[IllegalArgumentException] { empty2(0) }
 
       val weighted = new WeightedRoutees(routees, a1, Map.empty)
       weighted.total should ===(3)
-      intercept[IllegalArgumentException] {
-        weighted(0)
-      }
-      intercept[IllegalArgumentException] {
-        weighted(4)
-      }
+      intercept[IllegalArgumentException] { weighted(0) }
+      intercept[IllegalArgumentException] { weighted(4) }
     }
 
     "allocate routees for undefined weight" in {

@@ -96,9 +96,7 @@ sealed trait Vector extends Serializable {
           result = 31 * result + (bits ^ (bits >>> 32)).toInt
           nnz += 1
         }
-      } else {
-        return result
-      }
+      } else { return result }
     }
     result
   }
@@ -166,11 +164,8 @@ sealed trait Vector extends Serializable {
   def compressed: Vector = {
     val nnz = numNonzeros
     // A dense vector needs 8 * size + 8 bytes, while a sparse vector needs 12 * nnz + 20 bytes.
-    if (1.5 * (nnz + 1.0) < size) {
-      toSparse
-    } else {
-      toDense
-    }
+    if (1.5 * (nnz + 1.0) < size) { toSparse }
+    else { toDense }
   }
 
   /**
@@ -359,17 +354,13 @@ object Vectors {
     * @return a zero vector
     */
   @Since("1.1.0")
-  def zeros(size: Int): Vector = {
-    new DenseVector(new Array[Double](size))
-  }
+  def zeros(size: Int): Vector = { new DenseVector(new Array[Double](size)) }
 
   /**
     * Parses a string resulted from [[Vector.toString]] into a [[Vector]].
     */
   @Since("1.1.0")
-  def parse(s: String): Vector = {
-    parseNumeric(NumericParser.parse(s))
-  }
+  def parse(s: String): Vector = { parseNumeric(NumericParser.parse(s)) }
 
   /**
     * Parses the JSON representation of a vector into a [[Vector]].
@@ -566,9 +557,8 @@ object Vectors {
 
     while (kv2 < nnzv2) {
       var score = 0.0
-      if (kv2 != iv1) {
-        score = v2(kv2)
-      } else {
+      if (kv2 != iv1) { score = v2(kv2) }
+      else {
         score = v1.values(kv1) - v2(kv2)
         if (kv1 < nnzv1 - 1) {
           kv1 += 1
@@ -634,9 +624,7 @@ class DenseVector @Since("1.0.0") (@Since("1.0.0") val values: Array[Double])
   override def apply(i: Int): Double = values(i)
 
   @Since("1.1.0")
-  override def copy: DenseVector = {
-    new DenseVector(values.clone())
-  }
+  override def copy: DenseVector = { new DenseVector(values.clone()) }
 
   @Since("1.6.0")
   override def foreachActive(f: (Int, Double) => Unit): Unit = {
@@ -675,11 +663,7 @@ class DenseVector @Since("1.0.0") (@Since("1.0.0") val values: Array[Double])
   override def numNonzeros: Int = {
     // same as values.count(_ != 0.0) but faster
     var nnz = 0
-    values.foreach { v =>
-      if (v != 0.0) {
-        nnz += 1
-      }
-    }
+    values.foreach { v => if (v != 0.0) { nnz += 1 } }
     nnz
   }
 
@@ -701,9 +685,8 @@ class DenseVector @Since("1.0.0") (@Since("1.0.0") val values: Array[Double])
 
   @Since("1.5.0")
   override def argmax: Int = {
-    if (size == 0) {
-      -1
-    } else {
+    if (size == 0) { -1 }
+    else {
       var maxIdx = 0
       var maxValue = values(0)
       var i = 1
@@ -820,20 +803,15 @@ class SparseVector @Since("1.0.0") (
   @Since("1.4.0")
   override def numNonzeros: Int = {
     var nnz = 0
-    values.foreach { v =>
-      if (v != 0.0) {
-        nnz += 1
-      }
-    }
+    values.foreach { v => if (v != 0.0) { nnz += 1 } }
     nnz
   }
 
   @Since("1.4.0")
   override def toSparse: SparseVector = {
     val nnz = numNonzeros
-    if (nnz == numActives) {
-      this
-    } else {
+    if (nnz == numActives) { this }
+    else {
       val ii = new Array[Int](nnz)
       val vv = new Array[Double](nnz)
       var k = 0
@@ -850,9 +828,8 @@ class SparseVector @Since("1.0.0") (
 
   @Since("1.5.0")
   override def argmax: Int = {
-    if (size == 0) {
-      -1
-    } else {
+    if (size == 0) { -1 }
+    else {
       // Find the max active entry.
       var maxIdx = indices(0)
       var maxValue = values(0)
@@ -875,17 +852,13 @@ class SparseVector @Since("1.0.0") (
           // If there exists an inactive entry before maxIdx, find it and return its index.
           if (maxJ < maxIdx) {
             var k = 0
-            while (k < maxJ && indices(k) == k) {
-              k += 1
-            }
+            while (k < maxJ && indices(k) == k) { k += 1 }
             maxIdx = k
           }
         } else {
           // If the max active value is negative, find and return the first inactive index.
           var k = 0
-          while (k < na && indices(k) == k) {
-            k += 1
-          }
+          while (k < na && indices(k) == k) { k += 1 }
           maxIdx = k
         }
       }
@@ -907,11 +880,8 @@ class SparseVector @Since("1.0.0") (
     var currentIdx = 0
     val (sliceInds, sliceVals) = selectedIndices.flatMap { origIdx =>
       val iIdx = java.util.Arrays.binarySearch(this.indices, origIdx)
-      val i_v = if (iIdx >= 0) {
-        Iterator((currentIdx, this.values(iIdx)))
-      } else {
-        Iterator()
-      }
+      val i_v = if (iIdx >= 0) { Iterator((currentIdx, this.values(iIdx))) }
+      else { Iterator() }
       currentIdx += 1
       i_v
     }.unzip

@@ -182,9 +182,8 @@ abstract class BTypes {
     */
   def classBTypeFromClassNode(classNode: ClassNode): ClassBType = {
     classBTypeFromInternalName.getOrElse(
-      classNode.name, {
-        setClassInfoFromClassNode(classNode, ClassBType(classNode.name))
-      })
+      classNode.name,
+      { setClassInfoFromClassNode(classNode, ClassBType(classNode.name)) })
   }
 
   private def setClassInfoFromClassNode(
@@ -422,9 +421,8 @@ abstract class BTypes {
               else if (other.isPrimitive) false
               else
                 true // Null conforms to all classes (except Nothing) and arrays.
-            } else if (isNothingType) {
-              true
-            } else
+            } else if (isNothingType) { true }
+            else
               other match {
                 case otherClassType: ClassBType =>
                   classType.isSubtypeOf(otherClassType).orThrow
@@ -1056,9 +1054,7 @@ abstract class BTypes {
 
         // (*) check if some interface of this class conforms to other.
         Right(info.orThrow.interfaces.exists(_.isSubtypeOf(other).orThrow))
-      } catch {
-        case Invalid(noInfo: NoClassBTypeInfo) => Left(noInfo)
-      }
+      } catch { case Invalid(noInfo: NoClassBTypeInfo) => Left(noInfo) }
 
     /**
       * Finding the least upper bound in agreement with the bytecode verifier

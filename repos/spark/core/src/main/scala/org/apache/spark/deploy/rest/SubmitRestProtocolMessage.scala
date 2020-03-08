@@ -69,9 +69,8 @@ private[rest] abstract class SubmitRestProtocolMessage {
     * If the validation fails, throw a [[SubmitRestProtocolException]].
     */
   final def validate(): Unit = {
-    try {
-      doValidate()
-    } catch {
+    try { doValidate() }
+    catch {
       case e: Exception =>
         throw new SubmitRestProtocolException(
           s"Validation of message $messageType failed!",
@@ -156,7 +155,5 @@ private[spark] object SubmitRestProtocolMessage {
     */
   def fromJson[T <: SubmitRestProtocolMessage](
       json: String,
-      clazz: Class[T]): T = {
-    mapper.readValue(json, clazz)
-  }
+      clazz: Class[T]): T = { mapper.readValue(json, clazz) }
 }

@@ -71,7 +71,5 @@ class VirtualDirectory(
       dir
     }
 
-  def clear() {
-    files.clear()
-  }
+  def clear() { files.clear() }
 }

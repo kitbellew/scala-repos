@@ -61,9 +61,7 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
     } catch {
       case e: Throwable ⇒
         oldErr.write(bufferedLoadingErrors.toByteArray); throw e
-    } finally {
-      System.setErr(oldErr)
-    }
+    } finally { System.setErr(oldErr) }
   }
 
   // Ensure bundles get stopped at the end of the test to release resources and stop threads

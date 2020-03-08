@@ -87,9 +87,8 @@ trait ScopedLiftActor extends LiftActor with LazyLoggable {
         S.initIfUninitted(session) {
           RenderVersion.doWith(uniqueId) {
             S.functionLifespan(true) {
-              try {
-                what.apply(in)
-              } catch {
+              try { what.apply(in) }
+              catch {
                 case e if exceptionHandler.isDefinedAt(e) => exceptionHandler(e)
                 case e: Exception =>
                   reportError("Message dispatch for " + in, e)
@@ -106,9 +105,8 @@ trait ScopedLiftActor extends LiftActor with LazyLoggable {
         S.initIfUninitted(session) {
           RenderVersion.doWith(uniqueId) {
             S.functionLifespan(true) {
-              try {
-                what.isDefinedAt(in)
-              } catch {
+              try { what.isDefinedAt(in) }
+              catch {
                 case e if exceptionHandler.isDefinedAt(e) =>
                   exceptionHandler(e); false
                 case e: Exception =>

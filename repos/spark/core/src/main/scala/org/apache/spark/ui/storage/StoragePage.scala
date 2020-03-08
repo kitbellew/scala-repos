@@ -154,9 +154,8 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
 
   private def streamBlockTable(
       blocks: Seq[(BlockId, Seq[BlockUIData])]): Seq[Node] = {
-    if (blocks.isEmpty) {
-      Nil
-    } else {
+    if (blocks.isEmpty) { Nil }
+    else {
       <div>
         <h5>Blocks</h5>
         {
@@ -224,9 +223,8 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
 
   private[storage] def streamBlockStorageLevelDescriptionAndSize(
       block: BlockUIData): (String, Long) = {
-    if (block.storageLevel.useDisk) {
-      ("Disk", block.diskSize)
-    } else if (block.storageLevel.useMemory && block.storageLevel.deserialized) {
+    if (block.storageLevel.useDisk) { ("Disk", block.diskSize) }
+    else if (block.storageLevel.useMemory && block.storageLevel.deserialized) {
       ("Memory", block.memSize)
     } else if (block.storageLevel.useMemory && !block.storageLevel.deserialized) {
       ("Memory Serialized", block.memSize)

@@ -149,9 +149,7 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
       get(a) match {
         case None => (a, None)
         case Some(w) =>
-          f(w) apply a match {
-            case (y, x) => (y, Some(x))
-          }
+          f(w) apply a match { case (y, x) => (y, Some(x)) }
       })
 
   def ->>-[A >: A2 <: A1, C](f: => State[A, C]): PState[A, C] =

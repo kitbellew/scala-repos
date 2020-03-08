@@ -47,9 +47,7 @@ object CurrencyZoneSpec extends Specification {
       auBoolean mustEqual false
     }
 
-    "be creatable" in {
-      AU(20.1).get must beMatching("20.10")
-    }
+    "be creatable" in { AU(20.1).get must beMatching("20.10") }
 
     "be addable" in {
       val au = AU(20.68) + AU(3.08)

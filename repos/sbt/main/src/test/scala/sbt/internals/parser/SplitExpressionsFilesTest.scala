@@ -85,14 +85,12 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
         if (openSlashAsteriskIndex == -1 || statement
               .substring(0, openSlashAsteriskIndex)
               .trim
-              .nonEmpty) {
-          Some((statements, lineRange))
-        } else {
+              .nonEmpty) { Some((statements, lineRange)) }
+        else {
           val closeSlashAsteriskLine =
             statements.indexWhere(s => s.contains(END_COMMENT))
-          if (closeSlashAsteriskLine == -1) {
-            Some((statements, lineRange))
-          } else {
+          if (closeSlashAsteriskLine == -1) { Some((statements, lineRange)) }
+          else {
             val newLineRange = if (reverted) {
               lineRange.copy(end = lineRange.end - closeSlashAsteriskLine - 1)
             } else {

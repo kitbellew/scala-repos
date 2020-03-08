@@ -57,9 +57,7 @@ private class RateLimiterActor private (
     log.info("started RateLimiterActor")
   }
 
-  override def postStop(): Unit = {
-    cleanup.cancel()
-  }
+  override def postStop(): Unit = { cleanup.cancel() }
 
   override def receive: Receive = LoggingReceive {
     Seq[Receive](

@@ -578,9 +578,7 @@ class AdminTest extends ZooKeeperTestHarness with Logging with RackAwareTest {
             .leaderIsrAndControllerEpoch
             .leaderAndIsr
             .leader == 0))
-    } finally {
-      servers.foreach(_.shutdown())
-    }
+    } finally { servers.foreach(_.shutdown()) }
   }
 
   /**

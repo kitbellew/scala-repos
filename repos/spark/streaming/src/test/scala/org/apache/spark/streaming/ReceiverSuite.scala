@@ -59,11 +59,7 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
     executingThread.start()
 
     // Verify that the receiver
-    intercept[Exception] {
-      failAfter(200 millis) {
-        executingThread.join()
-      }
-    }
+    intercept[Exception] { failAfter(200 millis) { executingThread.join() } }
 
     // Ensure executor is started
     executorStarted.acquire()
@@ -226,9 +222,7 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
           logDirectory1.listFiles().filter { _.getName.startsWith("log") }.map {
             _.toString
           }
-        } else {
-          Seq.empty
-        }
+        } else { Seq.empty }
       } catch {
         case e: Exception =>
           Seq.empty
@@ -305,30 +299,22 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
       arrayBuffers.isEmpty && errors.isEmpty
     }
 
-    def pushSingle(data: Any) {
-      singles += data
-    }
+    def pushSingle(data: Any) { singles += data }
 
     def pushBytes(
         bytes: ByteBuffer,
         optionalMetadata: Option[Any],
-        optionalBlockId: Option[StreamBlockId]) {
-      byteBuffers += bytes
-    }
+        optionalBlockId: Option[StreamBlockId]) { byteBuffers += bytes }
 
     def pushIterator(
         iterator: Iterator[_],
         optionalMetadata: Option[Any],
-        optionalBlockId: Option[StreamBlockId]) {
-      iterators += iterator
-    }
+        optionalBlockId: Option[StreamBlockId]) { iterators += iterator }
 
     def pushArrayBuffer(
         arrayBuffer: ArrayBuffer[_],
         optionalMetadata: Option[Any],
-        optionalBlockId: Option[StreamBlockId]) {
-      arrayBuffers += arrayBuffer
-    }
+        optionalBlockId: Option[StreamBlockId]) { arrayBuffers += arrayBuffer }
 
     def reportError(message: String, throwable: Throwable) {
       errors += throwable
@@ -361,9 +347,7 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
       Thread.sleep(0)
     }
 
-    def onError(message: String, throwable: Throwable) {
-      errors += throwable
-    }
+    def onError(message: String, throwable: Throwable) { errors += throwable }
   }
 }
 

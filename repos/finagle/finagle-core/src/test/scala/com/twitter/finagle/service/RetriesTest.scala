@@ -52,9 +52,7 @@ class RetriesTest extends FunSuite {
     val stats = new InMemoryStatsReceiver()
     val budget = newBudget()
 
-    val retryAll: PartialFunction[Try[Nothing], Boolean] = {
-      case _ => true
-    }
+    val retryAll: PartialFunction[Try[Nothing], Boolean] = { case _ => true }
 
     val params = Stack.Params.empty +
       param.Stats(stats) +
@@ -71,9 +69,7 @@ class RetriesTest extends FunSuite {
       // each request will use up 1 retry from the budget due to the
       // caps maxRetriesPerReq limits
       1.to(minBudget).foreach { i =>
-        val f = intercept[Failure] {
-          Await.result(svc(requeableEx), 5.seconds)
-        }
+        val f = intercept[Failure] { Await.result(svc(requeableEx), 5.seconds) }
         assert(f.getMessage == requeableEx.getMessage)
         assert(stats.counter("retries", "requeues")() == i)
       }
@@ -114,9 +110,7 @@ class RetriesTest extends FunSuite {
       // each request will use up 1 retry from the budget due to the
       // caps maxRetriesPerReq limits
       1.to(minBudget).foreach { i =>
-        val f = intercept[Failure] {
-          Await.result(svc(requeableEx), 5.seconds)
-        }
+        val f = intercept[Failure] { Await.result(svc(requeableEx), 5.seconds) }
         assert(f.getMessage == requeableEx.getMessage)
         assert(stats.counter("retries", "requeues")() == i)
       }
@@ -161,9 +155,7 @@ class RetriesTest extends FunSuite {
     val svc: Service[Exception, Int] =
       Await.result(svcFactory(), 5.seconds)
 
-    intercept[MyRetryEx] {
-      Await.result(svc(new MyRetryEx()), 5.seconds)
-    }
+    intercept[MyRetryEx] { Await.result(svc(new MyRetryEx()), 5.seconds) }
 
     // should not be requeued, but should have been retried
     // up to what the budget allows for.
@@ -188,9 +180,7 @@ class RetriesTest extends FunSuite {
     val svc: Service[Exception, Int] =
       Await.result(svcFactory(), 5.seconds)
 
-    intercept[AnotherEx] {
-      Await.result(svc(new AnotherEx()), 5.seconds)
-    }
+    intercept[AnotherEx] { Await.result(svc(new AnotherEx()), 5.seconds) }
 
     // should not have triggered either requeue or retries
     assert(!stats.counters.contains(Seq("retries", "requeues")))
@@ -254,9 +244,7 @@ class RetriesTest extends FunSuite {
     val numReqs = 100
     Time.withCurrentTimeFrozen { _ =>
       0.until(numReqs).foreach { _ =>
-        intercept[MyRetryEx] {
-          Await.result(svc(new MyRetryEx()), 5.seconds)
-        }
+        intercept[MyRetryEx] { Await.result(svc(new MyRetryEx()), 5.seconds) }
       }
 
       // verify each layer only sees 20% more
@@ -283,9 +271,7 @@ class RetriesTest extends FunSuite {
     val numReqs = 100
     Time.withCurrentTimeFrozen { _ =>
       0.until(numReqs).foreach { i =>
-        intercept[MyRetryEx] {
-          Await.result(svc(new MyRetryEx()), 5.seconds)
-        }
+        intercept[MyRetryEx] { Await.result(svc(new MyRetryEx()), 5.seconds) }
       }
 
       assert(

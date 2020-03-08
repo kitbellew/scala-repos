@@ -77,9 +77,7 @@ class Mediator(winSz: Int) {
       if (totCt < winSz) totCt += 1
     }
 
-    if (totCt + nanCt > winSz) {
-      pop()
-    }
+    if (totCt + nanCt > winSz) { pop() }
 
     naIdx = (naIdx + 1) % winSz
   }

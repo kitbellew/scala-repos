@@ -598,30 +598,14 @@ abstract class ScalaMethodEvaluationTestBase extends ScalaDebuggerTestCase {
     runDebugger() {
       waitForBreakpoint()
       evalEquals("foo1", "1")
-      atNextBreakpoint {
-        evalEquals("foo2(3)", "7")
-      }
-      atNextBreakpoint {
-        evalEquals("foo3", "1")
-      }
-      atNextBreakpoint {
-        evalEquals("foo4", "1")
-      }
-      atNextBreakpoint {
-        evalEquals("foo5", "1")
-      }
-      atNextBreakpoint {
-        evalEquals("foo6", "1")
-      }
-      atNextBreakpoint {
-        evalEquals("foo7", "1")
-      }
-      atNextBreakpoint {
-        evalEquals("moo(x)", "2")
-      }
-      atNextBreakpoint {
-        evalEquals("foo8", "1")
-      }
+      atNextBreakpoint { evalEquals("foo2(3)", "7") }
+      atNextBreakpoint { evalEquals("foo3", "1") }
+      atNextBreakpoint { evalEquals("foo4", "1") }
+      atNextBreakpoint { evalEquals("foo5", "1") }
+      atNextBreakpoint { evalEquals("foo6", "1") }
+      atNextBreakpoint { evalEquals("foo7", "1") }
+      atNextBreakpoint { evalEquals("moo(x)", "2") }
+      atNextBreakpoint { evalEquals("foo8", "1") }
     }
   }
 
@@ -714,15 +698,9 @@ abstract class ScalaMethodEvaluationTestBase extends ScalaDebuggerTestCase {
     runDebugger() {
       waitForBreakpoint()
       evalEquals("foo()", "1")
-      atNextBreakpoint {
-        evalEquals("foo()", "2")
-      }
-      atNextBreakpoint {
-        evalEquals("foo()", "3")
-      }
-      atNextBreakpoint {
-        evalEquals("foo()", "4")
-      }
+      atNextBreakpoint { evalEquals("foo()", "2") }
+      atNextBreakpoint { evalEquals("foo()", "3") }
+      atNextBreakpoint { evalEquals("foo()", "4") }
     }
   }
 

@@ -98,9 +98,7 @@ object Set extends ImmutableSetFactory[Set] {
       else this
     def iterator: Iterator[A] =
       Iterator(elem1)
-    override def foreach[U](f: A => U): Unit = {
-      f(elem1)
-    }
+    override def foreach[U](f: A => U): Unit = { f(elem1) }
     override def exists(@deprecatedName('f) p: A => Boolean): Boolean = {
       p(elem1)
     }
@@ -138,9 +136,7 @@ object Set extends ImmutableSetFactory[Set] {
       else this
     def iterator: Iterator[A] =
       Iterator(elem1, elem2)
-    override def foreach[U](f: A => U): Unit = {
-      f(elem1); f(elem2)
-    }
+    override def foreach[U](f: A => U): Unit = { f(elem1); f(elem2) }
     override def exists(@deprecatedName('f) p: A => Boolean): Boolean = {
       p(elem1) || p(elem2)
     }
@@ -180,9 +176,7 @@ object Set extends ImmutableSetFactory[Set] {
       else this
     def iterator: Iterator[A] =
       Iterator(elem1, elem2, elem3)
-    override def foreach[U](f: A => U): Unit = {
-      f(elem1); f(elem2); f(elem3)
-    }
+    override def foreach[U](f: A => U): Unit = { f(elem1); f(elem2); f(elem3) }
     override def exists(@deprecatedName('f) p: A => Boolean): Boolean = {
       p(elem1) || p(elem2) || p(elem3)
     }

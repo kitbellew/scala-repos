@@ -32,11 +32,8 @@ trait ScalaSeparatorProvider {
   def doIfSeparatorNeeded(element: PsiElement) = {
     if (isSeparationContainer(element.getParent) && hasElementAbove(element)) {
       val g = getGroup(element)
-      if (g.get >= MultilineLevel) {
-        true
-      } else {
-        g != getGroupAbove(element) { _ => true }
-      }
+      if (g.get >= MultilineLevel) { true }
+      else { g != getGroupAbove(element) { _ => true } }
     } else false
   }
 
@@ -69,9 +66,7 @@ trait ScalaSeparatorProvider {
   def isSeparationContainer(element: PsiElement): Boolean = {
     var e = element
     while (e != null) {
-      if (isSeparationBlocker(e)) {
-        return false
-      }
+      if (isSeparationBlocker(e)) { return false }
       e = e.getParent
     }
     true
@@ -91,11 +86,8 @@ trait ScalaSeparatorProvider {
     var e = element.getPrevSibling
     while (e != null) {
       val g = getGroup(e)
-      if (g.isDefined) {
-        if (lines > 0 && filter(e)) return g
-      } else {
-        lines += augmentString(e.getText).count(_ == '\n')
-      }
+      if (g.isDefined) { if (lines > 0 && filter(e)) return g }
+      else { lines += augmentString(e.getText).count(_ == '\n') }
       e = e.getPrevSibling
     }
     None

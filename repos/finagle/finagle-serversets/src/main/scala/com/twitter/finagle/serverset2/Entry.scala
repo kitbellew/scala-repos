@@ -99,9 +99,7 @@ object Endpoint {
           case port: java.lang.Integer => port
         }
 
-        val h = Option(ep.get("host")) collect {
-          case host: String => host
-        }
+        val h = Option(ep.get("host")) collect { case host: String => host }
 
         for (h <- h; p <- p)
           yield (h, p.toInt)

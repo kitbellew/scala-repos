@@ -17,9 +17,7 @@ trait IntegrationClient {
       val socket = new ServerSocket(3306)
       socket.close()
       true
-    } catch {
-      case e: BindException => false
-    }
+    } catch { case e: BindException => false }
 
   val propFile = new File(
     System.getProperty("user.home") +
@@ -56,7 +54,5 @@ trait IntegrationClient {
         .withCredentials(username, password)
         .withDatabase(db)
         .newRichClient("localhost:3306"))
-  } else {
-    None
-  }
+  } else { None }
 }

@@ -61,23 +61,11 @@ object Main extends LilaController {
     } as JAVASCRIPT withHeaders (CACHE_CONTROL -> "max-age=86400")
   }
 
-  def developers = Open { implicit ctx =>
-    fuccess {
-      html.site.developers()
-    }
-  }
+  def developers = Open { implicit ctx => fuccess { html.site.developers() } }
 
-  def themepicker = Open { implicit ctx =>
-    fuccess {
-      html.base.themepicker()
-    }
-  }
+  def themepicker = Open { implicit ctx => fuccess { html.base.themepicker() } }
 
-  def lag = Open { implicit ctx =>
-    fuccess {
-      html.site.lag()
-    }
-  }
+  def lag = Open { implicit ctx => fuccess { html.site.lag() } }
 
   def mobile = Open { implicit ctx =>
     OptionOk(Prismic getBookmark "mobile-apk") {
@@ -100,9 +88,7 @@ object Main extends LilaController {
       .branch("jslog")
       .info(s"${ctx.req.remoteAddress} ${ctx.userId} $referer")
     lila.mon.cheat.cssBot()
-    ctx.userId.?? {
-      Env.report.api.autoBotReport(_, referer)
-    }
+    ctx.userId.?? { Env.report.api.autoBotReport(_, referer) }
     lila.game.GameRepo pov id map {
       _ ?? lila.game.GameRepo.setBorderAlert
     } inject Ok

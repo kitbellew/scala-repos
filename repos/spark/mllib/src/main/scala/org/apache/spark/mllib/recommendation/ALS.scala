@@ -230,14 +230,10 @@ class ALS private (
 
     val numUserBlocks = if (this.numUserBlocks == -1) {
       math.max(sc.defaultParallelism, ratings.partitions.length / 2)
-    } else {
-      this.numUserBlocks
-    }
+    } else { this.numUserBlocks }
     val numProductBlocks = if (this.numProductBlocks == -1) {
       math.max(sc.defaultParallelism, ratings.partitions.length / 2)
-    } else {
-      this.numProductBlocks
-    }
+    } else { this.numProductBlocks }
 
     val (floatUserFactors, floatProdFactors) = NewALS.train[Int](
       ratings =

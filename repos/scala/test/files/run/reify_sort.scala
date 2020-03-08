@@ -10,9 +10,7 @@ object Test extends App {
       */
     def sort(a: Array[Int]) {
 
-      def swap(i: Int, j: Int) {
-        val t = a(i); a(i) = a(j); a(j) = t
-      }
+      def swap(i: Int, j: Int) { val t = a(i); a(i) = a(j); a(j) = t }
 
       def sort1(l: Int, r: Int) {
         val pivot = a((l + r) / 2)

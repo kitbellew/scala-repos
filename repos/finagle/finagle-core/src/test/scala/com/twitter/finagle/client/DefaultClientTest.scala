@@ -80,9 +80,7 @@ class DefaultClientTest
     new SourcedExceptionHelper {
       val f = service(3)
       qOut.offer(3)
-      val e = intercept[SourcedException] {
-        Await.result(f)
-      }
+      val e = intercept[SourcedException] { Await.result(f) }
       assert(e.serviceName == name)
     }
   }
@@ -126,18 +124,14 @@ class DefaultClientTest
         control.advance(rTimeout)
         timer.tick()
         assert(f1.isDefined) // times out
-        intercept[IndividualRequestTimeoutException] {
-          Await.result(f1)
-        }
+        intercept[IndividualRequestTimeoutException] { Await.result(f1) }
         assert(!f2.isDefined)
         // f2 is now moved from the queue to dispatched
 
         control.advance(rTimeout)
         timer.tick()
         assert(f2.isDefined) // times out
-        intercept[IndividualRequestTimeoutException] {
-          Await.result(f2)
-        }
+        intercept[IndividualRequestTimeoutException] { Await.result(f2) }
       }
     }
   }

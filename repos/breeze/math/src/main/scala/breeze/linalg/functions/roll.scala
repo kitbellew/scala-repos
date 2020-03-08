@@ -21,9 +21,7 @@ object roll extends UFunc {
         cfor(0)(j => j < n, j => j + 1)(j => {
           result(j) = v(endOfBeginning + j)
         })
-        cfor(n)(j => j < v.size, j => j + 1)(j => {
-          result(j) = v(j - n)
-        })
+        cfor(n)(j => j < v.size, j => j + 1)(j => { result(j) = v(j - n) })
         result
       }
     }

@@ -243,9 +243,7 @@ class FormatterTest {
     assertF("1\n2", "%d%n%d", new JInteger(1), new JInteger(2))
   }
 
-  @Test def `should_survive_null`(): Unit = {
-    assertF("null", "%s", null)
-  }
+  @Test def `should_survive_null`(): Unit = { assertF("null", "%s", null) }
 
   @Test def `should_allow_f_string_interpolation_to_survive_null`(): Unit = {
     assertEquals("null", f"${null}%s")

@@ -141,9 +141,8 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
     * Returns Aliased [[Expression]]s that could be used to construct a flattened version of this
     * StructType.
     */
-  def flatten: Seq[NamedExpression] = valExprs.zip(names).map {
-    case (v, n) => Alias(v, n.toString)()
-  }
+  def flatten: Seq[NamedExpression] =
+    valExprs.zip(names).map { case (v, n) => Alias(v, n.toString)() }
 
   private lazy val (nameExprs, valExprs) =
     children
@@ -181,11 +180,8 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
         TypeCheckResult.TypeCheckFailure(
           s"Only foldable StringType expressions are allowed to appear at odd position , got :" +
             s" ${invalidNames.mkString(",")}")
-      } else if (!names.contains(null)) {
-        TypeCheckResult.TypeCheckSuccess
-      } else {
-        TypeCheckResult.TypeCheckFailure("Field name should not be null")
-      }
+      } else if (!names.contains(null)) { TypeCheckResult.TypeCheckSuccess }
+      else { TypeCheckResult.TypeCheckFailure("Field name should not be null") }
     }
   }
 

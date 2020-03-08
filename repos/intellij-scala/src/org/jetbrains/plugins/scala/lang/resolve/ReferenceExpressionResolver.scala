@@ -142,9 +142,7 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
               val iterator = reference.shapeResolve
                 .map(_.asInstanceOf[ScalaResolveResult])
                 .iterator
-              while (iterator.hasNext) {
-                levelSet.add(iterator.next())
-              }
+              while (iterator.hasNext) { levelSet.add(iterator.next()) }
               super.candidatesS
             }
           }
@@ -167,9 +165,7 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           // this is ugly, but it can improve performance
           result =
             reference.doResolve(reference, processor(smartProcessor = false))
-        } else {
-          result = candidatesS.toArray
-        }
+        } else { result = candidatesS.toArray }
       }
       if (result.isEmpty && reference.isAssignmentOperator) {
         val assignProcessor = new MethodResolveProcessor(
@@ -184,9 +180,7 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
         result.map(r =>
           r.asInstanceOf[ScalaResolveResult]
             .copy(isAssignment = true): ResolveResult)
-      } else {
-        result
-      }
+      } else { result }
     }
 
     nonAssignResolve

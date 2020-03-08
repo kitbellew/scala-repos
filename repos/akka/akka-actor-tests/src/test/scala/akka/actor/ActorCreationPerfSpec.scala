@@ -22,15 +22,11 @@ object ActorCreationPerfSpec {
   case object Waited
 
   class EmptyActor extends Actor {
-    def receive = {
-      case IsAlive ⇒ sender() ! Alive
-    }
+    def receive = { case IsAlive ⇒ sender() ! Alive }
   }
 
   class EmptyArgsActor(val foo: Int, val bar: Int) extends Actor {
-    def receive = {
-      case IsAlive ⇒ sender() ! Alive
-    }
+    def receive = { case IsAlive ⇒ sender() ! Alive }
   }
 
   class TimingDriver(hist: Histogram) extends Actor {
@@ -75,9 +71,7 @@ object ActorCreationPerfSpec {
       case IsAlive ⇒
         sender() ! Alive
       case Create(number, propsCreator) ⇒
-        for (i ← 1 to number) {
-          context.actorOf(propsCreator.apply())
-        }
+        for (i ← 1 to number) { context.actorOf(propsCreator.apply()) }
         sender() ! Created
       case WaitForChildren ⇒
         context.children.foreach(_ ! IsAlive)

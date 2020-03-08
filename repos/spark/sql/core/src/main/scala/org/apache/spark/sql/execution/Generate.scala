@@ -78,9 +78,7 @@ case class Generate(
           val outputRows = boundGenerator.eval(row)
           if (outer && outputRows.isEmpty) {
             joinedRow.withRight(generatorNullRow) :: Nil
-          } else {
-            outputRows.map(joinedRow.withRight)
-          }
+          } else { outputRows.map(joinedRow.withRight) }
         } ++ LazyIterator(boundGenerator.terminate).map { row =>
           // we leave the left side as the last element of its child output
           // keep it the same as Hive does

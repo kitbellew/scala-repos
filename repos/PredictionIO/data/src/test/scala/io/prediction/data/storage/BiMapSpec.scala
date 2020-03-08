@@ -71,13 +71,9 @@ class BiMapSpec extends Specification {
       biValues must beEqualTo(expected)
     }
 
-    "same size as original map" in {
-      (bi.size) must beEqualTo(org.size)
-    }
+    "same size as original map" in { (bi.size) must beEqualTo(org.size) }
 
-    "take(2) returns BiMap of size 2" in {
-      bi.take(2).size must beEqualTo(2)
-    }
+    "take(2) returns BiMap of size 2" in { bi.take(2).size must beEqualTo(2) }
 
     "toMap contain same element as original map" in {
       (bi.toMap) must beEqualTo(org)
@@ -92,9 +88,7 @@ class BiMapSpec extends Specification {
       biKeys must beEqualTo(keys)
     }
 
-    "inverse with same size" in {
-      bi.inverse.size must beEqualTo(org.size)
-    }
+    "inverse with same size" in { bi.inverse.size must beEqualTo(org.size) }
 
     "inverse's inverse reference back to the same original object" in {
       // NOTE: reference equality

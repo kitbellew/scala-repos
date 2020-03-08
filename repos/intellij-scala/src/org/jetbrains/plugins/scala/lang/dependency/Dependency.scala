@@ -39,9 +39,7 @@ case class Dependency(
   // directly and re-resolve references afterwards.
   // However, current implementation of "bindToElement" can handle only Class references
   def restoreFor(source: ScReferenceElement) {
-    if (source.resolve() != target) {
-      source.bindToElement(target)
-    }
+    if (source.resolve() != target) { source.bindToElement(target) }
   }
 }
 
@@ -60,9 +58,7 @@ object Dependency {
       reference.bind().flatMap { result =>
         dependencyFor(reference, result.element, result.fromType)
       }
-    } else {
-      None
-    }
+    } else { None }
   }
 
   private def isPrimary(ref: ScReferenceElement) = ref match {

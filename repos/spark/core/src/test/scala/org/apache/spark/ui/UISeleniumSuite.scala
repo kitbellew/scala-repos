@@ -49,21 +49,15 @@ private[spark] class SparkUICssErrorHandler extends DefaultCssErrorHandler {
     cssWhiteList.exists(uri.endsWith)
 
   override def warning(e: CSSParseException): Unit = {
-    if (!isInWhileList(e.getURI)) {
-      super.warning(e)
-    }
+    if (!isInWhileList(e.getURI)) { super.warning(e) }
   }
 
   override def fatalError(e: CSSParseException): Unit = {
-    if (!isInWhileList(e.getURI)) {
-      super.fatalError(e)
-    }
+    if (!isInWhileList(e.getURI)) { super.fatalError(e) }
   }
 
   override def error(e: CSSParseException): Unit = {
-    if (!isInWhileList(e.getURI)) {
-      super.error(e)
-    }
+    if (!isInWhileList(e.getURI)) { super.error(e) }
   }
 }
 
@@ -87,13 +81,8 @@ class UISeleniumSuite
   }
 
   override def afterAll(): Unit = {
-    try {
-      if (webDriver != null) {
-        webDriver.quit()
-      }
-    } finally {
-      super.afterAll()
-    }
+    try { if (webDriver != null) { webDriver.quit() } }
+    finally { super.afterAll() }
   }
 
   /**
@@ -279,9 +268,7 @@ class UISeleniumSuite
             mapId,
             reduceId,
             message)
-        } else {
-          x
-        }
+        } else { x }
       }
       mappedData.count()
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
@@ -312,9 +299,7 @@ class UISeleniumSuite
       } {
         val exp = if (attemptId.toInt == 0 && stageId.toInt == 1) {
           StageStatus.FAILED
-        } else {
-          StageStatus.COMPLETE
-        }
+        } else { StageStatus.COMPLETE }
         status should be(exp.name())
       }
 
@@ -736,9 +721,7 @@ class UISeleniumSuite
     }
   }
 
-  def goToUi(sc: SparkContext, path: String): Unit = {
-    goToUi(sc.ui.get, path)
-  }
+  def goToUi(sc: SparkContext, path: String): Unit = { goToUi(sc.ui.get, path) }
 
   def goToUi(ui: SparkUI, path: String): Unit = {
     go to (ui.appUIAddress.stripSuffix("/") + path)

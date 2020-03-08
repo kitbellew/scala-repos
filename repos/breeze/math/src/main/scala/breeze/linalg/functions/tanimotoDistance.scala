@@ -12,11 +12,8 @@ object tanimotoDistance extends UFunc {
       override def apply(v: T, v2: U): Double = {
         val dotProduct = dotTU(v, v2)
         val denom = dotTT(v, v) + dotUU(v2, v2) - dotProduct
-        if (denom == 0.0) {
-          0.0
-        } else {
-          1 - dotProduct / denom
-        }
+        if (denom == 0.0) { 0.0 }
+        else { 1 - dotProduct / denom }
       }
     }
   }

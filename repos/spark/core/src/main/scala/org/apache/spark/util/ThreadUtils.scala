@@ -139,9 +139,8 @@ private[spark] object ThreadUtils {
 
     val thread = new Thread(threadName) {
       override def run(): Unit = {
-        try {
-          result = body
-        } catch {
+        try { result = body }
+        catch {
           case NonFatal(e) =>
             exception = Some(e)
         }

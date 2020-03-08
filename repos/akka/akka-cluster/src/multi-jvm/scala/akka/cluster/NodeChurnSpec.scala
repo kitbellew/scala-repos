@@ -57,9 +57,7 @@ abstract class NodeChurnSpec
 
   def seedNodes: immutable.IndexedSeq[Address] = Vector(first, second, third)
 
-  override def afterAll(): Unit = {
-    super.afterAll()
-  }
+  override def afterAll(): Unit = { super.afterAll() }
 
   val rounds = 3
 

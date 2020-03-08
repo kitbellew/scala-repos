@@ -515,9 +515,7 @@ trait EntityPage extends HtmlPage {
     // Sometimes it's same, do we need signatureCompat still?
     val sig = if (mbr.signature == mbr.signatureCompat) {
       <a id={mbr.signature}/>
-    } else {
-      <a id={mbr.signature}/><a id={mbr.signatureCompat}/>
-    }
+    } else { <a id={mbr.signature}/><a id={mbr.signatureCompat}/> }
 
     val memberComment = memberToCommentHtml(mbr, inTpl, isSelf = false)
     <li name={mbr.definitionName} visbl={
@@ -1111,9 +1109,7 @@ trait EntityPage extends HtmlPage {
               "gt4s: " + encoded +
                 span.attribute("title").map(node => ". " + node).getOrElse(""),
               scala.xml.Null)
-          } else {
-            span
-          }
+          } else { span }
         }
         if (!nameLink.isEmpty)
           <a title={mbr.comment.fold("")(c => inlineToStr(c.short))} href={
@@ -1148,9 +1144,9 @@ trait EntityPage extends HtmlPage {
           def paramsToHtml(vlsss: List[List[ValueParam]]): NodeSeq = {
             def param0(vl: ValueParam): NodeSeq =
               // notice the }{ in the next lines, they are necessary to avoid an undesired whitespace in output
-              <span name={vl.name}>{
-                Text(vl.name)
-              }{Text(": ") ++ typeToHtml(vl.resultType, hasLinks)}{
+              <span name={vl.name}>{Text(vl.name)}{
+                Text(": ") ++ typeToHtml(vl.resultType, hasLinks)
+              }{
                 vl.defaultValue match {
                   case Some(v) => Text(" = ") ++ treeToHtml(v)
                   case None    => NodeSeq.Empty

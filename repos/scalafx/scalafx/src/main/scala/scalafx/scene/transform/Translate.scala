@@ -54,8 +54,6 @@ class Translate(override val delegate: jfxst.Translate = new jfxst.Translate)
     * Defines the distance by which coordinates are translated in the Z axis direction
     */
   def z: DoubleProperty = delegate.zProperty
-  def z_=(v: Double) {
-    z() = v
-  }
+  def z_=(v: Double) { z() = v }
 
 }

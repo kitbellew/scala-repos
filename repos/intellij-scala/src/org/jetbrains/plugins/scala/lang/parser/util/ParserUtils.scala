@@ -79,9 +79,7 @@ object ParserUtils extends ParserUtilsBase {
 
   //Defines priority
   def priority(id: String, assignments: Boolean = false): Int = {
-    if (assignments && isAssignmentOperator(id)) {
-      return 10
-    }
+    if (assignments && isAssignmentOperator(id)) { return 10 }
     id.charAt(0) match {
       case '~' | '#' | '@' | '?' | '\\' => 0 //todo: other special characters?
       case '*' | '/' | '%'              => 1
@@ -138,9 +136,7 @@ object ParserUtils extends ParserUtilsBase {
           br = true
         }
         builder.advanceLexer()
-        if (builder.eof) {
-          return
-        }
+        if (builder.eof) { return }
     }
     parseLoopUntilRBrace(builder, fun, br)
   }

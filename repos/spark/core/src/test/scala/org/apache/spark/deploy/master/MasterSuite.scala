@@ -162,14 +162,10 @@ class MasterSuite
           (workerResponse \ "cores").extract[Int] should be(2)
         }
       }
-    } finally {
-      localCluster.stop()
-    }
+    } finally { localCluster.stop() }
   }
 
-  test("basic scheduling - spread out") {
-    basicScheduling(spreadOut = true)
-  }
+  test("basic scheduling - spread out") { basicScheduling(spreadOut = true) }
 
   test("basic scheduling - no spread out") {
     basicScheduling(spreadOut = false)
@@ -372,11 +368,8 @@ class MasterSuite
     val scheduledCores3 =
       scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
     assert(scheduledCores1 === Array(0, 0, 0))
-    if (spreadOut) {
-      assert(scheduledCores2 === Array(4, 4, 0))
-    } else {
-      assert(scheduledCores2 === Array(8, 0, 0))
-    }
+    if (spreadOut) { assert(scheduledCores2 === Array(4, 4, 0)) }
+    else { assert(scheduledCores2 === Array(8, 0, 0)) }
     assert(scheduledCores3 === Array(8, 8, 4))
   }
 

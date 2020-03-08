@@ -31,9 +31,7 @@ trait MomentsTestBase[T] extends FunSuite with Checkers {
       if ((m - distr.mean).abs / (m.abs max 1) > 1e-1) {
         println("MExpected " + distr.mean + " but got " + m)
         false
-      } else {
-        true
-      }
+      } else { true }
 
     })
   }

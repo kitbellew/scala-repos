@@ -59,9 +59,7 @@ private[spark] object ExtractPythonUDFs extends Rule[LogicalPlan] {
               } else if (udf.references.intersect(child.outputSet).nonEmpty) {
                 sys.error(
                   s"Invalid PythonUDF $udf, requires attributes from more than one child.")
-              } else {
-                child
-              }
+              } else { child }
             }
 
             assert(

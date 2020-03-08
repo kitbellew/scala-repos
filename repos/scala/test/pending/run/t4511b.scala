@@ -2,14 +2,26 @@ import scala.{specialized => spec}
 
 class Interval[@spec(Int) T](high: T)
 
-class X1[@spec(Int) T](interval: Interval[T]) { val x = interval }
-class Y1[@spec(Int) T](interval: Interval[T]) { val y = Some(interval) }
+class X1[@spec(Int) T](interval: Interval[T]) {
+  val x = interval
+}
+class Y1[@spec(Int) T](interval: Interval[T]) {
+  val y = Some(interval)
+}
 
-class X2[T](val interval: Interval[T]) { val x = interval }
-class Y2[T](val interval: Interval[T]) { val y = Some(interval) }
+class X2[T](val interval: Interval[T]) {
+  val x = interval
+}
+class Y2[T](val interval: Interval[T]) {
+  val y = Some(interval)
+}
 
-class X3[@spec(Int) T](val interval: Interval[T]) { val x = interval }
-class Y3[@spec(Int) T](val interval: Interval[T]) { val y = Some(interval) }
+class X3[@spec(Int) T](val interval: Interval[T]) {
+  val x = interval
+}
+class Y3[@spec(Int) T](val interval: Interval[T]) {
+  val y = Some(interval)
+}
 
 object Test {
   def tryit(o: => Any) =

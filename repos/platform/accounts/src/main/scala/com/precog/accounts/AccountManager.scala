@@ -127,18 +127,15 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
 
   def hasAncestor(child: Account, ancestor: Account)(
       implicit M: Monad[M]): M[Boolean] = {
-    if (child == ancestor) {
-      true.point[M]
-    } else {
+    if (child == ancestor) { true.point[M] }
+    else {
       child.parentId map { id =>
         findAccountById(id) flatMap {
           case None          => false.point[M]
           case Some(`child`) => false.point[M] // avoid infinite loops
           case Some(parent)  => hasAncestor(parent, ancestor)
         }
-      } getOrElse {
-        false.point[M]
-      }
+      } getOrElse { false.point[M] }
     }
   }
 

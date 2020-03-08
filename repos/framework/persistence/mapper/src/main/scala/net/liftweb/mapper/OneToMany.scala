@@ -297,9 +297,8 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
     def delete_! = {
       delegate.forall { e =>
         if (foreign(e).get ==
-              OneToMany.this.primaryKeyField.get) {
-          e.delete_!
-        } else
+              OneToMany.this.primaryKeyField.get) { e.delete_! }
+        else
           true // doesn't constitute a failure
       }
     }

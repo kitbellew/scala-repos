@@ -55,9 +55,7 @@ class Atom[A] extends Source[A] with Sink[A] {
   private val lock = new ReentrantLock
   private val semaphore = new AnyRef
 
-  protected def populate() {
-    sys.error("Cannot self-populate atom")
-  }
+  protected def populate() { sys.error("Cannot self-populate atom") }
 
   def update(a: A) {
     lock.lock()
@@ -66,13 +64,9 @@ class Atom[A] extends Source[A] with Sink[A] {
         value = a
         isSet = true
 
-        semaphore synchronized {
-          semaphore.notifyAll()
-        }
+        semaphore synchronized { semaphore.notifyAll() }
       }
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
   def +=[B](b: B)(implicit
@@ -94,13 +88,9 @@ class Atom[A] extends Source[A] with Sink[A] {
 
           value = builder.result()
 
-          if (setterThread != null) {
-            isSet = true
-          }
+          if (setterThread != null) { isSet = true }
         }
-      } finally {
-        lock.unlock()
-      }
+      } finally { lock.unlock() }
     }
   }
 
@@ -124,13 +114,9 @@ class Atom[A] extends Source[A] with Sink[A] {
 
           value = builder.result()
 
-          if (setterThread != null) {
-            isSet = true
-          }
+          if (setterThread != null) { isSet = true }
         }
-      } finally {
-        lock.unlock()
-      }
+      } finally { lock.unlock() }
     }
   }
 
@@ -152,39 +138,26 @@ class Atom[A] extends Source[A] with Sink[A] {
           }
 
           // not thread safe, basically horrible
-          if (a.value != null) {
-            builder ++= evidence2(a.value)
-          }
+          if (a.value != null) { builder ++= evidence2(a.value) }
 
           value = builder.result()
 
-          if (setterThread != null) {
-            isSet = true
-          }
+          if (setterThread != null) { isSet = true }
         }
-      } finally {
-        lock.unlock()
-      }
+      } finally { lock.unlock() }
     }
   }
 
-  def from(source: Source[A]) {
-    source.into(this)
-  }
+  def from(source: Source[A]) { source.into(this) }
 
   def into(sink: Sink[A]) {
-    if (isSet) {
-      sink() = value
-    } else {
+    if (isSet) { sink() = value }
+    else {
       lock.lock()
-      if (isSet) {
-        sink() = value
-      } else {
-        try {
-          targets += sink
-        } finally {
-          lock.unlock()
-        }
+      if (isSet) { sink() = value }
+      else {
+        try { targets += sink }
+        finally { lock.unlock() }
       }
     }
   }
@@ -193,25 +166,18 @@ class Atom[A] extends Source[A] with Sink[A] {
   def apply(): A = {
     isForced = true
 
-    if (isSet) {
-      value
-    } else {
+    if (isSet) { value }
+    else {
       lock.lock()
       try {
-        if (isSet) {
-          value
-        } else if (setterThread != null) {
+        if (isSet) { value }
+        else if (setterThread != null) {
           if (setterThread == Thread.currentThread) {
             sys.error("Recursive atom definition detected")
           } else {
             lock.unlock()
-            try {
-              semaphore synchronized {
-                semaphore.wait()
-              }
-            } finally {
-              lock.lock()
-            }
+            try { semaphore synchronized { semaphore.wait() } }
+            finally { lock.lock() }
             value
           }
         } else {
@@ -231,9 +197,7 @@ class Atom[A] extends Source[A] with Sink[A] {
 
           value
         }
-      } finally {
-        lock.unlock()
-      }
+      } finally { lock.unlock() }
     }
 
     if (!targets.isEmpty) {
@@ -241,9 +205,7 @@ class Atom[A] extends Source[A] with Sink[A] {
       try {
         targets foreach { _() = value }
         targets = Set()
-      } finally {
-        lock.unlock()
-      }
+      } finally { lock.unlock() }
     }
 
     value
@@ -252,9 +214,7 @@ class Atom[A] extends Source[A] with Sink[A] {
 
 object Atom {
   def atom[A](f: => Unit): Atom[A] = new Atom[A] {
-    override def populate() = {
-      f
-    }
+    override def populate() = { f }
   }
 
   def atom[A]: Atom[A] = new Atom[A]

@@ -25,9 +25,7 @@ object ByteCode {
       }
       ByteCode(bytes)
 
-    } finally {
-      in.close()
-    }
+    } finally { in.close() }
   }
 }
 

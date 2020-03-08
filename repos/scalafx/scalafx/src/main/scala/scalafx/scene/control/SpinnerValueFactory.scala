@@ -84,9 +84,7 @@ object SpinnerValueFactory {
       * type that must match the type of the ListView itself.
       */
     def items: ObjectProperty[jfxc.ObservableList[T]] = delegate.itemsProperty
-    def items_=(v: ObservableBuffer[T]) {
-      items() = v
-    }
+    def items_=(v: ObservableBuffer[T]) { items() = v }
   }
 
   object IntegerSpinnerValueFactory {
@@ -153,25 +151,19 @@ object SpinnerValueFactory {
       * Sets the minimum allowable value for this value factory
       */
     def min: IntegerProperty = delegate.minProperty
-    def min_=(value: Int) {
-      min() = value
-    }
+    def min_=(value: Int) { min() = value }
 
     /**
       * Sets the maximum allowable value for this value factory
       */
     def max: IntegerProperty = delegate.maxProperty
-    def max_=(value: Int) {
-      max() = value
-    }
+    def max_=(value: Int) { max() = value }
 
     /**
       * Sets the amount to increment or decrement by, per step.
       */
     def amountToStepBy: IntegerProperty = delegate.amountToStepByProperty
-    def amountToStepBy_=(value: Int) {
-      amountToStepBy() = value
-    }
+    def amountToStepBy_=(value: Int) { amountToStepBy() = value }
   }
 
   object DoubleSpinnerValueFactory {
@@ -247,25 +239,19 @@ object SpinnerValueFactory {
       * Sets the minimum allowable value for this value factory
       */
     def min: DoubleProperty = delegate.minProperty
-    def min_=(value: Double) {
-      min() = value
-    }
+    def min_=(value: Double) { min() = value }
 
     /**
       * Sets the maximum allowable value for this value factory
       */
     def max: DoubleProperty = delegate.maxProperty
-    def max_=(value: Double) {
-      max() = value
-    }
+    def max_=(value: Double) { max() = value }
 
     /**
       * Sets the amount to increment or decrement by, per step.
       */
     def amountToStepBy: DoubleProperty = delegate.amountToStepByProperty
-    def amountToStepBy_=(value: Double) {
-      amountToStepBy() = value
-    }
+    def amountToStepBy_=(value: Double) { amountToStepBy() = value }
   }
 
 }
@@ -289,9 +275,7 @@ abstract class SpinnerValueFactory[T](
     * value has been set.
     */
   def value: ObjectProperty[T] = delegate.valueProperty()
-  def value_=(newValue: T): Unit = {
-    value() = newValue
-  }
+  def value_=(newValue: T): Unit = { value() = newValue }
 
   /**
     * Converts the user-typed input (when the Spinner is `editable`) to an object of type T,
@@ -310,8 +294,6 @@ abstract class SpinnerValueFactory[T](
     * from the maximum value back to the minimum value (and vice versa).
     */
   def wrapAround: BooleanProperty = delegate.wrapAroundProperty()
-  def wrapAround_=(value: Boolean): Unit = {
-    wrapAround() = value
-  }
+  def wrapAround_=(value: Boolean): Unit = { wrapAround() = value }
 
 }

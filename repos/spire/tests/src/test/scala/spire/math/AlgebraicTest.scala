@@ -208,9 +208,8 @@ class AlgebraicTest extends SpireProperties {
     } yield Rational(n, d)
 
   def genRationalPoly: Gen[Polynomial[Rational]] =
-    for {
-      coeffs <- Gen.listOf(genRational)
-    } yield Polynomial.dense(coeffs.toArray)
+    for { coeffs <- Gen.listOf(genRational) } yield Polynomial.dense(
+      coeffs.toArray)
 
   /**
     * An algebraic expression + the exact rational value of this expression.
@@ -240,9 +239,9 @@ class AlgebraicTest extends SpireProperties {
         )
 
     def genLong: Gen[RationalAlgebraic] =
-      for {
-        n <- arbitrary[Long]
-      } yield RationalAlgebraic(Algebraic(n), Rational(n))
+      for { n <- arbitrary[Long] } yield RationalAlgebraic(
+        Algebraic(n),
+        Rational(n))
 
     def genBigDecimal: Gen[RationalAlgebraic] =
       for {
@@ -252,9 +251,9 @@ class AlgebraicTest extends SpireProperties {
       } yield RationalAlgebraic(Algebraic(x), Rational(x))
 
     def genDouble: Gen[RationalAlgebraic] =
-      for {
-        x <- arbitrary[Double]
-      } yield RationalAlgebraic(Algebraic(x), Rational(x))
+      for { x <- arbitrary[Double] } yield RationalAlgebraic(
+        Algebraic(x),
+        Rational(x))
 
     def genLeaf: Gen[RationalAlgebraic] = Gen.oneOf(
       genRational.map { q => RationalAlgebraic(Algebraic(q), q) },

@@ -209,9 +209,7 @@ class RegexMatcherTest {
     val matcher = Pattern.compile("cat").matcher("one cat two cats in the yard")
     val sb = new StringBuffer
 
-    while (matcher.find()) {
-      matcher.appendReplacement(sb, "dog")
-    }
+    while (matcher.find()) { matcher.appendReplacement(sb, "dog") }
     matcher.appendTail(sb)
 
     assertEquals("one dog two dogs in the yard", sb.toString)
@@ -236,9 +234,7 @@ class RegexMatcherTest {
         try {
           block
           throw new Error("No exception thrown")
-        } catch {
-          case e: Throwable => e
-        }
+        } catch { case e: Throwable => e }
 
       assertEquals(
         "java.lang.IllegalStateException",
@@ -272,9 +268,7 @@ class RegexMatcherTest {
     }
 
     // Make sure we don't suddenly re-match
-    for (i <- 0 to 5) {
-      assertFalse(mat.find())
-    }
+    for (i <- 0 to 5) { assertFalse(mat.find()) }
   }
 
   @Test def should_support_in_pattern_flags_issue_997(): Unit = {

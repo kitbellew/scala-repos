@@ -397,9 +397,7 @@ object TypedActor
         }
 
       case msg if me.isInstanceOf[Receiver] ⇒
-        withContext {
-          me.asInstanceOf[Receiver].onReceive(msg, sender())
-        }
+        withContext { me.asInstanceOf[Receiver].onReceive(msg, sender()) }
     }
   }
 

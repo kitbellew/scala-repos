@@ -39,31 +39,17 @@ class DecompilerTest extends TestCase {
     }
   }
 
-  def testPackageObject(): Unit = {
-    doTest("package.class")
-  }
+  def testPackageObject(): Unit = { doTest("package.class") }
 
-  def testAnnotationArrayArguments(): Unit = {
-    doTest("FlatSpecLike.class")
-  }
+  def testAnnotationArrayArguments(): Unit = { doTest("FlatSpecLike.class") }
 
-  def testAnnotationArguments(): Unit = {
-    doTest("AnnotArgTest.class")
-  }
+  def testAnnotationArguments(): Unit = { doTest("AnnotArgTest.class") }
 
-  def testScl9394(): Unit = {
-    doTest("package.class")
-  }
+  def testScl9394(): Unit = { doTest("package.class") }
 
-  def testScl9400(): Unit = {
-    doTest("KMeansModel.class")
-  }
+  def testScl9400(): Unit = { doTest("KMeansModel.class") }
 
-  def testScl9419(): Unit = {
-    doTest("$bar.class")
-  }
+  def testScl9419(): Unit = { doTest("$bar.class") }
 
-  def testScl9457(): Unit = {
-    doTest("AnyVaal212.class")
-  }
+  def testScl9457(): Unit = { doTest("AnyVaal212.class") }
 }

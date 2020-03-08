@@ -264,9 +264,7 @@ trait SymbolTables {
         })
 
         withAliases.toList
-      } finally {
-        reifier.state.restore(backup)
-      }
+      } finally { reifier.state.restore(backup) }
     }
   }
 }

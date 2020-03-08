@@ -48,9 +48,7 @@ class FSMTimingSpec extends AkkaSpec with ImplicitSender {
       val stoppingActor = system.actorOf(Props[StoppingActor])
       system.eventStream.subscribe(testActor, classOf[DeadLetter])
       stoppingActor ! TestStoppingActorStateTimeout
-      within(400 millis) {
-        expectNoMsg
-      }
+      within(400 millis) { expectNoMsg }
     }
 
     "allow StateTimeout override" taggedAs TimingTest in {
@@ -97,9 +95,7 @@ class FSMTimingSpec extends AkkaSpec with ImplicitSender {
         fsm ! Tick
         expectMsg(Tick)
       }
-      within(300 millis, 1 second) {
-        expectMsg(Tock)
-      }
+      within(300 millis, 1 second) { expectMsg(Tock) }
       fsm ! Cancel
       expectMsg(1 second, Transition(fsm, TestCancelTimer, Initial))
     }
@@ -130,9 +126,7 @@ class FSMTimingSpec extends AkkaSpec with ImplicitSender {
 
     "receive and cancel a repeated timer" taggedAs TimingTest in {
       fsm ! TestRepeatedTimer
-      val seq = receiveWhile(2 seconds) {
-        case Tick ⇒ Tick
-      }
+      val seq = receiveWhile(2 seconds) { case Tick ⇒ Tick }
       seq should have length 5
       within(500 millis) {
         expectMsg(Transition(fsm, TestRepeatedTimer, Initial))
@@ -262,9 +256,7 @@ object FSMTimingSpec {
         if (remaining == 0) {
           cancelTimer("tester")
           goto(Initial)
-        } else {
-          stay using (remaining - 1)
-        }
+        } else { stay using (remaining - 1) }
     }
     when(TestCancelStateTimerInNamedTimerMessage) {
       // FSM is suspended after processing this message and resumed 500ms later

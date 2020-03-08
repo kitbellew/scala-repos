@@ -14,9 +14,8 @@ object Test {
     def loop(i: Int, arraySize: Int): Future[Unit] = {
       val array = new Array[Byte](arraySize)
       Future.successful(i).flatMap { i =>
-        if (i == 0) {
-          Future.successful(())
-        } else {
+        if (i == 0) { Future.successful(()) }
+        else {
           array.size // Force closure to refer to array
           loop(i - 1, arraySize)
         }

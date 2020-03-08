@@ -117,9 +117,7 @@ class KryoSerializer(conf: SparkConf)
     // Do this before we invoke the user registrator so the user registrator can override this.
     kryo.setReferences(referenceTracking)
 
-    for (cls <- KryoSerializer.toRegister) {
-      kryo.register(cls)
-    }
+    for (cls <- KryoSerializer.toRegister) { kryo.register(cls) }
     for ((cls, ser) <- KryoSerializer.toRegisterSerializer) {
       kryo.register(cls, ser)
     }
@@ -163,9 +161,7 @@ class KryoSerializer(conf: SparkConf)
     } catch {
       case e: Exception =>
         throw new SparkException(s"Failed to register classes with Kryo", e)
-    } finally {
-      Thread.currentThread.setContextClassLoader(oldClassLoader)
-    }
+    } finally { Thread.currentThread.setContextClassLoader(oldClassLoader) }
 
     // Register Chill's classes; we do this after our ranges and the user's own classes to let
     // our code override the generic serializers in Chill for things like Seq
@@ -446,17 +442,14 @@ private[spark] class KryoSerializationStream(
   }
 
   override def flush() {
-    if (output == null) {
-      throw new IOException("Stream is closed")
-    }
+    if (output == null) { throw new IOException("Stream is closed") }
     output.flush()
   }
 
   override def close() {
     if (output != null) {
-      try {
-        output.close()
-      } finally {
+      try { output.close() }
+      finally {
         serInstance.releaseKryo(kryo)
         kryo = null
         output = null
@@ -474,9 +467,8 @@ private[spark] class KryoDeserializationStream(
   private[this] var kryo: Kryo = serInstance.borrowKryo()
 
   override def readObject[T: ClassTag](): T = {
-    try {
-      kryo.readClassAndObject(input).asInstanceOf[T]
-    } catch {
+    try { kryo.readClassAndObject(input).asInstanceOf[T] }
+    catch {
       // DeserializationStream uses the EOF exception to indicate stopping condition.
       case e: KryoException
           if e.getMessage.toLowerCase.contains("buffer underflow") =>
@@ -521,9 +513,7 @@ private[spark] class KryoSerializerInstance(ks: KryoSerializer)
       kryo.reset()
       cachedKryo = null
       kryo
-    } else {
-      ks.newKryo()
-    }
+    } else { ks.newKryo() }
   }
 
   /**
@@ -532,9 +522,7 @@ private[spark] class KryoSerializerInstance(ks: KryoSerializer)
     * re-use.
     */
   private[serializer] def releaseKryo(kryo: Kryo): Unit = {
-    if (cachedKryo == null) {
-      cachedKryo = kryo
-    }
+    if (cachedKryo == null) { cachedKryo = kryo }
   }
 
   // Make these lazy vals to avoid creating a buffer unless we use them.
@@ -544,16 +532,13 @@ private[spark] class KryoSerializerInstance(ks: KryoSerializer)
   override def serialize[T: ClassTag](t: T): ByteBuffer = {
     output.clear()
     val kryo = borrowKryo()
-    try {
-      kryo.writeClassAndObject(output, t)
-    } catch {
+    try { kryo.writeClassAndObject(output, t) }
+    catch {
       case e: KryoException if e.getMessage.startsWith("Buffer overflow") =>
         throw new SparkException(
           s"Kryo serialization failed: ${e.getMessage}. To avoid this, " +
             "increase spark.kryoserializer.buffer.max value.")
-    } finally {
-      releaseKryo(kryo)
-    }
+    } finally { releaseKryo(kryo) }
     ByteBuffer.wrap(output.toBytes)
   }
 
@@ -565,9 +550,7 @@ private[spark] class KryoSerializerInstance(ks: KryoSerializer)
         bytes.arrayOffset() + bytes.position(),
         bytes.remaining())
       kryo.readClassAndObject(input).asInstanceOf[T]
-    } finally {
-      releaseKryo(kryo)
-    }
+    } finally { releaseKryo(kryo) }
   }
 
   override def deserialize[T: ClassTag](
@@ -604,11 +587,8 @@ private[spark] class KryoSerializerInstance(ks: KryoSerializer)
     val field = classOf[Kryo].getDeclaredField("autoReset")
     field.setAccessible(true)
     val kryo = borrowKryo()
-    try {
-      field.get(kryo).asInstanceOf[Boolean]
-    } finally {
-      releaseKryo(kryo)
-    }
+    try { field.get(kryo).asInstanceOf[Boolean] }
+    finally { releaseKryo(kryo) }
   }
 }
 
@@ -739,9 +719,7 @@ private class JavaIterableWrapperSerializer
     // Otherwise, serialize the object itself.
     if (obj.getClass == wrapperClass && underlyingMethodOpt.isDefined) {
       kryo.writeClassAndObject(out, underlyingMethodOpt.get.invoke(obj))
-    } else {
-      kryo.writeClassAndObject(out, obj)
-    }
+    } else { kryo.writeClassAndObject(out, obj) }
   }
 
   override def read(

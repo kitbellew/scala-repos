@@ -315,20 +315,16 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         // Just create a branch node containing the two.
         makeHashTrieSet(this.hash, this, that.hash, that, level)
       case that: HashSet1[A] =>
-        if (this.key == that.key) {
-          this
-        } else {
+        if (this.key == that.key) { this }
+        else {
           // 32-bit hash collision (rare, but not impossible)
           new HashSetCollision1[A](hash, ListSet.empty + this.key + that.key)
         }
       case that: HashSetCollision1[A] =>
         val ks1 = that.ks + key
         // Could use eq check (faster) if ListSet was guaranteed to return itself
-        if (ks1.size == that.ks.size) {
-          that
-        } else {
-          new HashSetCollision1[A](hash, ks1)
-        }
+        if (ks1.size == that.ks.size) { that }
+        else { new HashSetCollision1[A](hash, ks1) }
     }
 
     override private[immutable] def union0(
@@ -406,9 +402,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
       case that: HashSet1[A] =>
         val ks1 = ks + that.key
         // Could use eq check (faster) if ListSet was guaranteed to return itself
-        if (ks1.size == ks.size) {
-          this
-        } else {
+        if (ks1.size == ks.size) { this }
+        else {
           // create a new HashSetCollision with the existing hash
           // we don't have to check for size=1 because union is never going to remove elements
           new HashSetCollision1[A](hash, ks1)
@@ -610,9 +605,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
     override protected def get0(key: A, hash: Int, level: Int): Boolean = {
       val index = (hash >>> level) & 0x1f
       val mask = (1 << index)
-      if (bitmap == -1) {
-        elems(index & 0x1f).get0(key, hash, level + 5)
-      } else if ((bitmap & mask) != 0) {
+      if (bitmap == -1) { elems(index & 0x1f).get0(key, hash, level + 5) }
+      else if ((bitmap & mask) != 0) {
         val offset = Integer.bitCount(bitmap & (mask - 1))
         elems(offset).get0(key, hash, level + 5)
       } else
@@ -912,9 +906,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
             bbm &= ~blsb; bi += 1
           }
         }
-        if (rbm == 0) {
-          null
-        } else if (rs == this.size0) {
+        if (rbm == 0) { null }
+        else if (rs == this.size0) {
           // if the result has the same number of elements as this, it must be identical to this,
           // so we might as well return this
           this
@@ -979,9 +972,7 @@ object HashSet extends ImmutableSetFactory[HashSet] {
           val sizeNew = size + (subNew.size - sub.size)
           new HashTrieSet(bitmap, elemsNew, sizeNew)
         }
-      } else {
-        this
-      }
+      } else { this }
     }
 
     override protected def subsetOf0(that: HashSet[A], level: Int): Boolean =
@@ -1152,9 +1143,7 @@ object HashSet extends ImmutableSetFactory[HashSet] {
     private def writeObject(out: java.io.ObjectOutputStream) {
       val s = orig.size
       out.writeInt(s)
-      for (e <- orig) {
-        out.writeObject(e)
-      }
+      for (e <- orig) { out.writeObject(e) }
     }
 
     private def readObject(in: java.io.ObjectInputStream) {

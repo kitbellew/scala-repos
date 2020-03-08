@@ -33,9 +33,7 @@ sealed abstract class Scalar[+T] {
   @inline final def flatMap[B](f: T => Scalar[B]): Scalar[B] =
     if (isNA) NA else f(this.get)
 
-  @inline final def foreach[U](f: T => U) {
-    if (!isNA) f(this.get)
-  }
+  @inline final def foreach[U](f: T => U) { if (!isNA) f(this.get) }
 }
 
 object Scalar {

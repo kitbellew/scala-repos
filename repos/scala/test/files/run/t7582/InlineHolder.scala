@@ -10,7 +10,5 @@ object O {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    println(O.x)
-  }
+  def main(args: Array[String]) { println(O.x) }
 }

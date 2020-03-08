@@ -26,7 +26,12 @@ class DocumentationHandler(
 
   def this(repo: FileRepository, toClose: Closeable) = this(repo, repo, toClose)
   def this(repo: FileRepository, apiRepo: FileRepository) =
-    this(repo, apiRepo, new Closeable() { def close() = () })
+    this(
+      repo,
+      apiRepo,
+      new Closeable() {
+        def close() = ()
+      })
   def this(repo: FileRepository) = this(repo, repo)
 
   /**

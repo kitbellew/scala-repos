@@ -61,9 +61,7 @@ class Context {
 
   addrs() = allAddrs
 
-  def assertStable() {
-    assert(stabilized == Addr.Bound(addrs()))
-  }
+  def assertStable() { assert(stabilized == Addr.Bound(addrs())) }
 }
 
 @RunWith(classOf[JUnitRunner])

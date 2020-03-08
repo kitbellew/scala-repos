@@ -61,9 +61,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     * generate the RDDs with `numPartitions` partitions.
     */
   def groupByKey(numPartitions: Int): DStream[(K, Iterable[V])] =
-    ssc.withScope {
-      groupByKey(defaultPartitioner(numPartitions))
-    }
+    ssc.withScope { groupByKey(defaultPartitioner(numPartitions)) }
 
   /**
     * Return a new DStream by applying `groupByKey` on each RDD. The supplied
@@ -582,9 +580,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def cogroup[W: ClassTag](
       other: DStream[(K, W)]): DStream[(K, (Iterable[V], Iterable[W]))] =
-    ssc.withScope {
-      cogroup(other, defaultPartitioner())
-    }
+    ssc.withScope { cogroup(other, defaultPartitioner()) }
 
   /**
     * Return a new DStream by applying 'cogroup' between RDDs of `this` DStream and `other` DStream.
@@ -593,9 +589,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
   def cogroup[W: ClassTag](
       other: DStream[(K, W)],
       numPartitions: Int): DStream[(K, (Iterable[V], Iterable[W]))] =
-    ssc.withScope {
-      cogroup(other, defaultPartitioner(numPartitions))
-    }
+    ssc.withScope { cogroup(other, defaultPartitioner(numPartitions)) }
 
   /**
     * Return a new DStream by applying 'cogroup' between RDDs of `this` DStream and `other` DStream.
@@ -616,9 +610,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     * Hash partitioning is used to generate the RDDs with Spark's default number of partitions.
     */
   def join[W: ClassTag](other: DStream[(K, W)]): DStream[(K, (V, W))] =
-    ssc.withScope {
-      join[W](other, defaultPartitioner())
-    }
+    ssc.withScope { join[W](other, defaultPartitioner()) }
 
   /**
     * Return a new DStream by applying 'join' between RDDs of `this` DStream and `other` DStream.
@@ -727,9 +719,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def fullOuterJoin[W: ClassTag](
       other: DStream[(K, W)]): DStream[(K, (Option[V], Option[W]))] =
-    ssc.withScope {
-      fullOuterJoin[W](other, defaultPartitioner())
-    }
+    ssc.withScope { fullOuterJoin[W](other, defaultPartitioner()) }
 
   /**
     * Return a new DStream by applying 'full outer join' between RDDs of `this` DStream and

@@ -128,16 +128,10 @@ sealed abstract class ST[S, A] {
   import ST._
 
   def flatMap[B](g: A => ST[S, B]): ST[S, B] =
-    st(s =>
-      apply(s) match {
-        case (ns, a) => g(a)(ns)
-      })
+    st(s => apply(s) match { case (ns, a) => g(a)(ns) })
 
   def map[B](g: A => B): ST[S, B] =
-    st(s =>
-      apply(s) match {
-        case (ns, a) => (ns, g(a))
-      })
+    st(s => apply(s) match { case (ns, a) => (ns, g(a)) })
 }
 
 object ST extends STInstances {

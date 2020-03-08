@@ -144,9 +144,7 @@ trait Logic extends Debugging {
         case _ => false
       }
 
-      override def hashCode(): Int = {
-        variable.hashCode * 41 + const.hashCode
-      }
+      override def hashCode(): Int = { variable.hashCode * 41 + const.hashCode }
 
       private val id: Int = Sym.nextSymId
 

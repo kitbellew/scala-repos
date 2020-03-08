@@ -28,9 +28,7 @@ object Test extends Properties("concurrent.TrieMap") {
     val threads = for (idx <- 0 until totalThreads) yield new Thread {
       setName("ParThread-" + idx)
       private var res: T = _
-      override def run() {
-        res = body(idx)
-      }
+      override def run() { res = body(idx) }
       def result = {
         this.join()
         res

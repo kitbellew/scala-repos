@@ -49,15 +49,11 @@ class TaskBuilder(
 
       val maybeStatic: Option[String] = if (staticHostPorts.nonEmpty) {
         Some(s"[${staticHostPorts.mkString(", ")}] required")
-      } else {
-        None
-      }
+      } else { None }
 
       val maybeDynamic: Option[String] = if (numberDynamicHostPorts > 0) {
         Some(s"$numberDynamicHostPorts dynamic")
-      } else {
-        None
-      }
+      } else { None }
 
       val portStrings = Seq(maybeStatic, maybeDynamic).flatten.mkString(" + ")
 
@@ -108,11 +104,8 @@ class TaskBuilder(
       volumeMatchOpt: Option[PersistentVolumeMatcher.VolumeMatch])
       : Some[(TaskInfo, Seq[Int])] = {
 
-    val executor: Executor = if (app.executor == "") {
-      config.executor
-    } else {
-      Executor.dispatch(app.executor)
-    }
+    val executor: Executor = if (app.executor == "") { config.executor }
+    else { Executor.dispatch(app.executor) }
 
     val host: Option[String] = Some(offer.getHostname)
 
@@ -258,9 +251,7 @@ class TaskBuilder(
                 // port.
                 if (mapping.containerPort == 0) {
                   mapping.copy(hostPort = port, containerPort = port)
-                } else {
-                  mapping.copy(hostPort = port)
-                }
+                } else { mapping.copy(hostPort = port) }
             }
           }
         }
@@ -269,9 +260,7 @@ class TaskBuilder(
           case None => c
           case Some(newMappings) =>
             c.copy(
-              docker = c.docker.map {
-                _.copy(portMappings = newMappings)
-              }
+              docker = c.docker.map { _.copy(portMappings = newMappings) }
             )
         }
         builder.mergeFrom(
@@ -376,9 +365,8 @@ object TaskBuilder {
   def portsEnv(
       definedPorts: Seq[Int],
       assignedPorts: Seq[Int]): Map[String, String] = {
-    if (assignedPorts.isEmpty) {
-      Map.empty
-    } else {
+    if (assignedPorts.isEmpty) { Map.empty }
+    else {
       val env = Map.newBuilder[String, String]
 
       assignedPorts.zipWithIndex.foreach {

@@ -16,13 +16,9 @@ class AbstractTestRunConfigurationEditor(
     extends SettingsEditor[AbstractTestRunConfiguration] {
   val form = new TestRunConfigurationForm(project, configuration)
 
-  def resetEditorFrom(s: AbstractTestRunConfiguration) {
-    form(s)
-  }
+  def resetEditorFrom(s: AbstractTestRunConfiguration) { form(s) }
 
-  def applyEditorTo(s: AbstractTestRunConfiguration) {
-    s(form)
-  }
+  def applyEditorTo(s: AbstractTestRunConfiguration) { s(form) }
 
   def createEditor: JComponent = form.getPanel
 }

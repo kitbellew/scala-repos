@@ -68,9 +68,7 @@ class TaskTrackerImplTest
     deserializedTask should equal(Some(sampleTask.marathonTask))
   }
 
-  test("CreatedAndGetTask") {
-    testCreatedAndGetTask(_.marathonTaskSync(_))
-  }
+  test("CreatedAndGetTask") { testCreatedAndGetTask(_.marathonTaskSync(_)) }
 
   test("CreatedAndGetTask Async") {
     testCreatedAndGetTask(_.marathonTask(_).futureValue)
@@ -89,13 +87,9 @@ class TaskTrackerImplTest
       "Tasks are not properly stored")
   }
 
-  test("List") {
-    testList(_.tasksByAppSync)
-  }
+  test("List") { testList(_.tasksByAppSync) }
 
-  test("List Async") {
-    testList(_.tasksByApp().futureValue)
-  }
+  test("List Async") { testList(_.tasksByApp().futureValue) }
 
   private[this] def testList(
       call: TaskTracker => TaskTracker.TasksByApp): Unit = {
@@ -128,13 +122,9 @@ class TaskTrackerImplTest
       Set(task2.taskId, task3.taskId))
   }
 
-  test("GetTasks") {
-    testGetTasks(_.appTasksSync(TEST_APP_NAME))
-  }
+  test("GetTasks") { testGetTasks(_.appTasksSync(TEST_APP_NAME)) }
 
-  test("GetTasks Async") {
-    testGetTasks(_.appTasks(TEST_APP_NAME).futureValue)
-  }
+  test("GetTasks Async") { testGetTasks(_.appTasks(TEST_APP_NAME).futureValue) }
 
   private[this] def testGetTasks(call: TaskTracker => Iterable[Task]): Unit = {
     val task1 = makeSampleTask(TEST_APP_NAME)
@@ -154,13 +144,9 @@ class TaskTrackerImplTest
     assert(testAppTasks.size == 3)
   }
 
-  test("Count") {
-    testCount(_.countLaunchedAppTasksSync(_))
-  }
+  test("Count") { testCount(_.countLaunchedAppTasksSync(_)) }
 
-  test("Count Async") {
-    testCount(_.countAppTasks(_).futureValue)
-  }
+  test("Count Async") { testCount(_.countAppTasks(_).futureValue) }
 
   private[this] def testCount(count: (TaskTracker, PathId) => Int): Unit = {
     val task1 = makeSampleTask(TEST_APP_NAME / "a")
@@ -171,13 +157,9 @@ class TaskTrackerImplTest
     count(taskTracker, TEST_APP_NAME / "b") should be(0)
   }
 
-  test("Contains") {
-    testContains(_.hasAppTasksSync(_))
-  }
+  test("Contains") { testContains(_.hasAppTasksSync(_)) }
 
-  test("Contains Async") {
-    testContains(_.hasAppTasks(_).futureValue)
-  }
+  test("Contains Async") { testContains(_.hasAppTasks(_).futureValue) }
 
   private[this] def testContains(
       count: (TaskTracker, PathId) => Boolean): Unit = {

@@ -81,9 +81,7 @@ final class BoostingApi(
         }
         case none => funit
       }
-    } else {
-      funit
-    }
+    } else { funit }
   }
 
 }

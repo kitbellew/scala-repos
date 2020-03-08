@@ -1,4 +1,6 @@
-trait Sam { def apply(): Unit }
+trait Sam {
+  def apply(): Unit
+}
 abstract class Test {
   def foo(): Sam
   // no parens, instantiateToMethodType would wrap in a `new Sam { def apply = foo }`
@@ -7,9 +9,9 @@ abstract class Test {
 }
 
 object Test extends Test {
-  lazy val samIAm = new Sam { def apply() {} }
-  def foo() = samIAm
-  def main(args: Array[String]): Unit = {
-    assert(f eq samIAm, f)
+  lazy val samIAm = new Sam {
+    def apply() {}
   }
+  def foo() = samIAm
+  def main(args: Array[String]): Unit = { assert(f eq samIAm, f) }
 }

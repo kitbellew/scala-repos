@@ -26,10 +26,6 @@ class HoconLexerTest extends HoconFileSetTestCase("lexer") {
           l.getTokenType,
           fileContents.substring(l.getTokenStart, l.getTokenEnd)))
 
-    tokenIterator
-      .map {
-        case (token, str) => s"$token {$str}"
-      }
-      .mkString("\n")
+    tokenIterator.map { case (token, str) => s"$token {$str}" }.mkString("\n")
   }
 }

@@ -276,9 +276,7 @@ abstract class TreeBrowsers {
           putValue(
             Action.ACCELERATOR_KEY,
             KeyStroke.getKeyStroke(KeyEvent.VK_E, menuKey, false))
-          override def actionPerformed(e: ActionEvent) {
-            expandAll(jTree)
-          }
+          override def actionPerformed(e: ActionEvent) { expandAll(jTree) }
         }
       )
       jmView add jmiExpand
@@ -287,9 +285,7 @@ abstract class TreeBrowsers {
           putValue(
             Action.ACCELERATOR_KEY,
             KeyStroke.getKeyStroke(KeyEvent.VK_L, menuKey, false))
-          override def actionPerformed(e: ActionEvent) {
-            collapseAll(jTree)
-          }
+          override def actionPerformed(e: ActionEvent) { collapseAll(jTree) }
         }
       )
       jmView add jmiCollapse

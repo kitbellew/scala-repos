@@ -26,7 +26,5 @@ object A {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    assert(A.B2.t1.source == "from B2")
-  }
+  def main(args: Array[String]) { assert(A.B2.t1.source == "from B2") }
 }

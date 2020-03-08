@@ -1263,9 +1263,7 @@ object BinderSpecs
         }
       }
     }
-  } else {
-    "specification examples" >> skipped
-  }
+  } else { "specification examples" >> skipped }
 
   private def parseSingle(str: LineStream): Expr = {
     val set = parse(str)

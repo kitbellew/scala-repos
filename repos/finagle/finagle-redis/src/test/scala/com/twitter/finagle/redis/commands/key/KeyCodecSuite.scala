@@ -20,15 +20,11 @@ final class KeyCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if DELETE is called with no key") {
-    intercept[ClientError] {
-      codec(wrap("DEL\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("DEL\r\n")) }
   }
 
   test("Throw a ClientError if DUMP is called with no key", CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("DUMP\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("DUMP\r\n")) }
   }
 
   test("Correctly encode DUMP for one key", CodecTest) {
@@ -40,9 +36,7 @@ final class KeyCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError if EXISTS is called with no key") {
-    intercept[ClientError] {
-      codec(wrap("EXISTS\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("EXISTS\r\n")) }
   }
 
   test("Correctly encode EXPIRE for one key in 100 seconds", CodecTest) {
@@ -80,28 +74,18 @@ final class KeyCodecSuite extends RedisRequestTest {
 
   test(
     "Throw a ClientError if MOVE is called with no key or database",
-    CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("MOVE\r\n"))
-    }
-  }
+    CodecTest) { intercept[ClientError] { codec(wrap("MOVE\r\n")) } }
 
   test(
     "Throw a ClientError if MOVE is called with a key but no database",
-    CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("MOVE foo\r\n"))
-    }
-  }
+    CodecTest) { intercept[ClientError] { codec(wrap("MOVE foo\r\n")) } }
 
   test("Correctly encode PERSIST for one key", CodecTest) {
     assert(codec(wrap("PERSIST foo\r\n")) == List(Persist(foo)))
   }
 
   test("Throw a ClientError if Persist is called without a key", CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("PERSIST\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("PERSIST\r\n")) }
   }
 
   test("Correctly encode PEXPIRE for one key in 100 seconds", CodecTest) {
@@ -133,23 +117,15 @@ final class KeyCodecSuite extends RedisRequestTest {
 
   test(
     "Correctly encode a PTTL, time to live in milliseconds, for a key",
-    CodecTest) {
-    assert(codec(wrap("PTTL foo\r\n")) == List(PTtl(foo)))
-  }
+    CodecTest) { assert(codec(wrap("PTTL foo\r\n")) == List(PTtl(foo))) }
 
   test("Throw a ClientError if RENAME is called with no arguments", CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("RENAME\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("RENAME\r\n")) }
   }
 
   test(
     "Throw a ClientError if RENAME is called without a second argument",
-    CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("RENAME foo\r\n"))
-    }
-  }
+    CodecTest) { intercept[ClientError] { codec(wrap("RENAME foo\r\n")) } }
 
   test("Correctly encode RENAME of one key to another", CodecTest) {
     assert(codec(wrap("RENAME foo bar\r\n")) == List(Rename(foo, bar)))
@@ -157,19 +133,11 @@ final class KeyCodecSuite extends RedisRequestTest {
 
   test(
     "Throw a ClientError if RENAMEX is called with no arguments",
-    CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("RENAMENX\r\n"))
-    }
-  }
+    CodecTest) { intercept[ClientError] { codec(wrap("RENAMENX\r\n")) } }
 
   test(
     "Throw a ClientError if RENAMEX is called without a second argument",
-    CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("RENAMENX foo\r\n"))
-    }
-  }
+    CodecTest) { intercept[ClientError] { codec(wrap("RENAMENX foo\r\n")) } }
 
   test("Correctly encode RENAMEX of one key to another", CodecTest) {
     assert(codec(wrap("RENAMENX foo bar\r\n")) == List(RenameNx(foo, bar)))
@@ -181,14 +149,10 @@ final class KeyCodecSuite extends RedisRequestTest {
 
   test(
     "Correctly encode a TTL, time to live in seconds, for a key",
-    CodecTest) {
-    assert(codec(wrap("TTL foo\r\n")) == List(Ttl(foo)))
-  }
+    CodecTest) { assert(codec(wrap("TTL foo\r\n")) == List(Ttl(foo))) }
 
   test("Throw a ClientError if TYPE is called with no key", CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("TYPE\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("TYPE\r\n")) }
   }
 
   test("Correctly encode a TYPE request for a provided key", CodecTest) {

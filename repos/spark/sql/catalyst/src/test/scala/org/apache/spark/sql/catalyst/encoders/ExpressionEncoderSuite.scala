@@ -368,9 +368,7 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
                   other
               }
               .mkString("[", ",", "]")
-          } catch {
-            case e: Throwable => s"Failed to toSeq: $e"
-          }
+          } catch { case e: Throwable => s"Failed to toSeq: $e" }
 
         fail(s"""Encoded/Decoded data does not match input data
              |

@@ -123,9 +123,7 @@ private[kinesis] class KinesisBackedBlockRDD[T: ClassTag](
     }
     if (partition.isBlockIdValid) {
       getBlockFromBlockManager().getOrElse { getBlockFromKinesis() }
-    } else {
-      getBlockFromKinesis()
-    }
+    } else { getBlockFromKinesis() }
   }
 }
 
@@ -155,9 +153,8 @@ private[kinesis] class KinesisSequenceRangeIterator(
 
   override protected def getNext(): Record = {
     var nextRecord: Record = null
-    if (toSeqNumberReceived) {
-      finished = true
-    } else {
+    if (toSeqNumberReceived) { finished = true }
+    else {
 
       if (internalIterator == null) {
 
@@ -196,9 +193,7 @@ private[kinesis] class KinesisSequenceRangeIterator(
     nextRecord
   }
 
-  override protected def close(): Unit = {
-    client.shutdown()
-  }
+  override protected def close(): Unit = { client.shutdown() }
 
   /**
     * Get records starting from or after the given sequence number.
@@ -269,9 +264,8 @@ private[kinesis] class KinesisSequenceRangeIterator(
         Thread.sleep(waitTimeMs)
         waitTimeMs *= 2 // if you have waited, then double wait time for next round
       }
-      try {
-        result = Some(body)
-      } catch {
+      try { result = Some(body) }
+      catch {
         case NonFatal(t) =>
           lastError = t
           t match {

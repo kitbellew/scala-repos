@@ -1,5 +1,7 @@
 object WhatsYourTypeIsMyType {
-  class TypeCheat[+T] { type MyType = T }
+  class TypeCheat[+T] {
+    type MyType = T
+  }
 
   class Foo {
     val tc = new TypeCheat[Foo]

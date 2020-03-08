@@ -41,11 +41,8 @@ object Memo extends MemoInstances {
       extends Memo[Int, Double] {
     override def apply(f: (Int) => Double) = {
       lazy val a = {
-        if (sentinel == 0d) {
-          new Array[Double](n)
-        } else {
-          Array.fill(n)(sentinel)
-        }
+        if (sentinel == 0d) { new Array[Double](n) }
+        else { Array.fill(n)(sentinel) }
       }
       k => {
         val t = a(k)

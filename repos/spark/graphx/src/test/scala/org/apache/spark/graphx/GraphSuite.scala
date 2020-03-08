@@ -491,9 +491,7 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
         et => Iterator((et.dstId, et.srcAttr)),
         _ + _)
       assert(neighborAttrSums.collect().toSet === Set((0: VertexId, n)))
-    } finally {
-      sc.stop()
-    }
+    } finally { sc.stop() }
   }
 
   test("unpersist graph RDD") {

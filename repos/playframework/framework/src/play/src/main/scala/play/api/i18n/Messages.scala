@@ -172,9 +172,7 @@ class DefaultLangs @Inject() (configuration: Configuration) extends Langs {
       Logger.warn(
         "application.langs is deprecated, use play.i18n.langs instead")
       langsStr.split(",").map(_.trim).toSeq
-    } getOrElse {
-      config.get[Seq[String]]("play.i18n.langs")
-    }
+    } getOrElse { config.get[Seq[String]]("play.i18n.langs") }
 
     langs.map { lang =>
       try { Lang(lang) }
@@ -245,9 +243,7 @@ object Messages {
     * @return the formatted message or a default rendering if the key wasn’t defined
     */
   def apply(keys: Seq[String], args: Any*)(
-      implicit messages: Messages): String = {
-    messages(keys, args: _*)
-  }
+      implicit messages: Messages): String = { messages(keys, args: _*) }
 
   /**
     * Check if a message key is defined.
@@ -342,9 +338,7 @@ object Messages {
 
     val parser = phrase(((sentence | blankLine).*) <~ end) ^^ {
       case messages =>
-        messages.collect {
-          case m @ Messages.Message(_, _, _, _) => m
-        }
+        messages.collect { case m @ Messages.Message(_, _, _, _) => m }
     }
 
     def parse: Either[PlayException.ExceptionSource, Seq[Message]] = {

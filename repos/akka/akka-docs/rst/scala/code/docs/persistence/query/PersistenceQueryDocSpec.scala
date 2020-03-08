@@ -135,7 +135,9 @@ object PersistenceQueryDocSpec {
     def readyToSave = false
   }
   case class Record(any: Any)
-  class DummyStore { def save(record: Record) = Future.successful(42L) }
+  class DummyStore {
+    def save(record: Record) = Future.successful(42L)
+  }
 
   val JournalId = "akka.persistence.query.my-read-journal"
 

@@ -98,9 +98,7 @@ class AckedDeliverySpec extends AkkaSpec {
         .buffer(msg(2))
         .buffer(msg(3))
 
-      intercept[ResendBufferCapacityReachedException] {
-        buffer buffer msg(4)
-      }
+      intercept[ResendBufferCapacityReachedException] { buffer buffer msg(4) }
     }
 
     "remove messages from buffer when cumulative ack received" in {

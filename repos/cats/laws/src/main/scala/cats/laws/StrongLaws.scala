@@ -27,5 +27,7 @@ trait StrongLaws[F[_, _]] extends ProfunctorLaws[F] {
 
 object StrongLaws {
   def apply[F[_, _]](implicit ev: Strong[F]): StrongLaws[F] =
-    new StrongLaws[F] { def F: Strong[F] = ev }
+    new StrongLaws[F] {
+      def F: Strong[F] = ev
+    }
 }

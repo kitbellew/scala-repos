@@ -160,9 +160,7 @@ object ScalaPluginUpdater {
                _.getPluginId.getIdString == pluginIdString)) {
         installedPlugins.remove(pluginIdString)
       }
-    } catch {
-      case e1: IOException => PluginManagerMain.LOG.error(e1)
-    }
+    } catch { case e1: IOException => PluginManagerMain.LOG.error(e1) }
   }
 
   def upgradeRepo() = {
@@ -321,9 +319,7 @@ object ScalaPluginUpdater {
                 override def process(request: Request) =
                   JDOMUtil.load(request.getReader())
               })
-          } catch {
-            case e: Throwable => LOG.warn(e)
-          }
+          } catch { case e: Throwable => LOG.warn(e) }
         }
       })
     }
@@ -416,5 +412,7 @@ object ScalaPluginUpdater {
   def invokeLater(f: => Unit) =
     ApplicationManager.getApplication.executeOnPooledThread(toRunnable(f))
 
-  def toRunnable(f: => Unit) = new Runnable { override def run(): Unit = f }
+  def toRunnable(f: => Unit) = new Runnable {
+    override def run(): Unit = f
+  }
 }

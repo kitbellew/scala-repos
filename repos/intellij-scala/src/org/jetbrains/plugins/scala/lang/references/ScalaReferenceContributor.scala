@@ -117,9 +117,7 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
         moduleRootManager.orderEntries.getAllLibrariesAndSdkClassesRoots
       for (file <- libraryUrls) {
         val directory: PsiDirectory = psiManager.findDirectory(file)
-        if (directory != null) {
-          result.add(directory)
-        }
+        if (directory != null) { result.add(directory) }
       }
     }
     for (module <- JavaConversions.iterableAsScalaIterable(modules)) {
@@ -138,12 +136,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
                 .getMethod("create", classOf[PsiDirectory])
               createMethod.setAccessible(true)
               createMethod.invoke(directory)
-            } catch {
-              case t: Exception => LOG.warn(t)
-            }
-          } else {
-            result.add(directory)
-          }
+            } catch { case t: Exception => LOG.warn(t) }
+          } else { result.add(directory) }
         }
       }
     }

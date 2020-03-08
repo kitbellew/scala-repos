@@ -220,9 +220,7 @@ private[deploy] class Master(
     masterMetricsSystem.report()
     applicationMetricsSystem.report()
     // prevent the CompleteRecovery message sending to restarted master
-    if (recoveryCompletionTask != null) {
-      recoveryCompletionTask.cancel(true)
-    }
+    if (recoveryCompletionTask != null) { recoveryCompletionTask.cancel(true) }
     if (checkForWorkerTimeOutTask != null) {
       checkForWorkerTimeOutTask.cancel(true)
     }
@@ -236,13 +234,9 @@ private[deploy] class Master(
     leaderElectionAgent.stop()
   }
 
-  override def electedLeader() {
-    self.send(ElectedLeader)
-  }
+  override def electedLeader() { self.send(ElectedLeader) }
 
-  override def revokedLeadership() {
-    self.send(RevokedLeadership)
-  }
+  override def revokedLeadership() { self.send(RevokedLeadership) }
 
   override def receive: PartialFunction[Any, Unit] = {
     case ElectedLeader => {
@@ -251,9 +245,7 @@ private[deploy] class Master(
       state =
         if (storedApps.isEmpty && storedDrivers.isEmpty && storedWorkers.isEmpty) {
           RecoveryState.ALIVE
-        } else {
-          RecoveryState.RECOVERING
-        }
+        } else { RecoveryState.RECOVERING }
       logInfo("I have been elected leader! New state: " + state)
       if (state == RecoveryState.RECOVERING) {
         beginRecovery(storedApps, storedDrivers, storedWorkers)
@@ -314,9 +306,7 @@ private[deploy] class Master(
             logInfo(s"Removing executor ${exec.fullId} because it is $state")
             // If an application has already finished, preserve its
             // state to display its information properly on the UI
-            if (!appInfo.isFinished) {
-              appInfo.removeExecutor(exec)
-            }
+            if (!appInfo.isFinished) { appInfo.removeExecutor(exec) }
             exec.worker.removeExecutor(exec)
 
             val normalExit = exitStatus == Some(0)
@@ -445,9 +435,7 @@ private[deploy] class Master(
       logInfo(s"Received unregister request from application $applicationId")
       idToApp.get(applicationId).foreach(finishApplication)
 
-    case CheckForWorkerTimeOut => {
-      timeOutDeadWorkers()
-    }
+    case CheckForWorkerTimeOut => { timeOutDeadWorkers() }
 
     case AttachCompletedRebuildUI(appId) =>
       // An asyncRebuildSparkUI has completed, so need to attach to master webUi
@@ -466,9 +454,8 @@ private[deploy] class Master(
         workerWebUiUrl) => {
       logInfo("Registering worker %s:%d with %d cores, %s RAM"
         .format(workerHost, workerPort, cores, Utils.megabytesToString(memory)))
-      if (state == RecoveryState.STANDBY) {
-        context.reply(MasterInStandby)
-      } else if (idToWorker.contains(id)) {
+      if (state == RecoveryState.STANDBY) { context.reply(MasterInStandby) }
+      else if (idToWorker.contains(id)) {
         context.reply(RegisterWorkerFailed("Duplicate worker ID"))
       } else {
         val worker = new WorkerInfo(
@@ -756,19 +743,14 @@ private[deploy] class Master(
 
           // If we are launching one executor per worker, then every iteration assigns 1 core
           // to the executor. Otherwise, every iteration assigns cores to a new executor.
-          if (oneExecutorPerWorker) {
-            assignedExecutors(pos) = 1
-          } else {
-            assignedExecutors(pos) += 1
-          }
+          if (oneExecutorPerWorker) { assignedExecutors(pos) = 1 }
+          else { assignedExecutors(pos) += 1 }
 
           // Spreading out an application means spreading out its executors across as
           // many workers as possible. If we are not spreading out, then we should keep
           // scheduling executors on this worker until we use all of its resources.
           // Otherwise, just move on to the next worker.
-          if (spreadOutApps) {
-            keepScheduling = false
-          }
+          if (spreadOutApps) { keepScheduling = false }
         }
       }
       freeWorkers = freeWorkers.filter(canLaunchExecutor)
@@ -835,9 +817,7 @@ private[deploy] class Master(
     * every time a new app joins or resource availability changes.
     */
   private def schedule(): Unit = {
-    if (state != RecoveryState.ALIVE) {
-      return
-    }
+    if (state != RecoveryState.ALIVE) { return }
     // Drivers take strict precedence over executors
     val shuffledAliveWorkers =
       Random.shuffle(workers.toSeq.filter(_.state == WorkerState.ALIVE))
@@ -998,9 +978,7 @@ private[deploy] class Master(
       // If application events are logged, use them to rebuild the UI
       asyncRebuildSparkUI(app)
 
-      for (exec <- app.executors.values) {
-        killExecutor(exec)
-      }
+      for (exec <- app.executors.values) { killExecutor(exec) }
       app.markFinished(state)
       if (state != ApplicationState.FINISHED) {
         app.driver.send(ApplicationRemoved(state.toString))
@@ -1085,9 +1063,8 @@ private[deploy] class Master(
     */
   private def formatExecutorIds(executorIds: Seq[String]): Seq[Int] = {
     executorIds.flatMap { executorId =>
-      try {
-        Some(executorId.toInt)
-      } catch {
+      try { Some(executorId.toInt) }
+      catch {
         case e: NumberFormatException =>
           logError(
             s"Encountered executor with a non-integer ID: $executorId. Ignoring")
@@ -1142,9 +1119,7 @@ private[deploy] class Master(
         logWarning(
           s"Application $appName is still in progress, it may be terminated abnormally.")
         eventLogFilePrefix + EventLoggingListener.IN_PROGRESS
-      } else {
-        eventLogFilePrefix
-      }
+      } else { eventLogFilePrefix }
 
       val logInput =
         EventLoggingListener.openEventLog(new Path(eventLogFile), fs)
@@ -1156,11 +1131,8 @@ private[deploy] class Master(
         appName,
         HistoryServer.UI_PATH_PREFIX + s"/${app.id}",
         app.startTime)
-      try {
-        replayBus.replay(logInput, eventLogFile, inProgressExists)
-      } finally {
-        logInput.close()
-      }
+      try { replayBus.replay(logInput, eventLogFile, inProgressExists) }
+      finally { logInput.close() }
 
       Some(ui)
     }(rebuildUIContext)
@@ -1170,9 +1142,7 @@ private[deploy] class Master(
         appIdToUI.put(app.id, ui)
         // `self` can be null if we are already in the process of shutting down
         // This happens frequently in tests where `local-cluster` is used
-        if (self != null) {
-          self.send(AttachCompletedRebuildUI(app.id))
-        }
+        if (self != null) { self.send(AttachCompletedRebuildUI(app.id)) }
         // Application UI is successfully rebuilt, so link the Master UI to it
         // NOTE - app.appUIUrlAtHistoryServer is volatile
         app.appUIUrlAtHistoryServer = Some(ui.basePath)

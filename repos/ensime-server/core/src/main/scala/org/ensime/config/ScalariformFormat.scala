@@ -53,9 +53,7 @@ trait ScalariformFormat {
     }
 
     def write(f: FormattingPreferences) = {
-      val data = f.preferencesMap.map {
-        case (d, v) => key(d) -> ser(d, v)
-      }
+      val data = f.preferencesMap.map { case (d, v) => key(d) -> ser(d, v) }
       SexpData(data.toList)
     }
   }

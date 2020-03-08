@@ -114,11 +114,8 @@ private[spark] object TreePoint {
         val highThreshold = bin.highSplit.threshold
         if ((lowThreshold < feature) && (highThreshold >= feature)) {
           return mid
-        } else if (lowThreshold >= feature) {
-          right = mid - 1
-        } else {
-          left = mid + 1
-        }
+        } else if (lowThreshold >= feature) { right = mid - 1 }
+        else { left = mid + 1 }
       }
       -1
     }

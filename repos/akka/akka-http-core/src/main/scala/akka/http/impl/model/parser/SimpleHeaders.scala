@@ -121,9 +121,7 @@ private[parser] trait SimpleHeaders {
   }
 
   // http://tools.ietf.org/html/rfc7231#section-7.1.1.2
-  def `date` = rule {
-    `HTTP-date` ~ EOI ~> (Date(_))
-  }
+  def `date` = rule { `HTTP-date` ~ EOI ~> (Date(_)) }
 
   // http://tools.ietf.org/html/rfc7232#section-2.3
   def etag = rule { `entity-tag` ~ EOI ~> (ETag(_)) }
@@ -181,9 +179,7 @@ private[parser] trait SimpleHeaders {
   def `last-modified` = rule { `HTTP-date` ~ EOI ~> (`Last-Modified`(_)) }
 
   // http://tools.ietf.org/html/rfc7231#section-7.1.2
-  def location = rule {
-    uriReference ~ EOI ~> (Location(_))
-  }
+  def location = rule { uriReference ~ EOI ~> (Location(_)) }
 
   // http://tools.ietf.org/html/rfc6454#section-7
   def `origin` = rule { `origin-list-or-null` ~ EOI ~> (Origin(_)) }

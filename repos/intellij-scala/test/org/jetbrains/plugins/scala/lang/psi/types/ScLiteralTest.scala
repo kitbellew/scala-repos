@@ -10,13 +10,9 @@ import org.junit.Assert
   * Pavel Fatin
   */
 class ScLiteralTest extends SimpleTestCase {
-  def testNullLiteral() {
-    assertTypeIs("null", types.Null)
-  }
+  def testNullLiteral() { assertTypeIs("null", types.Null) }
 
-  def testIntLiteral() {
-    assertTypeIs("1", types.Int)
-  }
+  def testIntLiteral() { assertTypeIs("1", types.Int) }
 
   def testLongLiteral() {
     assertTypeIs("1l", types.Long)
@@ -33,9 +29,7 @@ class ScLiteralTest extends SimpleTestCase {
     assertTypeIs("1D", types.Double)
   }
 
-  def testCharLiteral() {
-    assertTypeIs("'c'", types.Char)
-  }
+  def testCharLiteral() { assertTypeIs("'c'", types.Char) }
 
   def testBooleanLiteral() {
     assertTypeIs("true", types.Boolean)

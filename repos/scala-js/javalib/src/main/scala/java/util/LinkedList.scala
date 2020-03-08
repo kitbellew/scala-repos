@@ -322,13 +322,9 @@ class LinkedList[E]()
         if (currentNode eq null) {
           removeLast()
           lastNode = LinkedList.this.last
-        } else {
-          removeNode(lastNode)
-        }
+        } else { removeNode(lastNode) }
 
-        if (last < i) {
-          i -= 1
-        }
+        if (last < i) { i -= 1 }
 
         last = -1
       }
@@ -342,9 +338,7 @@ class LinkedList[E]()
         if (currentNode eq null) {
           addLast(e)
           lastNode = LinkedList.this.last
-        } else {
-          addNode(currentNode, e)
-        }
+        } else { addNode(currentNode, e) }
 
         i += 1
         last = -1

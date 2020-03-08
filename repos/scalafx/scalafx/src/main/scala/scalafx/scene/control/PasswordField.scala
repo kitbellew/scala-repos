@@ -41,12 +41,8 @@ class PasswordField(
     extends TextField(delegate)
     with SFXDelegate[jfxsc.PasswordField] {
 
-  def cut() {
-    delegate.cut()
-  }
+  def cut() { delegate.cut() }
 
-  def copy() {
-    delegate.copy()
-  }
+  def copy() { delegate.copy() }
 
 }

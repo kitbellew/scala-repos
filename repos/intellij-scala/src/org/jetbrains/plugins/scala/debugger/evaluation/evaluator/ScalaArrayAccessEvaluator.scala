@@ -36,9 +36,8 @@ class ScalaArrayAccessEvaluator(
         DebuggerBundle.message("evaluation.error.invalid.index.expression"))
     }
     myEvaluatedIndex = indexValue.asInstanceOf[PrimitiveValue].intValue
-    try {
-      myEvaluatedArrayReference.getValue(myEvaluatedIndex)
-    } catch {
+    try { myEvaluatedArrayReference.getValue(myEvaluatedIndex) }
+    catch {
       case e: Exception =>
         throw EvaluationException(e)
     }

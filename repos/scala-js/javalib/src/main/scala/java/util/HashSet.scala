@@ -79,9 +79,8 @@ class HashSet[E]
       }
 
       def remove(): Unit = {
-        if (last.isEmpty) {
-          throw new IllegalStateException()
-        } else {
+        if (last.isEmpty) { throw new IllegalStateException() }
+        else {
           last.foreach(self.remove(_))
           last = None
         }

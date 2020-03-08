@@ -56,9 +56,7 @@ class SparkSubmitSuite
   private class BufferPrintStream extends PrintStream(noOpOutputStream) {
     var lineBuffer = ArrayBuffer[String]()
     // scalastyle:off println
-    override def println(line: String) {
-      lineBuffer += line
-    }
+    override def println(line: String) { lineBuffer += line }
     // scalastyle:on println
   }
 
@@ -72,9 +70,8 @@ class SparkSubmitSuite
 
     val thread = new Thread {
       override def run() =
-        try {
-          SparkSubmit.main(input)
-        } catch {
+        try { SparkSubmit.main(input) }
+        catch {
           // If exceptions occur after the "exit" has happened, fine to ignore them.
           // These represent code paths not reachable during normal execution.
           case e: Exception => if (!exitedCleanly) throw e
@@ -753,11 +750,8 @@ class SparkSubmitSuite
 
     writer.close()
 
-    try {
-      f(tmpDir.getAbsolutePath)
-    } finally {
-      Utils.deleteRecursively(tmpDir)
-    }
+    try { f(tmpDir.getAbsolutePath) }
+    finally { Utils.deleteRecursively(tmpDir) }
   }
 }
 

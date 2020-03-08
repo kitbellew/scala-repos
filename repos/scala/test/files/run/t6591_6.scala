@@ -4,7 +4,9 @@ import scala.tools.reflect.ToolBox
 import scala.tools.reflect.Eval
 import java.lang.reflect.InvocationTargetException
 
-class O { class I }
+class O {
+  class I
+}
 
 class A extends O {
   val x = new O
@@ -16,9 +18,8 @@ class A extends O {
 }
 
 object Test extends App {
-  try {
-    val v = (new A).code.eval
-  } catch {
+  try { val v = (new A).code.eval }
+  catch {
     case ex: InvocationTargetException
         if ex.getCause.isInstanceOf[NotImplementedError] =>
   }

@@ -24,9 +24,7 @@ import org.specs2.mutable.Specification
 
 class HttpsRulesSpec extends Specification {
   "HttpsRules" should {
-    "default to no required HTTPS" in {
-      HttpsRules().headers must be empty
-    }
+    "default to no required HTTPS" in { HttpsRules().headers must be empty }
 
     "provide a secure variant with 1-year max age and including sub-domains" in {
       HttpsRules.secure.requiredTime must_== Some(Duration(365, DAYS))
@@ -218,9 +216,7 @@ class FrameRestrictionsSpec extends Specification {
 
 class SecurityRulesSpec extends Specification {
   "SecurityRules" should {
-    "default to no HTTPS requirement" in {
-      SecurityRules().https must_== None
-    }
+    "default to no HTTPS requirement" in { SecurityRules().https must_== None }
 
     "default to default Content-Security-Policy settings" in {
       SecurityRules().content must_== Some(ContentSecurityPolicy())

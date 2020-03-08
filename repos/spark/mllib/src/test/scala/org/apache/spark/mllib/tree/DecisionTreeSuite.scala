@@ -1084,9 +1084,7 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
         model.save(sc, path)
         val sameModel = DecisionTreeModel.load(sc, path)
         DecisionTreeSuite.checkEqual(model, sameModel)
-      } finally {
-        Utils.deleteRecursively(tempDir)
-      }
+      } finally { Utils.deleteRecursively(tempDir) }
     }
   }
 }
@@ -1148,15 +1146,10 @@ object DecisionTreeSuite extends SparkFunSuite {
   def generateOrderedLabeledPoints(): Array[LabeledPoint] = {
     val arr = new Array[LabeledPoint](1000)
     for (i <- 0 until 1000) {
-      val label = if (i < 100) {
-        0.0
-      } else if (i < 500) {
-        1.0
-      } else if (i < 900) {
-        0.0
-      } else {
-        1.0
-      }
+      val label = if (i < 100) { 0.0 }
+      else if (i < 500) { 1.0 }
+      else if (i < 900) { 0.0 }
+      else { 1.0 }
       arr(i) = new LabeledPoint(label, Vectors.dense(i.toDouble, 1000.0 - i))
     }
     arr
@@ -1165,11 +1158,8 @@ object DecisionTreeSuite extends SparkFunSuite {
   def generateCategoricalDataPoints(): Array[LabeledPoint] = {
     val arr = new Array[LabeledPoint](1000)
     for (i <- 0 until 1000) {
-      if (i < 600) {
-        arr(i) = new LabeledPoint(1.0, Vectors.dense(0.0, 1.0))
-      } else {
-        arr(i) = new LabeledPoint(0.0, Vectors.dense(1.0, 0.0))
-      }
+      if (i < 600) { arr(i) = new LabeledPoint(1.0, Vectors.dense(0.0, 1.0)) }
+      else { arr(i) = new LabeledPoint(0.0, Vectors.dense(1.0, 0.0)) }
     }
     arr
   }
@@ -1182,13 +1172,10 @@ object DecisionTreeSuite extends SparkFunSuite {
   def generateCategoricalDataPointsForMulticlass(): Array[LabeledPoint] = {
     val arr = new Array[LabeledPoint](3000)
     for (i <- 0 until 3000) {
-      if (i < 1000) {
-        arr(i) = new LabeledPoint(2.0, Vectors.dense(2.0, 2.0))
-      } else if (i < 2000) {
+      if (i < 1000) { arr(i) = new LabeledPoint(2.0, Vectors.dense(2.0, 2.0)) }
+      else if (i < 2000) {
         arr(i) = new LabeledPoint(1.0, Vectors.dense(1.0, 2.0))
-      } else {
-        arr(i) = new LabeledPoint(2.0, Vectors.dense(2.0, 2.0))
-      }
+      } else { arr(i) = new LabeledPoint(2.0, Vectors.dense(2.0, 2.0)) }
     }
     arr
   }
@@ -1196,11 +1183,8 @@ object DecisionTreeSuite extends SparkFunSuite {
   def generateContinuousDataPointsForMulticlass(): Array[LabeledPoint] = {
     val arr = new Array[LabeledPoint](3000)
     for (i <- 0 until 3000) {
-      if (i < 2000) {
-        arr(i) = new LabeledPoint(2.0, Vectors.dense(2.0, i))
-      } else {
-        arr(i) = new LabeledPoint(1.0, Vectors.dense(2.0, i))
-      }
+      if (i < 2000) { arr(i) = new LabeledPoint(2.0, Vectors.dense(2.0, i)) }
+      else { arr(i) = new LabeledPoint(1.0, Vectors.dense(2.0, i)) }
     }
     arr
   }
@@ -1209,13 +1193,10 @@ object DecisionTreeSuite extends SparkFunSuite {
       : Array[LabeledPoint] = {
     val arr = new Array[LabeledPoint](3000)
     for (i <- 0 until 3000) {
-      if (i < 1000) {
-        arr(i) = new LabeledPoint(2.0, Vectors.dense(2.0, 2.0))
-      } else if (i < 2000) {
+      if (i < 1000) { arr(i) = new LabeledPoint(2.0, Vectors.dense(2.0, 2.0)) }
+      else if (i < 2000) {
         arr(i) = new LabeledPoint(1.0, Vectors.dense(1.0, 2.0))
-      } else {
-        arr(i) = new LabeledPoint(1.0, Vectors.dense(2.0, 2.0))
-      }
+      } else { arr(i) = new LabeledPoint(1.0, Vectors.dense(2.0, 2.0)) }
     }
     arr
   }

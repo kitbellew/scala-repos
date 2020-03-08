@@ -79,9 +79,7 @@ abstract class CommonWriteAheadLogTests(
     }
   }
 
-  after {
-    Utils.deleteRecursively(tempDir)
-  }
+  after { Utils.deleteRecursively(tempDir) }
 
   test(testPrefix + "read all logs") {
     // Write data manually for testing reading through WriteAheadLog
@@ -223,9 +221,7 @@ abstract class CommonWriteAheadLogTests(
       "Directory created just by creating log object")
     if (allowBatching) {
       intercept[UnsupportedOperationException](wal.read(writtenSegment.head))
-    } else {
-      wal.read(writtenSegment.head)
-    }
+    } else { wal.read(writtenSegment.head) }
     assert(
       !nonexistentTempPath.exists(),
       "Directory created just by attempting to read segment")
@@ -249,9 +245,7 @@ abstract class CommonWriteAheadLogTests(
       // the threadpool is shutdown by the wal.close call above, therefore we shouldn't be able
       // to materialize the iterator with parallel recovery
       intercept[RejectedExecutionException](readData.toArray)
-    } else {
-      assert(readData.toSeq === writtenData)
-    }
+    } else { assert(readData.toSeq === writtenData) }
   }
 }
 
@@ -316,9 +310,7 @@ class FileBasedWriteAheadLogSuite
       assert(collected === testSeq)
       // make sure we didn't open too many Iterators
       assert(counter.getMax() <= numThreads)
-    } finally {
-      fpool.shutdownNow()
-    }
+    } finally { fpool.shutdownNow() }
   }
 
   test("FileBasedWriteAheadLogWriter - writing data") {
@@ -347,9 +339,7 @@ class FileBasedWriteAheadLogSuite
     val readData = reader.toSeq.map(byteBufferToString)
     assert(readData === writtenData)
     assert(reader.hasNext === false)
-    intercept[Exception] {
-      reader.next()
-    }
+    intercept[Exception] { reader.next() }
     reader.close()
   }
 
@@ -511,9 +501,7 @@ class BatchedWriteAheadLogSuite
       if (walBatchingExecutionContext != null) {
         walBatchingExecutionContext.shutdownNow()
       }
-    } finally {
-      super.afterEach()
-    }
+    } finally { super.afterEach() }
   }
 
   test("BatchedWriteAheadLog - serializing and deserializing batched records") {
@@ -682,9 +670,7 @@ object WriteAheadLogSuite {
     }
     if (allowBatching) {
       writeToStream(wrapArrayArrayByte(data.toArray[String]).array())
-    } else {
-      data.foreach { item => writeToStream(Utils.serialize(item)) }
-    }
+    } else { data.foreach { item => writeToStream(Utils.serialize(item)) } }
     writer.close()
     segments
   }
@@ -736,9 +722,7 @@ object WriteAheadLogSuite {
         val data = Utils.deserialize[String](bytes)
         reader.close()
         data
-      } finally {
-        reader.close()
-      }
+      } finally { reader.close() }
     }
   }
 
@@ -756,9 +740,7 @@ object WriteAheadLogSuite {
       }
     } catch {
       case ex: EOFException =>
-    } finally {
-      reader.close()
-    }
+    } finally { reader.close() }
     buffer
   }
 
@@ -793,15 +775,9 @@ object WriteAheadLogSuite {
       fileSystem
         .listStatus(logDirectoryPath)
         .map { _.getPath() }
-        .sortBy {
-          _.getName().split("-")(1).toLong
-        }
-        .map {
-          _.toString.stripPrefix("file:")
-        }
-    } else {
-      Seq.empty
-    }
+        .sortBy { _.getName().split("-")(1).toLong }
+        .map { _.toString.stripPrefix("file:") }
+    } else { Seq.empty }
   }
 
   def createWriteAheadLog(
@@ -819,9 +795,7 @@ object WriteAheadLogSuite {
     if (allowBatching) new BatchedWriteAheadLog(wal, sparkConf) else wal
   }
 
-  def generateRandomData(): Seq[String] = {
-    (1 to 100).map { _.toString }
-  }
+  def generateRandomData(): Seq[String] = { (1 to 100).map { _.toString } }
 
   def readAndDeserializeDataManually(
       logFiles: Seq[String],
@@ -831,9 +805,7 @@ object WriteAheadLogSuite {
         val data = readDataManually[Array[Array[Byte]]](file)
         data.flatMap(byteArray => byteArray.map(Utils.deserialize[String]))
       }
-    } else {
-      logFiles.flatMap { file => readDataManually[String](file) }
-    }
+    } else { logFiles.flatMap { file => readDataManually[String](file) } }
   }
 
   implicit def stringToByteBuffer(str: String): ByteBuffer = {
@@ -864,9 +836,7 @@ object WriteAheadLogSuite {
         record: ByteBuffer,
         time: Long): WriteAheadLogRecordHandle = {
       isWriteCalled = true
-      eventually(Eventually.timeout(2 second)) {
-        assert(!blockWrite)
-      }
+      eventually(Eventually.timeout(2 second)) { assert(!blockWrite) }
       wal.write(record, time)
       isWriteCalled = false
       handle
@@ -879,9 +849,7 @@ object WriteAheadLogSuite {
     }
     override def close(): Unit = wal.close()
 
-    def allowWrite(): Unit = {
-      blockWrite = false
-    }
+    def allowWrite(): Unit = { blockWrite = false }
 
     def isBlocked: Boolean = isWriteCalled
   }

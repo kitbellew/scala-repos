@@ -29,9 +29,7 @@ object Bindings {
     Binding parse builder
     while (builder.getTokenType == ScalaTokenTypes.tCOMMA) {
       builder.advanceLexer() //Ate ,
-      if (!Binding.parse(builder)) {
-        builder error ErrMsg("wrong.binding")
-      }
+      if (!Binding.parse(builder)) { builder error ErrMsg("wrong.binding") }
     }
     builder.getTokenType match {
       case ScalaTokenTypes.tRPARENTHESIS =>

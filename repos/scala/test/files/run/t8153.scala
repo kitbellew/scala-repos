@@ -8,7 +8,5 @@ object Test {
     it.mkString
   }
 
-  def main(args: Array[String]) {
-    println(f())
-  }
+  def main(args: Array[String]) { println(f()) }
 }

@@ -173,9 +173,7 @@ class ScImplicitlyConvertible(
         processor.processType(obj, place, ResolveState.initial())
       }
       for (res <- processor.candidatesS.map(forMap(_, typez))
-           if res.condition) {
-        buffer += res
-      }
+           if res.condition) { buffer += res }
     }
 
     val result = new ArrayBuffer[ImplicitResolveResult]
@@ -281,9 +279,7 @@ class ScImplicitlyConvertible(
 
     val sigsFound = processor.candidatesS.map(forMap(_, typez))
 
-    for (res <- sigsFound if res.condition) {
-      result += res
-    }
+    for (res <- sigsFound if res.condition) { result += res }
 
     result
   }
@@ -606,9 +602,7 @@ class ScImplicitlyConvertible(
               //filtered cases
               if (clauses.length > 2) return true
               if (clauses.length == 2) {
-                if (!clauses(1).isImplicit) {
-                  return true
-                }
+                if (!clauses(1).isImplicit) { return true }
                 if (f.hasTypeParameters) {
                   val typeParameters = f.typeParameters
                   for {

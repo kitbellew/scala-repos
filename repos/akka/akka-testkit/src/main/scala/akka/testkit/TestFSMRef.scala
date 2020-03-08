@@ -71,9 +71,7 @@ class TestFSMRef[S, D, T <: Actor](
       name: String,
       msg: Any,
       timeout: FiniteDuration,
-      repeat: Boolean = false) {
-    fsm.setTimer(name, msg, timeout, repeat)
-  }
+      repeat: Boolean = false) { fsm.setTimer(name, msg, timeout, repeat) }
 
   /**
     * Proxy for [[akka.actor.FSM#cancelTimer]].

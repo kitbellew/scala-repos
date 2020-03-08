@@ -11,9 +11,7 @@ class InetAddressUtilBench extends StdBenchAnnotations {
   val ip = "69.55.236.117"
 
   @Benchmark
-  def timeOldInetAddressGetByName(): InetAddress = {
-    InetAddress.getByName(ip)
-  }
+  def timeOldInetAddressGetByName(): InetAddress = { InetAddress.getByName(ip) }
 
   @Benchmark
   def timeNewInetAddressGetByName(): InetAddress = {

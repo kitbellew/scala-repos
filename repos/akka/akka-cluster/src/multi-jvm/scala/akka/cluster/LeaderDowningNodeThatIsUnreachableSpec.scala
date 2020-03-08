@@ -87,9 +87,7 @@ abstract class LeaderDowningNodeThatIsUnreachableSpec(
           30.seconds)
       }
 
-      runOn(fourth) {
-        enterBarrier("down-fourth-node")
-      }
+      runOn(fourth) { enterBarrier("down-fourth-node") }
 
       runOn(second, third) {
         enterBarrier("down-fourth-node")
@@ -123,9 +121,7 @@ abstract class LeaderDowningNodeThatIsUnreachableSpec(
           30.seconds)
       }
 
-      runOn(second) {
-        enterBarrier("down-second-node")
-      }
+      runOn(second) { enterBarrier("down-second-node") }
 
       runOn(third) {
         enterBarrier("down-second-node")

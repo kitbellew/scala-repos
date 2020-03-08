@@ -85,9 +85,7 @@ class OffsetIndex(
         // if this is a pre-existing index, assume it is all valid and set position to last entry
         idx.position(roundToExactMultiple(idx.limit, 8))
       idx
-    } finally {
-      CoreUtils.swallow(raf.close())
-    }
+    } finally { CoreUtils.swallow(raf.close()) }
   }
 
   /* the number of eight-byte entries currently in the index */
@@ -288,11 +286,7 @@ class OffsetIndex(
     * Trim this segment to fit just the valid entries, deleting all trailing unwritten bytes from
     * the file.
     */
-  def trimToValidSize() {
-    inLock(lock) {
-      resize(entries * 8)
-    }
-  }
+  def trimToValidSize() { inLock(lock) { resize(entries * 8) } }
 
   /**
     * Reset the size of the memory map and the underneath file. This is used in two kinds of cases: (1) in
@@ -316,9 +310,7 @@ class OffsetIndex(
           .map(FileChannel.MapMode.READ_WRITE, 0, roundedNewSize)
         this.maxEntries = this.mmap.limit / 8
         this.mmap.position(position)
-      } finally {
-        CoreUtils.swallow(raf.close())
-      }
+      } finally { CoreUtils.swallow(raf.close()) }
     }
   }
 
@@ -331,19 +323,13 @@ class OffsetIndex(
         .asInstanceOf[sun.nio.ch.DirectBuffer])
         .cleaner()
         .clean()
-    } catch {
-      case t: Throwable => warn("Error when freeing index buffer", t)
-    }
+    } catch { case t: Throwable => warn("Error when freeing index buffer", t) }
   }
 
   /**
     * Flush the data in the index to disk
     */
-  def flush() {
-    inLock(lock) {
-      mmap.force()
-    }
-  }
+  def flush() { inLock(lock) { mmap.force() } }
 
   /**
     * Delete this index file
@@ -364,9 +350,7 @@ class OffsetIndex(
   def sizeInBytes() = 8 * entries
 
   /** Close the index */
-  def close() {
-    trimToValidSize()
-  }
+  def close() { trimToValidSize() }
 
   /**
     * Rename the file that backs this offset index
@@ -409,9 +393,8 @@ class OffsetIndex(
   private def maybeLock[T](lock: Lock)(fun: => T): T = {
     if (Os.isWindows)
       lock.lock()
-    try {
-      fun
-    } finally {
+    try { fun }
+    finally {
       if (Os.isWindows)
         lock.unlock()
     }

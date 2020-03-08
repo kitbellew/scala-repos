@@ -81,9 +81,7 @@ trait Scaling {
       else if (maxScale < -scaleConstant)
         oldScale + scaleConstant * (maxScale / scaleConstant)
       else oldScale
-    } else {
-      Int.MinValue
-    }
+    } else { Int.MinValue }
   }
 
   def scaleArrayToScale(
@@ -122,9 +120,8 @@ trait Scaling {
       // minValue in dest is 2**(-145+destScale), max in src is 2**(145 + srcScale)
       // if (-145-145) + (destScale-srcScale) > 53
       // then this is a noop.
-    } else if (destScale - srcScale > 53 + 2 * scaleConstant) {
-      destScale
-    } else if (srcScale - destScale > 53 + 2 * scaleConstant) {
+    } else if (destScale - srcScale > 53 + 2 * scaleConstant) { destScale }
+    else if (srcScale - destScale > 53 + 2 * scaleConstant) {
       System.arraycopy(src, 0, dest, 0, dest.length)
       srcScale
     } else if (srcScale > destScale) {

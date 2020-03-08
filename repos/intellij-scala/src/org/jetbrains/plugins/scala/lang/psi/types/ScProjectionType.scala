@@ -242,9 +242,7 @@ class ScProjectionType private (
         if (superReference) {
           ScalaPsiUtil
             .superTypeMembersAndSubstitutors(candidates(0).element)
-            .find {
-              _.info == element
-            } match {
+            .find { _.info == element } match {
             case Some(node) =>
               Some(element, defaultSubstitutor followed node.substitutor)
             case _ => Some(element, defaultSubstitutor)
@@ -430,9 +428,7 @@ class ScProjectionType private (
     case _                                     => false
   }
 
-  def visitType(visitor: ScalaTypeVisitor) {
-    visitor.visitProjectionType(this)
-  }
+  def visitType(visitor: ScalaTypeVisitor) { visitor.visitProjectionType(this) }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[ScProjectionType]
 
@@ -501,9 +497,7 @@ case class ScThisType(clazz: ScTemplateDefinition) extends ValueType {
     }
   }
 
-  def visitType(visitor: ScalaTypeVisitor) {
-    visitor.visitThisType(this)
-  }
+  def visitType(visitor: ScalaTypeVisitor) { visitor.visitThisType(this) }
 }
 
 /**
@@ -636,9 +630,7 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
     }
   }
 
-  def visitType(visitor: ScalaTypeVisitor) {
-    visitor.visitDesignatorType(this)
-  }
+  def visitType(visitor: ScalaTypeVisitor) { visitor.visitDesignatorType(this) }
 
   override def isFinalType = element match {
     case cl: PsiClass if cl.isEffectivelyFinal => true

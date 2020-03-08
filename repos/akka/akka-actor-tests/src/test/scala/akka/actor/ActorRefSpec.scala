@@ -58,12 +58,8 @@ object ActorRefSpec {
       case "complex" ⇒ replyActor ! "complexRequest"
       case "complex2" ⇒ replyActor ! "complexRequest2"
       case "simple" ⇒ replyActor ! "simpleRequest"
-      case "complexReply" ⇒ {
-        latch.countDown()
-      }
-      case "simpleReply" ⇒ {
-        latch.countDown()
-      }
+      case "complexReply" ⇒ { latch.countDown() }
+      case "simpleReply" ⇒ { latch.countDown() }
     }
   }
 
@@ -136,7 +132,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
     "not allow Actors to be created outside of an actorOf" in {
       import system.actorOf
       intercept[akka.actor.ActorInitializationException] {
-        new Actor { def receive = { case _ ⇒ } }
+        new Actor {
+          def receive = { case _ ⇒ }
+        }
       }
 
       def contextStackMustBeEmpty(): Unit =

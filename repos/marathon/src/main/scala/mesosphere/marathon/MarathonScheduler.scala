@@ -119,9 +119,7 @@ class MarathonScheduler @Inject() (
       driver: SchedulerDriver,
       executor: ExecutorID,
       slave: SlaveID,
-      p4: Int) {
-    log.info(s"Lost executor $executor slave $p4")
-  }
+      p4: Int) { log.info(s"Lost executor $executor slave $p4") }
 
   override def error(driver: SchedulerDriver, message: String) {
     log.warn(s"Error: $message\n" +

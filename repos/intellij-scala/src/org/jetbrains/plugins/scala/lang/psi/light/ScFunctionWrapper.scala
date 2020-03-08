@@ -45,9 +45,8 @@ class ScPrimaryConstructorWrapper(
     isJavaVarargs,
     forDefault)
   val method: PsiMethod = {
-    try {
-      elementFactory.createMethodFromText(methodText, containingClass)
-    } catch {
+    try { elementFactory.createMethodFromText(methodText, containingClass) }
+    catch {
       case e: Exception =>
         elementFactory.createMethodFromText(
           "public void FAILED_TO_DECOMPILE_METHOD() {}",
@@ -138,9 +137,8 @@ class ScFunctionWrapper(
     isJavaVarargs,
     forDefault)
   val method: PsiMethod = {
-    try {
-      elementFactory.createMethodFromText(methodText, containingClass)
-    } catch {
+    try { elementFactory.createMethodFromText(methodText, containingClass) }
+    catch {
       case e: Exception =>
         elementFactory.createMethodFromText(
           "public void FAILED_TO_DECOMPILE_METHOD() {}",
@@ -390,11 +388,8 @@ object ScFunctionWrapper {
       case _ =>
     }
 
-    if (!isInterface) {
-      builder.append(" {}")
-    } else {
-      builder.append(";")
-    }
+    if (!isInterface) { builder.append(" {}") }
+    else { builder.append(";") }
 
     builder.toString()
   }

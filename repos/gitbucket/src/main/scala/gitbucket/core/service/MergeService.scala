@@ -111,12 +111,8 @@ trait MergeService {
           try {
             if (merger.merge(mergeBaseTip, mergeTip)) {
               Some((merger.getResultTreeId, mergeBaseTip, mergeTip))
-            } else {
-              None
-            }
-          } catch {
-            case e: NoMergeBaseException => None
-          }
+            } else { None }
+          } catch { case e: NoMergeBaseException => None }
         } finally {
           val refUpdate = git.getRepository.updateRef(refSpec.getDestination)
           refUpdate.setForceUpdate(true)
@@ -235,9 +231,7 @@ object MergeService {
                 mergeTip)) {
             // merged branch exists
             Some(false)
-          } else {
-            None
-          }
+          } else { None }
         }
         .orElse(Option(repository.resolve(conflictedBranchName)).flatMap {
           conflicted =>
@@ -246,9 +240,7 @@ object MergeService {
                   mergeTip)) {
               // conflict branch exists
               Some(true)
-            } else {
-              None
-            }
+            } else { None }
         })
     }
     def checkConflict(): Boolean = {
@@ -257,11 +249,8 @@ object MergeService {
     def checkConflictForce(): Boolean = {
       val merger = MergeStrategy.RECURSIVE.newMerger(repository, true)
       val conflicted =
-        try {
-          !merger.merge(mergeBaseTip, mergeTip)
-        } catch {
-          case e: NoMergeBaseException => true
-        }
+        try { !merger.merge(mergeBaseTip, mergeTip) }
+        catch { case e: NoMergeBaseException => true }
       val mergeTipCommit =
         using(new RevWalk(repository))(_.parseCommit(mergeTip))
       val committer = mergeTipCommit.getCommitterIdent;

@@ -80,12 +80,8 @@ class BarChart[X, Y](override val delegate: jfxsc.BarChart[X, Y])
   }
 
   def barGap: DoubleProperty = delegate.barGapProperty
-  def barGap_=(v: Double) {
-    barGap() = v
-  }
+  def barGap_=(v: Double) { barGap() = v }
 
   def categoryGap: DoubleProperty = delegate.categoryGapProperty
-  def categoryGap_=(v: Double) {
-    categoryGap() = v
-  }
+  def categoryGap_=(v: Double) { categoryGap() = v }
 }

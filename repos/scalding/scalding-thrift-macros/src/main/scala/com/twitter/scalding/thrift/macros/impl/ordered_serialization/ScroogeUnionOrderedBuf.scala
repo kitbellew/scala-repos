@@ -52,11 +52,8 @@ object ScroogeUnionOrderedBuf {
 
     val subData: List[(Int, Type, Option[TreeOrderedBuf[c.type]])] = subClasses
       .map { t =>
-        if (t.typeSymbol.name.toString == "UnknownUnionField") {
-          (t, None)
-        } else {
-          (t, Some(dispatcher(t)))
-        }
+        if (t.typeSymbol.name.toString == "UnknownUnionField") { (t, None) }
+        else { (t, Some(dispatcher(t))) }
       }
       .zipWithIndex
       .map { case ((tpe, tbuf), idx) => (idx, tpe, tbuf) }

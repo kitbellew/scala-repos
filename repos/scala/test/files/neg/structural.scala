@@ -75,7 +75,9 @@ object Test extends App {
 
   /* Bug #1004 & #967 */
   type S1 = { def f(p: this.type): Unit }
-  val s1 = new { def f(p: this.type): Unit = () }
+  val s1 = new {
+    def f(p: this.type): Unit = ()
+  }
 
   type S2 = { type T; def f(p: T): Unit }
   //val s2: S2 = new { type T = A; def f(p: T): Unit = () }

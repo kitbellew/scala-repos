@@ -36,11 +36,8 @@ class RangeConsistencyTest {
     def NR(s: T, e: T, i: T) = {
       val delta = (bi(e) - bi(s)).abs - (if (r.isInclusive) 0 else 1)
       val n = if (r.length == 0) BigInt(0) else delta / bi(i).abs + 1
-      if (r.isInclusive) {
-        (n, Try(NumericRange.inclusive(s, e, i).length))
-      } else {
-        (n, Try(NumericRange(s, e, i).length))
-      }
+      if (r.isInclusive) { (n, Try(NumericRange.inclusive(s, e, i).length)) }
+      else { (n, Try(NumericRange(s, e, i).length)) }
     }
 
     List(NR(start, end, step)) :::

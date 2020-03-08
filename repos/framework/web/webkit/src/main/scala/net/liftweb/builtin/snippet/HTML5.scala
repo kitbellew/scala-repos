@@ -27,9 +27,7 @@ import net.liftweb.common._
   */
 object HTML5 extends DispatchSnippet {
 
-  def dispatch: DispatchIt = {
-    case _ => render _
-  }
+  def dispatch: DispatchIt = { case _ => render _ }
 
   def render(xhtml: NodeSeq): NodeSeq = {
     S.setDocType(Full(DocType.html5))

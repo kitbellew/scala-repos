@@ -534,7 +534,8 @@ final case class SuppressedDeadLetter(
 
 private[akka] object DeadLetterActorRef {
   @SerialVersionUID(1L)
-  class SerializedDeadLetterActorRef extends Serializable { //TODO implement as Protobuf for performance?
+  class SerializedDeadLetterActorRef
+      extends Serializable { //TODO implement as Protobuf for performance?
     @throws(classOf[java.io.ObjectStreamException])
     private def readResolve(): AnyRef =
       JavaSerializer.currentSystem.value.deadLetters
@@ -697,11 +698,8 @@ private[akka] class VirtualPathContainer(
               if (!wildcardFanOut)
                 emptyRef.tell(msg, sender)
             case child ⇒
-              if (elements.tail.isEmpty) {
-                child ! msg
-              } else if (!wildcardFanOut) {
-                emptyRef.tell(msg, sender)
-              }
+              if (elements.tail.isEmpty) { child ! msg }
+              else if (!wildcardFanOut) { emptyRef.tell(msg, sender) }
           }
         case _ ⇒
           if (!wildcardFanOut)
@@ -786,9 +784,7 @@ private[akka] final class FunctionRef(
     extends MinimalActorRef {
 
   override def !(message: Any)(
-      implicit sender: ActorRef = Actor.noSender): Unit = {
-    f(sender, message)
-  }
+      implicit sender: ActorRef = Actor.noSender): Unit = { f(sender, message) }
 
   override def sendSystemMessage(message: SystemMessage): Unit = {
     message match {

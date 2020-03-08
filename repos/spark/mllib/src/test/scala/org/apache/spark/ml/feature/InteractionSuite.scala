@@ -31,9 +31,7 @@ class InteractionSuite
     extends SparkFunSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
-  test("params") {
-    ParamsSuite.checkParams(new Interaction())
-  }
+  test("params") { ParamsSuite.checkParams(new Interaction()) }
 
   test("feature encoder") {
     def encode(cardinalities: Array[Int], value: Any): Vector = {

@@ -155,9 +155,7 @@ object TypedActorSpec {
 
     var internalNumber = 0
 
-    def incr() {
-      internalNumber += 1
-    }
+    def incr() { internalNumber += 1 }
 
     def read() = internalNumber
   }
@@ -213,13 +211,13 @@ object TypedActorSpec {
       ensureContextAvailable(for (i ← 1 to 7) latch.countDown())
 
     override def onReceive(msg: Any, sender: ActorRef): Unit = {
-      ensureContextAvailable(msg match {
-        case "pigdog" ⇒ sender ! "dogpig"
-      })
+      ensureContextAvailable(msg match { case "pigdog" ⇒ sender ! "dogpig" })
     }
   }
 
-  trait F { def f(pow: Boolean): Int }
+  trait F {
+    def f(pow: Boolean): Int
+  }
   class FI extends F {
     def f(pow: Boolean): Int =
       if (pow) throw new IllegalStateException("expected") else 1

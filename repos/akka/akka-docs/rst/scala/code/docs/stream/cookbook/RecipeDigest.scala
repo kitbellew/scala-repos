@@ -37,9 +37,7 @@ class RecipeDigest extends RecipeSpec {
             setHandler(
               out,
               new OutHandler {
-                override def onPull(): Trigger = {
-                  pull(in)
-                }
+                override def onPull(): Trigger = { pull(in) }
               })
 
             setHandler(

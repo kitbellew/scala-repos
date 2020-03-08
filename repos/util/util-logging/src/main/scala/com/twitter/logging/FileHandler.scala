@@ -129,11 +129,8 @@ class FileHandler(
   }
   val (filenamePrefix, filenameSuffix) = {
     val n = filename.lastIndexOf('.')
-    if (n > 0) {
-      (filename.substring(0, n), filename.substring(n))
-    } else {
-      (filename, "")
-    }
+    if (n > 0) { (filename.substring(0, n), filename.substring(n)) }
+    else { (filename, "") }
   }
 
   // Thread-safety is guarded by synchronized on this
@@ -158,31 +155,19 @@ class FileHandler(
   if (rollPolicy == Policy.SigHup) {
     HandleSignal("HUP") { signal =>
       val oldStream = stream
-      synchronized {
-        stream = openStream()
-      }
-      try {
-        oldStream.close()
-      } catch {
-        case e: Throwable => handleThrowable(e)
-      }
+      synchronized { stream = openStream() }
+      try { oldStream.close() }
+      catch { case e: Throwable => handleThrowable(e) }
     }
   }
 
-  def flush() {
-    synchronized {
-      stream.flush()
-    }
-  }
+  def flush() { synchronized { stream.flush() } }
 
   def close() {
     synchronized {
       flush()
-      try {
-        stream.close()
-      } catch {
-        case e: Throwable => handleThrowable(e)
-      }
+      try { stream.close() }
+      catch { case e: Throwable => handleThrowable(e) }
     }
   }
 
@@ -244,9 +229,8 @@ class FileHandler(
       }
       case Policy.Weekly(weekday) => {
         next.set(Calendar.HOUR_OF_DAY, 0)
-        do {
-          next.add(Calendar.DAY_OF_MONTH, 1)
-        } while (next.get(Calendar.DAY_OF_WEEK) != weekday)
+        do { next.add(Calendar.DAY_OF_MONTH, 1) } while (next.get(
+          Calendar.DAY_OF_WEEK) != weekday)
         Some(next)
       }
     }
@@ -314,9 +298,7 @@ class FileHandler(
         stream.flush()
         bytesWrittenToFile += lineSizeBytes
       }
-    } catch {
-      case e: Throwable => handleThrowable(e)
-    }
+    } catch { case e: Throwable => handleThrowable(e) }
   }
 
   private def handleThrowable(e: Throwable) {

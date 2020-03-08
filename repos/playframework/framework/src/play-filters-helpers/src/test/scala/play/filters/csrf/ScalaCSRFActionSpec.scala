@@ -21,9 +21,7 @@ object ScalaCSRFActionSpec extends CSRFCommonSpecs {
         case _ =>
           if (sendUnauthorizedResult) {
             csrfCheck(Action(req => Results.Ok), new CustomErrorHandler())
-          } else {
-            csrfCheck(Action(req => Results.Ok))
-          }
+          } else { csrfCheck(Action(req => Results.Ok)) }
       } {
         import play.api.Play.current
         handleResponse(

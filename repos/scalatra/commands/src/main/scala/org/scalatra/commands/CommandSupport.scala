@@ -50,9 +50,7 @@ trait CommandSupport extends ParamsValueReaderProperties with CommandExecutors {
     */
   def commandOrElse[T <: CommandType](factory: ⇒ T)(implicit
       request: HttpServletRequest,
-      mf: Manifest[T]): T = {
-    commandOption[T] getOrElse bindCommand(factory)
-  }
+      mf: Manifest[T]): T = { commandOption[T] getOrElse bindCommand(factory) }
 
   protected def bindCommand[T <: CommandType](newCommand: T)(implicit
       request: HttpServletRequest,

@@ -27,9 +27,7 @@ class Netty3AssumptionsTest extends FunSuite {
           new SimpleChannelUpstreamHandler {
             override def messageReceived(
                 ctx: ChannelHandlerContext,
-                e: MessageEvent) {
-              /* nothing */
-            }
+                e: MessageEvent) { /* nothing */ }
           })
         pipeline
       }
@@ -70,9 +68,7 @@ class Netty3AssumptionsTest extends FunSuite {
             Channels.close(channel)
             assert(!channel.isOpen)
             latch.countDown()
-          } else {
-            throw new Exception("connect attempt failed: " + f)
-          }
+          } else { throw new Exception("connect attempt failed: " + f) }
       })
 
     assert(latch.await(1.second))

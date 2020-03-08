@@ -57,9 +57,7 @@ class AnnotatorBasedErrorInspection extends LocalInspectionTool {
                   true,
                   highlightInfoHolder,
                   new Runnable {
-                    def run() {
-                      vr.visit(element)
-                    }
+                    def run() { vr.visit(element) }
                   })
             case _ =>
           }

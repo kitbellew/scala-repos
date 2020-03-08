@@ -288,25 +288,19 @@ class GridPane(override val delegate: jfxsl.GridPane = new jfxsl.GridPane)
     * columns.
     */
   def gridLinesVisible: BooleanProperty = delegate.gridLinesVisibleProperty
-  def gridLinesVisible_=(v: Boolean) {
-    gridLinesVisible() = v
-  }
+  def gridLinesVisible_=(v: Boolean) { gridLinesVisible() = v }
 
   /**
     * The width of the horizontal gaps between columns.
     */
   def hgap: DoubleProperty = delegate.hgapProperty
-  def hgap_=(v: Double) {
-    hgap() = v
-  }
+  def hgap_=(v: Double) { hgap() = v }
 
   /**
     * The height of the vertical gaps between rows.
     */
   def vgap: DoubleProperty = delegate.vgapProperty
-  def vgap_=(v: Double) {
-    vgap() = v
-  }
+  def vgap_=(v: Double) { vgap() = v }
 
   /**
     * List of column constraints.
@@ -320,11 +314,8 @@ class GridPane(override val delegate: jfxsl.GridPane = new jfxsl.GridPane)
     * @param c list of column constraints to replace prior content.
     */
   def columnConstraints_=(c: Iterable[ColumnConstraints]) {
-    if (null == c) {
-      columnConstraints.clear()
-    } else {
-      columnConstraints.setAll(c.map(_.delegate))
-    }
+    if (null == c) { columnConstraints.clear() }
+    else { columnConstraints.setAll(c.map(_.delegate)) }
   }
 
   /**
@@ -339,11 +330,8 @@ class GridPane(override val delegate: jfxsl.GridPane = new jfxsl.GridPane)
     * @param c list of row constraints to replace prior content.
     */
   def rowConstraints_=(c: Iterable[RowConstraints]) {
-    if (null == c) {
-      rowConstraints.clear()
-    } else {
-      rowConstraints.setAll(c.map(_.delegate))
-    }
+    if (null == c) { rowConstraints.clear() }
+    else { rowConstraints.setAll(c.map(_.delegate)) }
   }
 
   /**
@@ -382,8 +370,6 @@ class GridPane(override val delegate: jfxsl.GridPane = new jfxsl.GridPane)
   /**
     * Requests a layout pass to be performed before the next scene is rendered.
     */
-  def requestLayout() {
-    delegate.requestLayout()
-  }
+  def requestLayout() { delegate.requestLayout() }
 
 }

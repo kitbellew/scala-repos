@@ -77,10 +77,7 @@ private[puzzle] final class Finisher(api: PuzzleApi, puzzleColl: Coll) {
       case Glicko.Result.Win  => results.addResult(u1, u2)
       case Glicko.Result.Loss => results.addResult(u2, u1)
     }
-    try {
-      system.updateRatings(results)
-    } catch {
-      case e: Exception => logger.error("finisher", e)
-    }
+    try { system.updateRatings(results) }
+    catch { case e: Exception => logger.error("finisher", e) }
   }
 }

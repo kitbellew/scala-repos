@@ -62,11 +62,7 @@ class ReachingDefsCollectTest extends LightScalaTestCase {
        |$outputElements""".stripMargin.replace("\r", "")
   }
 
-  def testSimpleFragment() {
-    doTest()
-  }
-  def testClosure1() {
-    doTest()
-  }
+  def testSimpleFragment() { doTest() }
+  def testClosure1() { doTest() }
 
 }

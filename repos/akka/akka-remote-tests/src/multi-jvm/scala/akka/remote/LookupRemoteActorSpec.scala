@@ -15,9 +15,7 @@ import akka.actor.ActorIdentity
 object LookupRemoteActorMultiJvmSpec extends MultiNodeConfig {
 
   class SomeActor extends Actor {
-    def receive = {
-      case "identify" ⇒ sender() ! self
-    }
+    def receive = { case "identify" ⇒ sender() ! self }
   }
 
   commonConfig(debugConfig(on = false))
@@ -39,9 +37,7 @@ class LookupRemoteActorSpec
 
   def initialParticipants = 2
 
-  runOn(master) {
-    system.actorOf(Props[SomeActor], "service-hello")
-  }
+  runOn(master) { system.actorOf(Props[SomeActor], "service-hello") }
 
   "Remoting" must {
     "lookup remote actor" taggedAs LongRunningTest in {

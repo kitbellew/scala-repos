@@ -58,9 +58,7 @@ class ThriftClientFinagleServerTest
   }
   transport.open()
 
-  after {
-    server.close(20.milliseconds)
-  }
+  after { server.close(20.milliseconds) }
 
   test("thrift client with finagle server should make successful (void) RPCs") {
     client.add_one(1, 2)

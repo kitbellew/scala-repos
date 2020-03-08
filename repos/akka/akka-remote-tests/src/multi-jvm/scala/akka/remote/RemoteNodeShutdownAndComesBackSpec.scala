@@ -131,9 +131,7 @@ abstract class RemoteNodeShutdownAndComesBackSpec
 
         subjectNew ! "shutdown"
         // we are waiting for a Terminated here, but it is ok if it does not arrive
-        receiveWhile(5.seconds) {
-          case _: ActorIdentity ⇒ true
-        }
+        receiveWhile(5.seconds) { case _: ActorIdentity ⇒ true }
       }
 
       runOn(second) {

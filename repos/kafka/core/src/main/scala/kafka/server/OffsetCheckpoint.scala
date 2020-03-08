@@ -70,9 +70,7 @@ class OffsetCheckpoint(val file: File) extends Logging {
             Runtime.getRuntime.halt(1)
           }
           throw e
-      } finally {
-        writer.close()
-      }
+      } finally { writer.close() }
 
       Utils.atomicMoveWithFallback(tempPath, path)
     }
@@ -119,9 +117,7 @@ class OffsetCheckpoint(val file: File) extends Logging {
         }
       } catch {
         case e: NumberFormatException => throw malformedLineException(line)
-      } finally {
-        reader.close()
-      }
+      } finally { reader.close() }
     }
   }
 

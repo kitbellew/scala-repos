@@ -75,9 +75,7 @@ object GenerateMIMAIgnore {
               mirror.classSymbol(
                 Class.forName(maybeOuter, false, classLoader))) ||
             isPackagePrivateModule(mirror.staticModule(maybeOuter))
-          } else {
-            false
-          }
+          } else { false }
         }
         if (directlyPrivateSpark || indirectlyPrivateSpark) {
           ignoredClasses += className

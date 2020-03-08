@@ -1,1 +1,3 @@
-object S extends App { println(J.j1) }
+object S extends App {
+  println(J.j1)
+}

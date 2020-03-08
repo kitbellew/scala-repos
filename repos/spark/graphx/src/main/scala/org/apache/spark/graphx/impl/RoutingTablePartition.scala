@@ -92,9 +92,7 @@ private[graphx] object RoutingTablePartition {
     val bitset = new BitSet(flags.size)
     var i = 0
     while (i < flags.size) {
-      if (flags(i)) {
-        bitset.set(i)
-      }
+      if (flags(i)) { bitset.set(i) }
       i += 1
     }
     bitset

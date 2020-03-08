@@ -76,9 +76,8 @@ class ScModifierListImpl private (
     val stub = getStub
     if (stub != null) {
       val am = stub.findChildStubByType(ScalaElementTypes.ACCESS_MODIFIER)
-      if (am != null) {
-        return Some(am.getPsi)
-      } else return None
+      if (am != null) { return Some(am.getPsi) }
+      else return None
     }
     findChild(classOf[ScAccessModifier])
   }
@@ -294,9 +293,7 @@ class ScModifierListImpl private (
     }
   }
 
-  def addAnnotation(qualifiedName: String): PsiAnnotation = {
-    null
-  }
+  def addAnnotation(qualifiedName: String): PsiAnnotation = { null }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitModifierList(this)

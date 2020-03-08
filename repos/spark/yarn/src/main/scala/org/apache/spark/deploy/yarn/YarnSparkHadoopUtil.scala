@@ -209,9 +209,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
     */
   def obtainTokenForHiveMetastore(
       conf: Configuration): Option[Token[DelegationTokenIdentifier]] = {
-    try {
-      obtainTokenForHiveMetastoreInner(conf)
-    } catch {
+    try { obtainTokenForHiveMetastoreInner(conf) }
+    catch {
       case e: ClassNotFoundException =>
         logInfo(s"Hive class not found $e")
         logDebug("Hive class not found", e)
@@ -271,11 +270,7 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
           hive2Token.decodeFromUrlString(tokenStr)
           Some(hive2Token)
         }
-      } finally {
-        Utils.tryLogNonFatalError {
-          closeCurrent.invoke(null)
-        }
-      }
+      } finally { Utils.tryLogNonFatalError { closeCurrent.invoke(null) } }
     } else {
       logDebug("HiveMetaStore configured in localmode")
       None
@@ -297,9 +292,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
     */
   def obtainTokenForHBase(
       conf: Configuration): Option[Token[TokenIdentifier]] = {
-    try {
-      obtainTokenForHBaseInner(conf)
-    } catch {
+    try { obtainTokenForHBaseInner(conf) }
+    catch {
       case e: ClassNotFoundException =>
         logInfo(s"HBase class not found $e")
         logDebug("HBase class not found", e)
@@ -330,9 +324,7 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
         obtainToken
           .invoke(null, hbaseConf)
           .asInstanceOf[Token[TokenIdentifier]])
-    } else {
-      None
-    }
+    } else { None }
   }
 
   /**
@@ -414,9 +406,8 @@ object YarnSparkHadoopUtil {
         while (m.find()) {
           val variable = m.group(1)
           var replace = ""
-          if (env.get(variable) != None) {
-            replace = env.get(variable).get
-          } else {
+          if (env.get(variable) != None) { replace = env.get(variable).get }
+          else {
             // if this key is not configured for the child .. get it from the env
             replace = System.getenv(variable)
             if (replace == null) {
@@ -435,11 +426,8 @@ object YarnSparkHadoopUtil {
   }
 
   private val environmentVariableRegex: String = {
-    if (Utils.isWindows) {
-      "%([A-Za-z_][A-Za-z0-9_]*?)%"
-    } else {
-      "\\$([A-Za-z_][A-Za-z0-9_]*)"
-    }
+    if (Utils.isWindows) { "%([A-Za-z_][A-Za-z0-9_]*?)%" }
+    else { "\\$([A-Za-z_][A-Za-z0-9_]*)" }
   }
 
   /**
@@ -459,9 +447,7 @@ object YarnSparkHadoopUtil {
   def getOutOfMemoryErrorArgument: String = {
     if (Utils.isWindows) {
       escapeForShell("-XX:OnOutOfMemoryError=taskkill /F /PID %%%%p")
-    } else {
-      "-XX:OnOutOfMemoryError='kill %p'"
-    }
+    } else { "-XX:OnOutOfMemoryError='kill %p'" }
   }
 
   /**
@@ -483,9 +469,8 @@ object YarnSparkHadoopUtil {
     */
   def escapeForShell(arg: String): String = {
     if (arg != null) {
-      if (Utils.isWindows) {
-        YarnCommandBuilderUtils.quoteForBatchScript(arg)
-      } else {
+      if (Utils.isWindows) { YarnCommandBuilderUtils.quoteForBatchScript(arg) }
+      else {
         val escaped = new StringBuilder("'")
         for (i <- 0 to arg.length() - 1) {
           arg.charAt(i) match {
@@ -497,9 +482,7 @@ object YarnSparkHadoopUtil {
         }
         escaped.append("'").toString()
       }
-    } else {
-      arg
-    }
+    } else { arg }
   }
 
   def getApplicationAclsForYarn(

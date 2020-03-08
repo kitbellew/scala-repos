@@ -110,9 +110,7 @@ object ScopeSuggester {
         case _ => false
       }
 
-      if (!isSuitableParent(owners, parent)) {
-        noContinue = true
-      }
+      if (!isSuitableParent(owners, parent)) { noContinue = true }
 
       val occurrences =
         ScalaRefactoringUtil.getTypeElementOccurrences(currentElement, parent)
@@ -216,11 +214,8 @@ object ScopeSuggester {
             packageDirectories.intersect(dirContainingFile)
 
           val resultDirectory: PsiDirectory =
-            if (containingDirectory.length > 0) {
-              containingDirectory.apply(0)
-            } else {
-              typeElement.getContainingFile.getContainingDirectory
-            }
+            if (containingDirectory.length > 0) { containingDirectory.apply(0) }
+            else { typeElement.getContainingFile.getContainingDirectory }
 
           result += ((currentPackage, resultDirectory))
         }
@@ -229,9 +224,7 @@ object ScopeSuggester {
           module,
           result,
           dirContainingFile)
-      } else {
-        result
-      }
+      } else { result }
     }
 
     val currentPackage = ScPackageImpl
@@ -370,9 +363,7 @@ object ScopeSuggester {
           parent,
           occurrences.isEmpty)
       }
-    } else {
-      collectedFiles.foreach(handleOneFile)
-    }
+    } else { collectedFiles.foreach(handleOneFile) }
 
     val occurrences =
       allOcurrences.foldLeft(Array[ScTypeElement]())((a, b) => a ++ b)
@@ -426,9 +417,7 @@ case class SimpleScopeItem(
     (fileEncloser.getTextRange, fileEncloser.getContainingFile)
 
   def setInheretedOccurrences(occurrences: Array[ScTypeElement]) = {
-    if (occurrences != null) {
-      occurrencesFromInheretors = occurrences
-    }
+    if (occurrences != null) { occurrencesFromInheretors = occurrences }
   }
 
   def revalidate(newName: String): ScopeItem = {
@@ -443,9 +432,7 @@ case class SimpleScopeItem(
 
     val newNames = if ((newName == "") || availableNames.contains(newName)) {
       availableNames
-    } else {
-      newName +: availableNames
-    }
+    } else { newName +: availableNames }
 
     val updatedFileEncloser = fileEncloserRange match {
       case (range, containingFile) =>
@@ -473,17 +460,11 @@ case class SimpleScopeItem(
       newNames)
   }
 
-  def isTrait: Boolean = {
-    name.startsWith("trait")
-  }
+  def isTrait: Boolean = { name.startsWith("trait") }
 
-  def isClass: Boolean = {
-    name.startsWith("class")
-  }
+  def isClass: Boolean = { name.startsWith("class") }
 
-  def isObject: Boolean = {
-    name.startsWith("object")
-  }
+  def isObject: Boolean = { name.startsWith("object") }
 }
 
 case class PackageScopeItem(

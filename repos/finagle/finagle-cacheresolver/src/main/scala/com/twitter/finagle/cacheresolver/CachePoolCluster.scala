@@ -223,9 +223,7 @@ trait CachePoolCluster extends Cluster[CacheNode] {
     new Promise[Spool[Cluster.Change[CacheNode]]]
 
   def snap: (Seq[CacheNode], Future[Spool[Cluster.Change[CacheNode]]]) =
-    cachePool synchronized {
-      (cachePool.toSeq, cachePoolChanges)
-    }
+    cachePool synchronized { (cachePool.toSeq, cachePoolChanges) }
 
   /**
     * TODO: pick up new rev of Cluster once it's ready
@@ -341,9 +339,7 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
 
   // continuously gauging underlying cluster size
   private[this] val underlyingSizeGauge =
-    statsReceiver.addGauge("underlyingPoolSize") {
-      underlyingSize
-    }
+    statsReceiver.addGauge("underlyingPoolSize") { underlyingSize }
 
   // Falling back to use the backup pool (if provided) after a certain timeout.
   // Meanwhile, the first time invoke of updating pool will still proceed once it successfully
@@ -397,9 +393,8 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
       expectedSize: Int,
       spoolChanges: Future[Spool[Cluster.Change[CacheNode]]]
   ): Future[Set[CacheNode]] = {
-    if (expectedSize == currentSet.size) {
-      Future.value(currentSet)
-    } else
+    if (expectedSize == currentSet.size) { Future.value(currentSet) }
+    else
       spoolChanges flatMap { spool =>
         spool match {
           case Cluster.Add(node) *:: tail =>
@@ -444,9 +439,7 @@ class ZookeeperCacheNodeGroup(
     }
 
   private[this] val underlyingSizeGauge =
-    statsReceiver.addGauge("underlyingPoolSize") {
-      zkGroup.members.size
-    }
+    statsReceiver.addGauge("underlyingPoolSize") { zkGroup.members.size }
 
   def applyZKData(data: Array[Byte]) {
     if (data != null) {
@@ -481,9 +474,7 @@ class ZookeeperCacheNodeGroup(
         // e.g. certain cache node key is re-assigned to another host
         if (removed.forall(_.key.isDefined) && added.forall(_.key.isDefined) &&
             removed.size == added.size && removed.map(_.key.get) == added.map(
-              _.key.get)) {
-          set() = newMembers
-        }
+              _.key.get)) { set() = newMembers }
       }
     }
 }

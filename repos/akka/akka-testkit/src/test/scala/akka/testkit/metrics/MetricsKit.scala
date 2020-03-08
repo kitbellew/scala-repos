@@ -121,9 +121,7 @@ private[akka] trait MetricsKit extends MetricsKitOps {
     *
     * HINT: this operation can be costy, run outside of your tested code, or rely on scheduled reporting.
     */
-  def reportMetrics() {
-    reporters foreach { _.report() }
-  }
+  def reportMetrics() { reporters foreach { _.report() } }
 
   /**
     * Causes immediate flush of only memory related metrics, using all registered reporters.
@@ -173,9 +171,7 @@ private[akka] trait MetricsKit extends MetricsKitOps {
   /**
     * MUST be called after all tests have finished.
     */
-  def shutdownMetrics() {
-    reporters foreach { _.stop() }
-  }
+  def shutdownMetrics() { reporters foreach { _.stop() } }
 
   private[metrics] def getOrRegister[M <: Metric](key: String, metric: ⇒ M)(
       implicit tag: ClassTag[M]): M = {

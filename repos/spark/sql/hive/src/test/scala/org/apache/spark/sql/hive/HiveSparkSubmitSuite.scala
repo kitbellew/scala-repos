@@ -439,8 +439,6 @@ object SPARK_11009 extends QueryTest {
       if (df3.rdd.count() != 0) {
         throw new Exception("df3 should have 0 output row.")
       }
-    } finally {
-      sparkContext.stop()
-    }
+    } finally { sparkContext.stop() }
   }
 }

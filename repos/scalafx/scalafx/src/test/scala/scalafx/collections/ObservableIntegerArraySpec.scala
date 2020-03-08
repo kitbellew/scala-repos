@@ -64,9 +64,7 @@ class ObservableIntegerArraySpec
     def onChangeFull(a: ObservableIntegerArray, c: Change) {
       change += ((a, c))
     }
-    def onChangeBrief() {
-      changes += 1
-    }
+    def onChangeBrief() { changes += 1 }
     instance0.onChange(onChangeFull(_, _))
     instance0.onChange(onChangeBrief)
     instance1.onChange(onChangeFull(_, _))
@@ -99,27 +97,21 @@ class ObservableIntegerArraySpec
     * Test that a function to access/change an array element with an invalid index yields an out of bounds exception.
     */
   def testOutOfBoundsExceptionThrown(f: => Unit) {
-    intercept[ArrayIndexOutOfBoundsException] {
-      f
-    }
+    intercept[ArrayIndexOutOfBoundsException] { f }
   }
 
   /**
     * Test that a function results in an NegativeArraySizeException being thrown.
     */
   def testNegativeArraySizeExceptionThrown(f: => Unit) {
-    intercept[NegativeArraySizeException] {
-      f
-    }
+    intercept[NegativeArraySizeException] { f }
   }
 
   /**
     * Test that a function results in an IllegalArgumentException being thrown.
     */
   def testIllegalArgumentExceptionThrown(f: => Unit) {
-    intercept[IllegalArgumentException] {
-      f
-    }
+    intercept[IllegalArgumentException] { f }
   }
 
   /**
@@ -142,9 +134,7 @@ class ObservableIntegerArraySpec
     assert(oa.size === expected.length)
     assert(oa.isEmpty === false)
     testOutOfBoundsExceptionThrown(oa(-1))
-    for (i <- 0 until expected.length) {
-      assert(oa(i) === expected(i))
-    }
+    for (i <- 0 until expected.length) { assert(oa(i) === expected(i)) }
     testOutOfBoundsExceptionThrown(oa(expected.length))
   }
 

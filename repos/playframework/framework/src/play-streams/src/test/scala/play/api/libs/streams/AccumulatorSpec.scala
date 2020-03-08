@@ -19,9 +19,8 @@ object AccumulatorSpec extends Specification {
 
   def withMaterializer[T](block: Materializer => T) = {
     val system = ActorSystem("test")
-    try {
-      block(ActorMaterializer()(system))
-    } finally {
+    try { block(ActorMaterializer()(system)) }
+    finally {
       system.terminate()
       Await.result(system.whenTerminated, Duration.Inf)
     }
@@ -55,22 +54,12 @@ object AccumulatorSpec extends Specification {
       "when the exception is introduced in the materialized value" in withMaterializer {
         implicit m =>
           await(
-            sum
-              .map(error[Int])
-              .recover {
-                case e => 20
-              }
-              .run(source)) must_== 20
+            sum.map(error[Int]).recover { case e => 20 }.run(source)) must_== 20
       }
 
       "when the exception comes from the stream" in withMaterializer {
         implicit m =>
-          await(
-            sum
-              .recover {
-                case e => 20
-              }
-              .run(errorSource)) must_== 20
+          await(sum.recover { case e => 20 }.run(errorSource)) must_== 20
       }
     }
 
@@ -81,9 +70,7 @@ object AccumulatorSpec extends Specification {
           await(
             sum
               .map(error[Int])
-              .recoverWith {
-                case e => Future(20)
-              }
+              .recoverWith { case e => Future(20) }
               .run(source)) must_== 20
       }
 
@@ -91,9 +78,7 @@ object AccumulatorSpec extends Specification {
         implicit m =>
           await(
             sum
-              .recoverWith {
-                case e => Future(20)
-              }
+              .recoverWith { case e => Future(20) }
               .run(errorSource)) must_== 20
       }
     }

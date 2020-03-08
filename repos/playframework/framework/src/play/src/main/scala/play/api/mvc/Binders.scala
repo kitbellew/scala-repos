@@ -335,11 +335,8 @@ object QueryStringBindable {
 
     def bind(key: String, params: Map[String, Seq[String]]) =
       params.get(key).flatMap(_.headOption).map { p =>
-        try {
-          Right(parse(p))
-        } catch {
-          case e: Exception => Left(error(key, e))
-        }
+        try { Right(parse(p)) }
+        catch { case e: Exception => Left(error(key, e)) }
       }
     def unbind(key: String, value: A) = key + "=" + serialize(value)
   }
@@ -622,18 +619,11 @@ object QueryStringBindable {
         val o = ct.runtimeClass.newInstance
           .asInstanceOf[T]
           .bind(key, params.mapValues(_.toArray).asJava)
-        if (o.isPresent) {
-          Some(Right(o.get))
-        } else {
-          None
-        }
-      } catch {
-        case e: Exception => Some(Left(e.getMessage))
-      }
+        if (o.isPresent) { Some(Right(o.get)) }
+        else { None }
+      } catch { case e: Exception => Some(Left(e.getMessage)) }
     }
-    def unbind(key: String, value: T) = {
-      value.unbind(key)
-    }
+    def unbind(key: String, value: T) = { value.unbind(key) }
     override def javascriptUnbind =
       Option(ct.runtimeClass.newInstance.asInstanceOf[T].javascriptUnbind())
         .getOrElse(super.javascriptUnbind)
@@ -653,11 +643,8 @@ object PathBindable {
       extends PathBindable[A] {
 
     def bind(key: String, value: String): Either[String, A] = {
-      try {
-        Right(parse(value))
-      } catch {
-        case e: Exception => Left(error(key, e))
-      }
+      try { Right(parse(value)) }
+      catch { case e: Exception => Left(error(key, e)) }
     }
     def unbind(key: String, value: A): String = serialize(value)
   }
@@ -801,13 +788,9 @@ object PathBindable {
     def bind(key: String, value: String) = {
       try {
         Right(ct.runtimeClass.newInstance.asInstanceOf[T].bind(key, value))
-      } catch {
-        case e: Exception => Left(e.getMessage)
-      }
+      } catch { case e: Exception => Left(e.getMessage) }
     }
-    def unbind(key: String, value: T) = {
-      value.unbind(key)
-    }
+    def unbind(key: String, value: T) = { value.unbind(key) }
     override def javascriptUnbind =
       Option(ct.runtimeClass.newInstance.asInstanceOf[T].javascriptUnbind())
         .getOrElse(super.javascriptUnbind)

@@ -92,9 +92,8 @@ object CsvImplicits {
       val file = new FileOutputStream(path)
       val stream = new BufferedOutputStream(file, 4 * 1024)
 
-      try {
-        writeCsvStream(stream, withColIx, withRowIx, settings)
-      } finally {
+      try { writeCsvStream(stream, withColIx, withRowIx, settings) }
+      finally {
         stream.close()
         file.close()
       }

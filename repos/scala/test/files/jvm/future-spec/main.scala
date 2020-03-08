@@ -31,9 +31,7 @@ trait MinimalScalaTest extends Output with Features {
 
   val throwables = mutable.ArrayBuffer[Throwable]()
 
-  def check() {
-    if (throwables.nonEmpty) println(buffer.toString)
-  }
+  def check() { if (throwables.nonEmpty) println(buffer.toString) }
 
   implicit def stringops(s: String) = new {
 

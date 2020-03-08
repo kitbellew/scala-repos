@@ -16,8 +16,6 @@ class MetricsSupportSpec extends ScalatraFlatSpec {
   addServlet(new TestServlet, "/")
 
   "The Metrics support" should "not error out using metrics" in {
-    get("/") {
-      status should equal(200)
-    }
+    get("/") { status should equal(200) }
   }
 }

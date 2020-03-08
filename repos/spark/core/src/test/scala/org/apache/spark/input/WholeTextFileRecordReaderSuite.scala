@@ -65,11 +65,8 @@ class WholeTextFileRecordReaderSuite
   }
 
   override def afterAll() {
-    try {
-      sc.stop()
-    } finally {
-      super.afterAll()
-    }
+    try { sc.stop() }
+    finally { super.afterAll() }
   }
 
   private def createNativeFile(

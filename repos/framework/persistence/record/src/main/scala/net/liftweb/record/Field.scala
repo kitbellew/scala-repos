@@ -33,9 +33,7 @@ trait BaseField extends FieldIdentifier with util.BaseField {
 
   protected def dirty_?(b: Boolean) = dirty = b
 
-  def resetDirty {
-    if (safe_?) dirty_?(false)
-  }
+  def resetDirty { if (safe_?) dirty_?(false) }
 
   def dirty_? : Boolean = dirty
 
@@ -245,9 +243,8 @@ trait TypedField[ThisType] extends BaseField {
       case (f: Failure)     => set_!(f) // preserve failures set in
       case _                => Failure(notOptionalErrorMessage)
     }
-    if (forceDirty_?) {
-      dirty_?(true)
-    } else if (!dirty_?) {
+    if (forceDirty_?) { dirty_?(true) }
+    else if (!dirty_?) {
       val same = (oldValue, data) match {
         case (Full(ov), Full(nv)) => ov == nv
         case (a, b)               => a == b
@@ -471,9 +468,7 @@ trait Field[ThisType, OwnerType <: Record[OwnerType]]
     if (owner.meta.mutable_?) {
       this.setBox(in)
       owner
-    } else {
-      owner.meta.createWithMutableField(owner, this, in)
-    }
+    } else { owner.meta.createWithMutableField(owner, this, in) }
 }
 
 /**

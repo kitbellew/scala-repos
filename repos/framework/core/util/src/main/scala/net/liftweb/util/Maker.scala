@@ -165,11 +165,8 @@ trait StackableMaker[T] extends Maker[T] {
   def doWith[F](addl: PValueHolder[Maker[T]])(f: => F): F = {
     val old = _stack.get()
     _stack.set(addl :: stack)
-    try {
-      f
-    } finally {
-      _stack.set(old)
-    }
+    try { f }
+    finally { _stack.set(old) }
   }
 
   protected final def find(in: List[PValueHolder[Maker[T]]]): Box[T] =

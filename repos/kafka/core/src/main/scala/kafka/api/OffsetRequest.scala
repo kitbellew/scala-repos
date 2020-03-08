@@ -124,9 +124,7 @@ case class OffsetRequest(
   def isFromOrdinaryClient = replicaId == Request.OrdinaryConsumerId
   def isFromDebuggingClient = replicaId == Request.DebuggingConsumerId
 
-  override def toString(): String = {
-    describe(true)
-  }
+  override def toString(): String = { describe(true) }
 
   override def handleError(
       e: Throwable,

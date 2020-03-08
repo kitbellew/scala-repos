@@ -64,23 +64,15 @@ class MockHttpServletResponse(
     statusString = s
   }
 
-  def setStatus(i: Int): Unit = {
-    statusCode = i
-  }
+  def setStatus(i: Int): Unit = { statusCode = i }
   def getStatus = statusCode
 
-  def addIntHeader(s: String, i: Int) {
-    addHeader(s, i.toString)
-  }
-  def setIntHeader(s: String, i: Int) {
-    setHeader(s, i.toString)
-  }
+  def addIntHeader(s: String, i: Int) { addHeader(s, i.toString) }
+  def setIntHeader(s: String, i: Int) { setHeader(s, i.toString) }
   def addHeader(s1: String, s2: String) {
     headers += (s1 -> (headers.getOrElse(s1, Nil) ::: List(s2)))
   }
-  def setHeader(s1: String, s2: String) {
-    headers += (s1 -> List(s2))
-  }
+  def setHeader(s1: String, s2: String) { headers += (s1 -> List(s2)) }
 
   def getHeader(name: String): String = {
     headers.get(name).flatMap(_.headOption).getOrElse("")
@@ -88,16 +80,10 @@ class MockHttpServletResponse(
   def getHeaders(name: String): Collection[String] = {
     headers.get(name).getOrElse(Nil).asJava
   }
-  def getHeaderNames(): Collection[String] = {
-    headers.keySet.toSeq.asJava
-  }
+  def getHeaderNames(): Collection[String] = { headers.keySet.toSeq.asJava }
 
-  def addDateHeader(s: String, l: Long) {
-    addHeader(s, (new Date(l)).toString)
-  }
-  def setDateHeader(s: String, l: Long) {
-    setHeader(s, (new Date(l)).toString)
-  }
+  def addDateHeader(s: String, l: Long) { addHeader(s, (new Date(l)).toString) }
+  def setDateHeader(s: String, l: Long) { setHeader(s, (new Date(l)).toString) }
 
   def sendRedirect(uri: String) {
     // Send back a 301 to the URL mentioned
@@ -105,9 +91,7 @@ class MockHttpServletResponse(
     addHeader("Location", uri)
   }
 
-  def sendError(code: Int) {
-    statusCode = code
-  }
+  def sendError(code: Int) { statusCode = code }
 
   def sendError(code: Int, s: String) {
     sendError(code)
@@ -124,12 +108,8 @@ class MockHttpServletResponse(
     // use the same encoder as encodeRedirectUrl
     url
   }
-  def containsHeader(header: String): Boolean = {
-    headers.contains(header)
-  }
-  def addCookie(cookie: Cookie) = {
-    cookies = cookie :: cookies
-  }
+  def containsHeader(header: String): Boolean = { headers.contains(header) }
+  def addCookie(cookie: Cookie) = { cookies = cookie :: cookies }
   def getLocale: Locale = locale
   def setLocale(l: Locale) = locale = l
   def reset {

@@ -78,9 +78,7 @@ class TableSelectionModel[T](
     */
   def cellSelectionEnabled: BooleanProperty =
     delegate.cellSelectionEnabledProperty
-  def cellSelectionEnabled_=(v: Boolean) {
-    cellSelectionEnabled() = v
-  }
+  def cellSelectionEnabled_=(v: Boolean) { cellSelectionEnabled() = v }
 
   /**
     * Convenience function which tests whether the given row and column index is currently selected in this
@@ -113,30 +111,22 @@ class TableSelectionModel[T](
   /**
     * Selects the cell directly above the currently selected cell.
     */
-  def selectAboveCell() {
-    delegate.selectAboveCell()
-  }
+  def selectAboveCell() { delegate.selectAboveCell() }
 
   /**
     * Selects the cell directly below the currently selected cell.
     */
-  def selectBelowCell() {
-    delegate.selectBelowCell()
-  }
+  def selectBelowCell() { delegate.selectBelowCell() }
 
   /**
     * Selects the cell to the left of the currently selected cell.
     */
-  def selectLeftCell() {
-    delegate.selectLeftCell()
-  }
+  def selectLeftCell() { delegate.selectLeftCell() }
 
   /**
     * Selects the cell to the right of the currently selected cell.
     */
-  def selectRightCell() {
-    delegate.selectRightCell()
-  }
+  def selectRightCell() { delegate.selectRightCell() }
 
   /**
     * Selects the cells in the range (minRow, minColumn) to (maxRow, maxColumn), inclusive.

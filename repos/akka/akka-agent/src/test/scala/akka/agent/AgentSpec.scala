@@ -151,9 +151,7 @@ class AgentSpec extends AkkaSpec {
       val agent = Agent(3)
       var result = 0
 
-      for (value ← agent) {
-        result += value
-      }
+      for (value ← agent) { result += value }
 
       result should ===(3)
     }

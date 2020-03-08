@@ -34,9 +34,7 @@ class Bernoulli(p: Double, rand: RandBasis = Rand)
   require(p <= 1.0)
   def probabilityOf(b: Boolean) = if (b) p else (1 - p)
 
-  override def draw() = {
-    rand.uniform.get < p
-  }
+  override def draw() = { rand.uniform.get < p }
 
   override def toString() = "Bernoulli(" + p + ")"
 

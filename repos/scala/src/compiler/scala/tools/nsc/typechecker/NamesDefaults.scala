@@ -220,9 +220,8 @@ trait NamesDefaults { self: Analyzer =>
       def moduleQual(pos: Position, classType: Type) = {
         // prefix does 'normalize', which fixes #3384
         val pre = classType.prefix
-        if (pre == NoType) {
-          None
-        } else {
+        if (pre == NoType) { None }
+        else {
           val module = companionSymbolOf(baseFun.symbol.owner, context)
           if (module == NoSymbol) None
           else {
@@ -357,9 +356,8 @@ trait NamesDefaults { self: Analyzer =>
     }
 
     // begin transform
-    if (isNamedApplyBlock(tree)) {
-      context.namedApplyBlockInfo.get._1
-    } else
+    if (isNamedApplyBlock(tree)) { context.namedApplyBlockInfo.get._1 }
+    else
       tree match {
         // `fun` is typed. `namelessArgs` might be typed or not, if they are types are kept.
         case Apply(fun, namelessArgs) =>

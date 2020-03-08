@@ -72,11 +72,8 @@ trait IsolatedRichPresentationCompilerFixture
         withSearchService { (config, search) =>
           import org.ensime.fixture.RichPresentationCompilerFixture._
           val pc = create(config, search)
-          try {
-            testCode(testkit, config, pc)
-          } finally {
-            pc.askShutdown()
-          }
+          try { testCode(testkit, config, pc) }
+          finally { pc.askShutdown() }
         }
       }
     }

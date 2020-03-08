@@ -68,9 +68,7 @@ private class ResultDeletingTaskResultGetter(
               assert(!sparkEnv.blockManager.master.contains(blockId))
             }
             removeBlockSuccessfully = true
-          } catch {
-            case NonFatal(e) => removeBlockSuccessfully = false
-          }
+          } catch { case NonFatal(e) => removeBlockSuccessfully = false }
         case directResult: DirectTaskResult[_] =>
           taskSetManager.abort("Internal error: expect only indirect results")
       }

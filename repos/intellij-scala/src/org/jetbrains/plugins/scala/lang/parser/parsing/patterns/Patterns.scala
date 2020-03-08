@@ -51,9 +51,7 @@ object Patterns {
             }
           }
         }
-        if (underParams) {
-          ParserUtils.eatSeqWildcardNext(builder)
-        }
+        if (underParams) { ParserUtils.eatSeqWildcardNext(builder) }
         patternsMarker.done(ScalaElementTypes.PATTERNS)
         return true
       case _ =>
@@ -97,9 +95,7 @@ object XmlPatterns extends ParserNode {
           wild.rollbackTo()
           false
         }
-      } else {
-        false
-      }
+      } else { false }
     }
 
     def parseSeqWildcardBinding(withComma: Boolean): Boolean = {

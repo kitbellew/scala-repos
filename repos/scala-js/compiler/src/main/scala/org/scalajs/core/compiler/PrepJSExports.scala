@@ -213,9 +213,7 @@ trait PrepJSExports { this: PrepJSInterop =>
         Nil
     }
 
-    for {
-      annot <- directAnnots ++ unitAnnots
-    } yield {
+    for { annot <- directAnnots ++ unitAnnots } yield {
       val isNamedExport = annot.symbol == JSExportNamedAnnotation
       val isExportAll = annot.symbol == JSExportAllAnnotation
       val hasExplicitName = annot.args.nonEmpty
@@ -299,19 +297,15 @@ trait PrepJSExports { this: PrepJSInterop =>
     // The symbol from which we (potentially) inherit exports. It also
     // gives the exports their name
     val trgSym = {
-      if (sym.isModuleClass || (sym.isClass && isJSAny(sym))) {
-        sym
-      } else if (sym.isConstructor && sym.isPublic && !isJSAny(sym.owner) &&
-                 sym.owner.isConcreteClass && !sym.owner.isModuleClass) {
+      if (sym.isModuleClass || (sym.isClass && isJSAny(sym))) { sym }
+      else if (sym.isConstructor && sym.isPublic && !isJSAny(sym.owner) &&
+               sym.owner.isConcreteClass && !sym.owner.isModuleClass) {
         sym.owner
-      } else {
-        NoSymbol
-      }
+      } else { NoSymbol }
     }
 
-    if (trgSym == NoSymbol) {
-      Nil
-    } else {
+    if (trgSym == NoSymbol) { Nil }
+    else {
       val trgAnnot =
         if (sym.isModuleClass) JSExportDescendentObjectsAnnotation
         else JSExportDescendentClassesAnnotation

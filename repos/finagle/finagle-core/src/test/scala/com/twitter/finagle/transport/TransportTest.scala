@@ -24,18 +24,14 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
     Await.result(trans.write("10"))
     assert(Await.result(q.poll()) == 10)
 
-    intercept[NumberFormatException] {
-      Await.result(trans.write("hello"))
-    }
+    intercept[NumberFormatException] { Await.result(trans.write("hello")) }
 
     val exc = new Exception("can't coerce to string")
     q.offer(new Object {
       override def toString() = throw exc
     })
 
-    assert(exc == intercept[Exception] {
-      Await.result(trans.read())
-    })
+    assert(exc == intercept[Exception] { Await.result(trans.read()) })
   }
 
   def fromList[A](seq: => List[A]) = new Transport[Any, Option[A]] {
@@ -89,7 +85,9 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test("Transport.copyToWriter - concurrent reads") {
     val p = new Promise[Unit]
-    val failed = new Failed { override def read() = p }
+    val failed = new Failed {
+      override def read() = p
+    }
     val reader = Reader.writable()
     val done =
       Transport.copyToWriter(failed, reader)(_ => Future.None) respond {

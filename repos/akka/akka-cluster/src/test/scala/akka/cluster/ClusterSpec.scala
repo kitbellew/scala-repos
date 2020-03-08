@@ -76,9 +76,7 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
           ClusterEvent.InitialStateAsSnapshot,
           classOf[ClusterEvent.MemberEvent])
         expectMsgClass(classOf[ClusterEvent.CurrentClusterState])
-      } finally {
-        cluster.unsubscribe(testActor)
-      }
+      } finally { cluster.unsubscribe(testActor) }
     }
 
     "publish inital state as events to subscribers" in {
@@ -88,9 +86,7 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
           ClusterEvent.InitialStateAsEvents,
           classOf[ClusterEvent.MemberEvent])
         expectMsgClass(classOf[ClusterEvent.MemberUp])
-      } finally {
-        cluster.unsubscribe(testActor)
-      }
+      } finally { cluster.unsubscribe(testActor) }
     }
 
     "send CurrentClusterState to one receiver when requested" in {
@@ -136,13 +132,9 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
         }
         Cluster(sys2).leave(ref.path.address)
         within(5.seconds) {
-          awaitAssert {
-            Cluster(sys2).isTerminated should ===(true)
-          }
+          awaitAssert { Cluster(sys2).isTerminated should ===(true) }
         }
-      } finally {
-        shutdown(sys2)
-      }
+      } finally { shutdown(sys2) }
     }
 
     "allow to resolve remotePathOf any actor" in {

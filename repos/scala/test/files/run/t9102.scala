@@ -1,10 +1,16 @@
 object Test extends App {
   import reflect.runtime._, universe._
 
-  class C { def f(i: Int, j: => Int) = i + j }
+  class C {
+    def f(i: Int, j: => Int) = i + j
+  }
 
-  class V(val v: Int) extends AnyVal { def doubled = 2 * v }
-  class D { def f(i: Int, j: V) = i + j.doubled }
+  class V(val v: Int) extends AnyVal {
+    def doubled = 2 * v
+  }
+  class D {
+    def f(i: Int, j: V) = i + j.doubled
+  }
 
   class E(i: Int, j: V)
 

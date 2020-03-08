@@ -18,9 +18,7 @@ object unique extends UFunc {
       def apply(v: DenseVector[S]): DenseVector[S] =
         if (v.size > 0) {
           val data = new Array[S](v.size)
-          cfor(0)(i => i < v.size, i => i + 1)(i => {
-            data(i) = v(i)
-          })
+          cfor(0)(i => i < v.size, i => i + 1)(i => { data(i) = v(i) })
           java.util.Arrays.sort(data)
 
           var elementCount = 1
@@ -47,9 +45,7 @@ object unique extends UFunc {
           })
 
           DenseVector(result)
-        } else {
-          DenseVector(new Array[S](0))
-        }
+        } else { DenseVector(new Array[S](0)) }
     }
 
 }

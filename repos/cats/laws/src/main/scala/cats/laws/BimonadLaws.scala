@@ -22,5 +22,7 @@ trait BimonadLaws[F[_]] extends MonadLaws[F] with ComonadLaws[F] {
 
 object BimonadLaws {
   def apply[F[_]](implicit ev: Bimonad[F]): BimonadLaws[F] =
-    new BimonadLaws[F] { def F: Bimonad[F] = ev }
+    new BimonadLaws[F] {
+      def F: Bimonad[F] = ev
+    }
 }

@@ -22,10 +22,7 @@ package org.apache.spark.util
   */
 private[spark] object IntParam {
   def unapply(str: String): Option[Int] = {
-    try {
-      Some(str.toInt)
-    } catch {
-      case e: NumberFormatException => None
-    }
+    try { Some(str.toInt) }
+    catch { case e: NumberFormatException => None }
   }
 }

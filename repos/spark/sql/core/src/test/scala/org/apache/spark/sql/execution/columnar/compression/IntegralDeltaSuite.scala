@@ -39,9 +39,8 @@ class IntegralDeltaSuite extends SparkFunSuite {
 
       val builder =
         TestCompressibleColumnBuilder(columnStats, columnType, scheme)
-      val deltas = if (input.isEmpty) {
-        Seq.empty[Long]
-      } else {
+      val deltas = if (input.isEmpty) { Seq.empty[Long] }
+      else {
         (input.tail, input.init).zipped.map {
           case (x: Int, y: Int)   => (x - y).toLong
           case (x: Long, y: Long) => x - y
@@ -59,9 +58,8 @@ class IntegralDeltaSuite extends SparkFunSuite {
       val headerSize = CompressionScheme.columnHeaderSize(buffer)
 
       // Compression scheme ID + compressed contents
-      val compressedSize = 4 + (if (deltas.isEmpty) {
-                                  0
-                                } else {
+      val compressedSize = 4 + (if (deltas.isEmpty) { 0 }
+                                else {
                                   val oneBoolean = columnType.defaultSize
                                   1 + oneBoolean + deltas.map { d =>
                                     if (math.abs(d) <= Byte.MaxValue) 1
@@ -117,9 +115,7 @@ class IntegralDeltaSuite extends SparkFunSuite {
       assert(!decoder.hasNext)
     }
 
-    test(s"$scheme: empty column") {
-      skeleton(Seq.empty)
-    }
+    test(s"$scheme: empty column") { skeleton(Seq.empty) }
 
     test(s"$scheme: simple case") {
       val input = columnType match {

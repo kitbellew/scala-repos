@@ -74,9 +74,8 @@ trait BaseParsers extends RegexParsers {
     * Also matches the empty String. Returns the matched String.
     */
   def rest: Parser[String] = Parser { in =>
-    if (in.atEnd) {
-      Success("", in)
-    } else {
+    if (in.atEnd) { Success("", in) }
+    else {
       val source = in.source
       val offset = in.offset
       Success(
@@ -130,9 +129,7 @@ trait BaseParsers extends RegexParsers {
         "Previous char was '" + source.charAt(
           offset - 1) + "' expected one of " + cs,
         in)
-    } else {
-      Success((), in)
-    }
+    } else { Success((), in) }
   }
 
   /**
@@ -227,11 +224,8 @@ trait BaseParsers extends RegexParsers {
    * i.e. parsing '<' returns "&lt;"
    */
   def aChar = Parser { in =>
-    if (in.atEnd) {
-      Failure("End of input reached.", in)
-    } else {
-      Success(escapeForXml(in.first), in.rest)
-    }
+    if (in.atEnd) { Failure("End of input reached.", in) }
+    else { Success(escapeForXml(in.first), in.rest) }
   }
 
   val xmlNameStartCharRanges: SortedMap[Char, Char] =

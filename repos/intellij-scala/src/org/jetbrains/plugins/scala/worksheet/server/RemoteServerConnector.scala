@@ -145,9 +145,7 @@ object RemoteServerConnector {
       consumer.progress(text, done)
     }
 
-    override def trace(exception: Throwable) {
-      consumer trace exception
-    }
+    override def trace(exception: Throwable) { consumer trace exception }
 
     override def message(
         kind: Kind,
@@ -205,9 +203,7 @@ object RemoteServerConnector {
       )
     }
 
-    override def compilationEnd() {
-      if (!hasErrors) callback.run()
-    }
+    override def compilationEnd() { if (!hasErrors) callback.run() }
 
     override def worksheetOutput(text: String) {
       consumer.worksheetOutput(text)

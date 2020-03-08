@@ -213,9 +213,7 @@ final class ValueCell[A](initialValue: A) extends Cell[A] with LiftValue[A] {
   /**
     * The cell's value and most recent change time
     */
-  def currentValue: (A, Long) = synchronized {
-    (value, ct)
-  }
+  def currentValue: (A, Long) = synchronized { (value, ct) }
 
   /**
     * Get the cell's value
@@ -236,9 +234,7 @@ final class ValueCell[A](initialValue: A) extends Cell[A] with LiftValue[A] {
     */
   def predicateChanged(which: Cell[_]): Unit = {}
 
-  override def toString(): String = synchronized {
-    "ValueCell(" + value + ")"
-  }
+  override def toString(): String = synchronized { "ValueCell(" + value + ")" }
 
   override def hashCode(): Int = synchronized {
     if (null.asInstanceOf[Object] eq value.asInstanceOf[Object]) 0
@@ -321,9 +317,7 @@ final case class FuncCell1[A, Z](a: Cell[A], f: A => Z) extends Cell[Z] {
   /**
     * If the predicate cell changes, the Dependent will be notified
     */
-  def predicateChanged(which: Cell[_]): Unit = {
-    notifyDependents()
-  }
+  def predicateChanged(which: Cell[_]): Unit = { notifyDependents() }
 
   a.addDependent(this)
 
@@ -407,9 +401,7 @@ final case class FuncCell4[A, B, C, D, Z](
   /**
     * If the predicate cell changes, the Dependent will be notified
     */
-  def predicateChanged(which: Cell[_]): Unit = {
-    notifyDependents()
-  }
+  def predicateChanged(which: Cell[_]): Unit = { notifyDependents() }
 
   a.addDependent(this)
   b.addDependent(this)
@@ -444,9 +436,7 @@ final case class FuncCell5[A, B, C, D, E, Z](
   /**
     * If the predicate cell changes, the Dependent will be notified
     */
-  def predicateChanged(which: Cell[_]): Unit = {
-    notifyDependents()
-  }
+  def predicateChanged(which: Cell[_]): Unit = { notifyDependents() }
 
   a.addDependent(this)
   b.addDependent(this)

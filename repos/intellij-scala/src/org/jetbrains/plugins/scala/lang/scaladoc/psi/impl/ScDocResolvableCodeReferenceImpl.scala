@@ -45,9 +45,7 @@ class ScDocResolvableCodeReferenceImpl(node: ASTNode)
       case (ScalaResolveResult(cstr: ScPrimaryConstructor, _), ind)
           if cstr.containingClass != null =>
         (new ScalaResolveResult(cstr.containingClass), ind)
-    } foreach {
-      case (rr, idx) => s(idx) = rr
-    }
+    } foreach { case (rr, idx) => s(idx) = rr }
 
     s
   }

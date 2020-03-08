@@ -121,9 +121,7 @@ class MarathonHealthCheckManagerTest
 
     EventFilter
       .info(start = "Received health result for app", occurrences = 1)
-      .intercept {
-        hcManager.update(taskStatus, version)
-      }
+      .intercept { hcManager.update(taskStatus, version) }
   }
 
   test("Add") {
@@ -206,9 +204,7 @@ class MarathonHealthCheckManagerTest
 
     def statuses = hcManager.statuses(appId).futureValue
 
-    statuses.foreach {
-      case (_, health) => assert(health.isEmpty)
-    }
+    statuses.foreach { case (_, health) => assert(health.isEmpty) }
 
     updateTaskHealth(task1, version, healthy = true)
     statuses.foreach {

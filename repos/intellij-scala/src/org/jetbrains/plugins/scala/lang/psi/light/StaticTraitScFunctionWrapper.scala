@@ -21,9 +21,8 @@ class StaticTraitScFunctionWrapper(
     function,
     containingClass: PsiClassWrapper)
   val method: PsiMethod = {
-    try {
-      elementFactory.createMethodFromText(methodText, containingClass)
-    } catch {
+    try { elementFactory.createMethodFromText(methodText, containingClass) }
+    catch {
       case e: Exception =>
         elementFactory.createMethodFromText(
           "public void FAILED_TO_DECOMPILE_METHOD() {}",

@@ -58,9 +58,7 @@ case class MemcacheResponse(
         buffer.writeBytes(MemcacheCodec.END)
       }
       Some(buffer)
-    } else {
-      None
-    }
+    } else { None }
   }
 }
 
@@ -101,9 +99,7 @@ object MemcacheCodec {
             Some(bytes),
             line.length + dataBytes + 4))
       }
-    } else {
-      emit(MemcacheRequest(segments.toList, None, line.length + 2))
-    }
+    } else { emit(MemcacheRequest(segments.toList, None, line.length + 2)) }
   }
 
   val writeAscii = new Encoder[MemcacheResponse] {

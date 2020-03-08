@@ -18,9 +18,7 @@ class JSInteropTest extends DirectTest with TestHelpers {
   @Test
   def warnNoJSNativeAnnotation: Unit = {
 
-    for {
-      obj <- Seq("class", "trait", "object")
-    } yield {
+    for { obj <- Seq("class", "trait", "object") } yield {
       s"""
       $obj A extends js.Object
       """ hasWarns
@@ -50,9 +48,7 @@ class JSInteropTest extends DirectTest with TestHelpers {
   @Test
   def noJSNativeAnnotWithSJSDefinedAnnot: Unit = {
 
-    for {
-      obj <- Seq("class", "trait", "object")
-    } yield {
+    for { obj <- Seq("class", "trait", "object") } yield {
       s"""
       @ScalaJSDefined
       @js.native
@@ -131,9 +127,7 @@ class JSInteropTest extends DirectTest with TestHelpers {
   @Test
   def noScalaStuffInsideNativeJSObject: Unit = {
 
-    for {
-      inner <- Seq("class", "trait", "object")
-    } yield {
+    for { inner <- Seq("class", "trait", "object") } yield {
       s"""
       @js.native
       object A extends js.Object {
@@ -178,9 +172,7 @@ class JSInteropTest extends DirectTest with TestHelpers {
   @Test
   def noScalaJSDefinedClassObjectInsideNativeJSObject: Unit = {
 
-    for {
-      inner <- Seq("class", "object")
-    } yield {
+    for { inner <- Seq("class", "object") } yield {
       s"""
       @js.native
       object A extends js.Object {
@@ -616,9 +608,7 @@ class JSInteropTest extends DirectTest with TestHelpers {
   @Test
   def noNativeClassObjectInsideScalaJSDefinedObject: Unit = {
 
-    for {
-      inner <- Seq("class", "object")
-    } {
+    for { inner <- Seq("class", "object") } {
       s"""
       @ScalaJSDefined
       object A extends js.Object {

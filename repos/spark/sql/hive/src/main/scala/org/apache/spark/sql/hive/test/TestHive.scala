@@ -165,9 +165,7 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
           .map(_.getCanonicalPath)
           .getOrElse(inRepoTests.getCanonicalPath)
       cmd.replaceAll("\\.\\./\\.\\./", testDataLocation + "/")
-    } else {
-      cmd
-    }
+    } else { cmd }
 
   val hiveFilesTemp = File.createTempFile("catalystHiveFiles", "")
   hiveFilesTemp.delete()
@@ -436,9 +434,7 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
           .getOrElse(sys.error(s"Unknown test table $name"))
       createCmds.foreach(_())
 
-      if (cacheTables) {
-        cacheTable(name)
-      }
+      if (cacheTables) { cacheTable(name) }
     }
   }
 

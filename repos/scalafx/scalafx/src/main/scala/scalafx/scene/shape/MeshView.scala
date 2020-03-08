@@ -48,7 +48,5 @@ class MeshView(override val delegate: jfxss.MeshView = new jfxss.MeshView())
   def this(mesh: Mesh) = this(new jfxss.MeshView(mesh))
 
   def mesh: ObjectProperty[jfxss.Mesh] = delegate.meshProperty
-  def mesh_=(m: Mesh) {
-    ObjectProperty.fillProperty[jfxss.Mesh](this.mesh, m)
-  }
+  def mesh_=(m: Mesh) { ObjectProperty.fillProperty[jfxss.Mesh](this.mesh, m) }
 }

@@ -140,9 +140,7 @@ class LatencyCompensationTest
           timer.tick()
 
           respond.setValue("yo")
-          eventually {
-            assert(yo.isDefined)
-          }
+          eventually { assert(yo.isDefined) }
           assert(Await.result(yo, 10.seconds) == "yo")
         }
       }
@@ -172,9 +170,7 @@ class LatencyCompensationTest
           timer.tick()
 
           respond.setValue("yo")
-          eventually {
-            assert(yo.isDefined)
-          }
+          eventually { assert(yo.isDefined) }
           assert(Await.result(yo, 10.seconds) == "yo")
         }
       }
@@ -200,9 +196,7 @@ class LatencyCompensationTest
           timer.tick()
 
           respond.setValue("yo")
-          eventually {
-            assert(yo.isDefined)
-          }
+          eventually { assert(yo.isDefined) }
           assert(Await.result(yo, 10.seconds) == "yo")
         }
       }
@@ -227,9 +221,7 @@ class LatencyCompensationTest
             clock.advance(4.seconds)
             timer.tick() // triggers the timeout
 
-            eventually {
-              assert(sup.isDefined)
-            }
+            eventually { assert(sup.isDefined) }
             assert(respond.interrupted.isDefined)
             intercept[IndividualRequestTimeoutException] {
               Await.result(sup, 10.seconds)
@@ -255,9 +247,7 @@ class LatencyCompensationTest
             clock.advance(2.seconds)
             timer.tick() // triggers the timeout
 
-            eventually {
-              assert(nm.isDefined)
-            }
+            eventually { assert(nm.isDefined) }
             assert(respond.interrupted.isDefined)
             intercept[IndividualRequestTimeoutException] {
               Await.result(nm, 10.seconds)
@@ -286,9 +276,7 @@ class LatencyCompensationTest
           timer.tick() // does not trigger the timeout
 
           respond.setValue("aight")
-          eventually {
-            assert(aight.isDefined)
-          }
+          eventually { assert(aight.isDefined) }
           assert(Await.result(aight, 10.seconds) == "aight")
         }
       }

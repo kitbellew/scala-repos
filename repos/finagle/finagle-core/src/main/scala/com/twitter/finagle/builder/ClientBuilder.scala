@@ -1152,9 +1152,7 @@ private object ClientBuilderClient {
           return Future.exception(new IllegalStateException)
         }
 
-        super.close(deadline) ensure {
-          exitGuard.foreach(_.unguard())
-        }
+        super.close(deadline) ensure { exitGuard.foreach(_.unguard()) }
       }
     }
   }

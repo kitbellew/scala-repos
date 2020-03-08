@@ -3,10 +3,7 @@
 object Test {
 
   def main(args: Array[String]) {
-    try {
-      val x = 3
-    } finally {
-      print("hello")
-    }
+    try { val x = 3 }
+    finally { print("hello") }
   }
 }

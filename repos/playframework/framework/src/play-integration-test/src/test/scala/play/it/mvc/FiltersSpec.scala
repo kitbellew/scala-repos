@@ -353,9 +353,7 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
                 def apply(t: Throwable) = getResult(t)
               },
               play.core.Execution.internalContext)
-        } catch {
-          case t: Throwable => Accumulator.done(getResult(t))
-        }
+        } catch { case t: Throwable => Accumulator.done(getResult(t)) }
       }
     }
   }

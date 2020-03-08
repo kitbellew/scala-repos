@@ -75,9 +75,7 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
   private def setConf(conf: SparkConf) {
     compressionCodec = if (conf.getBoolean("spark.broadcast.compress", true)) {
       Some(CompressionCodec.createCodec(conf))
-    } else {
-      None
-    }
+    } else { None }
     // Note: use getSizeAsKb (not bytes) to maintain compatibility if no units are provided
     blockSize = conf.getSizeAsKb("spark.broadcast.blockSize", "4m").toInt * 1024
   }
@@ -88,9 +86,7 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
   /** Total number of blocks this broadcast variable contains. */
   private val numBlocks: Int = writeBlocks(obj)
 
-  override protected def getValue() = {
-    _value
-  }
+  override protected def getValue() = { _value }
 
   /**
     * Divide the object into multiple blocks and put those blocks in the block manager.

@@ -96,20 +96,14 @@ private[execution] trait UniqueHashedRelation extends HashedRelation {
 
   override def get(key: InternalRow): Seq[InternalRow] = {
     val row = getValue(key)
-    if (row != null) {
-      CompactBuffer[InternalRow](row)
-    } else {
-      null
-    }
+    if (row != null) { CompactBuffer[InternalRow](row) }
+    else { null }
   }
 
   override def get(key: Long): Seq[InternalRow] = {
     val row = getValue(key)
-    if (row != null) {
-      CompactBuffer[InternalRow](row)
-    } else {
-      null
-    }
+    if (row != null) { CompactBuffer[InternalRow](row) }
+    else { null }
   }
 }
 
@@ -213,9 +207,7 @@ private[execution] object HashedRelation {
         uniqHashTable.put(entry.getKey, entry.getValue()(0))
       }
       new UniqueKeyHashedRelation(uniqHashTable)
-    } else {
-      new GeneralHashedRelation(hashTable)
-    }
+    } else { new GeneralHashedRelation(hashTable) }
   }
 }
 
@@ -259,19 +251,13 @@ private[joins] final class UnsafeHashedRelation(
     * For non-broadcast joins or in local mode, return 0.
     */
   override def getMemorySize: Long = {
-    if (binaryMap != null) {
-      binaryMap.getTotalMemoryConsumption
-    } else {
-      0
-    }
+    if (binaryMap != null) { binaryMap.getTotalMemoryConsumption }
+    else { 0 }
   }
 
   override def estimatedSize: Long = {
-    if (binaryMap != null) {
-      binaryMap.getTotalMemoryConsumption
-    } else {
-      SizeEstimator.estimate(hashTable)
-    }
+    if (binaryMap != null) { binaryMap.getTotalMemoryConsumption }
+    else { SizeEstimator.estimate(hashTable) }
   }
 
   override def get(key: InternalRow): Seq[InternalRow] = {
@@ -304,9 +290,7 @@ private[joins] final class UnsafeHashedRelation(
           offset += sizeInBytes
         }
         buffer
-      } else {
-        null
-      }
+      } else { null }
 
     } else {
       // Use the Java HashMap in local mode or for non-broadcast joins (e.g. ShuffleHashJoin)
@@ -321,9 +305,7 @@ private[joins] final class UnsafeHashedRelation(
 
       var buffer = new Array[Byte](64)
       def write(base: Object, offset: Long, length: Int): Unit = {
-        if (buffer.length < length) {
-          buffer = new Array[Byte](length)
-        }
+        if (buffer.length < length) { buffer = new Array[Byte](length) }
         Platform
           .copyMemory(base, offset, buffer, Platform.BYTE_ARRAY_OFFSET, length)
         out.write(buffer, 0, length)
@@ -411,9 +393,7 @@ private[joins] final class UnsafeHashedRelation(
     while (i < nKeys) {
       val keySize = in.readInt()
       val valuesSize = in.readInt()
-      if (keySize > keyBuffer.length) {
-        keyBuffer = new Array[Byte](keySize)
-      }
+      if (keySize > keyBuffer.length) { keyBuffer = new Array[Byte](keySize) }
       in.readFully(keyBuffer, 0, keySize)
       if (valuesSize > valuesBuffer.length) {
         valuesBuffer = new Array[Byte](valuesSize)
@@ -460,9 +440,7 @@ private[joins] object UnsafeHashedRelation {
           val newMatchList = new CompactBuffer[UnsafeRow]()
           hashTable.put(rowKey.copy(), newMatchList)
           newMatchList
-        } else {
-          existingMatchList
-        }
+        } else { existingMatchList }
         matchList += unsafeRow
       }
     }
@@ -476,9 +454,7 @@ private[joins] object UnsafeHashedRelation {
   * An interface for a hashed relation that the key is a Long.
   */
 private[joins] trait LongHashedRelation extends HashedRelation {
-  override def get(key: InternalRow): Seq[InternalRow] = {
-    get(key.getLong(0))
-  }
+  override def get(key: InternalRow): Seq[InternalRow] = { get(key.getLong(0)) }
 }
 
 private[joins] final class GeneralLongHashedRelation(
@@ -513,9 +489,7 @@ private[joins] final class UniqueLongHashedRelation(
     getValue(key.getLong(0))
   }
 
-  override def getValue(key: Long): InternalRow = {
-    hashTable.get(key)
-  }
+  override def getValue(key: Long): InternalRow = { hashTable.get(key) }
 
   override def writeExternal(out: ObjectOutput): Unit = {
     writeBytes(out, SparkSqlSerializer.serialize(hashTable))
@@ -577,9 +551,7 @@ private[joins] final class LongArrayRelation(
         Platform.BYTE_ARRAY_OFFSET + offsets(idx),
         sizes(idx))
       result
-    } else {
-      null
-    }
+    } else { null }
   }
 
   override def writeExternal(out: ObjectOutput): Unit = {
@@ -699,9 +671,7 @@ private[joins] object LongHashedRelation {
         }
         new UniqueLongHashedRelation(uniqHashTable)
       }
-    } else {
-      new GeneralLongHashedRelation(hashTable)
-    }
+    } else { new GeneralLongHashedRelation(hashTable) }
   }
 }
 
@@ -716,9 +686,7 @@ private[execution] case class HashedRelationBroadcastMode(
     val generator = UnsafeProjection.create(keys, attributes)
     if (canJoinKeyFitWithinLong) {
       LongHashedRelation(rows.iterator, generator, rows.length)
-    } else {
-      HashedRelation(rows.iterator, generator, rows.length)
-    }
+    } else { HashedRelation(rows.iterator, generator, rows.length) }
   }
 
   private lazy val canonicalizedKeys: Seq[Expression] = {

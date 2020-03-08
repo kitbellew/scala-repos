@@ -32,9 +32,7 @@ class ListTest {
     } while (emptyIterators.forall(_._2.get.isDefined) && num < 1000)
 
     // check something is result to protect from JIT optimizations
-    for ((i, _) <- emptyIterators) {
-      Assert.assertTrue(i.isEmpty)
-    }
+    for ((i, _) <- emptyIterators) { Assert.assertTrue(i.isEmpty) }
 
     // await gc up to ~5 seconds
     var forceLoops = 50

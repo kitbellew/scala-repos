@@ -25,11 +25,8 @@ private[finagle] object Bufs {
     */
   implicit def seqOfNonEmptyStringToBuf(
       strings: Traversable[String]): Seq[Buf] = {
-    if (strings == null) {
-      null
-    } else {
-      strings.map(nonEmptyStringToBuf).toSeq
-    }
+    if (strings == null) { null }
+    else { strings.map(nonEmptyStringToBuf).toSeq }
   }
 
   implicit class RichBuf(buffer: Buf) extends Seq[Byte] {

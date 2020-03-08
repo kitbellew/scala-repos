@@ -44,7 +44,9 @@ class E {
     // 1a
     prot; protE; protT
     def foo = { prot; protE; protT }
-    new { prot; protE }
+    new {
+      prot; protE
+    }
     def this(a: Any) = { this(); prot; protE; protT }
     object B extends A {
       A.this.prot

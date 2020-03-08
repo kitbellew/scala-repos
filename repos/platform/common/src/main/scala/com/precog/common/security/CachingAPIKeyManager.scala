@@ -74,9 +74,7 @@ class CachingAPIKeyManager[M[+_]](
     addChildren(r.issuerKey, Set(r))
   }
 
-  protected def add(g: Grant) = IO {
-    grantCache.put(g.grantId, g)
-  }
+  protected def add(g: Grant) = IO { grantCache.put(g.grantId, g) }
 
   protected def remove(r: APIKeyRecord) = IO {
     @inline def removeChildren(k: APIKey, c: Set[APIKeyRecord]) =
@@ -86,9 +84,7 @@ class CachingAPIKeyManager[M[+_]](
     removeChildren(r.issuerKey, Set(r))
   }
 
-  protected def remove(g: Grant) = IO {
-    grantCache.remove(g.grantId)
-  }
+  protected def remove(g: Grant) = IO { grantCache.remove(g.grantId) }
 
   def rootGrantId: M[GrantId] = manager.rootGrantId
   def rootAPIKey: M[APIKey] = manager.rootAPIKey

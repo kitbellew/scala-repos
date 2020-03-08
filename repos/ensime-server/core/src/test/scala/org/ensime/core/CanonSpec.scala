@@ -15,9 +15,7 @@ class CanonSpec extends EnsimeSpec {
   val canon = file.canon
   assert(file != canon)
 
-  "Canon" should "canon File" in {
-    Canonised(file) shouldBe canon
-  }
+  "Canon" should "canon File" in { Canonised(file) shouldBe canon }
 
   it should "canon List of Files" in {
     Canonised(List(file)) shouldBe List(canon)

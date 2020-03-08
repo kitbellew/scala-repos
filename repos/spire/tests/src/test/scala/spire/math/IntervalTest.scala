@@ -243,9 +243,7 @@ class IntervalReciprocalTest extends FunSuite {
     test(s"[1]/$a = $b") { assert(a.reciprocal === b) }
 
   def error(a: Interval[Rational]): Unit =
-    test(s"[1]/$a = error") {
-      intercept[ArithmeticException] { a.reciprocal }
-    }
+    test(s"[1]/$a = error") { intercept[ArithmeticException] { a.reciprocal } }
 
   // point(x)
   t(Interval.point(r"1/5"), Interval.point(r"5"))
@@ -339,9 +337,7 @@ class IntervalCheck
 
   property("(x -- Ø) = x") {
     forAll { (x: Interval[Rational]) =>
-      if (x.nonEmpty) {
-        (x -- Interval.empty[Rational]) shouldBe List(x)
-      }
+      if (x.nonEmpty) { (x -- Interval.empty[Rational]) shouldBe List(x) }
     }
   }
 
@@ -356,9 +352,8 @@ class IntervalCheck
   }
 
   def sample(int: Interval[Rational], n: Int): Array[Rational] =
-    if (int.isEmpty) {
-      Array.empty[Rational]
-    } else {
+    if (int.isEmpty) { Array.empty[Rational] }
+    else {
       import spire.math.interval.ValueBound
       val underlyingf: () => Rational = (int.lowerBound, int.upperBound) match {
         case (ValueBound(x), ValueBound(y)) =>

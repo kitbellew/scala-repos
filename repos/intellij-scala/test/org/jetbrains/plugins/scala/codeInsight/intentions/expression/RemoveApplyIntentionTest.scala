@@ -92,9 +92,8 @@ class RemoveApplyIntentionTest extends ScalaIntentionTestBase {
         |}
       """
 
-    try {
-      doTest(text, resultText)
-    } catch {
+    try { doTest(text, resultText) }
+    catch {
       case _: RuntimeException => // Expected, so continue
     }
   }
@@ -127,9 +126,8 @@ class RemoveApplyIntentionTest extends ScalaIntentionTestBase {
         |}
       """
 
-    try {
-      doTest(text, resultText)
-    } catch {
+    try { doTest(text, resultText) }
+    catch {
       case _: RuntimeException => // Expected, so continue
     }
   }
@@ -152,9 +150,8 @@ class RemoveApplyIntentionTest extends ScalaIntentionTestBase {
         |}
       """
 
-    try {
-      doTest(text, resultText)
-    } catch {
+    try { doTest(text, resultText) }
+    catch {
       case _: RuntimeException => // Expected, so continue
     }
   }

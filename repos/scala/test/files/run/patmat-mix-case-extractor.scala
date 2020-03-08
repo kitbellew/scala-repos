@@ -1,17 +1,25 @@
 trait CaseClass
-trait ProdCaseClass extends CaseClass { def x: Int }
-trait SeqCaseClass extends CaseClass { def xs: Seq[Int] }
+trait ProdCaseClass extends CaseClass {
+  def x: Int
+}
+trait SeqCaseClass extends CaseClass {
+  def xs: Seq[Int]
+}
 
 case class CaseClass1() extends CaseClass
 case class CaseClass2(xs: Int*) extends SeqCaseClass
 case class CaseClass3(x: Int) extends ProdCaseClass
 case class CaseClass4(x: Int, xs: Int*) extends ProdCaseClass with SeqCaseClass
 
-object Extractor1 { def unapply(x: CaseClass): Boolean = false }
+object Extractor1 {
+  def unapply(x: CaseClass): Boolean = false
+}
 object Extractor2 {
   def unapplySeq(x: SeqCaseClass): Option[Seq[Int]] = Some(x.xs)
 }
-object Extractor3 { def unapply(x: ProdCaseClass): Option[Int] = Some(x.x) }
+object Extractor3 {
+  def unapply(x: ProdCaseClass): Option[Int] = Some(x.x)
+}
 object Extractor4 {
   def unapplySeq(x: ProdCaseClass with SeqCaseClass): Option[(Int, Seq[Int])] =
     Some(x.x, x.xs)
@@ -55,9 +63,7 @@ class A {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
-    (new A).run
-  }
+  def main(args: Array[String]): Unit = { (new A).run }
 }
 
 class B {
@@ -65,7 +71,9 @@ class B {
   case class CaseClass0v(xs: Int*)
 
   case class CaseClass(x: Int, y: Int)
-  object Extractor { def unapply(x: Any): Option[(Int, Int)] = Some((1, 1)) }
+  object Extractor {
+    def unapply(x: Any): Option[(Int, Int)] = Some((1, 1))
+  }
 
   case class CaseSeq(x: Char, y: Double, zs: Int*)
   object ExtractorSeq {
@@ -87,9 +95,7 @@ class B {
   def f5(x: Any) = x match { case ExtractorSeq(x, y, z)      => z }
   def f6(x: Any) = x match { case ExtractorSeq(x, y, z @ _*) => z }
 
-  def g1(x: CaseClass0) = x match {
-    case CaseClass0() => true
-  }
+  def g1(x: CaseClass0) = x match { case CaseClass0() => true }
   def g2(x: CaseClass0v) = x match {
     case CaseClass0v()        => true
     case CaseClass0v(5)       => true

@@ -197,9 +197,7 @@ object SparkSubmit {
                 s"ERROR: ${e.getClass().getName()}: ${e.getMessage()}")
               // scalastyle:on println
               exitFn(1)
-            } else {
-              throw e
-            }
+            } else { throw e }
         }
       } else {
         runMain(
@@ -233,9 +231,7 @@ object SparkSubmit {
           submit(args)
       }
       // In all other modes, just run the main class as prepared
-    } else {
-      doRunMain()
-    }
+    } else { doRunMain() }
   }
 
   /**
@@ -321,9 +317,7 @@ object SparkSubmit {
     val exclusions: Seq[String] =
       if (!StringUtils.isBlank(args.packagesExclusions)) {
         args.packagesExclusions.split(",")
-      } else {
-        Nil
-      }
+      } else { Nil }
     val resolvedMavenCoordinates = SparkSubmitUtils.resolveMavenCoordinates(
       args.packages,
       Option(args.repositories),
@@ -688,16 +682,12 @@ object SparkSubmit {
         childArgs += "launch"
         childArgs += (args.master, args.primaryResource, args.mainClass)
       }
-      if (args.childArgs != null) {
-        childArgs ++= args.childArgs
-      }
+      if (args.childArgs != null) { childArgs ++= args.childArgs }
     }
 
     // Let YARN know it's a pyspark app, so it distributes needed libraries.
     if (clusterManager == YARN) {
-      if (args.isPython) {
-        sysProps.put("spark.yarn.isPython", "true")
-      }
+      if (args.isPython) { sysProps.put("spark.yarn.isPython", "true") }
     }
 
     // assure a keytab is available from any place in a JVM
@@ -727,9 +717,7 @@ object SparkSubmit {
       childMainClass = "org.apache.spark.deploy.yarn.Client"
       if (args.isPython) {
         childArgs += ("--primary-py-file", args.primaryResource)
-        if (args.pyFiles != null) {
-          childArgs += ("--py-files", args.pyFiles)
-        }
+        if (args.pyFiles != null) { childArgs += ("--py-files", args.pyFiles) }
         childArgs += ("--class", "org.apache.spark.deploy.PythonRunner")
       } else if (args.isR) {
         val mainFile = new Path(args.primaryResource).getName
@@ -757,23 +745,15 @@ object SparkSubmit {
         if (args.pyFiles != null) {
           sysProps("spark.submit.pyFiles") = args.pyFiles
         }
-      } else {
-        childArgs += (args.primaryResource, args.mainClass)
-      }
-      if (args.childArgs != null) {
-        childArgs ++= args.childArgs
-      }
+      } else { childArgs += (args.primaryResource, args.mainClass) }
+      if (args.childArgs != null) { childArgs ++= args.childArgs }
     }
 
     // Load any properties specified through --conf and the default properties file
-    for ((k, v) <- args.sparkProperties) {
-      sysProps.getOrElseUpdate(k, v)
-    }
+    for ((k, v) <- args.sparkProperties) { sysProps.getOrElseUpdate(k, v) }
 
     // Ignore invalid spark.driver.host in cluster modes.
-    if (deployMode == CLUSTER) {
-      sysProps -= "spark.driver.host"
-    }
+    if (deployMode == CLUSTER) { sysProps -= "spark.driver.host" }
 
     // Resolve paths in certain spark properties
     val pathConfigs = Seq(
@@ -838,19 +818,14 @@ object SparkSubmit {
       }
     Thread.currentThread.setContextClassLoader(loader)
 
-    for (jar <- childClasspath) {
-      addJarToClasspath(jar, loader)
-    }
+    for (jar <- childClasspath) { addJarToClasspath(jar, loader) }
 
-    for ((key, value) <- sysProps) {
-      System.setProperty(key, value)
-    }
+    for ((key, value) <- sysProps) { System.setProperty(key, value) }
 
     var mainClass: Class[_] = null
 
-    try {
-      mainClass = Utils.classForName(childMainClass)
-    } catch {
+    try { mainClass = Utils.classForName(childMainClass) }
+    catch {
       case e: ClassNotFoundException =>
         e.printStackTrace(printStream)
         if (childMainClass.contains("thriftserver")) {
@@ -895,9 +870,8 @@ object SparkSubmit {
         e
     }
 
-    try {
-      mainMethod.invoke(null, childArgs.toArray)
-    } catch {
+    try { mainMethod.invoke(null, childArgs.toArray) }
+    catch {
       case t: Throwable =>
         findCause(t) match {
           case SparkUserAppException(exitCode) =>
@@ -916,11 +890,8 @@ object SparkSubmit {
     uri.getScheme match {
       case "file" | "local" =>
         val file = new File(uri.getPath)
-        if (file.exists()) {
-          loader.addURL(file.toURI.toURL)
-        } else {
-          printWarning(s"Local jar $file does not exist, skipping.")
-        }
+        if (file.exists()) { loader.addURL(file.toURI.toURL) }
+        else { printWarning(s"Local jar $file does not exist, skipping.") }
       case _ =>
         printWarning(s"Skip remote jar $uri.")
     }
@@ -1206,9 +1177,8 @@ private[spark] object SparkSubmitUtils {
       ivyPath: Option[String],
       exclusions: Seq[String] = Nil,
       isTest: Boolean = false): String = {
-    if (coordinates == null || coordinates.trim.isEmpty) {
-      ""
-    } else {
+    if (coordinates == null || coordinates.trim.isEmpty) { "" }
+    else {
       val sysOut = System.out
       try {
         // To prevent ivy from logging to system out
@@ -1252,9 +1222,7 @@ private[spark] object SparkSubmitUtils {
           resolveOptions.setDownload(false)
           resolveOptions.setLog(LogOptions.LOG_QUIET)
           retrieveOptions.setLog(LogOptions.LOG_QUIET)
-        } else {
-          resolveOptions.setDownload(true)
-        }
+        } else { resolveOptions.setDownload(true) }
 
         // A Module descriptor must be specified. Entries are dummy strings
         val md = getModuleDescriptor
@@ -1290,9 +1258,7 @@ private[spark] object SparkSubmitUtils {
           retrieveOptions.setConfs(Array(ivyConfName))
         )
         resolveDependencyPaths(rr.getArtifacts.toArray, packagesDirectory)
-      } finally {
-        System.setOut(sysOut)
-      }
+      } finally { System.setOut(sysOut) }
     }
   }
 

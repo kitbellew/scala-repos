@@ -27,14 +27,12 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
 
   import FlatClassPath.RootPackage
   private def getDirectory(forPackage: String): Option[File] = {
-    if (forPackage == RootPackage) {
-      Some(dir)
-    } else {
+    if (forPackage == RootPackage) { Some(dir) }
+    else {
       val packageDirName = FileUtils.dirPath(forPackage)
       val packageDir = new File(dir, packageDirName)
-      if (packageDir.exists && packageDir.isDirectory) {
-        Some(packageDir)
-      } else None
+      if (packageDir.exists && packageDir.isDirectory) { Some(packageDir) }
+      else None
     }
   }
 

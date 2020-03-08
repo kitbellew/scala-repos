@@ -73,9 +73,7 @@ object Collections {
   private def binarySearchImpl[E](
       list: List[E],
       compareToKey: E => Int): Int = {
-    def notFound(insertionPoint: Int): Int = {
-      -insertionPoint - 1
-    }
+    def notFound(insertionPoint: Int): Int = { -insertionPoint - 1 }
 
     @tailrec
     def binarySearch(lo: Int, hi: Int, get: Int => E): Int = {
@@ -85,9 +83,7 @@ object Collections {
         if (cmp == 0) mid
         else if (cmp > 0) binarySearch(lo, mid, get)
         else binarySearch(mid + 1, hi, get)
-      } else {
-        notFound(lo)
-      }
+      } else { notFound(lo) }
     }
 
     list match {
@@ -220,9 +216,7 @@ object Collections {
       if (dest.hasNext) {
         dest.next()
         dest.set(source.get(i))
-      } else {
-        throw new IndexOutOfBoundsException
-      }
+      } else { throw new IndexOutOfBoundsException }
     }
   }
 
@@ -233,9 +227,7 @@ object Collections {
       if (dest.hasNext) {
         dest.next()
         dest.set(source.next())
-      } else {
-        throw new IndexOutOfBoundsException
-      }
+      } else { throw new IndexOutOfBoundsException }
     }
   }
 
@@ -325,9 +317,7 @@ object Collections {
             if (isEqual)
               iter.set(newVal)
             replaceAll(iter, mod || isEqual)
-          } else {
-            mod
-          }
+          } else { mod }
         }
         replaceAll(list.listIterator(), false)
     }
@@ -853,28 +843,22 @@ object Collections {
       else false
 
     override def removeAll(c: Collection[_]): Boolean = {
-      if (eagerThrow) {
-        throw new UnsupportedOperationException
-      } else {
+      if (eagerThrow) { throw new UnsupportedOperationException }
+      else {
         val cSet = c.asInstanceOf[Collection[AnyRef]].toSet
         if (this.exists(e => cSet(e.asInstanceOf[AnyRef]))) {
           throw new UnsupportedOperationException
-        } else {
-          false
-        }
+        } else { false }
       }
     }
 
     override def retainAll(c: Collection[_]): Boolean = {
-      if (eagerThrow) {
-        throw new UnsupportedOperationException
-      } else {
+      if (eagerThrow) { throw new UnsupportedOperationException }
+      else {
         val cSet = c.asInstanceOf[Collection[AnyRef]].toSet
         if (this.exists(e => !cSet(e.asInstanceOf[AnyRef]))) {
           throw new UnsupportedOperationException
-        } else {
-          false
-        }
+        } else { false }
       }
     }
   }
@@ -1149,9 +1133,7 @@ object Collections {
       super.add(e)
     }
 
-    private def checkElem(elem: E): Unit = {
-      checkClass(elem, elemClazz)
-    }
+    private def checkElem(elem: E): Unit = { checkClass(elem, elemClazz) }
   }
 
   private class EmptyIterator extends Iterator[Any] {

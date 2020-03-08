@@ -41,10 +41,7 @@ object MonoidIsCommutative {
     * True if the Monoid is commutative, false otherwise.
     */
   def apply(isCommutative: Boolean): MonoidIsCommutative =
-    if (isCommutative) {
-      MonoidIsCommutative(Commutative)
-    } else {
-      default
-    }
+    if (isCommutative) { MonoidIsCommutative(Commutative) }
+    else { default }
 }
 case class MonoidIsCommutative(commutativity: Commutativity)

@@ -880,15 +880,11 @@ private[spark] object JsonProtocol {
             s"unexpected combination of accumulator " +
               s"value in JSON ($v) and accumulator param (${p.getClass.getName}) in '${name.get}'")
       }
-    } else {
-      value.extract[String]
-    }
+    } else { value.extract[String] }
   }
 
   def taskMetricsFromJson(json: JValue): TaskMetrics = {
-    if (json == JNothing) {
-      return TaskMetrics.empty
-    }
+    if (json == JNothing) { return TaskMetrics.empty }
     val metrics = new TaskMetrics
     metrics.setExecutorDeserializeTime(
       (json \ "Executor Deserialize Time").extract[Long])
@@ -1043,9 +1039,7 @@ private[spark] object JsonProtocol {
 
   def blockManagerIdFromJson(json: JValue): BlockManagerId = {
     // On metadata fetch fail, block manager ID can be null (SPARK-4471)
-    if (json == JNothing) {
-      return null
-    }
+    if (json == JNothing) { return null }
     val executorId = (json \ "Executor ID").extract[String]
     val host = (json \ "Host").extract[String]
     val port = (json \ "Port").extract[Int]

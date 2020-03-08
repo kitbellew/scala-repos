@@ -29,9 +29,8 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
     Some(arr)
 
   def join(left: Index[T], right: Index[T], how: JoinType): ReIndexer[T] = {
-    if (left == right) {
-      ReIndexer(None, None, right)
-    } else if (left.isUnique && right.isUnique) {
+    if (left == right) { ReIndexer(None, None, right) }
+    else if (left.isUnique && right.isUnique) {
       how match {
         case InnerJoin => intersect(left, right)
         case OuterJoin => union(left, right)
@@ -64,9 +63,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
 
     if (left.isMonotonic && right.isMonotonic) {
       outerJoinMonotonicUnique(left, right)
-    } else {
-      outerJoinUnique(left, right)
-    }
+    } else { outerJoinUnique(left, right) }
   }
 
   // Intersects two indices if both have set semantics
@@ -81,9 +78,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
 
     if (left.isMonotonic && right.isMonotonic && !(max > 5 * min)) {
       innerJoinMonotonicUnique(left, right)
-    } else {
-      innerJoinUnique(left, right)
-    }
+    } else { innerJoinUnique(left, right) }
   }
 
   private def leftJoinUnique(left: Index[T], right: Index[T]): ReIndexer[T] = {
@@ -148,9 +143,8 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       while (i < n) {
         val v = idx.raw(i)
         val loc = map.get(v)
-        if (loc != -1) {
-          labels(i) = loc
-        } else {
+        if (loc != -1) { labels(i) = loc }
+        else {
           map.put(v, numUniq)
           uniques.add(v)
           labels(i) = numUniq
@@ -608,9 +602,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       val l: T = left.raw(i)
       var r: T = l
 
-      while (j < rl && scalar.lt({ r = right.raw(j); r }, l)) {
-        j += 1
-      }
+      while (j < rl && scalar.lt({ r = right.raw(j); r }, l)) { j += 1 }
 
       if (j < rl && l == r)
         rgt(i) = j
@@ -646,9 +638,8 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
 
       if (nleft > 0) {
         while (!done) {
-          if (lc == nleft) {
-            done = true
-          } else if (rc == nright) {
+          if (lc == nleft) { done = true }
+          else if (rc == nright) {
             if (callback == TNoOp)
               count += nleft - lc
             else
@@ -677,9 +668,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
               callback(l, r, res, lc, -1, lval, count)
               count += 1
               lc += 1
-            } else {
-              rc += 1
-            }
+            } else { rc += 1 }
           }
         }
       }

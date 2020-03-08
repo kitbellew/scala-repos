@@ -93,21 +93,15 @@ object TestCC {
   }
 
   implicit def arbitraryTestDD: Arbitrary[TestCaseClassD] = Arbitrary {
-    for {
-      aInt <- arb[Int]
-    } yield TestCaseClassD(aInt)
+    for { aInt <- arb[Int] } yield TestCaseClassD(aInt)
   }
 
   implicit def arbitraryTestEE: Arbitrary[TestCaseClassE] = Arbitrary {
-    for {
-      aString <- arb[String]
-    } yield TestCaseClassE(aString)
+    for { aString <- arb[String] } yield TestCaseClassE(aString)
   }
 
   implicit def arbitraryTestObjectE: Arbitrary[TestObjectE.type] = Arbitrary {
-    for {
-      e <- Gen.const(TestObjectE)
-    } yield e
+    for { e <- Gen.const(TestObjectE) } yield e
   }
 
   implicit def arbitrarySealedTraitTest: Arbitrary[SealedTraitTest] =
@@ -215,11 +209,7 @@ object MacroOpaqueContainer {
     }
 
   implicit def arbitraryMacroOpaqueContainer: Arbitrary[MacroOpaqueContainer] =
-    Arbitrary {
-      for {
-        aInt <- arb[Int]
-      } yield MacroOpaqueContainer(aInt)
-    }
+    Arbitrary { for { aInt <- arb[Int] } yield MacroOpaqueContainer(aInt) }
 
   def apply(d: Int): MacroOpaqueContainer = new MacroOpaqueContainer(d)
 }
@@ -235,9 +225,7 @@ class MacroOpaqueContainer(val myField: Int) {
 
 object Container {
   implicit def arbitraryInnerCaseClass: Arbitrary[InnerCaseClass] = Arbitrary {
-    for {
-      anOption <- arb[Set[Double]]
-    } yield InnerCaseClass(anOption)
+    for { anOption <- arb[Set[Double]] } yield InnerCaseClass(anOption)
   }
 
   type SetAlias = Set[Double]

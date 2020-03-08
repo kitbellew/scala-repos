@@ -132,9 +132,7 @@ object expand {
   private def mkName(
       c: Context)(name: c.Name, typeMap: Map[c.Name, c.Type]): String = {
     name.toString + "_" + typeMap
-      .map {
-        case (k, v) => v.toString.reverse.takeWhile(_ != '.').reverse
-      }
+      .map { case (k, v) => v.toString.reverse.takeWhile(_ != '.').reverse }
       .mkString("_")
   }
 
@@ -218,9 +216,8 @@ object expand {
       case tree @ q"new expand.args(...$args)" =>
         val flatArgs: Seq[Tree] = args.flatten
         flatArgs.map(c.typeCheck(_)).map { tree =>
-          try {
-            tree.symbol.asModule.companionSymbol.asType.toType
-          } catch {
+          try { tree.symbol.asModule.companionSymbol.asType.toType }
+          catch {
             case ex: Exception =>
               c.abort(
                 tree.pos,
@@ -263,9 +260,7 @@ object expand {
   private def checkValify(c: Context)(mods: c.Modifiers) = {
     import c.mirror.universe._
     mods.annotations
-      .collectFirst {
-        case q"new expand.valify" => true
-      }
+      .collectFirst { case q"new expand.valify" => true }
       .getOrElse(false)
   }
 

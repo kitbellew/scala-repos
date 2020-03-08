@@ -58,20 +58,12 @@ abstract class StatementMoverTestBase extends SimpleTestCase {
   private case object Down extends Direction
 
   protected implicit class Movable(val code: String) {
-    def moveUpIsDisabled() {
-      assertEquals(None, move(code, Up))
-    }
+    def moveUpIsDisabled() { assertEquals(None, move(code, Up)) }
 
-    def moveDownIsDisabled() {
-      assertEquals(None, move(code, Down))
-    }
+    def moveDownIsDisabled() { assertEquals(None, move(code, Down)) }
 
-    def movedUpIs(s: String) {
-      assertEquals(Some(s), move(code, Up))
-    }
+    def movedUpIs(s: String) { assertEquals(Some(s), move(code, Up)) }
 
-    def movedDownIs(s: String) {
-      assertEquals(Some(s), move(code, Down))
-    }
+    def movedDownIs(s: String) { assertEquals(Some(s), move(code, Down)) }
   }
 }

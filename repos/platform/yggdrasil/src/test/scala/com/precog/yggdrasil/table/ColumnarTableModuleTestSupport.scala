@@ -82,9 +82,7 @@ trait ColumnarTableModuleTestSupport[M[+_]]
     Table(
       StreamT.unfoldM(values) { events =>
         M.point {
-          (!events.isEmpty) option {
-            makeSlice(events.toStream, sliceSize)
-          }
+          (!events.isEmpty) option { makeSlice(events.toStream, sliceSize) }
         }
       },
       ExactSize(values.length)

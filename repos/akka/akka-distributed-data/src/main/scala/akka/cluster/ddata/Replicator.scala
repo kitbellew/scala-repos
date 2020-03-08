@@ -1003,9 +1003,7 @@ final class Replicator(settings: ReplicatorSettings)
       case _ ⇒ false
     }
 
-  def receiveRead(key: String): Unit = {
-    sender() ! ReadResult(getData(key))
-  }
+  def receiveRead(key: String): Unit = { sender() ! ReadResult(getData(key)) }
 
   def isLocalSender(): Boolean = !sender().path.address.hasGlobalScope
 
@@ -1360,9 +1358,7 @@ final class Replicator(settings: ReplicatorSettings)
   }
 
   def receiveRemovedNodePruningTick(): Unit = {
-    if (isLeader && removedNodes.nonEmpty) {
-      initRemovedNodePruning()
-    }
+    if (isLeader && removedNodes.nonEmpty) { initRemovedNodePruning() }
     performRemovedNodePruning()
     tombstoneRemovedNodePruning()
   }

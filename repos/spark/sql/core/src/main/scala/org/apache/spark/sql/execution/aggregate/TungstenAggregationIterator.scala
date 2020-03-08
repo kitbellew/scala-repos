@@ -153,9 +153,7 @@ class TungstenAggregationIterator(
           currentGroupingKey,
           currentBuffer.asInstanceOf[UnsafeRow])
       }
-    } else {
-      super.generateResultProjection()
-    }
+    } else { super.generateResultProjection() }
   }
 
   // An aggregation buffer containing initial buffer values. It is used to
@@ -208,11 +206,8 @@ class TungstenAggregationIterator(
         }
         if (buffer == null) {
           val sorter = hashMap.destructAndCreateExternalSorter()
-          if (externalSorter == null) {
-            externalSorter = sorter
-          } else {
-            externalSorter.merge(sorter)
-          }
+          if (externalSorter == null) { externalSorter = sorter }
+          else { externalSorter.merge(sorter) }
           i = 0
           buffer = hashMap.getAggregationBufferFromUnsafeRow(groupingKey)
           if (buffer == null) {
@@ -383,9 +378,7 @@ class TungstenAggregationIterator(
     // Pre-load the first key-value pair from the aggregationBufferMapIterator.
     mapIteratorHasNext = aggregationBufferMapIterator.next()
     // If the map is empty, we just free it.
-    if (!mapIteratorHasNext) {
-      hashMap.free()
-    }
+    if (!mapIteratorHasNext) { hashMap.free() }
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -426,9 +419,7 @@ class TungstenAggregationIterator(
           hashMap.free()
 
           resultCopy
-        } else {
-          result
-        }
+        } else { result }
       }
 
       // If this is the last record, update the task's peak memory usage. Since we destroy

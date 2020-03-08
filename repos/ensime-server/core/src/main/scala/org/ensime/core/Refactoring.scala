@@ -277,11 +277,8 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
 
   private def using[A, R <: { def close(): Unit }](r: R)(f: R => A): A = {
     import scala.language.reflectiveCalls
-    try {
-      f(r)
-    } finally {
-      r.close()
-    }
+    try { f(r) }
+    finally { r.close() }
   }
 
   protected def doAddImport(

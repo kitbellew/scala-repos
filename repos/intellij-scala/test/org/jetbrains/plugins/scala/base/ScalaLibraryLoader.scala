@@ -70,9 +70,7 @@ class ScalaLibraryLoader(
     }
   }
 
-  def initScalaComponents(): Unit = {
-    ScalaLoader.loadScala()
-  }
+  def initScalaComponents(): Unit = { ScalaLoader.loadScala() }
 
   def addSyntheticClasses(): Unit = {
     val syntheticClasses: SyntheticClasses =
@@ -88,9 +86,7 @@ class ScalaLibraryLoader(
         LocalFileSystem.getInstance.refreshAndFindFileByPath(rootPath)
       PsiTestUtil.removeSourceRoot(module, testDataRoot)
     }
-    inWriteAction {
-      addedLibraries.foreach(module.detach)
-    }
+    inWriteAction { addedLibraries.foreach(module.detach) }
   }
 
   def addScalaSdk(

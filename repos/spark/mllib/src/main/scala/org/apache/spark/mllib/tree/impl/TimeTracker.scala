@@ -55,11 +55,8 @@ private[spark] class TimeTracker extends Serializable {
     }
     val elapsed = currentTime - starts(timerLabel)
     starts.remove(timerLabel)
-    if (totals.contains(timerLabel)) {
-      totals(timerLabel) += elapsed
-    } else {
-      totals(timerLabel) = elapsed
-    }
+    if (totals.contains(timerLabel)) { totals(timerLabel) += elapsed }
+    else { totals(timerLabel) = elapsed }
     elapsed / 1e9
   }
 

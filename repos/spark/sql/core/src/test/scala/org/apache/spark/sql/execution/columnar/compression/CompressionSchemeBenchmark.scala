@@ -73,11 +73,8 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     }
     input.rewind()
 
-    val compressedSize = if (encoder.compressedSize == 0) {
-      input.remaining()
-    } else {
-      encoder.compressedSize
-    }
+    val compressedSize = if (encoder.compressedSize == 0) { input.remaining() }
+    else { encoder.compressedSize }
 
     (
       encoder.compress,
@@ -133,9 +130,7 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
         for (n <- 0L until iters) {
           compressedBuf.rewind.position(4)
           val decoder = scheme.decoder(compressedBuf, tpe)
-          while (decoder.hasNext) {
-            decoder.next(rowBuf, 0)
-          }
+          while (decoder.hasNext) { decoder.next(rowBuf, 0) }
         }
       })
     }
@@ -151,9 +146,7 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
       val rng = genLowerSkewData()
       () => (rng().toInt % 2).toByte
     }
-    for (i <- 0 until count) {
-      testData.put(i * BOOLEAN.defaultSize, g())
-    }
+    for (i <- 0 until count) { testData.put(i * BOOLEAN.defaultSize, g()) }
 
     // Intel(R) Core(TM) i7-4578U CPU @ 3.00GHz
     // BOOLEAN Encode:                     Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative

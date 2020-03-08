@@ -65,40 +65,30 @@ class ArcTo(override val delegate: jfxss.ArcTo = new jfxss.ArcTo)
     * The x-axis rotation in degrees.
     */
   def XAxisRotation: DoubleProperty = delegate.XAxisRotationProperty
-  def XAxisRotation_=(v: Double) {
-    XAxisRotation() = v
-  }
+  def XAxisRotation_=(v: Double) { XAxisRotation() = v }
 
   /**
     * The sweep flag
     */
   def sweepFlag: BooleanProperty = delegate.sweepFlagProperty
-  def sweepFlag_=(v: Boolean) {
-    sweepFlag() = v
-  }
+  def sweepFlag_=(v: Boolean) { sweepFlag() = v }
 
   /**
     * The vertical radius to use for the arc.
     */
   def radiusY: DoubleProperty = delegate.radiusYProperty
-  def radiusY_=(v: Double) {
-    radiusY() = v
-  }
+  def radiusY_=(v: Double) { radiusY() = v }
 
   /**
     * The horizontal radius to use for the arc.
     */
   def radiusX: DoubleProperty = delegate.radiusXProperty
-  def radiusX_=(v: Double) {
-    radiusX() = v
-  }
+  def radiusX_=(v: Double) { radiusX() = v }
 
   /**
     * The large arc flag.
     */
   def largeArcFlag: BooleanProperty = delegate.largeArcFlagProperty
-  def largeArcFlag_=(v: Boolean) {
-    largeArcFlag() = v
-  }
+  def largeArcFlag_=(v: Boolean) { largeArcFlag() = v }
 
 }

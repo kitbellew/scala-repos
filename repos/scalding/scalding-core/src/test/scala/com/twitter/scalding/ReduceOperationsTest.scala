@@ -33,9 +33,7 @@ class SortWithTakeJob(args: Args) extends Job(args) {
       }
       .project('key, 'top_items)
       .write(Tsv("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 class SortedReverseTakeJob(args: Args) extends Job(args) {
@@ -50,9 +48,7 @@ class SortedReverseTakeJob(args: Args) extends Job(args) {
       }
       .project('key, 'top_items)
       .write(Tsv("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 class SortedTakeJob(args: Args) extends Job(args) {
@@ -67,9 +63,7 @@ class SortedTakeJob(args: Args) extends Job(args) {
       }
       .project('key, 'top_items)
       .write(Tsv("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 class ApproximateUniqueCountJob(args: Args) extends Job(args) {
@@ -77,14 +71,10 @@ class ApproximateUniqueCountJob(args: Args) extends Job(args) {
 
   try {
     Tsv("input0", ('category, 'model, 'os)).read
-      .groupBy('category) {
-        _.approximateUniqueCount[String]('os -> 'os_count)
-      }
+      .groupBy('category) { _.approximateUniqueCount[String]('os -> 'os_count) }
       .map('os_count -> 'os_count) { osCount: Double => osCount.toLong }
       .write(Tsv("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 class ReduceOperationsTest extends WordSpec with Matchers {

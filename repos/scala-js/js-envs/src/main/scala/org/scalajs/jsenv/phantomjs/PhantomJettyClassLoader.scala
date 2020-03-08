@@ -46,17 +46,15 @@ final class PhantomJettyClassLoader(
         val wsManager =
           parent.getResourceAsStream(name.replace('.', '/') + ".class")
 
-        if (wsManager == null) {
-          throw new ClassNotFoundException(name)
-        } else {
+        if (wsManager == null) { throw new ClassNotFoundException(name) }
+        else {
           val buf = IO.readInputStreamToByteArray(wsManager)
           defineClass(name, buf, 0, buf.length)
         }
       }
     } else {
-      try {
-        jettyLoader.loadClass(name)
-      } catch {
+      try { jettyLoader.loadClass(name) }
+      catch {
         case _: ClassNotFoundException =>
           super.loadClass(name, resolve)
       }

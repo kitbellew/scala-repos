@@ -155,11 +155,8 @@ object Trilean {
     if (java.lang.Double.isNaN(n)) Unknown else Trilean(f(n))
 
   final def run(body: => Boolean): Trilean =
-    try {
-      apply(body)
-    } catch {
-      case _: Exception => Unknown
-    }
+    try { apply(body) }
+    catch { case _: Exception => Unknown }
 
   implicit val algebra = new TrileanAlgebra
 }

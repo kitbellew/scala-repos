@@ -828,9 +828,7 @@ class RecordTests {
       typed[Record.`'i -> Int, 's -> String, 'b -> Boolean`.T](r)
     }
 
-    {
-      illTyped(""" Record(2, "a") """)
-    }
+    { illTyped(""" Record(2, "a") """) }
   }
 
   @Test

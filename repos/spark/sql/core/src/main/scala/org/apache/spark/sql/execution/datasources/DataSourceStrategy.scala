@@ -172,11 +172,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       val partitionAndNormalColumnAttrs = AttributeSet(
         partitionAndNormalColumnFilters)
       val partitionAndNormalColumnProjs =
-        if (partitionAndNormalColumnAttrs.isEmpty) {
-          projects
-        } else {
-          (partitionAndNormalColumnAttrs ++ projects).toSeq
-        }
+        if (partitionAndNormalColumnAttrs.isEmpty) { projects }
+        else { (partitionAndNormalColumnAttrs ++ projects).toSeq }
 
       // Prune the buckets based on the pushed filters that do not contain partitioning key
       // since the bucketing key is not allowed to use the columns in partitioning key
@@ -200,9 +197,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           if (projects.isEmpty || projects == partitionAndNormalColumnProjs) {
             // if the original projection is empty, no need for the additional Project either
             execution.Filter(cf, scan)
-          } else {
-            execution.Project(projects, execution.Filter(cf, scan))
-          })
+          } else { execution.Project(projects, execution.Filter(cf, scan)) })
         .getOrElse(scan) :: Nil
 
     // TODO: The code for planning bucketed/unbucketed/partitioned/unpartitioned tables contains
@@ -540,9 +535,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
             preservesPartitioning = false)
         }
         .asInstanceOf[RDD[InternalRow]]
-    } else {
-      dataRows
-    }
+    } else { dataRows }
   }
 
   // Get the bucket ID based on the bucketing values.
@@ -741,9 +734,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       rdd: RDD[Row]): RDD[InternalRow] = {
     if (relation.relation.needConversion) {
       execution.RDDConversions.rowToRowRdd(rdd, output.map(_.dataType))
-    } else {
-      rdd.asInstanceOf[RDD[InternalRow]]
-    }
+    } else { rdd.asInstanceOf[RDD[InternalRow]] }
   }
 
   /**

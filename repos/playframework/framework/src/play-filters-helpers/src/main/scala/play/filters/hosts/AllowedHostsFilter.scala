@@ -31,9 +31,8 @@ case class AllowedHostsFilter @Inject() (
     config.allowed map HostMatcher.apply
 
   override def apply(next: EssentialAction) = EssentialAction { req =>
-    if (hostMatchers.exists(_(req.host))) {
-      next(req)
-    } else {
+    if (hostMatchers.exists(_(req.host))) { next(req) }
+    else {
       Accumulator.done(
         errorHandler.onClientError(
           req,
@@ -74,9 +73,7 @@ private[hosts] case class HostMatcher(pattern: String) {
 }
 
 case class AllowedHostsConfig(allowed: Seq[String]) {
-  def this() {
-    this(Seq.empty)
-  }
+  def this() { this(Seq.empty) }
 
   import scala.collection.JavaConverters._
   def withHostPatterns(hosts: java.util.List[String]): AllowedHostsConfig =

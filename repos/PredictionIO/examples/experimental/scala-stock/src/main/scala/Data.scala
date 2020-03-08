@@ -64,9 +64,7 @@ case class DataView(
     rawData._activeFrame.rowSlice(idx - windowSize + 1, idx + 1)
   }
 
-  override def toString(): String = {
-    priceFrame().toString
-  }
+  override def toString(): String = { priceFrame().toString }
 }
 
 // Training data visible to the user is [untilIdx - windowSize, untilIdx).
@@ -114,9 +112,7 @@ object SaddleWrapper {
     val tickers = data.colIx.toVec.contents
 
     val tickerDataSeq = tickers.map { ticker =>
-      {
-        (ticker, data.firstCol(ticker).toVec.contents)
-      }
+      { (ticker, data.firstCol(ticker).toVec.contents) }
     }
 
     (timeIndex, tickerDataSeq)

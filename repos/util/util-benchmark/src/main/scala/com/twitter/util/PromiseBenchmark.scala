@@ -8,8 +8,6 @@ class PromiseBenchmark extends StdBenchAnnotations {
   private[this] val StringFuture = Future.value("hi")
 
   @Benchmark
-  def attached(): Promise[String] = {
-    Promise.attached(StringFuture)
-  }
+  def attached(): Promise[String] = { Promise.attached(StringFuture) }
 
 }

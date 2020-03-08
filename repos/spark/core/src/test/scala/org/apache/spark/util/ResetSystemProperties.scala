@@ -53,9 +53,8 @@ private[spark] trait ResetSystemProperties extends BeforeAndAfterEach {
   }
 
   override def afterEach(): Unit = {
-    try {
-      super.afterEach()
-    } finally {
+    try { super.afterEach() }
+    finally {
       System.setProperties(oldProperties)
       oldProperties = null
     }

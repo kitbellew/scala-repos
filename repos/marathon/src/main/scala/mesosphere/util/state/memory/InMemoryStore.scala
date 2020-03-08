@@ -19,9 +19,7 @@ class InMemoryStore(
   private[this] val entities = TrieMap.empty[ID, InMemoryEntity]
 
   override def load(key: ID): Future[Option[PersistentEntity]] =
-    Future.successful {
-      entities.get(key)
-    }
+    Future.successful { entities.get(key) }
 
   override def create(
       key: ID,

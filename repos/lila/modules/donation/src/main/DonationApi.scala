@@ -28,9 +28,7 @@ final class DonationApi(
         List(
           Group(BSONNull)("net" -> SumField("net"))
         ))
-      .map {
-        ~_.documents.headOption.flatMap { _.getAs[Int]("net") }
-      }
+      .map { ~_.documents.headOption.flatMap { _.getAs[Int]("net") } }
 
   private val decentAmount = BSONDocument(
     "gross" -> BSONDocument("$gte" -> BSONInteger(minAmount)))
@@ -50,9 +48,7 @@ final class DonationApi(
           GroupField("userId")("total" -> SumField("net")),
           Sort(Descending("total")),
           Limit(nb)))
-      .map {
-        _.documents.flatMap { _.getAs[String]("_id") }
-      }
+      .map { _.documents.flatMap { _.getAs[String]("_id") } }
 
   def isDonor(userId: String) =
     if (serverDonors contains userId) fuccess(true)

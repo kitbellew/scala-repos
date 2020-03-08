@@ -56,11 +56,8 @@ object Stages {
     */
   def ensureBytes(count: Int)(process: ChannelBuffer => NextStep): Stage =
     stage { buffer =>
-      if (buffer.readableBytes < count) {
-        Incomplete
-      } else {
-        process(buffer)
-      }
+      if (buffer.readableBytes < count) { Incomplete }
+      else { process(buffer) }
     }
 
   /**
@@ -69,18 +66,15 @@ object Stages {
     * bytes desired.
     */
   def readBytesDynamic(getCount: => Int)(process: Array[Byte] => NextStep) =
-    proxy {
-      readBytes(getCount)(process)
-    }
+    proxy { readBytes(getCount)(process) }
 
   /**
     * Read `count` bytes into a byte buffer and pass that buffer to the next step in processing.
     */
   def readBytes(count: Int)(process: Array[Byte] => NextStep) = stage {
     buffer =>
-      if (buffer.readableBytes < count) {
-        Incomplete
-      } else {
+      if (buffer.readableBytes < count) { Incomplete }
+      else {
         val bytes = new Array[Byte](count)
         buffer.readBytes(bytes)
         process(bytes)
@@ -103,11 +97,8 @@ object Stages {
   def ensureDelimiter(delimiter: Byte)(
       process: (Int, ChannelBuffer) => NextStep) = stage { buffer =>
     val n = buffer.bytesBefore(delimiter)
-    if (n < 0) {
-      Incomplete
-    } else {
-      process(n + 1, buffer)
-    }
+    if (n < 0) { Incomplete }
+    else { process(n + 1, buffer) }
   }
 
   /**
@@ -145,11 +136,8 @@ object Stages {
     ensureDelimiter('\n'.toByte) { (n, buffer) =>
       val end =
         if ((n > 1) && (buffer.getByte(
-              buffer.readerIndex + n - 2) == '\r'.toByte)) {
-          n - 2
-        } else {
-          n - 1
-        }
+              buffer.readerIndex + n - 2) == '\r'.toByte)) { n - 2 }
+        else { n - 1 }
       val byteBuffer = new Array[Byte](n)
       buffer.readBytes(byteBuffer)
       process(new String(byteBuffer, 0, (if (removeLF) end else n), encoding))

@@ -14,9 +14,7 @@ class RecordSchemaTest extends FunSuite {
 
   test("apply should throw IllegalStateException when field is uninitialized") {
     val record = schema.newRecord()
-    intercept[IllegalStateException] {
-      record(field)
-    }
+    intercept[IllegalStateException] { record(field) }
   }
 
   test(
@@ -37,9 +35,7 @@ class RecordSchemaTest extends FunSuite {
 
   test("lock should throw IllegalStateException when field is uninitialized") {
     val record = schema.newRecord()
-    intercept[IllegalStateException] {
-      record.lock(field)
-    }
+    intercept[IllegalStateException] { record.lock(field) }
   }
 
   test(
@@ -67,9 +63,7 @@ class RecordSchemaTest extends FunSuite {
     for (f <- fields) {
       record(f) = value
       record.lock(f)
-      intercept[IllegalStateException] {
-        record(f) = value
-      }
+      intercept[IllegalStateException] { record(f) = value }
     }
   }
 
@@ -79,9 +73,7 @@ class RecordSchemaTest extends FunSuite {
 
     for (f <- fields) {
       record.updateAndLock(f, value)
-      intercept[IllegalStateException] {
-        record(f) = value
-      }
+      intercept[IllegalStateException] { record(f) = value }
     }
   }
 
@@ -113,9 +105,7 @@ class RecordSchemaTest extends FunSuite {
 
     for (f <- fields) {
       record.updateAndLock(f, new Object)
-      intercept[IllegalStateException] {
-        record.copy().update(f, new Object)
-      }
+      intercept[IllegalStateException] { record.copy().update(f, new Object) }
     }
   }
 

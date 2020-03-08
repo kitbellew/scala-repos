@@ -220,11 +220,8 @@ private[stat] object ChiSqTest extends Logging {
               NullHypothesis.goodnessOfFit.toString)
           }
         }
-        if (scale == 1.0) {
-          stat + method.chiSqFunc(obs, exp)
-        } else {
-          stat + method.chiSqFunc(obs, exp * scale)
-        }
+        if (scale == 1.0) { stat + method.chiSqFunc(obs, exp) }
+        else { stat + method.chiSqFunc(obs, exp * scale) }
     }
     val df = size - 1
     val pValue =

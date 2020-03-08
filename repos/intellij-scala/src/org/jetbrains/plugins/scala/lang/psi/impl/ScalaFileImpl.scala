@@ -85,9 +85,7 @@ class ScalaFileImpl(
   def sourceName: String = {
     if (isCompiled) {
       val stub = getStub
-      if (stub != null) {
-        return stub.getFileName
-      }
+      if (stub != null) { return stub.getFileName }
       val virtualFile = getVirtualFile
       DecompilerUtil
         .decompile(virtualFile, virtualFile.contentsToByteArray)
@@ -213,9 +211,7 @@ class ScalaFileImpl(
         }
       }
       false
-    } else {
-      stub.isScript
-    }
+    } else { stub.isScript }
   }
 
   def isScriptFile: Boolean = isScriptFile(withCaching = true)
@@ -295,9 +291,7 @@ class ScalaFileImpl(
           document.insertString(0, packagingsText)
           prefixText.foreach(s => document.insertString(0, s))
         }
-      } finally {
-        documentManager.commitDocument(document)
-      }
+      } finally { documentManager.commitDocument(document) }
     }
   }
 
@@ -317,9 +311,7 @@ class ScalaFileImpl(
                 DebugUtil.startPsiModification(null)
                 aClass.getNode.getTreeParent
                   .replaceChild(aClass.getNode, oldClass.getNode)
-              } finally {
-                DebugUtil.finishPsiModification()
-              }
+              } finally { DebugUtil.finishPsiModification() }
             }
           }
         }
@@ -524,9 +516,7 @@ class ScalaFileImpl(
           addImportAfter(importSt, c)
         case _ => super.insertFirstImport(importSt, first)
       }
-    } else {
-      super.insertFirstImport(importSt, first)
-    }
+    } else { super.insertFirstImport(importSt, first) }
   }
 }
 
@@ -608,9 +598,7 @@ object ScalaFileImpl {
       try {
         duringMoveRefactoring = true
         body
-      } finally {
-        duringMoveRefactoring = false
-      }
+      } finally { duringMoveRefactoring = false }
     }
   }
 }

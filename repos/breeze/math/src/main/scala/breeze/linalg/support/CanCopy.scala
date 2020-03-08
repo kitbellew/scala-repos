@@ -30,9 +30,7 @@ trait CanCopy[V] {
 object CanCopy {
 
   class OpArray[@specialized V] extends CanCopy[Array[V]] {
-    override def apply(from: Array[V]) = {
-      ArrayUtil.copyOf(from, from.length)
-    }
+    override def apply(from: Array[V]) = { ArrayUtil.copyOf(from, from.length) }
   }
 
   class OpMapValues[From, V](implicit

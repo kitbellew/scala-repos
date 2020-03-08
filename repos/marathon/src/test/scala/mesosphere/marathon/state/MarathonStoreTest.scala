@@ -25,9 +25,7 @@ import scala.language.postfixOps
 class MarathonStoreTest extends MarathonSpec with Matchers {
   var metrics: Metrics = _
 
-  before {
-    metrics = new Metrics(new MetricRegistry)
-  }
+  before { metrics = new Metrics(new MetricRegistry) }
 
   test("Fetch") {
     val state = mock[PersistentStore]
@@ -73,9 +71,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
 
     verify(state).load("app:testApp")
 
-    intercept[StoreCommandFailedException] {
-      Await.result(res, 5.seconds)
-    }
+    intercept[StoreCommandFailedException] { Await.result(res, 5.seconds) }
   }
 
   test("Modify") {
@@ -138,9 +134,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
       "app:")
     val res = store.modify("testApp") { _ => newAppDef }
 
-    intercept[StoreCommandFailedException] {
-      Await.result(res, 5.seconds)
-    }
+    intercept[StoreCommandFailedException] { Await.result(res, 5.seconds) }
   }
 
   test("Expunge") {
@@ -176,9 +170,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
 
     val res = store.expunge("testApp")
 
-    intercept[StoreCommandFailedException] {
-      Await.result(res, 5.seconds)
-    }
+    intercept[StoreCommandFailedException] { Await.result(res, 5.seconds) }
   }
 
   test("Names") {
@@ -269,9 +261,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
     val state = new InMemoryStore() {
 
       override def allIds(): Future[scala.Seq[ID]] = Future {
-        synchronized {
-          blocking(wait())
-        }
+        synchronized { blocking(wait()) }
         Seq.empty
       }
     }
@@ -286,9 +276,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
       () => AppDefinition(),
       "app:")
 
-    noException should be thrownBy {
-      Await.result(store.names(), 1.second)
-    }
+    noException should be thrownBy { Await.result(store.names(), 1.second) }
   }
 
   // regression test for #1507
@@ -306,9 +294,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
       () => AppDefinition(),
       "app:")
 
-    noException should be thrownBy {
-      Await.result(store.names(), 1.second)
-    }
+    noException should be thrownBy { Await.result(store.names(), 1.second) }
   }
 
   class MyWeirdExecutionException
@@ -329,9 +315,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
       () => AppDefinition(),
       "app:")
 
-    noException should be thrownBy {
-      Await.result(store.names(), 1.second)
-    }
+    noException should be thrownBy { Await.result(store.names(), 1.second) }
   }
 
   test(
@@ -348,9 +332,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
       () => AppDefinition(),
       "app:")
 
-    noException should be thrownBy {
-      Await.result(store.names(), 1.second)
-    }
+    noException should be thrownBy { Await.result(store.names(), 1.second) }
   }
 
   test(
@@ -367,9 +349,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
       () => AppDefinition(),
       "app:")
 
-    noException should be thrownBy {
-      Await.result(store.names(), 1.second)
-    }
+    noException should be thrownBy { Await.result(store.names(), 1.second) }
   }
 
   def registry: MetricRegistry = new MetricRegistry

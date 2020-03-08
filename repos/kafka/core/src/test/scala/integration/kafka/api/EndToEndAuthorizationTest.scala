@@ -336,11 +336,8 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
       debug(s"Sending this record: $record")
       this.producers.head.send(record)
     }
-    try {
-      futures.foreach(_.get)
-    } catch {
-      case e: ExecutionException => throw e.getCause
-    }
+    try { futures.foreach(_.get) }
+    catch { case e: ExecutionException => throw e.getCause }
   }
 
   private def consumeRecords(
@@ -353,9 +350,7 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
     val maxIters = numRecords * 50
     var iters = 0
     while (records.size < numRecords) {
-      for (record <- consumer.poll(50).asScala) {
-        records.add(record)
-      }
+      for (record <- consumer.poll(50).asScala) { records.add(record) }
       if (iters > maxIters)
         throw new IllegalStateException(
           "Failed to consume the expected records after " + iters + " iterations.")

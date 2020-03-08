@@ -16,9 +16,7 @@ abstract class AbstractQueue[E] protected ()
     if (!isEmpty()) peek()
     else throw new NoSuchElementException()
 
-  override def clear(): Unit = {
-    while (poll() != null) {}
-  }
+  override def clear(): Unit = { while (poll() != null) {} }
 
   override def addAll(c: Collection[_ <: E]): Boolean = {
     val iter = c.iterator

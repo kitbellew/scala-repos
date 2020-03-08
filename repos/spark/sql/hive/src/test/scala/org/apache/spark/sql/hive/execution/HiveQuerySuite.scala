@@ -308,9 +308,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     "SELECT 11 % 10, IF((101.1 % 100.0) BETWEEN 1.01 AND 1.11, \"true\", \"false\"), " +
       "(101 / 2) % 10 FROM src LIMIT 1")
 
-  test("Query expressed in HiveQL") {
-    sql("FROM src SELECT key").collect()
-  }
+  test("Query expressed in HiveQL") { sql("FROM src SELECT key").collect() }
 
   test("Query with constant folding the CAST") {
     sql("SELECT CAST(CAST('123' AS binary) AS binary) FROM src LIMIT 1")
@@ -899,13 +897,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   test("Query Hive native command execution result") {
     val databaseName = "test_native_commands"
 
-    assertResult(0) {
-      sql(s"DROP DATABASE IF EXISTS $databaseName").count()
-    }
+    assertResult(0) { sql(s"DROP DATABASE IF EXISTS $databaseName").count() }
 
-    assertResult(0) {
-      sql(s"CREATE DATABASE $databaseName").count()
-    }
+    assertResult(0) { sql(s"CREATE DATABASE $databaseName").count() }
 
     assert(
       sql("SHOW DATABASES")
@@ -1136,9 +1130,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
             case (k, v) =>
               if (v == "NULL") {
                 s"$k=${ConfVars.DEFAULTPARTITIONNAME.defaultStrVal}"
-              } else {
-                s"$k=$v"
-              }
+              } else { s"$k=$v" }
           }
           .mkString("/")
 
@@ -1230,9 +1222,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
-      analyzedPlan.collect {
-        case _: Project => ()
-      }.size
+      analyzedPlan.collect { case _: Project => () }.size
     }
   }
 
@@ -1249,9 +1239,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
-      analyzedPlan.collect {
-        case _: Project => ()
-      }.size
+      analyzedPlan.collect { case _: Project => () }.size
     }
   }
 
@@ -1342,15 +1330,11 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       s2.sql("create table test_b(key INT, value STRING)")
 
       sql("select * from test_a")
-      intercept[AnalysisException] {
-        sql("select * from test_b")
-      }
+      intercept[AnalysisException] { sql("select * from test_b") }
       sql("select * from b.test_b")
 
       s2.sql("select * from test_b")
-      intercept[AnalysisException] {
-        s2.sql("select * from test_a")
-      }
+      intercept[AnalysisException] { s2.sql("select * from test_a") }
       s2.sql("select * from a.test_a")
     } finally {
       sql("DROP TABLE IF EXISTS test_a")
@@ -1367,9 +1351,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     assert(
       "hive_test_db" == sql("select current_database()").first().getString(0))
 
-    intercept[NoSuchDatabaseException] {
-      sql("USE not_existing_db")
-    }
+    intercept[NoSuchDatabaseException] { sql("USE not_existing_db") }
 
     sql(s"USE $currentDatabase")
     assert(
@@ -1377,9 +1359,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   test("lookup hive UDF in another thread") {
-    val e = intercept[AnalysisException] {
-      range(1).selectExpr("not_a_udf()")
-    }
+    val e = intercept[AnalysisException] { range(1).selectExpr("not_a_udf()") }
     assert(e.getMessage.contains("undefined function not_a_udf"))
     var success = false
     val t = new Thread("test") {

@@ -43,9 +43,7 @@ object ScalaChangeContextUtil {
             elem.getContainingFile,
             elem.getTextRange.getStartOffset,
             elem.getProject)
-        } finally {
-          elem.putCopyableUserData(ASSOCIATIONS_KEY, null)
-        }
+        } finally { elem.putCopyableUserData(ASSOCIATIONS_KEY, null) }
       }
     }
     scope.foreach(restoreForElement)

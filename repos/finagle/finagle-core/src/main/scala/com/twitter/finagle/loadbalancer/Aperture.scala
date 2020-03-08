@@ -120,9 +120,8 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
     }
 
     private[this] val (ring, unitWidth, maxAperture) =
-      if (up.isEmpty) {
-        (ZeroRing, RingWidth, RingWidth)
-      } else {
+      if (up.isEmpty) { (ZeroRing, RingWidth, RingWidth) }
+      else {
         val numNodes = up.size
         val ring = Ring(numNodes, RingWidth)
         val unit = RingWidth / numNodes
@@ -297,9 +296,7 @@ private trait LoadBand[Req, Rep] {
         case Return(svc) =>
           Future.value(new ServiceProxy(svc) {
             override def close(deadline: Time) =
-              super.close(deadline).ensure {
-                adjustNode(Node.this, -1)
-              }
+              super.close(deadline).ensure { adjustNode(Node.this, -1) }
           })
 
         case t @ Throw(_) =>

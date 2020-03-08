@@ -45,7 +45,9 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
     }
 
   def transform[R: Tuple](f: Matching[L] ⇒ Matching[R]): PathMatcher[R] =
-    new PathMatcher[R] { def apply(path: Path) = f(self(path)) }
+    new PathMatcher[R] {
+      def apply(path: Path) = f(self(path))
+    }
 
   def tmap[R: Tuple](f: L ⇒ R): PathMatcher[R] = transform(_.map(f))
 
@@ -135,7 +137,9 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
     def andThen[R: Tuple](f: (Path, L) ⇒ Matching[R]) = f(pathRest, extractions)
     def orElse[R >: L](other: ⇒ Matching[R]) = this
   }
-  object Matched { val Empty = Matched(Path.Empty, ()) }
+  object Matched {
+    val Empty = Matched(Path.Empty, ())
+  }
   case object Unmatched extends Matching[Nothing] {
     def map[R: Tuple](f: Nothing ⇒ R) = this
     def flatMap[R: Tuple](f: Nothing ⇒ Option[R]) = this

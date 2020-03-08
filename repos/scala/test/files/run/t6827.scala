@@ -8,9 +8,7 @@ object Test extends App {
         val it = ns.toIterator
         it.copyToArray(arr, start, len)
         "ok"
-      } catch {
-        case e: Exception => e.toString
-      }
+      } catch { case e: Exception => e.toString }
     println("%s: %s" format (label, status))
   }
 

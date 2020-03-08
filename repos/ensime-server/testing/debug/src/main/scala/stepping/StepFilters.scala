@@ -53,8 +53,6 @@ class Concrete extends Base[Int] {
 
 object StepFilters {
 
-  def main(args: Array[String]) {
-    new StepFilters().mainTest()
-  }
+  def main(args: Array[String]) { new StepFilters().mainTest() }
 
 }

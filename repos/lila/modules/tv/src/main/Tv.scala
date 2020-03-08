@@ -141,9 +141,7 @@ object Tv {
   private val standard = variant(V.Standard)
   private def fresh(seconds: Int) =
     (g: Game) =>
-      {
-        g.isBeingPlayed && !g.olderThan(seconds)
-      } || {
+      { g.isBeingPlayed && !g.olderThan(seconds) } || {
         g.finished && !g.olderThan(7)
       } // rematch time
   private val freshBlitz = fresh(40)

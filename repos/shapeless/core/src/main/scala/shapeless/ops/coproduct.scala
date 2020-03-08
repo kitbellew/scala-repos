@@ -1368,7 +1368,9 @@ object coproduct {
     *
     * @author Miles Sabin
     */
-  trait ToHList[L <: Coproduct] extends Serializable { type Out <: HList }
+  trait ToHList[L <: Coproduct] extends Serializable {
+    type Out <: HList
+  }
 
   object ToHList {
     def apply[L <: Coproduct](implicit thl: ToHList[L]): Aux[L, thl.Out] = thl

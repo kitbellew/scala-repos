@@ -111,9 +111,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             case (name, childType) =>
               val newPaths = if (current.nonEmpty) {
                 current.map { s => s + "." + name }
-              } else {
-                Set(name)
-              }
+              } else { Set(name) }
               jTypeToProperties(childType, newPaths)
           }
           .toSet
@@ -131,9 +129,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         extends LoadState
 
     def safeOp[A](nullMessage: String)(v: => A): Option[A] =
-      try {
-        Option(v) orElse { logger.error(nullMessage); None }
-      } catch {
+      try { Option(v) orElse { logger.error(nullMessage); None } }
+      catch {
         case t: Throwable =>
           logger.error(
             "Failure during Mongo query: %s(%s)"
@@ -141,9 +138,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       }
 
     def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] = {
-      for {
-        paths <- pathsM(table)
-      } yield {
+      for { paths <- pathsM(table) } yield {
         Table(
           StreamT.unfoldM[Future, Slice, LoadState](InitialLoad(paths.toList)) {
             case InLoad(cursorGen, skip, remaining) =>
@@ -175,9 +170,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                               case Array(user, password) =>
                                 if (d.authenticate(
                                       user,
-                                      password.toCharArray)) {
-                                  Some(d)
-                                } else {
+                                      password.toCharArray)) { Some(d) }
+                                else {
                                   logger.error(
                                     "Authentication failed for database " + dbName);
                                   None
@@ -189,9 +183,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                                     .format(dbName, invalid.mkString(":")));
                                 None
                             }
-                          } else {
-                            Some(d)
-                          }
+                          } else { Some(d) }
                       }
                       coll <- safeOp(
                         "Collection " + collectionName + " does not exist") {
@@ -261,11 +253,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       // sampleData.schema. This will cause the subsumption test in Slice#typed
       // to fail unless it allows for vacuous success
 
-      val nextSkip = if (hasMore) {
-        Some(skip + slice.size)
-      } else {
-        None
-      }
+      val nextSkip = if (hasMore) { Some(skip + slice.size) }
+      else { None }
 
       (slice, nextSkip)
     }
@@ -280,10 +269,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         value match {
           case null =>
             acc
-              .getOrElseUpdate(
-                (rprefix, CNull), {
-                  MutableNullColumn.empty()
-                })
+              .getOrElseUpdate((rprefix, CNull), { MutableNullColumn.empty() })
               .asInstanceOf[MutableNullColumn]
               .unsafeTap(_.update(row, true))
 
@@ -293,72 +279,62 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
               "ObjectId(\"" + Hex.encodeHexString(objId.toByteArray) + "\")"
             val col = acc
               .getOrElseUpdate(
-                (rprefix, CString), {
-                  ArrayStrColumn.empty(sliceSize)
-                })
+                (rprefix, CString),
+                { ArrayStrColumn.empty(sliceSize) })
               .asInstanceOf[ArrayStrColumn]
             col.update(row, value)
 
           case str: String =>
             val col = acc
               .getOrElseUpdate(
-                (rprefix, CString), {
-                  ArrayStrColumn.empty(sliceSize)
-                })
+                (rprefix, CString),
+                { ArrayStrColumn.empty(sliceSize) })
               .asInstanceOf[ArrayStrColumn]
             col.update(row, str)
 
           case num: java.lang.Integer =>
             val col = acc
               .getOrElseUpdate(
-                (rprefix, CLong), {
-                  ArrayLongColumn.empty(sliceSize)
-                })
+                (rprefix, CLong),
+                { ArrayLongColumn.empty(sliceSize) })
               .asInstanceOf[ArrayLongColumn]
             col.update(row, num.longValue)
 
           case num: java.lang.Long =>
             val col = acc
               .getOrElseUpdate(
-                (rprefix, CLong), {
-                  ArrayLongColumn.empty(sliceSize)
-                })
+                (rprefix, CLong),
+                { ArrayLongColumn.empty(sliceSize) })
               .asInstanceOf[ArrayLongColumn]
             col.update(row, num.longValue)
 
           case num: java.lang.Float =>
             val col = acc
               .getOrElseUpdate(
-                (rprefix, CDouble), {
-                  ArrayDoubleColumn.empty(sliceSize)
-                })
+                (rprefix, CDouble),
+                { ArrayDoubleColumn.empty(sliceSize) })
               .asInstanceOf[ArrayDoubleColumn]
             col.update(row, num.doubleValue)
 
           case num: java.lang.Double =>
             val col = acc
               .getOrElseUpdate(
-                (rprefix, CDouble), {
-                  ArrayDoubleColumn.empty(sliceSize)
-                })
+                (rprefix, CDouble),
+                { ArrayDoubleColumn.empty(sliceSize) })
               .asInstanceOf[ArrayDoubleColumn]
             col.update(row, num.doubleValue)
 
           case bool: java.lang.Boolean =>
             val col = acc
-              .getOrElseUpdate(
-                (rprefix, CBoolean), {
-                  ArrayBoolColumn.empty()
-                })
+              .getOrElseUpdate((rprefix, CBoolean), { ArrayBoolColumn.empty() })
               .asInstanceOf[ArrayBoolColumn]
             col.update(row, bool.booleanValue)
 
           case array: java.util.ArrayList[_] if array.isEmpty =>
             val col = acc
               .getOrElseUpdate(
-                (rprefix, CEmptyArray), {
-                  MutableEmptyArrayColumn.empty()
-                })
+                (rprefix, CEmptyArray),
+                { MutableEmptyArrayColumn.empty() })
               .asInstanceOf[MutableEmptyArrayColumn]
             col.update(row, true)
 
@@ -375,9 +351,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             if (keys.isEmpty) {
               acc
                 .getOrElseUpdate(
-                  (rprefix, CEmptyObject), {
-                    MutableEmptyObjectColumn.empty()
-                  })
+                  (rprefix, CEmptyObject),
+                  { MutableEmptyObjectColumn.empty() })
                 .asInstanceOf[MutableEmptyObjectColumn]
                 .unsafeTap(_.update(row, true))
             } else {
@@ -391,9 +366,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           case date: java.util.Date =>
             val col = acc
               .getOrElseUpdate(
-                (rprefix, CDate), {
-                  ArrayDateColumn.empty(sliceSize)
-                })
+                (rprefix, CDate),
+                { ArrayDateColumn.empty(sliceSize) })
               .asInstanceOf[ArrayDateColumn]
             col.update(row, new DateTime(date))
         }

@@ -15,9 +15,7 @@ class UriSpec extends WordSpec with Matchers {
 
   "Uri.Host instances" should {
 
-    "correctly parse empty hosts" in {
-      Host("") shouldEqual Host.Empty
-    }
+    "correctly parse empty hosts" in { Host("") shouldEqual Host.Empty }
 
     "parse correctly from IPv4 literals" in {
       Host("192.0.2.16") shouldEqual IPv4Host("192.0.2.16")

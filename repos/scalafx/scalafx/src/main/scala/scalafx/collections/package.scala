@@ -41,22 +41,16 @@ package object collections {
       originalList: jfxc.ObservableList[A],
       filler: Iterable[B],
       f: B => A) {
-    if (null == filler) {
-      originalList.clear()
-    } else {
-      originalList.setAll(filler.map(f(_)))
-    }
+    if (null == filler) { originalList.clear() }
+    else { originalList.setAll(filler.map(f(_))) }
   }
 
   private def internalFillerWithOne[A, B](
       originalList: jfxc.ObservableList[A],
       element: B,
       f: B => A) {
-    if (null == element) {
-      originalList.clear()
-    } else {
-      originalList.setAll(List(f(element)))
-    }
+    if (null == element) { originalList.clear() }
+    else { originalList.setAll(List(f(element))) }
   }
 
   /**
@@ -83,9 +77,7 @@ package object collections {
     */
   def fillCollectionWithOne[T](
       originalList: jfxc.ObservableList[T],
-      element: T) {
-    internalFillerWithOne(originalList, element, (t: T) => t)
-  }
+      element: T) { internalFillerWithOne(originalList, element, (t: T) => t) }
 
   /**
     * Inserts all elements from a Iterable of type SFXDelegate[J] in a JavaFX ObservableList of type J, replacing its

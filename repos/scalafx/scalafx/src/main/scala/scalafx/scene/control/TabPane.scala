@@ -100,9 +100,7 @@ class TabPane(override val delegate: jfxsc.TabPane = new jfxsc.TabPane)
     * The rotatedGraphic state of the tabs in the TabPane.
     */
   def rotateGraphic: BooleanProperty = delegate.rotateGraphicProperty
-  def rotateGraphic_=(v: Boolean) {
-    rotateGraphic() = v
-  }
+  def rotateGraphic_=(v: Boolean) { rotateGraphic() = v }
 
   /**
     * The selection model used for selecting tabs.
@@ -117,50 +115,38 @@ class TabPane(override val delegate: jfxsc.TabPane = new jfxsc.TabPane)
     * The position of the tabs in the TabPane.
     */
   def side: ObjectProperty[jfxg.Side] = delegate.sideProperty
-  def side_=(v: Side) {
-    side() = v
-  }
+  def side_=(v: Side) { side() = v }
 
   /**
     * The closing policy for the tabs.
     */
   def tabClosingPolicy: ObjectProperty[jfxsc.TabPane.TabClosingPolicy] =
     delegate.tabClosingPolicyProperty
-  def tabClosingPolicy_=(v: TabPane.TabClosingPolicy) {
-    tabClosingPolicy() = v
-  }
+  def tabClosingPolicy_=(v: TabPane.TabClosingPolicy) { tabClosingPolicy() = v }
 
   /**
     * The maximum height of the tabs in the TabPane.
     */
   def tabMaxHeight: DoubleProperty = delegate.tabMaxHeightProperty
-  def tabMaxHeight_=(v: Double) {
-    tabMaxHeight() = v
-  }
+  def tabMaxHeight_=(v: Double) { tabMaxHeight() = v }
 
   /**
     * The maximum width of the tabs in the TabPane.
     */
   def tabMaxWidth: DoubleProperty = delegate.tabMaxWidthProperty
-  def tabMaxWidth_=(v: Double) {
-    tabMaxWidth() = v
-  }
+  def tabMaxWidth_=(v: Double) { tabMaxWidth() = v }
 
   /**
     * The minimum height of the tab.
     */
   def tabMinHeight: DoubleProperty = delegate.tabMinHeightProperty
-  def tabMinHeight_=(v: Double) {
-    tabMinHeight() = v
-  }
+  def tabMinHeight_=(v: Double) { tabMinHeight() = v }
 
   /**
     * The minimum width of the tabs in the TabPane.
     */
   def tabMinWidth: DoubleProperty = delegate.tabMinWidthProperty
-  def tabMinWidth_=(v: Double) {
-    tabMinWidth() = v
-  }
+  def tabMinWidth_=(v: Double) { tabMinWidth() = v }
 
   /**
     * The tabs to display in this TabPane.

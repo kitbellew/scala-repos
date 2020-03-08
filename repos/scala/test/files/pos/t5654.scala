@@ -4,7 +4,9 @@ class U {
   val a = Array(Array(1, 2), Array("a", "b"))
 }
 
-class T1 { val a: Array[_] = Array(1) }
+class T1 {
+  val a: Array[_] = Array(1)
+}
 
 case class Bomb(a: Array[_])
 case class Bomb2(a: Array[T] forSome { type T })

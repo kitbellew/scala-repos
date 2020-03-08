@@ -26,9 +26,7 @@ class MarathonExceptionMapper extends ExceptionMapper[Exception] {
     // WebApplicationException are things like invalid requests etc, no need to log a stack trace
     if (!exception.isInstanceOf[WebApplicationException]) {
       log.warn("mapping exception to status code", exception)
-    } else {
-      log.info("mapping exception to status code", exception)
-    }
+    } else { log.info("mapping exception to status code", exception) }
 
     Response
       .status(statusCode(exception))
@@ -91,9 +89,7 @@ class MarathonExceptionMapper extends ExceptionMapper[Exception] {
           "message" -> Status
             .fromStatusCode(e.getResponse.getStatus)
             .getReasonPhrase)
-      } else {
-        Json.obj("message" -> e.getMessage)
-      }
+      } else { Json.obj("message" -> e.getMessage) }
     case _ =>
       Json.obj("message" -> exception.getMessage)
   }

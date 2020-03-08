@@ -150,9 +150,7 @@ trait TimeLikeSpec[T <: TimeLike[T]]
       assert(fromNanoseconds(Long.MaxValue) < Top)
     }
 
-    "equal to itself" in {
-      assert(Top == Top)
-    }
+    "equal to itself" in { assert(Top == Top) }
 
     "more or less equals only to itself" in {
       assert(Top.moreOrLessEquals(Top, Duration.Top) == true)
@@ -163,9 +161,7 @@ trait TimeLikeSpec[T <: TimeLike[T]]
       assert(Top.moreOrLessEquals(fromSeconds(0), Duration.Bottom) == false)
     }
 
-    "Undefined diff to Top" in {
-      assert((Top diff Top) == Duration.Undefined)
-    }
+    "Undefined diff to Top" in { assert((Top diff Top) == Duration.Undefined) }
   }
 
   "Bottom" should {
@@ -191,13 +187,9 @@ trait TimeLikeSpec[T <: TimeLike[T]]
       assert(Bottom < fromNanoseconds(Long.MinValue))
     }
 
-    "less than Top" in {
-      assert(Bottom < Top)
-    }
+    "less than Top" in { assert(Bottom < Top) }
 
-    "equal to itself" in {
-      assert(Bottom == Bottom)
-    }
+    "equal to itself" in { assert(Bottom == Bottom) }
 
     "more or less equals only to itself" in {
       assert(Bottom.moreOrLessEquals(Bottom, Duration.Top) == true)
@@ -236,9 +228,7 @@ trait TimeLikeSpec[T <: TimeLike[T]]
       assert(fromNanoseconds(Long.MaxValue) < Undefined)
     }
 
-    "equal to itself" in {
-      assert(Undefined == Undefined)
-    }
+    "equal to itself" in { assert(Undefined == Undefined) }
 
     "not more or less equal to anything" in {
       assert(Undefined.moreOrLessEquals(Undefined, Duration.Top) == false)
@@ -345,9 +335,7 @@ trait TimeLikeSpec[T <: TimeLike[T]]
   "from*" should {
     "never over/under flow nanos" in {
       for (v <- Seq(Long.MinValue, Long.MaxValue)) {
-        fromNanoseconds(v) match {
-          case Nanoseconds(ns) => assert(ns == v)
-        }
+        fromNanoseconds(v) match { case Nanoseconds(ns) => assert(ns == v) }
       }
     }
 
@@ -395,8 +383,9 @@ class TimeFormatTest extends WordSpec {
 }
 
 @RunWith(classOf[JUnitRunner])
-class TimeTest extends { val ops = Time } with TimeLikeSpec[Time]
-with Eventually with IntegrationPatience {
+class TimeTest extends {
+  val ops = Time
+} with TimeLikeSpec[Time] with Eventually with IntegrationPatience {
 
   "Time" should {
     "work in collections" in {
@@ -448,9 +437,7 @@ with Eventually with IntegrationPatience {
         assert(Time.now == t0)
         @volatile var threadTime: Option[Time] = None
         val thread = new Thread {
-          override def run() {
-            threadTime = Some(Time.now)
-          }
+          override def run() { threadTime = Some(Time.now) }
         }
         thread.start()
         thread.join()

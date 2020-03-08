@@ -15,9 +15,7 @@ class DiningHakkerSerializer(val system: ExtendedActorSystem)
   lazy val javaSerializer = SerializationExtension(system).findSerializerFor(
     classOf[java.io.Serializable])
 
-  def toBinary(obj: AnyRef): Array[Byte] = {
-    javaSerializer.toBinary(obj)
-  }
+  def toBinary(obj: AnyRef): Array[Byte] = { javaSerializer.toBinary(obj) }
 
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
     javaSerializer.fromBinary(bytes, clazz)

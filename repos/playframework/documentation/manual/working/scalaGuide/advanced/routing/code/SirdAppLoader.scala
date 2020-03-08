@@ -13,18 +13,13 @@ import play.api.inject.bind
 
 //#load
 class SirdAppLoader extends ApplicationLoader {
-  def load(context: Context) = {
-    new SirdComponents(context).application
-  }
+  def load(context: Context) = { new SirdComponents(context).application }
 }
 
 class SirdComponents(context: Context)
     extends BuiltInComponentsFromContext(context) {
   lazy val router = Router.from {
-    case GET(p"/hello/$to") =>
-      Action {
-        Ok(s"Hello $to")
-      }
+    case GET(p"/hello/$to") => Action { Ok(s"Hello $to") }
   }
 }
 //#load

@@ -55,9 +55,7 @@ case class Form[T](
     */
   val formats: Map[String, (String, Seq[Any])] = mapping.mappings
     .map { m => m.key -> m.format }
-    .collect {
-      case (k, Some(f)) => k -> f
-    }
+    .collect { case (k, Some(f)) => k -> f }
     .toMap
 
   /**
@@ -353,9 +351,7 @@ case class Field(
   /**
     * Retrieve available indexes defined for this field (if this field is repeated).
     */
-  lazy val indexes: Seq[Int] = {
-    RepeatedMapping.indexes(name, form.data)
-  }
+  lazy val indexes: Seq[Int] = { RepeatedMapping.indexes(name, form.data) }
 
   /**
     * The label for the field.  Transforms repeat names from foo[0] etc to foo.0.
@@ -625,9 +621,7 @@ trait Mapping[T] {
   protected def collectErrors(t: T): Seq[FormError] = {
     constraints
       .map(_(t))
-      .collect {
-        case Invalid(errors) => errors.toSeq
-      }
+      .collect { case Invalid(errors) => errors.toSeq }
       .flatten
       .map(ve => FormError(key, ve.messages, ve.args))
   }
@@ -894,9 +888,7 @@ case class OptionalMapping[T](
       .collect { case Some(v) => v }
       .headOption
       .map { _ => wrapped.bind(data).right.map(Some(_)) }
-      .getOrElse {
-        Right(None)
-      }
+      .getOrElse { Right(None) }
       .right
       .flatMap(applyConstraints)
   }
@@ -982,9 +974,7 @@ case class FieldMapping[T](
     * @param binder the new binder to use
     * @return the same mapping with a new binder
     */
-  def as(binder: Formatter[T]): Mapping[T] = {
-    this.copy()(binder)
-  }
+  def as(binder: Formatter[T]): Mapping[T] = { this.copy()(binder) }
 
   /**
     * Binds this field, i.e. constructs a concrete value from submitted data.
@@ -1002,9 +992,7 @@ case class FieldMapping[T](
     * @param value the value to unbind
     * @return the plain data
     */
-  def unbind(value: T): Map[String, String] = {
-    binder.unbind(key, value)
-  }
+  def unbind(value: T): Map[String, String] = { binder.unbind(key, value) }
 
   /**
     * Unbinds this field, i.e. transforms a concrete value to plain data, and applies validation.

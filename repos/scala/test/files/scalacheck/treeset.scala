@@ -7,9 +7,7 @@ import util._
 
 object Test extends Properties("TreeSet") {
   def genTreeSet[A: Arbitrary: Ordering]: Gen[TreeSet[A]] =
-    for {
-      elements <- listOf(arbitrary[A])
-    } yield TreeSet(elements: _*)
+    for { elements <- listOf(arbitrary[A]) } yield TreeSet(elements: _*)
   implicit def arbTreeSet[A: Arbitrary: Ordering]: Arbitrary[TreeSet[A]] =
     Arbitrary(genTreeSet)
 
@@ -76,15 +74,11 @@ object Test extends Properties("TreeSet") {
   }
 
   property("head/tail identity") = forAll { (subject: TreeSet[Int]) =>
-    subject.nonEmpty ==> {
-      subject == (subject.tail + subject.head)
-    }
+    subject.nonEmpty ==> { subject == (subject.tail + subject.head) }
   }
 
   property("init/last identity") = forAll { (subject: TreeSet[Int]) =>
-    subject.nonEmpty ==> {
-      subject == (subject.init + subject.last)
-    }
+    subject.nonEmpty ==> { subject == (subject.init + subject.last) }
   }
 
   property("take") = forAll { (subject: TreeSet[Int]) =>

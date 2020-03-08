@@ -177,9 +177,7 @@ object RecoverJson {
       if (s.length == 1) {
         // Last element should always be a Bracket (']')
         // Put the blank element before end of array
-        if (needsComma) {
-          closerBuffer.put(',')
-        }
+        if (needsComma) { closerBuffer.put(',') }
         closerBuffer.put(BlankElement)
       }
       if (!s.isEmpty) {

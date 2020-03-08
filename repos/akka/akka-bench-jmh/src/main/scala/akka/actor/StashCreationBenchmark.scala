@@ -12,9 +12,7 @@ import java.util.concurrent.TimeUnit
 
 object StashCreationBenchmark {
   class StashingActor extends Actor with Stash {
-    def receive = {
-      case msg => sender() ! msg
-    }
+    def receive = { case msg => sender() ! msg }
   }
 
   val props = Props[StashingActor]

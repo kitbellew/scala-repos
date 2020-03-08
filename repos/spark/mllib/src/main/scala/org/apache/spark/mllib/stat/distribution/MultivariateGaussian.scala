@@ -75,21 +75,15 @@ class MultivariateGaussian @Since("1.3.0") (
   /** Returns density of this multivariate Gaussian at given point, x
     */
   @Since("1.3.0")
-  def pdf(x: Vector): Double = {
-    pdf(x.toBreeze)
-  }
+  def pdf(x: Vector): Double = { pdf(x.toBreeze) }
 
   /** Returns the log-density of this multivariate Gaussian at given point, x
     */
   @Since("1.3.0")
-  def logpdf(x: Vector): Double = {
-    logpdf(x.toBreeze)
-  }
+  def logpdf(x: Vector): Double = { logpdf(x.toBreeze) }
 
   /** Returns density of this multivariate Gaussian at given point, x */
-  private[mllib] def pdf(x: BV[Double]): Double = {
-    math.exp(logpdf(x))
-  }
+  private[mllib] def pdf(x: BV[Double]): Double = { math.exp(logpdf(x)) }
 
   /** Returns the log-density of this multivariate Gaussian at given point, x */
   private[mllib] def logpdf(x: BV[Double]): Double = {

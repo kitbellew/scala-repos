@@ -90,9 +90,7 @@ class Word2VecSuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(
         sameModel.getVectors.mapValues(_.toSeq) === model.getVectors.mapValues(
           _.toSeq))
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally { Utils.deleteRecursively(tempDir) }
 
   }
 
@@ -111,9 +109,7 @@ class Word2VecSuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(
         sameModel.getVectors.mapValues(_.toSeq) === model.getVectors.mapValues(
           _.toSeq))
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally { Utils.deleteRecursively(tempDir) }
   }
 
 }

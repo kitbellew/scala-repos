@@ -638,11 +638,8 @@ class ColumnarBatchSuite extends SparkFunSuite {
   }
 
   private def doubleEquals(d1: Double, d2: Double): Boolean = {
-    if (d1.isNaN && d2.isNaN) {
-      true
-    } else {
-      d1 == d2
-    }
+    if (d1.isNaN && d2.isNaN) { true }
+    else { d1 == d2 }
   }
 
   private def compareStruct(
@@ -828,13 +825,9 @@ class ColumnarBatchSuite extends SparkFunSuite {
     }
   }
 
-  test("Random flat schema") {
-    testRandomRows(true, 15)
-  }
+  test("Random flat schema") { testRandomRows(true, 15) }
 
-  test("Random nested schema") {
-    testRandomRows(false, 30)
-  }
+  test("Random nested schema") { testRandomRows(false, 30) }
 
   test("null filtered columns") {
     val NUM_ROWS = 10

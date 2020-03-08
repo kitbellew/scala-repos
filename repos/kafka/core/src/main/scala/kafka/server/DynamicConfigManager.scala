@@ -129,7 +129,5 @@ class DynamicConfigManager(
   /**
     * Begin watching for config changes
     */
-  def startup(): Unit = {
-    configChangeListener.init()
-  }
+  def startup(): Unit = { configChangeListener.init() }
 }

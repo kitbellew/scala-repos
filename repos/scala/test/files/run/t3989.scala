@@ -1,4 +1,6 @@
-class Foo { override def equals(o: Any) = false; override def hashCode = 1 }
+class Foo {
+  override def equals(o: Any) = false; override def hashCode = 1
+}
 
 // should not result in a stack overflow
 object Test {

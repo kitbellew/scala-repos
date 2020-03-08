@@ -37,13 +37,9 @@ class ContainerPlacementStrategySuite
       null,
       YarnSparkHadoopUtil.RM_REQUEST_PRIORITY)
 
-  override def beforeEach() {
-    yarnAllocatorSuite.beforeEach()
-  }
+  override def beforeEach() { yarnAllocatorSuite.beforeEach() }
 
-  override def afterEach() {
-    yarnAllocatorSuite.afterEach()
-  }
+  override def afterEach() { yarnAllocatorSuite.afterEach() }
 
   test(
     "allocate locality preferred containers with enough resource and no matched existed " +

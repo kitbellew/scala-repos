@@ -163,9 +163,7 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
   step {
     actorSystem.scheduler.schedule(
       Duration(0, "milliseconds"),
-      Duration(clock.duration, "milliseconds")) {
-      ticker ! Tick
-    }
+      Duration(clock.duration, "milliseconds")) { ticker ! Tick }
     startup.run.copoint
   }
 

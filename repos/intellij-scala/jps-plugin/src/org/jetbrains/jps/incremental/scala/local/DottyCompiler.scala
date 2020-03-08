@@ -55,9 +55,7 @@ class DottyCompiler(scalaInstance: ScalaInstance, compilerJars: CompilerJars)
         args,
         new ClientDottyReporter(client),
         new ClientDottyCallback(client))
-    } finally {
-      System.setOut(oldOut)
-    }
+    } finally { System.setOut(oldOut) }
   }
 
   private val emptyPrintStream = new PrintStream(new OutputStream {

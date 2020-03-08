@@ -14,9 +14,7 @@ private[timeline] final class UnsubApi(coll: Coll) {
   def set(channel: String, userId: String, v: Boolean): Funit = {
     if (v) coll.insert(select(channel, userId)).void
     else coll.remove(select(channel, userId)).void
-  } recover {
-    case e: Exception => ()
-  }
+  } recover { case e: Exception => () }
 
   def get(channel: String, userId: String): Fu[Boolean] =
     coll.count(select(channel, userId).some) map (0 !=)

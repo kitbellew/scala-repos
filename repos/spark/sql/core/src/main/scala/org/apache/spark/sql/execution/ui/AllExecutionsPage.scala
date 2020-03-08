@@ -151,9 +151,7 @@ private[ui] abstract class ExecutionTable(
         <div class="stage-details collapsed">
         <pre>{execution.details}</pre>
       </div>
-    } else {
-      Nil
-    }
+    } else { Nil }
 
     val desc = {
       <a href={executionURL(execution.executionId)}>{execution.description}</a>
@@ -166,9 +164,7 @@ private[ui] abstract class ExecutionTable(
     val isMultiline = physicalPlan.indexOf('\n') >= 0
     val summary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
       physicalPlan.substring(0, physicalPlan.indexOf('\n'))
-    } else {
-      physicalPlan
-    })
+    } else { physicalPlan })
     val details = if (isMultiline) {
       // scalastyle:off
       <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
@@ -179,9 +175,7 @@ private[ui] abstract class ExecutionTable(
           <pre>{physicalPlan}</pre>
         </div>
       // scalastyle:on
-    } else {
-      ""
-    }
+    } else { "" }
     <td>{summary}{details}</td>
   }
 

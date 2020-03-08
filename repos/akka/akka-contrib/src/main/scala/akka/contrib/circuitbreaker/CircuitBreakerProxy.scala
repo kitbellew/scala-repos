@@ -189,11 +189,8 @@ final class CircuitBreakerProxy(
           "Received call failed notification in state {} incrementing counter",
           state)
         val newState = state.copy(failureCount = state.failureCount + 1)
-        if (newState.failureCount < maxFailures) {
-          stay using newState
-        } else {
-          goto(Open) using newState
-        }
+        if (newState.failureCount < maxFailures) { stay using newState }
+        else { goto(Open) using newState }
 
       case Event(message, state) ⇒
         log.debug(

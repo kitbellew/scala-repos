@@ -179,11 +179,8 @@ class PrefixSpan private (
           }
           allItems += 0
         }
-        if (containsFreqItems) {
-          Iterator.single(allItems.result())
-        } else {
-          Iterator.empty
-        }
+        if (containsFreqItems) { Iterator.single(allItems.result()) }
+        else { Iterator.empty }
       }
       .persist(StorageLevel.MEMORY_AND_DISK)
 
@@ -308,9 +305,7 @@ object PrefixSpan extends Logging {
           if (newPrefix.length < maxPatternLength) {
             if (projDBSize > maxLocalProjDBSize) {
               newLargePrefixes += newPrefix.id -> newPrefix
-            } else {
-              smallPrefixes += newPrefix.id -> newPrefix
-            }
+            } else { smallPrefixes += newPrefix.id -> newPrefix }
           }
       }
       largePrefixes = newLargePrefixes
@@ -363,11 +358,8 @@ object PrefixSpan extends Logging {
     /** Expands this prefix by the input item. */
     def :+(item: Int): Prefix = {
       require(item != 0)
-      if (item < 0) {
-        new Prefix(items :+ -item, length + 1)
-      } else {
-        new Prefix(items ++ Array(0, item), length + 1)
-      }
+      if (item < 0) { new Prefix(items :+ -item, length + 1) }
+      else { new Prefix(items ++ Array(0, item), length + 1) }
     }
   }
 
@@ -426,9 +418,7 @@ object PrefixSpan extends Logging {
       */
     private[this] def fullStart: Int = {
       var i = start
-      while (items(i) != 0) {
-        i += 1
-      }
+      while (items(i) != 0) { i += 1 }
       i
     }
 
@@ -456,9 +446,7 @@ object PrefixSpan extends Logging {
         var i = start
         var x = -items(i)
         while (x != 0) {
-          if (!prefixes.contains(x)) {
-            prefixes(x) = n1 - i
-          }
+          if (!prefixes.contains(x)) { prefixes(x) = n1 - i }
           i += 1
           x = -items(i)
         }
@@ -467,9 +455,7 @@ object PrefixSpan extends Logging {
       var i = fullStart
       while (i < n1) {
         val x = items(i)
-        if (x != 0 && !prefixes.contains(x)) {
-          prefixes(x) = n1 - i
-        }
+        if (x != 0 && !prefixes.contains(x)) { prefixes(x) = n1 - i }
         i += 1
       }
       prefixes.toIterator
@@ -506,9 +492,7 @@ object PrefixSpan extends Logging {
               newStart = i
               matched = true
             }
-            if (items(i) != 0) {
-              newPartialStarts += i
-            }
+            if (items(i) != 0) { newPartialStarts += i }
           }
         }
       } else {
@@ -524,9 +508,7 @@ object PrefixSpan extends Logging {
               newStart = i
               matched = true
             }
-            if (items(i + 1) != 0) {
-              newPartialStarts += i + 1
-            }
+            if (items(i + 1) != 0) { newPartialStarts += i + 1 }
           }
           i += 1
         }
@@ -544,12 +526,10 @@ object PrefixSpan extends Logging {
       val np = prefix.length
       while (i < np && cur.nonEmpty) {
         val x = prefix(i)
-        if (x == 0) {
-          partial = false
-        } else {
-          if (partial) {
-            cur = cur.project(-x)
-          } else {
+        if (x == 0) { partial = false }
+        else {
+          if (partial) { cur = cur.project(-x) }
+          else {
             cur = cur.project(x)
             partial = true
           }
@@ -573,9 +553,7 @@ object PrefixSpan extends Logging {
           items.slice(start, items.length),
           0,
           partialStarts.map(_ - start))
-      } else {
-        this
-      }
+      } else { this }
     }
   }
 

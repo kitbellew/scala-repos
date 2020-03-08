@@ -810,9 +810,7 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
     */
   def webSocketClientFlow(request: WebSocketRequest)
       : Flow[Message, Message, CompletionStage[WebSocketUpgradeResponse]] =
-    adaptWsFlow {
-      delegate.webSocketClientFlow(request.asScala)
-    }
+    adaptWsFlow { delegate.webSocketClientFlow(request.asScala) }
 
   /**
     * Constructs a flow that once materialized establishes a WebSocket connection to the given Uri.
@@ -1025,9 +1023,7 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
   private def adaptWsResultTuple[T](
       result: (Future[scaladsl.model.ws.WebSocketUpgradeResponse], T))
       : Pair[CompletionStage[WebSocketUpgradeResponse], T] =
-    result match {
-      case (fut, tMat) ⇒ Pair(adaptWsUpgradeResponse(fut), tMat)
-    }
+    result match { case (fut, tMat) ⇒ Pair(adaptWsUpgradeResponse(fut), tMat) }
   private def adaptWsUpgradeResponse(
       responseFuture: Future[scaladsl.model.ws.WebSocketUpgradeResponse])
       : CompletionStage[WebSocketUpgradeResponse] =

@@ -58,9 +58,7 @@ class FreeTests extends CatsSuite {
       } yield z
 
     def runner: FTestApi ~> Id = new (FTestApi ~> Id) {
-      def apply[A](fa: FTestApi[A]): Id[A] = fa match {
-        case TB(i) => i + 1
-      }
+      def apply[A](fa: FTestApi[A]): Id[A] = fa match { case TB(i) => i + 1 }
     }
 
     assert(10000 == a(0).foldMap(runner))

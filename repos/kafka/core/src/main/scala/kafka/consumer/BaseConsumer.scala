@@ -86,17 +86,11 @@ class NewShinyConsumer(
       record.value)
   }
 
-  override def stop() {
-    this.consumer.wakeup()
-  }
+  override def stop() { this.consumer.wakeup() }
 
-  override def cleanup() {
-    this.consumer.close()
-  }
+  override def cleanup() { this.consumer.close() }
 
-  override def commit() {
-    this.consumer.commitSync()
-  }
+  override def commit() { this.consumer.commitSync() }
 }
 
 class OldConsumer(topicFilter: TopicFilter, consumerProps: Properties)
@@ -130,15 +124,9 @@ class OldConsumer(topicFilter: TopicFilter, consumerProps: Properties)
     )
   }
 
-  override def stop() {
-    this.consumerConnector.shutdown()
-  }
+  override def stop() { this.consumerConnector.shutdown() }
 
-  override def cleanup() {
-    this.consumerConnector.shutdown()
-  }
+  override def cleanup() { this.consumerConnector.shutdown() }
 
-  override def commit() {
-    this.consumerConnector.commitOffsets
-  }
+  override def commit() { this.consumerConnector.commitOffsets }
 }

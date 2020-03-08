@@ -24,9 +24,7 @@ class ActorDSLDummy {
 class ActorDSLSpec extends AkkaSpec {
 
   val echo = system.actorOf(Props(new Actor {
-    def receive = {
-      case x ⇒ sender() ! x
-    }
+    def receive = { case x ⇒ sender() ! x }
   }))
 
   "An Inbox" must {
@@ -77,9 +75,7 @@ class ActorDSLSpec extends AkkaSpec {
       val i = inbox()
       i.receiver ! "hello"
       i.receiver ! "world"
-      val result = i.select() {
-        case "world" ⇒ true
-      }
+      val result = i.select() { case "world" ⇒ true }
       result should ===(true)
       i.receive() should ===("hello")
     }
@@ -92,30 +88,20 @@ class ActorDSLSpec extends AkkaSpec {
         expectNoMsg(1 second)
         EventFilter.warning(
           start = "dropping message",
-          occurrences = 1) intercept {
-          i.receiver ! 42
-        }
+          occurrences = 1) intercept { i.receiver ! 42 }
         expectMsgType[Warning]
         i.receiver ! 42
         expectNoMsg(1 second)
         val gotit = for (_ ← 1 to 1000) yield i.receive()
         gotit should ===((1 to 1000) map (_ ⇒ 0))
-        intercept[TimeoutException] {
-          i.receive(1 second)
-        }
-      } finally {
-        system.eventStream.unsubscribe(testActor, classOf[Warning])
-      }
+        intercept[TimeoutException] { i.receive(1 second) }
+      } finally { system.eventStream.unsubscribe(testActor, classOf[Warning]) }
     }
 
     "have a default and custom timeouts" in {
       val i = inbox()
-      within(5 seconds, 6 seconds) {
-        intercept[TimeoutException](i.receive())
-      }
-      within(1 second) {
-        intercept[TimeoutException](i.receive(100 millis))
-      }
+      within(5 seconds, 6 seconds) { intercept[TimeoutException](i.receive()) }
+      within(1 second) { intercept[TimeoutException](i.receive(100 millis)) }
     }
 
   }
@@ -125,9 +111,7 @@ class ActorDSLSpec extends AkkaSpec {
     "support creating regular actors" in {
       //#simple-actor
       val a = actor(new Act {
-        become {
-          case "hello" ⇒ sender() ! "hi"
-        }
+        become { case "hello" ⇒ sender() ! "hi" }
       })
       //#simple-actor
 
@@ -178,17 +162,13 @@ class ActorDSLSpec extends AkkaSpec {
     "support restart" in {
       //#failing-actor
       val a = actor(new Act {
-        become {
-          case "die" ⇒ throw new Exception
-        }
+        become { case "die" ⇒ throw new Exception }
         whenFailing { case m @ (cause, msg) ⇒ testActor ! m }
         whenRestarted { cause ⇒ testActor ! cause }
       })
       //#failing-actor
 
-      EventFilter[Exception](occurrences = 1) intercept {
-        a ! "die"
-      }
+      EventFilter[Exception](occurrences = 1) intercept { a ! "die" }
       expectMsgPF() { case (x: Exception, Some("die")) ⇒ }
       expectMsgPF() { case _: Exception ⇒ }
     }
@@ -209,9 +189,7 @@ class ActorDSLSpec extends AkkaSpec {
             case ex: Exception ⇒ throw ex
           }
         })
-        become {
-          case x ⇒ child ! x
-        }
+        become { case x ⇒ child ! x }
       })
       a ! testActor
       EventFilter.warning("hi", occurrences = 1) intercept {
@@ -232,9 +210,7 @@ class ActorDSLSpec extends AkkaSpec {
         val b = actor("barney")(new Act {
           whenStarting { context.parent ! ("hello from " + self.path) }
         })
-        become {
-          case x ⇒ testActor ! x
-        }
+        become { case x ⇒ testActor ! x }
       })
       //#nested-actor
       expectMsg("hello from akka://ActorDSLSpec/user/fred/barney")
@@ -248,9 +224,7 @@ class ActorDSLSpec extends AkkaSpec {
           case 1 ⇒ stash()
           case 2 ⇒
             testActor ! 2; unstashAll();
-            becomeStacked {
-              case 1 ⇒ testActor ! 1; unbecome()
-            }
+            becomeStacked { case 1 ⇒ testActor ! 1; unbecome() }
         }
       })
       //#act-with-stash

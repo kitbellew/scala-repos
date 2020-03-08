@@ -63,8 +63,6 @@ class ProgressIndicator(
     * The actual progress of the ProgressIndicator.
     */
   def progress: DoubleProperty = delegate.progressProperty
-  def progress_=(v: Double) {
-    progress() = v
-  }
+  def progress_=(v: Double) { progress() = v }
 
 }

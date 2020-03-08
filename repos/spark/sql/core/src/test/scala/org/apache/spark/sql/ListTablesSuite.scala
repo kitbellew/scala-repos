@@ -36,9 +36,7 @@ class ListTablesSuite
 
   private lazy val df = (1 to 10).map(i => (i, s"str$i")).toDF("key", "value")
 
-  before {
-    df.registerTempTable("ListTablesSuiteTable")
-  }
+  before { df.registerTempTable("ListTablesSuiteTable") }
 
   after {
     sqlContext.sessionState.catalog

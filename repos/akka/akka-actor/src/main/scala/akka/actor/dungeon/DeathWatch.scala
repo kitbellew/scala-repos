@@ -164,9 +164,8 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
                 clazz(actor),
                 s"now watched by $watcher"))
         }
-    } else if (!watcheeSelf && watcherSelf) {
-      watch(watchee)
-    } else {
+    } else if (!watcheeSelf && watcherSelf) { watch(watchee) }
+    else {
       publish(
         Warning(
           self.path.toString,
@@ -190,9 +189,8 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
                 clazz(actor),
                 s"no longer watched by $watcher"))
         }
-    } else if (!watcheeSelf && watcherSelf) {
-      unwatch(watchee)
-    } else {
+    } else if (!watcheeSelf && watcherSelf) { unwatch(watchee) }
+    else {
       publish(
         Warning(
           self.path.toString,
@@ -245,9 +243,7 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
       if (had && !has) unsubscribeAddressTerminated()
       else if (!had && has) subscribeAddressTerminated()
       result
-    } else {
-      block
-    }
+    } else { block }
   }
 
   private def unsubscribeAddressTerminated(): Unit =

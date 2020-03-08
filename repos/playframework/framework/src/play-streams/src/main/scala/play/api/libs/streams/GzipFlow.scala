@@ -42,9 +42,8 @@ object GzipFlow {
 
     def onPull(ctx: Context[ByteString]) = {
       // If finished, push the last ByteString
-      if (ctx.isFinishing) {
-        ctx.pushAndFinish(builder.result())
-      } else {
+      if (ctx.isFinishing) { ctx.pushAndFinish(builder.result()) }
+      else {
         // Otherwise request more demand from upstream
         ctx.pull()
       }

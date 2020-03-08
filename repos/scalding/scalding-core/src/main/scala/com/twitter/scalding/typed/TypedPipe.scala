@@ -651,9 +651,7 @@ trait TypedPipe[+T] extends Serializable {
       try {
         dest.validateTaps(mode)
         Execution.from(TypedPipe.from(dest))
-      } catch {
-        case ivs: InvalidSourceException => writeThrough(dest)
-      }
+      } catch { case ivs: InvalidSourceException => writeThrough(dest) }
     }
 
   /** Just keep the keys, or ._1 (if this type is a Tuple2) */
@@ -1242,9 +1240,7 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
     if (merged.size == 1) {
       // there is no actual merging here, no need to rename:
       merged.head
-    } else {
-      new cascading.pipe.Merge(merged.map(RichPipe.assignName): _*)
-    }
+    } else { new cascading.pipe.Merge(merged.map(RichPipe.assignName): _*) }
   }
 
   override def hashCogroup[K, V, W, R](smaller: HashJoinable[K, W])(

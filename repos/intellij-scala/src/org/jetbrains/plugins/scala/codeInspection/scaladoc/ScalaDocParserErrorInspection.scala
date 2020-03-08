@@ -20,9 +20,7 @@ class ScalaDocParserErrorInspection extends LocalInspectionTool {
       isOnTheFly: Boolean): PsiElementVisitor = {
 
     new ScalaElementVisitor {
-      override def visitDocComment(s: ScDocComment) {
-        visitScaladocElement(s)
-      }
+      override def visitDocComment(s: ScDocComment) { visitScaladocElement(s) }
 
       override def visitScaladocElement(element: ScalaPsiElement) {
         for (child <- element.getChildren) {
@@ -30,13 +28,9 @@ class ScalaDocParserErrorInspection extends LocalInspectionTool {
             case a: PsiErrorElement =>
               val startElement: PsiElement =
                 if (a.getPrevSibling == null) a else a.getPrevSibling
-              val endElement: PsiElement = if (a.getPrevSibling != null) {
-                a
-              } else if (a.getNextSibling != null) {
-                a.getNextSibling
-              } else {
-                a.getParent
-              }
+              val endElement: PsiElement = if (a.getPrevSibling != null) { a }
+              else if (a.getNextSibling != null) { a.getNextSibling }
+              else { a.getParent }
               holder.registerProblem(
                 holder.getManager.createProblemDescriptor(
                   startElement,

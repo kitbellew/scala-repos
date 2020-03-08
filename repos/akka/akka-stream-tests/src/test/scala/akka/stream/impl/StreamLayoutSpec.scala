@@ -138,9 +138,7 @@ class StreamLayoutSpec extends AkkaSpec {
         .foldLeft(Flow[Int].mapMaterializedValue(_ ⇒ 1)) { (flow, i) ⇒
           flow.mapMaterializedValue(x ⇒ x + i)
         }
-      a[StackOverflowError] shouldBe thrownBy {
-        Fusing.aggressive(g)
-      }
+      a[StackOverflowError] shouldBe thrownBy { Fusing.aggressive(g) }
     }
 
     "not fail materialization when building a large graph with simple computation" when {

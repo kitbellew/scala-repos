@@ -105,18 +105,15 @@ case class HttpDigestAuthentication(realmName: String)(
         if (keepPinging) doPing()
         nonceMap.foreach((entry) => {
           val ts = System.currentTimeMillis
-          if ((ts - entry._2) > nonceValidityPeriod) {
-            nonceMap -= entry._1
-          }
+          if ((ts - entry._2) > nonceValidityPeriod) { nonceMap -= entry._1 }
         })
 
       case ShutDown => keepPinging = false
     }
 
     private[auth] def doPing() {
-      try {
-        Schedule.schedule(this, CheckAndPurge, 5.seconds)
-      } catch {
+      try { Schedule.schedule(this, CheckAndPurge, 5.seconds) }
+      catch {
         case e: Exception => logger.error("Couldn't start NonceWatcher ping", e)
       }
     }

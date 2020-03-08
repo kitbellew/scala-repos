@@ -118,8 +118,6 @@ class ScalaXmlSupportSpec
     try {
       TestUtils.writeAllText(content, file)
       f(file)
-    } finally {
-      file.delete()
-    }
+    } finally { file.delete() }
   }
 }

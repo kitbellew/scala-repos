@@ -20,9 +20,7 @@ private[finagle] class RefcountedService[Req, Rep](
 
   override final def close(deadline: Time): Future[Unit] = {
     val p = new Promise[Unit]
-    replyLatch.await {
-      p.become(underlying.close(deadline))
-    }
+    replyLatch.await { p.become(underlying.close(deadline)) }
     p
   }
 }

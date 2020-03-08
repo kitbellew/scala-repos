@@ -296,9 +296,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
             t = typeArgs(atPos(in.currentPos)(typeSelect(t, ident())))
           }
           convertToTypeId(t)
-        } else {
-          basicType()
-        }
+        } else { basicType() }
       }
 
     def typeArgs(t: Tree): Tree = {
@@ -320,9 +318,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           }
           wildcards += tdef
           atPos(pos) { Ident(tdef.name) }
-        } else {
-          typ()
-        }
+        } else { typ() }
       if (in.token == LT) {
         in.nextToken()
         val t1 = convertToTypeId(t)
@@ -528,9 +524,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           val bodyOk =
             !(mods1 hasFlag Flags.DEFERRED) && isConcreteInterfaceMethod
           val body =
-            if (bodyOk && in.token == LBRACE) {
-              methodBody()
-            } else {
+            if (bodyOk && in.token == LBRACE) { methodBody() }
+            else {
               if (parentToken == AT && in.token == DEFAULT) {
                 val annot =
                   atPos(pos) {
@@ -622,9 +617,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       if (in.token == EQUALS && !mods.isParameter) skipTo(COMMA, SEMI)
       val mods1 =
         if (mods.isFinal) mods &~ Flags.FINAL else mods | Flags.MUTABLE
-      atPos(pos) {
-        ValDef(mods1, name, tpt1, blankExpr)
-      }
+      atPos(pos) { ValDef(mods1, name, tpt1, blankExpr) }
     }
 
     def memberDecl(mods: Modifiers, parentToken: Int): List[Tree] =
@@ -716,9 +709,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       if (in.token == IMPLEMENTS) {
         in.nextToken()
         repsep(typ, COMMA)
-      } else {
-        List()
-      }
+      } else { List() }
 
     def classDecl(mods: Modifiers): List[Tree] = {
       accept(CLASS)
@@ -729,9 +720,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         if (in.token == EXTENDS) {
           in.nextToken()
           typ()
-        } else {
-          javaLangObject()
-        }
+        } else { javaLangObject() }
       val interfaces = interfacesOpt()
       val (statics, body) = typeBody(CLASS, name)
       addCompanionObject(
@@ -754,9 +743,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         if (in.token == EXTENDS) {
           in.nextToken()
           repsep(typ, COMMA)
-        } else {
-          List(javaLangObject())
-        }
+        } else { List(javaLangObject()) }
       val (statics, body) = typeBody(INTERFACE, name)
       addCompanionObject(
         statics,
@@ -789,9 +776,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         if (in.token == LBRACE) {
           skipAhead() // skip init block, we just assume we have seen only static
           accept(RBRACE)
-        } else if (in.token == SEMI) {
-          in.nextToken()
-        } else {
+        } else if (in.token == SEMI) { in.nextToken() }
+        else {
           if (in.token == ENUM || definesInterface(in.token))
             mods |= Flags.STATIC
           val decls = memberDecl(mods, parentToken)
@@ -862,9 +848,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         if (in.token == SEMI) {
           in.nextToken()
           typeBodyDecls(ENUM, name)
-        } else {
-          (List(), List())
-        }
+        } else { (List(), List()) }
       val predefs = List(
         DefDef(
           Modifiers(Flags.JAVA | Flags.STATIC),
@@ -947,9 +931,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           val pkg = qualId()
           accept(SEMI)
           pkg
-        } else {
-          Ident(nme.EMPTY_PACKAGE_NAME)
-        }
+        } else { Ident(nme.EMPTY_PACKAGE_NAME) }
       thisPackageName = gen.convertToTypeName(pkg) match {
         case Some(t) => t.name.toTypeName
         case _       => tpnme.EMPTY
@@ -963,9 +945,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           buf ++= typeDecl(modifiers(inInterface = false))
       }
       accept(EOF)
-      atPos(pos) {
-        makePackaging(pkg, buf.toList)
-      }
+      atPos(pos) { makePackaging(pkg, buf.toList) }
     }
   }
 }

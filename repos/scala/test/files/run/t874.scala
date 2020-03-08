@@ -1,9 +1,7 @@
 import scala.language.{reflectiveCalls}
 object Test {
   abstract class Base {
-    val U: {
-      def apply[A](x1: A)(x2: Int): Any
-    }
+    val U: { def apply[A](x1: A)(x2: Int): Any }
     U("xyz")(2)
   }
   class Mix extends Base {

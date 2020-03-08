@@ -74,7 +74,9 @@ trait BooleanSteroids {
 
     def fold[A](t: => A, f: => A): A = if (self) t else f
 
-    def ?[X](t: => X) = new { def |(f: => X) = if (self) t else f }
+    def ?[X](t: => X) = new {
+      def |(f: => X) = if (self) t else f
+    }
 
     def option[A](a: => A): Option[A] = if (self) Some(a) else None
   }

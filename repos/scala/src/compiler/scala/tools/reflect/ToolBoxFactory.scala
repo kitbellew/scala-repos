@@ -129,9 +129,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
                     "internal error: %s (%s, %s) is not supported"
                       .format(tree, tree.productPrefix, tree.getClass))
               }
-            } else {
-              super.transform(tree)
-            }
+            } else { super.transform(tree) }
         }.transform(expr0)
         (expr, freeTermNames)
       }

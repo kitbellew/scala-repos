@@ -31,9 +31,7 @@ class HashingTFSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  test("params") {
-    ParamsSuite.checkParams(new HashingTF)
-  }
+  test("params") { ParamsSuite.checkParams(new HashingTF) }
 
   test("hashingTF") {
     val df = sqlContext

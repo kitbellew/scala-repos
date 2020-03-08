@@ -103,9 +103,7 @@ private[spark] abstract class WebUI(
     handlers += handler
     serverInfo.foreach { info =>
       info.rootHandler.addHandler(handler)
-      if (!handler.isStarted) {
-        handler.start()
-      }
+      if (!handler.isStarted) { handler.start() }
     }
   }
 
@@ -114,9 +112,7 @@ private[spark] abstract class WebUI(
     handlers -= handler
     serverInfo.foreach { info =>
       info.rootHandler.removeHandler(handler)
-      if (handler.isStarted) {
-        handler.stop()
-      }
+      if (handler.isStarted) { handler.stop() }
     }
   }
 

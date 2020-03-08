@@ -81,9 +81,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
          |   'Submitted: ${UIUtils.formatDate(new Date(submissionTime))}' +
          |   '${if (status != "running") {
            s"""<br>Completed: ${UIUtils.formatDate(new Date(completionTime))}"""
-         } else {
-           ""
-         }}">' +
+         } else { "" }}">' +
          |    '${escapedName} (Stage ${stageId}.${attemptId})</div>',
          |}
        """.stripMargin
@@ -124,9 +122,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
                  new Date(event.finishTime.get))}' +
                |    '${if (event.finishReason.isDefined) {
                  s"""<br>Reason: ${event.finishReason.get}"""
-               } else {
-                 ""
-               }}"' +
+               } else { "" }}"' +
                |    'data-html="true">Executor ${executorId} removed</div>'
                |}
              """.stripMargin
@@ -227,17 +223,11 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
       val pendingOrSkippedStages = Buffer[StageInfo]()
       val failedStages = Buffer[StageInfo]()
       for (stage <- stages) {
-        if (stage.submissionTime.isEmpty) {
-          pendingOrSkippedStages += stage
-        } else if (stage.completionTime.isDefined) {
-          if (stage.failureReason.isDefined) {
-            failedStages += stage
-          } else {
-            completedStages += stage
-          }
-        } else {
-          activeStages += stage
-        }
+        if (stage.submissionTime.isEmpty) { pendingOrSkippedStages += stage }
+        else if (stage.completionTime.isDefined) {
+          if (stage.failureReason.isDefined) { failedStages += stage }
+          else { completedStages += stage }
+        } else { activeStages += stage }
       }
 
       val activeStagesTable =

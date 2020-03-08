@@ -29,9 +29,8 @@ private[http] final case class RequestContextImpl(
   def unmatchedPath: String = underlying.unmatchedPath.toString
 
   def completeWith(futureResult: Future[RouteResult]): RouteResult =
-    futureResult.flatMap {
-      case r: RouteResultImpl ⇒ r.underlying
-    }(executionContext())
+    futureResult
+      .flatMap { case r: RouteResultImpl ⇒ r.underlying }(executionContext())
   def completeWith(futureResult: CompletionStage[RouteResult]): RouteResult =
     completeWith(futureResult.toScala)
   def complete(text: String): RouteResult = underlying.complete(text)

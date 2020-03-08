@@ -214,9 +214,7 @@ object Try {
     */
   def apply[T](r: => T): Try[T] =
     try Success(r)
-    catch {
-      case NonFatal(e) => Failure(e)
-    }
+    catch { case NonFatal(e) => Failure(e) }
 }
 
 final case class Failure[+T](exception: Throwable) extends Try[T] {

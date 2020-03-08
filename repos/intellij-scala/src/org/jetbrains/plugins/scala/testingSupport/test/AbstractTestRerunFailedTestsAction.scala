@@ -101,9 +101,7 @@ class AbstractTestRerunFailedTestsAction(
               }
             }
             if (!added) tail()
-          } else {
-            tail()
-          }
+          } else { tail() }
         }
         previoslyFailed = buffer
         patcher.setFailedTests(buffer)

@@ -137,33 +137,25 @@ class PathTransition(
     * The target node of this $PT.
     */
   def node: ObjectProperty[jfxs.Node] = delegate.nodeProperty
-  def node_=(n: Node) {
-    node() = n
-  }
+  def node_=(n: Node) { node() = n }
 
   /**
     * The duration of this `Transition`.
     */
   def duration: ObjectProperty[jfxu.Duration] = delegate.durationProperty
-  def duration_=(d: Duration) {
-    duration() = d
-  }
+  def duration_=(d: Duration) { duration() = d }
 
   /**
     * The shape on which outline the node should be animated.
     */
   def path: ObjectProperty[jfxss.Shape] = delegate.pathProperty
-  def path_=(s: Shape) {
-    path() = s
-  }
+  def path_=(s: Shape) { path() = s }
 
   /**
     * Specifies the upright orientation of node along the path.
     */
   def orientation: ObjectProperty[jfxa.PathTransition.OrientationType] =
     delegate.orientationProperty
-  def orientation_=(o: PathTransition.OrientationType) {
-    orientation() = o
-  }
+  def orientation_=(o: PathTransition.OrientationType) { orientation() = o }
 
 }

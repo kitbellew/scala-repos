@@ -360,9 +360,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   /**
     * Applies a function f to all elements of this RDD.
     */
-  def foreach(f: VoidFunction[T]) {
-    rdd.foreach(x => f.call(x))
-  }
+  def foreach(f: VoidFunction[T]) { rdd.foreach(x => f.call(x)) }
 
   /**
     * Return an array that contains all of the elements in this RDD.
@@ -540,9 +538,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   /**
     * Save this RDD as a text file, using string representations of elements.
     */
-  def saveAsTextFile(path: String): Unit = {
-    rdd.saveAsTextFile(path)
-  }
+  def saveAsTextFile(path: String): Unit = { rdd.saveAsTextFile(path) }
 
   /**
     * Save this RDD as a compressed text file, using string representations of elements.
@@ -556,9 +552,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   /**
     * Save this RDD as a SequenceFile of serialized objects.
     */
-  def saveAsObjectFile(path: String): Unit = {
-    rdd.saveAsObjectFile(path)
-  }
+  def saveAsObjectFile(path: String): Unit = { rdd.saveAsObjectFile(path) }
 
   /**
     * Creates tuples of the elements in this RDD by applying `f`.
@@ -576,9 +570,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * executed on this RDD. It is strongly recommended that this RDD is persisted in
     * memory, otherwise saving it on a file will require recomputation.
     */
-  def checkpoint(): Unit = {
-    rdd.checkpoint()
-  }
+  def checkpoint(): Unit = { rdd.checkpoint() }
 
   /**
     * Return whether this RDD has been checkpointed or not
@@ -593,9 +585,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   }
 
   /** A description of this RDD and its recursive dependencies for debugging. */
-  def toDebugString(): String = {
-    rdd.toDebugString
-  }
+  def toDebugString(): String = { rdd.toDebugString }
 
   /**
     * Returns the top k (largest) elements from this RDD as defined by

@@ -144,9 +144,7 @@ abstract class MinMembersBeforeUpBase(multiNodeConfig: MultiNodeConfig)
 
     onUpLatch.isOpen should ===(false)
 
-    runOn(second) {
-      cluster.join(first)
-    }
+    runOn(second) { cluster.join(first) }
     runOn(first, second) {
       val expectedAddresses = Set(first, second) map address
       awaitAssert {
@@ -163,9 +161,7 @@ abstract class MinMembersBeforeUpBase(multiNodeConfig: MultiNodeConfig)
     }
     enterBarrier("second-joined")
 
-    runOn(third) {
-      cluster.join(first)
-    }
+    runOn(third) { cluster.join(first) }
     awaitClusterUp(first, second, third)
 
     onUpLatch.await

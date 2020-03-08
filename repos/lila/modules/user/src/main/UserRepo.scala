@@ -88,9 +88,7 @@ object UserRepo {
       .sort(BSONDocument(s"perfs.standard.gl.r" -> -1))
       .cursor[BSONDocument](ReadPreference.secondaryPreferred)
       .collect[List](nb)
-      .map {
-        _.flatMap { _.getAs[String]("_id") }
-      }
+      .map { _.flatMap { _.getAs[String]("_id") } }
 
   def allSortToints(nb: Int) = $find($query.all sort ($sort desc F.toints), nb)
 
@@ -278,9 +276,7 @@ object UserRepo {
       select,
       Seq("password", "salt", "enabled", "sha512", "email")) { obj =>
       (AuthData.reader reads obj).asOpt
-    } map {
-      _ ?? (data => data.enabled && data.compare(password))
-    }
+    } map { _ ?? (data => data.enabled && data.compare(password)) }
 
   def getPasswordHash(id: ID): Fu[Option[String]] =
     $primitive.one($select(id), "password")(_.asOpt[String])
@@ -455,9 +451,7 @@ object UserRepo {
       F.createdAt -> DateTime.now,
       F.createdWithApiVersion -> mobileApiVersion,
       F.seenAt -> DateTime.now
-    ) ++ {
-      if (blind) BSONDocument("blind" -> true) else BSONDocument()
-    }
+    ) ++ { if (blind) BSONDocument("blind" -> true) else BSONDocument() }
   }
 
   private def hash(pass: String, salt: String): String =

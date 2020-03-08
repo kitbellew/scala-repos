@@ -110,11 +110,8 @@ case class SparseHint(sparsity: Double, rows: BigInt, cols: BigInt)
         // There are cols samples of the, above, so the probability one is present:
         // 1-(1-pq)^cols ~ (cols * p * q) min 1.0
         val newSp = (BigDecimal(cols) * sp * sparsity)
-        if (newSp >= 1.0) {
-          FiniteHint(rows, c)
-        } else {
-          SparseHint(newSp.toDouble, rows, c)
-        }
+        if (newSp >= 1.0) { FiniteHint(rows, c) }
+        else { SparseHint(newSp.toDouble, rows, c) }
       }
     }
   }

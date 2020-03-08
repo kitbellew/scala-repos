@@ -47,11 +47,8 @@ class LibSVMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   override def afterAll(): Unit = {
-    try {
-      Utils.deleteRecursively(tempDir)
-    } finally {
-      super.afterAll()
-    }
+    try { Utils.deleteRecursively(tempDir) }
+    finally { super.afterAll() }
   }
 
   test("select as sparse vector") {

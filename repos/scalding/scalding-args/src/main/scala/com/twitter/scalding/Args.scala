@@ -59,9 +59,7 @@ object Args {
     try {
       arg.toDouble
       true
-    } catch {
-      case e: NumberFormatException => false
-    }
+    } catch { case e: NumberFormatException => false }
   }
 }
 
@@ -110,11 +108,8 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
   def apply(position: Int): String = required(position)
 
   override def equals(other: Any): Boolean = {
-    if (other.isInstanceOf[Args]) {
-      other.asInstanceOf[Args].m.equals(m)
-    } else {
-      false
-    }
+    if (other.isInstanceOf[Args]) { other.asInstanceOf[Args].m.equals(m) }
+    else { false }
   }
 
   override def hashCode(): Int = m.hashCode()

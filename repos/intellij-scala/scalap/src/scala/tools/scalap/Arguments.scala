@@ -144,9 +144,7 @@ class Arguments {
 
   def addOption(option: String): Unit = options += option
 
-  def addArgument(option: String, arg: String) {
-    arguments(option) = arg
-  }
+  def addArgument(option: String, arg: String) { arguments(option) = arg }
 
   def addPrefixed(prefix: String, arg: String): Unit =
     if (prefixes isDefinedAt prefix)

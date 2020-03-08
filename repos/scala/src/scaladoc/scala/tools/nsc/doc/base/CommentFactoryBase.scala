@@ -81,9 +81,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
               List(group -> prio.trim.toInt)
             case _ => List()
           }
-        } catch {
-          case _: java.lang.NumberFormatException => List()
-        }
+        } catch { case _: java.lang.NumberFormatException => List() }
     }
     val groupNames = groupNames0 flatMap {
       case (group, body) =>
@@ -558,9 +556,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         hrule()
       else if (checkList)
         listBlock
-      else {
-        para()
-      }
+      else { para() }
     }
 
     /** listStyle ::= '-' spc | '1.' spc | 'I.' spc | 'i.' spc | 'A.' spc | 'a.' spc
@@ -695,14 +691,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
         str match {
           case OPEN_TAG(s, _, standalone) => {
-            if (standalone != "/") {
-              stack += s
-            }
+            if (standalone != "/") { stack += s }
           }
           case CLOSE_TAG(s) => {
-            if (s == stack.last) {
-              stack.remove(stack.length - 1)
-            }
+            if (s == stack.last) { stack.remove(stack.length - 1) }
           }
           case _ => ;
         }
@@ -741,9 +733,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
           val skipEndOfLine = if (char == endOfLine) {
             nextChar()
             true
-          } else {
-            false
-          }
+          } else { false }
 
           val current = inline0()
           (iss.last, current) match {
@@ -803,11 +793,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     def superscript(): Inline = {
       jump("^")
       val i = inline(check("^"))
-      if (jump("^")) {
-        Superscript(i)
-      } else {
-        Chain(Seq(Text("^"), i))
-      }
+      if (jump("^")) { Superscript(i) }
+      else { Chain(Seq(Text("^"), i)) }
     }
 
     def subscript(): Inline = {
@@ -932,9 +919,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     def char: Char =
       if (offset >= buffer.length) endOfText else buffer charAt offset
 
-    final def nextChar() {
-      offset += 1
-    }
+    final def nextChar() { offset += 1 }
 
     final def check(chars: String): Boolean = {
       val poff = offset
@@ -1030,11 +1015,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     /* READERS */
 
     final def readUntil(c: Char): String = {
-      withRead {
-        while (char != c && char != endOfText) {
-          nextChar()
-        }
-      }
+      withRead { while (char != c && char != endOfText) { nextChar() } }
     }
 
     final def readUntil(chars: String): String = {
@@ -1050,11 +1031,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     }
 
     final def readUntil(pred: => Boolean): String = {
-      withRead {
-        while (char != endOfText && !pred) {
-          nextChar()
-        }
-      }
+      withRead { while (char != endOfText && !pred) { nextChar() } }
     }
 
     private def withRead(read: => Unit): String = {

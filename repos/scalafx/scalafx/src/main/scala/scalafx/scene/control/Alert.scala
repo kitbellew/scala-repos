@@ -208,9 +208,7 @@ class Alert(override val delegate: jfxsc.Alert)
 
   def alertType: ObjectProperty[jfxsc.Alert.AlertType] =
     delegate.alertTypeProperty
-  def alertType_=(v: AlertType) {
-    alertType() = v
-  }
+  def alertType_=(v: AlertType) { alertType() = v }
 
   /**
     * Returns an `ObservableBuffer` of all `ButtonType` instances that

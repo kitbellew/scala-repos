@@ -57,11 +57,8 @@ object RRunner {
     // Check if the file path exists.
     // If not, change directory to current working directory for YARN cluster mode
     val rF = new File(rFile)
-    val rFileNormalized = if (!rF.exists()) {
-      new Path(rFile).getName
-    } else {
-      rFile
-    }
+    val rFileNormalized = if (!rF.exists()) { new Path(rFile).getName }
+    else { rFile }
 
     // Launch a SparkR backend server for the R process to connect to; this will let it see our
     // Java system properties etc.
@@ -104,12 +101,8 @@ object RRunner {
             "redirect R output").start()
 
           process.waitFor()
-        } finally {
-          sparkRBackend.close()
-        }
-      if (returnCode != 0) {
-        throw new SparkUserAppException(returnCode)
-      }
+        } finally { sparkRBackend.close() }
+      if (returnCode != 0) { throw new SparkUserAppException(returnCode) }
     } else {
       val errorMessage =
         s"SparkR backend did not initialize in $backendTimeout seconds"

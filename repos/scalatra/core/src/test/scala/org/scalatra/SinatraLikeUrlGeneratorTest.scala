@@ -40,9 +40,7 @@ class SinatraLikeUrlGeneratorTest extends FunSuite with Matchers {
   }
 
   test("Missing parameter produces an exception") {
-    the[Exception] thrownBy {
-      url("/:bar/:baz", "bar" -> "moonless")
-    }
+    the[Exception] thrownBy { url("/:bar/:baz", "bar" -> "moonless") }
   }
 
   test("Optional parameters can be provided") {
@@ -93,8 +91,6 @@ class SinatraLikeUrlGeneratorTest extends FunSuite with Matchers {
   }
 
   test("Unexpected splat parameters trigger an exception") {
-    the[Exception] thrownBy {
-      url("/foo/*", "black", "coffee")
-    }
+    the[Exception] thrownBy { url("/foo/*", "black", "coffee") }
   }
 }

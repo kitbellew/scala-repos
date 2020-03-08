@@ -131,13 +131,9 @@ private[spark] class ExecutorDelegationTokenUpdater(
       val newCredentials = new Credentials()
       newCredentials.readTokenStorageStream(stream)
       newCredentials
-    } finally {
-      stream.close()
-    }
+    } finally { stream.close() }
   }
 
-  def stop(): Unit = {
-    delegationTokenRenewer.shutdown()
-  }
+  def stop(): Unit = { delegationTokenRenewer.shutdown() }
 
 }

@@ -36,9 +36,7 @@ abstract class LServing[Q, P] extends BaseServing[Q, P] {
   @Experimental
   def supplement(q: Q): Q = q
 
-  def serveBase(q: Q, ps: Seq[P]): P = {
-    serve(q, ps)
-  }
+  def serveBase(q: Q, ps: Seq[P]): P = { serve(q, ps) }
 
   /** Implement this method to combine multiple algorithms' predictions to
     * produce a single final prediction. The query is the original query sent to

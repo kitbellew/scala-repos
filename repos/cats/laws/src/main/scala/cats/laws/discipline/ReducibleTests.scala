@@ -25,5 +25,7 @@ trait ReducibleTests[F[_]] extends FoldableTests[F] {
 
 object ReducibleTests {
   def apply[F[_]: Reducible]: ReducibleTests[F] =
-    new ReducibleTests[F] { def laws: ReducibleLaws[F] = ReducibleLaws[F] }
+    new ReducibleTests[F] {
+      def laws: ReducibleLaws[F] = ReducibleLaws[F]
+    }
 }

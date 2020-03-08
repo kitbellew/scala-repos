@@ -68,8 +68,6 @@ abstract class Transition(override val delegate: jfxa.Transition)
     */
   def interpolator: ObjectProperty[jfxa.Interpolator] =
     delegate.interpolatorProperty
-  def interpolator_=(i: jfxa.Interpolator) {
-    interpolator() = i
-  }
+  def interpolator_=(i: jfxa.Interpolator) { interpolator() = i }
 
 }

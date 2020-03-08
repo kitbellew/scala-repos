@@ -149,9 +149,7 @@ package scalaguide.cache {
   package views {
 
     object html {
-      def profile(user: User) = {
-        s"Hello, $user.name"
-      }
+      def profile(user: User) = { s"Hello, $user.name" }
     }
 
   }
@@ -188,11 +186,7 @@ package scalaguide.cache {
 
     class Application1 @Inject() (cached: Cached) extends Controller {
       //#cached-action
-      def index = cached("homePage") {
-        Action {
-          Ok("Hello world")
-        }
-      }
+      def index = cached("homePage") { Action { Ok("Hello world") } }
       //#cached-action
 
       import play.api.mvc.Security.Authenticated
@@ -200,20 +194,15 @@ package scalaguide.cache {
       //#composition-cached-action
       def userProfile = Authenticated { user =>
         cached(req => "profile." + user) {
-          Action {
-            Ok(views.html.profile(User.find(user)))
-          }
+          Action { Ok(views.html.profile(User.find(user))) }
         }
       }
       //#composition-cached-action
       //#cached-action-control
       def get(index: Int) = cached.status(_ => "/resource/" + index, 200) {
         Action {
-          if (index > 0) {
-            Ok(Json.obj("id" -> index))
-          } else {
-            NotFound
-          }
+          if (index > 0) { Ok(Json.obj("id" -> index)) }
+          else { NotFound }
         }
       }
       //#cached-action-control
@@ -227,11 +216,8 @@ package scalaguide.cache {
 
         caching {
           Action {
-            if (index % 2 == 1) {
-              Ok(Json.obj("id" -> index))
-            } else {
-              NotFound
-            }
+            if (index % 2 == 1) { Ok(Json.obj("id" -> index)) }
+            else { NotFound }
           }
         }
       }

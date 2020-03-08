@@ -28,9 +28,7 @@ object DesktopUtils {
   </html>
   """
 
-  def browse(url: URL) {
-    browse(url.toExternalForm)
-  }
+  def browse(url: URL) { browse(url.toExternalForm) }
 
   def browse(url: String) {
     val supported = Desktop.isDesktopSupported && Desktop.getDesktop

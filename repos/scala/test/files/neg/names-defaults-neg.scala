@@ -135,26 +135,48 @@ object anfun {
 }
 
 object t3685 {
-  object t { def f(x: Int) = x }
+  object t {
+    def f(x: Int) = x
+  }
 
   def t1 { def x = t.f(x = 1) }
   def t2 { val x = t.f(x = 1) }
   def t3 { var x = t.f(x = 1) }
-  object t4 { def x = t.f(x = 1) }
-  object t5 { val x = t.f(x = 1) }
-  object t6 { var x = t.f(x = 1) }
-  class t7 { def x = t.f(x = 1) }
-  class t8 { val x = t.f(x = 1) }
-  class t9 { var x = t.f(x = 1) }
+  object t4 {
+    def x = t.f(x = 1)
+  }
+  object t5 {
+    val x = t.f(x = 1)
+  }
+  object t6 {
+    var x = t.f(x = 1)
+  }
+  class t7 {
+    def x = t.f(x = 1)
+  }
+  class t8 {
+    val x = t.f(x = 1)
+  }
+  class t9 {
+    var x = t.f(x = 1)
+  }
 
   def t10 { def x: Int = t.f(x = 1) }
   def t11 { val x: Int = t.f(x = 1) }
   def t12 { var x: Int = t.f(x = 1) }
-  class t13 { def x: Int = t.f(x = 1) }
-  class t14 { val x: Int = t.f(x = 1) }
-  class t15 { var x: Int = t.f(x = 1) }
+  class t13 {
+    def x: Int = t.f(x = 1)
+  }
+  class t14 {
+    val x: Int = t.f(x = 1)
+  }
+  class t15 {
+    var x: Int = t.f(x = 1)
+  }
 
-  object u { def f[T](x: T) = 100 }
+  object u {
+    def f[T](x: T) = 100
+  }
 
   def u1 { def x = u.f(x = 1) }
   def u2 { val x = u.f(x = 1) }
@@ -169,13 +191,31 @@ object t3685 {
   def u11 { val x: Int = u.f(x = "32") }
   def u12 { var x: Int = u.f(x = "32") }
 
-  class u13 { def x = u.f(x = 1) }
-  class u14 { val x = u.f(x = 1) }
-  class u15 { var x = u.f(x = 1) }
-  class u16 { def x: Int = u.f(x = 1) }
-  class u17 { val x: Int = u.f(x = 1) }
-  class u18 { var x: Int = u.f(x = 1) }
-  class u19 { def x: Int = u.f(x = "32") }
-  class u20 { val x: Int = u.f(x = "32") }
-  class u21 { var x: Int = u.f(x = "32") }
+  class u13 {
+    def x = u.f(x = 1)
+  }
+  class u14 {
+    val x = u.f(x = 1)
+  }
+  class u15 {
+    var x = u.f(x = 1)
+  }
+  class u16 {
+    def x: Int = u.f(x = 1)
+  }
+  class u17 {
+    val x: Int = u.f(x = 1)
+  }
+  class u18 {
+    var x: Int = u.f(x = 1)
+  }
+  class u19 {
+    def x: Int = u.f(x = "32")
+  }
+  class u20 {
+    val x: Int = u.f(x = "32")
+  }
+  class u21 {
+    var x: Int = u.f(x = "32")
+  }
 }

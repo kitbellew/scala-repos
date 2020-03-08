@@ -347,7 +347,9 @@ abstract class DerbyDB(confName: String) extends InternalJdbcTestDB(confName) {
 }
 
 object DerbyDB {
-  val DEV_NULL = new java.io.OutputStream { def write(b: Int) {} };
+  val DEV_NULL = new java.io.OutputStream {
+    def write(b: Int) {}
+  };
 }
 
 abstract class HsqlDB(confName: String) extends InternalJdbcTestDB(confName) {

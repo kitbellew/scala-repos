@@ -79,9 +79,8 @@ private[spark] class TaskContextImpl(
     val errorMsgs = new ArrayBuffer[String](2)
     // Process failure callbacks in the reverse order of registration
     onFailureCallbacks.reverse.foreach { listener =>
-      try {
-        listener.onTaskFailure(this, error)
-      } catch {
+      try { listener.onTaskFailure(this, error) }
+      catch {
         case e: Throwable =>
           errorMsgs += e.getMessage
           logError("Error in TaskFailureListener", e)
@@ -98,9 +97,8 @@ private[spark] class TaskContextImpl(
     val errorMsgs = new ArrayBuffer[String](2)
     // Process complete callbacks in the reverse order of registration
     onCompleteCallbacks.reverse.foreach { listener =>
-      try {
-        listener.onTaskCompletion(this)
-      } catch {
+      try { listener.onTaskCompletion(this) }
+      catch {
         case e: Throwable =>
           errorMsgs += e.getMessage
           logError("Error in TaskCompletionListener", e)
@@ -112,9 +110,7 @@ private[spark] class TaskContextImpl(
   }
 
   /** Marks the task for interruption, i.e. cancellation. */
-  private[spark] def markInterrupted(): Unit = {
-    interrupted = true
-  }
+  private[spark] def markInterrupted(): Unit = { interrupted = true }
 
   override def isCompleted(): Boolean = completed
 
@@ -126,8 +122,6 @@ private[spark] class TaskContextImpl(
     metricsSystem.getSourcesByName(sourceName)
 
   private[spark] override def registerAccumulator(
-      a: Accumulable[_, _]): Unit = {
-    taskMetrics.registerAccumulator(a)
-  }
+      a: Accumulable[_, _]): Unit = { taskMetrics.registerAccumulator(a) }
 
 }

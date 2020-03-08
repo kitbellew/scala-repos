@@ -56,9 +56,7 @@ class UTF8StringPropertyCheckSuite
     forAll { (s: String) =>
       val utf8 = toUTF8(s)
       assert(utf8.endsWith(utf8))
-      for (i <- 1 to s.length) {
-        assert(utf8.endsWith(toUTF8(s.drop(i))))
-      }
+      for (i <- 1 to s.length) { assert(utf8.endsWith(toUTF8(s.drop(i)))) }
     }
   }
 
@@ -109,17 +107,13 @@ class UTF8StringPropertyCheckSuite
     def lTrim(s: String): String = {
       var st = 0
       val array: Array[Char] = s.toCharArray
-      while ((st < s.length) && (array(st) <= ' ')) {
-        st += 1
-      }
+      while ((st < s.length) && (array(st) <= ' ')) { st += 1 }
       if (st > 0) s.substring(st, s.length) else s
     }
     def rTrim(s: String): String = {
       var len = s.length
       val array: Array[Char] = s.toCharArray
-      while ((len > 0) && (array(len - 1) <= ' ')) {
-        len -= 1
-      }
+      while ((len > 0) && (array(len - 1) <= ' ')) { len -= 1 }
       if (len < s.length) s.substring(0, len) else s
     }
 
@@ -175,11 +169,8 @@ class UTF8StringPropertyCheckSuite
         val partPad =
           if (toPad % pad.length == 0) ""
           else pad.substring(0, toPad % pad.length)
-        if (isLPad) {
-          pad * (toPad / pad.length) + partPad + origin
-        } else {
-          origin + pad * (toPad / pad.length) + partPad
-        }
+        if (isLPad) { pad * (toPad / pad.length) + partPad + origin }
+        else { origin + pad * (toPad / pad.length) + partPad }
       }
     }
 

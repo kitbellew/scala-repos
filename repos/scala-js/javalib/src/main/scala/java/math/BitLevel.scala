@@ -58,9 +58,8 @@ private[math] object BitLevel {
     */
   def bitCount(bi: BigInteger): Int = {
     var bCount = 0
-    if (bi.sign == 0) {
-      0
-    } else {
+    if (bi.sign == 0) { 0 }
+    else {
       var i = bi.getFirstNonzeroDigit
       if (bi.sign > 0) {
         while (i < bi.numberLength) {
@@ -88,9 +87,8 @@ private[math] object BitLevel {
     *  @return
     */
   def bitLength(bi: BigInteger): Int = {
-    if (bi.sign == 0) {
-      0
-    } else {
+    if (bi.sign == 0) { 0 }
+    else {
       var bLength = bi.numberLength << 5
       var highDigit = bi.digits(bi.numberLength - 1)
       if (bi.sign < 0) {
@@ -122,13 +120,11 @@ private[math] object BitLevel {
     val bitNumber = 1 << bitN
     System.arraycopy(bi.digits, 0, resDigits, 0, bi.numberLength)
     if (bi.sign < 0) {
-      if (intCount >= bi.numberLength) {
-        resDigits(intCount) = bitNumber
-      } else {
+      if (intCount >= bi.numberLength) { resDigits(intCount) = bitNumber }
+      else {
         val firstNonZeroDigit = bi.getFirstNonzeroDigit
-        if (intCount > firstNonZeroDigit) {
-          resDigits(intCount) ^= bitNumber
-        } else if (intCount < firstNonZeroDigit) {
+        if (intCount > firstNonZeroDigit) { resDigits(intCount) ^= bitNumber }
+        else if (intCount < firstNonZeroDigit) {
           resDigits(intCount) = -bitNumber
           i = intCount + 1
           while (i < firstNonZeroDigit) {
@@ -205,9 +201,7 @@ private[math] object BitLevel {
     val intCount = numberOfBits >> 5
     val bitCount = numberOfBits & 31
     var i = 0
-    while (i < intCount && digits(i) == 0) {
-      i += 1
-    }
+    while (i < intCount && digits(i) == 0) { i += 1 }
     (i != intCount) || (digits(i) << (32 - bitCount) != 0)
   }
 
@@ -255,9 +249,7 @@ private[math] object BitLevel {
         i -= 1
       }
     }
-    for (i <- 0 until intCount) {
-      result(i) = 0
-    }
+    for (i <- 0 until intCount) { result(i) = 0 }
   }
 
   def shiftLeftOneBit(source: BigInteger): BigInteger = {
@@ -316,9 +308,7 @@ private[math] object BitLevel {
       if (source.sign < 0) {
         // Checking if the dropped bits are zeros (the remainder equals to 0)
         var i: Int = 0
-        while ((i < intCount) && (source.digits(i) == 0)) {
-          i += 1
-        }
+        while ((i < intCount) && (source.digits(i) == 0)) { i += 1 }
         // If the remainder is not zero, add 1 to the result
         val cmp = (source.digits(i) << (32 - andCount)) != 0
         if (i < intCount || (andCount > 0 && cmp)) {
@@ -361,9 +351,8 @@ private[math] object BitLevel {
       allZero &= (source(i) == 0)
       i += 1
     }
-    if (count == 0) {
-      System.arraycopy(source, intCount, result, 0, resultLen)
-    } else {
+    if (count == 0) { System.arraycopy(source, intCount, result, 0, resultLen) }
+    else {
       val leftShiftCount = 32 - count
       allZero &= ((source(i) << leftShiftCount) == 0)
       i = 0

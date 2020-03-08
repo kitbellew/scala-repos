@@ -80,9 +80,7 @@ class MultiReaderTest
           executor match {
             case Some(exec) =>
               exec.submit(new Runnable {
-                def run() {
-                  promise.setValue(interpreter(request))
-                }
+                def run() { promise.setValue(interpreter(request)) }
               })
             case None => promise.setValue(interpreter(request))
           }
@@ -195,9 +193,7 @@ class MultiReaderTest
           executor match {
             case Some(exec) =>
               exec.submit(new Runnable {
-                def run() {
-                  promise.setValue(interpreter(request))
-                }
+                def run() { promise.setValue(interpreter(request)) }
               })
             case None => promise.setValue(interpreter(request))
           }
@@ -349,9 +345,7 @@ class MultiReaderTest
               .apply(Set(queueNameBuf, Time.now, Buf.Utf8(m))))
       }
 
-      eventually {
-        assert(messages == sentMessages.toSet)
-      }
+      eventually { assert(messages == sentMessages.toSet) }
     }
   }
 
@@ -407,9 +401,7 @@ class MultiReaderTest
               .apply(Set(queueNameBuf, Time.now, Buf.Utf8(m))))
       }
 
-      eventually {
-        assert(messages == sentMessages.toSet)
-      }
+      eventually { assert(messages == sentMessages.toSet) }
       rest.zipWithIndex.foreach {
         case (host, hostIndex) =>
           messages.clear()
@@ -461,9 +453,7 @@ class MultiReaderTest
 
       va.update(Addr.Bound(hosts: _*))
 
-      eventually {
-        assert(messages == sentMessages.toSet)
-      }
+      eventually { assert(messages == sentMessages.toSet) }
     }
   }
 
@@ -513,9 +503,7 @@ class MultiReaderTest
               .apply(Set(Buf.Utf8("the_queue"), Time.now, Buf.Utf8(m))))
       }
 
-      eventually {
-        assert(messages == sentMessages.toSet)
-      }
+      eventually { assert(messages == sentMessages.toSet) }
     }
   }
 
@@ -573,9 +561,7 @@ class MultiReaderTest
               .apply(Set(Buf.Utf8("the_queue"), Time.now, Buf.Utf8(m))))
       }
 
-      eventually {
-        assert(messages == sentMessages.toSet)
-      }
+      eventually { assert(messages == sentMessages.toSet) }
 
       rest.reverse.zipWithIndex.foreach {
         case (host, hostIndex) =>
@@ -629,9 +615,7 @@ class MultiReaderTest
 
       hosts.foreach { host => cluster.add(host) }
 
-      eventually {
-        assert(messages == sentMessages.toSet)
-      }
+      eventually { assert(messages == sentMessages.toSet) }
     }
   }
 
@@ -668,9 +652,7 @@ class MultiReaderTest
             services(i % services.size)
               .apply(Set(Buf.Utf8("the_queue"), Time.now, Buf.Utf8(m))))
       }
-      eventually {
-        assert(messages == sentMessages.toSet)
-      }
+      eventually { assert(messages == sentMessages.toSet) }
       messages.clear()
 
       cluster.del(InetSocketAddress.createUnresolved("10.0.0.100", 22133))
@@ -681,9 +663,7 @@ class MultiReaderTest
             services(i % services.size)
               .apply(Set(Buf.Utf8("the_queue"), Time.now, Buf.Utf8(m))))
       }
-      eventually {
-        assert(messages == sentMessages.toSet)
-      }
+      eventually { assert(messages == sentMessages.toSet) }
     }
   }
 }

@@ -13,9 +13,7 @@ object Engine0 {
   @transient lazy val logger = Logger[this.type]
 
   case class TrainingData(id: Int, error: Boolean = false) extends SanityCheck {
-    def sanityCheck(): Unit = {
-      Predef.assert(!error, "Not Error")
-    }
+    def sanityCheck(): Unit = { Predef.assert(!error, "Not Error") }
   }
 
   case class EvalInfo(id: Int)
@@ -31,9 +29,7 @@ object Engine0 {
 
   class PDataSource0(id: Int = 0)
       extends PDataSource[TrainingData, EvalInfo, Query, Actual] {
-    def readTraining(sc: SparkContext): TrainingData = {
-      TrainingData(id)
-    }
+    def readTraining(sc: SparkContext): TrainingData = { TrainingData(id) }
   }
 
   class PDataSource1(id: Int = 0, en: Int = 0, qn: Int = 0)
@@ -45,9 +41,7 @@ object Engine0 {
       (0 until en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
+            { (Query(id, ex = ex, qx = qx), Actual(id, ex, qx)) }
           }
           (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
         }
@@ -69,9 +63,7 @@ object Engine0 {
       (0 until params.en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
+            { (Query(id, ex = ex, qx = qx), Actual(id, ex, qx)) }
           }
           (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
         }
@@ -101,9 +93,7 @@ object Engine0 {
       (0 until params.en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
+            { (Query(id, ex = ex, qx = qx), Actual(id, ex, qx)) }
           }
           (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
         }
@@ -120,9 +110,7 @@ object Engine0 {
       (0 until en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
+            { (Query(id, ex = ex, qx = qx), Actual(id, ex, qx)) }
           }
           (TrainingData(id), EvalInfo(id), qaSeq)
         }
@@ -144,9 +132,7 @@ object Engine0 {
       (0 until params.en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
+            { (Query(id, ex = ex, qx = qx), Actual(id, ex, qx)) }
           }
           (TrainingData(id), EvalInfo(id), qaSeq)
         }
@@ -174,9 +160,7 @@ object Engine0 {
 
   class LPreparator0(id: Int = 0)
       extends LPreparator[TrainingData, ProcessedData] {
-    def prepare(td: TrainingData): ProcessedData = {
-      ProcessedData(id, td)
-    }
+    def prepare(td: TrainingData): ProcessedData = { ProcessedData(id, td) }
   }
 
   object LPreparator1 {
@@ -480,9 +464,7 @@ class Metric0
       evalDataSet: Seq[(
           Engine1.EvalInfo,
           RDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)])])
-      : Double = {
-    evalDataSet.head._1.v
-  }
+      : Double = { evalDataSet.head._1.v }
 }
 
 object Metric1 {
@@ -503,7 +485,5 @@ class Metric1
       evalDataSet: Seq[(
           Engine1.EvalInfo,
           RDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)])])
-      : Metric1.Result = {
-    Metric1.Result(0, evalDataSet.head._1.v)
-  }
+      : Metric1.Result = { Metric1.Result(0, evalDataSet.head._1.v) }
 }

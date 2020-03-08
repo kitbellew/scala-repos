@@ -39,9 +39,8 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
       // scalastyle:off return
       val maxValue = ISO_8859_1_And_US_ASCII_Common.this.maxValue
       val inRemaining = in.remaining
-      if (inRemaining == 0) {
-        CoderResult.UNDERFLOW
-      } else {
+      if (inRemaining == 0) { CoderResult.UNDERFLOW }
+      else {
         val outRemaining = out.remaining
         val overflow = outRemaining < inRemaining
         val rem = if (overflow) outRemaining else inRemaining
@@ -105,9 +104,8 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
 
       val maxValue = ISO_8859_1_And_US_ASCII_Common.this.maxValue
       val inRemaining = in.remaining
-      if (inRemaining == 0) {
-        CoderResult.UNDERFLOW
-      } else {
+      if (inRemaining == 0) { CoderResult.UNDERFLOW }
+      else {
         if (in.hasArray && out.hasArray) {
           val outRemaining = out.remaining
           val overflow = outRemaining < inRemaining
@@ -153,12 +151,8 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
                         CoderResult.unmappableForLength(2)
                       else
                         CoderResult.malformedForLength(1)
-                    } else {
-                      CoderResult.UNDERFLOW
-                    }
-                  } else {
-                    CoderResult.unmappableForLength(1)
-                  }
+                    } else { CoderResult.UNDERFLOW }
+                  } else { CoderResult.unmappableForLength(1) }
                 }
               }
             }
@@ -170,11 +164,9 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
           @inline
           @tailrec
           def loop(): CoderResult = {
-            if (!in.hasRemaining) {
-              CoderResult.UNDERFLOW
-            } else if (!out.hasRemaining) {
-              CoderResult.OVERFLOW
-            } else {
+            if (!in.hasRemaining) { CoderResult.UNDERFLOW }
+            else if (!out.hasRemaining) { CoderResult.OVERFLOW }
+            else {
               val c = in.get()
               if (c <= maxValue) {
                 out.put(c.toByte)
@@ -189,9 +181,7 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
                     in.position(in.position - 2)
                     if (Character.isLowSurrogate(c2)) {
                       CoderResult.unmappableForLength(2)
-                    } else {
-                      CoderResult.malformedForLength(1)
-                    }
+                    } else { CoderResult.malformedForLength(1) }
                   } else {
                     in.position(in.position - 1)
                     CoderResult.UNDERFLOW

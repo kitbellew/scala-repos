@@ -44,9 +44,7 @@ trait FamilyFormats {
     final def read(sexp: Sexp): T = sexp match {
       case SexpList(List(hint @ SexpSymbol(_))) => read(hint, SexpNil)
       case SexpData(map) if map.size == 1 =>
-        map.head match {
-          case (hint, value) => read(hint, value)
-        }
+        map.head match { case (hint, value) => read(hint, value) }
 
       case x => deserializationError(x)
     }

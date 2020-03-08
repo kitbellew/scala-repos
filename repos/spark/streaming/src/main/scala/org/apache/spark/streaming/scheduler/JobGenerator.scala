@@ -52,9 +52,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
   val clock = {
     val clockClass = ssc.sc.conf
       .get("spark.streaming.clock", "org.apache.spark.util.SystemClock")
-    try {
-      Utils.classForName(clockClass).newInstance().asInstanceOf[Clock]
-    } catch {
+    try { Utils.classForName(clockClass).newInstance().asInstanceOf[Clock] }
+    catch {
       case e: ClassNotFoundException
           if clockClass.startsWith("org.apache.spark.streaming") =>
         val newClockClass =
@@ -80,9 +79,7 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
       ssc.conf,
       ssc.checkpointDir,
       ssc.sparkContext.hadoopConfiguration)
-  } else {
-    null
-  }
+  } else { null }
 
   // eventLoop is created when generator starts.
   // This not being null means the scheduler has been started and not stopped
@@ -109,11 +106,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     }
     eventLoop.start()
 
-    if (ssc.isCheckpointPresent) {
-      restart()
-    } else {
-      startFirstTime()
-    }
+    if (ssc.isCheckpointPresent) { restart() }
+    else { startFirstTime() }
   }
 
   /**
@@ -183,17 +177,13 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
   /**
     * Callback called when a batch has been completely processed.
     */
-  def onBatchCompletion(time: Time) {
-    eventLoop.post(ClearMetadata(time))
-  }
+  def onBatchCompletion(time: Time) { eventLoop.post(ClearMetadata(time)) }
 
   /**
     * Callback called when the checkpoint of a batch has been written.
     */
   def onCheckpointCompletion(time: Time, clearCheckpointDataLater: Boolean) {
-    if (clearCheckpointDataLater) {
-      eventLoop.post(ClearCheckpointData(time))
-    }
+    if (clearCheckpointDataLater) { eventLoop.post(ClearCheckpointData(time)) }
   }
 
   /** Processes all events */
@@ -338,7 +328,5 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     }
   }
 
-  private def markBatchFullyProcessed(time: Time) {
-    lastProcessedBatch = time
-  }
+  private def markBatchFullyProcessed(time: Time) { lastProcessedBatch = time }
 }

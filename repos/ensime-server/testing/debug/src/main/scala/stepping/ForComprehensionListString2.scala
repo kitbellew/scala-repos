@@ -8,9 +8,7 @@ object ForComprehensionListString2 {
 
     val l = List("un")
 
-    for (n <- l) {
-      n.size
-    }
+    for (n <- l) { n.size }
 
     noop(None)
   }

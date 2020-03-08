@@ -23,13 +23,9 @@ package org.apache.spark.util
 private[spark] class ParentClassLoader(parent: ClassLoader)
     extends ClassLoader(parent) {
 
-  override def findClass(name: String): Class[_] = {
-    super.findClass(name)
-  }
+  override def findClass(name: String): Class[_] = { super.findClass(name) }
 
-  override def loadClass(name: String): Class[_] = {
-    super.loadClass(name)
-  }
+  override def loadClass(name: String): Class[_] = { super.loadClass(name) }
 
   override def loadClass(name: String, resolve: Boolean): Class[_] = {
     super.loadClass(name, resolve)

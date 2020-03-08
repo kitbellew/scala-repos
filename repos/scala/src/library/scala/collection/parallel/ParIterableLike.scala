@@ -164,9 +164,7 @@ trait ParIterableLike[
   @volatile
   private var _tasksupport = defaultTaskSupport
 
-  protected def initTaskSupport() {
-    _tasksupport = defaultTaskSupport
-  }
+  protected def initTaskSupport() { _tasksupport = defaultTaskSupport }
 
   /** The task support object which is responsible for scheduling and
     *  load-balancing tasks to processors.
@@ -853,9 +851,7 @@ trait ParIterableLike[
           0,
           pred,
           combinerFactory,
-          splitter assign cntx) mapResult {
-          _._1.resultWithTaskSupport
-        })
+          splitter assign cntx) mapResult { _._1.resultWithTaskSupport })
     }
   }
 
@@ -914,9 +910,7 @@ trait ParIterableLike[
         pred,
         combinerFactory,
         combinerFactory,
-        splitter assign cntx) mapResult {
-        _._2.resultWithTaskSupport
-      }
+        splitter assign cntx) mapResult { _._2.resultWithTaskSupport }
     )
   }
 
@@ -957,9 +951,7 @@ trait ParIterableLike[
           thatElem,
           combinerFactory(() => bf(repr).asCombiner),
           splitter,
-          thatseq.splitter) mapResult {
-          _.resultWithTaskSupport
-        }
+          thatseq.splitter) mapResult { _.resultWithTaskSupport }
       )
     } else
       setTaskSupport(
@@ -1026,9 +1018,8 @@ trait ParIterableLike[
   override def to[Col[_]](
       implicit cbf: CanBuildFrom[Nothing, T, Col[T @uncheckedVariance]])
       : Col[T @uncheckedVariance] =
-    if (cbf().isCombiner) {
-      toParCollection[T, Col[T]](() => cbf().asCombiner)
-    } else seq.to(cbf)
+    if (cbf().isCombiner) { toParCollection[T, Col[T]](() => cbf().asCombiner) }
+    else seq.to(cbf)
 
   /* tasks */
 
@@ -1126,9 +1117,7 @@ trait ParIterableLike[
       val initialResult = tasksupport.executeAndWaitResult(inner)
       result = map(initialResult)
     }
-    private[parallel] override def signalAbort() {
-      inner.signalAbort()
-    }
+    private[parallel] override def signalAbort() { inner.signalAbort() }
     override def requiresStrictSplitters = inner.requiresStrictSplitters
   }
 
@@ -1566,12 +1555,11 @@ trait ParIterableLike[
         // val lst = pit.toList
         // val pa = mutable.ParArray(lst: _*)
         // val str = "At leaf we will iterate: " + pa.splitter.toList
-        result =
-          pit.span2combiners(
-            pred,
-            cbfBefore(),
-            cbfAfter()
-          ) // do NOT reuse old combiners here, lest ye be surprised
+        result = pit.span2combiners(
+          pred,
+          cbfBefore(),
+          cbfAfter()
+        ) // do NOT reuse old combiners here, lest ye be surprised
         // println("\nAt leaf result is: " + result)
         if (result._2.size > 0) pit.setIndexFlagIfLesser(pos)
       } else {
@@ -1857,9 +1845,7 @@ trait ParIterableLike[
       var acc: U)
       extends ScanTree[U] {
     def beginsAt = from
-    def pushdown(v: U) = {
-      acc = op(v, acc)
-    }
+    def pushdown(v: U) = { acc = op(v, acc) }
     def leftmost = this
     def rightmost = this
     def print(depth: Int) = println((" " * depth) + this)
@@ -1882,19 +1868,11 @@ trait ParIterableLike[
   // def debugBuffer: ArrayBuffer[String] = dbbuff
   def debugBuffer: ArrayBuffer[String] = null
 
-  private[parallel] def debugclear() = synchronized {
-    debugBuffer.clear()
-  }
+  private[parallel] def debugclear() = synchronized { debugBuffer.clear() }
 
-  private[parallel] def debuglog(s: String) = synchronized {
-    debugBuffer += s
-  }
+  private[parallel] def debuglog(s: String) = synchronized { debugBuffer += s }
 
   import scala.collection.DebugUtils._
   private[parallel] def printDebugBuffer() =
-    println(buildString { append =>
-      for (s <- debugBuffer) {
-        append(s)
-      }
-    })
+    println(buildString { append => for (s <- debugBuffer) { append(s) } })
 }

@@ -259,9 +259,7 @@ trait ZNode {
           if (knownChildren.size > 0) {
             broker send (ZNode
               .TreeUpdate(this, removed = knownChildren)) sync ()
-          } else {
-            Future.Done
-          } onSuccess { _ =>
+          } else { Future.Done } onSuccess { _ =>
             eventUpdate onSuccess {
               case MonitorableEvent() =>
                 monitorWatch(parent.getChildren.watch(), Set.empty[ZNode])

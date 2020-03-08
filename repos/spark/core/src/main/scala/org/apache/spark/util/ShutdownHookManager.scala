@@ -73,9 +73,7 @@ private[spark] object ShutdownHookManager extends Logging {
   // Register the path to be deleted via shutdown hook
   def registerShutdownDeleteDir(file: File) {
     val absolutePath = file.getAbsolutePath()
-    shutdownDeletePaths.synchronized {
-      shutdownDeletePaths += absolutePath
-    }
+    shutdownDeletePaths.synchronized { shutdownDeletePaths += absolutePath }
   }
 
   // Remove the path to be deleted via shutdown hook
@@ -127,9 +125,7 @@ private[spark] object ShutdownHookManager extends Logging {
       Runtime.getRuntime.addShutdownHook(hook)
       // scalastyle:on runtimeaddshutdownhook
       Runtime.getRuntime.removeShutdownHook(hook)
-    } catch {
-      case ise: IllegalStateException => return true
-    }
+    } catch { case ise: IllegalStateException => return true }
     false
   }
 
@@ -160,9 +156,7 @@ private[spark] object ShutdownHookManager extends Logging {
     * @param ref A handle returned by `addShutdownHook`.
     * @return Whether the hook was removed.
     */
-  def removeShutdownHook(ref: AnyRef): Boolean = {
-    shutdownHooks.remove(ref)
-  }
+  def removeShutdownHook(ref: AnyRef): Boolean = { shutdownHooks.remove(ref) }
 
 }
 
@@ -190,9 +184,7 @@ private[util] class SparkShutdownHookManager {
     var nextHook: SparkShutdownHook = null
     while ({
       nextHook = hooks.synchronized { hooks.poll() }; nextHook != null
-    }) {
-      Try(Utils.logUncaughtExceptions(nextHook.run()))
-    }
+    }) { Try(Utils.logUncaughtExceptions(nextHook.run())) }
   }
 
   def add(priority: Int, hook: () => Unit): AnyRef = {

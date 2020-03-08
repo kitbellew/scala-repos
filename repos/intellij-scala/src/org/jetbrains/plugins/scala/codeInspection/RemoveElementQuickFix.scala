@@ -10,7 +10,5 @@ import com.intellij.psi.PsiElement
   */
 class RemoveElementQuickFix(name: String, e: PsiElement)
     extends AbstractFixOnPsiElement(name, e) {
-  override def doApplyFix(project: Project): Unit = {
-    getElement.delete()
-  }
+  override def doApplyFix(project: Project): Unit = { getElement.delete() }
 }

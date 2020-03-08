@@ -210,9 +210,8 @@ private[hive] class HiveQl(conf: ParserConf)
   /** Creates LogicalPlan for a given SQL string. */
   override def parsePlan(sql: String): LogicalPlan = {
     safeParse(sql, ParseDriver.parsePlan(sql, conf)) { ast =>
-      if (nativeCommands.contains(ast.text)) {
-        HiveNativeCommand(sql)
-      } else {
+      if (nativeCommands.contains(ast.text)) { HiveNativeCommand(sql) }
+      else {
         nodeToPlan(ast) match {
           case NativePlaceholder => HiveNativeCommand(sql)
           case plan              => plan
@@ -317,9 +316,8 @@ private[hive] class HiveQl(conf: ParserConf)
         )
 
         // If the view is partitioned, we let hive handle it.
-        if (maybePartCols.isDefined) {
-          NativePlaceholder
-        } else {
+        if (maybePartCols.isDefined) { NativePlaceholder }
+        else {
           val schema = maybeColumns
             .map { cols =>
               // We can't specify column types when create view, so fill it with null first, and
@@ -338,9 +336,7 @@ private[hive] class HiveQl(conf: ParserConf)
           maybeComment.foreach {
             case Token("TOK_TABLECOMMENT", child :: Nil) =>
               val comment = unescapeSQLString(child.text)
-              if (comment ne null) {
-                properties += ("comment" -> comment)
-              }
+              if (comment ne null) { properties += ("comment" -> comment) }
           }
 
           createView(
@@ -392,9 +388,7 @@ private[hive] class HiveQl(conf: ParserConf)
           name = tableIdentifier,
           tableType = if (externalTable.isDefined) {
             CatalogTableType.EXTERNAL_TABLE
-          } else {
-            CatalogTableType.MANAGED_TABLE
-          },
+          } else { CatalogTableType.MANAGED_TABLE },
           storage = CatalogStorageFormat(
             locationUri = None,
             inputFormat = None,
@@ -428,9 +422,7 @@ private[hive] class HiveQl(conf: ParserConf)
         children.collect {
           case list @ Token("TOK_TABCOLLIST", _) =>
             val cols = nodeToColumns(list, lowerCase = true)
-            if (cols != null) {
-              tableDesc = tableDesc.copy(schema = cols)
-            }
+            if (cols != null) { tableDesc = tableDesc.copy(schema = cols) }
           case Token("TOK_TABLECOMMENT", child :: Nil) =>
             val comment = unescapeSQLString(child.text)
             // TODO support the sql text
@@ -731,15 +723,11 @@ private[hive] class HiveQl(conf: ParserConf)
       // TODO Adds support for user-defined record reader/writer classes
       val recordReaderClass = if (useDefaultRecordReader) {
         Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDREADER))
-      } else {
-        None
-      }
+      } else { None }
 
       val recordWriterClass = if (useDefaultRecordWriter) {
         Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDWRITER))
-      } else {
-        None
-      }
+      } else { None }
 
       val schema = HiveScriptIOSchema(
         inRowFormat,

@@ -121,14 +121,12 @@ object CachesUtil {
               false /* todo: true? */,
               new Computable[CachedValueProvider.Result[Result]] {
                 def compute(): CachedValueProvider.Result[Result] = {
-                  try {
-                    provider.compute()
-                  } catch {
+                  try { provider.compute() }
+                  catch {
                     case ProbablyRecursionException(`e`, (), k, set)
                         if k == key =>
-                      try {
-                        provider.compute()
-                      } finally set.foreach(_.setProbablyRecursive(false))
+                      try { provider.compute() }
+                      finally set.foreach(_.setProbablyRecursive(false))
                     case t @ ProbablyRecursionException(ee, data, k, set)
                         if k == key =>
                       val fun = PsiTreeUtil
@@ -253,14 +251,12 @@ object CachesUtil {
             false,
             new Computable[Result] {
               def compute(): Result = {
-                try {
-                  builder(e, data)
-                } catch {
+                try { builder(e, data) }
+                catch {
                   case ProbablyRecursionException(`e`, `data`, k, set)
                       if k == key =>
-                    try {
-                      builder(e, data)
-                    } finally set.foreach(_.setProbablyRecursive(false))
+                    try { builder(e, data) }
+                    finally set.foreach(_.setProbablyRecursive(false))
                   case t @ ProbablyRecursionException(ee, innerData, k, set)
                       if k == key =>
                     val fun =
@@ -283,9 +279,7 @@ object CachesUtil {
           }
         }
       }
-      if (isCache) {
-        map.put(data, result)
-      }
+      if (isCache) { map.put(data, result) }
     }
     result
   }
@@ -297,9 +291,7 @@ object CachesUtil {
         if (!ProjectRootManager
               .getInstance(element.getProject)
               .getFileIndex
-              .isInContent(file.getVirtualFile)) {
-          return dep_item
-        }
+              .isInContent(file.getVirtualFile)) { return dep_item }
         var dir = file.getParent
         while (dir != null) {
           if (dir.getName == "scala-library.jar")
@@ -417,9 +409,7 @@ object CachesUtil {
       try {
         currentThreadIsCheckingFuns.set(true)
         checkFuns()
-      } finally {
-        currentThreadIsCheckingFuns.set(false)
-      }
+      } finally { currentThreadIsCheckingFuns.set(false) }
     }
   }
 

@@ -130,9 +130,7 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
       case That(b) =>
         Functor[F].map(g(b))(That(_))
       case Both(a, b) =>
-        Apply[F].apply2(f(a), g(b)) {
-          case (c, d) => Both(c, d): C \&/ D
-        }
+        Apply[F].apply2(f(a), g(b)) { case (c, d) => Both(c, d): C \&/ D }
     }
 
   def map[D](g: B => D): (A \&/ D) =

@@ -45,21 +45,13 @@ private[streaming] object UIUtils {
     * after converting, also with its TimeUnit.
     */
   def normalizeDuration(milliseconds: Long): (Double, TimeUnit) = {
-    if (milliseconds < 1000) {
-      return (milliseconds, TimeUnit.MILLISECONDS)
-    }
+    if (milliseconds < 1000) { return (milliseconds, TimeUnit.MILLISECONDS) }
     val seconds = milliseconds.toDouble / 1000
-    if (seconds < 60) {
-      return (seconds, TimeUnit.SECONDS)
-    }
+    if (seconds < 60) { return (seconds, TimeUnit.SECONDS) }
     val minutes = seconds / 60
-    if (minutes < 60) {
-      return (minutes, TimeUnit.MINUTES)
-    }
+    if (minutes < 60) { return (minutes, TimeUnit.MINUTES) }
     val hours = minutes / 60
-    if (hours < 24) {
-      return (hours, TimeUnit.HOURS)
-    }
+    if (hours < 24) { return (hours, TimeUnit.HOURS) }
     val days = hours / 24
     (days, TimeUnit.DAYS)
   }
@@ -122,11 +114,8 @@ private[streaming] object UIUtils {
           // If batchInterval >= 1 second, don't show milliseconds
           batchTimeFormat.get.format(batchTime)
         }
-      if (showYYYYMMSS) {
-        formattedBatchTime
-      } else {
-        formattedBatchTime.substring(formattedBatchTime.indexOf(' ') + 1)
-      }
+      if (showYYYYMMSS) { formattedBatchTime }
+      else { formattedBatchTime.substring(formattedBatchTime.indexOf(' ') + 1) }
     } finally {
       if (timezone != null) {
         batchTimeFormat.get.setTimeZone(oldTimezones._1)
@@ -141,9 +130,7 @@ private[streaming] object UIUtils {
       "Failed due to Spark job error\n" + failure
     } else {
       var nextLineIndex = failure.indexOf("\n")
-      if (nextLineIndex < 0) {
-        nextLineIndex = failure.length
-      }
+      if (nextLineIndex < 0) { nextLineIndex = failure.length }
       val firstLine = failure.substring(0, nextLineIndex)
       s"Failed due to error: $firstLine\n$failure"
     }
@@ -157,16 +144,12 @@ private[streaming] object UIUtils {
     // Display the first line by default
     val failureReasonSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
       failureReason.substring(0, failureReason.indexOf('\n'))
-    } else {
-      failureReason
-    })
+    } else { failureReason })
     val failureDetails =
       if (isMultiline && !includeFirstLineInExpandDetails) {
         // Skip the first line
         failureReason.substring(failureReason.indexOf('\n') + 1)
-      } else {
-        failureReason
-      }
+      } else { failureReason }
     val details = if (isMultiline) {
       // scalastyle:off
       <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
@@ -177,9 +160,7 @@ private[streaming] object UIUtils {
           <pre>{failureDetails}</pre>
         </div>
       // scalastyle:on
-    } else {
-      ""
-    }
+    } else { "" }
 
     if (rowspan == 1) {
       <td valign="middle" style="max-width: 300px">{failureReasonSummary}{

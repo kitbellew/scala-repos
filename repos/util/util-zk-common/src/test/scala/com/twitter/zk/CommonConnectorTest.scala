@@ -49,9 +49,7 @@ class CommonConnectorTest extends WordSpec with BeforeAndAfter {
         val zkClient =
           commonClient.toZkClient(timeout)(FuturePool.immediatePool)
 
-        after {
-          Await.ready(zkClient.release())
-        }
+        after { Await.ready(zkClient.release()) }
 
         "have 'zookeeper' in '/'" in {
           assert(

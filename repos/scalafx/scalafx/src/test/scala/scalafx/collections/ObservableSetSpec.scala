@@ -96,9 +96,7 @@ class ObservableSetSpec[T]
     // Preparation
     val set = ObservableSet(1, 2)
     var invalidateCount = 0
-    set onInvalidate {
-      invalidateCount += 1
-    }
+    set onInvalidate { invalidateCount += 1 }
 
     // Execution
     set += 1 // 1 is in set yet. How set is not modified, invalidate is not activated
@@ -115,9 +113,7 @@ class ObservableSetSpec[T]
     // Preparation
     val set = ObservableSet(1, 2)
     var changeCount = 0
-    set onChange {
-      changeCount += 1
-    }
+    set onChange { changeCount += 1 }
 
     // Execution
     set += 1 // Set not changed. onChange not activated

@@ -34,9 +34,8 @@ private object PostgresDialect extends JdbcDialect {
       md: MetadataBuilder): Option[DataType] = {
     if (sqlType == Types.BIT && typeName.equals("bit") && size != 1) {
       Some(BinaryType)
-    } else if (sqlType == Types.OTHER) {
-      Some(StringType)
-    } else if (sqlType == Types.ARRAY) {
+    } else if (sqlType == Types.OTHER) { Some(StringType) }
+    else if (sqlType == Types.ARRAY) {
       val scale = md.build.getLong("scale").toInt
       // postgres array type names start with underscore
       toCatalystType(typeName.drop(1), size, scale).map(ArrayType(_))

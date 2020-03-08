@@ -71,9 +71,7 @@ case class StaticInvoke(
     if (propagateNull) {
       val objNullCheck = if (ctx.defaultValue(dataType) == "null") {
         s"${ev.isNull} = ${ev.value} == null;"
-      } else {
-        ""
-      }
+      } else { "" }
 
       val argsNonNull = s"!(${argGen.map(_.isNull).mkString(" || ")})"
       s"""
@@ -164,9 +162,7 @@ case class Invoke(
     // correctly.
     val objNullCheck = if (ctx.defaultValue(dataType) == "null") {
       s"${ev.isNull} = ${ev.value} == null;"
-    } else {
-      ""
-    }
+    } else { "" }
 
     val value = unboxer(s"${obj.value}.$functionName($argString)")
 
@@ -241,9 +237,7 @@ case class NewInstance(
 
     val constructorCall = outer
       .map { gen => s"""${gen.value}.new ${cls.getSimpleName}($argString)""" }
-      .getOrElse {
-        s"new $className($argString)"
-      }
+      .getOrElse { s"new $className($argString)" }
 
     if (propagateNull && argGen.nonEmpty) {
       val argsNonNull = s"!(${argGen.map(_.isNull).mkString(" || ")})"
@@ -463,9 +457,7 @@ case class MapObjects private (
       val arrayPart =
         convertedType.reverse.takeWhile(c => c == '[' || c == ']').reverse
       s"new $rawType[$dataLength]$arrayPart"
-    } else {
-      s"new $convertedType[$dataLength]"
-    }
+    } else { s"new $convertedType[$dataLength]" }
 
     val loopNullCheck = if (primitiveElement) {
       s"boolean ${loopVar.isNull} = ${genInputData.value}.isNullAt($loopIndex);"

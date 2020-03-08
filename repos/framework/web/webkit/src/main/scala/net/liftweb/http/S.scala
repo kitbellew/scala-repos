@@ -93,9 +93,7 @@ object S extends S {
     def add(in: HTTPCookie) =
       CookieHolder(inCookies, in :: outCookies.filter(_.name != in.name))
 
-    def delete(name: String) = {
-      add(HTTPCookie(name, "").setMaxAge(0))
-    }
+    def delete(name: String) = { add(HTTPCookie(name, "").setMaxAge(0)) }
 
     def delete(old: HTTPCookie) =
       add(old.setMaxAge(0).setValue(""))
@@ -988,9 +986,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
           )
           .cmd
       )
-    } else {
-      Nil
-    }
+    } else { Nil }
   }
 
   /**
@@ -1311,9 +1307,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     } yield queryString
 
   def uriAndQueryString: Box[String] =
-    for {
-      req <- this.request
-    } yield req.uri + (queryString.map(s => "?" + s) openOr "")
+    for { req <- this.request } yield req.uri + (queryString.map(s =>
+      "?" + s) openOr "")
 
   /**
     * Run any configured exception handlers and make sure errors in
@@ -1468,9 +1463,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     else {
       if (request.map(_.stateless_?).openOr(false)) {
         session.doAsStateless(_init(request, session)(() => f))
-      } else {
-        _init(request, session)(() => f)
-      }
+      } else { _init(request, session)(() => f) }
     }
   }
 
@@ -1486,9 +1479,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
       case _ => {
         val fakeSess = LiftRules.statelessSession.vend.apply(request)
-        try {
-          _init(Box !! request, fakeSess)(() => f)
-        } finally {
+        try { _init(Box !! request, fakeSess)(() => f) }
+        finally {
           // ActorPing.schedule(() => fakeSess.doShutDown(), 0 seconds)
         }
       }
@@ -1654,9 +1646,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   private def wrapQuery[B](f: () => B): B = {
     val begin = millis
-    try {
-      f()
-    } finally {
+    try { f() }
+    finally {
       val time = millis - begin
       _queryAnalyzer.foreach(_(request, time, queryLog))
     }
@@ -1684,9 +1675,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * Synonym for S.setHeader. Exists to provide the converse to
     * S.getResponseHeader.
     */
-  def setResponseHeader(name: String, value: String) {
-    setHeader(name, value)
-  }
+  def setResponseHeader(name: String, value: String) { setHeader(name, value) }
 
   /**
     * Returns the currently set HTTP response headers as a List[(String, String)]. To retrieve
@@ -1824,9 +1813,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
             }
             f
           }
-        } finally {
-          postFuncs.is.foreach(f => tryo(f()))
-        }
+        } finally { postFuncs.is.foreach(f => tryo(f())) }
       }
     }
   }
@@ -1841,9 +1828,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
             LiftRules.statefulRewrite.toList,
           Nil,
           LiftRules.statelessReqTest.toList)
-      } else {
-        req
-      }
+      } else { req }
     }
   }
 
@@ -1868,9 +1853,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   private[http] def withReq[T](req: Box[Req])(f: => T): T = {
     CurrentReq.doWith(req openOr null) {
-      _request.doWith(req openOr null) {
-        f
-      }
+      _request.doWith(req openOr null) { f }
     }
   }
 
@@ -2002,9 +1985,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
           List(name.substring(prefix.length + 1) -> value)
         case _ => Nil
       }
-      .foldRight(start) {
-        case ((name, value), at) => at + (name -> value)
-      }
+      .foldRight(start) { case ((name, value), at) => at + (name -> value) }
 
   /**
     * Returns the S attributes that are prefixed by 'prefix' parameter as a Map[String, String]
@@ -2201,9 +2182,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       template: NodeSeq,
       snips: (String, NodeSeq => NodeSeq)*): Box[NodeSeq] =
     mapSnippetsWith(snips: _*) {
-      for {
-        sess <- session ?~ "No current session"
-      } yield sess.processSurroundAndInclude("HTML Constant", template)
+      for { sess <- session ?~ "No current session" } yield sess
+        .processSurroundAndInclude("HTML Constant", template)
     }
 
   /**
@@ -2282,9 +2262,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @tparam T the return type of the code block
     * @return the return value of the code block
     */
-  def clearAttrs[T](f: => T): T = {
-    _attrs.doWith((Null, Nil))(f)
-  }
+  def clearAttrs[T](f: => T): T = { _attrs.doWith((Null, Nil))(f) }
 
   /**
     * A function that will eagerly evaluate a template.
@@ -2614,9 +2592,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     try {
       _currentSnippet.set(Full(name))
       f
-    } finally {
-      _currentSnippet.set(old)
-    }
+    } finally { _currentSnippet.set(old) }
   }
 
   def currentSnippet: Box[String] = _currentSnippet.is
@@ -2707,9 +2683,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                     shot = true
                     S.session.map(_.removeFunction(name))
                     value.apply(in)
-                  } else {
-                    js.JsCmds.Noop
-                  }
+                  } else { js.JsCmds.Noop }
                 }
               }
 
@@ -2719,9 +2693,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                     shot = true
                     S.session.map(_.removeFunction(name))
                     value.apply(in)
-                  } else {
-                    js.JsCmds.Noop
-                  }
+                  } else { js.JsCmds.Noop }
                 }
               }
             }
@@ -2767,9 +2739,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                     val ret = value.apply(in)
                     future.satisfy(ret)
                     ret
-                  } catch {
-                    case e: Exception => future.satisfy(e); throw e
-                  }
+                  } catch { case e: Exception => future.satisfy(e); throw e }
                 }
               }
 
@@ -2784,9 +2754,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                     val ret = value.apply(in)
                     future.satisfy(ret)
                     ret
-                  } catch {
-                    case e: Exception => future.satisfy(e); throw e
-                  }
+                  } catch { case e: Exception => future.satisfy(e); throw e }
                 }
               }
             }
@@ -2820,9 +2788,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def disableTestFuncNames_? : Boolean = _disableTestFuncNames.box openOr false
 
   def disableTestFuncNames[T](f: => T): T =
-    _disableTestFuncNames.doWith(true) {
-      f
-    }
+    _disableTestFuncNames.doWith(true) { f }
 
   def formFuncName: String = LiftRules.funcNameGenerator()
 
@@ -2860,11 +2826,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def formGroup[T](group: Int)(f: => T): T = {
     val x = _formGroup.is
     _formGroup.set(Full(group))
-    try {
-      f
-    } finally {
-      _formGroup.set(x)
-    }
+    try { f }
+    finally { _formGroup.set(x) }
   }
 
   import json.JsonAST._
@@ -3026,9 +2989,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
               ret
           }
 
-        init(Box !! req, ses) {
-          doRender(ses)
-        }
+        init(Box !! req, ses) { doRender(ses) }
       }
     }
   }
@@ -3068,9 +3029,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * Set the paramsForComet and run the function
     */
   private[http] def doCometParams[T](map: Map[String, List[String]])(
-      f: => T): T = {
-    paramsForComet.doWith(map)(f)
-  }
+      f: => T): T = { paramsForComet.doWith(map)(f) }
 
   /**
     * Sets an ERROR notice as a plain text
@@ -3223,9 +3182,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @param f - the function that returns the messages
     */
   def noIdMessages(f: => List[(NodeSeq, Box[String])]): List[NodeSeq] = {
-    f.collect {
-      case (message, Empty) => message
-    }
+    f.collect { case (message, Empty) => message }
   }
 
   /**
@@ -3269,11 +3226,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * after your function is invoked, it will be automatically removed from functions cache so
     * that it cannot be invoked again.
     */
-  def callOnce[T](f: => T): T = {
-    autoCleanUp.doWith(true) {
-      f
-    }
-  }
+  def callOnce[T](f: => T): T = { autoCleanUp.doWith(true) { f } }
 
   /**
     * All functions created inside the oneShot scope
@@ -3281,9 +3234,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * cached and served again if the same function is invoked
     */
   def oneShot[T](f: => T): T =
-    _oneShot.doWith(true) {
-      f
-    }
+    _oneShot.doWith(true) { f }
 
 }
 

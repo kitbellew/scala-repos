@@ -135,14 +135,9 @@ class JDBCQueryExecutor(
 
                       val result = stmt.executeQuery(query)
 
-                      if (result.next) {
-                        JNum(result.getLong("count"))
-                      } else {
-                        JNum(0)
-                      }
-                    } finally {
-                      conn.close()
-                    }
+                      if (result.next) { JNum(result.getLong("count")) }
+                      else { JNum(0) }
+                    } finally { conn.close() }
                   }
                   .bimap(
                     { t =>
@@ -154,9 +149,7 @@ class JDBCQueryExecutor(
           case _ =>
             Success(JNum(0))
         }
-      }.onFailure {
-        case t => logger.error("Failure during size", t)
-      }
+      }.onFailure { case t => logger.error("Failure during size", t) }
 
     def browse(
         userUID: String,
@@ -195,9 +188,7 @@ class JDBCQueryExecutor(
                       }
 
                       tables.serialize.asInstanceOf[JArray]
-                    } finally {
-                      conn.close()
-                    }
+                    } finally { conn.close() }
                   }
                   .bimap(
                     { t =>
@@ -213,9 +204,7 @@ class JDBCQueryExecutor(
             Failure(
               "JDBC paths have the form /databaseName/tableName; longer paths are not supported.")
         }
-      }.onFailure {
-        case t => logger.error("Failure during size", t)
-      }
+      }.onFailure { case t => logger.error("Failure during size", t) }
     }
 
     def structure(

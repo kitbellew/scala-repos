@@ -121,9 +121,7 @@ class ScAnnotationImpl private (
     val existing: PsiAnnotationMemberValue = findDeclaredAttributeValue(
       attributeName)
     if (value == null) {
-      if (existing == null) {
-        return null.asInstanceOf[T]
-      }
+      if (existing == null) { return null.asInstanceOf[T] }
       def delete(elem: PsiElement) {
         elem.getParent match {
           case arg: ScArgumentExprList =>
@@ -142,9 +140,7 @@ class ScAnnotationImpl private (
               if (next != null && next.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
                 elem.delete()
                 next.delete()
-              } else {
-                elem.delete()
-              }
+              } else { elem.delete() }
             }
           case _ => elem.delete()
         }
@@ -155,9 +151,8 @@ class ScAnnotationImpl private (
         case other                    => delete(other)
       }
     } else {
-      if (existing != null) {
-        existing.replace(value)
-      } else {
+      if (existing != null) { existing.replace(value) }
+      else {
         val args: Seq[ScArgumentExprList] = annotationExpr.constr.arguments
         if (args.length == 0) {
           return null.asInstanceOf[T] //todo: ?
@@ -174,11 +169,8 @@ class ScAnnotationImpl private (
           (PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME.equals(
             attributeName) || null == attributeName)
         var namePrefix: String = null
-        if (allowNoName) {
-          namePrefix = ""
-        } else {
-          namePrefix = attributeName + " = "
-        }
+        if (allowNoName) { namePrefix = "" }
+        else { namePrefix = attributeName + " = " }
 
         args(0).addBefore(
           ScalaPsiElementFactory.createExpressionFromText(

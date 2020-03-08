@@ -50,9 +50,7 @@ class CleanerTest extends JUnitSuite {
     time = time)
 
   @After
-  def teardown() {
-    CoreUtils.rm(tmpdir)
-  }
+  def teardown() { CoreUtils.rm(tmpdir) }
 
   /**
     * Test simple log cleaning

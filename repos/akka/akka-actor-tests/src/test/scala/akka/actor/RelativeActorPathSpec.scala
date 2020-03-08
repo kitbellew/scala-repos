@@ -14,9 +14,7 @@ class RelativeActorPathSpec extends WordSpec with Matchers {
     RelativeActorPath.unapply(path).getOrElse(Nil)
 
   "RelativeActorPath" must {
-    "match single name" in {
-      elements("foo") should ===(List("foo"))
-    }
+    "match single name" in { elements("foo") should ===(List("foo")) }
     "match path separated names" in {
       elements("foo/bar/baz") should ===(List("foo", "bar", "baz"))
     }

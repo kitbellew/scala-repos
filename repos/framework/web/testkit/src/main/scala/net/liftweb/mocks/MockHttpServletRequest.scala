@@ -191,9 +191,7 @@ class MockHttpServletRequest(
   def queryString: String =
     if (method == "GET" && !parameters.isEmpty) {
       parameters.map { case (k, v) => k + "=" + v }.mkString("&")
-    } else {
-      null
-    }
+    } else { null }
 
   def queryString_=(q: String) {
     if (q != null && q.length > 0) {
@@ -279,9 +277,7 @@ class MockHttpServletRequest(
       "Context path must be empty, or must start with a '/' and not end with a '/': " + contextPath)
   }
 
-  if (url != null) {
-    processUrl(url)
-  }
+  if (url != null) { processUrl(url) }
 
   // END PRIMARY CONSTRUCTOR
 
@@ -317,9 +313,8 @@ class MockHttpServletRequest(
     * @param url The URL to extract from
     */
   def processUrl(url: String) {
-    if (url.toLowerCase.startsWith("http")) {
-      processUrl(new URL(url))
-    } else if (url.startsWith("/")) {
+    if (url.toLowerCase.startsWith("http")) { processUrl(new URL(url)) }
+    else if (url.startsWith("/")) {
       computeRealPath(url).split('?') match {
         case Array(path, query) => this.path = path; queryString = query
         case Array(path)        => this.path = path; queryString = null
@@ -358,11 +353,8 @@ class MockHttpServletRequest(
     localAddr = localName
     serverName = localName
 
-    if (url.getPort == -1) {
-      localPort = 80
-    } else {
-      localPort = url.getPort
-    }
+    if (url.getPort == -1) { localPort = 80 }
+    else { localPort = url.getPort }
 
     serverPort = localPort
 
@@ -539,9 +531,7 @@ class MockHttpServletRequest(
 
     buffer.append(path)
 
-    if (queryString ne null) {
-      buffer.append("?" + queryString)
-    }
+    if (queryString ne null) { buffer.append("?" + queryString) }
 
     buffer
   }
@@ -551,9 +541,7 @@ class MockHttpServletRequest(
   def getSession(): HttpSession = getSession(true)
 
   def getSession(create: Boolean): HttpSession = {
-    if ((session eq null) && create) {
-      session = new MockHttpSession
-    }
+    if ((session eq null) && create) { session = new MockHttpSession }
     session
   }
 
@@ -577,13 +565,9 @@ class MockHttpServletRequest(
     headers += (s -> List(Helpers.toInternetDate(l)))
   }
 
-  def getParts(): Collection[Part] = {
-    Seq[Part]()
-  }
+  def getParts(): Collection[Part] = { Seq[Part]() }
 
-  def getPart(partName: String): Part = {
-    null
-  }
+  def getPart(partName: String): Part = { null }
 
   def login(username: String, password: String): Unit = ()
 

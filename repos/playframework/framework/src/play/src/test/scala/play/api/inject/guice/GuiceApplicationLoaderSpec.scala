@@ -17,9 +17,7 @@ class GuiceApplicationLoaderSpec extends Specification {
 
     "allow adding additional modules" in {
       val module = new AbstractModule {
-        def configure() = {
-          bind(classOf[Bar]) to classOf[MarsBar]
-        }
+        def configure() = { bind(classOf[Bar]) to classOf[MarsBar] }
       }
       val builder = new GuiceApplicationBuilder().bindings(module)
       val loader = new GuiceApplicationLoader(builder)
@@ -72,32 +70,24 @@ class GuiceApplicationLoaderSpec extends Specification {
 }
 
 class ManualTestModule extends AbstractModule {
-  def configure(): Unit = {
-    bind(classOf[Foo]) to classOf[ManualFoo]
-  }
+  def configure(): Unit = { bind(classOf[Foo]) to classOf[ManualFoo] }
 }
 
 class StaticTestModule extends AbstractModule {
-  def configure(): Unit = {
-    bind(classOf[Foo]) to classOf[StaticFoo]
-  }
+  def configure(): Unit = { bind(classOf[Foo]) to classOf[StaticFoo] }
 }
 
 class ScalaConfiguredModule(
     environment: Environment,
     configuration: Configuration)
     extends AbstractModule {
-  def configure(): Unit = {
-    bind(classOf[Foo]) to classOf[ScalaConfiguredFoo]
-  }
+  def configure(): Unit = { bind(classOf[Foo]) to classOf[ScalaConfiguredFoo] }
 }
 class JavaConfiguredModule(
     environment: JavaEnvironment,
     configuration: JavaConfiguration)
     extends AbstractModule {
-  def configure(): Unit = {
-    bind(classOf[Foo]) to classOf[JavaConfiguredFoo]
-  }
+  def configure(): Unit = { bind(classOf[Foo]) to classOf[JavaConfiguredFoo] }
 }
 
 trait Bar

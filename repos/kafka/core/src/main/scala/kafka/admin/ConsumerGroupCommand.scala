@@ -85,18 +85,14 @@ object ConsumerGroupCommand {
       case e: Throwable =>
         println("Error while executing consumer group command " + e.getMessage)
         println(Utils.stackTrace(e))
-    } finally {
-      consumerGroupService.close()
-    }
+    } finally { consumerGroupService.close() }
   }
 
   sealed trait ConsumerGroupService {
 
     def list(): Unit
 
-    def describe() {
-      describeGroup(opts.options.valueOf(opts.groupOpt))
-    }
+    def describe() { describeGroup(opts.options.valueOf(opts.groupOpt)) }
 
     def close(): Unit
 
@@ -175,13 +171,9 @@ object ConsumerGroupCommand {
       ZkUtils(zkUrl, 30000, 30000, JaasUtils.isZkSecurityEnabled)
     }
 
-    def close() {
-      zkUtils.close()
-    }
+    def close() { zkUtils.close() }
 
-    def list() {
-      zkUtils.getConsumerGroups().foreach(println)
-    }
+    def list() { zkUtils.getConsumerGroups().foreach(println) }
 
     def delete() {
       if (opts.options.has(opts.groupOpt) && opts.options.has(opts.topicOpt))

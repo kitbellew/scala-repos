@@ -81,9 +81,7 @@ class ShowImplicitParametersAction
       expr: PsiElement): Option[Seq[ScalaResolveResult]] = {
     def checkTypeElement(element: ScTypeElement)
         : Option[Option[scala.Seq[ScalaResolveResult]]] = {
-      def checkSimpleType(s: ScSimpleTypeElement) = {
-        s.findImplicitParameters
-      }
+      def checkSimpleType(s: ScSimpleTypeElement) = { s.findImplicitParameters }
       element match {
         case s: ScSimpleTypeElement =>
           return Some(checkSimpleType(s))
@@ -192,9 +190,8 @@ class ShowImplicitParametersAction
       }
       if (expressions.length == 0) {
         ScalaActionUtil.showHint(editor, "No implicit parameters")
-      } else if (expressions.length == 1) {
-        chooseExpression(expressions(0))
-      } else {
+      } else if (expressions.length == 1) { chooseExpression(expressions(0)) }
+      else {
         ScalaRefactoringUtil.showChooser(
           editor,
           expressions,
@@ -247,12 +244,8 @@ class ShowImplicitParametersAction
               popup.cancel()
               selectedNode.navigate(true)
               succeeded.set(true)
-            } else {
-              succeeded.set(false)
-            }
-          } else {
-            succeeded.set(false)
-          }
+            } else { succeeded.set(false) }
+          } else { succeeded.set(false) }
           IdeDocumentHistory
             .getInstance(project)
             .includeCurrentCommandAsNavigation()
@@ -312,9 +305,7 @@ class ShowImplicitParametersAction
     new AnAction {
       def actionPerformed(e: AnActionEvent) {
         val succeeded: Boolean = navigateSelectedElement(popup, jTree, project)
-        if (succeeded) {
-          unregisterCustomShortcutSet(panel)
-        }
+        if (succeeded) { unregisterCustomShortcutSet(panel) }
       }
     }.registerCustomShortcutSet(shortcutSet, panel)
 

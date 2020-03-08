@@ -125,20 +125,15 @@ class GroupMetadataManager(
   /**
     * Get the group associated with the given groupId, or null if not found
     */
-  def getGroup(groupId: String): GroupMetadata = {
-    groupsCache.get(groupId)
-  }
+  def getGroup(groupId: String): GroupMetadata = { groupsCache.get(groupId) }
 
   /**
     * Add a group or get the group associated with the given groupId if it already exists
     */
   def addGroup(group: GroupMetadata): GroupMetadata = {
     val currentGroup = groupsCache.putIfNotExists(group.groupId, group)
-    if (currentGroup != null) {
-      currentGroup
-    } else {
-      group
-    }
+    if (currentGroup != null) { currentGroup }
+    else { group }
   }
 
   /**
@@ -450,9 +445,7 @@ class GroupMetadataManager(
           info(
             "Offset load from %s already in progress.".format(topicPartition))
           return
-        } else {
-          loadingPartitions.add(offsetsPartition)
-        }
+        } else { loadingPartitions.add(offsetsPartition) }
       }
 
       val startMs = time.milliseconds()
@@ -818,9 +811,7 @@ class GroupMetadataManager(
     * NOTE: this is for test only
     */
   def addPartitionOwnership(partition: Int) {
-    loadingPartitions synchronized {
-      ownedPartitions.add(partition)
-    }
+    loadingPartitions synchronized { ownedPartitions.add(partition) }
   }
 }
 

@@ -139,7 +139,9 @@ object Streamable {
     }).toByteArray()
 
   def slurp(is: => InputStream)(implicit codec: Codec): String =
-    new Chars { def inputStream() = is } slurp codec
+    new Chars {
+      def inputStream() = is
+    } slurp codec
 
   def slurp(url: URL)(implicit codec: Codec): String =
     slurp(url.openStream())

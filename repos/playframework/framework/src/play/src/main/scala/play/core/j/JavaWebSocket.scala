@@ -35,9 +35,7 @@ object JavaWebSocket extends JavaHelpers {
         try {
           JContext.current.set(javaContext)
           FutureConverters.toScala(retrieveWebSocket)
-        } finally {
-          JContext.current.remove()
-        }
+        } finally { JContext.current.remove() }
 
       javaWebSocket.map { jws =>
         val reject = Option(jws.rejectWith())
@@ -68,12 +66,8 @@ object JavaWebSocket extends JavaHelpers {
                 .actorRef[A](256, OverflowStrategy.dropNew)
                 .mapMaterializedValue { actor =>
                   val socketOut = new JWebSocket.Out[A] {
-                    def write(frame: A) = {
-                      actor ! frame
-                    }
-                    def close() = {
-                      actor ! Status.Success(())
-                    }
+                    def write(frame: A) = { actor ! frame }
+                    def close() = { actor ! Status.Success(()) }
                   }
 
                   jws.onReady(socketIn, socketOut)

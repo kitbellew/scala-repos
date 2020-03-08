@@ -103,9 +103,7 @@ class MiscInteropTest {
         js.Dynamic
           .newInstance(tag.constructor)(35)
           .asInstanceOf[OtherwiseUnreferencedJSClassForTag]
-      } else {
-        tag.newInstance(35)
-      }
+      } else { tag.newInstance(35) }
     }
     assertEquals(35, instance.x)
   }

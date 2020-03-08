@@ -287,9 +287,7 @@ private[impl] class OfferMatcherManagerActor private (
         s"No launch tokens left for ${data.offer.getId.getValue}. " +
           s"Tune with --launch_tokens/launch_token_refresh_interval.")
       None
-    } else {
-      data.nextMatcherOpt
-    }
+    } else { data.nextMatcherOpt }
 
     nextMatcherOpt match {
       case Some((nextMatcher, newData)) =>

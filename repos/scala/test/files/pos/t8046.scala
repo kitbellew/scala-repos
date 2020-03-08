@@ -7,7 +7,9 @@ trait Two extends One {
   trait Op[A] extends (A => A)
 
   // This compiles
-  class View1 extends Op[Int] { def apply(xs: Int) = xs }
+  class View1 extends Op[Int] {
+    def apply(xs: Int) = xs
+  }
 
   // ??? base class View2 not found in basetypes of class View2
   // ./a.scala:9: error: class View2 needs to be abstract, since \
@@ -16,5 +18,7 @@ trait Two extends One {
   //   class View2 extends Alias[Int] { def apply(xs: Int) = xs }
   //         ^
   // one error found
-  class View2 extends Alias[Int] { def apply(xs: Int) = xs }
+  class View2 extends Alias[Int] {
+    def apply(xs: Int) = xs
+  }
 }

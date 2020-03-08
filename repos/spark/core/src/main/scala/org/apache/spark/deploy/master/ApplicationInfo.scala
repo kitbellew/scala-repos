@@ -136,11 +136,8 @@ private[spark] class ApplicationInfo(
   private[deploy] def getExecutorLimit: Int = executorLimit
 
   def duration: Long = {
-    if (endTime != -1) {
-      endTime - startTime
-    } else {
-      System.currentTimeMillis() - startTime
-    }
+    if (endTime != -1) { endTime - startTime }
+    else { System.currentTimeMillis() - startTime }
   }
 
   /**

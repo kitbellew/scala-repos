@@ -196,9 +196,7 @@ class FlowBufferSpec extends AkkaSpec {
       subscriber.expectNoMsg(500.millis)
 
       // drain
-      for (i ← 1 to 100) {
-        subscriber.requestNext(i)
-      }
+      for (i ← 1 to 100) { subscriber.requestNext(i) }
 
       subscriber.request(1)
       subscriber.expectNoMsg(1.seconds)

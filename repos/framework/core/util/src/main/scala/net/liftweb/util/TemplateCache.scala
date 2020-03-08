@@ -71,19 +71,13 @@ class InMemoryCache(templatesCount: Int)
   private val cache: LRU[(Locale, List[String]), NodeSeq] = new LRU(
     templatesCount)
 
-  def get(key: T): Box[NodeSeq] = {
-    cache.synchronized {
-      cache.get(key)
-    }
-  }
+  def get(key: T): Box[NodeSeq] = { cache.synchronized { cache.get(key) } }
 
   def set(key: T, node: NodeSeq): NodeSeq = cache.synchronized {
     cache(key) = node
     node
   }
 
-  override def delete(key: T) {
-    cache.synchronized(cache.remove(key))
-  }
+  override def delete(key: T) { cache.synchronized(cache.remove(key)) }
 
 }

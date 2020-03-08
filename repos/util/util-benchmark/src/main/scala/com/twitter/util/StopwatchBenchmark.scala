@@ -9,14 +9,10 @@ class StopwatchBenchmark {
   import StopwatchBenchmark._
 
   @Benchmark
-  def timeMakeCallback(): () => Duration = {
-    Stopwatch.start()
-  }
+  def timeMakeCallback(): () => Duration = { Stopwatch.start() }
 
   @Benchmark
-  def timeTime(state: StopwatchState): Duration = {
-    state.elapsed()
-  }
+  def timeTime(state: StopwatchState): Duration = { state.elapsed() }
 }
 
 object StopwatchBenchmark {

@@ -20,9 +20,7 @@ class BinaryCLMTTest extends Specification {
   "binary CastleLastMoveTime" should {
     "write" in {
       val clmt = CastleLastMoveTime.init
-      write(clmt) must_== {
-        "11110000" :: _0_ :: List.fill(3)(_0_)
-      }
+      write(clmt) must_== { "11110000" :: _0_ :: List.fill(3)(_0_) }
       write(clmt.copy(castles = clmt.castles without White)) must_== {
         "00110000" :: _0_ :: List.fill(3)(_0_)
       }
@@ -61,9 +59,7 @@ class BinaryCLMTTest extends Specification {
     }
     "read" in {
       val clmt = CastleLastMoveTime.init
-      read("11110000" :: _0_ :: List.fill(3)(_0_)) must_== {
-        clmt
-      }
+      read("11110000" :: _0_ :: List.fill(3)(_0_)) must_== { clmt }
       read("00110000" :: _0_ :: List.fill(3)(_0_)) must_== {
         clmt.copy(castles = clmt.castles without White)
       }

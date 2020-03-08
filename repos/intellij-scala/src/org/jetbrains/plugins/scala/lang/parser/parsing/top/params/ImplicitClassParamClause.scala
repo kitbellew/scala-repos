@@ -33,9 +33,7 @@ object ImplicitClassParamClause {
             //It's ok
             builder.advanceLexer //Ate implicit
           }
-          case _ => {
-            builder error ErrMsg("wrong.parameter")
-          }
+          case _ => { builder error ErrMsg("wrong.parameter") }
         }
         //ok, let's parse parameters
         if (!(ClassParam parse builder)) {

@@ -43,12 +43,8 @@ class MLPairRDDFunctions[K: ClassTag, V: ClassTag](self: RDD[(K, V)])
   def topByKey(num: Int)(implicit ord: Ordering[V]): RDD[(K, Array[V])] = {
     self
       .aggregateByKey(new BoundedPriorityQueue[V](num)(ord))(
-        seqOp = (queue, item) => {
-          queue += item
-        },
-        combOp = (queue1, queue2) => {
-          queue1 ++= queue2
-        }
+        seqOp = (queue, item) => { queue += item },
+        combOp = (queue1, queue2) => { queue1 ++= queue2 }
       )
       .mapValues(
         _.toArray.sorted(ord.reverse)

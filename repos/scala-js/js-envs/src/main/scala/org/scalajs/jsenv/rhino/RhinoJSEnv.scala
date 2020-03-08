@@ -71,9 +71,7 @@ final class RhinoJSEnv private (
     */
   override def jsRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): JSRunner = {
-    new Runner(libs, None, Nil, code)
-  }
+      code: VirtualJSFile): JSRunner = { new Runner(libs, None, Nil, code) }
 
   override def jsRunner(
       preLibs: Seq[ResolvedJSDependency],
@@ -187,9 +185,8 @@ final class RhinoJSEnv private (
     def send(msg: String): Unit = channel.sendToJS(msg)
 
     def receive(timeout: Duration): String = {
-      try {
-        channel.recvJVM(timeout)
-      } catch {
+      try { channel.recvJVM(timeout) }
+      catch {
         case _: ChannelClosedException =>
           throw new ComJSEnv.ComClosedException
       }

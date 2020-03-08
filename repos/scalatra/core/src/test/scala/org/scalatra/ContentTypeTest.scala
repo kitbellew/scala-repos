@@ -25,26 +25,18 @@ class ContentTypeTestServlet(system: ActorSystem) extends ScalatraServlet {
     "test"
   }
 
-  get("/implicit/string") {
-    "test"
-  }
+  get("/implicit/string") { "test" }
 
   get("/implicit/string/iso-8859-1") {
     response.setCharacterEncoding("iso-8859-1")
     "test"
   }
 
-  get("/implicit/byte-array") {
-    Array[Byte]()
-  }
+  get("/implicit/byte-array") { Array[Byte]() }
 
-  get("/implicit/byte-array-text") {
-    "Здравствуйте!".getBytes("iso-8859-5")
-  }
+  get("/implicit/byte-array-text") { "Здравствуйте!".getBytes("iso-8859-5") }
 
-  get("/implicit/text-element") {
-    Text("test")
-  }
+  get("/implicit/text-element") { Text("test") }
 
   implicit val timeout: Timeout = 5 seconds
 
@@ -58,9 +50,7 @@ class ContentTypeTestServlet(system: ActorSystem) extends ScalatraServlet {
         context.become(secondReceive)
     }
 
-    def secondReceive: Receive = {
-      case 2 => firstSender ! 1
-    }
+    def secondReceive: Receive = { case 2 => firstSender ! 1 }
   }))
 
   get("/concurrent/1") {
@@ -77,13 +67,9 @@ class ContentTypeTestServlet(system: ActorSystem) extends ScalatraServlet {
     conductor ! 2
   }
 
-  get("/default-charset") {
-    contentType = "text/xml"
-  }
+  get("/default-charset") { contentType = "text/xml" }
 
-  post("/echo") {
-    params("echo")
-  }
+  post("/echo") { params("echo") }
 }
 
 class ContentTypeTest extends ScalatraFunSuite with BeforeAndAfterAll {
@@ -97,13 +83,9 @@ class ContentTypeTest extends ScalatraFunSuite with BeforeAndAfterAll {
   servletContextHandler.addServlet(servletHolder, "/*")
 
   test("content-type test") {
-    get("/json") {
-      response.mediaType should equal(Some("application/json"))
-    }
+    get("/json") { response.mediaType should equal(Some("application/json")) }
 
-    get("/html") {
-      response.mediaType should equal(Some("text/html"))
-    }
+    get("/html") { response.mediaType should equal(Some("text/html")) }
   }
 
   test("contentType of a string defaults to text/plain") {
@@ -158,9 +140,7 @@ class ContentTypeTest extends ScalatraFunSuite with BeforeAndAfterAll {
   }
 
   test("charset is set to default when only content type is explicitly set") {
-    get("/default-charset") {
-      response.charset should equal(Some("UTF-8"))
-    }
+    get("/default-charset") { response.charset should equal(Some("UTF-8")) }
   }
 
   test("does not override request character encoding when explicitly set") {
@@ -172,8 +152,6 @@ class ContentTypeTest extends ScalatraFunSuite with BeforeAndAfterAll {
       headers = Map(
         "Content-Type" -> ("application/x-www-form-urlencoded; charset=" + charset)),
       body = ("echo=" + message.urlEncode(Charset.forName(charset)))
-    ) {
-      body should equal(message)
-    }
+    ) { body should equal(message) }
   }
 }

@@ -5,7 +5,5 @@ object Test {
       a
       b
   }
-  def main(args: Array[String]) = {
-    assert(act(1) == 9)
-  }
+  def main(args: Array[String]) = { assert(act(1) == 9) }
 }

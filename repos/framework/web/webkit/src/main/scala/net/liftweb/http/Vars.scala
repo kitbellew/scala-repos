@@ -135,9 +135,7 @@ abstract class SessionVar[T](dflt: => T)
       }
 
       // execute the query in the scope of the lock obj
-      lockObj.synchronized {
-        f
-      }
+      lockObj.synchronized { f }
     case _ => f
   }
 
@@ -219,9 +217,9 @@ abstract class ContainerVar[T](dflt: => T)(
   }
 
   private def localSet(session: LiftSession, name: String, value: Any): Unit = {
-    for {
-      httpSession <- session.httpSession
-    } httpSession.setAttribute(name, value)
+    for { httpSession <- session.httpSession } httpSession.setAttribute(
+      name,
+      value)
   }
 
   private def localGet(session: LiftSession, name: String): Box[Any] = {
@@ -550,7 +548,9 @@ abstract class TransientRequestVar[T](dflt: => T)
   def logUnreadVal = false
 }
 
-trait CleanRequestVarOnSessionTransition { self: RequestVar[_] => }
+trait CleanRequestVarOnSessionTransition {
+  self: RequestVar[_] =>
+}
 
 private[http] object RequestVarHandler extends CoreRequestVarHandler {
   type MyType = RequestVar[_]

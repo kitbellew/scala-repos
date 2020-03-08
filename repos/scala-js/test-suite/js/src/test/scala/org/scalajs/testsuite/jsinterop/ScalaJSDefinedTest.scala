@@ -217,9 +217,7 @@ class ScalaJSDefinedTest {
   @Test def lambda_inside_a_method_issue_2220(): Unit = {
     @ScalaJSDefined
     class LambdaInsideMethod extends js.Object {
-      def foo(): Int = {
-        List(1, 2, 3).map(_ * 2).sum
-      }
+      def foo(): Int = { List(1, 2, 3).map(_ * 2).sum }
     }
 
     assertEquals(12, new LambdaInsideMethod().foo())

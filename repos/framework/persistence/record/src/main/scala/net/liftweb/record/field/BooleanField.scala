@@ -44,9 +44,7 @@ trait BooleanTypedField extends TypedField[Boolean] {
         setBox(Empty)
       else
         setBox(Failure(notOptionalErrorMessage))
-    } else {
-      setBox(tryo(toBoolean(s)))
-    }
+    } else { setBox(tryo(toBoolean(s))) }
 
   private def elem(attrs: SHtml.ElemAttr*) =
     SHtml.checkbox(

@@ -64,9 +64,7 @@ abstract class UntypedDispatcher extends UntypedActor {
 trait LoadBalancer extends Dispatcher { self: Actor =>
   protected def seq: InfiniteIterator[ActorRef]
 
-  protected def routes = {
-    case x if seq.hasNext => seq.next
-  }
+  protected def routes = { case x if seq.hasNext => seq.next }
 
   override def broadcast(message: Any) = seq.items.foreach(_ ! message)
 

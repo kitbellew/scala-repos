@@ -371,15 +371,11 @@ object ScalaJSPluginInternal {
         val vf = new FileVirtualBinaryFile(cpEntry) with VirtualJarFile
         results ++= collectJar(vf)
       } else if (cpEntry.isDirectory) {
-        for {
-          (file, relPath) <- Path.selectSubpaths(cpEntry, filter)
-        } {
+        for { (file, relPath) <- Path.selectSubpaths(cpEntry, filter) } {
           realFiles += file
           results += collectFile(file, relPath)
         }
-      } else {
-        sys.error("Illegal classpath entry: " + cpEntry.getPath)
-      }
+      } else { sys.error("Illegal classpath entry: " + cpEntry.getPath) }
     }
 
     Attributed
@@ -602,9 +598,7 @@ object ScalaJSPluginInternal {
         new RhinoJSEnv(semantics, withDOM = scalaJSRequestsDOM.value)
       } else if (scalaJSRequestsDOM.value) {
         new PhantomJSEnv(jettyClassLoader = scalaJSPhantomJSClassLoader.value)
-      } else {
-        new NodeJSEnv
-      }
+      } else { new NodeJSEnv }
     },
     scalaJSJavaSystemProperties ++= {
       val javaSysPropsPattern = "-D([^=]*)=(.*)".r
@@ -618,9 +612,8 @@ object ScalaJSPluginInternal {
     },
     scalaJSConfigurationLibs ++= {
       val javaSystemProperties = scalaJSJavaSystemProperties.value
-      if (javaSystemProperties.isEmpty) {
-        Nil
-      } else {
+      if (javaSystemProperties.isEmpty) { Nil }
+      else {
         val formattedProps = javaSystemProperties.map {
           case (propName, propValue) =>
             "\"" + escapeJS(propName) + "\": \"" + escapeJS(propValue) + "\""
@@ -717,9 +710,7 @@ object ScalaJSPluginInternal {
             val memLaunch = memLauncher(mainClass)
             Attributed[VirtualJSFile](memLaunch)(
               AttributeMap.empty.put(name.key, mainClass))
-          } getOrElse {
-            sys.error("No main class detected.")
-          }
+          } getOrElse { sys.error("No main class detected.") }
         }
     },
     discoveredMainClasses <<= compile

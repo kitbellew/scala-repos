@@ -5,9 +5,7 @@ object Test {
   }
 
   // no warning
-  def g {
-    return println("hello")
-  }
+  def g { return println("hello") }
 }
 
 class UnusedValues {

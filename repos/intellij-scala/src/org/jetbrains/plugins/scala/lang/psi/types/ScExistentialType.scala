@@ -705,9 +705,7 @@ case class ScSkolemizedType(
     lower: ScType,
     upper: ScType)
     extends ValueType {
-  def visitType(visitor: ScalaTypeVisitor) {
-    visitor.visitSkolemizedType(this)
-  }
+  def visitType(visitor: ScalaTypeVisitor) { visitor.visitSkolemizedType(this) }
 
   override def removeAbstracts =
     ScSkolemizedType(name, args, lower.removeAbstracts, upper.removeAbstracts)

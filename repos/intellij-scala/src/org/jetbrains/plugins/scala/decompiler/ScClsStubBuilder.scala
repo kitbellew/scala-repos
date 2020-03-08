@@ -27,9 +27,8 @@ import scala.reflect.NameTransformer
   */
 object ScClsStubBuilder {
   def canBeProcessed(file: VirtualFile): Boolean = {
-    try {
-      canBeProcessed(file, file.contentsToByteArray())
-    } catch {
+    try { canBeProcessed(file, file.contentsToByteArray()) }
+    catch {
       case ex: IOException => false
       case u: UnsupportedOperationException =>
         false //why we need to handle this?

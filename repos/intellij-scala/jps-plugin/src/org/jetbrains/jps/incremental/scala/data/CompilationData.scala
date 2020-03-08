@@ -144,17 +144,11 @@ object CompilationData {
   def addCommonJavacOptions(
       options: util.ArrayList[String],
       compilerOptions: JpsJavaCompilerOptions) {
-    if (compilerOptions.DEBUGGING_INFO) {
-      options.add("-g")
-    }
+    if (compilerOptions.DEBUGGING_INFO) { options.add("-g") }
 
-    if (compilerOptions.DEPRECATION) {
-      options.add("-deprecation")
-    }
+    if (compilerOptions.DEPRECATION) { options.add("-deprecation") }
 
-    if (compilerOptions.GENERATE_NO_WARNINGS) {
-      options.add("-nowarn")
-    }
+    if (compilerOptions.GENERATE_NO_WARNINGS) { options.add("-nowarn") }
 
     if (!compilerOptions.ADDITIONAL_OPTIONS_STRING.isEmpty) {
       // TODO extract VM options

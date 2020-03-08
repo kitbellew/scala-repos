@@ -70,9 +70,7 @@ object JObjectParser extends SimpleInjector {
             JField(f.toString, serialize(x.get(f.toString), formats))
           }
         )
-      case x => {
-        JNothing
-      }
+      case x => { JNothing }
     }
   }
 
@@ -134,9 +132,7 @@ object JObjectParser extends SimpleInjector {
         new java.lang.Integer(i.intValue)
       } else if (i <= java.lang.Long.MAX_VALUE && i >= java.lang.Long.MIN_VALUE) {
         new java.lang.Long(i.longValue)
-      } else {
-        i.toString
-      }
+      } else { i.toString }
     }
 
     private def trimArr(xs: List[JValue]) = xs.filter(_ != JNothing)

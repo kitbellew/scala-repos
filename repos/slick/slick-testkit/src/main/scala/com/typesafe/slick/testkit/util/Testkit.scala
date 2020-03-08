@@ -89,9 +89,8 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
               else previousTestObject = testObject
             } else testObject.cleanup()
           }
-        } catch {
-          case t: Throwable => addFailure(t, notifier, desc)
-        } finally notifier.fireTestFinished(desc)
+        } catch { case t: Throwable => addFailure(t, notifier, desc) }
+        finally notifier.fireTestFinished(desc)
       }
     } finally tdb.cleanUpAfter()
   }

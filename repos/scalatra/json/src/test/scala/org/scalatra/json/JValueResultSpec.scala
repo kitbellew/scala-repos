@@ -19,9 +19,7 @@ class BottleSerializer
             } yield (new Bottle(of))
             b.get
         },
-        {
-          case a: Bottle => JObject(JField("of", JString(a.of)))
-        })) {}
+        { case a: Bottle => JObject(JField("of", JString(a.of))) })) {}
 
 class JValueResultSpec extends MutableScalatraSpec {
 
@@ -38,38 +36,22 @@ class JValueResultSpec extends MutableScalatraSpec {
         "the custom not found"
       }
 
-      get("/jvalue") {
-        jValue
-      }
-      get("/actionresult") {
-        Created(jValue)
-      }
-      get("/unit") {
-        response.writer.println("printed")
-      }
+      get("/jvalue") { jValue }
+      get("/actionresult") { Created(jValue) }
+      get("/unit") { response.writer.println("printed") }
       get("/namedthing") {
         contentType = formats("json")
         NamedThing()
       }
-      get("/empty-not-found") {
-        NotFound()
-      }
-      get("/halted-not-found") {
-        halt(NotFound())
-      }
+      get("/empty-not-found") { NotFound() }
+      get("/halted-not-found") { halt(NotFound()) }
       get("/null-value.:format") {
         params.getAs[String]("format").foreach(f => contentType = formats(f))
         null
       }
-      get("/null-value") {
-        ""
-      }
-      get("/empty-halt") {
-        halt(400, null)
-      }
-      get("/jnull") {
-        JNull
-      }
+      get("/null-value") { "" }
+      get("/empty-halt") { halt(400, null) }
+      get("/jnull") { JNull }
 
       get("/class") {
         contentType = formats("json")
@@ -101,9 +83,7 @@ class JValueResultSpec extends MutableScalatraSpec {
 
   "The JValueResult trait" should {
     "render a JValue result" in {
-      get("/jvalue") {
-        parse(body) must_== jValue
-      }
+      get("/jvalue") { parse(body) must_== jValue }
     }
     "render an ActionResult result" in {
       get("/actionresult") {
@@ -112,9 +92,7 @@ class JValueResultSpec extends MutableScalatraSpec {
       }
     }
     "render a Unit result" in {
-      get("/unit") {
-        body must_== "printed" + System.lineSeparator
-      }
+      get("/unit") { body must_== "printed" + System.lineSeparator }
     }
     "render a NamedThing result" in {
       get("/namedthing") { parse(body) must_== jValue }
@@ -126,14 +104,10 @@ class JValueResultSpec extends MutableScalatraSpec {
       }
     }
     "render a null value as JSON body" in {
-      get("/null-value.json") {
-        body must_== ""
-      }
+      get("/null-value.json") { body must_== "" }
     }
     "render a null value as HTML body" in {
-      get("/null-value.html") {
-        body must_== ""
-      }
+      get("/null-value.html") { body must_== "" }
     }
     "render a halted empty not found" in {
       get("/halted-not-found") {
@@ -145,11 +119,7 @@ class JValueResultSpec extends MutableScalatraSpec {
     val bottleRum = JObject(JField("of", JString("rum")))
     val bottleSoda = JObject(JField("of", JString("soda")))
 
-    "render a class" in {
-      get("/class") {
-        parse(body) must_== bottleRum
-      }
-    }
+    "render a class" in { get("/class") { parse(body) must_== bottleRum } }
 
     "render a class list" in {
       get("/class-list") {
@@ -158,9 +128,7 @@ class JValueResultSpec extends MutableScalatraSpec {
     }
 
     "render a mixed list" in {
-      get("/mixed-list") {
-        parse(body) must_== JArray(List(bottleRum, jValue))
-      }
+      get("/mixed-list") { parse(body) must_== JArray(List(bottleRum, jValue)) }
     }
 
     "render a map" in {

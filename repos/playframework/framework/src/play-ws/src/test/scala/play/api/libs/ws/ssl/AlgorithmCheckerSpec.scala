@@ -69,14 +69,10 @@ object AlgorithmCheckerSpec extends Specification {
       val checker = new AlgorithmChecker(Set.empty, Set.empty) {
         override def infoOnSunset(
             x509Cert: X509Certificate,
-            expirationDate: DateTime): Unit = {
-          infoCalled = true
-        }
+            expirationDate: DateTime): Unit = { infoCalled = true }
         override def warnOnSunset(
             x509Cert: X509Certificate,
-            expirationDate: DateTime): Unit = {
-          warningCalled = true
-        }
+            expirationDate: DateTime): Unit = { warningCalled = true }
       }
 
       checker.check(certificate, emptySet())
@@ -95,9 +91,7 @@ object AlgorithmCheckerSpec extends Specification {
       val checker = new AlgorithmChecker(Set.empty, Set.empty) {
         override def infoOnSunset(
             x509Cert: X509Certificate,
-            expirationDate: DateTime): Unit = {
-          infoCalled = true
-        }
+            expirationDate: DateTime): Unit = { infoCalled = true }
       }
 
       checker.check(certificate, emptySet())
@@ -115,9 +109,7 @@ object AlgorithmCheckerSpec extends Specification {
       val checker = new AlgorithmChecker(Set.empty, Set.empty) {
         override def warnOnSunset(
             x509Cert: X509Certificate,
-            expirationDate: DateTime): Unit = {
-          warningCalled = true
-        }
+            expirationDate: DateTime): Unit = { warningCalled = true }
       }
 
       checker.check(certificate, emptySet())

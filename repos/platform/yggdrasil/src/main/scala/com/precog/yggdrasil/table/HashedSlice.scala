@@ -79,9 +79,7 @@ private final class SliceHasher(slice: Slice) {
 
   @tailrec private final def hashOf(row: Int, i: Int = 0, hc: Int = 0): Int = {
     if (i >= hashers.length) hc
-    else {
-      hashOf(row, i + 1, hc ^ hashers(i).hash(row))
-    }
+    else { hashOf(row, i + 1, hc ^ hashers(i).hash(row)) }
   }
 
   def hash(row: Int): Int = hashOf(row)
@@ -143,9 +141,8 @@ private object NumericHash {
 
   def apply(n: Double): Int = {
     val rounded = math.round(n)
-    if (rounded == n) {
-      apply(rounded)
-    } else {
+    if (rounded == n) { apply(rounded) }
+    else {
       val bits = java.lang.Double.doubleToLongBits(n)
       17 * bits.toInt + 23 * (bits >>> 32).toInt
     }
@@ -153,11 +150,8 @@ private object NumericHash {
 
   def apply(n: BigDecimal): Int = {
     val approx = n.toDouble
-    if (n == approx) {
-      apply(approx)
-    } else {
-      n.bigDecimal.hashCode
-    }
+    if (n == approx) { apply(approx) }
+    else { n.bigDecimal.hashCode }
   }
 }
 

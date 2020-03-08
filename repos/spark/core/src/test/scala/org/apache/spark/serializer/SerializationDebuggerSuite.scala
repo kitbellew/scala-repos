@@ -154,9 +154,8 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
 
     def findAndAssert(shouldSerialize: Boolean, obj: Any): Unit = {
       val s = find(obj)
-      if (shouldSerialize) {
-        assert(s.isEmpty)
-      } else {
+      if (shouldSerialize) { assert(s.isEmpty) }
+      else {
         assert(s.nonEmpty)
         assert(s.head.contains("NotSerializable"))
       }
@@ -204,15 +203,11 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
   test("improveException with error in debugger") {
     // Object that throws exception in the SerializationDebugger
     val o = new SerializableClass1 {
-      private def writeReplace(): Object = {
-        throw new Exception()
-      }
+      private def writeReplace(): Object = { throw new Exception() }
     }
     withClue(
       "requirement: SerializationDebugger should fail trying debug this object") {
-      intercept[Exception] {
-        SerializationDebugger.find(o)
-      }
+      intercept[Exception] { SerializationDebugger.find(o) }
     }
 
     val originalException = new NotSerializableException("someClass")
@@ -245,9 +240,7 @@ class SerializableClassWithWriteObject(val objectField: Object)
 class SerializableClassWithWriteReplace(
     @(transient @param) replacementFieldObject: Object)
     extends Serializable {
-  private def writeReplace(): Object = {
-    replacementFieldObject
-  }
+  private def writeReplace(): Object = { replacementFieldObject }
 }
 
 class ExternalizableClass(objectField: Object) extends java.io.Externalizable {

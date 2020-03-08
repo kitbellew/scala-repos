@@ -54,9 +54,7 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
         SMART_ENTER_TIMESTAMP,
         editor.getDocument.getModificationStamp.asInstanceOf[Long])
       processImpl(project, editor, psiFile)
-    } finally {
-      editor.putUserData(SMART_ENTER_TIMESTAMP, null)
-    }
+    } finally { editor.putUserData(SMART_ENTER_TIMESTAMP, null) }
 
     true
   }

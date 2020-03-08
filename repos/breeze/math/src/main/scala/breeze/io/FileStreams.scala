@@ -44,9 +44,7 @@ object FileStreams {
         new BufferedInputStream(
           new GZIPInputStream(fis, BUFFER_SIZE),
           BUFFER_SIZE);
-      } else {
-        new BufferedInputStream(fis, BUFFER_SIZE);
-      }
+      } else { new BufferedInputStream(fis, BUFFER_SIZE); }
     } catch {
       case ex: Throwable =>
         fis.close();
@@ -65,9 +63,7 @@ object FileStreams {
         new BufferedOutputStream(
           new GZIPOutputStream(fos, BUFFER_SIZE),
           BUFFER_SIZE);
-      } else {
-        new BufferedOutputStream(fos, BUFFER_SIZE);
-      }
+      } else { new BufferedOutputStream(fos, BUFFER_SIZE); }
     } catch {
       case ex: Throwable =>
         fos.close();

@@ -46,9 +46,7 @@ class TryTest extends FunSuite {
   }
 
   test("Try.throwable: should throw IllegalStateException for Return:s") {
-    intercept[IllegalStateException] {
-      Return(1).throwable
-    }
+    intercept[IllegalStateException] { Return(1).throwable }
   }
 
   test("Try.rescue") {

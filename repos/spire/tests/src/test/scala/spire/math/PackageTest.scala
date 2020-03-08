@@ -4,9 +4,7 @@ package math
 import org.scalatest.FunSuite
 
 class PackageTest extends FunSuite {
-  test("pow(Int, Int)") {
-    assert(pow(2, 2) === 4)
-  }
+  test("pow(Int, Int)") { assert(pow(2, 2) === 4) }
 
   test("pow(Long, Long)") {
     assert(pow(1000000000L, 2) === 1000000000000000000L)

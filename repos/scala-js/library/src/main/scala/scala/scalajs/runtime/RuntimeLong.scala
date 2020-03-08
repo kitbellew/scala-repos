@@ -86,14 +86,11 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val lo = this.lo
     val hi = this.hi
 
-    if (isInt32(lo, hi)) {
-      lo.toString()
-    } else if (hi < 0) {
+    if (isInt32(lo, hi)) { lo.toString() }
+    else if (hi < 0) {
       val (absLo, absHi) = inline_unary_-(lo, hi)
       "-" + toUnsignedString(absLo, absHi)
-    } else {
-      toUnsignedString(lo, hi)
-    }
+    } else { toUnsignedString(lo, hi) }
   }
 
   private def toUnsignedString(lo: Int, hi: Int): String = {
@@ -143,9 +140,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     if (hi < 0) {
       val (abslo, abshi) = inline_unary_-(lo, hi)
       -(abshi.toUint * TwoPow32 + abslo.toUint) // abshi.toUint for MinValue
-    } else {
-      hi * TwoPow32 + lo.toUint
-    }
+    } else { hi * TwoPow32 + lo.toUint }
   }
 
   // java.lang.Number
@@ -403,9 +398,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
         // a < b
         Zero
       }
-    } else {
-      unsigned_/(alo, ahi, blo, bhi)
-    }
+    } else { unsigned_/(alo, ahi, blo, bhi) }
   }
 
   private def unsigned_/(
@@ -483,9 +476,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
         // a < b
         a
       }
-    } else {
-      unsigned_%(alo, ahi, blo, bhi)
-    }
+    } else { unsigned_%(alo, ahi, blo, bhi) }
   }
 
   private def unsigned_%(
@@ -703,13 +694,10 @@ object RuntimeLong {
   def fromDouble(value: Double): RuntimeLong = {
     import Utils._
 
-    if (value.isNaN) {
-      Zero
-    } else if (value < -TwoPow53) {
-      MinValue
-    } else if (value >= TwoPow53) {
-      MaxValue
-    } else {
+    if (value.isNaN) { Zero }
+    else if (value < -TwoPow53) { MinValue }
+    else if (value >= TwoPow53) { MaxValue }
+    else {
       val neg = value < 0
       val absValue = if (neg) -value else value
       val lo = rawToInt(absValue)

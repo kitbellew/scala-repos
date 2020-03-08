@@ -188,9 +188,7 @@ object ShardCoordinator {
         val (regionWithLeastShards, leastShards) =
           currentShardAllocations.minBy { case (_, v) ⇒ v.size }
         val mostShards = currentShardAllocations
-          .collect {
-            case (_, v) ⇒ v.filterNot(s ⇒ rebalanceInProgress(s))
-          }
+          .collect { case (_, v) ⇒ v.filterNot(s ⇒ rebalanceInProgress(s)) }
           .maxBy(_.size)
         if (mostShards.size - leastShards.size >= rebalanceThreshold)
           Future.successful(Set(mostShards.head))
@@ -655,9 +653,7 @@ abstract class ShardCoordinator(
               // continue when future is completed
               shardsFuture
                 .map { shards ⇒ RebalanceResult(shards) }
-                .recover {
-                  case _ ⇒ RebalanceResult(Set.empty)
-                }
+                .recover { case _ ⇒ RebalanceResult(Set.empty) }
                 .pipeTo(self)
           }
         }

@@ -140,9 +140,8 @@ class Tools[C <: Context](val c: C) {
       def loop(sym: ClassSymbol): List[ClassSymbol] = {
         sym +: {
           val initialize = sym.typeSignature
-          if (sym.isFinal || sym.isModuleClass) {
-            Nil
-          } else if (treatAsSealed(sym)) {
+          if (sym.isFinal || sym.isModuleClass) { Nil }
+          else if (treatAsSealed(sym)) {
             val syms: List[ClassSymbol] =
               directSubclasses(sym)
                 .map {
@@ -516,9 +515,7 @@ abstract class Macro extends RichTypes { self =>
           val im = mirror.reflect($target)
         """.asInstanceOf[Block]
         initMirror.stats :+ initMirror.expr
-      } else {
-        Nil
-      }
+      } else { Nil }
     }
     // val field = fir.field.get
     val owner =

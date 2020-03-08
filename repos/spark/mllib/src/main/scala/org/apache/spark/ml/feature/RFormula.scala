@@ -229,9 +229,8 @@ class RFormulaModel private[feature] (
   override def transformSchema(schema: StructType): StructType = {
     checkCanTransform(schema)
     val withFeatures = pipelineModel.transformSchema(schema)
-    if (hasLabelCol(withFeatures)) {
-      withFeatures
-    } else if (schema.exists(_.name == resolvedFormula.label)) {
+    if (hasLabelCol(withFeatures)) { withFeatures }
+    else if (schema.exists(_.name == resolvedFormula.label)) {
       val nullable = schema(resolvedFormula.label).dataType match {
         case _: NumericType | BooleanType => false
         case _                            => true
@@ -253,9 +252,8 @@ class RFormulaModel private[feature] (
 
   private def transformLabel(dataset: DataFrame): DataFrame = {
     val labelName = resolvedFormula.label
-    if (hasLabelCol(dataset.schema)) {
-      dataset
-    } else if (dataset.schema.exists(_.name == labelName)) {
+    if (hasLabelCol(dataset.schema)) { dataset }
+    else if (dataset.schema.exists(_.name == labelName)) {
       dataset.schema(labelName).dataType match {
         case _: NumericType | BooleanType =>
           dataset.withColumn($(labelCol), dataset(labelName).cast(DoubleType))
@@ -452,12 +450,8 @@ private class VectorAttributeRewriter(
           if (replacement.nonEmpty) {
             val (k, v) = replacement.headOption.get
             attr.withName(v + name.stripPrefix(k))
-          } else {
-            attr
-          }
-        } else {
-          attr
-        }
+          } else { attr }
+        } else { attr }
       }
       new AttributeGroup(vectorCol, attrs).toMetadata()
     }

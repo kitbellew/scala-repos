@@ -1,7 +1,5 @@
 trait Foo[TroubleSome] {
   type T <: Foo[TroubleSome]
 
-  this match {
-    case e: Foo[_]#T => ???
-  }
+  this match { case e: Foo[_]#T => ??? }
 }

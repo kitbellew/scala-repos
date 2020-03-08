@@ -35,9 +35,7 @@ class RuntimeConfigSuite extends SparkFunSuite {
     assert(conf.get("k2") == "2")
     assert(conf.get("k3") == "false")
 
-    intercept[NoSuchElementException] {
-      conf.get("notset")
-    }
+    intercept[NoSuchElementException] { conf.get("notset") }
   }
 
   test("getOption") {
@@ -50,9 +48,7 @@ class RuntimeConfigSuite extends SparkFunSuite {
     val conf = newConf().set("k1", "v1")
     assert(conf.get("k1") == "v1")
     conf.unset("k1")
-    intercept[NoSuchElementException] {
-      conf.get("k1")
-    }
+    intercept[NoSuchElementException] { conf.get("k1") }
   }
 
   test("set and get hadoop configuration") {
@@ -64,9 +60,7 @@ class RuntimeConfigSuite extends SparkFunSuite {
     assert(conf.getHadoop("k1") == "v1")
     assert(conf.getHadoop("k2") == "v2")
 
-    intercept[NoSuchElementException] {
-      conf.get("notset")
-    }
+    intercept[NoSuchElementException] { conf.get("notset") }
   }
 
   test("getHadoopOption") {
@@ -79,8 +73,6 @@ class RuntimeConfigSuite extends SparkFunSuite {
     val conf = newConf().setHadoop("k1", "v1")
     assert(conf.getHadoop("k1") == "v1")
     conf.unsetHadoop("k1")
-    intercept[NoSuchElementException] {
-      conf.getHadoop("k1")
-    }
+    intercept[NoSuchElementException] { conf.getHadoop("k1") }
   }
 }

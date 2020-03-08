@@ -448,9 +448,7 @@ private[akka] trait ClusterRouterActor { this: RouterActor ⇒
 
   var nodes: immutable.SortedSet[Address] = {
     import akka.cluster.Member.addressOrdering
-    cluster.readView.members.collect {
-      case m if isAvailable(m) ⇒ m.address
-    }
+    cluster.readView.members.collect { case m if isAvailable(m) ⇒ m.address }
   }
 
   def isAvailable(m: Member): Boolean =

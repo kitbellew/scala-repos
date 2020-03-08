@@ -44,9 +44,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       } ~> check { responseAs[String] shouldEqual "<p>cool</p>" }
     }
     "return a RequestEntityExpectedRejection rejection if the request has no entity" in {
-      Put() ~> {
-        entity(as[Int]) { echoComplete }
-      } ~> check { rejection shouldEqual RequestEntityExpectedRejection }
+      Put() ~> { entity(as[Int]) { echoComplete } } ~> check {
+        rejection shouldEqual RequestEntityExpectedRejection
+      }
     }
     "return an UnsupportedRequestContentTypeRejection if no matching unmarshaller is in scope" in {
       Put("/", HttpEntity(`text/css` withCharset `UTF-8`, "<p>cool</p>")) ~> {
@@ -106,9 +106,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       } ~> check { responseAs[String] shouldEqual "Some(<p>cool</p>)" }
     }
     "extract an Option[T] as None if the request has no entity" in {
-      Put() ~> {
-        entity(as[Option[Int]]) { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "None" }
+      Put() ~> { entity(as[Option[Int]]) { echoComplete } } ~> check {
+        responseAs[String] shouldEqual "None"
+      }
     }
     "return an UnsupportedRequestContentTypeRejection if no matching unmarshaller is in scope (for Option[T]s)" in {
       Put("/", HttpEntity(`text/css` withCharset `UTF-8`, "<p>cool</p>")) ~> {

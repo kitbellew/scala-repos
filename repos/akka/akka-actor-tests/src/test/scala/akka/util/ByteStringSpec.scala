@@ -486,10 +486,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
       "calling slice" in {
         check { slice: ByteStringSlice ⇒
           slice match {
-            case (xs, from, until) ⇒
-              likeVector(xs)({
-                _.slice(from, until)
-              })
+            case (xs, from, until) ⇒ likeVector(xs)({ _.slice(from, until) })
           }
         }
       }
@@ -498,9 +495,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check { slice: ByteStringSlice ⇒
           slice match {
             case (xs, from, until) ⇒
-              likeVector(xs)({
-                _.drop(from).take(until - from)
-              })
+              likeVector(xs)({ _.drop(from).take(until - from) })
           }
         }
       }
@@ -609,11 +604,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check { slice: ByteStringSlice ⇒
           slice match {
             case (xs, from, until) ⇒
-              likeVecIt(xs)(
-                {
-                  _.slice(from, until).toSeq
-                },
-                strict = false)
+              likeVecIt(xs)({ _.slice(from, until).toSeq }, strict = false)
           }
         }
       }
@@ -623,9 +614,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
           slice match {
             case (xs, from, until) ⇒
               likeVecIt(xs)(
-                {
-                  _.drop(from).take(until - from).toSeq
-                },
+                { _.drop(from).take(until - from).toSeq },
                 strict = false)
           }
         }
@@ -869,9 +858,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
     }
 
     "have correct empty info" when {
-      "is empty" in {
-        check { a: ByteStringBuilder ⇒ a.isEmpty }
-      }
+      "is empty" in { check { a: ByteStringBuilder ⇒ a.isEmpty } }
       "is nonEmpty" in {
         check { a: ByteStringBuilder ⇒
           a.putByte(1.toByte)

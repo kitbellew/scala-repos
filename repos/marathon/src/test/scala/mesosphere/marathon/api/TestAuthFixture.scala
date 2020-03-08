@@ -39,15 +39,11 @@ class TestAuthFixture extends Mockito {
     }
     override def handleNotAuthorized(
         principal: Identity,
-        response: HttpResponse): Unit = {
-      response.status(UnauthorizedStatus)
-    }
+        response: HttpResponse): Unit = { response.status(UnauthorizedStatus) }
     override def isAuthorized[Resource](
         principal: Identity,
         action: AuthorizedAction[Resource],
-        resource: Resource): Boolean = {
-      authorized && authFn(resource)
-    }
+        resource: Resource): Boolean = { authorized && authFn(resource) }
   }
 
   var request: HttpServletRequest = {

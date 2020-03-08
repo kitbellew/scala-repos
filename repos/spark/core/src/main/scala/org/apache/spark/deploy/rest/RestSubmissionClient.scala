@@ -63,9 +63,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
 
   private val masters: Array[String] = if (master.startsWith("spark://")) {
     Utils.parseStandaloneMasterUrls(master)
-  } else {
-    Array(master)
-  }
+  } else { Array(master) }
 
   // Set of masters that lost contact with us, used to keep track of
   // whether there are masters still alive for us to communicate with
@@ -157,9 +155,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
         response = get(url)
         response match {
           case s: SubmissionStatusResponse if s.success =>
-            if (!quiet) {
-              handleRestResponse(s)
-            }
+            if (!quiet) { handleRestResponse(s) }
             handled = true
           case unexpected =>
             handleUnexpectedRestResponse(unexpected)
@@ -222,9 +218,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
       val out = new DataOutputStream(conn.getOutputStream)
       Utils.tryWithSafeFinally {
         out.write(json.getBytes(StandardCharsets.UTF_8))
-      } {
-        out.close()
-      }
+      } { out.close() }
     } catch {
       case e: ConnectException =>
         throw new SubmitRestConnectionException(
@@ -246,9 +240,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
       val dataStream =
         if (connection.getResponseCode == HttpServletResponse.SC_OK) {
           connection.getInputStream
-        } else {
-          connection.getErrorStream
-        }
+        } else { connection.getErrorStream }
       // If the server threw an exception while writing a response, it will not have a body
       if (dataStream == null) {
         throw new SubmitRestProtocolException("Server returned empty body")
@@ -310,9 +302,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
   private def getBaseUrl(master: String): String = {
     var masterUrl = master
     supportedMasterPrefixes.foreach { prefix =>
-      if (master.startsWith(prefix)) {
-        masterUrl = master.stripPrefix(prefix)
-      }
+      if (master.startsWith(prefix)) { masterUrl = master.stripPrefix(prefix) }
     }
     masterUrl = masterUrl.stripSuffix("/")
     s"http://$masterUrl/$PROTOCOL_VERSION/submissions"

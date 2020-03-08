@@ -42,9 +42,8 @@ trait StringRegexExpression extends ImplicitCastInputTypes {
   }
 
   protected def compile(str: String): Pattern =
-    if (str == null) {
-      null
-    } else {
+    if (str == null) { null }
+    else {
       // Let it raise exception if couldn't compile the regex string
       Pattern.compile(escape(str))
     }
@@ -54,11 +53,8 @@ trait StringRegexExpression extends ImplicitCastInputTypes {
 
   protected override def nullSafeEval(input1: Any, input2: Any): Any = {
     val regex = pattern(input2.asInstanceOf[UTF8String].toString)
-    if (regex == null) {
-      null
-    } else {
-      matches(regex, input1.asInstanceOf[UTF8String].toString)
-    }
+    if (regex == null) { null }
+    else { matches(regex, input1.asInstanceOf[UTF8String].toString) }
   }
 
   override def sql: String =
@@ -251,9 +247,7 @@ case class RegExpReplace(
     val m = pattern.matcher(s.toString())
     result.delete(0, result.length())
 
-    while (m.find) {
-      m.appendReplacement(result, lastReplacement)
-    }
+    while (m.find) { m.appendReplacement(result, lastReplacement) }
     m.appendTail(result)
 
     UTF8String.fromString(result.toString)
@@ -356,9 +350,7 @@ case class RegExpExtract(
     if (m.find) {
       val mr: MatchResult = m.toMatchResult
       UTF8String.fromString(mr.group(r.asInstanceOf[Int]))
-    } else {
-      UTF8String.EMPTY_UTF8
-    }
+    } else { UTF8String.EMPTY_UTF8 }
   }
 
   override def dataType: DataType = StringType

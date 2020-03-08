@@ -113,9 +113,7 @@ object PlayDocsValidation {
     def stripFragment(path: String) =
       if (path.contains("#")) {
         path.dropRight(path.length - path.indexOf('#'))
-      } else {
-        path
-      }
+      } else { path }
 
     def parseMarkdownFile(markdownFile: File): String = {
 
@@ -206,9 +204,8 @@ object PlayDocsValidation {
             }
 
             // The file is either relative to current page page or absolute, under the root
-            val sourceFile = if (source.startsWith("/")) {
-              source.drop(1)
-            } else {
+            val sourceFile = if (source.startsWith("/")) { source.drop(1) }
+            else {
               markdownFile.getParentFile.getCanonicalPath
                 .stripPrefix(base.getCanonicalPath)
                 .stripPrefix("/") + "/" + source
@@ -217,9 +214,7 @@ object PlayDocsValidation {
             val sourcePos = code.getStartIndex + code.getLabel.length + 4
             val labelPos = if (code.getSource.contains("#")) {
               sourcePos + source.length + 1
-            } else {
-              code.getStartIndex + 2
-            }
+            } else { code.getStartIndex + 2 }
 
             codeSamples += CodeSampleRef(
               sourceFile,
@@ -276,9 +271,8 @@ object PlayDocsValidation {
           }
 
           // The file is either relative to current page page or absolute, under the root
-          val sourceFile = if (source.startsWith("/")) {
-            source.drop(1)
-          } else {
+          val sourceFile = if (source.startsWith("/")) { source.drop(1) }
+          else {
             filename.dropRight(
               filename.length - filename.lastIndexOf('/') + 1) + source
           }
@@ -286,9 +280,7 @@ object PlayDocsValidation {
           val sourcePos = code.getStartIndex + code.getLabel.length + 4
           val labelPos = if (code.getSource.contains("#")) {
             sourcePos + source.length + 1
-          } else {
-            code.getStartIndex + 2
-          }
+          } else { code.getStartIndex + 2 }
 
           codeSamples += CodeSample(sourceFile, label, sourcePos, labelPos)
           true
@@ -404,9 +396,7 @@ object PlayDocsValidation {
         .fold(
           { incomplete => throw incomplete.directCause.get },
           result => result)
-    } else {
-      file
-    }
+    } else { file }
   }
 
   val validateDocsTask = Def.task {
@@ -434,9 +424,8 @@ object PlayDocsValidation {
     var failed = false
 
     def doAssertion(desc: String, errors: Seq[_])(onFail: => Unit): Unit = {
-      if (errors.isEmpty) {
-        log.info("[" + Colors.green("pass") + "] " + desc)
-      } else {
+      if (errors.isEmpty) { log.info("[" + Colors.green("pass") + "] " + desc) }
+      else {
         failed = true
         onFail
         log.info(
@@ -540,9 +529,7 @@ object PlayDocsValidation {
         val segment =
           sourceCode dropWhile (notLabel) drop (1) takeWhile (notLabel)
         !segment.isEmpty
-      } else {
-        true
-      }
+      } else { true }
     }
 
     assertLinksNotMissing(
@@ -629,9 +616,7 @@ object PlayDocsValidation {
                 e.getClass.getName + ": " + e.getMessage + " for external link " + link.link)
             }
             refs
-        } finally {
-          connection.disconnect()
-        }
+        } finally { connection.disconnect() }
       }
     }
 
@@ -668,9 +653,7 @@ object PlayDocsValidation {
           case (total, l, c, None) => {
             if (total + line.length < position) {
               (total + line.length + 1, l + 1, c, None)
-            } else {
-              (0, l + 1, position - total + 1, Some(line))
-            }
+            } else { (0, l + 1, position - total + 1, Some(line)) }
           }
         }
       }

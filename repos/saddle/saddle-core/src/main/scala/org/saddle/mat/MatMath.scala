@@ -158,9 +158,8 @@ object MatMath {
     while (i < n) {
       va = values(ixA + i)
       vb = values(ixB + i)
-      if (va != va || vb != vb) {
-        count -= 1
-      } else {
+      if (va != va || vb != vb) { count -= 1 }
+      else {
         if (corr) {
           aa += va * va
           bb += vb * vb

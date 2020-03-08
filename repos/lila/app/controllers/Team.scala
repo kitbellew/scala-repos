@@ -28,9 +28,7 @@ object Team extends LilaController {
     getForumPosts = Env.forum.recent.team _) _
 
   def all(page: Int) = Open { implicit ctx =>
-    NotForKids {
-      paginator popularTeams page map { html.team.all(_) }
-    }
+    NotForKids { paginator popularTeams page map { html.team.all(_) } }
   }
 
   def home(page: Int) = Open { implicit ctx =>
@@ -41,9 +39,7 @@ object Team extends LilaController {
   }
 
   def show(id: String, page: Int) = Open { implicit ctx =>
-    NotForKids {
-      OptionFuOk(api team id) { team => renderTeam(team, page) }
-    }
+    NotForKids { OptionFuOk(api team id) { team => renderTeam(team, page) } }
   }
 
   def search(text: String, page: Int) = OpenBody { implicit ctx =>

@@ -89,9 +89,7 @@ object ThriftResponseClassifier {
     private[this] def deserialized(
         deserCtx: DeserializeCtx[_],
         bytes: Array[Byte]
-    ): ReqRep = {
-      ReqRep(deserCtx.request, deserCtx.deserialize(bytes))
-    }
+    ): ReqRep = { ReqRep(deserCtx.request, deserCtx.deserialize(bytes)) }
 
     override def toString: String =
       s"Thrift.usingDeserializeCtx(${classifier.toString})"
@@ -105,9 +103,7 @@ object ThriftResponseClassifier {
       reqRep.response match {
         case Return(bytes: Array[Byte]) =>
           try classifier.isDefinedAt(deserialized(deserCtx, bytes))
-          catch {
-            case _: Throwable => false
-          }
+          catch { case _: Throwable => false }
         case _ => false
       }
     }
@@ -119,11 +115,8 @@ object ThriftResponseClassifier {
             Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
           if (deserCtx eq NoDeserializeCtx)
             throw new MatchError("No DeserializeCtx found")
-          try {
-            classifier(deserialized(deserCtx, bytes))
-          } catch {
-            case NonFatal(e) => throw new MatchError(e)
-          }
+          try { classifier(deserialized(deserCtx, bytes)) }
+          catch { case NonFatal(e) => throw new MatchError(e) }
         case e => throw new MatchError(e)
       }
   }
@@ -146,9 +139,8 @@ object ThriftResponseClassifier {
             val deserCtx =
               Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
             if (deserCtx ne NoDeserializeCtx) {
-              try {
-                deserCtx.deserialize(bytes)
-              } catch {
+              try { deserCtx.deserialize(bytes) }
+              catch {
                 case _: Throwable =>
               }
             }

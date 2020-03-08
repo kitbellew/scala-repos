@@ -7,9 +7,7 @@ import collection._
 // test conversions between collections
 object Test {
 
-  def main(args: Array[String]) {
-    testConversions
-  }
+  def main(args: Array[String]) { testConversions }
 
   def testConversions {
     // seq conversions

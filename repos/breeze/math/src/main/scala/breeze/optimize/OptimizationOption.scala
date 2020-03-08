@@ -17,9 +17,7 @@ object OptimizationOption {
 }
 
 case class MaxIterations(num: Int) extends OptimizationOption {
-  def apply(params: OptParams): OptParams = {
-    params.copy(maxIterations = num)
-  }
+  def apply(params: OptParams): OptParams = { params.copy(maxIterations = num) }
 }
 
 case class L2Regularization(value: Double = 1.0) extends OptimizationOption {
@@ -37,15 +35,11 @@ case class L1Regularization(value: Double = 1.0) extends OptimizationOption {
 }
 
 case class BatchSize(size: Int) extends OptimizationOption {
-  def apply(params: OptParams): OptParams = {
-    params.copy(batchSize = size)
-  }
+  def apply(params: OptParams): OptParams = { params.copy(batchSize = size) }
 }
 
 case class StepSizeScale(alpha: Double = 1.0) extends OptimizationOption {
-  def apply(params: OptParams): OptParams = {
-    params.copy(alpha = alpha)
-  }
+  def apply(params: OptParams): OptParams = { params.copy(alpha = alpha) }
 }
 
 case class Tolerance(fvalTolerance: Double = 1e-5, gvalTolerance: Double = 1e-6)

@@ -30,9 +30,8 @@ class UTestRunConfiguration(
       acc: String = ""): String = {
     val parentTypeDef =
       PsiTreeUtil.getParentOfType(currentClass, classOf[ScTypeDefinition], true)
-    if (parentTypeDef == null) {
-      currentClass.qualifiedName + acc
-    } else {
+    if (parentTypeDef == null) { currentClass.qualifiedName + acc }
+    else {
       getClassPath(
         parentTypeDef,
         acc + (if (parentTypeDef.isObject) "$" else ".") + currentClass.getName)

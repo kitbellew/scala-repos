@@ -34,9 +34,7 @@ class SwitchSpec extends WordSpec with Matchers {
 
     "revert when exception" in {
       val s = new Switch(false)
-      intercept[RuntimeException] {
-        s.switchOn(throw new RuntimeException)
-      }
+      intercept[RuntimeException] { s.switchOn(throw new RuntimeException) }
       s.isOff should ===(true)
     }
 

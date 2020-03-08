@@ -24,9 +24,8 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
     val res = new Response[U]
     op(arg, res)
     while (!res.isComplete && !res.isCancelled) {
-      if (System.currentTimeMillis() > limit) {
-        print("c"); res.cancel()
-      } else
+      if (System.currentTimeMillis() > limit) { print("c"); res.cancel() }
+      else
         res.get(TIMEOUT.toLong) match {
           case Some(Left(t)) =>
             /**/
@@ -103,11 +102,7 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
             pos -= 1
             deleteOne()
           }
-        } else {
-          if (pos < inputs(sfidx).length) {
-            deleteOne()
-          }
-        }
+        } else { if (pos < inputs(sfidx).length) { deleteOne() } }
       }
     }
 

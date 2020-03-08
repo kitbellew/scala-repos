@@ -81,9 +81,7 @@ abstract class AbstractFetcherThread(
 
   override def shutdown() {
     initiateShutdown()
-    inLock(partitionMapLock) {
-      partitionMapCond.signalAll()
-    }
+    inLock(partitionMapLock) { partitionMapCond.signalAll() }
     awaitShutdown()
   }
 
@@ -302,9 +300,7 @@ class FetcherLagMetrics(metricId: ClientIdTopicPartition)
       "partition" -> metricId.partitionId.toString)
   )
 
-  def lag_=(newLag: Long) {
-    lagVal.set(newLag)
-  }
+  def lag_=(newLag: Long) { lagVal.set(newLag) }
 
   def lag = lagVal.get
 }

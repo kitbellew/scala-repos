@@ -22,9 +22,7 @@ import org.apache.spark.SparkFunSuite
 class CodeFormatterSuite extends SparkFunSuite {
 
   def testCase(name: String)(input: String)(expected: String): Unit = {
-    test(name) {
-      assert(CodeFormatter.format(input).trim === expected.trim)
-    }
+    test(name) { assert(CodeFormatter.format(input).trim === expected.trim) }
   }
 
   testCase("basic example") {

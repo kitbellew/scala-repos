@@ -6,7 +6,5 @@ class AddNewClauseWithDefault {
 }
 
 class AddNewClauseWithDefault2 extends AddNewClauseWithDefault {
-  override def foo(b: Boolean)(x: Int, y: Int): Unit = {
-    super.foo()(x)
-  }
+  override def foo(b: Boolean)(x: Int, y: Int): Unit = { super.foo()(x) }
 }

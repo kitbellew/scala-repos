@@ -25,11 +25,8 @@ trait ScTypeParametersOwner extends ScalaPsiElement {
           val array = stub.getChildrenByType(
             ScalaElementTypes.TYPE_PARAM_CLAUSE,
             JavaArrayFactoryUtil.ScTypeParamClauseFactory)
-          if (array.length == 0) {
-            return None
-          } else {
-            return Some(array.apply(0))
-          }
+          if (array.length == 0) { return None }
+          else { return Some(array.apply(0)) }
         }
       case _ =>
     }

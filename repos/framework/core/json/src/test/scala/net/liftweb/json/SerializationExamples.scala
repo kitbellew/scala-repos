@@ -82,13 +82,9 @@ object SerializationExamples extends Specification {
     read[Primitives](ser) mustEqual primitives
   }
 
-  "Primitive Int serialization" in {
-    read[Int](swrite(42)) mustEqual 42
-  }
+  "Primitive Int serialization" in { read[Int](swrite(42)) mustEqual 42 }
 
-  "Primitive Long serialization" in {
-    read[Long](swrite(42L)) mustEqual 42L
-  }
+  "Primitive Long serialization" in { read[Long](swrite(42L)) mustEqual 42L }
 
   "Primitive Double serialization" in {
     read[Double](swrite(3.14)) mustEqual 3.14
@@ -115,9 +111,7 @@ object SerializationExamples extends Specification {
     read[String](swrite(rt)) mustEqual rt
   }
 
-  "Symbol serialization" in {
-    read[Symbol](swrite('j)) mustEqual 'j
-  }
+  "Symbol serialization" in { read[Symbol](swrite('j)) mustEqual 'j }
 
   "Multidimensional list example" in {
     val ints = Ints(List(List(1, 2), List(3), List(4, 5)))

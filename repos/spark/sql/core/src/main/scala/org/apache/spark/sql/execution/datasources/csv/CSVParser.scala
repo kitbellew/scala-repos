@@ -88,9 +88,7 @@ private[sql] class LineCsvWriter(params: CSVOptions, headers: Seq[String])
     val outputWriter = new OutputStreamWriter(buffer, StandardCharsets.UTF_8)
     val writer = new CsvWriter(outputWriter, writerSettings)
 
-    if (includeHeader) {
-      writer.writeHeaders()
-    }
+    if (includeHeader) { writer.writeHeaders() }
     writer.writeRow(row.toArray: _*)
     writer.close()
     buffer.toString.stripLineEnd
@@ -143,11 +141,8 @@ private[sql] class BulkCsvReader(
     */
   override def next(): Array[String] = {
     val curRecord = nextRecord
-    if (curRecord != null) {
-      nextRecord = parser.parseNext()
-    } else {
-      throw new NoSuchElementException("next record is null")
-    }
+    if (curRecord != null) { nextRecord = parser.parseNext() }
+    else { throw new NoSuchElementException("next record is null") }
     curRecord
   }
 
@@ -179,9 +174,7 @@ private class StringIteratorReader(val iter: Iterator[String])
         str = iter.next()
         start = length
         length += (str.length + 1) // allowance for newline removed by SparkContext.textFile()
-      } else {
-        str = null
-      }
+      } else { str = null }
     }
   }
 
@@ -190,9 +183,8 @@ private class StringIteratorReader(val iter: Iterator[String])
     */
   override def read(): Int = {
     refill()
-    if (next >= length) {
-      -1
-    } else {
+    if (next >= length) { -1 }
+    else {
       val cur = next - start
       next += 1
       if (cur == str.length) '\n' else str.charAt(cur.toInt)
@@ -208,16 +200,14 @@ private class StringIteratorReader(val iter: Iterator[String])
     if ((off < 0) || (off > cbuf.length) || (len < 0) ||
         ((off + len) > cbuf.length) || ((off + len) < 0)) {
       throw new IndexOutOfBoundsException()
-    } else if (len == 0) {
-      n = 0
-    } else {
+    } else if (len == 0) { n = 0 }
+    else {
       if (next >= length) { // end of input
         n = -1
       } else {
-        n =
-          Math
-            .min(length - next, len)
-            .toInt // lesser of amount of input available or buf size
+        n = Math
+          .min(length - next, len)
+          .toInt // lesser of amount of input available or buf size
         if (n == length - next) {
           str.getChars(
             (next - start).toInt,

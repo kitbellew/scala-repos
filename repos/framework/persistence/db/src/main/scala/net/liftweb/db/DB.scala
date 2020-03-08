@@ -134,9 +134,7 @@ trait DB extends Loggable {
 
   def defineConnectionManager(
       name: ConnectionIdentifier,
-      mgr: ConnectionManager) {
-    connectionManagers(name) = mgr
-  }
+      mgr: ConnectionManager) { connectionManagers(name) = mgr }
 
   /**
     * Allows you to override the connection manager associated with particular connection identifiers for the duration
@@ -298,9 +296,7 @@ trait DB extends Loggable {
                       }
                     }
 
-                  } finally {
-                    clearThread(success)
-                  }
+                  } finally { clearThread(success) }
 
                 case x :: xs => DB.use(x) { ignore => recurseMe(xs) }
               }
@@ -320,9 +316,7 @@ trait DB extends Loggable {
                       throw e
                     }
                   }
-                } finally {
-                  clearThread(success)
-                }
+                } finally { clearThread(success) }
               }
             }
 
@@ -427,21 +421,13 @@ trait DB extends Loggable {
   def statement[T](db: SuperConnection)(f: (Statement) => T): T = {
     Helpers.calcTime {
       val st =
-        if (loggingEnabled_?) {
-          DBLog.createStatement(db.connection)
-        } else {
-          db.createStatement
-        }
+        if (loggingEnabled_?) { DBLog.createStatement(db.connection) }
+        else { db.createStatement }
 
       queryTimeout.foreach(to => st.setQueryTimeout(to))
-      try {
-        (st, f(st))
-      } finally {
-        st.close
-      }
-    } match {
-      case (time, (query, res)) => runLogger(query, time); res
-    }
+      try { (st, f(st)) }
+      finally { st.close }
+    } match { case (time, (query, res)) => runLogger(query, time); res }
   }
 
   def exec[T](db: SuperConnection, query: String)(f: (ResultSet) => T): T =
@@ -522,9 +508,7 @@ trait DB extends Loggable {
 
     val lb = new ListBuffer[List[String]]()
 
-    while (rs.next) {
-      lb += cntList.map(i => asString(i, rs, md))
-    }
+    while (rs.next) { lb += cntList.map(i => asString(i, rs, md)) }
 
     (colNames, lb.toList)
   }
@@ -537,9 +521,7 @@ trait DB extends Loggable {
 
     val lb = new ListBuffer[List[Any]]()
 
-    while (rs.next) {
-      lb += cntList.map(i => asAny(i, rs, md))
-    }
+    while (rs.next) { lb += cntList.map(i => asAny(i, rs, md)) }
 
     (colNames, lb.toList)
   }
@@ -681,9 +663,8 @@ trait DB extends Loggable {
   def exec[T](statement: PreparedStatement)(f: (ResultSet) => T): T = {
     queryTimeout.foreach(to => statement.setQueryTimeout(to))
     val rs = statement.executeQuery
-    try {
-      f(rs)
-    } finally {
+    try { f(rs) }
+    finally {
       statement.close
       rs.close
     }
@@ -699,9 +680,7 @@ trait DB extends Loggable {
     val st =
       if (loggingEnabled_?) {
         DBLog.prepareStatement(conn.connection, statement)
-      } else {
-        conn.prepareStatement(statement)
-      }
+      } else { conn.prepareStatement(statement) }
     runPreparedStatement(st)(f)
   }
 
@@ -720,9 +699,7 @@ trait DB extends Loggable {
     val st =
       if (loggingEnabled_?) {
         DBLog.prepareStatement(conn.connection, statement, autokeys)
-      } else {
-        conn.prepareStatement(statement, autokeys)
-      }
+      } else { conn.prepareStatement(statement, autokeys) }
     runPreparedStatement(st)(f)
   }
 
@@ -740,9 +717,7 @@ trait DB extends Loggable {
     val st =
       if (loggingEnabled_?) {
         DBLog.prepareStatement(conn.connection, statement, autoColumns)
-      } else {
-        conn.prepareStatement(statement, autoColumns)
-      }
+      } else { conn.prepareStatement(statement, autoColumns) }
     runPreparedStatement(st)(f)
   }
 
@@ -760,9 +735,7 @@ trait DB extends Loggable {
     val st =
       if (loggingEnabled_?) {
         DBLog.prepareStatement(conn.connection, statement, autoColumns)
-      } else {
-        conn.prepareStatement(statement, autoColumns)
-      }
+      } else { conn.prepareStatement(statement, autoColumns) }
     runPreparedStatement(st)(f)
   }
 
@@ -770,14 +743,9 @@ trait DB extends Loggable {
       f: (PreparedStatement) => T): T = {
     queryTimeout.foreach(to => st.setQueryTimeout(to))
     Helpers.calcTime {
-      try {
-        (st, f(st))
-      } finally {
-        st.close
-      }
-    } match {
-      case (time, (query, res)) => runLogger(query, time); res
-    }
+      try { (st, f(st)) }
+      finally { st.close }
+    } match { case (time, (query, res)) => runLogger(query, time); res }
   }
 
   private object currentConn extends DynoVar[SuperConnection]
@@ -805,9 +773,7 @@ trait DB extends Loggable {
           rollback = S.exceptionThrown_?
           throw e
         }
-      } finally {
-        releaseConnectionNamed(name, rollback)
-      }
+      } finally { releaseConnectionNamed(name, rollback) }
     }
   }
 
@@ -1292,9 +1258,7 @@ trait ProtoDBVendor extends ConnectionManager {
     * Test the connection.  By default, setAutoCommit(false),
     * but you can do a real query on your RDBMS to see if the connection is alive
     */
-  protected def testConnection(conn: Connection) {
-    conn.setAutoCommit(false)
-  }
+  protected def testConnection(conn: Connection) { conn.setAutoCommit(false) }
 
   def newConnection(name: ConnectionIdentifier): Box[Connection] =
     synchronized {
@@ -1336,9 +1300,7 @@ trait ProtoDBVendor extends ConnectionManager {
                 poolSize = poolSize - 1
                 tryo(x.close)
                 newConnection(name)
-              } catch {
-                case e: Exception => newConnection(name)
-              }
+              } catch { case e: Exception => newConnection(name) }
           }
       }
     }
@@ -1348,9 +1310,7 @@ trait ProtoDBVendor extends ConnectionManager {
       tryo { conn.close() }
       tempMaxSize -= 1
       poolSize -= 1
-    } else {
-      pool = conn :: pool
-    }
+    } else { pool = conn :: pool }
     logger.debug("Released connection. poolSize=%d".format(poolSize))
     notifyAll
   }

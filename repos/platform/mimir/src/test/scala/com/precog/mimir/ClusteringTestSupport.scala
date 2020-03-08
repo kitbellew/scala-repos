@@ -61,9 +61,7 @@ trait ClusteringTestSupport {
     points.toList map (pointToJson(_))
 
   def writePointsToDataset[A](points: Array[Array[Double]])(
-      f: String => A): A = {
-    writeRValuesToDataset(pointsToJson(points))(f)
-  }
+      f: String => A): A = { writeRValuesToDataset(pointsToJson(points))(f) }
 
   def writeRValuesToDataset[A](jvals: List[RValue])(f: String => A): A = {
     val lines = jvals map { _.toJValue.renderCompact }

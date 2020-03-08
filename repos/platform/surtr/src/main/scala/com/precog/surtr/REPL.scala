@@ -153,9 +153,7 @@ trait REPL
       val tree = shakeTree(oldTree)
       val strs = for (error <- tree.errors) yield showError(error)
 
-      if (!tree.errors.isEmpty) {
-        out.println(color.red(strs mkString "\n"))
-      }
+      if (!tree.errors.isEmpty) { out.println(color.red(strs mkString "\n")) }
 
       if (tree.errors filterNot isWarning isEmpty)
         Some(tree)
@@ -218,9 +216,8 @@ trait REPL
       val failures = results collect { case f: Failure        => f }
 
       if (successes.isEmpty) {
-        try {
-          handleFailures(failures)
-        } catch {
+        try { handleFailures(failures) }
+        catch {
           case pe: ParseException => {
             out.println()
             out.println(color.red(pe.mkString))
@@ -258,9 +255,8 @@ trait REPL
 
   def readNext(reader: ConsoleReader, color: Color): String = {
     var input = reader.readLine(color.blue(Prompt))
-    if (input == null) {
-      readNext(reader, color)
-    } else {
+    if (input == null) { readNext(reader, color) }
+    else {
       var line = reader.readLine(color.blue(Follow))
       while (line != null) {
         input += '\n' + line
@@ -307,9 +303,7 @@ object Console extends App {
 
   val repl: IO[
     scalaz.Validation[blueeyes.json.serialization.Extractor.Error, Lifecycle]] =
-    for {
-      replConfig <- loadConfig(args.headOption)
-    } yield {
+    for { replConfig <- loadConfig(args.headOption) } yield {
       scalaz.Success[blueeyes.json.serialization.Extractor.Error, Lifecycle] {
         new REPL with Lifecycle { self =>
           val storageTimeout = yggConfig.storageTimeout

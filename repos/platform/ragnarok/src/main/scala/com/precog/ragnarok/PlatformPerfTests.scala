@@ -20,9 +20,7 @@
 package com.precog.ragnarok
 
 object PlatformPerfTests extends PerfTestSuite {
-  "billings" := {
-    query("count(//billings)")
-  }
+  "billings" := { query("count(//billings)") }
 
   "arithmetic" := {
     query("1 + 2")

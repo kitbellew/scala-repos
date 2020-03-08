@@ -39,8 +39,12 @@ sealed trait JobQueryState[+A] {
 }
 
 object JobQueryState {
-  case object Cancelled extends JobQueryState[Nothing] { def value = None }
-  case object Expired extends JobQueryState[Nothing] { def value = None }
+  case object Cancelled extends JobQueryState[Nothing] {
+    def value = None
+  }
+  case object Expired extends JobQueryState[Nothing] {
+    def value = None
+  }
   case class Running[A](resources: Set[QueryResource[_]], value0: A)
       extends JobQueryState[A] {
     def value = Some(value0)
@@ -69,23 +73,16 @@ trait JobQueryStateMonad extends SwappableMonad[JobQueryState] {
   }
 
   def point[A](a: => A): JobQueryState[A] =
-    if (isCancelled()) {
-      Cancelled
-    } else if (hasExpired()) {
-      Expired
-    } else {
-      Running(Set.empty, a)
-    }
+    if (isCancelled()) { Cancelled }
+    else if (hasExpired()) { Expired }
+    else { Running(Set.empty, a) }
 
   def maybeCancel[A](q: JobQueryState[A]): JobQueryState[A] =
     if (isCancelled()) {
       // Free resources from q.
       Cancelled
-    } else if (hasExpired()) {
-      Expired
-    } else {
-      q
-    }
+    } else if (hasExpired()) { Expired }
+    else { q }
 
   override def map[A, B](fa: JobQueryState[A])(f: A => B): JobQueryState[B] =
     maybeCancel(fa) match {

@@ -218,7 +218,9 @@ sealed abstract class CoyonedaInstances7 extends CoyonedaInstances8 {
 
 sealed abstract class CoyonedaInstances8 extends CoyonedaInstances9 {
   implicit def coyonedaFoldable1[F[_]: Foldable1]: Foldable1[Coyoneda[F, ?]] =
-    new CoyonedaFoldable1[F] { def F = implicitly }
+    new CoyonedaFoldable1[F] {
+      def F = implicitly
+    }
 
   implicit def coyonedaApply[F[_]: Apply]: Apply[Coyoneda[F, ?]] =
     new IsomorphismApply[Coyoneda[F, ?], F] {
@@ -244,7 +246,9 @@ sealed abstract class CoyonedaInstances9 extends CoyonedaInstances10 {
 
 sealed abstract class CoyonedaInstances10 {
   implicit def coyonedaFoldable[F[_]: Foldable]: Foldable[Coyoneda[F, ?]] =
-    new CoyonedaFoldable[F] { def F = implicitly }
+    new CoyonedaFoldable[F] {
+      def F = implicitly
+    }
 
   /** `Coyoneda[F,_]` is a functor for any `F` */
   implicit def coyonedaFunctor[F[_]]: Functor[Coyoneda[F, ?]] =

@@ -280,20 +280,16 @@ trait XorFunctions {
 
   final class CatchOnlyPartiallyApplied[T] private[XorFunctions] {
     def apply[A](f: => A)(implicit CT: ClassTag[T], NT: NotNull[T]): T Xor A =
-      try {
-        right(f)
-      } catch {
+      try { right(f) }
+      catch {
         case t if CT.runtimeClass.isInstance(t) =>
           left(t.asInstanceOf[T])
       }
   }
 
   def catchNonFatal[A](f: => A): Throwable Xor A =
-    try {
-      right(f)
-    } catch {
-      case scala.util.control.NonFatal(t) => left(t)
-    }
+    try { right(f) }
+    catch { case scala.util.control.NonFatal(t) => left(t) }
 
   /**
     * Converts a `Try[A]` to a `Throwable Xor A`.

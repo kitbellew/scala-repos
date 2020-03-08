@@ -265,9 +265,7 @@ private[streaming] class ReceiverTracker(
         "Register received for unexpected id " + streamId)
     }
 
-    if (isTrackerStopping || isTrackerStopped) {
-      return false
-    }
+    if (isTrackerStopping || isTrackerStopped) { return false }
 
     val scheduledLocations = receiverTrackingInfos(streamId).scheduledLocations
     val acceptableExecutors = if (scheduledLocations.nonEmpty) {
@@ -340,9 +338,7 @@ private[streaming] class ReceiverTracker(
       StreamingListenerReceiverStopped(newReceiverTrackingInfo.toReceiverInfo))
     val messageWithError = if (error != null && !error.isEmpty) {
       s"$message - $error"
-    } else {
-      s"$message"
-    }
+    } else { s"$message" }
     logError(s"Deregistered receiver for stream $streamId: $messageWithError")
   }
 
@@ -388,9 +384,7 @@ private[streaming] class ReceiverTracker(
       StreamingListenerReceiverError(newReceiverTrackingInfo.toReceiverInfo))
     val messageWithError = if (error != null && !error.isEmpty) {
       s"$message - $error"
-    } else {
-      s"$message"
-    }
+    } else { s"$message" }
     logWarning(
       s"Error reported by receiver for stream $streamId: $messageWithError")
   }
@@ -549,9 +543,7 @@ private[streaming] class ReceiverTracker(
         receiverTrackingInfos.values.flatMap(_.endpoint).foreach(_.send(c))
       case UpdateReceiverRateLimit(streamUID, newRate) =>
         for (info <- receiverTrackingInfos.get(streamUID);
-             eP <- info.endpoint) {
-          eP.send(UpdateRateLimit(newRate))
-        }
+             eP <- info.endpoint) { eP.send(UpdateRateLimit(newRate)) }
       // Remote messages
       case ReportError(streamId, message, error) =>
         reportError(streamId, message, error)
@@ -579,17 +571,14 @@ private[streaming] class ReceiverTracker(
         if (WriteAheadLogUtils.isBatchingEnabled(ssc.conf, isDriver = true)) {
           walBatchingThreadPool.execute(new Runnable {
             override def run(): Unit = Utils.tryLogNonFatalError {
-              if (active) {
-                context.reply(addBlock(receivedBlockInfo))
-              } else {
+              if (active) { context.reply(addBlock(receivedBlockInfo)) }
+              else {
                 throw new IllegalStateException(
                   "ReceiverTracker RpcEndpoint shut down.")
               }
             }
           })
-        } else {
-          context.reply(addBlock(receivedBlockInfo))
-        }
+        } else { context.reply(addBlock(receivedBlockInfo)) }
       case DeregisterReceiver(streamId, message, error) =>
         deregisterReceiver(streamId, message, error)
         context.reply(true)
@@ -621,12 +610,8 @@ private[streaming] class ReceiverTracker(
             case loc: ExecutorCacheTaskLocation => executors(loc)
             case loc: TaskLocation              => true
           }
-        } else {
-          Nil
-        }
-      } else {
-        Nil
-      }
+        } else { Nil }
+      } else { Nil }
     }
 
     /**
@@ -674,9 +659,8 @@ private[streaming] class ReceiverTracker(
 
       // Create the RDD using the scheduledLocations to run the receiver in a Spark job
       val receiverRDD: RDD[Receiver[_]] =
-        if (scheduledLocations.isEmpty) {
-          ssc.sc.makeRDD(Seq(receiver), 1)
-        } else {
+        if (scheduledLocations.isEmpty) { ssc.sc.makeRDD(Seq(receiver), 1) }
+        else {
           val preferredLocations = scheduledLocations.map(_.toString).distinct
           ssc.sc.makeRDD(Seq(receiver -> preferredLocations))
         }
@@ -695,16 +679,14 @@ private[streaming] class ReceiverTracker(
       // We will keep restarting the receiver job until ReceiverTracker is stopped
       future.onComplete {
         case Success(_) =>
-          if (!shouldStartReceiver) {
-            onReceiverJobFinish(receiverId)
-          } else {
+          if (!shouldStartReceiver) { onReceiverJobFinish(receiverId) }
+          else {
             logInfo(s"Restarting Receiver $receiverId")
             self.send(RestartReceiver(receiver))
           }
         case Failure(e) =>
-          if (!shouldStartReceiver) {
-            onReceiverJobFinish(receiverId)
-          } else {
+          if (!shouldStartReceiver) { onReceiverJobFinish(receiverId) }
+          else {
             logError("Receiver has been stopped. Try to restart it.", e)
             logInfo(s"Restarting Receiver $receiverId")
             self.send(RestartReceiver(receiver))

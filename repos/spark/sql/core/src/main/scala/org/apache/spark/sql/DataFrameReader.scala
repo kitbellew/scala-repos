@@ -152,9 +152,7 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     *
     * @since 1.4.0
     */
-  def load(path: String): DataFrame = {
-    option("path", path).load()
-  }
+  def load(path: String): DataFrame = { option("path", path).load() }
 
   /**
     * Loads input in as a [[DataFrame]], for data sources that support multiple paths.
@@ -164,9 +162,8 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     */
   @scala.annotation.varargs
   def load(paths: String*): DataFrame = {
-    if (paths.isEmpty) {
-      sqlContext.emptyDataFrame
-    } else {
+    if (paths.isEmpty) { sqlContext.emptyDataFrame }
+    else {
       sqlContext.baseRelationToDataFrame(
         DataSource
           .apply(
@@ -202,9 +199,7 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     *
     * @since 2.0.0
     */
-  def stream(path: String): DataFrame = {
-    option("path", path).stream()
-  }
+  def stream(path: String): DataFrame = { option("path", path).stream() }
 
   /**
     * Construct a [[DataFrame]] representing the database table accessible via JDBC URL
@@ -417,9 +412,7 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     * @since 1.4.0
     */
   @scala.annotation.varargs
-  def parquet(paths: String*): DataFrame = {
-    format("parquet").load(paths: _*)
-  }
+  def parquet(paths: String*): DataFrame = { format("parquet").load(paths: _*) }
 
   /**
     * Loads an ORC file and returns the result as a [[DataFrame]].

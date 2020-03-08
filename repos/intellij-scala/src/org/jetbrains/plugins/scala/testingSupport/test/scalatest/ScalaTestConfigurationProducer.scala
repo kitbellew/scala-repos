@@ -100,9 +100,7 @@ class ScalaTestConfigurationProducer extends {
     runConfiguration.setTestKind(kind)
     try {
       val module = ScalaPsiUtil.getModule(element)
-      if (module != null) {
-        runConfiguration.setModule(module)
-      }
+      if (module != null) { runConfiguration.setModule(module) }
     } catch {
       case e: Exception =>
     }
@@ -770,9 +768,7 @@ class ScalaTestConfigurationProducer extends {
       while (fun != null) {
         if (fun.getParent
               .isInstanceOf[ScTemplateBody] && fun.containingClass == clazz) {
-          if (fun.name.startsWith("test")) {
-            return Some(fun.name)
-          }
+          if (fun.name.startsWith("test")) { return Some(fun.name) }
         }
         fun =
           PsiTreeUtil.getParentOfType(fun, classOf[ScFunctionDefinition], true)
@@ -789,9 +785,7 @@ class ScalaTestConfigurationProducer extends {
       while (fun != null) {
         if (fun.getParent
               .isInstanceOf[ScTemplateBody] && fun.containingClass == clazz) {
-          if (fun.hasAnnotation(annot) != None) {
-            return Some(fun.name)
-          }
+          if (fun.hasAnnotation(annot) != None) { return Some(fun.name) }
         }
         fun =
           PsiTreeUtil.getParentOfType(fun, classOf[ScFunctionDefinition], true)

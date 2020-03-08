@@ -179,18 +179,15 @@ class ExecutorBasedEventDrivenDispatcher(
   private[akka] def shutdown {
     val old =
       executorService.getAndSet(config.createLazyExecutorService(threadFactory))
-    if (old ne null) {
-      old.shutdownNow()
-    }
+    if (old ne null) { old.shutdownNow() }
   }
 
   private[akka] def registerForExecution(
       mbox: MessageQueue with ExecutableMailbox): Unit = {
     if (mbox.dispatcherLock.tryLock()) {
       if (active.isOn && !mbox.suspended.locked) { //If the dispatcher is active and the actor not suspended
-        try {
-          executorService.get() execute mbox
-        } catch {
+        try { executorService.get() execute mbox }
+        catch {
           case e: RejectedExecutionException =>
             EventHandler.warning(this, e.toString)
             mbox.dispatcherLock.unlock()
@@ -209,9 +206,7 @@ class ExecutorBasedEventDrivenDispatcher(
 
   override val toString = getClass.getSimpleName + "[" + name + "]"
 
-  def suspend(actorRef: ActorRef) {
-    getMailbox(actorRef).suspended.tryLock
-  }
+  def suspend(actorRef: ActorRef) { getMailbox(actorRef).suspended.tryLock }
 
   def resume(actorRef: ActorRef) {
     val mbox = getMailbox(actorRef)
@@ -228,13 +223,10 @@ trait ExecutableMailbox extends Runnable { self: MessageQueue =>
   def dispatcher: ExecutorBasedEventDrivenDispatcher
 
   final def run = {
-    try {
-      processMailbox()
-    } catch {
+    try { processMailbox() }
+    catch {
       case ie: InterruptedException =>
-    } finally {
-      dispatcherLock.unlock()
-    }
+    } finally { dispatcherLock.unlock() }
     if (!self.isEmpty)
       dispatcher.reRegisterForExecution(this)
   }

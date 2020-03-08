@@ -45,13 +45,9 @@ private[spark] class ResultStage(
 
   def activeJob: Option[ActiveJob] = _activeJob
 
-  def setActiveJob(job: ActiveJob): Unit = {
-    _activeJob = Option(job)
-  }
+  def setActiveJob(job: ActiveJob): Unit = { _activeJob = Option(job) }
 
-  def removeActiveJob(): Unit = {
-    _activeJob = None
-  }
+  def removeActiveJob(): Unit = { _activeJob = None }
 
   /**
     * Returns the sequence of partition ids that are missing (i.e. needs to be computed).

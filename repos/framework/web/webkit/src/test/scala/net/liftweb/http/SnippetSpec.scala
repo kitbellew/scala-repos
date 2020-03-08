@@ -99,9 +99,7 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.statelessInit(Req.nil) {
           S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude(
+            for { s <- S.session } yield s.processSurroundAndInclude(
               "test",
               <lift:foo>{res}</lift:foo>)
           }
@@ -116,9 +114,9 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.statelessInit(Req.nil) {
           S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude("test", <l:foo>{res}</l:foo>)
+            for { s <- S.session } yield s.processSurroundAndInclude(
+              "test",
+              <l:foo>{res}</l:foo>)
           }
         }
 
@@ -131,9 +129,9 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.statelessInit(Req.nil) {
           S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude("test", <div class="l:foo" />)
+            for { s <- S.session } yield s.processSurroundAndInclude(
+              "test",
+              <div class="l:foo" />)
           }
         }
 
@@ -153,9 +151,7 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.statelessInit(Req.nil) {
           S.mapSnippetsWith("foo" -> testAttrs _) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude(
+            for { s <- S.session } yield s.processSurroundAndInclude(
               "test",
               <div class="l:foo?bing=bong?fuzz=faz+snark?noodle=FatPoodle" />)
           }
@@ -177,9 +173,7 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.statelessInit(Req.nil) {
           S.mapSnippetsWith("foo" -> testAttrs _) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude(
+            for { s <- S.session } yield s.processSurroundAndInclude(
               "test",
               <div class="l:foo?bing=bong;fuzz=faz+snark;noodle=FatPoodle" />)
           }
@@ -203,9 +197,9 @@ object SnippetSpec extends Specification with XmlMatchers {
           S.mapSnippetsWith("foo" -> testAttrs _) {
             val clStr =
               "l:foo?bing=bong&amp;fuzz=faz+snark&amp;noodle=FatPoodle"
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude("test", <div class={clStr} />)
+            for { s <- S.session } yield s.processSurroundAndInclude(
+              "test",
+              <div class={clStr} />)
           }
         }
 
@@ -225,9 +219,7 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.statelessInit(Req.nil) {
           S.mapSnippetsWith("foo" -> testAttrs _) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude(
+            for { s <- S.session } yield s.processSurroundAndInclude(
               "test",
               <div class="l:foo?bing=bong?fuzz=faz+snark;noodle=FatPoodle" />)
           }
@@ -242,9 +234,7 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.statelessInit(Req.nil) {
           S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude(
+            for { s <- S.session } yield s.processSurroundAndInclude(
               "test",
               <div class='lift:foo' />)
           }
@@ -257,9 +247,7 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.statelessInit(Req.nil) {
           S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude(
+            for { s <- S.session } yield s.processSurroundAndInclude(
               "test",
               <div class="lift:bar" />)
           }
@@ -291,9 +279,7 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.statelessInit(Req.nil) {
           S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude(
+            for { s <- S.session } yield s.processSurroundAndInclude(
               "test",
               <lift:foo>{res}</lift:foo>)
           }
@@ -310,9 +296,7 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.init(makeReq, session) {
           S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude(
+            for { s <- S.session } yield s.processSurroundAndInclude(
               "test",
               <lift:foo>{res}</lift:foo>)
           }
@@ -327,9 +311,7 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.statelessInit(Req.nil) {
           S.mapSnippetsWith("foo" -> Funky.foo _) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude(
+            for { s <- S.session } yield s.processSurroundAndInclude(
               "test",
               <lift:foo>{res}</lift:foo>)
           }
@@ -346,9 +328,7 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret =
         S.init(makeReq, session) {
           S.mapSnippetsWith("foo" -> Funky.foo _) {
-            for {
-              s <- S.session
-            } yield s.processSurroundAndInclude(
+            for { s <- S.session } yield s.processSurroundAndInclude(
               "test",
               <lift:foo>{res}</lift:foo>)
           }
@@ -420,9 +400,7 @@ object SnippetSpec extends Specification with XmlMatchers {
 
       S.init(makeReq, session) {
         S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
-          for {
-            s <- S.session
-          } yield s.processSurroundAndInclude(
+          for { s <- S.session } yield s.processSurroundAndInclude(
             "test",
             <div class="l:foo?eager_eval=true">a<lift:foo>b</lift:foo></div>)
         }

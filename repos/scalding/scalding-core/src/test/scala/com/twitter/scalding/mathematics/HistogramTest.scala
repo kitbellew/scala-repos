@@ -33,9 +33,7 @@ class HistogramJob(args: Args) extends Job(args) {
       }
       .write(Tsv("stats-output"))
 
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 class HistogramJobTest extends WordSpec with Matchers {
@@ -67,9 +65,7 @@ class HistogramJobTest extends WordSpec with Matchers {
           }
       }
       .sink[(Double, Double)](Tsv("cdf-output")) { buf =>
-        "correctly compute a CDF" in {
-          buf.toSet shouldBe cdfOutput
-        }
+        "correctly compute a CDF" in { buf.toSet shouldBe cdfOutput }
       }
       .run
       .finish

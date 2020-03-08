@@ -89,11 +89,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
 
       years.zipWithIndex.foreach {
         case (year, index) =>
-          if (checkTypes) {
-            assert(year === Row(actualYears(index).toInt))
-          } else {
-            assert(year === Row(actualYears(index)))
-          }
+          if (checkTypes) { assert(year === Row(actualYears(index).toInt)) }
+          else { assert(year === Row(actualYears(index))) }
       }
     }
   }

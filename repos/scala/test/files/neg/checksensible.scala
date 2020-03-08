@@ -1,4 +1,6 @@
-final class Bip { def <=(other: Bop) = true }
+final class Bip {
+  def <=(other: Bop) = true
+}
 final class Bop {}
 object Bep {}
 
@@ -73,7 +75,9 @@ class EqEqRefTest {
   class C1 {}
   class C2 extends C1 {}
   final class Z1 extends C2 {}
-  final class C3 extends C2 { def !=(other: Z1) = false }
+  final class C3 extends C2 {
+    def !=(other: Z1) = false
+  }
   val z1 = new Z1
   val c3 = new C3
 

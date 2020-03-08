@@ -81,18 +81,14 @@ D <: jfxc.ObservableArray[D]](override val delegate: D)
   /**
     * Shrinks capacity to current length of data in this array.
     */
-  def trimToSize() {
-    delegate.trimToSize()
-  }
+  def trimToSize() { delegate.trimToSize() }
 
   /**
     * Grow array capacity if currently smaller than given `capacity`; do nothing otherwise.
     *
     * @param capacity Required capacity.
     */
-  def ensureCapacity(capacity: Int) {
-    delegate.ensureCapacity(capacity)
-  }
+  def ensureCapacity(capacity: Int) { delegate.ensureCapacity(capacity) }
 
   // Observable<X>Array interface functions.  Note: These functions are present in ObservableFloatArray and
   // ObservableIntegerArray, but they are not in ObservableArray[T].
@@ -329,9 +325,7 @@ D <: jfxc.ObservableArray[D]](override val delegate: D)
     * @param value New value for element at `idx`.
     * @throws java.lang.ArrayIndexOutOfBoundsException if `idx` does not satisfy `0 <= idx < length`.
     */
-  def update(idx: Int, value: V) {
-    set(idx, value)
-  }
+  def update(idx: Int, value: V) { set(idx, value) }
 
   /**
     * Retrieve length of data in this array.
@@ -382,9 +376,7 @@ D <: jfxc.ObservableArray[D]](override val delegate: D)
     *
     * Capacity is unchanged.
     */
-  override def clear() {
-    delegate.clear()
-  }
+  override def clear() { delegate.clear() }
 
   /**
     * Produces collection from builder.
@@ -443,9 +435,7 @@ D <: jfxc.ObservableArray[D]](override val delegate: D)
             array: D,
             sizeChanged: Boolean,
             start: Int,
-            end: Int) {
-          op
-        }
+            end: Int) { op }
       }
     }
   }

@@ -21,9 +21,7 @@ private[round] final class Titivate(
 
   def scheduler = context.system.scheduler
 
-  override def preStart() {
-    self ! Schedule
-  }
+  override def preStart() { self ! Schedule }
 
   val delayDuration = 200 millis
   def delayF(f: => Funit): Funit =
@@ -44,9 +42,7 @@ private[round] final class Titivate(
         else if (game.outoftime(_ => chess.Clock.maxGraceMillis)) delay {
           roundMap ! Tell(game.id, Outoftime)
         }
-        else if (game.abandoned) delay {
-          roundMap ! Tell(game.id, Abandon)
-        }
+        else if (game.abandoned) delay { roundMap ! Tell(game.id, Abandon) }
         else if (game.unplayed) delayF {
           bookmark ! lila.hub.actorApi.bookmark.Remove(game.id)
           GameRepo remove game.id
@@ -71,8 +67,6 @@ private[round] final class Titivate(
                 GameRepo.setCheckAt(game, DateTime.now plusDays days)
               }
           }
-      }.void andThenAnyway {
-        self ! Schedule
-      }
+      }.void andThenAnyway { self ! Schedule }
   }
 }

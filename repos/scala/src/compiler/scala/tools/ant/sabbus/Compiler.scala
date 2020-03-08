@@ -29,9 +29,7 @@ class Compiler(classpath: Array[URL], val settings: Settings) {
     try foreignCompiler.getClass
       .getMethod(method, types: _*)
       .invoke(foreignCompiler, args: _*)
-    catch {
-      case e: InvocationTargetException => throw e.getCause
-    }
+    catch { case e: InvocationTargetException => throw e.getCause }
 
   def compile(files: Array[File]): (Int, Int) = //(errors, warnings)
     try {

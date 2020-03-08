@@ -150,11 +150,8 @@ class InsertIntoHiveTableSuite
       val folders = dir.filter { e =>
         e.isDirectory && !e.getName().startsWith(stagingDir)
       }.toList
-      if (folders.isEmpty) {
-        List(acc.reverse)
-      } else {
-        folders.flatMap(x => listFolders(x, x.getName :: acc))
-      }
+      if (folders.isEmpty) { List(acc.reverse) }
+      else { folders.flatMap(x => listFolders(x, x.getName :: acc)) }
     }
     val expected = List(
       "p1=a" :: "p2=b" :: "p3=c" :: "p4=c" :: "p5=2" :: Nil,

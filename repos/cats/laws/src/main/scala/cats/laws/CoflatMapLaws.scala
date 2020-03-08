@@ -42,5 +42,7 @@ trait CoflatMapLaws[F[_]] extends FunctorLaws[F] {
 
 object CoflatMapLaws {
   def apply[F[_]](implicit ev: CoflatMap[F]): CoflatMapLaws[F] =
-    new CoflatMapLaws[F] { def F: CoflatMap[F] = ev }
+    new CoflatMapLaws[F] {
+      def F: CoflatMap[F] = ev
+    }
 }

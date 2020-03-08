@@ -90,9 +90,7 @@ private[spark] class LocalStopwatch(override val name: String)
 
   override def elapsed(): Long = elapsedTime
 
-  override protected def add(duration: Long): Unit = {
-    elapsedTime += duration
-  }
+  override protected def add(duration: Long): Unit = { elapsedTime += duration }
 }
 
 /**
@@ -109,9 +107,7 @@ private[spark] class DistributedStopwatch(
 
   override def elapsed(): Long = elapsedTime.value
 
-  override protected def add(duration: Long): Unit = {
-    elapsedTime += duration
-  }
+  override protected def add(duration: Long): Unit = { elapsedTime += duration }
 }
 
 /**

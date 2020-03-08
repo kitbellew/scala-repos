@@ -76,9 +76,7 @@ trait StringHelpers {
     val pattern = Pattern.compile("\\<\\%\\=([^\\%]*)\\%\\>")
     val m = pattern.matcher(msg)
     val ret = new StringBuffer
-    while (m.find) {
-      m.appendReplacement(ret, subst(m.group(1).trim))
-    }
+    while (m.find) { m.appendReplacement(ret, subst(m.group(1).trim)) }
     m.appendTail(ret)
     ret.toString
   }
@@ -199,9 +197,7 @@ trait StringHelpers {
       else {
         val randNum = if ((pos % 6) == 0) {
           _random.synchronized(_random.nextInt)
-        } else {
-          lastRand
-        }
+        } else { lastRand }
 
         sb.append((randNum & 0x1f) match {
           case n if n < 26 => ('A' + n).toChar
@@ -317,9 +313,7 @@ trait StringHelpers {
           pos += 1
         }
 
-        if (pos > lastPos) {
-          ret += str.substring(lastPos, pos)
-        }
+        if (pos > lastPos) { ret += str.substring(lastPos, pos) }
 
         ret.toList
       }

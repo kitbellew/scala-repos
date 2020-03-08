@@ -17,11 +17,7 @@ private[finagle] class DelayedReleaseService[-Req <: Request](
 
   private[this] def proxy(in: Response) = {
     val released = new AtomicBoolean(false)
-    def done() {
-      if (released.compareAndSet(false, true)) {
-        counter.decr()
-      }
-    }
+    def done() { if (released.compareAndSet(false, true)) { counter.decr() } }
 
     Response(
       in.httpResponse,

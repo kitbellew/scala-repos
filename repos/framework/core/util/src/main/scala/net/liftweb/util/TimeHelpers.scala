@@ -534,9 +534,7 @@ trait TimeHelpers { self: ControlHelpers =>
 
   /** @return a date from a string using the internet format. Return the Epoch date if the parse is unsuccesful */
   def parseInternetDate(dateString: String): Date =
-    tryo {
-      internetDateFormatter.parse(dateString)
-    } openOr new Date(0L)
+    tryo { internetDateFormatter.parse(dateString) } openOr new Date(0L)
 
   /** @return a date formatted with the internet format */
   def toInternetDate(in: Date): String = internetDateFormatter.format(in)

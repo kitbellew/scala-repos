@@ -107,12 +107,8 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
     }
   }
 
-  override def getID: String = {
-    "ScalaDeprecation"
-  }
+  override def getID: String = { "ScalaDeprecation" }
 
-  override def isEnabledByDefault: Boolean = {
-    true
-  }
+  override def isEnabledByDefault: Boolean = { true }
 
 }

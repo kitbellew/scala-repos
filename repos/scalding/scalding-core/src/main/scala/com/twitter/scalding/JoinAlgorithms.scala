@@ -112,9 +112,8 @@ trait JoinAlgorithms {
       asList(fields)
         .map { fname =>
           // If we renamed, get the rename, else just use the field
-          if (collisions(fname)) {
-            rename(fname)
-          } else fname
+          if (collisions(fname)) { rename(fname) }
+          else fname
         }: _*)
     val renamedPipe = p.rename(orig -> temp)
     (renamedPipe, newJoinKeys, temp)
@@ -226,9 +225,7 @@ trait JoinAlgorithms {
   def leftJoinWithLarger(
       fs: (Fields, Fields),
       that: Pipe,
-      reducers: Int = -1) = {
-    joinWithLarger(fs, that, new LeftJoin, reducers)
-  }
+      reducers: Int = -1) = { joinWithLarger(fs, that, new LeftJoin, reducers) }
 
   /**
     * This does an assymmetric join, using cascading's "HashJoin".  This only runs through
@@ -500,9 +497,8 @@ trait JoinAlgorithms {
           val leftValue = result.getObject(index)
           val rightValue = result.getObject(index + keysSize)
 
-          if (leftValue == null) {
-            result.set(index, rightValue)
-          } else if (rightValue == null) {
+          if (leftValue == null) { result.set(index, rightValue) }
+          else if (rightValue == null) {
             result.set(index + keysSize, leftValue)
           }
         }

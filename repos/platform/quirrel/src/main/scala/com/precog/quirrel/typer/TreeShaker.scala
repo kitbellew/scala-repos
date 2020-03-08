@@ -39,9 +39,7 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
       root._errors ++= errors
 
       root
-    } else {
-      tree.root
-    }
+    } else { tree.root }
   }
 
   def performShake(tree: Expr): (

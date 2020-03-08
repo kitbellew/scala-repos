@@ -46,11 +46,8 @@ package object templates {
     include.router.replace(".", "_") + index
 
   def concatSep[T](seq: Seq[T], sep: String)(f: T => ScalaContent): Any = {
-    if (seq.isEmpty) {
-      Nil
-    } else {
-      Seq(f(seq.head), seq.tail.map { t => Seq(sep, f(t)) })
-    }
+    if (seq.isEmpty) { Nil }
+    else { Seq(f(seq.head), seq.tail.map { t => Seq(sep, f(t)) }) }
   }
 
   /**
@@ -61,9 +58,7 @@ package object templates {
       paramFormat: Parameter => String): String = {
     val methodPart = if (r.call.instantiate) {
       s"$Injector.instanceOf(classOf[${r.call.packageName}.${r.call.controller}]).${r.call.method}"
-    } else {
-      s"${r.call.packageName}.${r.call.controller}.${r.call.method}"
-    }
+    } else { s"${r.call.packageName}.${r.call.controller}.${r.call.method}" }
     val paramPart = r.call.parameters
       .map { params => params.map(paramFormat).mkString(", ") }
       .map("(" + _ + ")")
@@ -78,11 +73,8 @@ package object templates {
       r: Route,
       ident: String,
       paramFormat: Parameter => String): String = {
-    val methodPart = if (r.call.instantiate) {
-      s"$ident.get.${r.call.method}"
-    } else {
-      s"$ident.${r.call.method}"
-    }
+    val methodPart = if (r.call.instantiate) { s"$ident.get.${r.call.method}" }
+    else { s"$ident.${r.call.method}" }
     val paramPart = r.call.parameters
       .map { params => params.map(paramFormat).mkString(", ") }
       .map("(" + _ + ")")
@@ -309,9 +301,8 @@ package object templates {
       case Parameter(name, _, Some(fixed), _) =>
         "(\"%s\", %s)".format(name, fixed)
     }
-    if (fixedParams.isEmpty) {
-      "import ReverseRouteContext.empty"
-    } else {
+    if (fixedParams.isEmpty) { "import ReverseRouteContext.empty" }
+    else {
       "implicit val _rrc = new ReverseRouteContext(Map(%s))".format(
         fixedParams.mkString(", "))
     }
@@ -357,24 +348,19 @@ package object templates {
                 """implicitly[PathBindable[""" + param.typeName + """]].unbind("""" + paramName + """", """ + safeKeyword(
                   localNames.get(param.name).getOrElse(param.name)) + """)"""
             }
-            .getOrElse {
-              throw new Error("missing key " + name)
-            }
+            .getOrElse { throw new Error("missing key " + name) }
       }
       .mkString(" + ")
 
     val queryParams = route.call.parameters.getOrElse(Nil).filterNot { p =>
       p.fixed.isDefined ||
       route.path.parts
-        .collect {
-          case DynamicPart(name, _, _) => name
-        }
+        .collect { case DynamicPart(name, _, _) => name }
         .contains(p.name)
     }
 
-    val callQueryString = if (queryParams.size == 0) {
-      ""
-    } else {
+    val callQueryString = if (queryParams.size == 0) { "" }
+    else {
       """ + queryString(List(%s))""".format(queryParams
         .map { p =>
           ("""implicitly[QueryStringBindable[""" + p.typeName + """]].unbind("""" + paramNameOnQueryString(
@@ -465,24 +451,19 @@ package object templates {
                 .get(param.name)
                 .getOrElse(param.name) + """)"""
           }
-          .getOrElse {
-            throw new Error("missing key " + name)
-          }
+          .getOrElse { throw new Error("missing key " + name) }
       }
     }.mkString
 
     val queryParams = route.call.parameters.getOrElse(Nil).filterNot { p =>
       p.fixed.isDefined ||
       route.path.parts
-        .collect {
-          case DynamicPart(name, _, _) => name
-        }
+        .collect { case DynamicPart(name, _, _) => name }
         .contains(p.name)
     }
 
-    val queryString = if (queryParams.size == 0) {
-      ""
-    } else {
+    val queryString = if (queryParams.size == 0) { "" }
+    else {
       """ + _qS([%s])""".format(queryParams
         .map { p =>
           val paramName: String = paramNameOnQueryString(p.name)
@@ -525,9 +506,7 @@ package object templates {
       s"${route.call.method}(${route.call.parameters.getOrElse(Nil).map(x => safeKeyword(x.name)).mkString(", ")})"
     if (useInjector(route)) {
       s"$Injector.instanceOf(classOf[$controllerRef]).$methodCall"
-    } else {
-      s"$controllerRef.$methodCall"
-    }
+    } else { s"$controllerRef.$methodCall" }
   }
 
   /**

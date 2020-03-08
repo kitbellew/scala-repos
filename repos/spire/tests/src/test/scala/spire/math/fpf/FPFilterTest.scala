@@ -89,12 +89,9 @@ class FpFilterTest extends FunSuite with Checkers {
   case class Simplex(p: Point, q: Point, r: Point)
 
   // I'm not trying to test things that won't ever work.
-  def genSimpleDouble: Gen[Double] =
-    for {
-      n <- arbitrary[Long]
-    } yield {
-      (n >>> 11) * 1.1102230246251565e-16
-    }
+  def genSimpleDouble: Gen[Double] = for { n <- arbitrary[Long] } yield {
+    (n >>> 11) * 1.1102230246251565e-16
+  }
 
   def genPoint: Gen[Point] =
     for {

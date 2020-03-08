@@ -13,8 +13,6 @@ object T {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
-    T
-  }
+  def main(args: Array[String]): Unit = { T }
 
 }

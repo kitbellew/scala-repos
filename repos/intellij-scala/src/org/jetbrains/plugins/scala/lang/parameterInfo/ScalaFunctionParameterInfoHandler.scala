@@ -100,14 +100,10 @@ class ScalaFunctionParameterInfoHandler
   }
 
   def findElementForParameterInfo(
-      context: CreateParameterInfoContext): PsiElement = {
-    findCall(context)
-  }
+      context: CreateParameterInfoContext): PsiElement = { findCall(context) }
 
   def findElementForUpdatingParameterInfo(
-      context: UpdateParameterInfoContext): PsiElement = {
-    findCall(context)
-  }
+      context: UpdateParameterInfoContext): PsiElement = { findCall(context) }
 
   def getParametersForDocumentation(
       p: Any,
@@ -207,9 +203,7 @@ class ScalaFunctionParameterInfoHandler
                 }
               }
               if (k == index || (k == parameters.length - 1 && index >= parameters.length &&
-                  parameters.last._1.isRepeated)) {
-                buffer.append("<b>")
-              }
+                  parameters.last._1.isRepeated)) { buffer.append("<b>") }
               if (k < index && !isGrey) {
                 //slow checking
                 if (k >= exprs.length) { //shouldn't be
@@ -220,9 +214,8 @@ class ScalaFunctionParameterInfoHandler
                     case assign @ NamedAssignStmt(name) =>
                       val ind = parameters.indexWhere(param =>
                         ScalaPsiUtil.memberNamesEquals(param._1.name, name))
-                      if (ind == -1 || used(ind)) {
-                        doNoNamed(assign)
-                      } else {
+                      if (ind == -1 || used(ind)) { doNoNamed(assign) }
+                      else {
                         if (k != ind) namedMode = true
                         used(ind) = true
                         val param: (Parameter, String) = parameters(ind)
@@ -245,16 +238,14 @@ class ScalaFunctionParameterInfoHandler
                 }
               } else {
                 //fast checking
-                if (k >= exprs.length) {
-                  appendFirst()
-                } else {
+                if (k >= exprs.length) { appendFirst() }
+                else {
                   exprs(k) match {
                     case NamedAssignStmt(name) =>
                       val ind = parameters.indexWhere(param =>
                         ScalaPsiUtil.memberNamesEquals(param._1.name, name))
-                      if (ind == -1 || used(ind)) {
-                        appendFirst()
-                      } else {
+                      if (ind == -1 || used(ind)) { appendFirst() }
+                      else {
                         if (k != ind) namedMode = true
                         used(ind) = true
                         if (namedMode) buffer.append(namedPrefix)
@@ -266,9 +257,7 @@ class ScalaFunctionParameterInfoHandler
                 }
               }
               if (k == index || (k == parameters.length - 1 && index >= parameters.length &&
-                  parameters.last._1.isRepeated)) {
-                buffer.append("</b>")
-              }
+                  parameters.last._1.isRepeated)) { buffer.append("</b>") }
               k = k + 1
               if (k != parameters.length) buffer.append(", ")
             }
@@ -401,9 +390,7 @@ class ScalaFunctionParameterInfoHandler
                         if (lastSize != buffer.length) buffer.append(" ")
 
                         val name = param.name
-                        if (name != null) {
-                          buffer.append(name)
-                        }
+                        if (name != null) { buffer.append(name) }
                         buffer.append(": ")
                         buffer.append(ScType.presentableText(
                           subst.subst(param.exactParamType())))
@@ -486,9 +473,7 @@ class ScalaFunctionParameterInfoHandler
       override def invocationCount: Int = 1
 
       override def callReference: Option[ScReferenceExpression] = {
-        element.getParent match {
-          case i: ScInfixExpr => Some(i.operation)
-        }
+        element.getParent match { case i: ScInfixExpr => Some(i.operation) }
       }
     }
     private class InfixExpressionInvocation(expr: ScExpression)

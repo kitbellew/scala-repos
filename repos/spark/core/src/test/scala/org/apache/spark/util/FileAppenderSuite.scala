@@ -45,13 +45,9 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
   val testFile =
     new File(Utils.createTempDir(), "FileAppenderSuite-test").getAbsoluteFile
 
-  before {
-    cleanup()
-  }
+  before { cleanup() }
 
-  after {
-    cleanup()
-  }
+  after { cleanup() }
 
   test("basic file appender") {
     val testString = (1 to 1000).mkString(", ")

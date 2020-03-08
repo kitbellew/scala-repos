@@ -80,9 +80,7 @@ private[spark] class HadoopPartition(rddId: Int, idx: Int, s: InputSplit)
         Map(
           "map_input_file" -> is.getPath().toString(),
           "mapreduce_map_input_file" -> is.getPath().toString())
-      } else {
-        Map()
-      }
+      } else { Map() }
     envVars
   }
 }
@@ -276,15 +274,12 @@ class HadoopRDD[K, V](
       val value: V = reader.createValue()
 
       override def getNext(): (K, V) = {
-        try {
-          finished = !reader.next(key, value)
-        } catch {
+        try { finished = !reader.next(key, value) }
+        catch {
           case eof: EOFException =>
             finished = true
         }
-        if (!finished) {
-          inputMetrics.incRecordsReadInternal(1)
-        }
+        if (!finished) { inputMetrics.incRecordsReadInternal(1) }
         if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
           updateBytesRead()
         }
@@ -298,20 +293,16 @@ class HadoopRDD[K, V](
           // reader more than once, since that exposes us to MAPREDUCE-5918 when running against
           // Hadoop 1.x and older Hadoop 2.x releases. That bug can lead to non-deterministic
           // corruption issues when reading compressed input.
-          try {
-            reader.close()
-          } catch {
+          try { reader.close() }
+          catch {
             case e: Exception =>
               if (!ShutdownHookManager.inShutdown()) {
                 logWarning("Exception in RecordReader.close()", e)
               }
-          } finally {
-            reader = null
-          }
-          if (getBytesReadCallback.isDefined) {
-            updateBytesRead()
-          } else if (split.inputSplit.value.isInstanceOf[FileSplit] ||
-                     split.inputSplit.value.isInstanceOf[CombineFileSplit]) {
+          } finally { reader = null }
+          if (getBytesReadCallback.isDefined) { updateBytesRead() }
+          else if (split.inputSplit.value.isInstanceOf[FileSplit] ||
+                   split.inputSplit.value.isInstanceOf[CombineFileSplit]) {
             // If we can't get the bytes read from the FS stats, fall back to the split size,
             // which may be inaccurate.
             try {
@@ -457,9 +448,8 @@ private[spark] object HadoopRDD extends Logging {
   }
 
   private[spark] val SPLIT_INFO_REFLECTIONS: Option[SplitInfoReflections] =
-    try {
-      Some(new SplitInfoReflections)
-    } catch {
+    try { Some(new SplitInfoReflections) }
+    catch {
       case e: Exception =>
         logDebug(
           "SplitLocationInfo and other new Hadoop classes are " +
@@ -482,9 +472,7 @@ private[spark] object HadoopRDD extends Logging {
                 .asInstanceOf[Boolean]) {
             logDebug("Partition " + locationStr + " is cached by Hadoop.")
             out += new HDFSCacheTaskLocation(locationStr).toString
-          } else {
-            out += new HostTaskLocation(locationStr).toString
-          }
+          } else { out += new HostTaskLocation(locationStr).toString }
         }
       }
     }

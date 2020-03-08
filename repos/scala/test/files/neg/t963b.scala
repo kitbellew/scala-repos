@@ -11,10 +11,14 @@ object B {
   var b: Boolean = false
   def y: A = {
     if (b) {
-      a = new A { type T = Int; var v = 1 }
+      a = new A {
+        type T = Int; var v = 1
+      }
       a
     } else {
-      a = new A { type T = String; var v = "" }
+      a = new A {
+        type T = String; var v = ""
+      }
       b = true
       a
     }

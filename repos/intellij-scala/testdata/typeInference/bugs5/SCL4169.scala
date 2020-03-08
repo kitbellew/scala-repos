@@ -4,8 +4,6 @@ object Scl4169 {
     for (item <- List[Any]().toArray) yield "" /*end*/
   }
 
-  val b: Array[Any] = {
-    (List[Any]().toArray).map { case item => "" }
-  }
+  val b: Array[Any] = { (List[Any]().toArray).map { case item => "" } }
 }
 //Array[Any]

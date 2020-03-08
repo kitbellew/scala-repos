@@ -31,12 +31,8 @@ private[application] class AppHelper extends javafx.application.Application {
     JFXApp.ActiveJFXApp = this
     JFXApp.Stage = stage
     JFXApp.ActiveApp.init()
-    if (JFXApp.AutoShow) {
-      JFXApp.Stage.show()
-    }
+    if (JFXApp.AutoShow) { JFXApp.Stage.show() }
   }
 
-  override def stop() {
-    JFXApp.ActiveApp.stopApp()
-  }
+  override def stop() { JFXApp.ActiveApp.stopApp() }
 }

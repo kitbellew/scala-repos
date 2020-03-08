@@ -109,12 +109,9 @@ case class BaseBolt[I, O](
       if (currentPeriod == lastPeriod) {
         val maxPerPeriod = if (currentPeriod < endRampPeriod) {
           ((currentPeriod - startPeriod) * deltaPerPeriod) + lowerBound
-        } else {
-          upperBound
-        }
-        if (executedThisPeriod > maxPerPeriod) {
-          timeTillNextPeriod
-        } else {
+        } else { upperBound }
+        if (executedThisPeriod > maxPerPeriod) { timeTillNextPeriod }
+        else {
           executedThisPeriod = executedThisPeriod + 1
           0
         }
@@ -127,9 +124,7 @@ case class BaseBolt[I, O](
     if (sleepTime > 0) {
       Thread.sleep(sleepTime)
       rateLimit()
-    } else {
-      ()
-    }
+    } else { () }
   }
 
   // Should we ack immediately on reception instead of at the end
@@ -221,9 +216,7 @@ case class BaseBolt[I, O](
 
   override val getComponentConfiguration = null
 
-  override def cleanup {
-    executor.cleanup
-  }
+  override def cleanup { executor.cleanup }
 
   /**
     * This is clearly not safe, but done to deal with GC issues since
@@ -247,7 +240,5 @@ case class BaseBolt[I, O](
     }
   }
 
-  private def clearValues(t: Tuple): Unit = {
-    valuesField.foreach(fn => fn(t))
-  }
+  private def clearValues(t: Tuple): Unit = { valuesField.foreach(fn => fn(t)) }
 }

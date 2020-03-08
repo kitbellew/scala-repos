@@ -128,9 +128,7 @@ class ValidatedTests extends CatsSuite {
       if (v.isInvalid) {
         v.forall(p) should ===(true)
         v.exists(p) should ===(false)
-      } else {
-        v.forall(p) should ===(v.exists(p))
-      }
+      } else { v.forall(p) should ===(v.exists(p)) }
     }
   }
 

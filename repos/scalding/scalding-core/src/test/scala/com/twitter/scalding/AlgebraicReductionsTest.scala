@@ -48,9 +48,7 @@ class AlgebraJobTest extends WordSpec with Matchers {
     JobTest(new AlgebraJob(_))
       .source(Tsv("input", ('x, 'y, 'z, 'w)), inputData)
       .sink[(Int, Int, Int, Set[Int], Int, Int, Int)](Tsv("output")) { buf =>
-        "correctly do algebra" in {
-          buf.toList shouldBe correctOutput
-        }
+        "correctly do algebra" in { buf.toList shouldBe correctOutput }
       }
       .run
       .finish
@@ -62,9 +60,7 @@ class AlgebraJobTest extends WordSpec with Matchers {
     JobTest(new ComplicatedAlgebraJob(_))
       .source(Tsv("input", ('x, 'y, 'z, 'w, 'v)), inputData2)
       .sink[(Int, Int, Int, Set[Int], Double)](Tsv("output")) { buf =>
-        "correctly do complex algebra" in {
-          buf.toList shouldBe correctOutput2
-        }
+        "correctly do complex algebra" in { buf.toList shouldBe correctOutput2 }
       }
       .run
       .finish

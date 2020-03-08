@@ -52,8 +52,6 @@ class TableRow[T](
   /**
     * Updates the TableView associated with this TableCell.
     */
-  def updateTableView(tv: TableView[T]) {
-    delegate.updateTableView(tv)
-  }
+  def updateTableView(tv: TableView[T]) { delegate.updateTableView(tv) }
 
 }

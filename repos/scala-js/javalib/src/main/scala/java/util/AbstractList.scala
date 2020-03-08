@@ -103,9 +103,8 @@ abstract class AbstractList[E] protected ()
   }
 
   override def equals(o: Any): Boolean = {
-    if (o.asInstanceOf[AnyRef] eq this) {
-      true
-    } else {
+    if (o.asInstanceOf[AnyRef] eq this) { true }
+    else {
       o match {
         case o: List[_] =>
           val oIter = o.listIterator

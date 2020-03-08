@@ -34,9 +34,7 @@ class FlowTakeWithinSpec extends AkkaSpec {
       val demand3 = pSub.expectRequest().toInt
       val sentN = demand1 + demand2
       (1 to sentN) foreach { n ⇒ c.expectNext(n) }
-      within(2.seconds) {
-        c.expectComplete()
-      }
+      within(2.seconds) { c.expectComplete() }
       (1 to demand3) foreach { _ ⇒ pSub.sendNext(input.next()) }
       c.expectNoMsg(200.millis)
     }

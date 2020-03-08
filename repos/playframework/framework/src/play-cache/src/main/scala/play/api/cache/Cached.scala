@@ -45,9 +45,7 @@ class Cached @Inject() (cache: CacheApi) {
     *
     * @param key Cache key
     */
-  def apply(key: String): CachedBuilder = {
-    apply(_ => key, duration = 0)
-  }
+  def apply(key: String): CachedBuilder = { apply(_ => key, duration = 0) }
 
   /**
     * Cache an action.
@@ -251,11 +249,8 @@ final class CachedBuilder(
   private val cachingWithEternity = caching.andThen { duration =>
     // FIXME: Surely Duration.Inf is a better marker for eternity than 0?
     val zeroDuration: Boolean = duration.neg().equals(duration)
-    if (zeroDuration) {
-      Duration(60 * 60 * 24 * 365, SECONDS)
-    } else {
-      duration
-    }
+    if (zeroDuration) { Duration(60 * 60 * 24 * 365, SECONDS) }
+    else { duration }
   }
 
   private def handleResult(
@@ -312,9 +307,7 @@ final class CachedBuilder(
     * @param duration how long should we cache the result for
     */
   def includeStatus(status: Int, duration: Duration): CachedBuilder = compose {
-    case e if e.status == status => {
-      duration
-    }
+    case e if e.status == status => { duration }
   }
 
   /**
@@ -406,11 +399,7 @@ class UnboundCachedBuilder(
     * @param duration how long should we cache the result for
     */
   def includeStatus(status: Int, duration: Duration): UnboundCachedBuilder =
-    compose {
-      case e if e.status == status => {
-        duration
-      }
-    }
+    compose { case e if e.status == status => { duration } }
 
   /**
     * The returned cache will store all responses whatever they may contain

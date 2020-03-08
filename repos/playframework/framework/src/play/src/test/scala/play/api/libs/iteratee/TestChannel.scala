@@ -18,17 +18,11 @@ class TestChannel[A](defaultTimeout: Duration) extends Concurrent.Channel[A] {
   private val chunks = new LinkedBlockingQueue[Input[A]]
   private val ends = new LinkedBlockingQueue[Option[Throwable]]
 
-  def push(chunk: Input[A]): Unit = {
-    chunks.offer(chunk)
-  }
+  def push(chunk: Input[A]): Unit = { chunks.offer(chunk) }
 
-  def end(e: Throwable): Unit = {
-    ends.offer(Some(e))
-  }
+  def end(e: Throwable): Unit = { ends.offer(Some(e)) }
 
-  def end(): Unit = {
-    ends.offer(None)
-  }
+  def end(): Unit = { ends.offer(None) }
 
   private def takeChunk(timeout: Duration): Input[A] = {
     if (timeout.isFinite)

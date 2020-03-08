@@ -80,7 +80,9 @@ private[io] object SelectionHandler {
       extends NoSerializationVerificationNeeded
 
   final case class Retry(command: WorkerForCommand, retriesLeft: Int)
-      extends NoSerializationVerificationNeeded { require(retriesLeft >= 0) }
+      extends NoSerializationVerificationNeeded {
+    require(retriesLeft >= 0)
+  }
 
   case object ChannelConnectable
   case object ChannelAcceptable

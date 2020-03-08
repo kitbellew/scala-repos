@@ -83,9 +83,8 @@ object DataView {
     val hash = MurmurHash3.stringHash(s"$beginTime-$endTime-$version-$uid")
     val baseDir = s"${sys.env("PIO_FS_BASEDIR")}/view"
     val fileName = s"$baseDir/$name-$appName-$hash.parquet"
-    try {
-      sqlContext.parquetFile(fileName)
-    } catch {
+    try { sqlContext.parquetFile(fileName) }
+    catch {
       case e: java.io.FileNotFoundException =>
         logger.info("Cached copy not found, reading from DB.")
         // if cached copy is found, use it. If not, grab from Storage

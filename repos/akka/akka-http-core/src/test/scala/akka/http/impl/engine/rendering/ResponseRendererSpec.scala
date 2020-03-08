@@ -714,9 +714,7 @@ class ResponseRendererSpec
           try {
             Await.ready(wasCompletedFuture, 100.millis)
             true
-          } catch {
-            case NonFatal(_) ⇒ false
-          }
+          } catch { case NonFatal(_) ⇒ false }
         Await
           .result(resultFuture, 250.millis)
           .reduceLeft(_ ++ _)

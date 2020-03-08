@@ -80,9 +80,8 @@ private[math] object Multiplication {
     val aNumberLength = bi.numberLength
     val aDigits = bi.digits
 
-    if (resSign == 0) {
-      BigInteger.ZERO
-    } else if (aNumberLength == 1) {
+    if (resSign == 0) { BigInteger.ZERO }
+    else if (aNumberLength == 1) {
       val res: Long = unsignedMultAddAdd(aDigits(0), factor, 0, 0)
       val resLo = res.toInt
       val resHi = (res >>> 32).toInt
@@ -179,9 +178,8 @@ private[math] object Multiplication {
       if (val2.numberLength > val1.numberLength) (val2, val1)
       else (val1, val2)
 
-    if (op2.numberLength < whenUseKaratsuba) {
-      multiplyPAP(op1, op2)
-    } else {
+    if (op2.numberLength < whenUseKaratsuba) { multiplyPAP(op1, op2) }
+    else {
       /*
        * Karatsuba: u = u1*B + u0 v = v1*B + v0 u*v = (u1*v1)*B^2 +
        * ((u1-u0)*(v0-v1) + u1*v1 + u0*v0)*B + u0*v0
@@ -343,18 +341,15 @@ private[math] object Multiplication {
           if ((exp & 1) != 0) res.multiply(acc)
           else res
         val acc2 = {
-          if (acc.numberLength == 1) {
-            acc.multiply(acc)
-          } else {
+          if (acc.numberLength == 1) { acc.multiply(acc) }
+          else {
             val a = new Array[Int](acc.numberLength << 1)
             val sq = square(acc.digits, acc.numberLength, a)
             new BigInteger(1, sq)
           }
         }
         loop(exp >> 1, res2, acc2)
-      } else {
-        res.multiply(acc)
-      }
+      } else { res.multiply(acc) }
     }
 
     loop(exponent, BigInteger.ONE, base)
@@ -369,11 +364,9 @@ private[math] object Multiplication {
     */
   def powerOf10(exp: Long): BigInteger = {
     // "SMALL POWERS"
-    if (exp < BigTenPows.length) {
-      BigTenPows(exp.toInt)
-    } else if (exp <= 50) {
-      BigInteger.TEN.pow(exp.toInt)
-    } else if (exp <= Int.MaxValue) { // "LARGE POWERS"
+    if (exp < BigTenPows.length) { BigTenPows(exp.toInt) }
+    else if (exp <= 50) { BigInteger.TEN.pow(exp.toInt) }
+    else if (exp <= Int.MaxValue) { // "LARGE POWERS"
       BigFivePows(1).pow(exp.toInt).shiftLeft(exp.toInt)
     } else { //"HUGE POWERS"
       val powerOfFive = BigFivePows(1).pow(Integer.MAX_VALUE)
@@ -442,9 +435,8 @@ private[math] object Multiplication {
       t: Array[Int],
       aLen: Int,
       bLen: Int): Unit = {
-    if (a == b && aLen == bLen) {
-      square(a, aLen, t)
-    } else {
+    if (a == b && aLen == bLen) { square(a, aLen, t) }
+    else {
       for (i <- 0 until aLen) {
         var carry = 0
         val aI = a(i)

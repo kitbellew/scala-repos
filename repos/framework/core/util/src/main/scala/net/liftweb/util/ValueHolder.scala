@@ -48,9 +48,7 @@ trait Settable extends ValueHolder {
     * Perform an atomic operation on the Settable. By default
     * synchronizes the instance, but it could use other mechanisms
     */
-  def performAtomicOperation[T](f: => T): T = synchronized {
-    f
-  }
+  def performAtomicOperation[T](f: => T): T = synchronized { f }
 }
 
 trait SettableValueHolder extends Settable

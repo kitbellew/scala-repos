@@ -105,9 +105,7 @@ private[spark] class DiskBlockObjectWriter(
           fos.getFD.sync()
           writeMetrics.incWriteTime(System.nanoTime() - start)
         }
-      } {
-        objOut.close()
-      }
+      } { objOut.close() }
 
       channel = null
       bs = null
@@ -134,9 +132,7 @@ private[spark] class DiskBlockObjectWriter(
       finalPosition = file.length()
       // In certain compression codecs, more bytes are written after close() is called
       writeMetrics.incBytesWritten(finalPosition - reportedPosition)
-    } else {
-      finalPosition = file.length()
-    }
+    } else { finalPosition = file.length() }
     commitAndCloseHasBeenCalled = true
   }
 
@@ -163,9 +159,7 @@ private[spark] class DiskBlockObjectWriter(
       try {
         truncateStream.getChannel.truncate(initialPosition)
         file
-      } finally {
-        truncateStream.close()
-      }
+      } finally { truncateStream.close() }
     } catch {
       case e: Exception =>
         logError(
@@ -179,9 +173,7 @@ private[spark] class DiskBlockObjectWriter(
     * Writes a key-value pair.
     */
   def write(key: Any, value: Any) {
-    if (!initialized) {
-      open()
-    }
+    if (!initialized) { open() }
 
     objOut.writeKey(key)
     objOut.writeValue(value)
@@ -191,9 +183,7 @@ private[spark] class DiskBlockObjectWriter(
   override def write(b: Int): Unit = throw new UnsupportedOperationException()
 
   override def write(kvBytes: Array[Byte], offs: Int, len: Int): Unit = {
-    if (!initialized) {
-      open()
-    }
+    if (!initialized) { open() }
 
     bs.write(kvBytes, offs, len)
   }
@@ -206,9 +196,7 @@ private[spark] class DiskBlockObjectWriter(
     writeMetrics.incRecordsWritten(1)
 
     // TODO: call updateBytesWritten() less frequently.
-    if (numRecordsWritten % 32 == 0) {
-      updateBytesWritten()
-    }
+    if (numRecordsWritten % 32 == 0) { updateBytesWritten() }
   }
 
   /**

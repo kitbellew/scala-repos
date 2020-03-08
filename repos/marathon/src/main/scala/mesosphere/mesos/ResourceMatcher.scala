@@ -166,9 +166,7 @@ object ResourceMatcher {
       } yield ResourceMatch(
         scalarMatchResults.collect { case m: ScalarMatch => m },
         portsMatch)
-    } else {
-      None
-    }
+    } else { None }
   }
 
   private[this] def matchScalarResource(

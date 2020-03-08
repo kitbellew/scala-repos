@@ -32,9 +32,7 @@ class BucketizerSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  test("params") {
-    ParamsSuite.checkParams(new Bucketizer)
-  }
+  test("params") { ParamsSuite.checkParams(new Bucketizer) }
 
   test("Bucket continuous features, without -inf,inf") {
     // Check a set of valid feature values.
@@ -70,18 +68,14 @@ class BucketizerSuite
       .toDF("feature", "idx")
     withClue(
       "Invalid feature value -0.9 was not caught as an invalid feature!") {
-      intercept[SparkException] {
-        bucketizer.transform(badDF1).collect()
-      }
+      intercept[SparkException] { bucketizer.transform(badDF1).collect() }
     }
     val badDF2 = sqlContext
       .createDataFrame(invalidData2.zipWithIndex)
       .toDF("feature", "idx")
     withClue(
       "Invalid feature value 0.51 was not caught as an invalid feature!") {
-      intercept[SparkException] {
-        bucketizer.transform(badDF2).collect()
-      }
+      intercept[SparkException] { bucketizer.transform(badDF2).collect() }
     }
   }
 

@@ -73,9 +73,7 @@ object ImageUtils extends Logging {
           (
             string.tryToInt(wStr).getOrElse(0),
             string.tryToInt(hStr).getOrElse(0))
-        } else {
-          (0, 0)
-        }
+        } else { (0, 0) }
       }
       case None => (0, 0)
     }
@@ -107,11 +105,8 @@ object ImageUtils extends Logging {
       }
     } finally {
       if (image != null) {
-        try {
-          image.flush
-        } catch {
-          case e: Exception => {}
-        }
+        try { image.flush }
+        catch { case e: Exception => {} }
       }
     }
   }
@@ -134,24 +129,17 @@ object ImageUtils extends Logging {
       p.waitFor
       return line
     } catch {
-      case e: IOException => {
-        logger.error(e.toString, e)
-      }
+      case e: IOException => { logger.error(e.toString, e) }
       case e: InterruptedException => {
         logger.error(e.toString, e)
         throw new RuntimeException(e)
       }
     } finally {
       if (in != null) {
-        try {
-          in.close()
-        } catch {
-          case e: IOException => {}
-        }
+        try { in.close() }
+        catch { case e: IOException => {} }
       }
-      if (p != null) {
-        p.destroy()
-      }
+      if (p != null) { p.destroy() }
     }
     null
   }
@@ -240,9 +228,7 @@ object ImageUtils extends Logging {
           None
         }
       }
-    } else {
-      None
-    }
+    } else { None }
 
   }
 
@@ -259,16 +245,13 @@ object ImageUtils extends Logging {
     try {
       val fileCopyBytes = IOUtils.copy(instream, outstream)
       trace(fileCopyBytes + " bytes copied to disk")
-    } catch {
-      case e: Exception => info(e, e.toString)
-    } finally {
+    } catch { case e: Exception => info(e, e.toString) }
+    finally {
       try {
         outstream.flush()
         outstream.close()
         instream.close()
-      } catch {
-        case e: Exception => info(e, e.toString)
-      }
+      } catch { case e: Exception => info(e, e.toString) }
     }
     //    entity.writeTo(outstream)
     EntityUtils.consume(entity)
@@ -308,12 +291,10 @@ object ImageUtils extends Logging {
 
         val respStatus = response.getStatusLine.getStatusCode
 
-        if (respStatus != 200) {
-          None
-        } else {
-          try {
-            Option(response.getEntity)
-          } catch {
+        if (respStatus != 200) { None }
+        else {
+          try { Option(response.getEntity) }
+          catch {
             case e: Exception => warn(e, e.toString); httpget.abort(); None
           }
         }

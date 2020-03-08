@@ -333,8 +333,6 @@ trait JobResultManager[M[+_]] { self: JobManager[M] =>
     fs.load(job) map (_ map {
       case FileData(mimeType, data) =>
         Right((mimeType, data))
-    } getOrElse {
-      Left("No results exist for job " + job)
-    })
+    } getOrElse { Left("No results exist for job " + job) })
   }
 }

@@ -16,9 +16,7 @@ private object TimeoutFilterTest {
     val timer = new MockTimer
     val promise = new Promise[String] {
       @volatile var interrupted: Option[Throwable] = None
-      setInterruptHandler {
-        case exc => interrupted = Some(exc)
-      }
+      setInterruptHandler { case exc => interrupted = Some(exc) }
     }
     val service = new Service[String, String] {
       def apply(request: String) = promise
@@ -59,12 +57,8 @@ class TimeoutFilterTest extends FunSuite with MockitoSugar {
       timer.tick()
       assert(res.isDefined)
       val t = promise.interrupted
-      intercept[java.util.concurrent.TimeoutException] {
-        throw t.get
-      }
-      intercept[IndividualRequestTimeoutException] {
-        Await.result(res)
-      }
+      intercept[java.util.concurrent.TimeoutException] { throw t.get }
+      intercept[IndividualRequestTimeoutException] { Await.result(res) }
     }
   }
 

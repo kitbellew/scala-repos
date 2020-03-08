@@ -39,9 +39,7 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
   def collect[U](f: PartialFunction[T, U]): Activity[U] = flatMap {
     case t if f.isDefinedAt(t) =>
       try Activity.value(f(t))
-      catch {
-        case NonFatal(exc) => Activity.exception(exc)
-      }
+      catch { case NonFatal(exc) => Activity.exception(exc) }
     case _ => Activity.pending
   }
 
@@ -59,9 +57,7 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
       case Ok(v) =>
         val a =
           try f(v)
-          catch {
-            case NonFatal(exc) => Activity.exception(exc)
-          }
+          catch { case NonFatal(exc) => Activity.exception(exc) }
 
         a.run
       case Pending         => Var.value(Activity.Pending)
@@ -76,9 +72,7 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
     Activity(run flatMap { act =>
       val a =
         try f(act)
-        catch {
-          case NonFatal(exc) => Activity.exception(exc)
-        }
+        catch { case NonFatal(exc) => Activity.exception(exc) }
       a.run
     })
 

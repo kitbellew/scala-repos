@@ -257,9 +257,7 @@ class ALSModel private[ml] (
     val predict = udf { (userFeatures: Seq[Float], itemFeatures: Seq[Float]) =>
       if (userFeatures != null && itemFeatures != null) {
         blas.sdot(rank, userFeatures.toArray, 1, itemFeatures.toArray, 1)
-      } else {
-        Float.NaN
-      }
+      } else { Float.NaN }
     }
     dataset
       .join(userFactors, dataset($(userCol)) === userFactors("id"), "left")
@@ -558,9 +556,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
         workspace = NNLS.createWorkspace(rank)
         ata = new Array[Double](rank * rank)
         initialized = true
-      } else {
-        require(this.rank == rank)
-      }
+      } else { require(this.rank == rank) }
     }
 
     /**
@@ -639,9 +635,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       require(a.length == k)
       copyToDouble(a)
       blas.dspr(upper, k, c, da, 1, ata)
-      if (b != 0.0) {
-        blas.daxpy(k, c * b, da, 1, atb, 1)
-      }
+      if (b != 0.0) { blas.daxpy(k, c * b, da, 1, atb, 1) }
       this
     }
 
@@ -996,9 +990,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
           if (builder.size >= 2048) { // 2048 * (3 * 4) = 24k
             builders(idx) = new RatingBlockBuilder
             Iterator.single(((srcBlockId, dstBlockId), builder.build()))
-          } else {
-            Iterator.empty
-          }
+          } else { Iterator.empty }
         } ++ {
           builders.view.zipWithIndex.filter(_._1.size > 0).map {
             case (block, idx) =>
@@ -1167,18 +1159,13 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
         data: UncompressedInBlock[ID],
         pos: Int,
         reuse: KeyWrapper[ID]): KeyWrapper[ID] = {
-      if (reuse == null) {
-        new KeyWrapper().setKey(data.srcIds(pos))
-      } else {
-        reuse.setKey(data.srcIds(pos))
-      }
+      if (reuse == null) { new KeyWrapper().setKey(data.srcIds(pos)) }
+      else { reuse.setKey(data.srcIds(pos)) }
     }
 
     override def getKey(
         data: UncompressedInBlock[ID],
-        pos: Int): KeyWrapper[ID] = {
-      getKey(data, pos, null)
-    }
+        pos: Int): KeyWrapper[ID] = { getKey(data, pos, null) }
 
     private def swapElements[@specialized(Int, Float) T](
         data: Array[T],
@@ -1369,9 +1356,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
         val ls = new NormalEquation(rank)
         while (j < dstIds.length) {
           ls.reset()
-          if (implicitPrefs) {
-            ls.merge(YtY.get)
-          }
+          if (implicitPrefs) { ls.merge(YtY.get) }
           var i = srcPtrs(j)
           var numExplicits = 0
           while (i < srcPtrs(j + 1)) {
@@ -1446,15 +1431,11 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
 
     /** Gets the block id from an encoded index. */
     @inline
-    def blockId(encoded: Int): Int = {
-      encoded >>> numLocalIndexBits
-    }
+    def blockId(encoded: Int): Int = { encoded >>> numLocalIndexBits }
 
     /** Gets the local index from an encoded index. */
     @inline
-    def localIndex(encoded: Int): Int = {
-      encoded & localIndexMask
-    }
+    def localIndex(encoded: Int): Int = { encoded & localIndexMask }
   }
 
   /**

@@ -508,9 +508,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
       ForwardedHeaderHandlerConfig(
         Some(Configuration.reference ++ Configuration.from(config))))
 
-  def version(s: String) = {
-    Map("play.http.forwarded.version" -> s)
-  }
+  def version(s: String) = { Map("play.http.forwarded.version" -> s) }
 
   def trustedProxies(s: String*) = {
     Map("play.http.forwarded.trustedProxies" -> s)

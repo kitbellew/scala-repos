@@ -87,9 +87,8 @@ abstract class CharsetDecoder protected (
     @tailrec
     def loop(): CoderResult = {
       val result1 =
-        try {
-          decodeLoop(in, out)
-        } catch {
+        try { decodeLoop(in, out) }
+        catch {
           case ex: BufferOverflowException =>
             throw new CoderMalfunctionError(ex)
           case ex: BufferUnderflowException =>
@@ -102,22 +101,18 @@ abstract class CharsetDecoder protected (
           CoderResult.malformedForLength(remaining)
         else
           result1
-      } else {
-        result1
-      }
+      } else { result1 }
 
-      if (result2.isUnderflow || result2.isOverflow) {
-        result2
-      } else {
+      if (result2.isUnderflow || result2.isOverflow) { result2 }
+      else {
         val action =
           if (result2.isUnmappable) unmappableCharacterAction
           else malformedInputAction
 
         action match {
           case CodingErrorAction.REPLACE =>
-            if (out.remaining < replacement.length) {
-              CoderResult.OVERFLOW
-            } else {
+            if (out.remaining < replacement.length) { CoderResult.OVERFLOW }
+            else {
               out.put(replacement)
               in.position(in.position + result2.length)
               loop()
@@ -163,9 +158,8 @@ abstract class CharsetDecoder protected (
 
   final def decode(in: ByteBuffer): CharBuffer = {
     def grow(out: CharBuffer): CharBuffer = {
-      if (out.capacity == 0) {
-        CharBuffer.allocate(1)
-      } else {
+      if (out.capacity == 0) { CharBuffer.allocate(1) }
+      else {
         val result = CharBuffer.allocate(out.capacity * 2)
         out.flip()
         result.put(out)
@@ -180,9 +174,8 @@ abstract class CharsetDecoder protected (
       if (result.isUnderflow) {
         assert(!in.hasRemaining)
         out
-      } else if (result.isOverflow) {
-        loopDecode(grow(out))
-      } else {
+      } else if (result.isOverflow) { loopDecode(grow(out)) }
+      else {
         result.throwException()
         throw new AssertionError("should not get here")
       }
@@ -192,11 +185,9 @@ abstract class CharsetDecoder protected (
     @tailrec
     def loopFlush(out: CharBuffer): CharBuffer = {
       val result = flush(out)
-      if (result.isUnderflow) {
-        out
-      } else if (result.isOverflow) {
-        loopFlush(grow(out))
-      } else {
+      if (result.isUnderflow) { out }
+      else if (result.isOverflow) { loopFlush(grow(out)) }
+      else {
         result.throwException()
         throw new AssertionError("should not get here")
       }

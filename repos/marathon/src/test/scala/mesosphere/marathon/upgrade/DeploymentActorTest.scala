@@ -225,9 +225,7 @@ class DeploymentActorTest
       verify(scheduler).startApp(driver, app3.copy(instances = 0))
       verify(driver, times(1)).killTask(task1_2.taskId.mesosTaskId)
       verify(scheduler).stopApp(driver, app4.copy(instances = 0))
-    } finally {
-      system.shutdown()
-    }
+    } finally { system.shutdown() }
   }
 
   test("Restart app") {
@@ -342,9 +340,7 @@ class DeploymentActorTest
       verify(driver).killTask(task1_1.taskId.mesosTaskId)
       verify(driver).killTask(task1_2.taskId.mesosTaskId)
       verify(queue).add(appNew, 2)
-    } finally {
-      system.shutdown()
-    }
+    } finally { system.shutdown() }
   }
 
   test("Restart suspended app") {
@@ -386,9 +382,7 @@ class DeploymentActorTest
       )
 
       receiverProbe.expectMsg(DeploymentFinished(plan))
-    } finally {
-      system.shutdown()
-    }
+    } finally { system.shutdown() }
   }
 
   test("Scale with tasksToKill") {
@@ -470,8 +464,6 @@ class DeploymentActorTest
 
       verify(driver, times(1)).killTask(task1_2.taskId.mesosTaskId)
       verifyNoMoreInteractions(driver)
-    } finally {
-      system.shutdown()
-    }
+    } finally { system.shutdown() }
   }
 }

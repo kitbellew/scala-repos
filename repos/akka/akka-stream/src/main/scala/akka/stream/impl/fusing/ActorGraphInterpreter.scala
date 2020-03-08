@@ -255,9 +255,7 @@ private[stream] object ActorGraphInterpreter {
               push(out, dequeue())
               complete(out)
             } else push(out, dequeue())
-          } else if (upstreamCompleted) {
-            complete(out)
-          }
+          } else if (upstreamCompleted) { complete(out) }
         }
 
         override def onDownstreamFinish(): Unit = cancel()

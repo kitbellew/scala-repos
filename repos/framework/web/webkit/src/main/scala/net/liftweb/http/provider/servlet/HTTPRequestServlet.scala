@@ -128,9 +128,8 @@ class HTTPRequestServlet(
     * Destroy the underlying servlet session
     */
   def destroyServletSession() {
-    for {
-      httpSession <- Box !! req.getSession(false)
-    } yield httpSession.invalidate()
+    for { httpSession <- Box !! req.getSession(false) } yield httpSession
+      .invalidate()
   }
 
   /**

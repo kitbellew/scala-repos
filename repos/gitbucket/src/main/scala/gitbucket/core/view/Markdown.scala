@@ -82,9 +82,7 @@ object Markdown {
         out.append(
           "<a class=\"markdown-anchor-link\" href=\"#" + id + "\"><span class=\"octicon octicon-link\"></span></a>")
         out.append("<a class=\"markdown-anchor\" name=\"" + id + "\"></a>")
-      } else {
-        out.append(">")
-      }
+      } else { out.append(">") }
 
       out.append(text)
       out.append("</h" + level + ">\n")
@@ -100,24 +98,17 @@ object Markdown {
 
     override def list(body: String, ordered: Boolean): String = {
       var listType: String = null
-      if (ordered) {
-        listType = "ol"
-      } else {
-        listType = "ul"
-      }
+      if (ordered) { listType = "ol" }
+      else { listType = "ul" }
       if (body.contains("""class="task-list-item-checkbox"""")) {
         "<" + listType + " class=\"task-list\">\n" + body + "</" + listType + ">\n"
-      } else {
-        "<" + listType + ">\n" + body + "</" + listType + ">\n"
-      }
+      } else { "<" + listType + ">\n" + body + "</" + listType + ">\n" }
     }
 
     override def listitem(text: String): String = {
       if (text.contains("""class="task-list-item-checkbox" """)) {
         "<li class=\"task-list-item\">" + text + "</li>\n"
-      } else {
-        "<li>" + text + "</li>\n"
-      }
+      } else { "<li>" + text + "</li>\n" }
     }
 
     override def text(text: String): String = {
@@ -148,9 +139,7 @@ object Markdown {
         val (label, page) = if (link.contains('|')) {
           val i = link.indexOf('|')
           (link.substring(0, i), link.substring(i + 1))
-        } else {
-          (link, link)
-        }
+        } else { (link, link) }
 
         val url = repository.httpUrl
           .replaceFirst("/git/", "/")
@@ -160,16 +149,13 @@ object Markdown {
         } else {
           "<a href=\"" + url + "\" class=\"absent\">" + escape(label) + "</a>"
         }
-      } else {
-        escape(text)
-      }
+      } else { escape(text) }
     }
 
     private def fixUrl(url: String, isImage: Boolean = false): String = {
       if (url.startsWith("http://") || url.startsWith("https://") || url
-            .startsWith("/")) {
-        url
-      } else if (url.startsWith("#")) {
+            .startsWith("/")) { url }
+      else if (url.startsWith("#")) {
         ("#" + generateAnchorName(url.substring(1)))
       } else if (!enableWikiLink) {
         if (context.currentPath.contains("/blob/")) {

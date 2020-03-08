@@ -35,21 +35,15 @@ private[streaming] object RawTextHelper {
       i = 0
       while (i < s.length) {
         j = i
-        while (j < s.length && s.charAt(j) != ' ') {
-          j += 1
-        }
+        while (j < s.length && s.charAt(j) != ' ') { j += 1 }
         if (j > i) {
           val w = s.substring(i, j)
           map.changeValue(w, 1L, _ + 1L)
         }
         i = j
-        while (i < s.length && s.charAt(i) == ' ') {
-          i += 1
-        }
+        while (i < s.length && s.charAt(i) == ' ') { i += 1 }
       }
-      map.toIterator.map {
-        case (k, v) => (k, v)
-      }
+      map.toIterator.map { case (k, v) => (k, v) }
     }
     map.toIterator.map { case (k, v) => (k, v) }
   }
@@ -76,9 +70,7 @@ private[streaming] object RawTextHelper {
           taken(0) = value
           len = 1
         } else if (len < k || value._2 > taken(len - 1)._2) {
-          if (len < k) {
-            len += 1
-          }
+          if (len < k) { len += 1 }
           taken(len - 1) = value
           i = len - 1
           while (i > 0 && taken(i - 1)._2 < taken(i)._2) {
@@ -108,13 +100,9 @@ private[streaming] object RawTextHelper {
     }
   }
 
-  def add(v1: Long, v2: Long): Long = {
-    v1 + v2
-  }
+  def add(v1: Long, v2: Long): Long = { v1 + v2 }
 
-  def subtract(v1: Long, v2: Long): Long = {
-    v1 - v2
-  }
+  def subtract(v1: Long, v2: Long): Long = { v1 - v2 }
 
   def max(v1: Long, v2: Long): Long = math.max(v1, v2)
 }

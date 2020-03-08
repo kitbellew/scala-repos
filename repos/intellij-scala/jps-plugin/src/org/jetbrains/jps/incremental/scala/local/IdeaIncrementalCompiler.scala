@@ -60,9 +60,7 @@ private class ClientCallback(client: Client) extends ClientCallbackBase {
     client.generated(source, module, name)
   }
 
-  override def endSource(source: File) {
-    client.processed(source)
-  }
+  override def endSource(source: File) { client.processed(source) }
 
   override def nameHashing() = false
 }

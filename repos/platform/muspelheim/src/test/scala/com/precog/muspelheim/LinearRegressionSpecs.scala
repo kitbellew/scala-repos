@@ -193,9 +193,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
                   const("estimate") mustEqual SDecimal(0)
                   const("standardError") mustEqual SDecimal(0)
               }
-            } else {
-              ok
-            }
+            } else { ok }
         }
 
         arr(1) must beLike {
@@ -470,12 +468,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               obj("rateprice") must beLike {
                 case SObject(rateprice) => handleCoeffs(rateprice)
               }
-              obj("zzz") must beLike {
-                case SObject(zzz) => handleCoeffs(zzz)
-              }
-              obj("rate") must beLike {
-                case SObject(rate) => handleZero(rate)
-              }
+              obj("zzz") must beLike { case SObject(zzz)   => handleCoeffs(zzz) }
+              obj("rate") must beLike { case SObject(rate) => handleZero(rate) }
           }
 
           arr(1) must beLike { case SObject(obj) => handleCoeffs(obj) }

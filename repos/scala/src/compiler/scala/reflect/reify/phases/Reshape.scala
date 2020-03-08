@@ -128,9 +128,7 @@ trait Reshape {
           println("originals are: " + sym.annotations)
         val preTyper = postTyper map toPreTyperAnnotation
         mods.withAnnotations(preTyper)
-      } else {
-        mods
-      }
+      } else { mods }
     }
 
     /** Restore pre-typer representation of a type.
@@ -249,9 +247,8 @@ trait Reshape {
       *  If we do not do that, subsequent reflective compilation will fail.
       */
     private def toPreTyperAnnotation(ann: AnnotationInfo): Tree = {
-      val args = if (ann.assocs.isEmpty) {
-        ann.args
-      } else {
+      val args = if (ann.assocs.isEmpty) { ann.args }
+      else {
         def toScalaAnnotation(jann: ClassfileAnnotArg): Tree =
           (jann: @unchecked) match {
             case LiteralAnnotArg(const) => Literal(const)
@@ -344,9 +341,7 @@ trait Reshape {
               flags1,
               privateWithin1,
               annotations1) setPositions mods.positions
-          } else {
-            mods
-          }
+          } else { mods }
           val mods2 = toPreTyperModifiers(mods1, vdef.symbol)
           val name1 = name.dropLocal
           val vdef1 = ValDef(mods2, name1.toTermName, tpt, rhs)
@@ -362,9 +357,7 @@ trait Reshape {
           if (accessors.values.exists(_.contains(ddef))) {
             if (reifyDebug) println("discarding accessor method: " + ddef)
             None
-          } else {
-            Some(ddef)
-          }
+          } else { Some(ddef) }
         case tree =>
           Some(tree)
       }

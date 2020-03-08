@@ -3,7 +3,5 @@ import Assert._
 
 class ContinuationsTest {
   @Test
-  def basic {
-    assertTrue(Example.x == 20)
-  }
+  def basic { assertTrue(Example.x == 20) }
 }

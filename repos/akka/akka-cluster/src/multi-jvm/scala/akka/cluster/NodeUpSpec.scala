@@ -36,9 +36,7 @@ abstract class NodeUpSpec
   "A cluster node that is joining another cluster" must {
     "not be able to join a node that is not a cluster member" in {
 
-      runOn(first) {
-        cluster.join(second)
-      }
+      runOn(first) { cluster.join(second) }
       enterBarrier("first-join-attempt")
 
       Thread.sleep(2000)
@@ -67,9 +65,7 @@ abstract class NodeUpSpec
       )
       enterBarrier("listener-registered")
 
-      runOn(second) {
-        cluster.join(first)
-      }
+      runOn(second) { cluster.join(first) }
       enterBarrier("joined-again")
 
       // let it run for a while to make sure that nothing bad happens

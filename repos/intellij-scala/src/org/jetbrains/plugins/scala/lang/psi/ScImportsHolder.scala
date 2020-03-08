@@ -330,13 +330,9 @@ trait ScImportsHolder extends ScalaPsiElement {
     addImportBefore(element, anchor.getNode.getTreeNext.getPsi)
   }
 
-  def plainDeleteImport(stmt: ScImportExpr) {
-    stmt.deleteExpr()
-  }
+  def plainDeleteImport(stmt: ScImportExpr) { stmt.deleteExpr() }
 
-  def plainDeleteSelector(sel: ScImportSelector) {
-    sel.deleteSelector()
-  }
+  def plainDeleteSelector(sel: ScImportSelector) { sel.deleteSelector() }
 
   def deleteImportStmt(stmt: ScImportStmt) {
     def remove(node: ASTNode) = getNode.removeChild(node)

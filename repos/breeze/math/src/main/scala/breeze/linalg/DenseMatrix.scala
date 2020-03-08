@@ -148,11 +148,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   def rowColumnFromLinearIndex(index: Int): (Int, Int) = {
     val r = (index - offset) % majorStride
     val c = (index - offset) / majorStride
-    if (isTranspose) {
-      (c, r)
-    } else {
-      (r, c)
-    }
+    if (isTranspose) { (c, r) }
+    else { (r, c) }
   }
 
   def update(row: Int, col: Int, v: V): Unit = {
@@ -352,14 +349,10 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
       val matrices = ArrayBuffer[DenseMatrix[V]]()
       for (index <- sorted) {
         assert(index >= last)
-        if (index != last) {
-          matrices += this(last until index, ::)
-        }
+        if (index != last) { matrices += this(last until index, ::) }
         last = index + 1
       }
-      if (last != this.rows) {
-        matrices += this(last until this.rows, ::)
-      }
+      if (last != this.rows) { matrices += this(last until this.rows, ::) }
       DenseMatrix.vertcat(matrices: _*)
     }
   }
@@ -378,14 +371,10 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
       val matrices = ArrayBuffer[DenseMatrix[V]]()
       for (index <- sorted) {
         assert(index >= last)
-        if (index != last) {
-          matrices += this(::, last until index)
-        }
+        if (index != last) { matrices += this(::, last until index) }
         last = index + 1
       }
-      if (last != this.cols) {
-        matrices += this(::, last until this.cols)
-      }
+      if (last != this.cols) { matrices += this(::, last until this.cols) }
       DenseMatrix.horzcat(matrices: _*)
     }
   }
@@ -638,9 +627,7 @@ object DenseMatrix
             m.data,
             m.offset + first,
             m.majorStride)
-        } else {
-          canSliceCols(m.t, ::, rows).t
-        }
+        } else { canSliceCols(m.t, ::, rows).t }
       }
     }
   }
@@ -652,9 +639,8 @@ object DenseMatrix
 
         val cols = colsWNegative.getRangeWithoutNegativeIndexes(m.cols)
 
-        if (cols.isEmpty) {
-          DenseMatrix.create(m.rows, 0, m.data, 0, m.rows)
-        } else if (!m.isTranspose) {
+        if (cols.isEmpty) { DenseMatrix.create(m.rows, 0, m.data, 0, m.rows) }
+        else if (!m.isTranspose) {
           val first = cols.head
           if (cols.last >= m.cols) {
             throw new IndexOutOfBoundsException(
@@ -666,9 +652,7 @@ object DenseMatrix
             m.data,
             m.offset + first * m.majorStride,
             m.majorStride * cols.step)
-        } else {
-          canSliceRows(m.t, cols, ::).t
-        }
+        } else { canSliceRows(m.t, cols, ::).t }
       }
     }
   }
@@ -736,9 +720,8 @@ object DenseMatrix
             "Row must be in bounds for slice!")
         val col = if (colWNegative < 0) colWNegative + m.cols else colWNegative
 
-        if (rows.isEmpty) {
-          DenseVector.create(m.data, 0, 0, 0)
-        } else if (!m.isTranspose) {
+        if (rows.isEmpty) { DenseVector.create(m.data, 0, 0, 0) }
+        else if (!m.isTranspose) {
           if (rows.last >= m.rows) {
             throw new IndexOutOfBoundsException(
               s"Row slice of $rows was bigger than matrix rows of ${m.rows}")
@@ -915,9 +898,7 @@ object DenseMatrix
           cforRange(from.offset until from.offset + from.size) { j =>
             d(j) = fn(d(j))
           }
-        } else {
-          slowPath(from, fn)
-        }
+        } else { slowPath(from, fn) }
       }
 
       private def slowPath(from: DenseMatrix[V], fn: (V) => V): Unit = {
@@ -991,9 +972,7 @@ object DenseMatrix
   }
 
   implicit def canCopyDenseMatrix[V: ClassTag] = new CanCopy[DenseMatrix[V]] {
-    def apply(v1: DenseMatrix[V]) = {
-      v1.copy
-    }
+    def apply(v1: DenseMatrix[V]) = { v1.copy }
   }
 
   def binaryOpFromUpdateOp[Op <: OpType, V, Other](implicit
@@ -1051,11 +1030,8 @@ object DenseMatrix
           result(::, c) := col
         }
 
-        if (result eq null) {
-          DenseMatrix.zeros[R](0, from.cols)
-        } else {
-          result
-        }
+        if (result eq null) { DenseMatrix.zeros[R](0, from.cols) }
+        else { result }
       }
     }
 
@@ -1086,11 +1062,8 @@ object DenseMatrix
           result(::, c) := col
         }
 
-        if (result eq null) {
-          DenseMatrix.zeros[Boolean](0, from.cols)
-        } else {
-          result
-        }
+        if (result eq null) { DenseMatrix.zeros[Boolean](0, from.cols) }
+        else { result }
       }
     }
 
@@ -1130,9 +1103,8 @@ object DenseMatrix
           result.t apply (::, r) := row
         }
 
-        if (result ne null) {
-          result
-        } else {
+        if (result ne null) { result }
+        else {
           val data = new Array[Res](0)
           result = DenseMatrix.create(rows, 0, data)
           result
@@ -1169,9 +1141,8 @@ object DenseMatrix
           result.t apply (::, r) := row
         }
 
-        if (result ne null) {
-          result
-        } else {
+        if (result ne null) { result }
+        else {
           val data = new Array[Boolean](0)
           result = DenseMatrix.create(rows, 0, data)
           result

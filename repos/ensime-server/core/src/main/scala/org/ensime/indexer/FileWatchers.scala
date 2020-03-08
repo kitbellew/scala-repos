@@ -55,9 +55,7 @@ class ClassfileWatcher(
     case _ =>
   }
 
-  override def postStop(): Unit = {
-    impls.foreach(_.shutdown())
-  }
+  override def postStop(): Unit = { impls.foreach(_.shutdown()) }
 
 }
 
@@ -155,7 +153,5 @@ private class ApachePollingFileWatcher(
 
   init(restarted = false)
 
-  override def shutdown(): Unit = {
-    fm.stop()
-  }
+  override def shutdown(): Unit = { fm.stop() }
 }

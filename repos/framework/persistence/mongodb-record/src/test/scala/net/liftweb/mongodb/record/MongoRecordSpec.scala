@@ -458,21 +458,13 @@ class MongoRecordSpec extends Specification with MongoTestKit {
       mfttr.asJValue mustEqual mfttrJson
     }
 
-    "convert pattern field to JValue" in {
-      pftr.asJValue mustEqual pftrJson
-    }
+    "convert pattern field to JValue" in { pftr.asJValue mustEqual pftrJson }
 
-    "convert list fields to JValue" in {
-      ltr.asJValue mustEqual ltrJson
-    }
+    "convert list fields to JValue" in { ltr.asJValue mustEqual ltrJson }
 
-    "convert map fields to JValue" in {
-      mtr.asJValue mustEqual mtrJson
-    }
+    "convert map fields to JValue" in { mtr.asJValue mustEqual mtrJson }
 
-    "convert JObject fields to JValue" in {
-      joftr.asJValue mustEqual joftrJson
-    }
+    "convert JObject fields to JValue" in { joftr.asJValue mustEqual joftrJson }
 
     "convert BsonRecord fields to JValue" in {
       val srtrAsJValue = srtr.asJValue

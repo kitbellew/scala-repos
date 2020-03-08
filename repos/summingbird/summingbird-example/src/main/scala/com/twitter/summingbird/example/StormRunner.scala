@@ -34,9 +34,7 @@ import twitter4j.TwitterStreamFactory
 import twitter4j.conf.ConfigurationBuilder
 
 object ExeStorm {
-  def main(args: Array[String]) {
-    Executor(args, StormRunner(_))
-  }
+  def main(args: Array[String]) { Executor(args, StormRunner(_)) }
 }
 
 /**

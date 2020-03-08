@@ -91,9 +91,7 @@ class ConsumerIntegrationTest
             case m: CamelMessage ⇒ sender() ! "received " + m.bodyAs[String]
           }
 
-          override def postRestart(reason: Throwable) {
-            restarted.countDown()
-          }
+          override def postRestart(reason: Throwable) { restarted.countDown() }
         },
         "direct-a2"
       )
@@ -244,9 +242,7 @@ class ErrorThrowingConsumer(override val endpointUri: String) extends Consumer {
 
 class ErrorRespondingConsumer(override val endpointUri: String)
     extends Consumer {
-  def receive = {
-    case msg: CamelMessage ⇒ throw new TestException("Error!")
-  }
+  def receive = { case msg: CamelMessage ⇒ throw new TestException("Error!") }
   override def onRouteDefinition = (rd: RouteDefinition) ⇒ {
     // Catch TestException and handle it by returning a modified version of the in message
     rd.onException(classOf[TestException])

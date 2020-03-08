@@ -62,23 +62,15 @@ class Plot() {
   }
 
   // Sigh, I hate the listener pattern
-  def listen(l: Plot.Listener) {
-    listeners += (l -> ())
-  }
+  def listen(l: Plot.Listener) { listeners += (l -> ()) }
 
-  def unlisten(l: Plot.Listener) {
-    listeners -= (l)
-  }
+  def unlisten(l: Plot.Listener) { listeners -= (l) }
 
   def xlabel = xaxis.getLabel
-  def xlabel_=(label: String) {
-    xaxis.setLabel(label)
-  }
+  def xlabel_=(label: String) { xaxis.setLabel(label) }
 
   def ylabel = yaxis.getLabel
-  def ylabel_=(label: String) {
-    yaxis.setLabel(label)
-  }
+  def ylabel_=(label: String) { yaxis.setLabel(label) }
 
   def xlim_=(lowerUpper: (Double, Double)) {
     xlim(lowerUpper._1, lowerUpper._2)
@@ -138,9 +130,7 @@ class Plot() {
   }
 
   /** The plot title */
-  def title_=(str: String) {
-    chart.setTitle(str)
-  }
+  def title_=(str: String) { chart.setTitle(str) }
   def title: String = chart.getTitle.getText
 
   // Save the default tick units.

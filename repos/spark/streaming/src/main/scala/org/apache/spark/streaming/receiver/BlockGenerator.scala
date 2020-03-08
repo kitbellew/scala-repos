@@ -147,9 +147,8 @@ private[streaming] class BlockGenerator(
   def stop(): Unit = {
     // Set the state to stop adding data
     synchronized {
-      if (state == Active) {
-        state = StoppedAddingData
-      } else {
+      if (state == Active) { state = StoppedAddingData }
+      else {
         logWarning(
           s"Cannot stop BlockGenerator as its not in the Active state [state = $state]")
         return
@@ -175,9 +174,8 @@ private[streaming] class BlockGenerator(
     if (state == Active) {
       waitToPush()
       synchronized {
-        if (state == Active) {
-          currentBuffer += data
-        } else {
+        if (state == Active) { currentBuffer += data }
+        else {
           throw new SparkException(
             "Cannot add data as BlockGenerator has not been started or has been stopped")
         }

@@ -50,9 +50,7 @@ object Equivalence {
         try {
           eval.set(true)
           cache.get(key)
-        } finally {
-          eval.set(false)
-        }
+        } finally { eval.set(false) }
       }
     if (tuple != null) {
       if (subst.isEmpty) return tuple
@@ -118,9 +116,7 @@ object Equivalence {
       try {
         eval.set(true)
         cache.put(key, res)
-      } finally {
-        eval.set(false)
-      }
+      } finally { eval.set(false) }
     }
     if (subst.isEmpty) return res
     res.copy(_2 = subst + res._2)

@@ -21,7 +21,5 @@ private[cache] class MemoizedFunction[A, B](
     cache: FutureCache[A, B])
     extends (A => Future[B]) {
 
-  def apply(a: A): Future[B] = cache.getOrElseUpdate(a) {
-    fn(a)
-  }
+  def apply(a: A): Future[B] = cache.getOrElseUpdate(a) { fn(a) }
 }

@@ -27,9 +27,7 @@ import akka.routing.Routees
 object ClusterConsistentHashingRouterMultiJvmSpec extends MultiNodeConfig {
 
   class Echo extends Actor {
-    def receive = {
-      case _ ⇒ sender() ! self
-    }
+    def receive = { case _ ⇒ sender() ! self }
   }
 
   val first = role("first")
@@ -157,9 +155,7 @@ abstract class ClusterConsistentHashingRouterSpec
 
     "handle combination of configured router and programatically defined hashMapping" taggedAs LongRunningTest in {
       runOn(first) {
-        def hashMapping: ConsistentHashMapping = {
-          case s: String ⇒ s
-        }
+        def hashMapping: ConsistentHashMapping = { case s: String ⇒ s }
 
         val router3 = system.actorOf(
           ConsistentHashingPool(nrOfInstances = 0, hashMapping = hashMapping)
@@ -174,9 +170,7 @@ abstract class ClusterConsistentHashingRouterSpec
 
     "handle combination of configured router and programatically defined hashMapping and ClusterRouterConfig" taggedAs LongRunningTest in {
       runOn(first) {
-        def hashMapping: ConsistentHashMapping = {
-          case s: String ⇒ s
-        }
+        def hashMapping: ConsistentHashMapping = { case s: String ⇒ s }
 
         val router4 = system.actorOf(
           ClusterRouterPool(

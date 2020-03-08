@@ -48,9 +48,7 @@ class RateLimitingFilterTest extends FunSuite with MockitoSugar {
         t += 100.milliseconds
       }
 
-      intercept[Exception] {
-        Await.result(rateLimitedService(1))
-      }
+      intercept[Exception] { Await.result(rateLimitedService(1)) }
     }
   }
 

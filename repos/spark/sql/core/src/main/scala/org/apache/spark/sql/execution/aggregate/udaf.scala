@@ -120,57 +120,42 @@ sealed trait BufferSetterGetterUtils {
           (row: MutableRow, ordinal: Int, value: Any) =>
             if (value != null) {
               row.setBoolean(ordinal, value.asInstanceOf[Boolean])
-            } else {
-              row.setNullAt(ordinal)
-            }
+            } else { row.setNullAt(ordinal) }
 
         case ByteType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
             if (value != null) {
               row.setByte(ordinal, value.asInstanceOf[Byte])
-            } else {
-              row.setNullAt(ordinal)
-            }
+            } else { row.setNullAt(ordinal) }
 
         case ShortType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
             if (value != null) {
               row.setShort(ordinal, value.asInstanceOf[Short])
-            } else {
-              row.setNullAt(ordinal)
-            }
+            } else { row.setNullAt(ordinal) }
 
         case IntegerType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
-              row.setInt(ordinal, value.asInstanceOf[Int])
-            } else {
-              row.setNullAt(ordinal)
-            }
+            if (value != null) { row.setInt(ordinal, value.asInstanceOf[Int]) }
+            else { row.setNullAt(ordinal) }
 
         case LongType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
             if (value != null) {
               row.setLong(ordinal, value.asInstanceOf[Long])
-            } else {
-              row.setNullAt(ordinal)
-            }
+            } else { row.setNullAt(ordinal) }
 
         case FloatType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
             if (value != null) {
               row.setFloat(ordinal, value.asInstanceOf[Float])
-            } else {
-              row.setNullAt(ordinal)
-            }
+            } else { row.setNullAt(ordinal) }
 
         case DoubleType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
             if (value != null) {
               row.setDouble(ordinal, value.asInstanceOf[Double])
-            } else {
-              row.setNullAt(ordinal)
-            }
+            } else { row.setNullAt(ordinal) }
 
         case dt: DecimalType =>
           val precision = dt.precision
@@ -181,27 +166,19 @@ sealed trait BufferSetterGetterUtils {
 
         case DateType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
-              row.setInt(ordinal, value.asInstanceOf[Int])
-            } else {
-              row.setNullAt(ordinal)
-            }
+            if (value != null) { row.setInt(ordinal, value.asInstanceOf[Int]) }
+            else { row.setNullAt(ordinal) }
 
         case TimestampType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
             if (value != null) {
               row.setLong(ordinal, value.asInstanceOf[Long])
-            } else {
-              row.setNullAt(ordinal)
-            }
+            } else { row.setNullAt(ordinal) }
 
         case other =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
-              row.update(ordinal, value)
-            } else {
-              row.setNullAt(ordinal)
-            }
+            if (value != null) { row.update(ordinal, value) }
+            else { row.setNullAt(ordinal) }
       }
 
       i += 1

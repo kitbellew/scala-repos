@@ -466,15 +466,10 @@ private[spark] object StatsReportListener extends Logging {
     */
   def millisToString(ms: Long): String = {
     val (size, units) =
-      if (ms > hours) {
-        (ms.toDouble / hours, "hours")
-      } else if (ms > minutes) {
-        (ms.toDouble / minutes, "min")
-      } else if (ms > seconds) {
-        (ms.toDouble / seconds, "s")
-      } else {
-        (ms.toDouble, "ms")
-      }
+      if (ms > hours) { (ms.toDouble / hours, "hours") }
+      else if (ms > minutes) { (ms.toDouble / minutes, "min") }
+      else if (ms > seconds) { (ms.toDouble / seconds, "s") }
+      else { (ms.toDouble, "ms") }
     "%.1f %s".format(size, units)
   }
 }

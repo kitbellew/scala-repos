@@ -186,15 +186,12 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] =
-    if (e.isSignZero) {
-      Complex.one[T]
-    } else if (this.isZero) {
+    if (e.isSignZero) { Complex.one[T] }
+    else if (this.isZero) {
       if (e < f.zero)
         throw new Exception("raising 0 to negative/complex power")
       Complex.zero[T]
-    } else {
-      Complex.polar(abs fpow e, arg * e)
-    }
+    } else { Complex.polar(abs fpow e, arg * e) }
 
   def +(b: Complex[T])(implicit r: Semiring[T]): Complex[T] =
     new Complex(real + b.real, imag + b.imag)
@@ -269,9 +266,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] =
-    if (b.isZero) {
-      Complex.one[T]
-    } else if (this.isZero) {
+    if (b.isZero) { Complex.one[T] }
+    else if (this.isZero) {
       if (b.imag =!= f.zero || b.real < f.zero)
         throw new Exception("raising 0 to negative/complex power")
       Complex.zero[T]
@@ -279,9 +275,7 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       val len = (abs fpow b.real) / t.exp(arg * b.imag)
       val phase = arg * b.real + t.log(abs) * b.imag
       Complex.polar(len, phase)
-    } else {
-      Complex.polar(abs fpow b.real, arg * b.real)
-    }
+    } else { Complex.polar(abs fpow b.real, arg * b.real) }
 
   // we are going with the "principal value" definition of Log.
   def log(implicit
@@ -294,9 +288,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
   }
 
   def sqrt(implicit f: Field[T], n0: NRoot[T], o: IsReal[T]): Complex[T] = {
-    if (isZero) {
-      Complex.zero[T]
-    } else {
+    if (isZero) { Complex.zero[T] }
+    else {
       val two = f.fromInt(2)
       val a = ((abs + real.abs) / two).sqrt
       imag.signum match {
@@ -646,10 +639,8 @@ object FastComplex {
 
   // exponentiation
   final def pow(a: Long, b: Long): Long =
-    if (b == zero) {
-      encode(1.0f, 0.0f)
-
-    } else if (a == zero) {
+    if (b == zero) { encode(1.0f, 0.0f) }
+    else if (a == zero) {
       if (imag(b) != 0.0f || real(b) < 0.0f)
         throw new Exception("raising 0 to negative/complex power")
       zero

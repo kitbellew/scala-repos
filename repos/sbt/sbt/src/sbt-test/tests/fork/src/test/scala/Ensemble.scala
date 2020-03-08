@@ -12,6 +12,12 @@ trait Ensemble extends FlatSpec with MustMatchers {
   }
 }
 
-class Ensemble1 extends Ensemble { def i = 1 }
-class Ensemble2 extends Ensemble { def i = 2 }
-class Ensemble3 extends Ensemble { def i = 3 }
+class Ensemble1 extends Ensemble {
+  def i = 1
+}
+class Ensemble2 extends Ensemble {
+  def i = 2
+}
+class Ensemble3 extends Ensemble {
+  def i = 3
+}

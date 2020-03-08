@@ -56,9 +56,7 @@ class TestRunner(
         val ret = f()
         success = true
         ret
-      } finally {
-        afterAssert(name, success)
-      }
+      } finally { afterAssert(name, success) }
     }
 
     def beforeTest(name: String) {
@@ -88,11 +86,8 @@ class TestRunner(
         beforeTest(testItem.name)
 
         val myTrace =
-          try {
-            throw new Exception("")
-          } catch {
-            case e: Exception => e.getStackTrace.toList.tail.head
-          }
+          try { throw new Exception("") }
+          catch { case e: Exception => e.getStackTrace.toList.tail.head }
 
         if (testItem.resetDB) doResetDB
         val (success, trace, excp) =
@@ -126,11 +121,8 @@ class TestRunner(
               beforeTest(testItem.name + " thread " + n)
 
               val myTrace =
-                try {
-                  throw new Exception("")
-                } catch {
-                  case e: Exception => e.getStackTrace.toList.tail.head
-                }
+                try { throw new Exception("") }
+                catch { case e: Exception => e.getStackTrace.toList.tail.head }
 
               if (testItem.resetDB) doResetDB
               val (success, trace, excp) =

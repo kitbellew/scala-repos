@@ -92,9 +92,8 @@ class TypeAnnotationInspection extends AbstractInspection {
   private def requirementForProperty(
       property: ScMember,
       settings: ScalaCodeStyleSettings): Int = {
-    if (property.isLocal) {
-      settings.LOCAL_PROPERTY_TYPE_ANNOTATION
-    } else {
+    if (property.isLocal) { settings.LOCAL_PROPERTY_TYPE_ANNOTATION }
+    else {
       if (property.isPrivate) settings.PRIVATE_PROPERTY_TYPE_ANNOTATION
       else if (property.isProtected) settings.PROTECTED_PROPERTY_TYPE_ANNOTATION
       else settings.PUBLIC_PROPERTY_TYPE_ANNOTATION
@@ -104,9 +103,8 @@ class TypeAnnotationInspection extends AbstractInspection {
   private def requirementForMethod(
       method: ScFunctionDefinition,
       settings: ScalaCodeStyleSettings): Int = {
-    if (method.isLocal) {
-      settings.LOCAL_METHOD_TYPE_ANNOTATION
-    } else {
+    if (method.isLocal) { settings.LOCAL_METHOD_TYPE_ANNOTATION }
+    else {
       if (method.isPrivate) settings.PRIVATE_METHOD_TYPE_ANNOTATION
       else if (method.isProtected) settings.PROTECTED_METHOD_TYPE_ANNOTATION
       else settings.PUBLIC_METHOD_TYPE_ANNOTATION

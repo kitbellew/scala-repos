@@ -248,9 +248,7 @@ trait TransSpecableModule[M[+_]]
             (r, ar) = get(pr)
             result <- if (al == ar) {
               set(pl, (transFromBinOp(op, MorphContext(ctx, node))(l, r), al))
-            } else {
-              init(Leaf(Source), node)
-            }
+            } else { init(Leaf(Source), node) }
           } yield result
         }
 

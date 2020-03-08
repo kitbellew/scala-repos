@@ -41,9 +41,7 @@ object AssetInfoSpec extends Specification {
         "2015-01-08T06:54:20.000Z")
     }
 
-    "not parse empty date header" in {
-      parseAndReformat("") must beNone
-    }
+    "not parse empty date header" in { parseAndReformat("") must beNone }
 
   }
 

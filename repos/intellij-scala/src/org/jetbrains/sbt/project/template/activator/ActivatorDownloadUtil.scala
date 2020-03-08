@@ -24,9 +24,8 @@ object ActivatorDownloadUtil {
         "Parent dir of '" + outputFile.getAbsolutePath + "' can not be created!")
 
     val out = new BufferedOutputStream(new FileOutputStream(outputFile))
-    try {
-      download(progress, url, out)
-    } finally out.close()
+    try { download(progress, url, out) }
+    finally out.close()
   }
 
   def download(

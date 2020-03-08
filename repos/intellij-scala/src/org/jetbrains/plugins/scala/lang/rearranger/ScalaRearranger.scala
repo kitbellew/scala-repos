@@ -60,11 +60,8 @@ class ScalaRearranger
         document,
         Iterable(element.getTextRange),
         groupingRules))
-    if (newInfo.entries.size != 1) {
-      null
-    } else {
-      Pair.create(newInfo.entries(0), existingInfo.entries)
-    }
+    if (newInfo.entries.size != 1) { null }
+    else { Pair.create(newInfo.entries(0), existingInfo.entries) }
   }
 
   override def parse(
@@ -99,9 +96,8 @@ class ScalaRearranger
       parent: ScalaArrangementEntry,
       previous: ScalaArrangementEntry,
       target: ScalaArrangementEntry): Int = {
-    if (previous == null) {
-      -1
-    } else {
+    if (previous == null) { -1 }
+    else {
       val codeStyleSettings = settings.getCommonSettings(
         ScalaFileType.SCALA_LANGUAGE
       ) //probably this will not work
@@ -112,9 +108,7 @@ class ScalaRearranger
         codeStyleSettings.BLANK_LINES_AROUND_METHOD
       } else if (targetType == CLASS || targetType == TRAIT) {
         codeStyleSettings.BLANK_LINES_AROUND_CLASS
-      } else {
-        -1
-      }
+      } else { -1 }
     }
   }
 
@@ -166,14 +160,9 @@ class ScalaRearranger
     (scalaTypesValues.contains(token) || supportedOrders.contains(token)) ||
       (if (current != null) {
          val tokenType = ArrangementUtil.parseType(current)
-         if (tokenType != null) {
-           tokensForType(tokenType).contains(token)
-         } else {
-           commonModifiers.contains(token)
-         }
-       } else {
-         commonModifiers.contains(token)
-       })
+         if (tokenType != null) { tokensForType(tokenType).contains(token) }
+         else { commonModifiers.contains(token) }
+       } else { commonModifiers.contains(token) })
 
   override def buildMatcher(condition: ArrangementMatchCondition) =
     throw new IllegalArgumentException(
@@ -193,9 +182,7 @@ class ScalaRearranger
       for (root <- info.getMethodDependencyRoots) {
         setupBreadthFirstDependency(root)
       }
-    } else {
-      assert(assertion = false, orderType)
-    }
+    } else { assert(assertion = false, orderType) }
   }
 
   private def setupDepthFirstDependency(info: ScalaArrangementDependency) {

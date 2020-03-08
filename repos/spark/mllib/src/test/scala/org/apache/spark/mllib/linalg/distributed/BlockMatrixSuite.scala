@@ -77,21 +77,13 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(part0.getPartition((i, j, random.nextInt())) === expected0(i)(j))
     }
 
-    intercept[IllegalArgumentException] {
-      part0.getPartition((-1, 0))
-    }
+    intercept[IllegalArgumentException] { part0.getPartition((-1, 0)) }
 
-    intercept[IllegalArgumentException] {
-      part0.getPartition((4, 0))
-    }
+    intercept[IllegalArgumentException] { part0.getPartition((4, 0)) }
 
-    intercept[IllegalArgumentException] {
-      part0.getPartition((0, -1))
-    }
+    intercept[IllegalArgumentException] { part0.getPartition((0, -1)) }
 
-    intercept[IllegalArgumentException] {
-      part0.getPartition((0, 7))
-    }
+    intercept[IllegalArgumentException] { part0.getPartition((0, 7)) }
 
     val part1 = GridPartitioner(2, 2, suggestedNumPartitions = 5)
     val expected1 = Array(Array(0, 2), Array(1, 3))
@@ -189,9 +181,7 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
         m,
         n + 1
       ) // columns don't match
-    intercept[IllegalArgumentException] {
-      gridBasedMat.add(C)
-    }
+    intercept[IllegalArgumentException] { gridBasedMat.add(C) }
     val largerBlocks: Seq[((Int, Int), Matrix)] = Seq(
       ((0, 0), new DenseMatrix(4, 4, new Array[Double](16))),
       ((1, 0), new DenseMatrix(1, 4, Array(1.0, 0.0, 1.0, 5.0))))
@@ -247,9 +237,7 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
         m,
         n + 1
       ) // columns don't match
-    intercept[IllegalArgumentException] {
-      gridBasedMat.subtract(C)
-    }
+    intercept[IllegalArgumentException] { gridBasedMat.subtract(C) }
     val largerBlocks: Seq[((Int, Int), Matrix)] = Seq(
       ((0, 0), new DenseMatrix(4, 4, new Array[Double](16))),
       ((1, 0), new DenseMatrix(1, 4, Array(1.0, 0.0, 1.0, 5.0))))
@@ -298,9 +286,7 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
         m + 1,
         n
       ) // dimensions don't match
-    intercept[IllegalArgumentException] {
-      gridBasedMat.multiply(C)
-    }
+    intercept[IllegalArgumentException] { gridBasedMat.multiply(C) }
     val largerBlocks = Seq(((0, 0), DenseMatrix.eye(4)))
     val C2 = new BlockMatrix(sc.parallelize(largerBlocks, numPartitions), 4, 4)
     intercept[SparkException] {
@@ -361,21 +347,13 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     val rdd = sc.parallelize(blocks, numPartitions)
     val wrongRowPerParts = new BlockMatrix(rdd, rowPerPart + 1, colPerPart)
     val wrongColPerParts = new BlockMatrix(rdd, rowPerPart, colPerPart + 1)
-    intercept[SparkException] {
-      wrongRowPerParts.validate()
-    }
-    intercept[SparkException] {
-      wrongColPerParts.validate()
-    }
+    intercept[SparkException] { wrongRowPerParts.validate() }
+    intercept[SparkException] { wrongColPerParts.validate() }
     // Wrong BlockMatrix dimensions
     val wrongRowSize = new BlockMatrix(rdd, rowPerPart, colPerPart, 4, 4)
-    intercept[AssertionError] {
-      wrongRowSize.validate()
-    }
+    intercept[AssertionError] { wrongRowSize.validate() }
     val wrongColSize = new BlockMatrix(rdd, rowPerPart, colPerPart, 5, 2)
-    intercept[AssertionError] {
-      wrongColSize.validate()
-    }
+    intercept[AssertionError] { wrongColSize.validate() }
     // Duplicate indices
     val duplicateBlocks: Seq[((Int, Int), Matrix)] = Seq(
       ((0, 0), new DenseMatrix(2, 2, Array(1.0, 0.0, 0.0, 2.0))),
@@ -386,9 +364,7 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     )
     val dupMatrix =
       new BlockMatrix(sc.parallelize(duplicateBlocks, numPartitions), 2, 2)
-    intercept[SparkException] {
-      dupMatrix.validate()
-    }
+    intercept[SparkException] { dupMatrix.validate() }
   }
 
   test("transpose") {

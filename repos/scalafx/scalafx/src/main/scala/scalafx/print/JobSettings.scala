@@ -72,33 +72,25 @@ final class JobSettings(override val delegate: jfxp.JobSettings)
     * Property representing an instance of `Collation`.
     */
   def collation: ObjectProperty[jfxp.Collation] = delegate.collationProperty
-  def collation_=(v: Collation) {
-    collation() = v
-  }
+  def collation_=(v: Collation) { collation() = v }
 
   /**
     * IntegerProperty representing the number of copies of the job to print.
     */
   def copies: IntegerProperty = delegate.copiesProperty
-  def copies_=(v: Int) {
-    copies() = v
-  }
+  def copies_=(v: Int) { copies() = v }
 
   /**
     * StringProperty representing the name of a job.
     */
   def jobName: StringProperty = delegate.jobNameProperty
-  def jobName_=(v: String) {
-    jobName() = v
-  }
+  def jobName_=(v: String) { jobName() = v }
 
   /**
     * Property representing an instance of PageLayout.
     */
   def pageLayout: ObjectProperty[jfxp.PageLayout] = delegate.pageLayoutProperty
-  def pageLayout_=(v: PageLayout) {
-    pageLayout() = v
-  }
+  def pageLayout_=(v: PageLayout) { pageLayout() = v }
 
   /**
     * An ObjectProperty whose value represents the job pages to print as an array of PageRange.
@@ -113,42 +105,32 @@ final class JobSettings(override val delegate: jfxp.JobSettings)
     */
   def paperSource: ObjectProperty[jfxp.PaperSource] =
     delegate.paperSourceProperty
-  def paperSource_=(v: PaperSource) {
-    paperSource() = v
-  }
+  def paperSource_=(v: PaperSource) { paperSource() = v }
 
   /**
     * Property representing an instance of PrintColor.
     */
   def printColor: ObjectProperty[jfxp.PrintColor] = delegate.printColorProperty
-  def printColor_=(v: PrintColor) {
-    printColor() = v
-  }
+  def printColor_=(v: PrintColor) { printColor() = v }
 
   /**
     * Property representing an instance of PrintQuality.
     */
   def printQuality: ObjectProperty[jfxp.PrintQuality] =
     delegate.printQualityProperty
-  def printQuality_=(v: PrintQuality) {
-    printQuality() = v
-  }
+  def printQuality_=(v: PrintQuality) { printQuality() = v }
 
   /**
     * Property representing an instance of PrintResolution.
     */
   def printResolution: ObjectProperty[jfxp.PrintResolution] =
     delegate.printResolutionProperty
-  def printResolution_=(v: PrintResolution) {
-    printResolution() = v
-  }
+  def printResolution_=(v: PrintResolution) { printResolution() = v }
 
   /**
     * Property representing an instance of PrintSides.
     */
   def printSides: ObjectProperty[jfxp.PrintSides] = delegate.printSidesProperty
-  def printSides_=(v: PrintSides) {
-    printSides() = v
-  }
+  def printSides_=(v: PrintSides) { printSides() = v }
 
 }

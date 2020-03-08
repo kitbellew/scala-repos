@@ -42,9 +42,7 @@ object ParserBugs extends Specification {
 
   "Solo quote mark should fail cleanly (not StringIndexOutOfBoundsException) (1041)" in {
     JsonParser.parse("\"", discardParser) must throwA[JsonParser.ParseException]
-      .like {
-        case e => e.getMessage must startWith("unexpected eof")
-      }
+      .like { case e => e.getMessage must startWith("unexpected eof") }
   }
 
   "Field names must be quoted" in {
@@ -62,8 +60,6 @@ object ParserBugs extends Specification {
 
   private val discardParser = (p: JsonParser.Parser) => {
     var token: JsonParser.Token = null
-    do {
-      token = p.nextToken
-    } while (token != JsonParser.End)
+    do { token = p.nextToken } while (token != JsonParser.End)
   }
 }

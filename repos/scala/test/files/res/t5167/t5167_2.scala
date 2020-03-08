@@ -1,7 +1,5 @@
 package compilerbug
 
 class TestClass {
-  def repro() {
-    SadObject.buggyMethod[Int]()()
-  }
+  def repro() { SadObject.buggyMethod[Int]()() }
 }

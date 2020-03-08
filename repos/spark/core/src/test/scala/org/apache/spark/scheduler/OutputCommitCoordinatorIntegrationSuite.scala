@@ -59,9 +59,7 @@ class OutputCommitCoordinatorIntegrationSuite
         sc.parallelize(1 to 4, 2)
           .map(_.toString)
           .saveAsTextFile(tempDir.getAbsolutePath + "/out")
-      } finally {
-        Utils.deleteRecursively(tempDir)
-      }
+      } finally { Utils.deleteRecursively(tempDir) }
     }
   }
 }

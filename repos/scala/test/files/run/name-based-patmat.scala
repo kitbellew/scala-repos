@@ -1,4 +1,6 @@
-final class MiniSome[T](val get: T) extends AnyVal { def isEmpty = false }
+final class MiniSome[T](val get: T) extends AnyVal {
+  def isEmpty = false
+}
 
 package p0 {
   class Single(val x: Any) extends AnyRef with Product1[String] {

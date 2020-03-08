@@ -155,9 +155,8 @@ object GameRepo {
   def urgentGames(user: User): Fu[List[Pov]] =
     $find(Query nowPlaying user.id, 100) map { games =>
       val povs = games flatMap { Pov(_, user) }
-      try {
-        povs sortWith Pov.priority
-      } catch {
+      try { povs sortWith Pov.priority }
+      catch {
         case e: IllegalArgumentException =>
           povs sortBy (-_.game.updatedAtOrCreatedAt.getSeconds)
       }
@@ -190,19 +189,13 @@ object GameRepo {
       } sort Query.sortAntiChronological
     }
 
-  def setTv(id: ID) {
-    $update.fieldUnchecked(id, F.tvAt, $date(DateTime.now))
-  }
+  def setTv(id: ID) { $update.fieldUnchecked(id, F.tvAt, $date(DateTime.now)) }
 
   def onTv(nb: Int): Fu[List[Game]] =
     $find($query(Json.obj(F.tvAt -> $exists(true))) sort $sort.desc(F.tvAt), nb)
 
-  def setAnalysed(id: ID) {
-    $update.fieldUnchecked(id, F.analysed, true)
-  }
-  def setUnanalysed(id: ID) {
-    $update.fieldUnchecked(id, F.analysed, false)
-  }
+  def setAnalysed(id: ID) { $update.fieldUnchecked(id, F.analysed, true) }
+  def setUnanalysed(id: ID) { $update.fieldUnchecked(id, F.analysed, false) }
 
   def isAnalysed(id: ID): Fu[Boolean] =
     $count.exists($select(id) ++ Query.analysed(true))

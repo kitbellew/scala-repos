@@ -22,26 +22,18 @@ abstract class AbstractCompiler extends Compiler {
     new ClientProgress(client)
 
   private class ClientLogger(val client: Client) extends Logger {
-    def error(msg: F0[String]) {
-      client.error(msg())
-    }
+    def error(msg: F0[String]) { client.error(msg()) }
 
-    def warn(msg: F0[String]) {
-      client.warning(msg())
-    }
+    def warn(msg: F0[String]) { client.warning(msg()) }
 
-    def info(msg: F0[String]) {
-      client.progress(msg())
-    }
+    def info(msg: F0[String]) { client.progress(msg()) }
 
     def debug(msg: F0[String]) {
       val lines = msg().trim.split('\n')
       client.debug("\n\n" + lines.mkString("\n") + "\n")
     }
 
-    def trace(exception: F0[Throwable]) {
-      client.trace(exception())
-    }
+    def trace(exception: F0[Throwable]) { client.trace(exception()) }
   }
 
   private class ClientProgress(client: Client) extends ExtendedCompileProgress {
@@ -50,9 +42,7 @@ abstract class AbstractCompiler extends Compiler {
       client.generated(source, module, name)
     }
 
-    def deleted(module: File) {
-      client.deleted(module)
-    }
+    def deleted(module: File) { client.deleted(module) }
 
     def startUnit(phase: String, unitPath: String) {
       val unitName = new File(unitPath).getName
@@ -68,9 +58,7 @@ abstract class AbstractCompiler extends Compiler {
   private class ClientReporter(client: Client) extends Reporter {
     private var entries: List[Problem] = Nil
 
-    def reset() {
-      entries = Nil
-    }
+    def reset() { entries = Nil }
 
     def hasErrors = entries.exists(_.severity == Severity.Error)
 

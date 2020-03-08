@@ -147,9 +147,7 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
     *
     * @param f the function to execute on change
     */
-  def onChange(f: FuncType) {
-    changeFuncs ::= f
-  }
+  def onChange(f: FuncType) { changeFuncs ::= f }
 
   /**
     * A non-side-effecting test if the value was initialized
@@ -182,9 +180,7 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
       case _ =>
         val ret = calcDefaultValue
         testInitialized
-        settingDefault.doWith(true) {
-          apply(ret)
-        }
+        settingDefault.doWith(true) { apply(ret) }
         // Use findFunc so that we clear the "unread" flag
         findFunc(name) match {
           case Full(v) => v
@@ -194,9 +190,7 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
   }
 
   private def testInitialized: Unit = doSync {
-    if (!wasInitialized(name, initedKey)) {
-      registerCleanupFunc(_onShutdown _)
-    }
+    if (!wasInitialized(name, initedKey)) { registerCleanupFunc(_onShutdown _) }
   }
 
   /**
@@ -218,9 +212,7 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
     * Set the Var if it has not been calculated
     */
   def setIfUnset(value: => T): T = doSync {
-    if (!set_?) {
-      set(value)
-    }
+    if (!set_?) { set(value) }
     this.is
   }
 
@@ -247,10 +239,7 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
     is
   }
 
-  def remove(): Unit = {
-    _clearFunc(name)
-
-  }
+  def remove(): Unit = { _clearFunc(name) }
 
   //def cleanupFunc: Box[() => Unit] = Empty
 
@@ -277,9 +266,8 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
   def doWith[F](newVal: T)(f: => F): F = {
     val old = findFunc(name)
     _setFunc(name, newVal)
-    try {
-      f
-    } finally {
+    try { f }
+    finally {
       old match {
         case Full(t) => _setFunc(name, t)
         case _       => _clearFunc(name)

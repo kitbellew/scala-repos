@@ -451,9 +451,7 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(cmd.hasValue)
     assert(cmd.getArgumentsList.asScala == Seq("a", "b", "c"))
 
-    for (r <- taskInfo.getResourcesList.asScala) {
-      assert("*" == r.getRole)
-    }
+    for (r <- taskInfo.getResourcesList.asScala) { assert("*" == r.getRole) }
 
     // TODO test for resources etc.
   }
@@ -830,9 +828,7 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(ports == taskPorts)
 
     // In this case, the first roles are sufficient so we'll use those first.
-    for (r <- taskInfo.getResourcesList.asScala) {
-      assert("*" == r.getRole)
-    }
+    for (r <- taskInfo.getResourcesList.asScala) { assert("*" == r.getRole) }
 
     // TODO test for resources etc.
   }
@@ -1557,9 +1553,7 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
         .getValue
     assert(exposesSecondPort)
 
-    for (r <- taskInfo.getResourcesList.asScala) {
-      assert("*" == r.getRole)
-    }
+    for (r <- taskInfo.getResourcesList.asScala) { assert("*" == r.getRole) }
 
     assert(taskInfo.hasDiscovery)
     val discoveryInfo = taskInfo.getDiscovery

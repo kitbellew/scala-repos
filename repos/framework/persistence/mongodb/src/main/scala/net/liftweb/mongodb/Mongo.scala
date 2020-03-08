@@ -163,9 +163,8 @@ object MongoDB {
 
     // start the request
     db.requestStart
-    try {
-      f(db)
-    } finally {
+    try { f(db) }
+    finally {
       // end the request
       db.requestDone
     }
@@ -188,9 +187,8 @@ object MongoDB {
 
     // start the request
     db.requestStart
-    try {
-      f(db)
-    } finally {
+    try { f(db) }
+    finally {
       // end the request
       db.requestDone
     }

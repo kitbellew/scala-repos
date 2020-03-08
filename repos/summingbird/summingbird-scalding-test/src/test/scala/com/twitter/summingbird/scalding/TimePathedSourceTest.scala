@@ -69,9 +69,7 @@ object TimePathSourceLaws extends Properties("Time path source") {
   def rangeWithEmbgginContained(
       smaller: DateRange,
       embiggen: Long,
-      bigger: DateRange) = {
-    bigger.contains(genEmbiggen(embiggen)(smaller))
-  }
+      bigger: DateRange) = { bigger.contains(genEmbiggen(embiggen)(smaller)) }
 
   def rangeLength(dr: DateRange): Long =
     dr.end.timestamp - dr.start.timestamp + 1
@@ -85,9 +83,8 @@ object TimePathSourceLaws extends Properties("Time path source") {
       if (rangeWithEmbgginContained(
             data.requestedRange,
             data.embiggen,
-            data.availableRange)) {
-        retData == Some(data.requestedRange)
-      } else true // not tested here
+            data.availableRange)) { retData == Some(data.requestedRange) }
+      else true // not tested here
     }
 
   property(

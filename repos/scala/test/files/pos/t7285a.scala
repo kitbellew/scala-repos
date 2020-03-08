@@ -37,10 +37,7 @@ object Test2 {
 
     case object Up extends Base {}
 
-    (d1: Base, d2: Base) =>
-      (d1) match {
-        case Up | Down => false
-      }
+    (d1: Base, d2: Base) => (d1) match { case Up | Down => false }
   }
 }
 
@@ -50,10 +47,7 @@ object Test3 {
   object Base {
     case object Down extends Base
 
-    (d1: Base, d2: Base) =>
-      (d1, d2) match {
-        case (Down, Down) => false
-      }
+    (d1: Base, d2: Base) => (d1, d2) match { case (Down, Down) => false }
   }
 }
 

@@ -42,9 +42,7 @@ private[streaming] class FileBasedWriteAheadLogReader(
   private var nextItem: Option[ByteBuffer] = None
 
   override def hasNext: Boolean = synchronized {
-    if (closed) {
-      return false
-    }
+    if (closed) { return false }
 
     if (nextItem.isDefined) { // handle the case where hasNext is called without calling next
       true
@@ -95,9 +93,7 @@ private[streaming] class FileBasedWriteAheadLogReader(
   }
 
   override def close(): Unit = synchronized {
-    if (!closed) {
-      instream.close()
-    }
+    if (!closed) { instream.close() }
     closed = true
   }
 }

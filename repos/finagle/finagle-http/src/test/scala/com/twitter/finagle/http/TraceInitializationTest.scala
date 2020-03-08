@@ -33,9 +33,7 @@ class TraceInitializationTest extends FunSuite {
 
     val (svc, closable) = f(tracer, tracer)
     try Await.result(svc(req))
-    finally {
-      Closable.all(svc, closable).close()
-    }
+    finally { Closable.all(svc, closable).close() }
 
     assertAnnotationsInOrder(
       tracer.toSeq,

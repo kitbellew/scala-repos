@@ -93,9 +93,7 @@ trait PresentationCompilation {
 
     /** The length of synthetic code the precedes the user written code */
     def preambleLength: Int
-    def cleanup(): Unit = {
-      compiler.askShutdown()
-    }
+    def cleanup(): Unit = { compiler.askShutdown() }
     import compiler.CompletionResult
 
     def completionsAt(cursor: Int): CompletionResult = {

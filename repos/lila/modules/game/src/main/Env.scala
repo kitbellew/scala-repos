@@ -60,9 +60,7 @@ final class Env(
   private val captcher =
     system.actorOf(Props(new Captcher), name = CaptcherName)
 
-  scheduler.message(CaptcherDuration) {
-    captcher -> actorApi.NewCaptcha
-  }
+  scheduler.message(CaptcherDuration) { captcher -> actorApi.NewCaptcha }
 
   def cli = new Cli(db, system = system)
 

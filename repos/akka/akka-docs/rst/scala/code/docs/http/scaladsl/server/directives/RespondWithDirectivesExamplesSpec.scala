@@ -72,9 +72,7 @@ class RespondWithDirectivesExamplesSpec extends RoutingSpec {
       path("foo") {
         respondWithHeaders(
           RawHeader("Funky-Muppet", "gonzo"),
-          Origin(HttpOrigin("http://akka.io"))) {
-          complete("beep")
-        }
+          Origin(HttpOrigin("http://akka.io"))) { complete("beep") }
       }
 
     // tests:

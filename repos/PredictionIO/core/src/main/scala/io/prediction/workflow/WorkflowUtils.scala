@@ -182,9 +182,8 @@ object WorkflowUtils extends Logging {
       implicit lazy val formats =
         Utils.json4sDefaultFormats + new NameParamsSerializer
       val np: NameParams =
-        try {
-          jv._2.extract[NameParams]
-        } catch {
+        try { jv._2.extract[NameParams] }
+        catch {
           case e: Exception =>
             error(s"Unable to extract $field name and params $jv")
             throw e
@@ -235,19 +234,13 @@ object WorkflowUtils extends Logging {
   // Extract debug string by recursively traversing the data.
   def debugString[D](data: D): String = {
     val s: String = data match {
-      case rdd: RDD[_] => {
-        debugString(rdd.collect())
-      }
-      case javaRdd: JavaRDDLike[_, _] => {
-        debugString(javaRdd.collect())
-      }
+      case rdd: RDD[_]                => { debugString(rdd.collect()) }
+      case javaRdd: JavaRDDLike[_, _] => { debugString(javaRdd.collect()) }
       case array: Array[_] => {
         "[" + array.map(debugString).mkString(",") + "]"
       }
-      case d: AnyRef => {
-        d.toString
-      }
-      case null => "null"
+      case d: AnyRef => { d.toString }
+      case null      => "null"
     }
     s
   }
@@ -354,9 +347,7 @@ case class NameParams(name: String, params: Option[JValue])
 class NameParamsSerializer
     extends CustomSerializer[NameParams](format =>
       (
-        {
-          case jv: JValue => WorkflowUtils.extractNameParams(jv)
-        },
+        { case jv: JValue => WorkflowUtils.extractNameParams(jv) },
         {
           case x: NameParams =>
             JObject(
@@ -411,14 +402,10 @@ class UpgradeCheckRunner(val component: String, val engine: String)
   val versionsHost = "http://direct.prediction.io/"
 
   def run(): Unit = {
-    val url = if (engine == "") {
-      s"$versionsHost$version/$component.json"
-    } else {
-      s"$versionsHost$version/$component/$engine.json"
-    }
-    try {
-      val upgradeData = Source.fromURL(url)
-    } catch {
+    val url = if (engine == "") { s"$versionsHost$version/$component.json" }
+    else { s"$versionsHost$version/$component/$engine.json" }
+    try { val upgradeData = Source.fromURL(url) }
+    catch {
       case e: FileNotFoundException =>
         debug(s"Update metainfo not found. $url")
       case e: java.net.UnknownHostException =>

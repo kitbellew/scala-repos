@@ -306,9 +306,7 @@ private[collection] trait AugmentedIterableIterator[+T]
       cb: Combiner[(U, S), That]): Combiner[(U, S), That] = {
     if (isRemainingCheap && otherpit.isRemainingCheap)
       cb.sizeHint(remaining min otherpit.remaining)
-    while (hasNext && otherpit.hasNext) {
-      cb += ((next(), otherpit.next()))
-    }
+    while (hasNext && otherpit.hasNext) { cb += ((next(), otherpit.next())) }
     cb
   }
 

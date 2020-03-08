@@ -68,9 +68,7 @@ object GraphLoader extends Logging {
     val lines =
       if (numEdgePartitions > 0) {
         sc.textFile(path, numEdgePartitions).coalesce(numEdgePartitions)
-      } else {
-        sc.textFile(path)
-      }
+      } else { sc.textFile(path) }
     val edges = lines
       .mapPartitionsWithIndex { (pid, iter) =>
         val builder = new EdgePartitionBuilder[Int, Int]
@@ -84,9 +82,7 @@ object GraphLoader extends Logging {
             val dstId = lineArray(1).toLong
             if (canonicalOrientation && srcId > dstId) {
               builder.add(dstId, srcId, 1)
-            } else {
-              builder.add(srcId, dstId, 1)
-            }
+            } else { builder.add(srcId, dstId, 1) }
           }
         }
         Iterator((pid, builder.toEdgePartition))

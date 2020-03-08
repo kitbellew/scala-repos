@@ -15,9 +15,8 @@ trait IsolatedSearchServiceFixture extends IsolatedSourceResolverFixture {
       actorSystem: ActorSystem,
       vfs: EnsimeVFS): Any = withSourceResolver { (config, resolver) =>
     val searchService = new SearchService(config, resolver)
-    try {
-      testCode(config, searchService)
-    } finally {
+    try { testCode(config, searchService) }
+    finally {
       Await.ready(searchService.shutdown(), Duration.Inf)
       actorSystem.shutdown()
       actorSystem.awaitTermination(10.seconds)

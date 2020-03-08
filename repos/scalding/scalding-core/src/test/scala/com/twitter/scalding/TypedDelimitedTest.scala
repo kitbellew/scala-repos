@@ -22,36 +22,28 @@ class TypedTsvJob(args: Args) extends Job(args) {
   try {
     TypedTsv[(String, Int)]("input0").read
       .write(TypedTsv[(String, Int)]("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 class TypedCsvJob(args: Args) extends Job(args) {
   try {
     TypedCsv[(String, Int)]("input0").read
       .write(TypedCsv[(String, Int)]("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 class TypedPsvJob(args: Args) extends Job(args) {
   try {
     TypedPsv[(String, Int)]("input0").read
       .write(TypedPsv[(String, Int)]("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 class TypedOsvJob(args: Args) extends Job(args) {
   try {
     TypedOsv[(String, Int)]("input0").read
       .write(TypedOsv[(String, Int)]("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 object DailySuffixTypedTsvJob {
@@ -73,9 +65,7 @@ class DailySuffixTypedTsvJob(args: Args)
       .source("input0")
       .read
       .write(TypedTsv[(String, Int)]("output0"))
-  } catch {
-    case e: Exception => e.printStackTrace()
-  }
+  } catch { case e: Exception => e.printStackTrace() }
 }
 
 class TypedDelimitedTest extends WordSpec with Matchers {
@@ -87,9 +77,7 @@ class TypedDelimitedTest extends WordSpec with Matchers {
     JobTest(new TypedTsvJob(_))
       .source(TypedTsv[(String, Int)]("input0"), data)
       .typedSink(TypedTsv[(String, Int)]("output0")) { buf =>
-        "read and write data" in {
-          buf shouldBe data
-        }
+        "read and write data" in { buf shouldBe data }
       }
       .run
       .finish
@@ -99,9 +87,7 @@ class TypedDelimitedTest extends WordSpec with Matchers {
     JobTest(new TypedCsvJob(_))
       .source(TypedCsv[(String, Int)]("input0"), data)
       .typedSink(TypedCsv[(String, Int)]("output0")) { buf =>
-        "read and write data" in {
-          buf shouldBe data
-        }
+        "read and write data" in { buf shouldBe data }
       }
       .run
       .finish
@@ -111,9 +97,7 @@ class TypedDelimitedTest extends WordSpec with Matchers {
     JobTest(new TypedPsvJob(_))
       .source(TypedPsv[(String, Int)]("input0"), data)
       .typedSink(TypedPsv[(String, Int)]("output0")) { buf =>
-        "read and write data" in {
-          buf shouldBe data
-        }
+        "read and write data" in { buf shouldBe data }
       }
       .run
       .finish
@@ -123,9 +107,7 @@ class TypedDelimitedTest extends WordSpec with Matchers {
     JobTest(new TypedOsvJob(_))
       .source(TypedOsv[(String, Int)]("input0"), data)
       .typedSink(TypedOsv[(String, Int)]("output0")) { buf =>
-        "read and write data" in {
-          buf shouldBe data
-        }
+        "read and write data" in { buf shouldBe data }
       }
       .run
       .finish
@@ -137,9 +119,7 @@ class TypedDelimitedTest extends WordSpec with Matchers {
       .arg("date", strd1 + " " + strd2)
       .source(source("input0"), data)
       .typedSink(TypedTsv[(String, Int)]("output0")) { buf =>
-        "read and write data" in {
-          buf shouldBe data
-        }
+        "read and write data" in { buf shouldBe data }
       }
       .run
       .finish

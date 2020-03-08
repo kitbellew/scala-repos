@@ -8,7 +8,9 @@ private[reflect] trait ThreadLocalStorage {
 
   // see a discussion at scala-internals for more information:
   // http://groups.google.com/group/scala-internals/browse_thread/thread/337ce68aa5e51f79
-  trait ThreadLocalStorage[T] { def get: T; def set(newValue: T): Unit }
+  trait ThreadLocalStorage[T] {
+    def get: T; def set(newValue: T): Unit
+  }
   private class MyThreadLocalStorage[T](initialValue: => T)
       extends ThreadLocalStorage[T] {
     // TODO: how do we use org.cliffc.high_scale_lib.NonBlockingHashMap here?
@@ -26,9 +28,7 @@ private[reflect] trait ThreadLocalStorage {
         value
       }
     }
-    def set(newValue: T): Unit = {
-      values.put(currentThread, newValue)
-    }
+    def set(newValue: T): Unit = { values.put(currentThread, newValue) }
   }
   @inline final def mkThreadLocalStorage[T](x: => T): ThreadLocalStorage[T] =
     new MyThreadLocalStorage(x)

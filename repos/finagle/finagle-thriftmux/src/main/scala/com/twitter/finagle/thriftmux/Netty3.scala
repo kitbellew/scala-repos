@@ -268,9 +268,7 @@ private[finagle] class PipelineFactory(
         val msg = buffer().readMessageBegin()
         msg.`type` == TMessageType.CALL &&
         msg.name == ThriftTracing.CanTraceMethodName
-      } catch {
-        case NonFatal(_) => false
-      }
+      } catch { case NonFatal(_) => false }
     }
 
     override def writeRequested(

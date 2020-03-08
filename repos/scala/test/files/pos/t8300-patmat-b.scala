@@ -13,8 +13,6 @@ object Test extends App {
 
   locally {
     val ScalaName: TermName = ???
-    ??? match {
-      case ScalaName => ???
-    }
+    ??? match { case ScalaName => ??? }
   }
 }

@@ -80,9 +80,7 @@ case class Statistics private[ragnarok] (
       case (m, vn, 1) => (m, 0.0, 1)
       case (m, vn, n) => (m, math.abs(vn / (n - 1)), n)
     }
-  } else {
-    (Double.NaN, Double.NaN, 0)
-  }
+  } else { (Double.NaN, Double.NaN, 0) }
 
   def min: Double = allMin.last
 

@@ -71,9 +71,7 @@ class RankingMetrics[T: ClassTag](
             var i = 0
             var cnt = 0
             while (i < n) {
-              if (labSet.contains(pred(i))) {
-                cnt += 1
-              }
+              if (labSet.contains(pred(i))) { cnt += 1 }
               i += 1
             }
             cnt.toDouble / k
@@ -150,12 +148,8 @@ class RankingMetrics[T: ClassTag](
             var i = 0
             while (i < n) {
               val gain = 1.0 / math.log(i + 2)
-              if (labSet.contains(pred(i))) {
-                dcg += gain
-              }
-              if (i < labSetSize) {
-                maxDcg += gain
-              }
+              if (labSet.contains(pred(i))) { dcg += gain }
+              if (i < labSetSize) { maxDcg += gain }
               i += 1
             }
             dcg / maxDcg

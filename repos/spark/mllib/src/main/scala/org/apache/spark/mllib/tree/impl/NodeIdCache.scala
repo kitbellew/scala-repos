@@ -52,15 +52,11 @@ private[tree] case class NodeIndexUpdater(split: Split, nodeIndex: Int) {
         bins(featureIndex)(binIndex).highSplit.threshold
       if (featureValueUpperBound <= split.threshold) {
         Node.leftChildIndex(nodeIndex)
-      } else {
-        Node.rightChildIndex(nodeIndex)
-      }
+      } else { Node.rightChildIndex(nodeIndex) }
     } else {
       if (split.categories.contains(binnedFeatures(split.feature).toDouble)) {
         Node.leftChildIndex(nodeIndex)
-      } else {
-        Node.rightChildIndex(nodeIndex)
-      }
+      } else { Node.rightChildIndex(nodeIndex) }
     }
   }
 }
@@ -148,9 +144,7 @@ private[spark] class NodeIdCache(
           // we'll manually delete it here.
           val fs = FileSystem.get(old.sparkContext.hadoopConfiguration)
           fs.delete(new Path(old.getCheckpointFile.get), true)
-        } else {
-          canDelete = false
-        }
+        } else { canDelete = false }
       }
 
       nodeIdsForInstances.checkpoint()

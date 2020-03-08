@@ -180,9 +180,7 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
             permissionsFinder.findBrowsableChildren(apiKey, path))
           nonRoot = children.filterNot(_ == Path.Root)
           childMetadata <- nonRoot.toList.traverseU(vfs.findPathMetadata)
-        } yield {
-          childMetadata.toSet
-        }
+        } yield { childMetadata.toSet }
 
       case other =>
         for {
@@ -358,9 +356,7 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
                 queryRes.authorities,
                 Some(job.id),
                 raw,
-                clock) {
-                VFS.derefValue
-              }
+                clock) { VFS.derefValue }
 
               StoredQueryResult(stream, None, Some(job.id))
             }

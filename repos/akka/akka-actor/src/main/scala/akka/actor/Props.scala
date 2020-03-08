@@ -216,7 +216,5 @@ final case class Props(
     * actor creation by the ActorSystem, i.e. for user-level code it can only be
     * used within the implementation of [[IndirectActorProducer#produce]].
     */
-  private[akka] def newActor(): Actor = {
-    producer.produce()
-  }
+  private[akka] def newActor(): Actor = { producer.produce() }
 }

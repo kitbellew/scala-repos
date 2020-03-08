@@ -78,11 +78,8 @@ private[spark] class EventLoggingListener(
     sparkConf.getInt("spark.eventLog.buffer.kb", 100) * 1024
   private val fileSystem = Utils.getHadoopFileSystem(logBaseDir, hadoopConf)
   private val compressionCodec =
-    if (shouldCompress) {
-      Some(CompressionCodec.createCodec(sparkConf))
-    } else {
-      None
-    }
+    if (shouldCompress) { Some(CompressionCodec.createCodec(sparkConf)) }
+    else { None }
   private val compressionCodecName = compressionCodec.map { c =>
     CompressionCodec.getShortName(c.getClass.getName)
   }
@@ -160,9 +157,7 @@ private[spark] class EventLoggingListener(
       writer.foreach(_.flush())
       hadoopDataStream.foreach(_.hflush())
     }
-    if (testing) {
-      loggedEvents += eventJson
-    }
+    if (testing) { loggedEvents += eventJson }
   }
 
   // Events that do not trigger a flush
@@ -229,9 +224,7 @@ private[spark] class EventLoggingListener(
       event: SparkListenerExecutorMetricsUpdate): Unit = {}
 
   override def onOtherEvent(event: SparkListenerEvent): Unit = {
-    if (event.logEvent) {
-      logEvent(event, flushLogger = true)
-    }
+    if (event.logEvent) { logEvent(event, flushLogger = true) }
   }
 
   /**
@@ -256,11 +249,8 @@ private[spark] class EventLoggingListener(
     fileSystem.rename(new Path(logPath + IN_PROGRESS), target)
     // touch file to ensure modtime is current across those filesystems where rename()
     // does not set it, -and which support setTimes(); it's a no-op on most object stores
-    try {
-      fileSystem.setTimes(target, System.currentTimeMillis(), -1)
-    } catch {
-      case e: Exception => logDebug(s"failed to set time of $target", e)
-    }
+    try { fileSystem.setTimes(target, System.currentTimeMillis(), -1) }
+    catch { case e: Exception => logDebug(s"failed to set time of $target", e) }
   }
 
 }
@@ -316,9 +306,7 @@ private[spark] object EventLoggingListener extends Logging {
     val codec = compressionCodecName.map("." + _).getOrElse("")
     if (appAttemptId.isDefined) {
       base + "_" + sanitize(appAttemptId.get) + codec
-    } else {
-      base + codec
-    }
+    } else { base + codec }
   }
 
   private def sanitize(str: String): String = {
@@ -349,9 +337,8 @@ private[spark] object EventLoggingListener extends Logging {
         CompressionCodec.createCodec(new SparkConf, c))
     }
 
-    try {
-      codec.map(_.compressedInputStream(in)).getOrElse(in)
-    } catch {
+    try { codec.map(_.compressedInputStream(in)).getOrElse(in) }
+    catch {
       case e: Exception =>
         in.close()
         throw e

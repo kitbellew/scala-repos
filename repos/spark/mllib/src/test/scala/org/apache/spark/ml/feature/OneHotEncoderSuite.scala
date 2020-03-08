@@ -48,9 +48,7 @@ class OneHotEncoderSuite
     indexer.transform(df)
   }
 
-  test("params") {
-    ParamsSuite.checkParams(new OneHotEncoder)
-  }
+  test("params") { ParamsSuite.checkParams(new OneHotEncoder) }
 
   test("OneHotEncoder dropLast = false") {
     val transformed = stringIndexed()

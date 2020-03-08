@@ -53,13 +53,9 @@ class DottyLibraryPropertiesEditor(
 
   def isModified = form.getState != properties.getState
 
-  def reset() {
-    form.setState(properties.getState)
-  }
+  def reset() { form.setState(properties.getState) }
 
-  def apply() {
-    properties.loadState(form.getState)
-  }
+  def apply() { properties.loadState(form.getState) }
 
   private def properties = editorComponent.getProperties
 }

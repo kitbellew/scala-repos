@@ -48,9 +48,7 @@ class ScalaFileStructureViewElement(
             for (td <- pack.immediateTypeDefinitions) {
               children += new ScalaTypeDefinitionStructureViewElement(td)
             }
-            for (p <- pack.packagings) {
-              children ++= getChildren(p)
-            }
+            for (p <- pack.packagings) { children ++= getChildren(p) }
             children.toArray
           }
           children ++= getChildren(packaging)
@@ -84,8 +82,6 @@ class ScalaFileStructureViewElement(
         buffer.toString(),
         file.getManager)
       newFile
-    } else {
-      file
-    }
+    } else { file }
   }
 }

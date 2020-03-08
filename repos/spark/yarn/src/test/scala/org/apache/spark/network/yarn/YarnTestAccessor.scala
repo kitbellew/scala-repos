@@ -22,9 +22,7 @@ import java.io.File
   * just a cheat to get package-visible members in tests
   */
 object YarnTestAccessor {
-  def getShuffleServicePort: Int = {
-    YarnShuffleService.boundPort
-  }
+  def getShuffleServicePort: Int = { YarnShuffleService.boundPort }
 
   def getShuffleServiceInstance: YarnShuffleService = {
     YarnShuffleService.instance

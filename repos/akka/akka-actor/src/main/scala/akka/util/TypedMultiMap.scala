@@ -63,9 +63,7 @@ class TypedMultiMap[T <: AnyRef, K[_ <: T]] private (
     */
   def valueRemoved(value: Any): TypedMultiMap[T, K] = {
     val s = Set(value)
-    val m = map.collect {
-      case (k, set) if set != s ⇒ (k, set - value)
-    }
+    val m = map.collect { case (k, set) if set != s ⇒ (k, set - value) }
     new TypedMultiMap[T, K](m)
   }
 

@@ -13,9 +13,7 @@ object HelloServer {
     val server = ThriftMux.server.serveIface(
       "localhost:1234",
       new Hello[Future] {
-        def echo(m: String) = {
-          Future.value(m)
-        }
+        def echo(m: String) = { Future.value(m) }
       })
 
     Await.ready(server)

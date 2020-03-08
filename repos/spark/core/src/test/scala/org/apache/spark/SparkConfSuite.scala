@@ -309,7 +309,5 @@ class Class2 {}
 class Class3 {}
 
 class CustomRegistrator extends KryoRegistrator {
-  def registerClasses(kryo: Kryo) {
-    kryo.register(classOf[Class2])
-  }
+  def registerClasses(kryo: Kryo) { kryo.register(classOf[Class2]) }
 }

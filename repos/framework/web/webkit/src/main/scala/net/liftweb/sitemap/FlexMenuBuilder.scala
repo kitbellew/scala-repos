@@ -256,11 +256,8 @@ trait FlexMenuBuilder {
         def buildLine(in: Seq[MenuItem]): NodeSeq = buildUlLine(in, false)
 
         def buildUlLine(in: Seq[MenuItem], top: Boolean): NodeSeq =
-          if (in.isEmpty) {
-            NodeSeq.Empty
-          } else {
-            renderOuterTag(in.flatMap(buildANavItem), top)
-          }
+          if (in.isEmpty) { NodeSeq.Empty }
+          else { renderOuterTag(in.flatMap(buildANavItem), top) }
 
         val realMenuItems = level match {
           case Full(lvl) if lvl > 0 =>

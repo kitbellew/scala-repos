@@ -107,8 +107,6 @@ class IntroduceFieldSettings[T <: PsiElement](ifc: IntroduceFieldContext[T]) {
   def initLocallyEnabled = initLocEn
   def initLocallyEnabled_=(value: Boolean) {
     initLocEn = value
-    if (!initLocallyEnabled) {
-      initInDeclaration = true
-    }
+    if (!initLocallyEnabled) { initInDeclaration = true }
   }
 }

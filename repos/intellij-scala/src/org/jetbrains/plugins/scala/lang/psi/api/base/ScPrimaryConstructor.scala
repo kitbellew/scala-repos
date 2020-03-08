@@ -158,9 +158,7 @@ trait ScPrimaryConstructor
       first <- parameterList.clauses.headOption
       if first.hasRepeatedParam
       if hasAnnotation("scala.annotation.varargs").isDefined
-    } {
-      buffer += new ScPrimaryConstructorWrapper(this, isJavaVarargs = true)
-    }
+    } { buffer += new ScPrimaryConstructorWrapper(this, isJavaVarargs = true) }
 
     val params = parameters
     for (i <- params.indices if params(i).baseDefaultParam) {

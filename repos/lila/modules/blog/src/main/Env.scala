@@ -33,12 +33,8 @@ final class Env(
   {
     import scala.concurrent.duration._
 
-    scheduler.effect(NotifyDelay, "blog: notify check") {
-      notifier.apply
-    }
-    scheduler.once(1 minute) {
-      notifier.apply
-    }
+    scheduler.effect(NotifyDelay, "blog: notify check") { notifier.apply }
+    scheduler.once(1 minute) { notifier.apply }
   }
 }
 

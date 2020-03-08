@@ -16,9 +16,7 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
 
   private[this] var validMark = false
 
-  override def close(): Unit = {
-    closed = true
-  }
+  override def close(): Unit = { closed = true }
 
   override def mark(readAheadLimit: Int): Unit = {
     ensureOpen()

@@ -45,9 +45,7 @@ class VertexRDDImpl[VD] private[graphx] (
   override def setName(_name: String): this.type = {
     if (partitionsRDD.name != null) {
       partitionsRDD.setName(partitionsRDD.name + ", " + _name)
-    } else {
-      partitionsRDD.setName(_name)
-    }
+    } else { partitionsRDD.setName(_name) }
     this
   }
   setName("VertexRDD")
@@ -74,9 +72,7 @@ class VertexRDDImpl[VD] private[graphx] (
 
   override def getStorageLevel: StorageLevel = partitionsRDD.getStorageLevel
 
-  override def checkpoint(): Unit = {
-    partitionsRDD.checkpoint()
-  }
+  override def checkpoint(): Unit = { partitionsRDD.checkpoint() }
 
   override def isCheckpointed: Boolean = {
     firstParent[ShippableVertexPartition[VD]].isCheckpointed

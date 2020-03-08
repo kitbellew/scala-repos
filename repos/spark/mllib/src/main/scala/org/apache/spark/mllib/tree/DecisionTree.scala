@@ -361,11 +361,8 @@ object DecisionTree extends Serializable with Logging {
       }
       if (node.leftNode.isEmpty || node.rightNode.isEmpty) {
         // Return index from next layer of nodes to train
-        if (splitLeft) {
-          Node.leftChildIndex(node.id)
-        } else {
-          Node.rightChildIndex(node.id)
-        }
+        if (splitLeft) { Node.leftChildIndex(node.id) }
+        else { Node.rightChildIndex(node.id) }
       } else {
         if (splitLeft) {
           predictNodeIndex(
@@ -417,9 +414,7 @@ object DecisionTree extends Serializable with Logging {
     while (featureIndexIdx < numFeaturesPerNode) {
       val featureIndex = if (featuresForNode.nonEmpty) {
         featuresForNode.get.apply(featureIndexIdx)
-      } else {
-        featureIndexIdx
-      }
+      } else { featureIndexIdx }
       if (unorderedFeatures.contains(featureIndex)) {
         // Unordered feature
         val featureValue = treePoint.binnedFeatures(featureIndex)
@@ -654,9 +649,8 @@ object DecisionTree extends Serializable with Logging {
     def getNodeToFeatures(
         treeToNodeToIndexInfo: Map[Int, Map[Int, NodeIndexInfo]])
         : Option[Map[Int, Array[Int]]] =
-      if (!metadata.subsamplingFeatures) {
-        None
-      } else {
+      if (!metadata.subsamplingFeatures) { None }
+      else {
         val mutableNodeToFeatures = new mutable.HashMap[Int, Array[Int]]()
         treeToNodeToIndexInfo.values.foreach { nodeIdToNodeInfo =>
           nodeIdToNodeInfo.values.foreach { nodeIndexInfo =>
@@ -750,9 +744,7 @@ object DecisionTree extends Serializable with Logging {
     val nodeIdUpdaters = if (nodeIdCache.nonEmpty) {
       Array.fill[mutable.Map[Int, NodeIndexUpdater]](metadata.numTrees)(
         mutable.Map[Int, NodeIndexUpdater]())
-    } else {
-      null
-    }
+    } else { null }
 
     // Iterate over all nodes in this group.
     nodesForGroup.foreach {
@@ -919,9 +911,7 @@ object DecisionTree extends Serializable with Logging {
     val level = Node.indexToLevel(node.id)
     var predictWithImpurity: Option[(Predict, Double)] = if (level == 0) {
       None
-    } else {
-      Some((node.predict, node.impurity))
-    }
+    } else { Some((node.predict, node.impurity)) }
 
     // For each (feature, split), calculate the gain, and select the best (feature, split).
     val (bestSplit, bestSplitStats) =
@@ -929,9 +919,7 @@ object DecisionTree extends Serializable with Logging {
         .map { featureIndexIdx =>
           val featureIndex = if (featuresForNode.nonEmpty) {
             featuresForNode.get.apply(featureIndexIdx)
-          } else {
-            featureIndexIdx
-          }
+          } else { featureIndexIdx }
           val numSplits = binAggregates.metadata.numSplits(featureIndex)
           if (binAggregates.metadata.isContinuous(featureIndex)) {
             // Cumulative sum (scanLeft) of bin statistics.
@@ -1029,9 +1017,7 @@ object DecisionTree extends Serializable with Logging {
                     // the bins are ordered by the prediction.
                     categoryStats.predict
                   }
-                } else {
-                  Double.MaxValue
-                }
+                } else { Double.MaxValue }
                 (featureValue, centroid)
             }
 
@@ -1149,17 +1135,13 @@ object DecisionTree extends Serializable with Logging {
       val requiredSamples = math.max(metadata.maxBins * metadata.maxBins, 10000)
       val fraction = if (requiredSamples < metadata.numExamples) {
         requiredSamples.toDouble / metadata.numExamples
-      } else {
-        1.0
-      }
+      } else { 1.0 }
       logDebug("fraction of data used for calculating quantiles = " + fraction)
       input.sample(
         withReplacement = false,
         fraction,
         new XORShiftRandom().nextInt())
-    } else {
-      input.sparkContext.emptyRDD[LabeledPoint]
-    }
+    } else { input.sparkContext.emptyRDD[LabeledPoint] }
 
     metadata.quantileStrategy match {
       case Sort =>
@@ -1315,9 +1297,8 @@ object DecisionTree extends Serializable with Logging {
 
       // if possible splits is not enough or just enough, just return all possible splits
       val possibleSplits = valueCounts.length
-      if (possibleSplits <= numSplits) {
-        valueCounts.map(_._1)
-      } else {
+      if (possibleSplits <= numSplits) { valueCounts.map(_._1) }
+      else {
         // stride between splits
         val stride: Double = numSamples.toDouble / (numSplits + 1)
         logDebug("stride = " + stride)

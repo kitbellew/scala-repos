@@ -44,17 +44,14 @@ class NewShinyProducer(producerProps: Properties) extends BaseProducer {
 
   override def send(topic: String, key: Array[Byte], value: Array[Byte]) {
     val record = new ProducerRecord[Array[Byte], Array[Byte]](topic, key, value)
-    if (sync) {
-      this.producer.send(record).get()
-    } else {
+    if (sync) { this.producer.send(record).get() }
+    else {
       this.producer
         .send(record, new ErrorLoggingCallback(topic, key, value, false))
     }
   }
 
-  override def close() {
-    this.producer.close()
-  }
+  override def close() { this.producer.close() }
 }
 
 @deprecated(
@@ -76,7 +73,5 @@ class OldProducer(producerProps: Properties) extends BaseProducer {
       .send(new KeyedMessage[Array[Byte], Array[Byte]](topic, key, value))
   }
 
-  override def close() {
-    this.producer.close()
-  }
+  override def close() { this.producer.close() }
 }

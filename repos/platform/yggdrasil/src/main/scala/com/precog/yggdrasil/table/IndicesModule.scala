@@ -266,11 +266,9 @@ trait IndicesModule[M[+_]]
       while (i < alen && j < blen) {
         val a = as.get(i)
         val b = bs.get(j)
-        if (a < b) {
-          i += 1
-        } else if (a > b) {
-          j += 1
-        } else {
+        if (a < b) { i += 1 }
+        else if (a > b) { j += 1 }
+        else {
           out.add(a)
           i += 1
           j += 1
@@ -390,11 +388,8 @@ trait IndicesModule[M[+_]]
           var k = 0
           while (!dead && k < numKeys) {
             val jv = keys(k)(i)
-            if (jv != null) {
-              row(k) = jv
-            } else {
-              dead = true
-            }
+            if (jv != null) { row(k) = jv }
+            else { dead = true }
             k += 1
           }
 
@@ -406,9 +401,8 @@ trait IndicesModule[M[+_]]
               vals.get(k).map { jvs =>
                 jvs.add(jv)
                 val key = (k, jv)
-                if (dict.contains(key)) {
-                  dict(key).add(i)
-                } else {
+                if (dict.contains(key)) { dict(key).add(i) }
+                else {
                   val as = new ArrayIntList(0)
                   as.add(i)
                   dict(key) = as

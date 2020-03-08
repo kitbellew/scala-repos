@@ -38,9 +38,8 @@ private[spark] object SignalLogger {
 
       val signals = Seq("TERM", "HUP", "INT")
       for (signal <- signals) {
-        try {
-          new SignalLoggerHandler(signal, log)
-        } catch {
+        try { new SignalLoggerHandler(signal, log) }
+        catch {
           case e: Exception =>
             log.warn("Failed to register signal handler " + signal, e)
         }

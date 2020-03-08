@@ -65,9 +65,7 @@ final class SbtHandler(
       try {
         send("exit", server)
         process.exitValue()
-      } catch {
-        case e: IOException => process.destroy()
-      }
+      } catch { case e: IOException => process.destroy() }
     case None =>
   }
   def send(message: String, server: IPC.Server) = server.connection {

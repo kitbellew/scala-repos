@@ -12,9 +12,7 @@ private[finagle] class RichRequestHeader(val header: RequestHeader)
   def clientId: Option[ClientId] =
     if (header.isSetClient_id && header.getClient_id.isSetName) {
       Some(ClientId(header.getClient_id.getName))
-    } else {
-      None
-    }
+    } else { None }
 
   def dest: Path = if (header.isSetDest) Path.read(header.dest) else Path.empty
 

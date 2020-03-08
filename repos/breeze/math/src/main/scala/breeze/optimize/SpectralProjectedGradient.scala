@@ -59,9 +59,7 @@ class SpectralProjectedGradient[T](
 
   override protected def initialHistory(
       f: DiffFunction[T],
-      init: T): History = {
-    History(0.1, IndexedSeq.empty)
-  }
+      init: T): History = { History(0.1, IndexedSeq.empty) }
 
   /**
     * From Mark Schmidt's Matlab code

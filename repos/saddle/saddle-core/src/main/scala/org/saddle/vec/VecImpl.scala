@@ -142,9 +142,7 @@ private[saddle] object VecImpl {
       if (sca.notMissing(v)) {
         acc = f(acc, v)
         buf(i) = acc
-      } else {
-        buf(i) = scb.missing
-      }
+      } else { buf(i) = scb.missing }
       i += 1
     }
     Vec(buf)
@@ -164,11 +162,8 @@ private[saddle] object VecImpl {
     while (i < v1.length) {
       val a = v1(i)
       val b = v2(i)
-      if (sca.isMissing(a) || scb.isMissing(b)) {
-        buf(i) = scc.missing
-      } else {
-        buf(i) = f(a, b)
-      }
+      if (sca.isMissing(a) || scb.isMissing(b)) { buf(i) = scc.missing }
+      else { buf(i) = f(a, b) }
       i += 1
     }
     Vec(buf)
@@ -183,9 +178,7 @@ private[saddle] object VecImpl {
     var i = 0
     while (i < vec.length) {
       val vi = vec(i)
-      if (sa.notMissing(vi) && pred(vi)) {
-        acc = f(acc, vi)
-      }
+      if (sa.notMissing(vi) && pred(vi)) { acc = f(acc, vi) }
       i += 1
     }
     acc
@@ -205,9 +198,7 @@ private[saddle] object VecImpl {
       if (sa.notMissing(v) && pred(v)) {
         acc = f(acc, v)
         buf(i) = acc
-      } else {
-        buf(i) = sb.missing
-      }
+      } else { buf(i) = sb.missing }
       i += 1
     }
     Vec(buf)

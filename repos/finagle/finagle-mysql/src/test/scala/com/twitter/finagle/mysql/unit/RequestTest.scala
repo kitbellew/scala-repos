@@ -61,13 +61,9 @@ class HandshakeResponseTest extends FunSuite {
     assert(rbytes.forall(_ == 0))
   }
 
-  test("username") {
-    assert(br.readNullTerminatedString() == username.get)
-  }
+  test("username") { assert(br.readNullTerminatedString() == username.get) }
 
-  test("password") {
-    assert(br.readLengthCodedBytes() === req.hashPassword)
-  }
+  test("password") { assert(br.readLengthCodedBytes() === req.hashPassword) }
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -155,9 +151,7 @@ class ExecuteRequestTest extends FunSuite {
   }
 
   val hasNewParams = br.readByte() == 1
-  test("has new parameters") {
-    assert(hasNewParams == true)
-  }
+  test("has new parameters") { assert(hasNewParams == true) }
 
   test("sanitized null parameters") {
     assert(!req.params.contains(null))
@@ -170,41 +164,25 @@ class ExecuteRequestTest extends FunSuite {
         assert(br.readShort() == p.typeCode)
     }
 
-    test("String") {
-      assert(br.readLengthCodedString() == strVal)
-    }
+    test("String") { assert(br.readLengthCodedString() == strVal) }
 
     test("Non-Ascii String") {
       assert(br.readLengthCodedString() == nonAsciiStrVal)
     }
 
-    test("Boolean") {
-      assert(br.readByte() == (if (boolVal) 1 else 0))
-    }
+    test("Boolean") { assert(br.readByte() == (if (boolVal) 1 else 0)) }
 
-    test("Byte") {
-      assert(br.readByte() == byteVal)
-    }
+    test("Byte") { assert(br.readByte() == byteVal) }
 
-    test("Short") {
-      assert(br.readShort() == shortVal)
-    }
+    test("Short") { assert(br.readShort() == shortVal) }
 
-    test("Int") {
-      assert(br.readInt() == intVal)
-    }
+    test("Int") { assert(br.readInt() == intVal) }
 
-    test("Long") {
-      assert(br.readLong() == longVal)
-    }
+    test("Long") { assert(br.readLong() == longVal) }
 
-    test("Float") {
-      assert(br.readFloat() == floatVal)
-    }
+    test("Float") { assert(br.readFloat() == floatVal) }
 
-    test("Double") {
-      assert(br.readDouble() == doubleVal)
-    }
+    test("Double") { assert(br.readDouble() == doubleVal) }
 
     val timestampValueLocal =
       new TimestampValue(TimeZone.getDefault(), TimeZone.getDefault())
@@ -233,32 +211,18 @@ class ExecuteRequestTest extends FunSuite {
       assert(dt.getTime == timestamp.getTime)
     }
 
-    test("StringValue") {
-      assert(br.readLengthCodedString() == strVal)
-    }
+    test("StringValue") { assert(br.readLengthCodedString() == strVal) }
 
-    test("ByteValue") {
-      assert(br.readByte() == byteVal)
-    }
+    test("ByteValue") { assert(br.readByte() == byteVal) }
 
-    test("ShortValue") {
-      assert(br.readShort() == shortVal)
-    }
+    test("ShortValue") { assert(br.readShort() == shortVal) }
 
-    test("IntValue") {
-      assert(br.readInt() == intVal)
-    }
+    test("IntValue") { assert(br.readInt() == intVal) }
 
-    test("LongValue") {
-      assert(br.readLong() == longVal)
-    }
+    test("LongValue") { assert(br.readLong() == longVal) }
 
-    test("FloatValue") {
-      assert(br.readFloat() == floatVal)
-    }
+    test("FloatValue") { assert(br.readFloat() == floatVal) }
 
-    test("DoubleValue") {
-      assert(br.readDouble() == doubleVal)
-    }
+    test("DoubleValue") { assert(br.readDouble() == doubleVal) }
   }
 }

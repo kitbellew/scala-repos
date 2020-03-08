@@ -106,11 +106,8 @@ private[sql] object PreInsertCastAndRename extends Rule[LogicalPlan] {
         }
     }
 
-    if (newChildOutput == child.output) {
-      insertInto
-    } else {
-      insertInto.copy(child = Project(newChildOutput, child))
-    }
+    if (newChildOutput == child.output) { insertInto }
+    else { insertInto.copy(child = Project(newChildOutput, child)) }
   }
 }
 

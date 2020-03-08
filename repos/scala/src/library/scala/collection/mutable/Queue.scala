@@ -151,9 +151,7 @@ class Queue[A]
     if (isEmpty) None
     else {
       var cell = start
-      while ((cell.next.nonEmpty) && !p(cell.next.elem)) {
-        cell = cell.next
-      }
+      while ((cell.next.nonEmpty) && !p(cell.next.elem)) { cell = cell.next }
       if (cell.next.isEmpty)
         None
       else {

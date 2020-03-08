@@ -82,9 +82,7 @@ class CompileServerManager(project: Project) extends ProjectComponent {
     }
   }
 
-  private def updateWidget() {
-    bar.updateWidget(Widget.ID)
-  }
+  private def updateWidget() { bar.updateWidget(Widget.ID) }
 
   private def applicable =
     running ||
@@ -117,9 +115,7 @@ class CompileServerManager(project: Project) extends ProjectComponent {
         title + launcher.port.map(_.formatted(" (TCP %d)")).getOrElse("")
 
       object ClickConsumer extends Consumer[MouseEvent] {
-        def consume(t: MouseEvent) {
-          toggleList(t)
-        }
+        def consume(t: MouseEvent) { toggleList(t) }
       }
     }
   }
@@ -159,9 +155,7 @@ class CompileServerManager(project: Project) extends ProjectComponent {
       e.getPresentation.setEnabled(!launcher.running)
     }
 
-    def actionPerformed(e: AnActionEvent) {
-      launcher.tryToStart(project)
-    }
+    def actionPerformed(e: AnActionEvent) { launcher.tryToStart(project) }
   }
 
   private object Stop
@@ -174,9 +168,7 @@ class CompileServerManager(project: Project) extends ProjectComponent {
       e.getPresentation.setEnabled(launcher.running)
     }
 
-    def actionPerformed(e: AnActionEvent) {
-      launcher.stop(e.getProject)
-    }
+    def actionPerformed(e: AnActionEvent) { launcher.stop(e.getProject) }
   }
 
   private object Configure
@@ -185,15 +177,11 @@ class CompileServerManager(project: Project) extends ProjectComponent {
         "Configure compile server",
         AllIcons.General.Settings)
       with DumbAware {
-    def actionPerformed(e: AnActionEvent) {
-      showCompileServerSettingsDialog()
-    }
+    def actionPerformed(e: AnActionEvent) { showCompileServerSettingsDialog() }
   }
 
   private object ScalaListener extends ScalaProjectListener {
-    def onScalaProjectChanged() {
-      configureWidget()
-    }
+    def onScalaProjectChanged() { configureWidget() }
   }
 
   private object TimerListener extends ActionListener {

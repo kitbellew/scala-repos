@@ -41,15 +41,9 @@ class SafeLongTest extends FunSuite {
     assert(SafeLong.one.isValidLong)
     assert(SafeLong.one.isValidChar)
   }
-  test("|") {
-    assert((SafeLong.one | SafeLong.one.toBigInt) == SafeLong.one)
-  }
-  test("^") {
-    assert((SafeLong.one ^ SafeLong.one.toBigInt) == SafeLong.zero)
-  }
-  test("<<") {
-    assert((SafeLong.minusOne << 1) == SafeLong(-1 << 1))
-  }
+  test("|") { assert((SafeLong.one | SafeLong.one.toBigInt) == SafeLong.one) }
+  test("^") { assert((SafeLong.one ^ SafeLong.one.toBigInt) == SafeLong.zero) }
+  test("<<") { assert((SafeLong.minusOne << 1) == SafeLong(-1 << 1)) }
   test("safeLongIsSigned") {
     for (x ← Seq(SafeLong.one)) {
       assert(Signed[SafeLong].signum(x) == x.signum)

@@ -175,13 +175,9 @@ abstract class UntypedPersistentActor
 
   final def onReceive(message: Any) = onReceiveCommand(message)
 
-  final def receiveRecover: Receive = {
-    case msg ⇒ onReceiveRecover(msg)
-  }
+  final def receiveRecover: Receive = { case msg ⇒ onReceiveRecover(msg) }
 
-  final def receiveCommand: Receive = {
-    case msg ⇒ onReceiveCommand(msg)
-  }
+  final def receiveCommand: Receive = { case msg ⇒ onReceiveCommand(msg) }
 
   /**
     * Java API: asynchronously persists `event`. On successful persistence, `handler` is called with the

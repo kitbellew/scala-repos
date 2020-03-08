@@ -24,9 +24,7 @@ object Directory {
                 "version").exists) {
             //FileUtils.moveDirectory(oldHome, newHome)
             oldHome
-          } else {
-            new File(System.getProperty("user.home"), ".gitbucket")
-          }
+          } else { new File(System.getProperty("user.home"), ".gitbucket") }
         }
       }
   }).getAbsolutePath

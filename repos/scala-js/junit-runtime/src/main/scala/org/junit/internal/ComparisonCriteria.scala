@@ -29,9 +29,8 @@ abstract class ComparisonCriteria {
         val actual = get(actuals, i)
 
         if (isArray(expected) && isArray(actual)) {
-          try {
-            arrayEquals(message, expected, actual, false)
-          } catch {
+          try { arrayEquals(message, expected, actual, false) }
+          catch {
             case e: ArrayComparisonFailure =>
               e.addDimension(i)
               throw e
@@ -39,9 +38,8 @@ abstract class ComparisonCriteria {
               throw new ArrayComparisonFailure(header, e, i)
           }
         } else {
-          try {
-            assertElementsEqual(expected, actual)
-          } catch {
+          try { assertElementsEqual(expected, actual) }
+          catch {
             case e: AssertionError =>
               throw new ArrayComparisonFailure(header, e, i)
           }

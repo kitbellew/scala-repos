@@ -228,14 +228,10 @@ object getDummyBlocks {
         def getNonWsSiblings(
             firstNode: ASTNode,
             acc: List[ASTNode] = List()): List[ASTNode] =
-          if (firstNode == null) {
-            acc.reverse
-          } else if (ScalaDocNewlinedPreFormatProcessor.isWhiteSpace(
-                       firstNode)) {
+          if (firstNode == null) { acc.reverse }
+          else if (ScalaDocNewlinedPreFormatProcessor.isWhiteSpace(firstNode)) {
             getNonWsSiblings(firstNode.getTreeNext, acc)
-          } else {
-            getNonWsSiblings(firstNode.getTreeNext, firstNode :: acc)
-          }
+          } else { getNonWsSiblings(firstNode.getTreeNext, firstNode :: acc) }
 
         val childBlocks = getNonWsSiblings(docTag.getFirstChild.getNode)
         //TODO whitespace between tag name and tag parameter (like in @param x) has type "DOC_COMMENT_DATA"
@@ -401,9 +397,7 @@ object getDummyBlocks {
         if (nodeChild.getText.contains(
               "\n") && nodeChild.getFirstChildNode != null) {
           flattenChildren(nodeChild, buffer)
-        } else {
-          buffer += nodeChild
-        }
+        } else { buffer += nodeChild }
       }
     }
 
@@ -433,9 +427,7 @@ object getDummyBlocks {
       do {
         if (scaladocNode.getText.contains("\n")) {
           flattenChildren(scaladocNode, children)
-        } else {
-          children += scaladocNode
-        }
+        } else { children += scaladocNode }
 
       } while (scaladocNode != lastNode && (
         scaladocNode = scaladocNode.getTreeNext,
@@ -611,9 +603,8 @@ object getDummyBlocks {
           val prevChild =
             prev.findChildByType(TokenSet
               .create(ScalaTokenTypes.tFUNTYPE, ScalaTokenTypes.tFUNTYPE_ASCII))
-          if (prevChild == null) {
-            return getChildAlignment(prev, child)
-          } else return getAlignment(prevChild)
+          if (prevChild == null) { return getChildAlignment(prev, child) }
+          else return getAlignment(prevChild)
         }
         null
       }
@@ -685,9 +676,7 @@ object getDummyBlocks {
               if (hasMod1 != hasMod2) {
                 breaks += 2
                 false
-              } else {
-                true
-              }
+              } else { true }
             case _: PsiComment => false
             case _ =>
               breaks += 2
@@ -719,23 +708,20 @@ object getDummyBlocks {
         if (child.getElementType == ScalaTokenTypes.tCOLON) {
           if (prev == null) return createNewAlignment
           val prevChild = prev.findChildByType(ScalaTokenTypes.tCOLON)
-          if (prevChild == null) {
-            return getChildAlignment(prev, child)
-          } else return getAlignment(prevChild)
+          if (prevChild == null) { return getChildAlignment(prev, child) }
+          else return getAlignment(prevChild)
         } else if (child.getElementType == ScalaTokenTypes.tASSIGN) {
           if (prev == null) return createNewAlignment
           val prevChild = prev.findChildByType(ScalaTokenTypes.tASSIGN)
-          if (prevChild == null) {
-            return getChildAlignment(prev, child)
-          } else return getAlignment(prevChild)
+          if (prevChild == null) { return getChildAlignment(prev, child) }
+          else return getAlignment(prevChild)
         } else if (child.getElementType == ScalaTokenTypes.kVAL ||
                    child.getElementType == ScalaTokenTypes.kVAR) {
           if (prev == null) return createNewAlignment
           val prevChild = prev.findChildByType(
             TokenSet.create(ScalaTokenTypes.kVAL, ScalaTokenTypes.kVAR))
-          if (prevChild == null) {
-            return getChildAlignment(prev, child)
-          } else return getAlignment(prevChild)
+          if (prevChild == null) { return getChildAlignment(prev, child) }
+          else return getAlignment(prevChild)
         }
         null
       }
@@ -878,9 +864,7 @@ object getDummyBlocks {
         if (child.getElementType != ScalaTokenTypes.kYIELD) {
           if (prevChild != null && prevChild.getElementType == ScalaTokenTypes.kYIELD) {
             addSubBlock(prevChild, child)
-          } else {
-            addSubBlock(child, null)
-          }
+          } else { addSubBlock(child, null) }
         }
         prevChild = child
       }
@@ -903,9 +887,8 @@ object getDummyBlocks {
           else ScalaTokenTypes.tRBRACE
         val (_, after) =
           tail.span(elem => elem.getElementType != closingType)
-        if (after.isEmpty) {
-          addTail(children)
-        } else {
+        if (after.isEmpty) { addTail(children) }
+        else {
           addSubBlock(lParen, after.head)
           addTail(after.tail)
         }
@@ -1035,9 +1018,7 @@ object getDummyBlocks {
           tabsCount /* *settings.getTabSize(ScalaFileType.SCALA_FILE_TYPE)*/ + line
             .substring(tabsCount)
             .prefixLength(_ == ' ')
-        } else {
-          line.prefixLength(_ == ' ')
-        }
+        } else { line.prefixLength(_ == ' ') }
 
       if (trimmedLine.startsWith(marginChar)) {
         subBlocks.add(
@@ -1354,9 +1335,7 @@ object getDummyBlocks {
       new ChildAttributes(Indent.getNoneIndent, null)
 
     override def getSubBlocks(): util.List[Block] = {
-      if (mySubBlocks == null) {
-        mySubBlocks = new util.ArrayList[Block]()
-      }
+      if (mySubBlocks == null) { mySubBlocks = new util.ArrayList[Block]() }
       mySubBlocks
     }
 

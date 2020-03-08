@@ -67,12 +67,8 @@ trait SnapshotStore extends Actor with ActorLogging {
     case d @ DeleteSnapshot(metadata) ⇒
       breaker
         .withCircuitBreaker(deleteAsync(metadata))
-        .map {
-          case _ ⇒ DeleteSnapshotSuccess(metadata)
-        }
-        .recover {
-          case e ⇒ DeleteSnapshotFailure(metadata, e)
-        }
+        .map { case _ ⇒ DeleteSnapshotSuccess(metadata) }
+        .recover { case e ⇒ DeleteSnapshotFailure(metadata, e) }
         .pipeTo(self)(senderPersistentActor())
         .onComplete {
           case _ ⇒ if (publish) context.system.eventStream.publish(d)
@@ -88,12 +84,8 @@ trait SnapshotStore extends Actor with ActorLogging {
     case d @ DeleteSnapshots(persistenceId, criteria) ⇒
       breaker
         .withCircuitBreaker(deleteAsync(persistenceId, criteria))
-        .map {
-          case _ ⇒ DeleteSnapshotsSuccess(criteria)
-        }
-        .recover {
-          case e ⇒ DeleteSnapshotsFailure(criteria, e)
-        }
+        .map { case _ ⇒ DeleteSnapshotsSuccess(criteria) }
+        .recover { case e ⇒ DeleteSnapshotsFailure(criteria, e) }
         .pipeTo(self)(senderPersistentActor())
         .onComplete {
           case _ ⇒ if (publish) context.system.eventStream.publish(d)

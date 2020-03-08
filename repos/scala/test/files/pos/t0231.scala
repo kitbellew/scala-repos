@@ -1,7 +1,5 @@
 class Foo {
-  def aaa {
-    println("a")
-  }
+  def aaa { println("a") }
 }
 
 class Bar extends Foo {

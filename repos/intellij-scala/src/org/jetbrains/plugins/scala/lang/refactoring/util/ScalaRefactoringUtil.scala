@@ -207,9 +207,7 @@ object ScalaRefactoringUtil {
     typeElement.breadthFirst.foreach {
       case x: ScTypeElement if x.calcType.isInstanceOf[ScTypeParameterType] =>
         val owner = getOwner(x)
-        if (owner != null) {
-          ownersArray += owner
-        }
+        if (owner != null) { ownersArray += owner }
       case _ =>
     }
     ownersArray.toSeq
@@ -237,9 +235,7 @@ object ScalaRefactoringUtil {
         val ta = getTypeAlias(te)
         if (ta != null) {
           val owner = getOwner(ta)
-          if (owner != null) {
-            ownersArray += owner
-          }
+          if (owner != null) { ownersArray += owner }
         }
 
       case _ => false
@@ -491,9 +487,7 @@ object ScalaRefactoringUtil {
               }
             case _ =>
           }
-        } else {
-          occurrences ++= getExprOccurrences(element, child)
-        }
+        } else { occurrences ++= getExprOccurrences(element, child) }
       }
     occurrences.toArray
   }
@@ -514,9 +508,7 @@ object ScalaRefactoringUtil {
               occurrences += typeElement
             case _ =>
           }
-        } else {
-          occurrences ++= getTypeElementOccurrences(element, child)
-        }
+        } else { occurrences ++= getTypeElementOccurrences(element, child) }
       }
     occurrences.toArray
   }
@@ -662,9 +654,7 @@ object ScalaRefactoringUtil {
     val selection = new Selection
     val highlighter: ScopeHighlighter = new ScopeHighlighter(editor)
     val model = JListCompatibility.createDefaultListModel()
-    for (element <- elements) {
-      JListCompatibility.addElement(model, element)
-    }
+    for (element <- elements) { JListCompatibility.addElement(model, element) }
     val list = JListCompatibility.createJListFromModel(model)
     JListCompatibility.setCellRenderer(
       list,
@@ -682,9 +672,7 @@ object ScalaRefactoringUtil {
             isSelected,
             cellHasFocus)
           val element: T = value.asInstanceOf[T]
-          if (element.isValid) {
-            setText(elementName(element))
-          }
+          if (element.isValid) { setText(elementName(element)) }
           rendererComponent
         }
       }
@@ -709,9 +697,7 @@ object ScalaRefactoringUtil {
       .setResizable(false)
       .setRequestFocus(true)
       .setItemChoosenCallback(new Runnable {
-        def run() {
-          pass(list.getSelectedValue.asInstanceOf[T])
-        }
+        def run() { pass(list.getSelectedValue.asInstanceOf[T]) }
       })
       .addListener(new JBPopupAdapter {
         override def beforeShown(event: LightweightWindowEvent): Unit = {
@@ -915,9 +901,7 @@ object ScalaRefactoringUtil {
           expressions,
           (elem: ScExpression) => chooseExpression(elem),
           ScalaBundle.message("choose.expression.for", refactoringName),
-          (expr: ScExpression) => {
-            getShortText(expr)
-          }
+          (expr: ScExpression) => { getShortText(expr) }
         )
         return
       }
@@ -978,9 +962,7 @@ object ScalaRefactoringUtil {
           typeElement,
           (elem: ScTypeElement) => chooseTypeElement(elem),
           ScalaBundle.message("choose.type.element.for", refactoringName),
-          (value: ScTypeElement) => {
-            getShortText(value)
-          }
+          (value: ScTypeElement) => { getShortText(value) }
         )
         return
       }
@@ -1472,9 +1454,7 @@ object ScalaRefactoringUtil {
       for {
         ref <- refs.asScala
         if !elements.exists(PsiTreeUtil.isAncestor(_, ref.getElement, false))
-      } {
-        return true
-      }
+      } { return true }
       false
     }
 

@@ -38,15 +38,12 @@ object TestingUtils {
     val absX = math.abs(x)
     val absY = math.abs(y)
     val diff = math.abs(x - y)
-    if (x == y) {
-      true
-    } else if (absX < Double.MinPositiveValue || absY < Double.MinPositiveValue) {
+    if (x == y) { true }
+    else if (absX < Double.MinPositiveValue || absY < Double.MinPositiveValue) {
       throw new TestFailedException(
         s"$x or $y is extremely close to zero, so the relative tolerance is meaningless.",
         0)
-    } else {
-      diff < eps * math.min(absX, absY)
-    }
+    } else { diff < eps * math.min(absX, absY) }
   }
 
   /**
@@ -55,9 +52,7 @@ object TestingUtils {
   private def AbsoluteErrorComparison(
       x: Double,
       y: Double,
-      eps: Double): Boolean = {
-    math.abs(x - y) < eps
-  }
+      eps: Double): Boolean = { math.abs(x - y) < eps }
 
   case class CompareDoubleRightSide(
       fun: (Double, Double, Double) => Boolean,

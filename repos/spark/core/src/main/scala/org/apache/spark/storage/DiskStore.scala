@@ -60,13 +60,8 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
       writeFunc(fileOutputStream)
       threwException = false
     } finally {
-      try {
-        Closeables.close(fileOutputStream, threwException)
-      } finally {
-        if (threwException) {
-          remove(blockId)
-        }
-      }
+      try { Closeables.close(fileOutputStream, threwException) }
+      finally { if (threwException) { remove(blockId) } }
     }
     val finishTime = System.currentTimeMillis
     logDebug(
@@ -79,11 +74,7 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
   def putBytes(blockId: BlockId, bytes: ChunkedByteBuffer): Unit = {
     put(blockId) { fileOutputStream =>
       val channel = fileOutputStream.getChannel
-      Utils.tryWithSafeFinally {
-        bytes.writeFully(channel)
-      } {
-        channel.close()
-      }
+      Utils.tryWithSafeFinally { bytes.writeFully(channel) } { channel.close() }
     }
   }
 
@@ -106,22 +97,16 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
       } else {
         new ChunkedByteBuffer(channel.map(MapMode.READ_ONLY, 0, file.length))
       }
-    } {
-      channel.close()
-    }
+    } { channel.close() }
   }
 
   def remove(blockId: BlockId): Boolean = {
     val file = diskManager.getFile(blockId.name)
     if (file.exists()) {
       val ret = file.delete()
-      if (!ret) {
-        logWarning(s"Error deleting ${file.getPath()}")
-      }
+      if (!ret) { logWarning(s"Error deleting ${file.getPath()}") }
       ret
-    } else {
-      false
-    }
+    } else { false }
   }
 
   def contains(blockId: BlockId): Boolean = {

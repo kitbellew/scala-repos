@@ -32,9 +32,7 @@ object Annotation {
     if (!AnnotationExpr.parse(builder)) {
       builder error ScalaBundle.message("wrong.annotation.expression")
       annotMarker.drop()
-    } else {
-      annotMarker.done(ScalaElementTypes.ANNOTATION)
-    }
+    } else { annotMarker.done(ScalaElementTypes.ANNOTATION) }
     if (countLinesAfterAnnotation && builder.twoNewlinesBeforeCurrentToken) {
       rollbackMarker.rollbackTo()
       return false

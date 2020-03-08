@@ -116,9 +116,7 @@ class VectorIndexerSuite
     val rdd = sqlContext.createDataFrame(
       sc.parallelize(Array.empty[Vector], 2).map(FeatureData))
     val vectorIndexer = getIndexer
-    intercept[IllegalArgumentException] {
-      vectorIndexer.fit(rdd)
-    }
+    intercept[IllegalArgumentException] { vectorIndexer.fit(rdd) }
   }
 
   test("Throws error when given RDDs with different size vectors") {

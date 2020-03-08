@@ -37,9 +37,7 @@ class ClientTest extends FunSuite {
         .codec(HttpCodec())
 
     try spec(builder)
-    finally {
-      Await.result(server.close())
-    }
+    finally { Await.result(server.close()) }
   }
 
   var counter = 0

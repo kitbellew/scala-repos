@@ -25,12 +25,8 @@ class AkkaSpecSpec extends WordSpec with Matchers {
         val a = system.actorOf(Props.empty)
         EventFilter.warning(
           start = "unhandled message",
-          occurrences = 1) intercept {
-          a ! 42
-        }
-      } finally {
-        TestKit.shutdownActorSystem(system)
-      }
+          occurrences = 1) intercept { a ! 42 }
+      } finally { TestKit.shutdownActorSystem(system) }
     }
 
     "terminate all actors" in {

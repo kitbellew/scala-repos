@@ -227,9 +227,7 @@ class TableColumn[S, T](
   def cellFactory_=(f: TableColumn[S, T] => TableCell[S, T]) {
     delegate.cellFactoryProperty.setValue(
       new jfxu.Callback[jfxsc.TableColumn[S, T], jfxsc.TableCell[S, T]] {
-        def call(v: jfxsc.TableColumn[S, T]): jfxsc.TableCell[S, T] = {
-          f(v)
-        }
+        def call(v: jfxsc.TableColumn[S, T]): jfxsc.TableCell[S, T] = { f(v) }
       })
   }
   def cellFactory_=(
@@ -273,9 +271,7 @@ class TableColumn[S, T](
         jfxsc.TableColumn.CellDataFeatures[S, T],
         jfxbv.ObservableValue[T]] {
         def call(v: jfxsc.TableColumn.CellDataFeatures[S, T])
-            : jfxbv.ObservableValue[T] = {
-          f(v).delegate
-        }
+            : jfxbv.ObservableValue[T] = { f(v).delegate }
       })
   }
 
@@ -317,9 +313,7 @@ class TableColumn[S, T](
     */
   def sortType: ObjectProperty[jfxsc.TableColumn.SortType] =
     delegate.sortTypeProperty
-  def sortType_=(v: TableColumn.SortType) {
-    sortType() = v
-  }
+  def sortType_=(v: TableColumn.SortType) { sortType() = v }
 
   /**
     * The TableView that this TableColumn belongs to.

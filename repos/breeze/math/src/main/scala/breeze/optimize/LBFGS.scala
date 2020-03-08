@@ -127,9 +127,7 @@ object LBFGS {
         val yy = prevGradStep dot prevGradStep
         if (sy < 0 || sy.isNaN) throw new NaNHistory
         sy / yy
-      } else {
-        1.0
-      }
+      } else { 1.0 }
 
       val dir = space.copy(grad)
       val as = new Array[Double](m)
@@ -138,9 +136,7 @@ object LBFGS {
       for (i <- 0 until historyLength) {
         rho(i) = (memStep(i) dot memGradDelta(i))
         as(i) = (memStep(i) dot dir) / rho(i)
-        if (as(i).isNaN) {
-          throw new NaNHistory
-        }
+        if (as(i).isNaN) { throw new NaNHistory }
         axpy(-as(i), memGradDelta(i), dir)
       }
 

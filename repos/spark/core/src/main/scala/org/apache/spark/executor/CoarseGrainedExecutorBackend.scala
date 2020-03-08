@@ -116,9 +116,7 @@ private[spark] class CoarseGrainedExecutorBackend(
       if (executor == null) {
         logError("Received KillTask command but executor was null")
         System.exit(1)
-      } else {
-        executor.killTask(taskId, interruptThread)
-      }
+      } else { executor.killTask(taskId, interruptThread) }
 
     case StopExecutor =>
       stopping.set(true)
@@ -140,9 +138,7 @@ private[spark] class CoarseGrainedExecutorBackend(
     } else if (driver.exists(_.address == remoteAddress)) {
       logError(s"Driver $remoteAddress disassociated! Shutting down.")
       System.exit(1)
-    } else {
-      logWarning(s"An unknown ($remoteAddress) driver disconnected.")
-    }
+    } else { logWarning(s"An unknown ($remoteAddress) driver disconnected.") }
   }
 
   override def statusUpdate(taskId: Long, state: TaskState, data: ByteBuffer) {
@@ -194,9 +190,7 @@ private[spark] object CoarseGrainedExecutorBackend extends Logging {
         // this is required for SSL in standalone mode
         if (SparkConf.isExecutorStartupConf(key)) {
           driverConf.setIfMissing(key, value)
-        } else {
-          driverConf.set(key, value)
-        }
+        } else { driverConf.set(key, value) }
       }
       if (driverConf.contains("spark.yarn.credentials.file")) {
         logInfo(
@@ -275,9 +269,7 @@ private[spark] object CoarseGrainedExecutorBackend extends Logging {
     }
 
     if (driverUrl == null || executorId == null || hostname == null || cores <= 0 ||
-        appId == null) {
-      printUsageAndExit()
-    }
+        appId == null) { printUsageAndExit() }
 
     run(driverUrl, executorId, hostname, cores, appId, workerUrl, userClassPath)
     System.exit(0)

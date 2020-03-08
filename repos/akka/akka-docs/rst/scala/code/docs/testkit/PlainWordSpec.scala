@@ -21,9 +21,7 @@ class MySpec()
     with BeforeAndAfterAll {
   //#implicit-sender
 
-  override def afterAll {
-    TestKit.shutdownActorSystem(system)
-  }
+  override def afterAll { TestKit.shutdownActorSystem(system) }
 
   "An Echo actor" must {
 

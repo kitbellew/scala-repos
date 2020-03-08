@@ -35,14 +35,10 @@ private[spark] class ByteBufferInputStream(
     if (buffer == null || buffer.remaining() == 0) {
       cleanUp()
       -1
-    } else {
-      buffer.get() & 0xFF
-    }
+    } else { buffer.get() & 0xFF }
   }
 
-  override def read(dest: Array[Byte]): Int = {
-    read(dest, 0, dest.length)
-  }
+  override def read(dest: Array[Byte]): Int = { read(dest, 0, dest.length) }
 
   override def read(dest: Array[Byte], offset: Int, length: Int): Int = {
     if (buffer == null || buffer.remaining() == 0) {
@@ -59,13 +55,9 @@ private[spark] class ByteBufferInputStream(
     if (buffer != null) {
       val amountToSkip = math.min(bytes, buffer.remaining).toInt
       buffer.position(buffer.position + amountToSkip)
-      if (buffer.remaining() == 0) {
-        cleanUp()
-      }
+      if (buffer.remaining() == 0) { cleanUp() }
       amountToSkip
-    } else {
-      0L
-    }
+    } else { 0L }
   }
 
   /**
@@ -73,9 +65,7 @@ private[spark] class ByteBufferInputStream(
     */
   private def cleanUp() {
     if (buffer != null) {
-      if (dispose) {
-        StorageUtils.dispose(buffer)
-      }
+      if (dispose) { StorageUtils.dispose(buffer) }
       buffer = null
     }
   }

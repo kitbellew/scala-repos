@@ -39,9 +39,7 @@ class SynchronizedPriorityQueue[A](implicit ord: Ordering[A])
     *  @param  elem        the element to insert
     */
   override def +=(elem: A): this.type = {
-    synchronized {
-      super.+=(elem)
-    }
+    synchronized { super.+=(elem) }
     this
   }
 
@@ -50,9 +48,7 @@ class SynchronizedPriorityQueue[A](implicit ord: Ordering[A])
     *  @param  xs        a traversable object
     */
   override def ++=(xs: TraversableOnce[A]): this.type = {
-    synchronized {
-      super.++=(xs)
-    }
+    synchronized { super.++=(xs) }
     this
   }
 

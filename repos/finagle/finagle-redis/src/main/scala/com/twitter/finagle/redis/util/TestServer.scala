@@ -37,9 +37,7 @@ object RedisCluster { self =>
       instanceStack.push(instance)
     }
   }
-  def stop() {
-    instanceStack.pop().stop()
-  }
+  def stop() { instanceStack.pop().stop() }
   def stopAll() {
     instanceStack.foreach { i => i.stop() }
     instanceStack.clear

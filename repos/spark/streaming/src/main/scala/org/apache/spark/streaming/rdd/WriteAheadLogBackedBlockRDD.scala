@@ -179,9 +179,7 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
 
     if (partition.isBlockIdValid) {
       getBlockFromBlockManager().getOrElse { getBlockFromWriteAheadLog() }
-    } else {
-      getBlockFromWriteAheadLog()
-    }
+    } else { getBlockFromWriteAheadLog() }
   }
 
   /**
@@ -193,9 +191,7 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
     val partition = split.asInstanceOf[WriteAheadLogBackedBlockRDDPartition]
     val blockLocations = if (partition.isBlockIdValid) {
       getBlockIdLocations().get(partition.blockId)
-    } else {
-      None
-    }
+    } else { None }
 
     blockLocations.getOrElse {
       partition.walRecordHandle match {

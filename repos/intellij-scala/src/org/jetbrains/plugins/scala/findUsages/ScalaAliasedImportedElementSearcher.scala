@@ -69,12 +69,8 @@ class ScalaAliasedImportedElementSearcher
       val alias: String = getAlias(element)
       if (alias == null) return true
       val reference: PsiReference = element.getReference
-      if (reference == null) {
-        return true
-      }
-      if (!reference.isReferenceTo(myTarget)) {
-        return true
-      }
+      if (reference == null) { return true }
+      if (!reference.isReferenceTo(myTarget)) { return true }
       val collector: SearchRequestCollector =
         new SearchRequestCollector(mySession)
       val fileScope: SearchScope =

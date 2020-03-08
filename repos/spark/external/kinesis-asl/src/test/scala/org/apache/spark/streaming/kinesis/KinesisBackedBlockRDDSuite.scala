@@ -89,13 +89,8 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
   }
 
   override def afterAll(): Unit = {
-    try {
-      if (testUtils != null) {
-        testUtils.deleteStream()
-      }
-    } finally {
-      super.afterAll()
-    }
+    try { if (testUtils != null) { testUtils.deleteStream() } }
+    finally { super.afterAll() }
   }
 
   testIfEnabled("Basic reading from Kinesis") {
@@ -302,9 +297,7 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
         blockIds.toArray,
         ranges,
         isBlockIdValid = Array.fill(blockIds.length)(false))
-      intercept[SparkException] {
-        rdd2.collect()
-      }
+      intercept[SparkException] { rdd2.collect() }
     }
 
     // Verify that the RDD is not invalid after the blocks are removed and can still read data

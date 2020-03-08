@@ -391,9 +391,8 @@ object AdminUtils extends Logging {
   }
 
   def deleteTopic(zkUtils: ZkUtils, topic: String) {
-    try {
-      zkUtils.createPersistentPath(getDeleteTopicPath(topic))
-    } catch {
+    try { zkUtils.createPersistentPath(getDeleteTopicPath(topic)) }
+    catch {
       case e1: ZkNodeExistsException =>
         throw new TopicAlreadyMarkedForDeletionException(
           "topic %s is already marked for deletion".format(topic))
@@ -434,9 +433,8 @@ object AdminUtils extends Logging {
       group: String,
       topic: String) = {
     val topics = zkUtils.getTopicsByConsumerGroup(group)
-    if (topics == Seq(topic)) {
-      deleteConsumerGroupInZK(zkUtils, group)
-    } else if (!isConsumerGroupActive(zkUtils, group)) {
+    if (topics == Seq(topic)) { deleteConsumerGroupInZK(zkUtils, group) }
+    else if (!isConsumerGroupActive(zkUtils, group)) {
       val dir = new ZKGroupTopicDirs(group, topic)
       zkUtils.deletePathRecursive(dir.consumerOwnerDir)
       zkUtils.deletePathRecursive(dir.consumerOffsetDir)

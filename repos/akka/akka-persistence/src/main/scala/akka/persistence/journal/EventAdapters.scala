@@ -33,9 +33,7 @@ class EventAdapters(
   def get(clazz: Class[_]): EventAdapter = {
     map.get(clazz) match {
       case null ⇒ // bindings are ordered from most specific to least specific
-        val value = bindings filter {
-          _._1 isAssignableFrom clazz
-        } match {
+        val value = bindings filter { _._1 isAssignableFrom clazz } match {
           case (_, bestMatch) +: _ ⇒ bestMatch
           case _ ⇒ IdentityEventAdapter
         }

@@ -116,7 +116,9 @@ object NatWith {
   *
   * @author Alexandre Archambault
   */
-trait Widen[T] extends DepFn1[T] { type Out >: T }
+trait Widen[T] extends DepFn1[T] {
+  type Out >: T
+}
 
 object Widen {
   def apply[T](implicit widen: Widen[T]): Aux[T, widen.Out] = widen

@@ -45,9 +45,8 @@ object AccessKey extends Logging {
 
   def list(ca: ConsoleArgs): Int = {
     val keys =
-      if (ca.app.name == "") {
-        storage.Storage.getMetaDataAccessKeys.getAll
-      } else {
+      if (ca.app.name == "") { storage.Storage.getMetaDataAccessKeys.getAll }
+      else {
         val apps = storage.Storage.getMetaDataApps
         apps.getByName(ca.app.name) map { app =>
           storage.Storage.getMetaDataAccessKeys.getByAppid(app.id)

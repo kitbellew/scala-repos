@@ -104,8 +104,6 @@ class ByteArrayReader(content: Array[Byte]) {
 
   /** skip next 'n' bytes
     */
-  def skip(n: Int) {
-    bp += n
-  }
+  def skip(n: Int) { bp += n }
 
 }

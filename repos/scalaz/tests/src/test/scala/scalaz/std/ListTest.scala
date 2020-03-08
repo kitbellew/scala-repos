@@ -62,9 +62,7 @@ object ListTest extends SpecLite {
   "groupByWhenM[Id] ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" ! forAll {
     (a: List[Int], p: (Int, Int) => Boolean) =>
       val pairs = list.adjacentPairs(a.groupWhen(p))
-      pairs.forall {
-        case (l, r) => !p(l.last, r.head)
-      }
+      pairs.forall { case (l, r) => !p(l.last, r.head) }
   }
 
   "groupBy1" ! forAll { (a: List[String]) =>
@@ -101,9 +99,7 @@ object ListTest extends SpecLite {
   "groupByWhen ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" ! forAll {
     (a: List[Int], p: (Int, Int) => Boolean) =>
       val pairs = list.adjacentPairs(a.groupWhen(p))
-      pairs.forall {
-        case (l, r) => !p(l.last, r.head)
-      }
+      pairs.forall { case (l, r) => !p(l.last, r.head) }
   }
 
   "lookups in assoc lists sometime return a value" ! forAll {

@@ -616,9 +616,7 @@ private[transport] class ThrottledAssociation(
           scheduleDequeue(
             inboundThrottleMode.timeToAvailable(System.nanoTime(), tokens))
         }
-      } else {
-        throttledMessages = throttledMessages.enqueue(payload)
-      }
+      } else { throttledMessages = throttledMessages.enqueue(payload) }
     }
   }
 
@@ -666,9 +664,7 @@ private[transport] final case class ThrottlerHandle(
 
   }
 
-  override def disassociate(): Unit = {
-    throttlerActor ! PoisonPill
-  }
+  override def disassociate(): Unit = { throttlerActor ! PoisonPill }
 
   def disassociateWithFailure(reason: DisassociateInfo): Unit = {
     throttlerActor ! ThrottledAssociation.FailWith(reason)

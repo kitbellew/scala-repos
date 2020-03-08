@@ -46,9 +46,8 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
     */
   protected def safeParse[T](sql: String, ast: ASTNode)(
       toResult: ASTNode => T): T = {
-    try {
-      toResult(ast)
-    } catch {
+    try { toResult(ast) }
+    catch {
       case e: MatchError        => throw e
       case e: AnalysisException => throw e
       case e: Exception =>
@@ -426,11 +425,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
       case Token("TOK_TABREF", clauses) =>
         // If the last clause is not a token then it's the alias of the table.
         val (nonAliasClauses, aliasClause) =
-          if (clauses.last.text.startsWith("TOK")) {
-            (clauses, None)
-          } else {
-            (clauses.dropRight(1), Some(clauses.last))
-          }
+          if (clauses.last.text.startsWith("TOK")) { (clauses, None) }
+          else { (clauses.dropRight(1), Some(clauses.last)) }
 
         val (Some(tableNameParts) ::
           splitSampleClause ::
@@ -982,29 +978,20 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                 noParseRule("Partition & Ordering", partitionAndOrdering)
             }
           }
-          .getOrElse {
-            (Nil, Nil)
-          }
+          .getOrElse { (Nil, Nil) }
 
         // Handle Window Frame
         val windowFrame =
-          if (rowFrame.isEmpty && rangeFrame.isEmpty) {
-            UnspecifiedFrame
-          } else {
+          if (rowFrame.isEmpty && rangeFrame.isEmpty) { UnspecifiedFrame }
+          else {
             val frameType = rowFrame.map(_ => RowFrame).getOrElse(RangeFrame)
             def nodeToBoundary(node: ASTNode): FrameBoundary = node match {
               case Token(PRECEDING(), Token(count, Nil) :: Nil) =>
-                if (count.toLowerCase() == "unbounded") {
-                  UnboundedPreceding
-                } else {
-                  ValuePreceding(count.toInt)
-                }
+                if (count.toLowerCase() == "unbounded") { UnboundedPreceding }
+                else { ValuePreceding(count.toInt) }
               case Token(FOLLOWING(), Token(count, Nil) :: Nil) =>
-                if (count.toLowerCase() == "unbounded") {
-                  UnboundedFollowing
-                } else {
-                  ValueFollowing(count.toInt)
-                }
+                if (count.toLowerCase() == "unbounded") { UnboundedFollowing }
+                else { ValueFollowing(count.toInt) }
               case Token(CURRENT(), Nil) => CurrentRow
               case _ =>
                 noParseRule("Window Frame Boundary", node)

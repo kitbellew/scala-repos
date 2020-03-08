@@ -56,9 +56,7 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
 
     "return a partial response for a ranged request with a single suffix range" in {
       Get() ~> addHeader(Range(ByteRange.suffix(1))) ~> completeWithRangedBytes(
-        10) ~> check {
-        responseAs[Array[Byte]] shouldEqual Array[Byte](9)
-      }
+        10) ~> check { responseAs[Array[Byte]] shouldEqual Array[Byte](9) }
     }
 
     "return a partial response for a ranged request with a overlapping suffix range" in {
@@ -70,9 +68,7 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
 
     "be transparent to non-GET requests" in {
       Post() ~> addHeader(Range(ByteRange(1, 2))) ~> completeWithRangedBytes(
-        5) ~> check {
-        responseAs[Array[Byte]] shouldEqual bytes(5)
-      }
+        5) ~> check { responseAs[Array[Byte]] shouldEqual bytes(5) }
     }
 
     "be transparent to non-200 responses" in {
@@ -167,9 +163,7 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
     "reject a request with too many requested ranges" in {
       val ranges = (1 to 20).map(a ⇒ ByteRange.fromOffset(a))
       Get() ~> addHeader(Range(ranges)) ~> completeWithRangedBytes(
-        100) ~> check {
-        rejection shouldEqual TooManyRangesRejection(10)
-      }
+        100) ~> check { rejection shouldEqual TooManyRangesRejection(10) }
     }
   }
 }

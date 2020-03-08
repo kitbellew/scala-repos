@@ -103,9 +103,8 @@ class MonitorFilterTest
     when(
       service(any[String])) thenThrow outer // make server service throw the mock exception
 
-    try {
-      val f = Await.result(client("123"))
-    } catch {
+    try { val f = Await.result(client("123")) }
+    catch {
       case e: ChannelException => // deliberately empty. Server exception comes back as ChannelClosedException
     }
 

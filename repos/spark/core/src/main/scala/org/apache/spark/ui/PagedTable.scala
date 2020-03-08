@@ -155,9 +155,8 @@ private[ui] trait PagedTable[T] {
       page: Int,
       pageSize: Int,
       totalPages: Int): Seq[Node] = {
-    if (totalPages == 1) {
-      Nil
-    } else {
+    if (totalPages == 1) { Nil }
+    else {
       // A group includes all page numbers will be shown in the page navigation.
       // The size of group is 10 means there are 10 page numbers will be shown.
       // The first group is 1 to 10, the second is 2 to 20, and so on
@@ -171,9 +170,7 @@ private[ui] trait PagedTable[T] {
         if (p == page) {
           // The current page should be disabled so that it cannot be clicked.
           <li class="disabled"><a href="#">{p}</a></li>
-        } else {
-          <li><a href={Unparsed(pageLink(p))}>{p}</a></li>
-        }
+        } else { <li><a href={Unparsed(pageLink(p))}>{p}</a></li> }
       }
 
       val hiddenFormFields = {
@@ -193,9 +190,7 @@ private[ui] trait PagedTable[T] {
               case (k, v) =>
                 <input type="hidden" name={k} value={v} />
             }
-        } else {
-          Seq.empty
-        }
+        } else { Seq.empty }
       }
 
       <div>

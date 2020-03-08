@@ -107,9 +107,7 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
            |     '${if (status != JobExecutionStatus.RUNNING) {
                s"""<br>Completed: ${UIUtils.formatDate(
                  new Date(completionTime))}"""
-             } else {
-               ""
-             }}">' +
+             } else { "" }}">' +
            |    '${escapedDesc} (Job ${jobId})</div>'
            |}
          """.stripMargin
@@ -151,9 +149,7 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
                  new Date(event.finishTime.get))}' +
                |    '${if (event.finishReason.isDefined) {
                  s"""<br>Reason: ${event.finishReason.get}"""
-               } else {
-                 ""
-               }}"' +
+               } else { "" }}"' +
                |    'data-html="true">Executor ${executorId} removed</div>'
                |}
              """.stripMargin

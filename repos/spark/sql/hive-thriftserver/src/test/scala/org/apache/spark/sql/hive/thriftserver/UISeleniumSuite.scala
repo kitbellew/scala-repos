@@ -48,18 +48,14 @@ class UISeleniumSuite
   }
 
   override def afterAll(): Unit = {
-    if (webDriver != null) {
-      webDriver.quit()
-    }
+    if (webDriver != null) { webDriver.quit() }
     super.afterAll()
   }
 
   override protected def serverStartCommand(port: Int) = {
     val portConf = if (mode == ServerMode.binary) {
       ConfVars.HIVE_SERVER2_THRIFT_PORT
-    } else {
-      ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT
-    }
+    } else { ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT }
 
     s"""$startScript
         |  --master local

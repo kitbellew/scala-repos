@@ -458,16 +458,12 @@ trait MethodConstruction { self: QuasiquoteProperties =>
 
   property("unquote improper tree into annot") = test {
     val t = tq"Foo[Baz]"
-    assertThrows[IllegalArgumentException] {
-      q"@$t def foo"
-    }
+    assertThrows[IllegalArgumentException] { q"@$t def foo" }
   }
 
   property("can't unquote annotations with arguments specified twice") = test {
     val a = q"new a(x)"
-    assertThrows[IllegalArgumentException] {
-      q"@$a(y) def foo"
-    }
+    assertThrows[IllegalArgumentException] { q"@$a(y) def foo" }
   }
 
   property("unquote annotation with targs") = test {

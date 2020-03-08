@@ -38,9 +38,7 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
 
   val indices = client.admin.indices
   val indexExistResponse = indices.prepareExists(index).get
-  if (!indexExistResponse.isExists) {
-    indices.prepareCreate(index).get
-  }
+  if (!indexExistResponse.isExists) { indices.prepareCreate(index).get }
   val typeExistResponse = indices.prepareTypesExists(index).setTypes(estype).get
   if (!typeExistResponse.isExists) {
     val json =
@@ -111,9 +109,8 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
   }
 
   def delete(key: String): Unit = {
-    try {
-      client.prepareDelete(index, estype, key).get
-    } catch {
+    try { client.prepareDelete(index, estype, key).get }
+    catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
     }

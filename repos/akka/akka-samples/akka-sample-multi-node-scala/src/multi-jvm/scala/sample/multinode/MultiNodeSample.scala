@@ -21,9 +21,7 @@ class MultiNodeSampleSpecMultiJvmNode2 extends MultiNodeSample
 
 object MultiNodeSample {
   class Ponger extends Actor {
-    def receive = {
-      case "ping" => sender() ! "pong"
-    }
+    def receive = { case "ping" => sender() ! "pong" }
   }
 }
 
@@ -39,9 +37,7 @@ class MultiNodeSample
 
   "A MultiNodeSample" must {
 
-    "wait for all nodes to enter a barrier" in {
-      enterBarrier("startup")
-    }
+    "wait for all nodes to enter a barrier" in { enterBarrier("startup") }
 
     "send to and receive from a remote node" in {
       runOn(node1) {

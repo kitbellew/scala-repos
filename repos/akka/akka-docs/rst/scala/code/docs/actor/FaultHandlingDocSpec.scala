@@ -34,9 +34,7 @@ object FaultHandlingDocSpec {
       }
     //#strategy
 
-    def receive = {
-      case p: Props => sender() ! context.actorOf(p)
-    }
+    def receive = { case p: Props => sender() ! context.actorOf(p) }
   }
   //#supervisor
 
@@ -56,9 +54,7 @@ object FaultHandlingDocSpec {
       }
     //#strategy2
 
-    def receive = {
-      case p: Props => sender() ! context.actorOf(p)
-    }
+    def receive = { case p: Props => sender() ! context.actorOf(p) }
     // override default to kill all children during restart
     override def preRestart(cause: Throwable, msg: Option[Any]) {}
   }
@@ -119,9 +115,7 @@ class FaultHandlingDocSpec(_system: ActorSystem)
       """)
       ))
 
-  override def afterAll {
-    TestKit.shutdownActorSystem(system)
-  }
+  override def afterAll { TestKit.shutdownActorSystem(system) }
 
   "A supervisor" must "apply the chosen strategy for its child" in {
     //#testkit

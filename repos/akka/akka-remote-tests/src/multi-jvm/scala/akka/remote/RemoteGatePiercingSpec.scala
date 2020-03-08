@@ -47,9 +47,7 @@ object RemoteGatePiercingSpec extends MultiNodeConfig {
   testTransport(on = true)
 
   class Subject extends Actor {
-    def receive = {
-      case "shutdown" ⇒ context.system.terminate()
-    }
+    def receive = { case "shutdown" ⇒ context.system.terminate() }
   }
 
 }
@@ -105,11 +103,7 @@ abstract class RemoteGatePiercingSpec
         enterBarrier("gated")
 
         // Pierce the gate
-        within(30.seconds) {
-          awaitAssert {
-            identify(first, "subject")
-          }
-        }
+        within(30.seconds) { awaitAssert { identify(first, "subject") } }
 
         enterBarrier("gate-pierced")
 

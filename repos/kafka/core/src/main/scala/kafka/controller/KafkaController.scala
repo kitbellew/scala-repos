@@ -198,9 +198,8 @@ object KafkaController extends Logging {
           "Failed to parse the controller info as json. "
             + "Probably this controller is still using the old format [%s] to store the broker id in zookeeper"
               .format(controllerInfoString))
-        try {
-          return controllerInfoString.toInt
-        } catch {
+        try { return controllerInfoString.toInt }
+        catch {
           case t: Throwable =>
             throw new KafkaException(
               "Failed to parse the controller info: " + controllerInfoString + ". This is neither the new or the old format.",
@@ -934,9 +933,7 @@ class KafkaController(
     * shuts down the controller channel manager, if one exists (i.e. if it was the current controller)
     */
   def shutdown() = {
-    inLock(controllerContext.controllerLock) {
-      isRunning = false
-    }
+    inLock(controllerContext.controllerLock) { isRunning = false }
     onControllerResignation()
   }
 
@@ -1987,9 +1984,7 @@ class IsrChangeNotificationListener(controller: KafkaController)
             "Invalid topic and partition JSON: " + jsonOpt.get + " in ZK: " + changeZnode)
           Set.empty
       }
-    } else {
-      Set.empty
-    }
+    } else { Set.empty }
   }
 }
 

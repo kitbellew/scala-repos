@@ -66,9 +66,7 @@ class ChooseTypeTextExpression(
     lookupItems: Seq[ScTypeText],
     default: ScTypeText)
     extends ChooseValueExpression[ScTypeText](lookupItems, default) {
-  def this(lookupItems: Seq[ScTypeText]) {
-    this(lookupItems, lookupItems.head)
-  }
+  def this(lookupItems: Seq[ScTypeText]) { this(lookupItems, lookupItems.head) }
 
   override def lookupString(elem: ScTypeText): String = {
     val useCanonicalText: Boolean =

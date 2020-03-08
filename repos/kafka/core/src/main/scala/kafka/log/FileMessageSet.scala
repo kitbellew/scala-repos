@@ -324,9 +324,7 @@ class FileMessageSet private[kafka] (
   /**
     * Commit all written data to the physical disk
     */
-  def flush() = {
-    channel.force(true)
-  }
+  def flush() = { channel.force(true) }
 
   /**
     * Close this message set
@@ -340,9 +338,7 @@ class FileMessageSet private[kafka] (
   /**
     * Trim file when close or roll to next file
     */
-  def trim() {
-    truncateTo(sizeInBytes())
-  }
+  def trim() { truncateTo(sizeInBytes()) }
 
   /**
     * Delete this message set from the filesystem

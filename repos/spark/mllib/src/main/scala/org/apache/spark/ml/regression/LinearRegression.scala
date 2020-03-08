@@ -179,9 +179,7 @@ class LinearRegression @Since("1.3.0") (
       .select(col($(featuresCol)))
       .limit(1)
       .rdd
-      .map {
-        case Row(features: Vector) => features.size
-      }
+      .map { case Row(features: Vector) => features.size }
       .first()
     val w = if ($(weightCol).isEmpty) lit(1.0) else col($(weightCol))
 
@@ -327,9 +325,8 @@ class LinearRegression @Since("1.3.0") (
     } else {
       val standardizationParam = $(standardization)
       def effectiveL1RegFun = (index: Int) => {
-        if (standardizationParam) {
-          effectiveL1RegParam
-        } else {
+        if (standardizationParam) { effectiveL1RegParam }
+        else {
           // If `standardization` is false, we still standardize the data
           // to improve the rate of convergence; as a result, we have to
           // perform this reverse standardization by penalizing each component
@@ -396,9 +393,7 @@ class LinearRegression @Since("1.3.0") (
      */
     val intercept = if ($(fitIntercept)) {
       yMean - dot(coefficients, Vectors.dense(featuresMean))
-    } else {
-      0.0
-    }
+    } else { 0.0 }
 
     if (handlePersistence) instances.unpersist()
 
@@ -707,9 +702,7 @@ class LinearRegressionSummary private[regression] (
   /** Degrees of freedom */
   private val degreesOfFreedom: Long = if (model.getFitIntercept) {
     numInstances - model.coefficients.size - 1
-  } else {
-    numInstances - model.coefficients.size
-  }
+  } else { numInstances - model.coefficients.size }
 
   /**
     * The weighted residuals, the usual residuals rescaled by
@@ -771,9 +764,7 @@ class LinearRegressionSummary private[regression] (
     } else {
       val estimate = if (model.getFitIntercept) {
         Array.concat(model.coefficients.toArray, Array(model.intercept))
-      } else {
-        model.coefficients.toArray
-      }
+      } else { model.coefficients.toArray }
       estimate.zip(coefficientStandardErrors).map { x => x._1 / x._2 }
     }
   }
@@ -912,9 +903,7 @@ private class LeastSquaresAggregator(
       if (featuresStd(i) != 0.0) {
         coefficientsArray(i) /= featuresStd(i)
         sum += coefficientsArray(i) * featuresMean(i)
-      } else {
-        coefficientsArray(i) = 0.0
-      }
+      } else { coefficientsArray(i) = 0.0 }
       i += 1
     }
     val offset = if (fitIntercept) labelMean / labelStd - sum else 0.0
@@ -1052,9 +1041,8 @@ private class LeastSquaresCostFun(
 
     val totalGradientArray = leastSquaresAggregator.gradient.toArray
 
-    val regVal = if (effectiveL2regParam == 0.0) {
-      0.0
-    } else {
+    val regVal = if (effectiveL2regParam == 0.0) { 0.0 }
+    else {
       var sum = 0.0
       coeffs.foreachActive { (index, value) =>
         // The following code will compute the loss of the regularization; also
@@ -1073,9 +1061,7 @@ private class LeastSquaresCostFun(
               val temp = value / (featuresStd(index) * featuresStd(index))
               totalGradientArray(index) += effectiveL2regParam * temp
               value * temp
-            } else {
-              0.0
-            }
+            } else { 0.0 }
           }
         }
       }

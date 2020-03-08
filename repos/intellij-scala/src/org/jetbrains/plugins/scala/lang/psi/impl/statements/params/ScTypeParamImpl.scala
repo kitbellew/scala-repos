@@ -74,9 +74,7 @@ class ScTypeParamImpl private (
 
   def isCovariant: Boolean = {
     val stub = getStub
-    if (stub != null) {
-      return stub.asInstanceOf[ScTypeParamStub].isCovariant
-    }
+    if (stub != null) { return stub.asInstanceOf[ScTypeParamStub].isCovariant }
     findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
       case null => false
       case x    => x.getText == "+"
@@ -114,9 +112,8 @@ class ScTypeParamImpl private (
 
   override def viewTypeElement: Seq[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
-      stub.asInstanceOf[ScTypeParamStub].getViewTypeElement
-    } else super.viewTypeElement
+    if (stub != null) { stub.asInstanceOf[ScTypeParamStub].getViewTypeElement }
+    else super.viewTypeElement
   }
 
   override def contextBoundTypeElement: Seq[ScTypeElement] = {
@@ -128,21 +125,17 @@ class ScTypeParamImpl private (
 
   override def lowerTypeElement: Option[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
-      stub.asInstanceOf[ScTypeParamStub].getLowerTypeElement
-    } else super.lowerTypeElement
+    if (stub != null) { stub.asInstanceOf[ScTypeParamStub].getLowerTypeElement }
+    else super.lowerTypeElement
   }
 
   override def upperTypeElement: Option[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
-      stub.asInstanceOf[ScTypeParamStub].getUpperTypeElement
-    } else super.upperTypeElement
+    if (stub != null) { stub.asInstanceOf[ScTypeParamStub].getUpperTypeElement }
+    else super.upperTypeElement
   }
 
-  override def getIcon(flags: Int) = {
-    Icons.TYPE_ALIAS
-  }
+  override def getIcon(flags: Int) = { Icons.TYPE_ALIAS }
 
   override def getSuperTypes: Array[PsiClassType] = {
     // For Java
@@ -154,9 +147,7 @@ class ScTypeParamImpl private (
               ScType.toPsi(des, getProject, getResolveScope)
             case _ => ScType.toPsi(t, getProject, getResolveScope)
           }
-        } else {
-          ScType.toPsi(t, getProject, getResolveScope)
-        }
+        } else { ScType.toPsi(t, getProject, getResolveScope) }
         psiType match {
           case x: PsiClassType => Array(x)
           case _               => Array() // TODO

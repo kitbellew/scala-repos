@@ -92,9 +92,7 @@ class IndexedRowMatrix @Since("1.0.0") (
 
   /** Converts to BlockMatrix. Creates blocks of [[SparseMatrix]] with size 1024 x 1024. */
   @Since("1.3.0")
-  def toBlockMatrix(): BlockMatrix = {
-    toBlockMatrix(1024, 1024)
-  }
+  def toBlockMatrix(): BlockMatrix = { toBlockMatrix(1024, 1024) }
 
   /**
     * Converts to BlockMatrix. Creates blocks of [[SparseMatrix]].
@@ -169,9 +167,7 @@ class IndexedRowMatrix @Since("1.0.0") (
           IndexedRow(i, v)
       }
       new IndexedRowMatrix(indexedRows, nRows, svd.U.numCols().toInt)
-    } else {
-      null
-    }
+    } else { null }
     SingularValueDecomposition(U, svd.s, svd.V)
   }
 
@@ -195,9 +191,7 @@ class IndexedRowMatrix @Since("1.0.0") (
     * Computes the Gramian matrix `A^T A`.
     */
   @Since("1.0.0")
-  def computeGramianMatrix(): Matrix = {
-    toRowMatrix().computeGramianMatrix()
-  }
+  def computeGramianMatrix(): Matrix = { toRowMatrix().computeGramianMatrix() }
 
   private[mllib] override def toBreeze(): BDM[Double] = {
     val m = numRows().toInt

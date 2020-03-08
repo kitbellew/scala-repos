@@ -180,14 +180,12 @@ object RemoveInternalClusterShardingData {
       }: Receive).orElse(handleFailure)
 
     def waitDeleteSnapshotsSuccess: Receive =
-      ({
-        case DeleteSnapshotsSuccess(_) ⇒ done()
-      }: Receive).orElse(handleFailure)
+      ({ case DeleteSnapshotsSuccess(_) ⇒ done() }: Receive)
+        .orElse(handleFailure)
 
     def waitDeleteMessagesSuccess: Receive =
-      ({
-        case DeleteMessagesSuccess(_) ⇒ done()
-      }: Receive).orElse(handleFailure)
+      ({ case DeleteMessagesSuccess(_) ⇒ done() }: Receive)
+        .orElse(handleFailure)
 
     def handleFailure: Receive = {
       case DeleteMessagesFailure(cause, _) ⇒ failure(cause)
@@ -232,9 +230,7 @@ class RemoveInternalClusterShardingData(
   def persistenceId2dot3(typeName: String): String =
     s"/user/sharding/${typeName}Coordinator/singleton/coordinator"
 
-  override def preStart(): Unit = {
-    removeNext()
-  }
+  override def preStart(): Unit = { removeNext() }
 
   def removeNext(): Unit = {
     currentPid = remainingPids.head

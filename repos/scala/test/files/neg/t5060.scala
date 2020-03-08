@@ -1,10 +1,14 @@
 class A[+T] {
   val foo0 = {
-    class AsVariantAsIWantToBe { def contains(x: T) = () }
+    class AsVariantAsIWantToBe {
+      def contains(x: T) = ()
+    }
     new AsVariantAsIWantToBe
   }
   def foo1 = {
-    class VarianceIsTheSpiceOfTypes { def contains(x: T) = () }
+    class VarianceIsTheSpiceOfTypes {
+      def contains(x: T) = ()
+    }
     new VarianceIsTheSpiceOfTypes
   }
 }

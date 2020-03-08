@@ -150,9 +150,7 @@ final class PrinterJob(override val delegate: jfxp.PrinterJob)
     * Property representing the Printer for this job.
     */
   def printer: ObjectProperty[jfxp.Printer] = delegate.printerProperty
-  def printer_=(v: Printer) {
-    printer() = v
-  }
+  def printer_=(v: Printer) { printer() = v }
 
   /**
     * Cancel the underlying print job at the earliest opportunity.

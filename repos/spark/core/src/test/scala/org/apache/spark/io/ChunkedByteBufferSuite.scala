@@ -75,9 +75,7 @@ class ChunkedByteBufferSuite extends SparkFunSuite {
     val chunkedByteBuffer =
       new ChunkedByteBuffer(Array.fill(1024)(fourMegabyteBuffer))
     assert(chunkedByteBuffer.size === (1024L * 1024L * 1024L * 4L))
-    intercept[UnsupportedOperationException] {
-      chunkedByteBuffer.toArray
-    }
+    intercept[UnsupportedOperationException] { chunkedByteBuffer.toArray }
   }
 
   test("toInputStream()") {

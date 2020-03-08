@@ -40,9 +40,7 @@ object Namer {
 
   private[finagle] val namerOfKind: (String => Namer) = Memoize { kind =>
     try Class.forName(kind).newInstance().asInstanceOf[Namer]
-    catch {
-      case NonFatal(exc) => FailingNamer(exc)
-    }
+    catch { case NonFatal(exc) => FailingNamer(exc) }
   }
 
   // Key to encode name tree weights in Addr metadata
@@ -191,18 +189,12 @@ object Namer {
           // - if all activities are pending, the union is pending.
           // - if no subtree is Ok, and there are failures, retain the first failure.
 
-          val oks = seq.collect {
-            case Activity.Ok(t) => t
-          }
+          val oks = seq.collect { case Activity.Ok(t) => t }
           if (oks.isEmpty) {
             seq
-              .collectFirst {
-                case f @ Activity.Failed(_) => f
-              }
+              .collectFirst { case f @ Activity.Failed(_) => f }
               .getOrElse(Activity.Pending)
-          } else {
-            Activity.Ok(Union.fromSeq(oks).simplified)
-          }
+          } else { Activity.Ok(Union.fromSeq(oks).simplified) }
       }
     new Activity(stateVar)
   }

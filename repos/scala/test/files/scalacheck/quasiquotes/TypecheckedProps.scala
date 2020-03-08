@@ -153,9 +153,7 @@ trait TypecheckedTypes { self: QuasiquoteProperties =>
     val tq"C" = tpt
   }
 
-  property("type select") = test {
-    val tq"scala.Int" = typecheckTyp(tq"Int")
-  }
+  property("type select") = test { val tq"scala.Int" = typecheckTyp(tq"Int") }
 
   property("this type select") = test {
     val q"class $_ { $_; type $_ = $tpt }" =

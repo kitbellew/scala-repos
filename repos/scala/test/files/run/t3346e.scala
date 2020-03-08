@@ -9,9 +9,7 @@ class QuickSort[Coll](a: Coll) {
   def quickSort[T](implicit
       ev0: Coll => SeqLike[T, Coll],
       cbf: CanBuildFrom[Coll, T, Coll],
-      n: Ordering[T]): Coll = {
-    quickSortAnything(ev0, cbf, n)
-  }
+      n: Ordering[T]): Coll = { quickSortAnything(ev0, cbf, n) }
 
   //we can even sort a Set, if we really want to
   def quickSortAnything[T](implicit
@@ -19,9 +17,8 @@ class QuickSort[Coll](a: Coll) {
       cbf: CanBuildFrom[Coll, T, Coll],
       n: Ordering[T]): Coll = {
     import n._
-    if (a.size < 2) {
-      a
-    } else {
+    if (a.size < 2) { a }
+    else {
       // We pick the first value for the pivot.
       val pivot = a.head
       val (lower, tmp) = a.partition(_ < pivot)
@@ -39,9 +36,7 @@ class QuickSort[Coll](a: Coll) {
 class FilterMap[Repr](a: Repr) {
   def filterMap[A, B, That](f: A => Option[B])(implicit
       ev0: Repr => TraversableLike[A, Repr],
-      cbf: CanBuildFrom[Repr, B, That]): That = {
-    a.flatMap(e => f(e).toSeq)
-  }
+      cbf: CanBuildFrom[Repr, B, That]): That = { a.flatMap(e => f(e).toSeq) }
 }
 
 class FilterMapFixed[A, Repr <% TraversableLike[A, Repr]](a: Repr) {

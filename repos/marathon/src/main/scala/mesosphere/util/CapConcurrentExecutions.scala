@@ -146,9 +146,7 @@ private[util] class RestrictParallelExecutionsActor(
   }
 
   private[this] def startNextIfPossible(): Unit = {
-    if (active < maxParallel) {
-      startNext()
-    }
+    if (active < maxParallel) { startNext() }
 
     metrics.processing.setValue(active)
     metrics.queued.setValue(queue.size)

@@ -13,9 +13,8 @@ final class Scheduler(
   def throttle[A](delay: FiniteDuration)(batch: Seq[A])(op: A => Unit) {
     batch.zipWithIndex foreach {
       case (a, i) =>
-        try {
-          scheduler.scheduleOnce((1 + i) * delay) { op(a) }
-        } catch {
+        try { scheduler.scheduleOnce((1 + i) * delay) { op(a) } }
+        catch {
           case e: java.lang.IllegalStateException =>
           // the actor system is being stopped, can't schedule
         }
@@ -27,9 +26,7 @@ final class Scheduler(
   }
 
   def messageToSelection(freq: FiniteDuration)(to: => (ActorSelection, Any)) {
-    enabled ! scheduler.schedule(freq, randomize(freq)) {
-      to._1 ! to._2
-    }
+    enabled ! scheduler.schedule(freq, randomize(freq)) { to._1 ! to._2 }
   }
 
   def effect(freq: FiniteDuration, name: String)(op: => Unit) {

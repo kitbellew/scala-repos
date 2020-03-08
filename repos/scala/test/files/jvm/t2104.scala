@@ -44,7 +44,5 @@ object Test {
       delete_after(tmp, (s) => assert(s.toList == l))
     }
   }
-  def main(args: Array[String]) {
-    (0 until N).foreach(test(_))
-  }
+  def main(args: Array[String]) { (0 until N).foreach(test(_)) }
 }

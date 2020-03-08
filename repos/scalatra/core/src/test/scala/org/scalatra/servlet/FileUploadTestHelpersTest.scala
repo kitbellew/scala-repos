@@ -52,9 +52,7 @@ class FileUploadTestHelpersTestServlet
     "OK"
   }
 
-  error {
-    case e => e.printStackTrace()
-  }
+  error { case e => e.printStackTrace() }
 }
 
 class FileUploadTestHelpersTest extends ScalatraFunSuite {

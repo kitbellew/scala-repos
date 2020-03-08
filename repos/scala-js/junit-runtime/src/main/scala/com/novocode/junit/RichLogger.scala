@@ -95,19 +95,15 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
     while (i <= m2) {
       if (trace(i).toString.startsWith("org.junit.") ||
           trace(i).toString.startsWith("org.hamcrest.")) {
-        if (i == top) {
-          top += 1
-        } else {
+        if (i == top) { top += 1 }
+        else {
           m2 = i - 1
           var break = false
           while (m2 > top && !break) {
             val s = trace(m2).toString
             if (!s.startsWith("java.lang.reflect.") &&
-                !s.startsWith("sun.reflect.")) {
-              break = true
-            } else {
-              m2 -= 1
-            }
+                !s.startsWith("sun.reflect.")) { break = true }
+            else { m2 -= 1 }
           }
           i = m2 // break
         }

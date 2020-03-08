@@ -41,9 +41,8 @@ object ResourceUtil {
     def consumeScalarResource: Option[MesosProtos.Resource] = {
       val leftOver: Double =
         resource.getScalar.getValue - usedResource.getScalar.getValue
-      if (leftOver <= 0) {
-        None
-      } else {
+      if (leftOver <= 0) { None }
+      else {
         Some(
           resource.toBuilder
             .setScalar(

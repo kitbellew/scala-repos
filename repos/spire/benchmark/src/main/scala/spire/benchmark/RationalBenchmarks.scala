@@ -49,9 +49,7 @@ class RationalBenchmarks extends MyBenchmark with BenchmarkData {
         LongRational(
           BigInt(bits, Random).toLong,
           BigInt(bits, Random).toLong + 1L))
-    } else {
-      longRats = Array[LongRational]()
-    }
+    } else { longRats = Array[LongRational]() }
   }
 
   def bigSum(rats: Array[BigIntRational]): Int = {

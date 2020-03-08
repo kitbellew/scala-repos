@@ -122,9 +122,7 @@ class ApacheZooKeeperTest
 
     val closed = zk.close()
 
-    intercept[ExecutionException] {
-      Await.result(closed, 5.seconds)
-    }
+    intercept[ExecutionException] { Await.result(closed, 5.seconds) }
   }
 
   "create" should "submit properly constructed empty znode create" in {
@@ -190,9 +188,7 @@ class ApacheZooKeeperTest
       meq(null))
 
     stringCB.getValue.processResult(apacheConnLoss, path, null, null)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(created)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(created) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -215,9 +211,7 @@ class ApacheZooKeeperTest
       stringCB.capture,
       meq(null))
 
-    intercept[IllegalArgumentException] {
-      Await.result(created)
-    }
+    intercept[IllegalArgumentException] { Await.result(created) }
     assert(statsReceiver.counter("write_failures")() == 1)
   }
 
@@ -247,9 +241,7 @@ class ApacheZooKeeperTest
     verify(mockZK).delete(meq(path), meq(version), voidCB.capture, meq(null))
 
     voidCB.getValue.processResult(apacheConnLoss, path, null)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(deleted)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(deleted) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -279,9 +271,7 @@ class ApacheZooKeeperTest
     verify(mockZK).exists(meq(path), meq(null), statCB.capture, meq(null))
 
     statCB.getValue.processResult(apacheConnLoss, path, null, null)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(existed)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(existed) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -293,9 +283,7 @@ class ApacheZooKeeperTest
 
     verify(mockZK).exists(meq(path), meq(null), statCB.capture, meq(null))
 
-    intercept[IllegalArgumentException] {
-      Await.result(existed)
-    }
+    intercept[IllegalArgumentException] { Await.result(existed) }
     assert(statsReceiver.counter("read_failures")() == 1)
   }
 
@@ -325,9 +313,7 @@ class ApacheZooKeeperTest
     verify(mockZK).exists(meq(path), watcher.capture, statCB.capture, meq(null))
 
     statCB.getValue.processResult(apacheConnLoss, path, null, null)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(existed)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(existed) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -338,9 +324,7 @@ class ApacheZooKeeperTest
 
     verify(mockZK).exists(meq(path), watcher.capture, statCB.capture, meq(null))
 
-    intercept[IllegalArgumentException] {
-      Await.result(existed)
-    }
+    intercept[IllegalArgumentException] { Await.result(existed) }
     assert(statsReceiver.counter("watch_failures")() == 1)
   }
 
@@ -370,9 +354,7 @@ class ApacheZooKeeperTest
     verify(mockZK).getData(meq(path), meq(null), dataCB.capture, meq(null))
 
     dataCB.getValue.processResult(apacheConnLoss, path, null, null, null)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(nodeData)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(nodeData) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -383,9 +365,7 @@ class ApacheZooKeeperTest
 
     verify(mockZK).getData(meq(path), meq(null), dataCB.capture, meq(null))
 
-    intercept[IllegalArgumentException] {
-      Await.result(nodeData)
-    }
+    intercept[IllegalArgumentException] { Await.result(nodeData) }
     assert(statsReceiver.counter("read_failures")() == 1)
   }
 
@@ -427,9 +407,7 @@ class ApacheZooKeeperTest
       meq(null))
 
     dataCB.getValue.processResult(apacheConnLoss, path, null, null, null)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(nodeDataWatch)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(nodeDataWatch) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -444,9 +422,7 @@ class ApacheZooKeeperTest
       dataCB.capture,
       meq(null))
 
-    intercept[IllegalArgumentException] {
-      Await.result(nodeDataWatch)
-    }
+    intercept[IllegalArgumentException] { Await.result(nodeDataWatch) }
     assert(statsReceiver.counter("watch_failures")() == 1)
   }
 
@@ -506,9 +482,7 @@ class ApacheZooKeeperTest
       meq(null))
 
     statCB.getValue.processResult(apacheConnLoss, path, null, null)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(nodeStat)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(nodeStat) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -525,9 +499,7 @@ class ApacheZooKeeperTest
       statCB.capture,
       meq(null))
 
-    intercept[IllegalArgumentException] {
-      Await.result(nodeStat)
-    }
+    intercept[IllegalArgumentException] { Await.result(nodeStat) }
     assert(statsReceiver.counter("write_failures")() == 1)
   }
 
@@ -547,9 +519,7 @@ class ApacheZooKeeperTest
     verify(mockZK).getACL(meq(path), meq(null), aclCB.capture, meq(null))
 
     aclCB.getValue.processResult(apacheConnLoss, path, null, null, null)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(nodeACL)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(nodeACL) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -560,9 +530,7 @@ class ApacheZooKeeperTest
 
     verify(mockZK).getACL(meq(path), meq(null), aclCB.capture, meq(null))
 
-    intercept[IllegalArgumentException] {
-      Await.result(nodeACL)
-    }
+    intercept[IllegalArgumentException] { Await.result(nodeACL) }
     assert(statsReceiver.counter("read_failures")() == 1)
   }
 
@@ -607,9 +575,7 @@ class ApacheZooKeeperTest
       meq(null))
 
     statCB.getValue.processResult(apacheConnLoss, path, null, apacheStat)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(nodeStat)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(nodeStat) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -630,9 +596,7 @@ class ApacheZooKeeperTest
       statCB.capture,
       meq(null))
 
-    intercept[IllegalArgumentException] {
-      Await.result(nodeStat)
-    }
+    intercept[IllegalArgumentException] { Await.result(nodeStat) }
     assert(statsReceiver.counter("write_failures")() == 1)
   }
 
@@ -670,9 +634,7 @@ class ApacheZooKeeperTest
       null,
       apacheChildren,
       apacheStat)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(nodeChildren)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(nodeChildren) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -688,9 +650,7 @@ class ApacheZooKeeperTest
       childrenCB.capture,
       meq(null))
 
-    intercept[IllegalArgumentException] {
-      Await.result(nodeChildren)
-    }
+    intercept[IllegalArgumentException] { Await.result(nodeChildren) }
     assert(statsReceiver.counter("read_failures")() == 1)
   }
 
@@ -728,9 +688,7 @@ class ApacheZooKeeperTest
       null,
       apacheChildren,
       apacheStat)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(nodeChildren)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(nodeChildren) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -747,9 +705,7 @@ class ApacheZooKeeperTest
       childrenCB.capture,
       meq(null))
 
-    intercept[IllegalArgumentException] {
-      Await.result(nodeChildren)
-    }
+    intercept[IllegalArgumentException] { Await.result(nodeChildren) }
     assert(statsReceiver.counter("watch_failures")() == 1)
   }
 
@@ -777,9 +733,7 @@ class ApacheZooKeeperTest
     )
 
     voidCB.getValue.processResult(apacheConnLoss, path, null)
-    intercept[KeeperException.ConnectionLoss] {
-      Await.result(synced)
-    }
+    intercept[KeeperException.ConnectionLoss] { Await.result(synced) }
     assert(statsReceiver.counter("connection_loss")() == 1)
   }
 
@@ -798,9 +752,7 @@ class ApacheZooKeeperTest
       meq(null)
     )
 
-    intercept[IllegalArgumentException] {
-      Await.result(synced)
-    }
+    intercept[IllegalArgumentException] { Await.result(synced) }
     assert(statsReceiver.counter("read_failures")() == 1)
   }
 }

@@ -37,9 +37,8 @@ object Test {
     Console.print("test " + name);
     try {
       val actual: Int = closure;
-      if (actual == expected) {
-        Console.print(" was successful");
-      } else {
+      if (actual == expected) { Console.print(" was successful"); }
+      else {
         Console.print(" failed: expected " + expected + ", found " + actual);
       }
     } catch {

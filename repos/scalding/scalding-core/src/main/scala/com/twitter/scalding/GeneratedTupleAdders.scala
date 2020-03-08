@@ -3,20 +3,12 @@ package com.twitter.scalding
 
 trait GeneratedTupleAdders {
   class Tuple1Adder[A](tup: Tuple1[A]) {
-    def :+[B](other: B) = {
-      (tup._1, other)
-    }
-    def +:[B](other: B) = {
-      (other, tup._1)
-    }
+    def :+[B](other: B) = { (tup._1, other) }
+    def +:[B](other: B) = { (other, tup._1) }
 
-    def ++[B](other: Tuple1[B]) = {
-      (tup._1, other._1)
-    }
+    def ++[B](other: Tuple1[B]) = { (tup._1, other._1) }
 
-    def ++[B, C](other: Tuple2[B, C]) = {
-      (tup._1, other._1, other._2)
-    }
+    def ++[B, C](other: Tuple2[B, C]) = { (tup._1, other._1, other._2) }
 
     def ++[B, C, D](other: Tuple3[B, C, D]) = {
       (tup._1, other._1, other._2, other._3)
@@ -414,20 +406,12 @@ trait GeneratedTupleAdders {
   implicit def tup1ToAdder[A](tup: Tuple1[A]) = new Tuple1Adder(tup)
 
   class Tuple2Adder[A, B](tup: Tuple2[A, B]) {
-    def :+[C](other: C) = {
-      (tup._1, tup._2, other)
-    }
-    def +:[C](other: C) = {
-      (other, tup._1, tup._2)
-    }
+    def :+[C](other: C) = { (tup._1, tup._2, other) }
+    def +:[C](other: C) = { (other, tup._1, tup._2) }
 
-    def ++[C](other: Tuple1[C]) = {
-      (tup._1, tup._2, other._1)
-    }
+    def ++[C](other: Tuple1[C]) = { (tup._1, tup._2, other._1) }
 
-    def ++[C, D](other: Tuple2[C, D]) = {
-      (tup._1, tup._2, other._1, other._2)
-    }
+    def ++[C, D](other: Tuple2[C, D]) = { (tup._1, tup._2, other._1, other._2) }
 
     def ++[C, D, E](other: Tuple3[C, D, E]) = {
       (tup._1, tup._2, other._1, other._2, other._3)
@@ -799,16 +783,10 @@ trait GeneratedTupleAdders {
   implicit def tup2ToAdder[A, B](tup: Tuple2[A, B]) = new Tuple2Adder(tup)
 
   class Tuple3Adder[A, B, C](tup: Tuple3[A, B, C]) {
-    def :+[D](other: D) = {
-      (tup._1, tup._2, tup._3, other)
-    }
-    def +:[D](other: D) = {
-      (other, tup._1, tup._2, tup._3)
-    }
+    def :+[D](other: D) = { (tup._1, tup._2, tup._3, other) }
+    def +:[D](other: D) = { (other, tup._1, tup._2, tup._3) }
 
-    def ++[D](other: Tuple1[D]) = {
-      (tup._1, tup._2, tup._3, other._1)
-    }
+    def ++[D](other: Tuple1[D]) = { (tup._1, tup._2, tup._3, other._1) }
 
     def ++[D, E](other: Tuple2[D, E]) = {
       (tup._1, tup._2, tup._3, other._1, other._2)
@@ -1151,16 +1129,10 @@ trait GeneratedTupleAdders {
   implicit def tup3ToAdder[A, B, C](tup: Tuple3[A, B, C]) = new Tuple3Adder(tup)
 
   class Tuple4Adder[A, B, C, D](tup: Tuple4[A, B, C, D]) {
-    def :+[E](other: E) = {
-      (tup._1, tup._2, tup._3, tup._4, other)
-    }
-    def +:[E](other: E) = {
-      (other, tup._1, tup._2, tup._3, tup._4)
-    }
+    def :+[E](other: E) = { (tup._1, tup._2, tup._3, tup._4, other) }
+    def +:[E](other: E) = { (other, tup._1, tup._2, tup._3, tup._4) }
 
-    def ++[E](other: Tuple1[E]) = {
-      (tup._1, tup._2, tup._3, tup._4, other._1)
-    }
+    def ++[E](other: Tuple1[E]) = { (tup._1, tup._2, tup._3, tup._4, other._1) }
 
     def ++[E, F](other: Tuple2[E, F]) = {
       (tup._1, tup._2, tup._3, tup._4, other._1, other._2)
@@ -1480,12 +1452,8 @@ trait GeneratedTupleAdders {
     new Tuple4Adder(tup)
 
   class Tuple5Adder[A, B, C, D, E](tup: Tuple5[A, B, C, D, E]) {
-    def :+[F](other: F) = {
-      (tup._1, tup._2, tup._3, tup._4, tup._5, other)
-    }
-    def +:[F](other: F) = {
-      (other, tup._1, tup._2, tup._3, tup._4, tup._5)
-    }
+    def :+[F](other: F) = { (tup._1, tup._2, tup._3, tup._4, tup._5, other) }
+    def +:[F](other: F) = { (other, tup._1, tup._2, tup._3, tup._4, tup._5) }
 
     def ++[F](other: Tuple1[F]) = {
       (tup._1, tup._2, tup._3, tup._4, tup._5, other._1)

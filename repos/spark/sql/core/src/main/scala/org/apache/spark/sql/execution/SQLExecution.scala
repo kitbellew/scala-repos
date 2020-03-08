@@ -59,17 +59,14 @@ private[sql] object SQLExecution {
               SparkPlanInfo.fromSparkPlan(queryExecution.executedPlan),
               System.currentTimeMillis()
             ))
-          try {
-            body
-          } finally {
+          try { body }
+          finally {
             sqlContext.sparkContext.listenerBus.post(
               SparkListenerSQLExecutionEnd(
                 executionId,
                 System.currentTimeMillis()))
           }
-        } finally {
-          sc.setLocalProperty(EXECUTION_ID_KEY, null)
-        }
+        } finally { sc.setLocalProperty(EXECUTION_ID_KEY, null) }
       r
     } else {
       // Don't support nested `withNewExecutionId`. This is an example of the nested

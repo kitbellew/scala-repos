@@ -84,9 +84,7 @@ object SerializerPropertiesSuite extends Assertions {
   def testSupportsRelocationOfSerializedObjects(
       serializer: Serializer,
       generateRandomItem: Random => Any): Unit = {
-    if (!serializer.supportsRelocationOfSerializedObjects) {
-      return
-    }
+    if (!serializer.supportsRelocationOfSerializedObjects) { return }
     val NUM_TRIALS = 5
     val rand = new Random(42)
     for (_ <- 1 to NUM_TRIALS) {

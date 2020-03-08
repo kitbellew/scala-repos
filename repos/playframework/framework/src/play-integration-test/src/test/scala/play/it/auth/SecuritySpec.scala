@@ -62,9 +62,7 @@ object SecuritySpec extends PlaySpecification {
   }
 
   object DB {
-    def withConnection[A](block: Connection => A) = {
-      block(FakeConnection)
-    }
+    def withConnection[A](block: Connection => A) = { block(FakeConnection) }
   }
   object FakeConnection extends Connection("fake")
   case class Connection(name: String)

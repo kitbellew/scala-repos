@@ -61,16 +61,12 @@ class Shear(override val delegate: jfxst.Shear = new jfxst.Shear)
     * Defines the X coordinate of the shear pivot point.
     */
   def pivotX: DoubleProperty = delegate.pivotXProperty()
-  def pivotX_=(v: Double) {
-    pivotX() = v
-  }
+  def pivotX_=(v: Double) { pivotX() = v }
 
   /**
     * Defines the Y coordinate of the shear pivot point.
     */
   def pivotY: DoubleProperty = delegate.pivotYProperty()
-  def pivotY_=(v: Double) {
-    pivotY() = v
-  }
+  def pivotY_=(v: Double) { pivotY() = v }
 
 }

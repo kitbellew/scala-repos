@@ -20,9 +20,7 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils
  */
 object VarDef {
   def parse(builder: ScalaPsiBuilder): Boolean = {
-    if (PatDef parse builder) {
-      return true
-    }
+    if (PatDef parse builder) { return true }
 
     // Parsing specifig wildcard definition
     val valDefMarker = builder.mark

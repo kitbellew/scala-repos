@@ -32,16 +32,12 @@ object SbtProjectImportProvider {
       entry.getName == Sbt.ProjectDirectory ||
       entry.containsDirectory(Sbt.ProjectDirectory) ||
       entry.containsFile(Sbt.BuildFile)
-    } else {
-      entry.getName == Sbt.BuildFile
-    }
+    } else { entry.getName == Sbt.BuildFile }
   }
 
   def projectRootOf(entry: VirtualFile): VirtualFile = {
     if (entry.isDirectory) {
       if (entry.getName == Sbt.ProjectDirectory) entry.getParent else entry
-    } else {
-      entry.getParent
-    }
+    } else { entry.getParent }
   }
 }

@@ -67,9 +67,7 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
     "(?i)varchar".r ~> "(" ~> (numericLit <~ ")") ^^^ StringType
 
   protected lazy val arrayType: Parser[DataType] =
-    "(?i)array".r ~> "<" ~> dataType <~ ">" ^^ {
-      case tpe => ArrayType(tpe)
-    }
+    "(?i)array".r ~> "<" ~> dataType <~ ">" ^^ { case tpe => ArrayType(tpe) }
 
   protected lazy val mapType: Parser[DataType] =
     "(?i)map".r ~> "<" ~> dataType ~ "," ~ dataType <~ ">" ^^ {

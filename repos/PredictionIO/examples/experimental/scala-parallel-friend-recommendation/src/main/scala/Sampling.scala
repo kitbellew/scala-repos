@@ -15,16 +15,13 @@ object Sampling {
 
   def geometricSample(param: Double): Int = {
     var num = 1
-    while (Random.nextDouble <= param) {
-      num += 1
-    }
+    while (Random.nextDouble <= param) { num += 1 }
     num
   }
 
   def sortBySrc(a: Array[Edge[Int]]): Array[Edge[Int]] = {
-    if (a.length < 2) {
-      a
-    } else {
+    if (a.length < 2) { a }
+    else {
       val pivot = a(a.length / 2).srcId
       // 'L'ess, 'E'qual, 'G'reater
       val partitions = a.groupBy((e: Edge[Int]) => {
@@ -75,9 +72,7 @@ object Sampling {
         val edgeCandidates = accumulateEdges(e, vertexId)
         val burnCandidate = sc
           .parallelize(edgeCandidates)
-          .filter((e: Edge[Int]) => {
-            !sampledVertices.contains(e.dstId)
-          })
+          .filter((e: Edge[Int]) => { !sampledVertices.contains(e.dstId) })
         val burnFraction = numToSample.toDouble / burnCandidate.count.toDouble
         val burnEdges =
           burnCandidate.sample(false, burnFraction, Random.nextLong)
@@ -126,9 +121,7 @@ object Sampling {
       if (edge.srcId == target) {
         outEdges.append(edge)
         tIdx += 1
-      } else {
-        tIdx = e.size
-      }
+      } else { tIdx = e.size }
     }
     // get lower edges
     tIdx = idx - 1
@@ -137,9 +130,7 @@ object Sampling {
       if (edge.srcId == target) {
         outEdges.append(edge)
         tIdx -= 1
-      } else {
-        tIdx = -1
-      }
+      } else { tIdx = -1 }
     }
     outEdges
   }

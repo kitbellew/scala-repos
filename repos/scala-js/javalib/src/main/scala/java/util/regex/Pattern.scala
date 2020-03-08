@@ -16,9 +16,8 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
 
   private[regex] def newJSRegExp(): js.RegExp = {
     val r = new js.RegExp(jsRegExp)
-    if (r ne jsRegExp) {
-      r
-    } else {
+    if (r ne jsRegExp) { r }
+    else {
       /* Workaround for the PhantomJS 1.x bug
        * https://github.com/ariya/phantomjs/issues/11494
        * which causes new js.RegExp(jsRegExp) to return the same object,
@@ -87,9 +86,8 @@ object Pattern {
 
   def compile(regex: String, flags: Int): Pattern = {
     val (jsPattern, flags1) = {
-      if ((flags & LITERAL) != 0) {
-        (quote(regex), flags)
-      } else {
+      if ((flags & LITERAL) != 0) { (quote(regex), flags) }
+      else {
         trySplitHack(regex, flags) orElse
           tryFlagHack(regex, flags) getOrElse
           (regex, flags)

@@ -188,9 +188,8 @@ case class Sort(
       ctx: CodegenContext,
       input: Seq[ExprCode],
       row: String): String = {
-    if (row != null) {
-      s"$sorterVariable.insertRow((UnsafeRow)$row);"
-    } else {
+    if (row != null) { s"$sorterVariable.insertRow((UnsafeRow)$row);" }
+    else {
       val colExprs = child.output.zipWithIndex.map {
         case (attr, i) =>
           BoundReference(i, attr.dataType, attr.nullable)

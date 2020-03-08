@@ -139,9 +139,8 @@ class OutputStreamWriter(
   }
 
   private def makeRoomInOutBuf(): Unit = {
-    if (outBuf.position != 0) {
-      flushBuffer()
-    } else {
+    if (outBuf.position != 0) { flushBuffer() }
+    else {
       // Very unlikely (outBuf.capacity is not enough to encode a single code point)
       outBuf.flip()
       val newBuf = ByteBuffer.allocate(outBuf.capacity * 2)

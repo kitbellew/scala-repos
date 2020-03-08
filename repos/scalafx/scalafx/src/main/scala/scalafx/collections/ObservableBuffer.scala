@@ -421,9 +421,7 @@ class ObservableBuffer[T](
   /**
     * Clears the $OB's contents. After this operation, the $buf is empty.
     */
-  def clear() {
-    delegate.clear()
-  }
+  def clear() { delegate.clear() }
 
   /**
     * Inserts new elements at a given index into this $buf.
@@ -483,9 +481,7 @@ class ObservableBuffer[T](
     * @param from the start of the range to remove (inclusive)
     * @param to  the end of the range to remove (exclusive)
     */
-  def removeRange(from: Int, to: Int) {
-    delegate.remove(from, to)
-  }
+  def removeRange(from: Int, to: Int) { delegate.remove(from, to) }
 
   /**
     * Replaces element at given index with a new value.
@@ -493,9 +489,7 @@ class ObservableBuffer[T](
     * @param n the index of the element to replace.
     * @param newelem new value to be positioned at position n.
     */
-  def update(n: Int, newelem: T) {
-    delegate.set(n, newelem)
-  }
+  def update(n: Int, newelem: T) { delegate.set(n, newelem) }
 
   /**
     * Retains only the elements in this list that are contained in the specified collection.
@@ -504,9 +498,7 @@ class ObservableBuffer[T](
     *
     * @param elems the traversable collection containing elements to be retained in this list
     */
-  def retainAll(elems: T*) {
-    delegate.retainAll(elems)
-  }
+  def retainAll(elems: T*) { delegate.retainAll(elems) }
 
   /**
     * Retains only the elements in this list that are contained in the specified collection.
@@ -515,9 +507,7 @@ class ObservableBuffer[T](
     *
     * @param elems the traversable collection containing elements to be retained in this list
     */
-  def retainAll(elems: Iterable[T]) {
-    delegate.retainAll(elems)
-  }
+  def retainAll(elems: Iterable[T]) { delegate.retainAll(elems) }
 
   /**
     * Replace all oldVal elements in the list with newVal element. Fires only '''one''' change
@@ -585,15 +575,10 @@ class ObservableBuffer[T](
         while (c.next()) {
           if (c.wasPermutated()) {
             changes += Reorder(c.getFrom, c.getTo, { x => c.getPermutation(x) })
-          } else if (c.wasUpdated()) {
-            changes += Update(c.getFrom, c.getTo)
-          } else {
-            if (c.wasRemoved()) {
-              changes += Remove(c.getFrom, c.getRemoved)
-            }
-            if (c.wasAdded()) {
-              changes += Add(c.getFrom, c.getAddedSubList)
-            }
+          } else if (c.wasUpdated()) { changes += Update(c.getFrom, c.getTo) }
+          else {
+            if (c.wasRemoved()) { changes += Remove(c.getFrom, c.getRemoved) }
+            if (c.wasAdded()) { changes += Add(c.getFrom, c.getAddedSubList) }
           }
         }
         op(ObservableBuffer.this, changes)
@@ -603,9 +588,7 @@ class ObservableBuffer[T](
     delegate.addListener(listener)
 
     new Subscription {
-      def cancel() {
-        delegate.removeListener(listener)
-      }
+      def cancel() { delegate.removeListener(listener) }
     }
   }
 
@@ -618,17 +601,13 @@ class ObservableBuffer[T](
     */
   def onChange[T1 >: T](op: => Unit): Subscription = {
     val listener = new jfxc.ListChangeListener[T1] {
-      def onChanged(c: jfxc.ListChangeListener.Change[_ <: T1]) {
-        op
-      }
+      def onChanged(c: jfxc.ListChangeListener.Change[_ <: T1]) { op }
     }
 
     delegate.addListener(listener)
 
     new Subscription {
-      def cancel() {
-        delegate.removeListener(listener)
-      }
+      def cancel() { delegate.removeListener(listener) }
     }
   }
 

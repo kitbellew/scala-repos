@@ -21,18 +21,26 @@ sealed abstract class CapabilityFlag {
 }
 object CapabilityFlag {
   def on(): CapabilityFlag =
-    new CapabilityFlag { override def value = true }
+    new CapabilityFlag {
+      override def value = true
+    }
   def off(): CapabilityFlag =
-    new CapabilityFlag { override def value = true }
+    new CapabilityFlag {
+      override def value = true
+    }
 
   /** Java DSL */
   def create(`val`: Boolean): CapabilityFlag =
-    new CapabilityFlag { override def value = `val` }
+    new CapabilityFlag {
+      override def value = `val`
+    }
 
   // conversions
 
   implicit def mkFlag(v: Boolean): CapabilityFlag =
-    new CapabilityFlag { override def value = v }
+    new CapabilityFlag {
+      override def value = v
+    }
 }
 
 sealed trait CapabilityFlags

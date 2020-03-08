@@ -104,9 +104,7 @@ trait ContextErrors {
     }
 
     def issueSymbolTypeError(sym: Symbol, msg: String)(
-        implicit context: Context) {
-      issueTypeError(SymbolTypeError(sym, msg))
-    }
+        implicit context: Context) { issueTypeError(SymbolTypeError(sym, msg)) }
 
     def issueTypeError(err: AbsTypeError)(implicit context: Context) {
       context.issue(err)
@@ -295,9 +293,8 @@ trait ContextErrors {
           tpt: Tree,
           tparams: List[Symbol]) = {
         val tptSafeString: String =
-          try {
-            tpt.tpe.toString()
-          } catch {
+          try { tpt.tpe.toString() }
+          catch {
             case _: CyclicReference =>
               tpt.toString()
           }

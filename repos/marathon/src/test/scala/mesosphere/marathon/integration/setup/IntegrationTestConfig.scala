@@ -100,11 +100,8 @@ object IntegrationTestConfig {
     val useExternalSetup = string("useExternalSetup", "false").toBoolean
 
     def unusedForExternalSetup(block: => String): String = {
-      if (useExternalSetup) {
-        "UNUSED FOR EXTERNAL SETUP"
-      } else {
-        block
-      }
+      if (useExternalSetup) { "UNUSED FOR EXTERNAL SETUP" }
+      else { block }
     }
 
     val zkHost = string("zkHost", unusedForExternalSetup("localhost"))

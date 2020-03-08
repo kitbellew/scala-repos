@@ -68,9 +68,7 @@ private[akka] abstract class FanoutOutputs(
     afterShutdown()
   }
 
-  override protected def cancelUpstream(): Unit = {
-    downstreamCompleted = true
-  }
+  override protected def cancelUpstream(): Unit = { downstreamCompleted = true }
 
   protected def waitingExposedPublisher: Actor.Receive = {
     case ExposedPublisher(publisher) ⇒

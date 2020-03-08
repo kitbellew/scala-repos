@@ -168,9 +168,7 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
     }
 
     def moveCaretIfNeeded() {
-      if (some) {
-        editor.getCaretModel.moveToOffset(endOffset + 1)
-      }
+      if (some) { editor.getCaretModel.moveToOffset(endOffset + 1) }
     }
 
     /**
@@ -200,25 +198,18 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       if (!withSpace && nextChar != openChar) {
         if (CodeInsightSettings.getInstance().AUTOINSERT_PAIR_BRACKET) {
           document.insertString(endOffset, s"$openChar$closeChar")
-          if (placeInto) {
-            shiftEndOffset(1)
-          } else {
-            shiftEndOffset(2)
-          }
+          if (placeInto) { shiftEndOffset(1) }
+          else { shiftEndOffset(2) }
         } else {
           document.insertString(endOffset, s"$openChar")
           shiftEndOffset(1)
         }
       } else if (!withSpace && nextChar == openChar) {
-        if (placeInto) {
-          shiftEndOffset(1)
-        } else {
+        if (placeInto) { shiftEndOffset(1) }
+        else {
           val nextNextChar = documentText.charAt(endOffset + 1)
-          if (nextNextChar == closeChar) {
-            shiftEndOffset(2)
-          } else {
-            shiftEndOffset(1)
-          }
+          if (nextNextChar == closeChar) { shiftEndOffset(2) }
+          else { shiftEndOffset(1) }
         }
       } else if (withSpace && (nextChar != ' ' || documentText.charAt(
                    endOffset + 1) != openChar)) {

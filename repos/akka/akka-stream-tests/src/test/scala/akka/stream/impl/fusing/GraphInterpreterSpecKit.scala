@@ -491,9 +491,7 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
         new InHandler {
 
           // Modified onPush that does not grab() automatically the element. This accesses some internals.
-          override def onPush(): Unit = {
-            lastEvent += OnNext(grab(in))
-          }
+          override def onPush(): Unit = { lastEvent += OnNext(grab(in)) }
 
           override def onUpstreamFinish() = lastEvent += OnComplete
           override def onUpstreamFailure(ex: Throwable) =

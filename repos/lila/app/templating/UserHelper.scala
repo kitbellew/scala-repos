@@ -296,9 +296,7 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     withPerfRating match {
       case Some(perfType) => renderRating(user.perfs(perfType))
       case _ if withBestRating =>
-        user.perfs.bestPerf ?? {
-          case (_, perf) => renderRating(perf)
-        }
+        user.perfs.bestPerf ?? { case (_, perf) => renderRating(perf) }
       case _ => ""
     }
 

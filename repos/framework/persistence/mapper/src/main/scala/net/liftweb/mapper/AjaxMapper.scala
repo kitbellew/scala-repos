@@ -36,9 +36,7 @@ trait AjaxEditableField[FieldType, OwnerType <: Mapper[OwnerType]]
             () => { fieldOwner.save; onSave; net.liftweb.http.js.JsCmds.Noop })
         } openOr super.asHtml
       }</xml:group>
-    } else {
-      super.asHtml
-    }
+    } else { super.asHtml }
 
   /** This method is called when the element's data are saved. The default is to do nothing */
   def onSave {}

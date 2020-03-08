@@ -107,9 +107,7 @@ class UnsafeRowSuite extends SparkFunSuite {
         val writeBuffer = new Array[Byte](1024)
         offheapUnsafeRow.writeToStream(baos, writeBuffer)
         (baos.toByteArray, offheapUnsafeRow.getString(0))
-      } finally {
-        MemoryAllocator.UNSAFE.free(offheapRowPage)
-      }
+      } finally { MemoryAllocator.UNSAFE.free(offheapRowPage) }
     }
 
     assert(bytesFromArrayBackedRow === bytesFromOffheapRow)

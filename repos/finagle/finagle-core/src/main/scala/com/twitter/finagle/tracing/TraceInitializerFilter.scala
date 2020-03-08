@@ -123,9 +123,7 @@ sealed class AnnotatingTracingFilter[Req, Rep](
         }
         Trace.record(after)
       }
-    } else {
-      service(request)
-    }
+    } else { service(request) }
   }
 }
 

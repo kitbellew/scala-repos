@@ -58,9 +58,7 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
   def handleDriverKillRequest(request: HttpServletRequest): Unit = {
     handleKillRequest(
       request,
-      id => {
-        master.ask[KillDriverResponse](RequestKillDriver(id))
-      })
+      id => { master.ask[KillDriverResponse](RequestKillDriver(id)) })
   }
 
   private def handleKillRequest(
@@ -72,9 +70,7 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
       val killFlag =
         Option(request.getParameter("terminate")).getOrElse("false").toBoolean
       val id = Option(request.getParameter("id"))
-      if (id.isDefined && killFlag) {
-        action(id.get)
-      }
+      if (id.isDefined && killFlag) { action(id.get) }
 
       Thread.sleep(100)
     }

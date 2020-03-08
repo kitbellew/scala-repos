@@ -36,9 +36,7 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
             "!" + id.getText
           case _ => super.getTemplateAsString(elements)
         }
-      } else {
-        super.getTemplateAsString(elements)
-      }
+      } else { super.getTemplateAsString(elements) }
   }
 
   override def getNegatedExpression(element: PsiElement): PsiElement =

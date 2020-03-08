@@ -13,9 +13,7 @@ import scala.collection.JavaConverters._
 object IndyLambdaTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler()
 
-  def clear(): Unit = {
-    compiler = null
-  }
+  def clear(): Unit = { compiler = null }
 }
 
 class IndyLambdaTest extends ClearAfterClass {

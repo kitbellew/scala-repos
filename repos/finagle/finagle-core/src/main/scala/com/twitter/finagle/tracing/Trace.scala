@@ -207,9 +207,8 @@ object Trace {
     */
   def letTracerAndId[R](tracer: Tracer, id: TraceId, terminal: Boolean = false)(
       f: => R): R = {
-    if (ctx.terminal) {
-      letTracer(tracer)(f)
-    } else {
+    if (ctx.terminal) { letTracer(tracer)(f) }
+    else {
       val newCtx = ctx.withTracer(tracer).withTerminal(terminal)
       val newId = id.sampled match {
         case None    => id.copy(_sampled = tracer.sampleTrace(id))
@@ -227,9 +226,7 @@ object Trace {
     */
   def letClear[R](f: => R): R =
     Contexts.local.letClear(traceCtx) {
-      Contexts.broadcast.letClear(idCtx) {
-        f
-      }
+      Contexts.broadcast.letClear(idCtx) { f }
     }
 
   /**
@@ -248,9 +245,7 @@ object Trace {
       hostOpt.map { Trace.recordServerAddr(_) }
       Trace.record(Annotation.ServerRecv())
       try f
-      finally {
-        Trace.record(Annotation.ServerSend())
-      }
+      finally { Trace.record(Annotation.ServerSend()) }
     }
   }
 
@@ -303,9 +298,7 @@ object Trace {
     */
   def timeFuture[T](message: String)(f: Future[T]): Future[T] = {
     val start = Time.now
-    f.ensure {
-      record(message, start.untilNow)
-    }
+    f.ensure { record(message, start.untilNow) }
     f
   }
 
@@ -326,9 +319,7 @@ object Trace {
       uncheckedRecord(Record(id, Time.now, ann, Some(duration)))
   }
 
-  def record(message: String): Unit = {
-    record(Annotation.Message(message))
-  }
+  def record(message: String): Unit = { record(Annotation.Message(message)) }
 
   def record(message: String, duration: Duration): Unit = {
     record(Annotation.Message(message), duration)
@@ -343,9 +334,7 @@ object Trace {
     record(Annotation.ServiceName(serviceName))
   }
 
-  def recordRpc(name: String): Unit = {
-    record(Annotation.Rpc(name))
-  }
+  def recordRpc(name: String): Unit = { record(Annotation.Rpc(name)) }
 
   def recordClientAddr(ia: InetSocketAddress): Unit = {
     record(Annotation.ClientAddr(ia))
@@ -365,9 +354,7 @@ object Trace {
 
   def recordBinaries(annotations: Map[String, Any]): Unit = {
     if (isActivelyTracing) {
-      for ((key, value) <- annotations) {
-        recordBinary(key, value)
-      }
+      for ((key, value) <- annotations) { recordBinary(key, value) }
     }
   }
 }

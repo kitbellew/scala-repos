@@ -276,9 +276,7 @@ class ScalaAnnotator
       }
 
       override def visitPatternDefinition(pat: ScPatternDefinition) {
-        if (!compiled) {
-          annotatePatternDefinition(pat, holder, typeAware)
-        }
+        if (!compiled) { annotatePatternDefinition(pat, holder, typeAware) }
         super.visitPatternDefinition(pat)
       }
 
@@ -619,9 +617,7 @@ class ScalaAnnotator
               case ScalaResolveResult(fun: ScFunction, subst) =>
                 if (fun.returnType.isEmpty || !Equivalence.equiv(
                       subst.subst(fun.returnType.get),
-                      psi.types.Boolean)) {
-                  error()
-                }
+                      psi.types.Boolean)) { error() }
               case _ => error()
             }
           } else {
@@ -810,9 +806,7 @@ class ScalaAnnotator
       }
     }
 
-    if (refElement.isSoft) {
-      return
-    }
+    if (refElement.isSoft) { return }
 
     val goodDoc = refElement
       .isInstanceOf[ScDocResolvableCodeReference] && resolve.length > 1
@@ -1149,9 +1143,7 @@ class ScalaAnnotator
       refElement: ScReferenceElement,
       annotation: Annotation,
       actions: IntentionAction*) {
-    for (action <- actions) {
-      annotation.registerFix(action)
-    }
+    for (action <- actions) { annotation.registerFix(action) }
   }
 
   private def registerUsedImports(
@@ -1677,9 +1669,7 @@ class ScalaAnnotator
             limit / (base / divider) < value ||
             limit - (d / divider) < value * (base / divider) &&
             // This checks for Long.MinValue, same as the the previous Int.MinValue check.
-            !(isNegative && limit == value * base - 1 + d)) {
-          return (None, 2)
-        }
+            !(isNegative && limit == value * base - 1 + d)) { return (None, 2) }
         value = value * base + d
         i += 1
       }

@@ -40,31 +40,23 @@ case class Interval[T: Ordering](start: Option[T], end: Option[T]) {
   }
 
   def intersect(other: Interval[T]): Option[Interval[T]] = {
-    if (disjoint(other)) {
-      None
-    } else if (startsBefore(other) && endsAfter(other)) {
-      Some(other)
-    } else if (startsBefore(other) && other.endsAfter(this)) {
+    if (disjoint(other)) { None }
+    else if (startsBefore(other) && endsAfter(other)) { Some(other) }
+    else if (startsBefore(other) && other.endsAfter(this)) {
       Some(withEnd(other.start))
     } else if (other.startsBefore(this) && endsAfter(other)) {
       Some(withStart(other.end))
-    } else {
-      other.intersect(this);
-    }
+    } else { other.intersect(this); }
   }
 
   def union(other: Interval[T]): Set[Interval[T]] = {
-    if (disjoint(other)) {
-      Set(this, other)
-    } else if (startsBefore(other) && endsAfter(other)) {
-      Set(this)
-    } else if (startsBefore(other) && other.endsAfter(this)) {
+    if (disjoint(other)) { Set(this, other) }
+    else if (startsBefore(other) && endsAfter(other)) { Set(this) }
+    else if (startsBefore(other) && other.endsAfter(this)) {
       Set(withEnd(other.end))
     } else if (other.startsBefore(this) && endsAfter(other)) {
       Set(withStart(other.start))
-    } else {
-      other.union(this)
-    }
+    } else { other.union(this) }
   }
 }
 

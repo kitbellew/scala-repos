@@ -60,8 +60,6 @@ class LinearInterpolatorTest extends FunSuite {
     val x = DenseVector(1.0)
     val y = DenseVector(2.0)
     val f = LinearInterpolator(x, y)
-    intercept[IndexOutOfBoundsException] {
-      f(0.0)
-    }
+    intercept[IndexOutOfBoundsException] { f(0.0) }
   }
 }

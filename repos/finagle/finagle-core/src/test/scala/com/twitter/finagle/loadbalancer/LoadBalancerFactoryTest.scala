@@ -41,16 +41,12 @@ class LoadBalancerFactoryTest
         client
           .configured(LoadBalancerFactory.HostStats(sr))
           .newService(port)
-        eventually {
-          assert(sr.self.gauges(perHostStatKey).apply == 1.0)
-        }
+        eventually { assert(sr.self.gauges(perHostStatKey).apply == 1.0) }
 
         client
           .configured(LoadBalancerFactory.HostStats(sr1))
           .newService(port)
-        eventually {
-          assert(sr1.gauges(perHostStatKey).apply == 1.0)
-        }
+        eventually { assert(sr1.gauges(perHostStatKey).apply == 1.0) }
       }
     }
   }

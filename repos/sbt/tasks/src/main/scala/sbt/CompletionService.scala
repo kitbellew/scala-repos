@@ -30,7 +30,11 @@ object CompletionService {
       def take() = completion.take().get()
     }
   def submit[T](work: () => T, completion: JCompletionService[T]): () => T = {
-    val future = completion.submit { new Callable[T] { def call = work() } }
+    val future = completion.submit {
+      new Callable[T] {
+        def call = work()
+      }
+    }
     () => future.get()
   }
   def manage[A, T](service: CompletionService[A, T])(

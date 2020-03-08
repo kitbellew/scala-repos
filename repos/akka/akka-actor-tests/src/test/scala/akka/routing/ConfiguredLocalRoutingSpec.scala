@@ -74,9 +74,7 @@ object ConfiguredLocalRoutingSpec {
   }
 
   class EchoProps extends Actor {
-    def receive = {
-      case "get" ⇒ sender() ! context.props
-    }
+    def receive = { case "get" ⇒ sender() ! context.props }
   }
 
   class SendRefAtStartup(testActor: ActorRef) extends Actor {
@@ -152,9 +150,7 @@ class ConfiguredLocalRoutingSpec
     }
 
     "fail with an exception if not correct" in {
-      intercept[ConfigurationException] {
-        system.actorOf(FromConfig.props())
-      }
+      intercept[ConfigurationException] { system.actorOf(FromConfig.props()) }
     }
 
     "not get confused when trying to wildcard-configure children" in {

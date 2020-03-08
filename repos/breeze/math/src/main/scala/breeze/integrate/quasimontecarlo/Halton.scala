@@ -74,9 +74,7 @@ class BaseUniformHaltonGenerator(val dimension: Int)
     (0 to dimension)
       .map(i => {
         val vv = new Array[Long](Halton.PRIMES(i))
-        cfor(0)(j => j < Halton.PRIMES(i), j => j + 1)(j => {
-          vv(j) = j
-        })
+        cfor(0)(j => j < Halton.PRIMES(i), j => j + 1)(j => { vv(j) = j })
         shuffle(vv)
         vv
       })
@@ -96,11 +94,8 @@ class BaseUniformHaltonGenerator(val dimension: Int)
         lIndex += 1
       }
 
-      if (lIndex == counters(j).size()) {
-        counters(j).add(1)
-      } else {
-        counters(j).set(lIndex, counters(j).get(lIndex) + 1)
-      }
+      if (lIndex == counters(j).size()) { counters(j).add(1) }
+      else { counters(j).set(lIndex, counters(j).get(lIndex) + 1) }
 
       var lCountSizeI: Int = counters(j).size()
       var lBasesPow: Long = bases(j)
@@ -138,8 +133,6 @@ class BaseUniformHaltonGenerator(val dimension: Int)
 
     def get(i: Int): Int = storage(i)
 
-    def set(i: Int, x: Int) = {
-      storage(i) = x
-    }
+    def set(i: Int, x: Int) = { storage(i) = x }
   }
 }

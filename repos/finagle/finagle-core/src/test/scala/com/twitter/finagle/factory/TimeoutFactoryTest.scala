@@ -42,9 +42,7 @@ class TimeoutFactoryTest extends FunSuite with MockitoSugar {
   test("TimeoutFactory after the timeout should fail the service acquisition") {
     new AfterHelper {
       assert(res.isDefined)
-      val failure = intercept[Failure] {
-        Await.result(res)
-      }
+      val failure = intercept[Failure] { Await.result(res) }
       assert(failure.getCause.isInstanceOf[TimeoutException])
       assert(failure.getCause == exception)
     }

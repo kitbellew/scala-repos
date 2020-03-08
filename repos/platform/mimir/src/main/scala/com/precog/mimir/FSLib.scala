@@ -69,9 +69,7 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               case token =>
                 walk(m, prefixes.map(_ / Path(token)))
             }
-          } else {
-            M.point(prefixes)
-          }
+          } else { M.point(prefixes) }
         }
 
         walk(pattern.matcher(pathString), Stream(pathRoot))
@@ -101,9 +99,7 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                     Table.constString(unprefixed.toSet).slices
                   }
                 }
-            } getOrElse {
-              StreamT.empty[M, Slice]
-            }
+            } getOrElse { StreamT.empty[M, Slice] }
           },
           UnknownSize
         )

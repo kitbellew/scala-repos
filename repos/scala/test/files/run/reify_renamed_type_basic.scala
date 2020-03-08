@@ -8,9 +8,7 @@ object O {
 object Test extends App {
   import O.{A => X}
 
-  def expr = reify {
-    val a: X = ()
-  }
+  def expr = reify { val a: X = () }
 
   println(expr.eval)
 }

@@ -42,9 +42,7 @@ class NettyBlockTransferServiceSuite
         service1.close()
         service1 = null
       }
-    } finally {
-      super.afterEach()
-    }
+    } finally { super.afterEach() }
   }
 
   test("can bind to a random port") {

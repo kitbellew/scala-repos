@@ -144,9 +144,7 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.4.0
     */
-  def corr(col1: String, col2: String): Double = {
-    corr(col1, col2, "pearson")
-  }
+  def corr(col1: String, col2: String): Double = { corr(col1, col2, "pearson") }
 
   /**
     * Computes a pair-wise frequency table of the given columns. Also known as a contingency table.

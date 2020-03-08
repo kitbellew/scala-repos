@@ -130,9 +130,7 @@ class MarathonApp extends App {
     */
   private[this] def setConcurrentContextDefaults(): Unit = {
     def setIfNotDefined(property: String, value: String): Unit = {
-      if (!sys.props.contains(property)) {
-        sys.props += property -> value
-      }
+      if (!sys.props.contains(property)) { sys.props += property -> value }
     }
 
     setIfNotDefined("scala.concurrent.context.minThreads", "5")

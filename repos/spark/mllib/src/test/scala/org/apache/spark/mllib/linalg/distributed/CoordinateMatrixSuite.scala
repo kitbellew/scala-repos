@@ -59,12 +59,8 @@ class CoordinateMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("empty entries") {
     val entries = sc.parallelize(Seq[MatrixEntry](), 1)
     val emptyMat = new CoordinateMatrix(entries)
-    intercept[RuntimeException] {
-      emptyMat.numCols()
-    }
-    intercept[RuntimeException] {
-      emptyMat.numRows()
-    }
+    intercept[RuntimeException] { emptyMat.numCols() }
+    intercept[RuntimeException] { emptyMat.numRows() }
   }
 
   test("toBreeze") {
@@ -112,11 +108,7 @@ class CoordinateMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(blockMat.numCols() === n)
     assert(blockMat.toBreeze() === mat.toBreeze())
 
-    intercept[IllegalArgumentException] {
-      mat.toBlockMatrix(-1, 2)
-    }
-    intercept[IllegalArgumentException] {
-      mat.toBlockMatrix(2, 0)
-    }
+    intercept[IllegalArgumentException] { mat.toBlockMatrix(-1, 2) }
+    intercept[IllegalArgumentException] { mat.toBlockMatrix(2, 0) }
   }
 }

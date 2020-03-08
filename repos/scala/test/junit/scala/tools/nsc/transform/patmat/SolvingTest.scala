@@ -46,9 +46,7 @@ object TestSolver extends Logic with Solving {
 
       override def hashCode(): Int = x.hashCode()
 
-      override def toString: String = {
-        s"Var($x)"
-      }
+      override def toString: String = { s"Var($x)" }
 
       def domainSyms = None
 
@@ -105,12 +103,8 @@ object TestSolver extends Logic with Solving {
 
       // we use double buffering:
       // read from `current` and create a two models for each model in `next`
-      for {
-        s <- unassigned
-      } {
-        for {
-          model <- current
-        } {
+      for { s <- unassigned } {
+        for { model <- current } {
           def force(s: Sym, pol: Boolean) = model + (s -> pol)
 
           next += force(s, pol = true)
@@ -237,9 +231,7 @@ class SolvingTest {
   }
 
   def formatModel(model: Model): String = {
-    (for {
-      (SymName(name), value) <- model
-    } yield {
+    (for { (SymName(name), value) <- model } yield {
       val v = if (value) "T" else "F"
       s"$name -> $v"
     }).mkString(", ")
@@ -901,9 +893,7 @@ class SolvingTest {
     And(
       ops
         .combinations(2)
-        .collect {
-          case a :: b :: Nil => Or(Not(a), Not(b))
-        }
+        .collect { case a :: b :: Nil => Or(Not(a), Not(b)) }
         .toSet[TestSolver.TestSolver.Prop])
   }
 

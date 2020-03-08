@@ -88,18 +88,14 @@ object Bits {
     if (areTypedArraysSupported) {
       int32Array(0) = bits
       float32Array(0)
-    } else {
-      intBitsToFloatPolyfill(bits).toFloat
-    }
+    } else { intBitsToFloatPolyfill(bits).toFloat }
   }
 
   def floatToIntBits(value: Float): Int = {
     if (areTypedArraysSupported) {
       float32Array(0) = value
       int32Array(0)
-    } else {
-      floatToIntBitsPolyfill(value.toDouble)
-    }
+    } else { floatToIntBitsPolyfill(value.toDouble) }
   }
 
   def longBitsToDouble(bits: Long): Double = {
@@ -107,9 +103,7 @@ object Bits {
       int32Array(highOffset) = (bits >>> 32).toInt
       int32Array(lowOffset) = bits.toInt
       float64Array(0)
-    } else {
-      longBitsToDoublePolyfill(bits)
-    }
+    } else { longBitsToDoublePolyfill(bits) }
   }
 
   def doubleToLongBits(value: Double): Long = {
@@ -117,9 +111,7 @@ object Bits {
       float64Array(0) = value
       ((int32Array(highOffset).toLong << 32) |
         (int32Array(lowOffset).toLong & 0xFFFFFFFFL))
-    } else {
-      doubleToLongBitsPolyfill(value)
-    }
+    } else { doubleToLongBitsPolyfill(value) }
   }
 
   /* --- Polyfills for floating point bit manipulations ---
@@ -217,11 +209,9 @@ object Bits {
     if (v.isNaN) {
       // http://dev.w3.org/2006/webapi/WebIDL/#es-type-mapping
       (false, (1 << ebits) - 1, pow(2, fbits - 1))
-    } else if (v.isInfinite) {
-      (v < 0, (1 << ebits) - 1, 0.0)
-    } else if (v == 0.0) {
-      (1 / v == Double.NegativeInfinity, 0, 0.0)
-    } else {
+    } else if (v.isInfinite) { (v < 0, (1 << ebits) - 1, 0.0) }
+    else if (v == 0.0) { (1 / v == Double.NegativeInfinity, 0, 0.0) }
+    else {
       val LN2 = 0.6931471805599453
 
       val s = v < 0

@@ -60,9 +60,7 @@ object ScentrySpec extends Specification with Mockito {
     var defaultUnauthenticatedCalled = false
 
     Scentry.clearGlobalStrategies
-    theScentry unauthenticated {
-      defaultUnauthenticatedCalled = true
-    }
+    theScentry unauthenticated { defaultUnauthenticatedCalled = true }
 
     val s = new ScentryStrategy[User] {
       protected val app = context

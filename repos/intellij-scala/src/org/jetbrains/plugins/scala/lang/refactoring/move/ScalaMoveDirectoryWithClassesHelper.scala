@@ -51,9 +51,7 @@ class ScalaMoveDirectoryWithClassesHelper
               searchInComments,
               searchInNonJavaFiles,
               aClass.name)
-          } {
-            usages.add(usage)
-          }
+          } { usages.add(usage) }
 
           for {
             obj <- packObj

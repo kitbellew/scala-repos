@@ -165,11 +165,7 @@ private[spark] class YarnClientSchedulerBackend(
       }
     }
 
-    def stopMonitor(): Unit = {
-      if (allowInterrupt) {
-        this.interrupt()
-      }
-    }
+    def stopMonitor(): Unit = { if (allowInterrupt) { this.interrupt() } }
   }
 
   /**
@@ -194,9 +190,7 @@ private[spark] class YarnClientSchedulerBackend(
     assert(
       client != null,
       "Attempted to stop this scheduler before starting it!")
-    if (monitorThread != null) {
-      monitorThread.stopMonitor()
-    }
+    if (monitorThread != null) { monitorThread.stopMonitor() }
 
     // Report a final state to the launcher if one is connected. This is needed since in client
     // mode this backend doesn't let the app monitor loop run to completion, so it does not report

@@ -88,21 +88,13 @@ class BooleanBitSetSuite extends SparkFunSuite {
     assert(!decoder.hasNext)
   }
 
-  test(s"$BooleanBitSet: empty") {
-    skeleton(0)
-  }
+  test(s"$BooleanBitSet: empty") { skeleton(0) }
 
-  test(s"$BooleanBitSet: less than 1 word") {
-    skeleton(BITS_PER_LONG - 1)
-  }
+  test(s"$BooleanBitSet: less than 1 word") { skeleton(BITS_PER_LONG - 1) }
 
-  test(s"$BooleanBitSet: exactly 1 word") {
-    skeleton(BITS_PER_LONG)
-  }
+  test(s"$BooleanBitSet: exactly 1 word") { skeleton(BITS_PER_LONG) }
 
-  test(s"$BooleanBitSet: multiple whole words") {
-    skeleton(BITS_PER_LONG * 2)
-  }
+  test(s"$BooleanBitSet: multiple whole words") { skeleton(BITS_PER_LONG * 2) }
 
   test(s"$BooleanBitSet: multiple words and 1 more bit") {
     skeleton(BITS_PER_LONG * 2 + 1)

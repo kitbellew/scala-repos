@@ -307,9 +307,7 @@ trait Kinds {
         alias: Option[String])
         extends ScalaNotation {
       override def toString: String = {
-        alias getOrElse {
-          typeAlias(order) + n.map(_.toString).getOrElse("")
-        }
+        alias getOrElse { typeAlias(order) + n.map(_.toString).getOrElse("") }
       }
       private def typeAlias(x: Int): String =
         x match {
@@ -416,9 +414,7 @@ trait Kinds {
       args.zipWithIndex foreach {
         case (arg, i) =>
           s = arg.kind.buildState(arg.sym, arg.variance)(s)
-          if (i != args.size - 1) {
-            s = s.append(",")
-          }
+          if (i != args.size - 1) { s = s.append(",") }
       }
       s = s.append("]").append(bounds.scalaNotation(_.toString))
       s

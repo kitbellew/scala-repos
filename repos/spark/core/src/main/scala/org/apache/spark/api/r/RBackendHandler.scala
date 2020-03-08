@@ -90,9 +90,7 @@ private[r] class RBackendHandler(server: RBackend)
           dos.writeInt(-1)
           writeString(dos, s"Error: unknown method $methodName")
       }
-    } else {
-      handleMethodCall(isStatic, objId, methodName, numArgs, dis, dos)
-    }
+    } else { handleMethodCall(isStatic, objId, methodName, numArgs, dis, dos) }
 
     val reply = bos.toByteArray
     ctx.write(reply)
@@ -119,9 +117,8 @@ private[r] class RBackendHandler(server: RBackend)
       dos: DataOutputStream): Unit = {
     var obj: Object = null
     try {
-      val cls = if (isStatic) {
-        Utils.classForName(objId)
-      } else {
+      val cls = if (isStatic) { Utils.classForName(objId) }
+      else {
         JVMObjectTracker.get(objId) match {
           case None =>
             throw new IllegalArgumentException("Object not found " + objId)
@@ -280,13 +277,9 @@ private[r] object JVMObjectTracker {
   // Investigate using use atomic integer in the future.
   private[this] var objCounter: Int = 0
 
-  def getObject(id: String): Object = {
-    objMap(id)
-  }
+  def getObject(id: String): Object = { objMap(id) }
 
-  def get(id: String): Option[Object] = {
-    objMap.get(id)
-  }
+  def get(id: String): Option[Object] = { objMap.get(id) }
 
   def put(obj: Object): String = {
     val objId = objCounter.toString
@@ -295,8 +288,6 @@ private[r] object JVMObjectTracker {
     objId
   }
 
-  def remove(id: String): Option[Object] = {
-    objMap.remove(id)
-  }
+  def remove(id: String): Option[Object] = { objMap.remove(id) }
 
 }

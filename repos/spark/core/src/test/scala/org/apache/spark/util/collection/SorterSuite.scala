@@ -218,9 +218,7 @@ class SorterSuite extends SparkFunSuite with Logging {
     }
 
     runExperiment("Java Arrays.sort() on primitive int array")(
-      {
-        Arrays.sort(intPrimitiveArray)
-      },
+      { Arrays.sort(intPrimitiveArray) },
       prepareIntPrimitiveArray)
 
     val sorterWithoutKeyReuse = new Sorter(new IntArraySortDataFormat)
@@ -254,9 +252,7 @@ abstract class AbstractIntArraySortDataFormat[K]
       src: Array[Int],
       srcPos: Int,
       dst: Array[Int],
-      dstPos: Int) {
-    dst(dstPos) = src(srcPos)
-  }
+      dstPos: Int) { dst(dstPos) = src(srcPos) }
 
   /** Copy a range of elements starting at src(srcPos) to dest, starting at destPos. */
   override def copyRange(
@@ -264,22 +260,16 @@ abstract class AbstractIntArraySortDataFormat[K]
       srcPos: Int,
       dst: Array[Int],
       dstPos: Int,
-      length: Int) {
-    System.arraycopy(src, srcPos, dst, dstPos, length)
-  }
+      length: Int) { System.arraycopy(src, srcPos, dst, dstPos, length) }
 
   /** Allocates a new structure that can hold up to 'length' elements. */
-  override def allocate(length: Int): Array[Int] = {
-    new Array[Int](length)
-  }
+  override def allocate(length: Int): Array[Int] = { new Array[Int](length) }
 }
 
 /** Format to sort a simple Array[Int]. Could be easily generified and specialized. */
 class IntArraySortDataFormat extends AbstractIntArraySortDataFormat[Int] {
 
-  override protected def getKey(data: Array[Int], pos: Int): Int = {
-    data(pos)
-  }
+  override protected def getKey(data: Array[Int], pos: Int): Int = { data(pos) }
 }
 
 /** Wrapper of Int for key reuse. */
@@ -294,17 +284,14 @@ class IntWrapper(var key: Int = 0) extends Ordered[IntWrapper] {
 class KeyReuseIntArraySortDataFormat
     extends AbstractIntArraySortDataFormat[IntWrapper] {
 
-  override def newKey(): IntWrapper = {
-    new IntWrapper()
-  }
+  override def newKey(): IntWrapper = { new IntWrapper() }
 
   override def getKey(
       data: Array[Int],
       pos: Int,
       reuse: IntWrapper): IntWrapper = {
-    if (reuse == null) {
-      new IntWrapper(data(pos))
-    } else {
+    if (reuse == null) { new IntWrapper(data(pos)) }
+    else {
       reuse.key = data(pos)
       reuse
     }

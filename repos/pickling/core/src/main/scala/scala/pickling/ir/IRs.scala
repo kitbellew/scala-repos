@@ -125,15 +125,11 @@ class IRs[U <: Universe with Singleton](val uni: U) {
                 None,
                 None,
                 Some(JavaProperty(shortName, tpe.toString, sym.isPublic))))
-          } else {
-            List()
-          }
+          } else { List() }
 
         case _ => List()
       }
-    } else {
-      List()
-    }
+    } else { List() }
 
     (tpe.declarations.collect {
       case sym: MethodSymbol

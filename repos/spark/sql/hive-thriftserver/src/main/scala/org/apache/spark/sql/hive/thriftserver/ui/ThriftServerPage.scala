@@ -126,9 +126,7 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
           None,
           Seq(null),
           false))
-    } else {
-      None
-    }
+    } else { None }
 
     val content =
       <h5 id="sqlstat">SQL Statistics</h5> ++
@@ -145,9 +143,7 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
     val isMultiline = errorMessage.indexOf('\n') >= 0
     val errorSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
       errorMessage.substring(0, errorMessage.indexOf('\n'))
-    } else {
-      errorMessage
-    })
+    } else { errorMessage })
     val details = if (isMultiline) {
       // scalastyle:off
       <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
@@ -158,9 +154,7 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
         <pre>{errorMessage}</pre>
       </div>
       // scalastyle:on
-    } else {
-      ""
-    }
+    } else { "" }
     <td>{errorSummary}{details}</td>
   }
 
@@ -205,9 +199,7 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
           None,
           Seq(null),
           false))
-    } else {
-      None
-    }
+    } else { None }
 
     val content =
       <h5 id="sessionstat">Session Statistics</h5> ++

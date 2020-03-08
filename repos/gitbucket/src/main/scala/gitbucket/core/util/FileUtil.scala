@@ -20,9 +20,7 @@ object FileUtil {
     defining(getMimeType(name)) { mimeType =>
       if (mimeType == "application/octet-stream" && isText(bytes)) {
         "text/plain"
-      } else {
-        mimeType
-      }
+      } else { mimeType }
     }
   }
 
@@ -45,14 +43,9 @@ object FileUtil {
     }
 
   def withTmpDir[A](dir: File)(action: File => A): A = {
-    if (dir.exists()) {
-      FileUtils.deleteDirectory(dir)
-    }
-    try {
-      action(dir)
-    } finally {
-      FileUtils.deleteDirectory(dir)
-    }
+    if (dir.exists()) { FileUtils.deleteDirectory(dir) }
+    try { action(dir) }
+    finally { FileUtils.deleteDirectory(dir) }
   }
 
   val mimeTypeWhiteList: Array[String] = Array(

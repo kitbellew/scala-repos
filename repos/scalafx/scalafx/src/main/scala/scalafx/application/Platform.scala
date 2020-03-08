@@ -36,9 +36,7 @@ import scalafx.beans.property.ReadOnlyBooleanProperty
 object Platform {
 
   /** Causes the JavaFX application to terminate. */
-  def exit() {
-    jfxa.Platform.exit()
-  }
+  def exit() { jfxa.Platform.exit() }
 
   /** Returns true if the calling thread is the JavaFX Application Thread. */
   def isFxApplicationThread: Boolean = jfxa.Platform.isFxApplicationThread
@@ -74,9 +72,7 @@ object Platform {
     */
   def runLater[R](op: => R) {
     runLater(new Runnable {
-      def run() {
-        op
-      }
+      def run() { op }
     })
   }
 

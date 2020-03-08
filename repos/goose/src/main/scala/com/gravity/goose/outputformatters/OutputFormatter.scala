@@ -81,9 +81,7 @@ trait OutputFormatter {
       (
         node
           .children()
-          .map((e: Element) => {
-            StringEscapeUtils.unescapeHtml(e.text).trim
-          }))
+          .map((e: Element) => { StringEscapeUtils.unescapeHtml(e.text).trim }))
         .toList
         .mkString("\n\n")
     }
@@ -115,18 +113,13 @@ trait OutputFormatter {
     */
   private def removeNodesWithNegativeScores(topNode: Element) {
     def tryInt(text: String): Int =
-      try {
-        Integer.parseInt(text)
-      } catch {
-        case _: Exception => 0
-      }
+      try { Integer.parseInt(text) }
+      catch { case _: Exception => 0 }
 
     val gravityItems = selectElements("*[gravityScore]", topNode)
     for (item <- gravityItems) {
       val score = tryInt(item.attr("gravityScore"))
-      if (score < 1) {
-        item.remove()
-      }
+      if (score < 1) { item.remove() }
     }
   }
 
@@ -162,13 +155,9 @@ trait OutputFormatter {
     val sb = new StringBuilder()
 
     item.childNodes().foreach {
-      case childText: TextNode => {
-        sb.append(childText.getWholeText)
-      }
-      case childElement: Element => {
-        sb.append(childElement.outerHtml())
-      }
-      case _ =>
+      case childText: TextNode   => { sb.append(childText.getWholeText) }
+      case childElement: Element => { sb.append(childElement.outerHtml()) }
+      case _                     =>
     }
 
     val text = tagReplace replaceAllIn (sb.toString(), "")
@@ -198,9 +187,7 @@ trait OutputFormatter {
             el.remove()
           }
         } catch {
-          case e: IllegalArgumentException => {
-            logger.error(e.getMessage)
-          }
+          case e: IllegalArgumentException => { logger.error(e.getMessage) }
         }
       }
 

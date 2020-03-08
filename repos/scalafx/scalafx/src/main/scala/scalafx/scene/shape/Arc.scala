@@ -52,37 +52,23 @@ class Arc(override val delegate: jfxss.Arc = new jfxss.Arc())
     extends Shape(delegate)
     with SFXDelegate[jfxss.Arc] {
   def centerX: DoubleProperty = delegate.centerXProperty
-  def centerX_=(v: Double) {
-    centerX() = v
-  }
+  def centerX_=(v: Double) { centerX() = v }
 
   def centerY: DoubleProperty = delegate.centerYProperty
-  def centerY_=(v: Double) {
-    centerY() = v
-  }
+  def centerY_=(v: Double) { centerY() = v }
 
   def length: DoubleProperty = delegate.lengthProperty
-  def length_=(v: Double) {
-    length() = v
-  }
+  def length_=(v: Double) { length() = v }
 
   def radiusX: DoubleProperty = delegate.radiusXProperty
-  def radiusX_=(v: Double) {
-    radiusX() = v
-  }
+  def radiusX_=(v: Double) { radiusX() = v }
 
   def radiusY: DoubleProperty = delegate.radiusYProperty
-  def radiusY_=(v: Double) {
-    radiusY() = v
-  }
+  def radiusY_=(v: Double) { radiusY() = v }
 
   def startAngle: DoubleProperty = delegate.startAngleProperty
-  def startAngle_=(v: Double) {
-    startAngle() = v
-  }
+  def startAngle_=(v: Double) { startAngle() = v }
 
   def `type`: ObjectProperty[jfxss.ArcType] = delegate.typeProperty
-  def `type_=`(v: ArcType) {
-    `type`() = v
-  }
+  def `type_=`(v: ArcType) { `type`() = v }
 }

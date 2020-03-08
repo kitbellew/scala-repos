@@ -21,7 +21,5 @@ class ScalaPrimaryConstructorStructureViewElement(
     new ScalaPrimaryConstructorItemPresentation(element);
   }
 
-  def getChildren: Array[TreeElement] = {
-    new Array[TreeElement](0)
-  }
+  def getChildren: Array[TreeElement] = { new Array[TreeElement](0) }
 }

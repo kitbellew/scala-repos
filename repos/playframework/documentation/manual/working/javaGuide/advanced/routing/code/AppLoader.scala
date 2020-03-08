@@ -14,15 +14,11 @@ import router.RoutingDslBuilder
 
 //#load
 class AppLoader extends ApplicationLoader {
-  def load(context: Context) = {
-    new MyComponents(context).application
-  }
+  def load(context: Context) = { new MyComponents(context).application }
 }
 
 class MyComponents(context: Context)
     extends BuiltInComponentsFromContext(context) {
-  lazy val router = Router.from {
-    RoutingDslBuilder.getRouter.asScala.routes
-  }
+  lazy val router = Router.from { RoutingDslBuilder.getRouter.asScala.routes }
 }
 //#load

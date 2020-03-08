@@ -279,25 +279,18 @@ object SparkBuild extends PomBuild {
           i.reportedProblems foreach { p =>
             val deprecation = p.message.contains("is deprecated")
 
-            if (!deprecation) {
-              failed = failed + 1
-            }
+            if (!deprecation) { failed = failed + 1 }
 
             val printer: (=> String) => Unit = s =>
-              if (deprecation) {
-                out.log.warn(s)
-              } else {
-                out.log.error("[warn] " + s)
-              }
+              if (deprecation) { out.log.warn(s) }
+              else { out.log.error("[warn] " + s) }
 
             logProblem(printer, k, p)
 
           }
       }
 
-      if (failed > 0) {
-        sys.error(s"$failed fatal warnings")
-      }
+      if (failed > 0) { sys.error(s"$failed fatal warnings") }
       analysis
     }
   )
@@ -631,9 +624,7 @@ object Assembly {
               "streaming-kinesis-asl-assembly")) {
           // This must match the same name used in maven (see external/kafka-assembly/pom.xml)
           s"${mName}-${v}.jar"
-        } else {
-          s"${mName}-${v}-hadoop${hv}.jar"
-        }
+        } else { s"${mName}-${v}-hadoop${hv}.jar" }
     },
     jarName in (Test, assembly) <<= (version, moduleName, hadoopVersion) map {
       (v, mName, hv) => s"${mName}-test-${v}.jar"
@@ -657,9 +648,7 @@ object Assembly {
       libManagedJars.mkdirs()
       jars.foreach { jar =>
         val dest = new File(libManagedJars, jar.getName)
-        if (!dest.exists()) {
-          Files.copy(jar.toPath, dest.toPath)
-        }
+        if (!dest.exists()) { Files.copy(jar.toPath, dest.toPath) }
       }
     },
     assembly <<= assembly.dependsOn(deployDatanucleusJars)
@@ -711,9 +700,7 @@ object PySparkAssembly {
       var n = 0
       while (n != -1) {
         n = in.read(buf)
-        if (n != -1) {
-          output.write(buf, 0, n)
-        }
+        if (n != -1) { output.write(buf, 0, n) }
       }
       output.closeEntry()
       in.close()
@@ -854,9 +841,7 @@ object Unidoc {
       // Add links to sources when generating Scaladoc for a non-snapshot release
       if (!isSnapshot.value) {
         Opts.doc.sourceUrl(unidocSourceBase.value + "€{FILE_PATH}.scala")
-      } else {
-        Seq()
-      }
+      } else { Seq() }
     )
   )
 }
@@ -880,9 +865,7 @@ object CopyDependencies {
         .filter { jar => jar.isFile() }
         .foreach { jar =>
           val destJar = new File(dest, jar.getName())
-          if (destJar.isFile()) {
-            destJar.delete()
-          }
+          if (destJar.isFile()) { destJar.delete() }
           Files.copy(jar.toPath(), destJar.toPath())
         }
     },

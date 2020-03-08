@@ -30,9 +30,8 @@ class TestBarrier(count: Int) {
     await(TestBarrier.DefaultTimeout)
 
   def await(timeout: FiniteDuration)(implicit system: ActorSystem) {
-    try {
-      barrier.await(timeout.dilated.toNanos, TimeUnit.NANOSECONDS)
-    } catch {
+    try { barrier.await(timeout.dilated.toNanos, TimeUnit.NANOSECONDS) }
+    catch {
       case e: TimeoutException ⇒
         throw new TestBarrierTimeoutException(
           "Timeout of %s and time factor of %s"

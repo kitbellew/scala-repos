@@ -306,9 +306,7 @@ class ScalaResolveResult(
           }
       }
     }
-    if (precedence == -1) {
-      precedence = getPrecedenceInner
-    }
+    if (precedence == -1) { precedence = getPrecedenceInner }
     precedence
   }
 

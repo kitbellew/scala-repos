@@ -146,9 +146,8 @@ class StreamingContext private[streaming] (
   private[streaming] val isCheckpointPresent = (_cp != null)
 
   private[streaming] val sc: SparkContext = {
-    if (_sc != null) {
-      _sc
-    } else if (isCheckpointPresent) {
+    if (_sc != null) { _sc }
+    else if (isCheckpointPresent) {
       SparkContext.getOrCreate(_cp.createSparkConf())
     } else {
       throw new SparkException(
@@ -188,9 +187,7 @@ class StreamingContext private[streaming] (
     if (isCheckpointPresent) {
       sc.setCheckpointDir(_cp.checkpointDir)
       _cp.checkpointDir
-    } else {
-      null
-    }
+    } else { null }
   }
 
   private[streaming] val checkpointDuration: Duration = {
@@ -207,9 +204,7 @@ class StreamingContext private[streaming] (
   private[streaming] val uiTab: Option[StreamingTab] =
     if (conf.getBoolean("spark.ui.enabled", true)) {
       Some(new StreamingTab(this))
-    } else {
-      None
-    }
+    } else { None }
 
   /* Initializing a streamingSource to register metrics */
   private val streamingSource = new StreamingSource(this)
@@ -236,9 +231,7 @@ class StreamingContext private[streaming] (
     * if the developer wishes to query old data outside the DStream computation).
     * @param duration Minimum duration that each DStream should remember its RDDs
     */
-  def remember(duration: Duration) {
-    graph.remember(duration)
-  }
+  def remember(duration: Duration) { graph.remember(duration) }
 
   /**
     * Set the context to periodically checkpoint the DStream operations for driver
@@ -254,9 +247,7 @@ class StreamingContext private[streaming] (
       val fullPath = fs.getFileStatus(path).getPath().toString
       sc.setCheckpointDir(fullPath)
       checkpointDir = fullPath
-    } else {
-      checkpointDir = null
-    }
+    } else { checkpointDir = null }
   }
 
   private[streaming] def isCheckpointingEnabled: Boolean = {
@@ -565,9 +556,8 @@ class StreamingContext private[streaming] (
     // Verify whether the DStream checkpoint is serializable
     if (isCheckpointingEnabled) {
       val checkpoint = new Checkpoint(this, Time(0))
-      try {
-        Checkpoint.serialize(checkpoint, conf)
-      } catch {
+      try { Checkpoint.serialize(checkpoint, conf) }
+      catch {
         case e: NotSerializableException =>
           throw new NotSerializableException(
             "DStream checkpointing has been enabled but the DStreams with their functions " +
@@ -597,9 +587,7 @@ class StreamingContext private[streaming] (
     *  - StreamingContextState.STOPPED - The context has been stopped and cannot be used any more.
     */
   @DeveloperApi
-  def getState(): StreamingContextState = synchronized {
-    state
-  }
+  def getState(): StreamingContextState = synchronized { state }
 
   /**
     * Start the execution of the streams.
@@ -655,9 +643,7 @@ class StreamingContext private[streaming] (
     * Wait for the execution to stop. Any exceptions that occurs during the execution
     * will be thrown in this thread.
     */
-  def awaitTermination() {
-    waiter.waitForStopOrError()
-  }
+  def awaitTermination() { waiter.waitForStopOrError() }
 
   /**
     * Wait for the execution to stop. Any exceptions that occurs during the execution
@@ -684,9 +670,7 @@ class StreamingContext private[streaming] (
   def stop(
       stopSparkContext: Boolean =
         conf.getBoolean("spark.streaming.stopSparkContextByDefault", true)
-  ): Unit = synchronized {
-    stop(stopSparkContext, false)
-  }
+  ): Unit = synchronized { stop(stopSparkContext, false) }
 
   /**
     * Stop the execution of the streams, with option of ensuring all received data
@@ -720,20 +704,14 @@ class StreamingContext private[streaming] (
           // interrupted. See SPARK-12001 for more details. Because the body of this case can be
           // executed twice in the case of a partial stop, all methods called here need to be
           // idempotent.
-          Utils.tryLogNonFatalError {
-            scheduler.stop(stopGracefully)
-          }
+          Utils.tryLogNonFatalError { scheduler.stop(stopGracefully) }
           // Removing the streamingSource to de-register the metrics on stop()
           Utils.tryLogNonFatalError {
             env.metricsSystem.removeSource(streamingSource)
           }
-          Utils.tryLogNonFatalError {
-            uiTab.foreach(_.detach())
-          }
+          Utils.tryLogNonFatalError { uiTab.foreach(_.detach()) }
           StreamingContext.setActiveContext(null)
-          Utils.tryLogNonFatalError {
-            waiter.notifyStop()
-          }
+          Utils.tryLogNonFatalError { waiter.notifyStop() }
           if (shutdownHookRef != null) {
             shutdownHookRefToRemove = shutdownHookRef
             shutdownHookRef = null
@@ -788,9 +766,7 @@ object StreamingContext extends Logging {
   }
 
   private def setActiveContext(ssc: StreamingContext): Unit = {
-    ACTIVATION_LOCK.synchronized {
-      activeContext.set(ssc)
-    }
+    ACTIVATION_LOCK.synchronized { activeContext.set(ssc) }
   }
 
   /**
@@ -800,9 +776,7 @@ object StreamingContext extends Logging {
     */
   @Experimental
   def getActive(): Option[StreamingContext] = {
-    ACTIVATION_LOCK.synchronized {
-      Option(activeContext.get())
-    }
+    ACTIVATION_LOCK.synchronized { Option(activeContext.get()) }
   }
 
   /**
@@ -815,9 +789,7 @@ object StreamingContext extends Logging {
   @Experimental
   def getActiveOrCreate(
       creatingFunc: () => StreamingContext): StreamingContext = {
-    ACTIVATION_LOCK.synchronized {
-      getActive().getOrElse { creatingFunc() }
-    }
+    ACTIVATION_LOCK.synchronized { getActive().getOrElse { creatingFunc() } }
   }
 
   /**
@@ -887,9 +859,7 @@ object StreamingContext extends Logging {
   def jarOfClass(cls: Class[_]): Option[String] = SparkContext.jarOfClass(cls)
 
   private[streaming] def createNewSparkContext(
-      conf: SparkConf): SparkContext = {
-    new SparkContext(conf)
-  }
+      conf: SparkConf): SparkContext = { new SparkContext(conf) }
 
   private[streaming] def createNewSparkContext(
       master: String,
@@ -913,12 +883,8 @@ object StreamingContext extends Logging {
       suffix: String,
       time: Time): String = {
     var result = time.milliseconds.toString
-    if (prefix != null && prefix.length > 0) {
-      result = s"$prefix-$result"
-    }
-    if (suffix != null && suffix.length > 0) {
-      result = s"$result.$suffix"
-    }
+    if (prefix != null && prefix.length > 0) { result = s"$prefix-$result" }
+    if (suffix != null && suffix.length > 0) { result = s"$result.$suffix" }
     result
   }
 }

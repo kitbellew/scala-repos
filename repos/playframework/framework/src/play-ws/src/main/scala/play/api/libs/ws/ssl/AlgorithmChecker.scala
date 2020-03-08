@@ -30,15 +30,11 @@ class AlgorithmChecker(
   private val logger = org.slf4j.LoggerFactory.getLogger(getClass)
 
   private val signatureConstraintsMap: Map[String, AlgorithmConstraint] = {
-    for (c <- signatureConstraints.iterator) yield {
-      c.algorithm -> c
-    }
+    for (c <- signatureConstraints.iterator) yield { c.algorithm -> c }
   }.toMap
 
   private val keyConstraintsMap: Map[String, AlgorithmConstraint] = {
-    for (c <- keyConstraints.iterator) yield {
-      c.algorithm -> c
-    }
+    for (c <- keyConstraints.iterator) yield { c.algorithm -> c }
   }.toMap
 
   def isForwardCheckingSupported: Boolean = false
@@ -172,9 +168,7 @@ class AlgorithmChecker(
       // “neutral, lacking security”.
       val january2017 = new DateTime(2017, 1, 1, 0, 0, 0, 0)
       if (january2017.isEqual(expirationDate) || january2017.isBefore(
-            expirationDate)) {
-        warnOnSunset(x509Cert, expirationDate)
-      }
+            expirationDate)) { warnOnSunset(x509Cert, expirationDate) }
     }
   }
 
@@ -206,9 +200,7 @@ class AlgorithmChecker(
        */
       var cn: String = null
       for (rdn: Rdn <- ldapName.getRdns.asScala) {
-        if ("CN".equalsIgnoreCase(rdn.getType)) {
-          cn = rdn.getValue.toString
-        }
+        if ("CN".equalsIgnoreCase(rdn.getType)) { cn = rdn.getValue.toString }
       }
       cn
     } catch {

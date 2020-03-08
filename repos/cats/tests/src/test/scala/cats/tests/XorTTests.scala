@@ -307,17 +307,13 @@ class XorTTests extends CatsSuite {
 
   test("ensure on left is identity") {
     forAll { (x: XorT[Id, String, Int], s: String, p: Int => Boolean) =>
-      if (x.isLeft) {
-        x.ensure(s)(p) should ===(x)
-      }
+      if (x.isLeft) { x.ensure(s)(p) should ===(x) }
     }
   }
 
   test("ensure on right is identity if predicate satisfied") {
     forAll { (x: XorT[Id, String, Int], s: String, p: Int => Boolean) =>
-      if (x.isRight && p(x getOrElse 0)) {
-        x.ensure(s)(p) should ===(x)
-      }
+      if (x.isRight && p(x getOrElse 0)) { x.ensure(s)(p) should ===(x) }
     }
   }
 

@@ -238,9 +238,7 @@ class DestinationActor extends Actor {
       seqNr += 1
       if (seqNr % 11 == 0) {
         //drop it
-      } else {
-        sender() ! Confirm(deliveryId)
-      }
+      } else { sender() ! Confirm(deliveryId) }
     case _ => // do nothing
   }
 }

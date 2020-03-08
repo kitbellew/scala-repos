@@ -193,11 +193,8 @@ private class AppTaskLauncherActor(
   }
 
   private[this] def waitingForInFlight(): Unit = {
-    if (inFlightTaskOperations.isEmpty) {
-      context.stop(self)
-    } else {
-      context.become(receiveWaitingForInFlight)
-    }
+    if (inFlightTaskOperations.isEmpty) { context.stop(self) }
+    else { context.become(receiveWaitingForInFlight) }
   }
 
   /**
@@ -345,9 +342,7 @@ private class AppTaskLauncherActor(
             addCount
           )
         }
-      } else {
-        tasksToLaunch += addCount
-      }
+      } else { tasksToLaunch += addCount }
 
       OfferMatcherRegistration.manageOfferMatcherStatus()
 

@@ -133,8 +133,6 @@ private[deploy] object ClientArguments {
       val uri = new URI(s)
       uri.getScheme != null && uri.getPath != null && uri.getPath.endsWith(
         ".jar")
-    } catch {
-      case _: URISyntaxException => false
-    }
+    } catch { case _: URISyntaxException => false }
   }
 }

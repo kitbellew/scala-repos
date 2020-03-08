@@ -107,9 +107,7 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
         StringUtil.repeat("\t", count / tabSize) + StringUtil.repeat(
           " ",
           count % tabSize)
-      } else {
-        StringUtil.repeat(" ", count)
-      }
+      } else { StringUtil.repeat(" ", count) }
 
     def getSmartLength(line: String) =
       if (useTabs) line.length + line.count(_ == '\t') * (tabSize - 1)
@@ -230,9 +228,7 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
             indentSize - marginIndent,
             trimPreviousLine = false)
           caretMarker.setGreedyToRight(true)
-        } else {
-          forceIndent(caretOffset, indentSize, marginCharOpt)
-        }
+        } else { forceIndent(caretOffset, indentSize, marginCharOpt) }
 
         if (!wasSingleLine) {
           val currentPrefix =

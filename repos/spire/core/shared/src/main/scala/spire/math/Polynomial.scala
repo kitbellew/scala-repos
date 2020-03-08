@@ -26,9 +26,8 @@ object Polynomial extends PolynomialInstances {
       coeffs: Array[C]): PolyDense[C] = {
     var i = coeffs.length
     while (i > 0 && (coeffs(i - 1) === Semiring[C].zero)) i -= 1
-    if (i == coeffs.length) {
-      new PolyDense(coeffs)
-    } else {
+    if (i == coeffs.length) { new PolyDense(coeffs) }
+    else {
       val cs = new Array[C](i)
       System.arraycopy(coeffs, 0, cs, 0, i)
       new PolyDense(cs)
@@ -104,9 +103,8 @@ object Polynomial extends PolynomialInstances {
 
     // parse all the terms and operators out of the string
     @tailrec def parse(s: String, ts: List[T]): List[T] =
-      if (s.isEmpty) {
-        ts
-      } else {
+      if (s.isEmpty) { ts }
+      else {
         val (op, s2) = operRe.findPrefixMatchOf(s) match {
           case Some(m) => (m.group(1), s.substring(m.end))
           case None =>
@@ -123,9 +121,8 @@ object Polynomial extends PolynomialInstances {
         val e = if (e0 != "") e0 else if (v == "") "0" else "1"
 
         val t =
-          try {
-            T(Rational(c), v, e.toInt)
-          } catch {
+          try { T(Rational(c), v, e.toInt) }
+          catch {
             case _: Exception =>
               throw new IllegalArgumentException(s"illegal term: $c*x^$e")
           }
@@ -335,9 +332,7 @@ trait Polynomial[@sp(Double) C] { lhs =>
     var variations = 0
     foreachNonZero { (_, c) =>
       val sign = signed.sign(c)
-      if (Sign.Zero != prevSign && sign != prevSign) {
-        variations += 1
-      }
+      if (Sign.Zero != prevSign && sign != prevSign) { variations += 1 }
       prevSign = sign
     }
     variations
@@ -425,15 +420,10 @@ trait Polynomial[@sp(Double) C] { lhs =>
       else
         loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
 
-    if (k < 0) {
-      throw new IllegalArgumentException("negative exponent")
-    } else if (k == 0) {
-      Polynomial.one[C]
-    } else if (k == 1) {
-      this
-    } else {
-      loop(this, k - 1, this)
-    }
+    if (k < 0) { throw new IllegalArgumentException("negative exponent") }
+    else if (k == 0) { Polynomial.one[C] }
+    else if (k == 1) { this }
+    else { loop(this, k - 1, this) }
   }
 
   // VectorSpace ops.
@@ -460,9 +450,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
       @tailrec def loop(): Boolean = {
         val has1 = it1.hasNext
         val has2 = it2.hasNext
-        if (has1 && has2) {
-          if (it1.next == it2.next) loop() else false
-        } else has1 == has2
+        if (has1 && has2) { if (it1.next == it2.next) loop() else false }
+        else has1 == has2
       }
       loop()
 
@@ -481,9 +470,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
   }
 
   override def toString: String =
-    if (isZero) {
-      "(0)"
-    } else {
+    if (isZero) { "(0)" }
+    else {
       val bldr = ArrayBuilder.make[Term[C]]()
       foreach { (e, c) => bldr += Term(c, e) }
 

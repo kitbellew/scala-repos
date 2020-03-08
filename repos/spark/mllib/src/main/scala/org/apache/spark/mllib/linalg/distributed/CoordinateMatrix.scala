@@ -55,18 +55,14 @@ class CoordinateMatrix @Since("1.0.0") (
   /** Gets or computes the number of columns. */
   @Since("1.0.0")
   override def numCols(): Long = {
-    if (nCols <= 0L) {
-      computeSize()
-    }
+    if (nCols <= 0L) { computeSize() }
     nCols
   }
 
   /** Gets or computes the number of rows. */
   @Since("1.0.0")
   override def numRows(): Long = {
-    if (nRows <= 0L) {
-      computeSize()
-    }
+    if (nRows <= 0L) { computeSize() }
     nRows
   }
 
@@ -104,15 +100,11 @@ class CoordinateMatrix @Since("1.0.0") (
     * The number of columns must be within the integer range.
     */
   @Since("1.0.0")
-  def toRowMatrix(): RowMatrix = {
-    toIndexedRowMatrix().toRowMatrix()
-  }
+  def toRowMatrix(): RowMatrix = { toIndexedRowMatrix().toRowMatrix() }
 
   /** Converts to BlockMatrix. Creates blocks of [[SparseMatrix]] with size 1024 x 1024. */
   @Since("1.3.0")
-  def toBlockMatrix(): BlockMatrix = {
-    toBlockMatrix(1024, 1024)
-  }
+  def toBlockMatrix(): BlockMatrix = { toBlockMatrix(1024, 1024) }
 
   /**
     * Converts to BlockMatrix. Creates blocks of [[SparseMatrix]].

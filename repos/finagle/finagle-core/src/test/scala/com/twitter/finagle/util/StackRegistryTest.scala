@@ -51,7 +51,9 @@ class StackRegistryTest extends FunSuite {
   }
 
   test("StackRegistry should register stacks and params properly") {
-    val reg = new StackRegistry { def registryName: String = "test" }
+    val reg = new StackRegistry {
+      def registryName: String = "test"
+    }
     val stk = newStack()
     val params =
       Stack.Params.empty + param1 + param.Label("foo") + param.ProtocolLibrary(
@@ -70,7 +72,9 @@ class StackRegistryTest extends FunSuite {
   }
 
   test("StackRegistry should unregister stacks and params properly") {
-    val reg = new StackRegistry { def registryName: String = "test" }
+    val reg = new StackRegistry {
+      def registryName: String = "test"
+    }
     val stk = newStack()
     val params =
       Stack.Params.empty + param1 + param.Label("foo") + param.ProtocolLibrary(
@@ -93,7 +97,9 @@ class StackRegistryTest extends FunSuite {
 
   test(
     "StackRegistry keeps track of the number of GlobalRegistry entries it enters") {
-    val reg = new StackRegistry { def registryName: String = "test" }
+    val reg = new StackRegistry {
+      def registryName: String = "test"
+    }
     val stk = newStack()
     val params =
       Stack.Params.empty + param1 + param.Label("foo") + param.ProtocolLibrary(
@@ -115,7 +121,9 @@ class StackRegistryTest extends FunSuite {
   }
 
   test("Duplicates are tracked") {
-    val reg = new StackRegistry { def registryName: String = "test" }
+    val reg = new StackRegistry {
+      def registryName: String = "test"
+    }
     val stk = newStack()
 
     val name = "aname"

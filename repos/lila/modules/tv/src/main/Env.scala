@@ -70,15 +70,11 @@ final class Env(
   {
     import scala.concurrent.duration._
 
-    scheduler.message(FeaturedSelect) {
-      tvActor -> TvActor.Select
-    }
+    scheduler.message(FeaturedSelect) { tvActor -> TvActor.Select }
 
     scheduler.once(2.seconds) {
       streaming.actor ! Streaming.Search
-      scheduler.message(StreamingSearch) {
-        streaming.actor -> Streaming.Search
-      }
+      scheduler.message(StreamingSearch) { streaming.actor -> Streaming.Search }
     }
   }
 }

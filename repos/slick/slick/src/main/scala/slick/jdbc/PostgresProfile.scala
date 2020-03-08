@@ -90,9 +90,8 @@ trait PostgresProfile extends JdbcProfile {
           }
           .getOrElse {
             val d = super.default
-            if (meta.nullable == Some(true) && d == None) {
-              Some(None)
-            } else d
+            if (meta.nullable == Some(true) && d == None) { Some(None) }
+            else d
           }
       override def length: Option[Int] = {
         val l = super.length

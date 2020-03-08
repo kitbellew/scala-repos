@@ -65,11 +65,8 @@ object ColorSelector extends JFXApp {
   // METHODS - BEGIN
 
   private def controlSelected(control: SliderControl) {
-    if (control.selectedControl.value) {
-      synchronizedControls.add(control)
-    } else {
-      synchronizedControls.remove(control)
-    }
+    if (control.selectedControl.value) { synchronizedControls.add(control) }
+    else { synchronizedControls.remove(control) }
   }
 
   private def changeColor() {

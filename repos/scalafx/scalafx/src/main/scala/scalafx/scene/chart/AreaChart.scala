@@ -66,7 +66,5 @@ class AreaChart[X, Y](override val delegate: jfxsc.AreaChart[X, Y])
 
   /** When true, CSS styleable symbols are created for any data items that don't have a symbol node specified. */
   def createSymbols: BooleanProperty = delegate.createSymbolsProperty
-  def createSymbols_=(v: Boolean) {
-    createSymbols() = v
-  }
+  def createSymbols_=(v: Boolean) { createSymbols() = v }
 }

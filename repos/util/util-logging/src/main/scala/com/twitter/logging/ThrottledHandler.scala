@@ -84,9 +84,7 @@ class ThrottledHandler(
         if (!expired) {
           count += 1
           (count <= maxToDisplay, true)
-        } else {
-          (false, false)
-        }
+        } else { (false, false) }
       }
 
       if (shouldPublish) doPublish(record)
@@ -117,9 +115,7 @@ class ThrottledHandler(
   private val throttleMap = new mutable.HashMap[String, Throttle]
 
   @deprecated("Use flushThrottled() instead", "5.3.13")
-  def reset() {
-    flushThrottled()
-  }
+  def reset() { flushThrottled() }
 
   /**
     * Force printing any "swallowed" messages.
@@ -164,7 +160,5 @@ class ThrottledHandler(
     tryPublish()
   }
 
-  private def doPublish(record: javalog.LogRecord) = {
-    super.publish(record)
-  }
+  private def doPublish(record: javalog.LogRecord) = { super.publish(record) }
 }

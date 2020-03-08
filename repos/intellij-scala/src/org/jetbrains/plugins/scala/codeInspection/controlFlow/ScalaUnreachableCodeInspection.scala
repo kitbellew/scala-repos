@@ -40,9 +40,7 @@ class ScalaUnreachableCodeInspection
           comp <- components.tail
           unreachable = comp.diff(components.head)
           fragm <- fragments(unreachable)
-        } {
-          registerProblem(fragm, holder)
-        }
+        } { registerProblem(fragm, holder) }
       }
   }
 

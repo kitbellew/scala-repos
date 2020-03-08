@@ -16,12 +16,8 @@ class ScalaControllerInject @Inject() (db: Database) extends Controller {
       val stmt = conn.createStatement
       val rs = stmt.executeQuery("SELECT 9 as testkey ")
 
-      while (rs.next()) {
-        outString += rs.getString("testkey")
-      }
-    } finally {
-      conn.close()
-    }
+      while (rs.next()) { outString += rs.getString("testkey") }
+    } finally { conn.close() }
     Ok(outString)
   }
 

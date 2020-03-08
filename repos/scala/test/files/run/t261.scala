@@ -1,4 +1,6 @@
-trait A { val foo: String = "A" }
+trait A {
+  val foo: String = "A"
+}
 trait B {
   private val foo: String = "B"
   def f = println(foo)

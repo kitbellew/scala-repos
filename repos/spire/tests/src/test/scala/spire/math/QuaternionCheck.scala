@@ -29,9 +29,7 @@ class QuaternionCheck
     }
   }
 
-  property("q + -q = 0") {
-    forAll { (q: H) => q + (-q) shouldBe zero }
-  }
+  property("q + -q = 0") { forAll { (q: H) => q + (-q) shouldBe zero } }
 
   property("q1 + -q2 = q1 - q2") {
     forAll { (q1: H, q2: H) => q1 + (-q2) shouldBe q1 - q2 }
@@ -59,9 +57,7 @@ class QuaternionCheck
     }
   }
 
-  property("q * 2 = q + q") {
-    forAll { (q: H) => q * Real(2) shouldBe q + q }
-  }
+  property("q * 2 = q + q") { forAll { (q: H) => q * Real(2) shouldBe q + q } }
 
   property("q1 * (q2 + q3) = q1 * q2 + q1 * q3") {
     forAll { (q1: H, q2: H, q3: H) =>
@@ -81,9 +77,7 @@ class QuaternionCheck
     forAll { (q: H) => if (q != zero) (one / q) shouldBe q.reciprocal }
   }
 
-  property("q.pow(2) = q * q") {
-    forAll { (q: H) => q.pow(2) shouldBe q * q }
-  }
+  property("q.pow(2) = q * q") { forAll { (q: H) => q.pow(2) shouldBe q * q } }
 
   // exact checking isn't quite working in all cases, ugh
   val tolerance = Real(Rational(1, 1000000000))
@@ -112,9 +106,7 @@ class QuaternionCheck
     if (x != y) {
       //dumpDiff("ouch", x, y)
       (x - y).abs should be < tolerance // sadface
-    } else {
-      x shouldBe y
-    }
+    } else { x shouldBe y }
 
   property("q.sqrt.pow(2) = q") {
     forAll { (q: H) =>

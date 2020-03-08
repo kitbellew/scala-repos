@@ -67,9 +67,7 @@ class ZookeeperConsumerConnectorTest
   }
 
   @After
-  override def tearDown() {
-    super.tearDown()
-  }
+  override def tearDown() { super.tearDown() }
 
   @Test
   def testBasic() {

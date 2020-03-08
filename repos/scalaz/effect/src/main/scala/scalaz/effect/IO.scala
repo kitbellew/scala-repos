@@ -54,17 +54,11 @@ sealed abstract class IO[A] {
 
   /** Continues this action with the given function. */
   def map[B](f: A => B): IO[B] =
-    io(rw =>
-      apply(rw) map {
-        case (nw, a) => (nw, f(a))
-      })
+    io(rw => apply(rw) map { case (nw, a) => (nw, f(a)) })
 
   /** Continues this action with the given action. */
   def flatMap[B](f: A => IO[B]): IO[B] =
-    io(rw =>
-      apply(rw) flatMap {
-        case (nw, a) => f(a)(nw)
-      })
+    io(rw => apply(rw) flatMap { case (nw, a) => f(a)(nw) })
 
   /** Lift this action to a given IO-like monad. */
   def liftIO[M[_]](implicit m: MonadIO[M]): M[A] =

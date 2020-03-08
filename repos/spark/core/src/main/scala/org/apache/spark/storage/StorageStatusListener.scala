@@ -56,9 +56,7 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
         case (blockId, updatedStatus) =>
           if (updatedStatus.storageLevel == StorageLevel.NONE) {
             storageStatus.removeBlock(blockId)
-          } else {
-            storageStatus.updateBlock(blockId, updatedStatus)
-          }
+          } else { storageStatus.updateBlock(blockId, updatedStatus) }
       }
     }
   }
@@ -85,9 +83,7 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
   }
 
   override def onUnpersistRDD(unpersistRDD: SparkListenerUnpersistRDD): Unit =
-    synchronized {
-      updateStorageStatus(unpersistRDD.rddId)
-    }
+    synchronized { updateStorageStatus(unpersistRDD.rddId) }
 
   override def onBlockManagerAdded(
       blockManagerAdded: SparkListenerBlockManagerAdded) {

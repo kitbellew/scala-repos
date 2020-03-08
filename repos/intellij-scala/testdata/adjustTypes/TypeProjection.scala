@@ -4,10 +4,16 @@ object TypeProjection {
     def id(t: T): T = t
   }
 
-  class IntBox extends Box { override type T = Int }
-  object StringBox extends Box { override type T = String }
+  class IntBox extends Box {
+    override type T = Int
+  }
+  object StringBox extends Box {
+    override type T = String
+  }
 
-  class ParamBox[S] extends Box { override type T = S }
+  class ParamBox[S] extends Box {
+    override type T = S
+  }
 
   class Inner /*start*/ {
     val intBox: IntBox = new IntBox()
@@ -21,9 +27,7 @@ object TypeProjection {
     val j: Inner.this.pb.T = pb.id(1)
     val j1: Inner.this.pb.type#T = pb.id(1)
 
-    def foo[S](s: S, pb: ParamBox[S]): Unit = {
-      val s1: pb.T = pb.id(s)
-    }
+    def foo[S](s: S, pb: ParamBox[S]): Unit = { val s1: pb.T = pb.id(s) }
   } /*end*/
 }
 

@@ -46,7 +46,5 @@ class PointLight(override val delegate: jfxs.PointLight = new jfxs.PointLight())
     with SFXDelegate[jfxs.PointLight] {
 
   /** Creates a new instance of `PointLight` class using the specified color. */
-  def this(color: Color) {
-    this(new jfxs.PointLight(color))
-  }
+  def this(color: Color) { this(new jfxs.PointLight(color)) }
 }

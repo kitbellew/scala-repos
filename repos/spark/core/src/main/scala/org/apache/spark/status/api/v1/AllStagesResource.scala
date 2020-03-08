@@ -44,11 +44,8 @@ private[v1] class AllStagesResource(ui: SparkUI) {
     val listener = ui.jobProgressListener
     val stageAndStatus = AllStagesResource.stagesAndStatus(ui)
     val adjStatuses = {
-      if (statuses.isEmpty()) {
-        Arrays.asList(StageStatus.values(): _*)
-      } else {
-        statuses
-      }
+      if (statuses.isEmpty()) { Arrays.asList(StageStatus.values(): _*) }
+      else { statuses }
     }
     for {
       (status, stageList) <- stageAndStatus
@@ -77,17 +74,12 @@ private[v1] object AllStagesResource {
       stageUiData.taskData.values.map(_.taskInfo.launchTime).filter(_ > 0)
 
     val firstTaskLaunchedTime: Option[Date] =
-      if (taskLaunchTimes.nonEmpty) {
-        Some(new Date(taskLaunchTimes.min))
-      } else {
-        None
-      }
+      if (taskLaunchTimes.nonEmpty) { Some(new Date(taskLaunchTimes.min)) }
+      else { None }
 
     val taskData = if (includeDetails) {
       Some(stageUiData.taskData.map { case (k, v) => k -> convertTaskData(v) })
-    } else {
-      None
-    }
+    } else { None }
     val executorSummary = if (includeDetails) {
       Some(stageUiData.executorSummary.map {
         case (k, summary) =>
@@ -103,9 +95,7 @@ private[v1] object AllStagesResource {
             diskBytesSpilled = summary.diskBytesSpilled
           )
       })
-    } else {
-      None
-    }
+    } else { None }
 
     val accumulableInfo = stageUiData.accumulables.values.map {
       convertAccumulableInfo
@@ -356,10 +346,7 @@ private[v1] abstract class MetricHelper[I, O](
   }
 
   def metricOption: Option[O] = {
-    if (data.isEmpty) {
-      None
-    } else {
-      Some(build)
-    }
+    if (data.isEmpty) { None }
+    else { Some(build) }
   }
 }

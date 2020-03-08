@@ -39,9 +39,8 @@ class CookieMap(message: Message)
 
   private[this] def decodeCookies(header: String): Iterable[Cookie] = {
     val decoder = new NettyCookieDecoder
-    try {
-      decoder.decode(header).asScala map { new Cookie(_) }
-    } catch {
+    try { decoder.decode(header).asScala map { new Cookie(_) } }
+    catch {
       case e: IllegalArgumentException =>
         _isValid = false
         Nil
@@ -131,9 +130,7 @@ class CookieMap(message: Message)
     *
     * @param cookie the ''Cookie'' to add
     */
-  def +=(cookie: Cookie): CookieMap = {
-    this += ((cookie.name, cookie))
-  }
+  def +=(cookie: Cookie): CookieMap = { this += ((cookie.name, cookie)) }
 
   /**
     * Deletes all cookies with the given ''name'' from this map.
@@ -168,14 +165,10 @@ class CookieMap(message: Message)
     *
     * @param cookie the ''Cookie'' to add
     */
-  def add(cookie: Cookie) {
-    add(cookie.name, cookie)
-  }
+  def add(cookie: Cookie) { add(cookie.name, cookie) }
 
   for {
     cookieHeader <- message.headers.getAll(cookieHeaderName).asScala
     cookie <- decodeCookies(cookieHeader)
-  } {
-    add(cookie)
-  }
+  } { add(cookie) }
 }

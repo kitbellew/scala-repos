@@ -61,9 +61,7 @@ case class TopicMetadataRequest(
     topics.foldLeft(0)(_ + shortStringLength(_)) /* topics */
   }
 
-  override def toString(): String = {
-    describe(true)
-  }
+  override def toString(): String = { describe(true) }
 
   override def handleError(
       e: Throwable,

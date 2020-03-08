@@ -87,17 +87,14 @@ private[spark] object SerDeUtil extends Logging {
           'u' -> 20)
       }
     override def construct(args: Array[Object]): Object = {
-      if (args.length == 1) {
-        construct(args ++ Array(""))
-      } else if (args.length == 2 && args(1).isInstanceOf[String]) {
+      if (args.length == 1) { construct(args ++ Array("")) }
+      else if (args.length == 2 && args(1).isInstanceOf[String]) {
         val typecode = args(0).asInstanceOf[String].charAt(0)
         // This must be ISO 8859-1 / Latin 1, not UTF-8, to interoperate correctly
         val data =
           args(1).asInstanceOf[String].getBytes(StandardCharsets.ISO_8859_1)
         construct(typecode, machineCodes(typecode), data)
-      } else {
-        super.construct(args)
-      }
+      } else { super.construct(args) }
     }
   }
 
@@ -141,17 +138,12 @@ private[spark] object SerDeUtil extends Logging {
     override def hasNext: Boolean = iter.hasNext
 
     override def next(): Array[Byte] = {
-      while (iter.hasNext && buffer.length < batch) {
-        buffer += iter.next()
-      }
+      while (iter.hasNext && buffer.length < batch) { buffer += iter.next() }
       val bytes = pickle.dumps(buffer.toArray)
       val size = bytes.length
       // let  1M < size < 10M
-      if (size < 1024 * 1024) {
-        batch *= 2
-      } else if (size > 1024 * 1024 * 10 && batch > 1) {
-        batch /= 2
-      }
+      if (size < 1024 * 1024) { batch *= 2 }
+      else if (size > 1024 * 1024 * 10 && batch > 1) { batch /= 2 }
       buffer.clear()
       bytes
     }
@@ -182,9 +174,7 @@ private[spark] object SerDeUtil extends Logging {
               case array: Array[Any] => array.toSeq
               case _                 => obj.asInstanceOf[JArrayList[_]].asScala
             }
-          } else {
-            Seq(obj)
-          }
+          } else { Seq(obj) }
         }
       }
       .toJavaRDD()
@@ -192,12 +182,8 @@ private[spark] object SerDeUtil extends Logging {
 
   private def checkPickle(t: (Any, Any)): (Boolean, Boolean) = {
     val pickle = new Pickler
-    val kt = Try {
-      pickle.dumps(t._1)
-    }
-    val vt = Try {
-      pickle.dumps(t._2)
-    }
+    val kt = Try { pickle.dumps(t._1) }
+    val vt = Try { pickle.dumps(t._2) }
     (kt, vt) match {
       case (Failure(kf), Failure(vf)) =>
         logWarning(s"""
@@ -242,9 +228,8 @@ private[spark] object SerDeUtil extends Logging {
           val value = if (valueFailed) v.toString else v
           Array[Any](key, value)
       }
-      if (batchSize == 0) {
-        new AutoBatchedPickler(cleaned)
-      } else {
+      if (batchSize == 0) { new AutoBatchedPickler(cleaned) }
+      else {
         val pickle = new Pickler
         cleaned.grouped(batchSize).map(batched => pickle.dumps(batched.asJava))
       }

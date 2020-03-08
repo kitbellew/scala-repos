@@ -30,9 +30,8 @@ case class GradientPaintScale[T](
     implicit view: T => Double)
     extends PaintScale[T] {
   def apply(value: T): Paint = {
-    if (view(value).isNaN) {
-      PaintScale.nanPaint
-    } else {
+    if (view(value).isNaN) { PaintScale.nanPaint }
+    else {
       val index = gradient.length * (value - lower) / (upper - lower)
       gradient(math.min(gradient.length - 1, math.max(0, index.toInt)))
     }
@@ -48,11 +47,8 @@ case class GradientPaintScale[T](
 case class CategoricalPaintScale[T](categories: Function1[T, Paint])
     extends PaintScale[T] {
   def apply(value: T): Paint = {
-    if (categories == null) {
-      PaintScale.nanPaint
-    } else {
-      categories(value)
-    }
+    if (categories == null) { PaintScale.nanPaint }
+    else { categories(value) }
   }
 
   private def ida(v: T) = categories match {

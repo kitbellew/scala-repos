@@ -20,11 +20,8 @@ private[finagle] class CloseOnReleaseService[Req, Rep](
   private[this] val wasReleased = new AtomicBoolean(false)
 
   override def apply(request: Req) = {
-    if (!wasReleased.get) {
-      super.apply(request)
-    } else {
-      Future.exception(WriteException(new ServiceClosedException))
-    }
+    if (!wasReleased.get) { super.apply(request) }
+    else { Future.exception(WriteException(new ServiceClosedException)) }
   }
 
   override def close(deadline: Time) = {

@@ -82,9 +82,8 @@ class MacroExpandAction extends AnAction {
   def expandMacroUnderCursor(expansion: ResolvedMacroExpansion)(
       implicit e: AnActionEvent) = {
     inWriteCommandAction(e.getProject) {
-      try {
-        applyExpansion(expansion)
-      } catch {
+      try { applyExpansion(expansion) }
+      catch {
         case e: UnresolvedExpansion =>
           LOG.warn(
             s"unable to expand ${expansion.expansion.place}, cannot resolve place, skipping")
@@ -142,9 +141,7 @@ class MacroExpandAction extends AnAction {
           val file = element.getContainingFile
           val nextLeaf = file.findElementAt(element.getTextRange.getEndOffset)
           if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf.getText.contains(
-                "\n")) {
-            tobeDeleted += element
-          }
+                "\n")) { tobeDeleted += element }
         }
         element.acceptChildren(this)
       }

@@ -119,9 +119,7 @@ trait CompletionControl {
         val src = new BatchSourceFile(inputP.source.file, contents)
 
         (src, inputP.withSource(src).withShift(1), true)
-      } else {
-        (inputP.source, inputP, false)
-      }
+      } else { (inputP.source, inputP, false) }
       askReloadFile(src)
       val x = new Response[Tree]
       askTypeAt(p, x)

@@ -295,9 +295,8 @@ private[io] abstract class TcpConnection(
           if (TraceLogging)
             log.debug("Read returned end-of-stream, our side not yet closed")
           handleClose(info, closeCommander, PeerClosed)
-      } catch {
-        case e: IOException ⇒ handleError(info.handler, e)
-      } finally bufferPool.release(buffer)
+      } catch { case e: IOException ⇒ handleError(info.handler, e) }
+      finally bufferPool.release(buffer)
     }
 
   def doWrite(info: ConnectionInfo): Unit =
@@ -358,9 +357,7 @@ private[io] abstract class TcpConnection(
     try {
       channel.socket().shutdownOutput()
       true
-    } catch {
-      case _: SocketException ⇒ false
-    }
+    } catch { case _: SocketException ⇒ false }
 
   @tailrec private[this] def extractMsg(t: Throwable): String =
     if (t == null) "unknown"
@@ -550,9 +547,7 @@ private[io] abstract class TcpConnection(
             PendingWrite(commander, tail),
             andThen)
         }
-      } catch {
-        case e: IOException ⇒ self ! WriteFileFailed(e)
-      }
+      } catch { case e: IOException ⇒ self ! WriteFileFailed(e) }
   }
 }
 

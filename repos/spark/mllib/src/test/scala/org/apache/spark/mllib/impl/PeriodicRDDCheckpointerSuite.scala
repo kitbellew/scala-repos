@@ -103,9 +103,7 @@ private object PeriodicRDDCheckpointerSuite {
     try {
       if (gIndex + 2 < iteration) {
         assert(rdd.getStorageLevel == StorageLevel.NONE)
-      } else {
-        assert(rdd.getStorageLevel != StorageLevel.NONE)
-      }
+      } else { assert(rdd.getStorageLevel != StorageLevel.NONE) }
     } catch {
       case _: AssertionError =>
         throw new Exception(
@@ -157,9 +155,7 @@ private object PeriodicRDDCheckpointerSuite {
           assert(
             rdd.getCheckpointFile.nonEmpty,
             "RDD should have 2 checkpoint files")
-        } else {
-          confirmCheckpointRemoved(rdd)
-        }
+        } else { confirmCheckpointRemoved(rdd) }
       } else {
         // RDD should never be checkpointed
         assert(!rdd.isCheckpointed, "RDD should never have been checkpointed")

@@ -94,9 +94,7 @@ private[spark] class SparkUI private (
 
   def getAppName: String = appName
 
-  def setAppId(id: String): Unit = {
-    appId = id
-  }
+  def setAppId(id: String): Unit = { appId = id }
 
   /** Stop the server behind this web interface. Only valid after bind(). */
   override def stop() {

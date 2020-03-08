@@ -21,13 +21,9 @@ class IoSpec extends WordSpec with Matchers {
       testCopy(300, 256)
     }
 
-    "copy an empty input stream to the output stream" in {
-      testCopy(0, 256)
-    }
+    "copy an empty input stream to the output stream" in { testCopy(0, 256) }
 
-    "not blow the stack" in {
-      testCopy(10000, 10000)
-    }
+    "not blow the stack" in { testCopy(10000, 10000) }
 
     def testCopy(len: Int, bufferSize: Int) {
       val bytes: Array[Byte] = (0 until len) map { x => x.toByte } toArray
@@ -43,9 +39,8 @@ class IoSpec extends WordSpec with Matchers {
         def read() = throw new RuntimeException
         override def close() = isClosed = true
       }
-      try {
-        copy(in, new ByteArrayOutputStream)
-      } catch { case ignore: Throwable => }
+      try { copy(in, new ByteArrayOutputStream) }
+      catch { case ignore: Throwable => }
       isClosed should equal(true)
     }
 
@@ -88,9 +83,7 @@ class IoSpec extends WordSpec with Matchers {
           f = myF
           throw new RuntimeException()
         }
-      } catch {
-        case _: Throwable => f.exists() should be(false)
-      }
+      } catch { case _: Throwable => f.exists() should be(false) }
     }
   }
 }

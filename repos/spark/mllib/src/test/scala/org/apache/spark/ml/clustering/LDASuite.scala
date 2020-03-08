@@ -128,15 +128,11 @@ class LDASuite
     val lda = new LDA()
 
     // misc Params
-    intercept[IllegalArgumentException] {
-      new LDA().setK(1)
-    }
+    intercept[IllegalArgumentException] { new LDA().setK(1) }
     intercept[IllegalArgumentException] {
       new LDA().setOptimizer("no_such_optimizer")
     }
-    intercept[IllegalArgumentException] {
-      new LDA().setDocConcentration(-1.1)
-    }
+    intercept[IllegalArgumentException] { new LDA().setDocConcentration(-1.1) }
     intercept[IllegalArgumentException] {
       new LDA().setTopicConcentration(-1.1)
     }
@@ -159,18 +155,10 @@ class LDASuite
     }
 
     // Online LDA
-    intercept[IllegalArgumentException] {
-      new LDA().setLearningOffset(0)
-    }
-    intercept[IllegalArgumentException] {
-      new LDA().setLearningDecay(0)
-    }
-    intercept[IllegalArgumentException] {
-      new LDA().setSubsamplingRate(0)
-    }
-    intercept[IllegalArgumentException] {
-      new LDA().setSubsamplingRate(1.1)
-    }
+    intercept[IllegalArgumentException] { new LDA().setLearningOffset(0) }
+    intercept[IllegalArgumentException] { new LDA().setLearningDecay(0) }
+    intercept[IllegalArgumentException] { new LDA().setSubsamplingRate(0) }
+    intercept[IllegalArgumentException] { new LDA().setSubsamplingRate(1.1) }
   }
 
   test("fit & transform with Online LDA") {

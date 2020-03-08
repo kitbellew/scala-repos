@@ -51,9 +51,7 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
       .map(KafkaConfig.fromProps(_, overridingProps))
 
   @Before
-  override def setUp() {
-    super.setUp()
-  }
+  override def setUp() { super.setUp() }
 
   @After
   override def tearDown() {
@@ -73,9 +71,7 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     val epochMap: mutable.Map[Int, Int] = mutable.Map.empty
     for (server <- this.servers) {
       epochMap += (server.config.brokerId -> server.kafkaController.epoch)
-      if (server.kafkaController.isActive()) {
-        controller = server
-      }
+      if (server.kafkaController.isActive()) { controller = server }
     }
     // Create topic with one partition
     kafka.admin.AdminUtils.createTopic(controller.zkUtils, topic, 1, 1)
@@ -116,18 +112,12 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
             "Queue state %d %d".format(
               channelManager.queueCapacity(0),
               channelManager.queueSize(0)))
-        } catch {
-          case e: Exception => {
-            log.info("Thread interrupted")
-          }
-        }
+        } catch { case e: Exception => { log.info("Thread interrupted") } }
       }
     })
     thread.setName("mythread")
     thread.start()
-    while (thread.getState() != Thread.State.WAITING) {
-      Thread.sleep(100)
-    }
+    while (thread.getState() != Thread.State.WAITING) { Thread.sleep(100) }
     // Assume that the thread is WAITING because it is
     // blocked on the queue, so interrupt and move forward
     thread.interrupt()
@@ -163,11 +153,7 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     try {
       controller.kafkaController
         .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
-    } catch {
-      case e: Throwable => {
-        fail(e)
-      }
-    }
+    } catch { case e: Throwable => { fail(e) } }
   }
 }
 
@@ -195,9 +181,7 @@ class MockChannelManager(
       .put(brokerId, brokerInfo.copy(messageQueue = messageQueue))
   }
 
-  def resumeSendThread(brokerId: Int) {
-    this.startRequestSendThread(0)
-  }
+  def resumeSendThread(brokerId: Int) { this.startRequestSendThread(0) }
 
   def queueCapacity(brokerId: Int): Int = {
     this.brokerStateInfo(brokerId).messageQueue.remainingCapacity

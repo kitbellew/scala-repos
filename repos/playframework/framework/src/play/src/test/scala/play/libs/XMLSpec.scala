@@ -12,17 +12,12 @@ object XMLSpec extends Specification {
 
   "The Java XML support" should {
 
-    def parse(xml: String) = {
-      XML.fromString(xml)
-    }
+    def parse(xml: String) = { XML.fromString(xml) }
 
     def writeStringToFile(file: File, text: String) = {
       val out = new FileOutputStream(file)
-      try {
-        out.write(text.getBytes("utf-8"))
-      } finally {
-        out.close()
-      }
+      try { out.write(text.getBytes("utf-8")) }
+      finally { out.close() }
     }
 
     "parse XML bodies" in {

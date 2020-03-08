@@ -22,9 +22,7 @@ trait ActivityService {
         case (t1, t2) =>
           if (isPublic) {
             (t1.activityUserName === activityUserName.bind) && (t2.isPrivate === false.bind)
-          } else {
-            (t1.activityUserName === activityUserName.bind)
-          }
+          } else { (t1.activityUserName === activityUserName.bind) }
       }
       .sortBy { case (t1, t2) => t1.activityId desc }
       .map { case (t1, t2) => t1 }

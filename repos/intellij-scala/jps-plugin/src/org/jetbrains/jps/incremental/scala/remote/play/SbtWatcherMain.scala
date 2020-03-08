@@ -19,9 +19,7 @@ object SbtWatcherMain {
     handle(context.getArgs.toSeq, context.out)
   }
 
-  def main(args: Array[String]) {
-    handle(args, System.out)
-  }
+  def main(args: Array[String]) { handle(args, System.out) }
 
   private def handle(arguments: Seq[String], out: PrintStream) {
     val messageConsumer = new MessageConsumer {
@@ -47,9 +45,7 @@ object SbtWatcherMain {
           val watcher = new LocalSbtWatcherExec
           watcher.startSbtExec(argsTail.toArray, messageConsumer)
 
-          if (watcher.isRunning) {
-            currentExec = Some((watcher, argsTail))
-          }
+          if (watcher.isRunning) { currentExec = Some((watcher, argsTail)) }
         }
 
         currentExec foreach {

@@ -175,7 +175,5 @@ object BSONHandlers {
         )
   }
   private[game] def clockBSONWrite(since: DateTime, clock: Clock) =
-    ByteArrayBSONHandler write {
-      BinaryFormat clock since write clock
-    }
+    ByteArrayBSONHandler write { BinaryFormat clock since write clock }
 }

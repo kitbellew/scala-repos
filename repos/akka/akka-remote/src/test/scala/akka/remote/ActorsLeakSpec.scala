@@ -61,9 +61,7 @@ object ActorsLeakSpec {
   }
 
   class StoppableActor extends Actor {
-    override def receive = {
-      case "stop" ⇒ context.stop(self)
-    }
+    override def receive = { case "stop" ⇒ context.stop(self) }
   }
 
 }
@@ -103,9 +101,7 @@ class ActorsLeakSpec
           remoteSystem.actorSelection(echoPath).tell(Identify(1), probe.ref)
           probe.expectMsgType[ActorIdentity].ref.nonEmpty should be(true)
 
-        } finally {
-          remoteSystem.terminate()
-        }
+        } finally { remoteSystem.terminate() }
 
         Await.ready(remoteSystem.whenTerminated, 10.seconds)
       }
@@ -132,15 +128,11 @@ class ActorsLeakSpec
               .managementCommand(ForceDisassociate(remoteAddress)),
             3.seconds)
 
-        } finally {
-          remoteSystem.terminate()
-        }
+        } finally { remoteSystem.terminate() }
 
         EventFilter
           .warning(pattern = "Association with remote system", occurrences = 1)
-          .intercept {
-            Await.ready(remoteSystem.whenTerminated, 10.seconds)
-          }
+          .intercept { Await.ready(remoteSystem.whenTerminated, 10.seconds) }
       }
 
       // Remote idle for too long case
@@ -174,15 +166,11 @@ class ActorsLeakSpec
             .managementCommand(ForceDisassociate(remoteAddress)),
           3.seconds)
 
-      } finally {
-        remoteSystem.terminate()
-      }
+      } finally { remoteSystem.terminate() }
 
       EventFilter
         .warning(pattern = "Association with remote system", occurrences = 1)
-        .intercept {
-          Await.ready(remoteSystem.whenTerminated, 10.seconds)
-        }
+        .intercept { Await.ready(remoteSystem.whenTerminated, 10.seconds) }
 
       EventFilter[TimeoutException](occurrences = 1).intercept {}
 

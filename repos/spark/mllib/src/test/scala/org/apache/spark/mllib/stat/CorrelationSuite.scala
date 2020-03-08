@@ -48,12 +48,8 @@ class CorrelationSuite
   test("corr(x, y) pearson, 1 value in data") {
     val x = sc.parallelize(Array(1.0))
     val y = sc.parallelize(Array(4.0))
-    intercept[RuntimeException] {
-      Statistics.corr(x, y, "pearson")
-    }
-    intercept[RuntimeException] {
-      Statistics.corr(x, y, "spearman")
-    }
+    intercept[RuntimeException] { Statistics.corr(x, y, "pearson") }
+    intercept[RuntimeException] { Statistics.corr(x, y, "spearman") }
   }
 
   test("corr(x, y) default, pearson") {
@@ -145,11 +141,8 @@ class CorrelationSuite
   }
 
   def approxEqual(v1: Double, v2: Double, threshold: Double = 1e-6): Boolean = {
-    if (v1.isNaN) {
-      v2.isNaN
-    } else {
-      math.abs(v1 - v2) <= threshold
-    }
+    if (v1.isNaN) { v2.isNaN }
+    else { math.abs(v1 - v2) <= threshold }
   }
 
   def matrixApproxEqual(

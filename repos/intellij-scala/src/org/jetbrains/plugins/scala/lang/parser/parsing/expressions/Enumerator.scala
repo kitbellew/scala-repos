@@ -55,9 +55,7 @@ object Enumerator {
             return Guard.parse(builder, noIf = true)
           }
       }
-      if (!Expr.parse(builder)) {
-        builder error ErrMsg("wrong.expression")
-      }
+      if (!Expr.parse(builder)) { builder error ErrMsg("wrong.expression") }
       enumMarker.done(ScalaElementTypes.ENUMERATOR)
       true
     }

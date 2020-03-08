@@ -98,9 +98,7 @@ class ObservableMapSpec[K, V]
     // Preparation
     val map = ObservableMap(List((1, "one"), (2, "two")))
     var invalidateCount = 0
-    map onInvalidate {
-      invalidateCount += 1
-    }
+    map onInvalidate { invalidateCount += 1 }
 
     // Execution
     map(3) = "three"
@@ -114,9 +112,7 @@ class ObservableMapSpec[K, V]
     // Preparation
     val map = ObservableMap((1, "one"), (2, "two"))
     var changeCount = 0
-    map onChange {
-      changeCount += 1
-    }
+    map onChange { changeCount += 1 }
 
     // Execution
     map(3) = "three"
@@ -141,10 +137,8 @@ class ObservableMapSpec[K, V]
     val addedEntries = Buffer.empty[(Int, String)]
     map onChange { (sourceMap, change) =>
       change match {
-        case Add(key, valueAdded) => {
-          addedEntries += ((key, valueAdded))
-        }
-        case _ => fail("Unexpected change: " + change)
+        case Add(key, valueAdded) => { addedEntries += ((key, valueAdded)) }
+        case _                    => fail("Unexpected change: " + change)
       }
     }
 

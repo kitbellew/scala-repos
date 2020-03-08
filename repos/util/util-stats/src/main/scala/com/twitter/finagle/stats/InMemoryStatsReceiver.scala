@@ -66,9 +66,8 @@ class InMemoryStatsReceiver extends StatsReceiver {
 
       override def toString: String = {
         val vals = apply()
-        val valStr = if (vals.length <= 3) {
-          vals.mkString("[", ",", "]")
-        } else {
+        val valStr = if (vals.length <= 3) { vals.mkString("[", ",", "]") }
+        else {
           val numOmitted = vals.length - 3
           vals
             .take(3)
@@ -83,9 +82,7 @@ class InMemoryStatsReceiver extends StatsReceiver {
     */
   def addGauge(name: String*)(f: => Float): Gauge = {
     val gauge = new Gauge {
-      def remove(): Unit = {
-        gauges -= name
-      }
+      def remove(): Unit = { gauges -= name }
 
       override def toString: String = {
         // avoid holding a reference to `f`

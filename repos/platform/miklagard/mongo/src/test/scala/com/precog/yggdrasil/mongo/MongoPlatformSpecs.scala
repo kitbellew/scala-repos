@@ -82,9 +82,7 @@ object MongoPlatformSpecEngine extends Logging {
   def release: Unit = lock.synchronized {
     refcount -= 1
 
-    if (refcount == 0) {
-      scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
-    }
+    if (refcount == 0) { scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS) }
 
     logger.debug("Mongo released, refcount = " + refcount)
   }
@@ -145,9 +143,7 @@ object MongoPlatformSpecEngine extends Logging {
                 assert(collection.count() == objs.size)
               case Failure(error) => logger.error("Error loading: " + error)
             }
-          } catch {
-            case t: Throwable => logger.error("Error loading: " + t)
-          }
+          } catch { case t: Throwable => logger.error("Error loading: " + t) }
         }
       }
     }
@@ -231,13 +227,9 @@ trait MongoPlatformSpecs
 
   def userMetadataView(apiKey: APIKey) = null
 
-  def startup() {
-    mongo = MongoPlatformSpecEngine.acquire.realMongo
-  }
+  def startup() { mongo = MongoPlatformSpecEngine.acquire.realMongo }
 
-  def shutdown() {
-    MongoPlatformSpecEngine.release
-  }
+  def shutdown() { MongoPlatformSpecEngine.release }
 
   override def map(fs: => Fragments): Fragments =
     (Step { startup() }) ^ fs ^ (Step { shutdown() })

@@ -69,18 +69,12 @@ object ViewAggregators {
       {
         e.event match {
           case "$set" => {
-            if (p == None) {
-              Some(e.properties)
-            } else {
-              p.map(_ ++ e.properties)
-            }
+            if (p == None) { Some(e.properties) }
+            else { p.map(_ ++ e.properties) }
           }
           case "$unset" => {
-            if (p == None) {
-              None
-            } else {
-              p.map(_ -- e.properties.keySet)
-            }
+            if (p == None) { None }
+            else { p.map(_ -- e.properties.keySet) }
           }
           case "$delete" => None
           case _         => p // do nothing for others

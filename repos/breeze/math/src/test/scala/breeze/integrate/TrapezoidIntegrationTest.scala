@@ -22,8 +22,6 @@ class TrapezoidIntegrationTest extends FunSuite {
   }
 
   test("not enough nodes") {
-    intercept[Exception] {
-      integrate.trapezoid(f, 0, 1, 1)
-    }
+    intercept[Exception] { integrate.trapezoid(f, 0, 1, 1) }
   }
 }

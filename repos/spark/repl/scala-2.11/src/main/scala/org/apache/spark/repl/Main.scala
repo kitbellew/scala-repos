@@ -47,9 +47,7 @@ object Main extends Logging {
     Console.err.println(msg)
   }
 
-  def main(args: Array[String]) {
-    doMain(args, new SparkILoop)
-  }
+  def main(args: Array[String]) { doMain(args, new SparkILoop) }
 
   // Visible for testing
   private[repl] def doMain(args: Array[String], _interp: SparkILoop): Unit = {
@@ -85,9 +83,7 @@ object Main extends Logging {
       // initialization in certain cases, there's an initialization order issue that prevents
       // this from being set after SparkContext is instantiated.
       .set("spark.repl.class.outputDir", outputDir.getAbsolutePath())
-    if (execUri != null) {
-      conf.set("spark.executor.uri", execUri)
-    }
+    if (execUri != null) { conf.set("spark.executor.uri", execUri) }
     if (System.getenv("SPARK_HOME") != null) {
       conf.setSparkHome(System.getenv("SPARK_HOME"))
     }

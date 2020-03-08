@@ -57,9 +57,7 @@ class StreamTest {
   }
 
   @Test
-  def foreach_allows_GC() {
-    assertStreamOpAllowsGC(_.foreach(_), _ => ())
-  }
+  def foreach_allows_GC() { assertStreamOpAllowsGC(_.foreach(_), _ => ()) }
 
   @Test
   def filter_all_foreach_allows_GC() {

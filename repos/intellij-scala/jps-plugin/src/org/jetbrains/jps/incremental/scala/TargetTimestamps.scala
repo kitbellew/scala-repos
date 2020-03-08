@@ -15,11 +15,8 @@ class TargetTimestamps(context: CompileContext) {
       using(
         new DataInputStream(
           new BufferedInputStream(new FileInputStream(file)))) { in =>
-        try {
-          Some(in.readLong())
-        } catch {
-          case _: IOException => None
-        }
+        try { Some(in.readLong()) }
+        catch { case _: IOException => None }
       }
     }
   }

@@ -64,9 +64,7 @@ private[spark] object ExecutorExitCode {
         "Unknown executor exit code (" + exitCode + ")" + (
           if (exitCode > 128) {
             " (died from signal " + (exitCode - 128) + "?)"
-          } else {
-            ""
-          }
+          } else { "" }
         )
     }
   }

@@ -209,19 +209,11 @@ case class RawBuffer(
       if (chunk.length + inMemory.size > memoryThreshold) {
         backToTemporaryFile()
         outStream.write(chunk.toArray)
-      } else {
-        inMemory = inMemory ++ chunk
-      }
-    } else {
-      outStream.write(chunk.toArray)
-    }
+      } else { inMemory = inMemory ++ chunk }
+    } else { outStream.write(chunk.toArray) }
   }
 
-  private[play] def close() {
-    if (outStream != null) {
-      outStream.close()
-    }
-  }
+  private[play] def close() { if (outStream != null) { outStream.close() } }
 
   private[play] def backToTemporaryFile() {
     backedByTemporaryFile = TemporaryFile("requestBody", "asRaw")
@@ -250,14 +242,9 @@ case class RawBuffer(
     */
   def asBytes(maxLength: Long = memoryThreshold): Option[ByteString] = {
     if (size <= maxLength) {
-      Some(if (inMemory != null) {
-        inMemory
-      } else {
-        ByteString(PlayIO.readFile(backedByTemporaryFile.file))
-      })
-    } else {
-      None
-    }
+      Some(if (inMemory != null) { inMemory }
+      else { ByteString(PlayIO.readFile(backedByTemporaryFile.file)) })
+    } else { None }
   }
 
   /**
@@ -647,9 +634,7 @@ trait BodyParsers {
       request =>
         if (request.method == HttpVerbs.PATCH || request.method == HttpVerbs.POST || request.method == HttpVerbs.PUT) {
           anyContent(maxLength)
-        } else {
-          ignore(AnyContentAsEmpty)
-        }
+        } else { ignore(AnyContentAsEmpty) }
     }
 
     /**
@@ -788,9 +773,8 @@ trait BodyParsers {
         parser: BodyParser[A],
         badResult: RequestHeader => Future[Result]): BodyParser[A] = {
       BodyParser("conditional, wrapping=" + parser.toString) { request =>
-        if (predicate(request)) {
-          parser(request)
-        } else {
+        if (predicate(request)) { parser(request) }
+        else {
           import play.api.libs.iteratee.Execution.Implicits.trampoline
           Accumulator.done(badResult(request).map(Left.apply))
         }
@@ -855,9 +839,8 @@ trait BodyParsers {
             Sink.fold[ByteString, ByteString](ByteString.empty)((state, bs) =>
               state ++ bs)
           ) mapFuture { bytes =>
-            try {
-              Future.successful(Right(parser(request, bytes)))
-            } catch {
+            try { Future.successful(Right(parser(request, bytes))) }
+            catch {
               case NonFatal(e) =>
                 logger.debug(errorMessage, e)
                 createBadResult(errorMessage + ": " + e.getMessage)(request)
@@ -902,9 +885,7 @@ object BodyParsers extends BodyParsers {
         setHandler(
           out,
           new OutHandler {
-            override def onPull(): Unit = {
-              pull(in)
-            }
+            override def onPull(): Unit = { pull(in) }
             override def onDownstreamFinish(): Unit = {
               status.success(MaxSizeNotExceeded)
               completeStage()
@@ -920,9 +901,7 @@ object BodyParsers extends BodyParsers {
                 status.success(MaxSizeExceeded(maxLength))
                 // Make sure we fail the stream, this will ensure downstream body parsers don't try to parse it
                 failStage(new MaxLengthLimitAttained)
-              } else {
-                push(out, chunk)
-              }
+              } else { push(out, chunk) }
             }
             override def onUpstreamFinish(): Unit = {
               status.success(MaxSizeNotExceeded)

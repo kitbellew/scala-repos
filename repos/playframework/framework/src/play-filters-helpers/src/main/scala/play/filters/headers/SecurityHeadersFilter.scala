@@ -45,9 +45,7 @@ object SecurityHeadersFilter {
     * @return a configured SecurityHeadersFilter.
     */
   def apply(config: SecurityHeadersConfig = SecurityHeadersConfig())
-      : SecurityHeadersFilter = {
-    new SecurityHeadersFilter(config)
-  }
+      : SecurityHeadersFilter = { new SecurityHeadersFilter(config) }
 
   /**
     * Convenience method for creating a filter using play.api.Configuration.  Good for testing.
@@ -75,9 +73,7 @@ case class SecurityHeadersConfig(
     contentTypeOptions: Option[String] = Some("nosniff"),
     permittedCrossDomainPolicies: Option[String] = Some("master-only"),
     contentSecurityPolicy: Option[String] = Some("default-src 'self'")) {
-  def this() {
-    this(frameOptions = Some("DENY"))
-  }
+  def this() { this(frameOptions = Some("DENY")) }
 
   import scala.compat.java8.OptionConverters._
   import java.{util => ju}

@@ -35,9 +35,7 @@ object KleisliUsage extends App {
   def cities(country: Country): List[City] = country.cities
 
   def save(cities: List[City]): Try[Unit] =
-    Try {
-      cities.foreach(c => println("Saving " + c.name))
-    }
+    Try { cities.foreach(c => println("Saving " + c.name)) }
 
   def inhabitants(c: City): Int = c.inhabitants
   // allCities and allCities are examples of using the variations of the

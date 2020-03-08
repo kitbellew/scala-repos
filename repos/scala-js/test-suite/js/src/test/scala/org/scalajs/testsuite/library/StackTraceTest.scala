@@ -50,13 +50,9 @@ class StackTraceTest {
     Error.stackTraceLimit = 20
 
     try {
-      verifyClassMethodNames("Foo" -> "f") {
-        new Foo().f(25)
-      }
+      verifyClassMethodNames("Foo" -> "f") { new Foo().f(25) }
 
-      verifyClassMethodNames("Foo" -> "f", "Bar" -> "g") {
-        new Bar().g(7)
-      }
+      verifyClassMethodNames("Foo" -> "f", "Bar" -> "g") { new Bar().g(7) }
 
       verifyClassMethodNames("Foo" -> "f", "FooTrait" -> "h") {
         new Foo().h(78)
@@ -65,20 +61,14 @@ class StackTraceTest {
       verifyClassMethodNames(
         "Foo" -> "f",
         "FooTrait" -> "h",
-        "Baz" -> "<init>") {
-        new Baz()
-      }
+        "Baz" -> "<init>") { new Baz() }
 
       verifyClassMethodNames(
         "Foo" -> "f",
         "Bar" -> "g",
         "Foobar$" -> "<clinit>",
-        "Foobar$" -> "<init>") {
-        Foobar.z
-      }
-    } finally {
-      Error.stackTraceLimit = oldStackTraceLimit
-    }
+        "Foobar$" -> "<init>") { Foobar.z }
+    } finally { Error.stackTraceLimit = oldStackTraceLimit }
   }
 
 }

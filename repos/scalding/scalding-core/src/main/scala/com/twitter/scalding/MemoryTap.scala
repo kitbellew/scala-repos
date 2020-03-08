@@ -30,9 +30,7 @@ class MemoryTap[In, Out](
     extends Tap[Properties, In, Out](scheme) {
 
   private var modifiedTime: Long = 1L
-  def updateModifiedTime: Unit = {
-    modifiedTime = System.currentTimeMillis
-  }
+  def updateModifiedTime: Unit = { modifiedTime = System.currentTimeMillis }
 
   override def createResource(conf: Properties) = {
     updateModifiedTime

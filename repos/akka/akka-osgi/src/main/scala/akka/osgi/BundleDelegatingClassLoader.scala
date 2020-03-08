@@ -79,13 +79,11 @@ class BundleDelegatingClassLoader(
     @tailrec def process(
         processed: Set[Bundle],
         remaining: Set[Bundle]): Set[Bundle] = {
-      if (remaining.isEmpty) {
-        processed
-      } else {
+      if (remaining.isEmpty) { processed }
+      else {
         val (b, rest) = (remaining.head, remaining.tail)
-        if (processed contains b) {
-          process(processed, rest)
-        } else {
+        if (processed contains b) { process(processed, rest) }
+        else {
           val wiring = b.adapt(classOf[BundleWiring])
           val direct: Set[Bundle] =
             if (wiring == null) Set.empty

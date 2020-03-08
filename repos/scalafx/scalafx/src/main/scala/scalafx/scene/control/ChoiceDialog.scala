@@ -119,9 +119,7 @@ class ChoiceDialog[T](
     * Sets the currently selected item in the dialog.
     * @param item The item to select in the dialog.
     */
-  def selectedItem_=(item: T): Unit = {
-    delegate.setSelectedItem(item)
-  }
+  def selectedItem_=(item: T): Unit = { delegate.setSelectedItem(item) }
 
   /**
     * Returns the buffer of all items that will be displayed to users. This buffer

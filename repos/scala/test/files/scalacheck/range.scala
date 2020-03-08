@@ -251,9 +251,8 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
     arbInt.arbitrary) { (r, x) =>
 //    println("takeWhile "+str(r))
     val t = (if (r.step > 0) r takeWhile (_ <= x) else r takeWhile (_ >= x))
-    if (r.size == 0) {
-      (t.size == 0) :| str(r) + " / " + str(t) + ": " + x
-    } else {
+    if (r.size == 0) { (t.size == 0) :| str(r) + " / " + str(t) + ": " + x }
+    else {
       val t2 =
         (if (r.step > 0) Range(r.start, x min r.last, r.step).inclusive
          else Range(r.start, x max r.last, r.step).inclusive)
@@ -307,9 +306,7 @@ object SmallValuesRange extends RangeTest("smallValues") {
 }
 
 object TooLargeRange extends Properties("Too Large Range") {
-  val genTooLargeStart = for {
-    start <- choose(-Int.MinValue, 0)
-  } yield start
+  val genTooLargeStart = for { start <- choose(-Int.MinValue, 0) } yield start
 
   property("Too large range throws exception") = forAll(genTooLargeStart) {
     start =>

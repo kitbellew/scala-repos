@@ -97,18 +97,14 @@ private[spark] class ShuffleMapStage(
   def addOutputLoc(partition: Int, status: MapStatus): Unit = {
     val prevList = outputLocs(partition)
     outputLocs(partition) = status :: prevList
-    if (prevList == Nil) {
-      _numAvailableOutputs += 1
-    }
+    if (prevList == Nil) { _numAvailableOutputs += 1 }
   }
 
   def removeOutputLoc(partition: Int, bmAddress: BlockManagerId): Unit = {
     val prevList = outputLocs(partition)
     val newList = prevList.filterNot(_.location == bmAddress)
     outputLocs(partition) = newList
-    if (prevList != Nil && newList == Nil) {
-      _numAvailableOutputs -= 1
-    }
+    if (prevList != Nil && newList == Nil) { _numAvailableOutputs -= 1 }
   }
 
   /**

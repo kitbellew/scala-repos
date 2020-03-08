@@ -103,9 +103,8 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver { self =>
             if (cg.totalSize >= 100000) Some(ks -> cg.totalSize)
             else None
         }
-        if (largeCgs.isEmpty) {
-          Nil
-        } else {
+        if (largeCgs.isEmpty) { Nil }
+        else {
           largeCgs.map {
             case (ks, size) =>
               Issue(ks.mkString("/") + "=" + size)

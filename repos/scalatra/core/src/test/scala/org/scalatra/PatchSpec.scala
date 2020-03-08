@@ -5,9 +5,7 @@ import org.scalatra.test.scalatest.ScalatraWordSpec
 class PatchSpec extends ScalatraWordSpec {
   addServlet(
     new ScalatraServlet {
-      patch("/") {
-        params.get("name").getOrElse("params are absent")
-      }
+      patch("/") { params.get("name").getOrElse("params are absent") }
     },
     "/*")
 

@@ -40,16 +40,12 @@ class LimitConcurrentRequestsFilter(concurrentOption: Option[Int])
   def pass(
       request: ServletRequest,
       response: ServletResponse,
-      chain: FilterChain): Unit = {
-    chain.doFilter(request, response)
-  }
+      chain: FilterChain): Unit = { chain.doFilter(request, response) }
 
   override def doFilter(
       request: ServletRequest,
       response: ServletResponse,
-      chain: FilterChain): Unit = {
-    filterFunction(request, response, chain)
-  }
+      chain: FilterChain): Unit = { filterFunction(request, response, chain) }
 
   override def init(filterConfig: FilterConfig): Unit = {}
   override def destroy(): Unit = {}

@@ -170,8 +170,6 @@ class RPackageUtilsSuite
       assert(!entries.contains("/package.zip"))
       assert(entries.contains("/packageTest/def.R"))
       assert(entries.contains("/packageTest/DESCRIPTION"))
-    } finally {
-      FileUtils.deleteDirectory(tempDir)
-    }
+    } finally { FileUtils.deleteDirectory(tempDir) }
   }
 }

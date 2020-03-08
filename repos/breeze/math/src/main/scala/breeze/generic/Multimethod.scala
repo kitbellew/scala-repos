@@ -42,9 +42,8 @@ trait Multimethod[Method, A <: AnyRef, R] extends MMRegistry1[Method] {
     val ac = a.asInstanceOf[AnyRef].getClass
 
     val cached = cache.get(ac)
-    if (cached != null) {
-      doMethod(cached.asInstanceOf, a)
-    } else {
+    if (cached != null) { doMethod(cached.asInstanceOf, a) }
+    else {
       val options = resolve(ac)
       options.size match {
         case 0 => bindingMissing(a)
@@ -54,9 +53,8 @@ trait Multimethod[Method, A <: AnyRef, R] extends MMRegistry1[Method] {
           doMethod(method, a)
         case _ =>
           val selected = selectBestOption(options)
-          if (selected.size != 1) {
-            multipleOptions(a, options)
-          } else {
+          if (selected.size != 1) { multipleOptions(a, options) }
+          else {
             val method = selected.values.head
             cache.put(ac, method)
             doMethod(method, a)
@@ -206,9 +204,7 @@ trait MMRegistry2[R] {
 
   def register(a: Class[_], b: Class[_], op: R) {
     ops(a -> b) = op
-    if (b.isPrimitive) {
-      ops(a -> ReflectionUtil.boxedFromPrimitive(b)) = op
-    }
+    if (b.isPrimitive) { ops(a -> ReflectionUtil.boxedFromPrimitive(b)) = op }
     if (a.isPrimitive) {
       ops(ReflectionUtil.boxedFromPrimitive(a) -> b) = op
       if (b.isPrimitive) {
@@ -228,14 +224,8 @@ trait MMRegistry2[R] {
       val t = queue.dequeue()
       result += t
       val s = t.getSuperclass
-      if (s != null) {
-        queue += s
-      }
-      for (i <- t.getInterfaces) {
-        if (!result(i)) {
-          queue += i
-        }
-      }
+      if (s != null) { queue += s }
+      for (i <- t.getInterfaces) { if (!result(i)) { queue += i } }
     }
     result
   }
@@ -303,14 +293,8 @@ trait MMRegistry3[R] {
       val t = queue.dequeue()
       result += t
       val s = t.getSuperclass
-      if (s != null) {
-        queue += s
-      }
-      for (i <- t.getInterfaces) {
-        if (!result(i)) {
-          queue += i
-        }
-      }
+      if (s != null) { queue += s }
+      for (i <- t.getInterfaces) { if (!result(i)) { queue += i } }
     }
     result
   }
@@ -362,9 +346,7 @@ trait MMRegistry1[M] {
 
   def register(a: Class[_], op: M) {
     ops(a) = op
-    if (a.isPrimitive) {
-      ops(ReflectionUtil.boxedFromPrimitive(a)) = op
-    }
+    if (a.isPrimitive) { ops(ReflectionUtil.boxedFromPrimitive(a)) = op }
     cache.clear()
   }
 
@@ -377,9 +359,7 @@ trait MMRegistry1[M] {
         val newCA = checkedA ++ a.getInterfaces
         val sa = a.getSuperclass +: a.getInterfaces.filterNot(checkedA)
         val allParents =
-          for (aa <- sa; if aa != null; m <- resolve(aa, newCA)) yield {
-            m
-          }
+          for (aa <- sa; if aa != null; m <- resolve(aa, newCA)) yield { m }
         allParents.toMap
     }
 

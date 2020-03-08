@@ -30,8 +30,6 @@ object Test {
   def main(args: Array[String]): Unit = {
     daemon()
     nonDaemon()
-    scala.sys.addShutdownHook {
-      println("main#shutdown.")
-    }
+    scala.sys.addShutdownHook { println("main#shutdown.") }
   }
 }

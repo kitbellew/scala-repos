@@ -178,11 +178,8 @@ abstract class ProbabilisticClassificationModel[
   }
 
   override protected def raw2prediction(rawPrediction: Vector): Double = {
-    if (!isDefined(thresholds)) {
-      rawPrediction.argmax
-    } else {
-      probability2prediction(raw2probability(rawPrediction))
-    }
+    if (!isDefined(thresholds)) { rawPrediction.argmax }
+    else { probability2prediction(raw2probability(rawPrediction)) }
   }
 
   /**
@@ -204,9 +201,8 @@ abstract class ProbabilisticClassificationModel[
     * @return  predicted label
     */
   protected def probability2prediction(probability: Vector): Double = {
-    if (!isDefined(thresholds)) {
-      probability.argmax
-    } else {
+    if (!isDefined(thresholds)) { probability.argmax }
+    else {
       val thresholds: Array[Double] = getThresholds
       val scaledProbability: Array[Double] =
         probability.toArray.zip(thresholds).map {

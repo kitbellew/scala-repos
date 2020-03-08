@@ -30,9 +30,7 @@ class CancellationTest extends FunSuite with IntegrationBase with MockitoSugar {
     assert(meCaptor.getValue match {
       case event: DownstreamMessageEvent => {
         assert(event.getChannel == m.channel)
-        assert(event.getMessage match {
-          case s: String => s == "123"
-        })
+        assert(event.getMessage match { case s: String => s == "123" })
         true
       }
     })
@@ -65,9 +63,7 @@ class CancellationTest extends FunSuite with IntegrationBase with MockitoSugar {
 
     f1.raise(new Exception)
     assert(f1.isDefined)
-    val failure = intercept[Failure] {
-      Await.result(f1)
-    }
+    val failure = intercept[Failure] { Await.result(f1) }
 
     assert(failure.getCause.isInstanceOf[CancelledConnectionException])
   }

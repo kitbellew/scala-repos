@@ -53,9 +53,7 @@ case class ProjectL1(s: Double) extends Proximal {
   val projectSimplex = ProjectProbabilitySimplex(s)
 
   def prox(x: DenseVector[Double], rho: Double = 1.0): Unit = {
-    val u = x.mapValues {
-      _.abs
-    }
+    val u = x.mapValues { _.abs }
     projectSimplex.prox(u, rho)
     cforRange(0 until x.length) { i => x.update(i, signum(x(i)) * u(i)) }
   }
@@ -82,9 +80,8 @@ case class ProjectSoc() extends Proximal {
     nx = sqrt(nx)
 
     if (nx > x(0)) {
-      if (nx <= -x(0)) {
-        cforRange(0 until n) { i => x(i) = 0 }
-      } else {
+      if (nx <= -x(0)) { cforRange(0 until n) { i => x(i) = 0 } }
+      else {
         val alpha = 0.5 * (1 + x(0) / nx)
         x.update(0, alpha * nx)
         cforRange(1 until n) { i => x.update(i, alpha * x(i)) }
@@ -213,9 +210,8 @@ case class ProximalHuber() extends Proximal {
   }
 
   def subgradHuber(x: Double): Double = {
-    if (abs(x) <= 1) {
-      2 * x
-    } else {
+    if (abs(x) <= 1) { 2 * x }
+    else {
       val projx = if (x > 0) x else -x
       2 * projx
     }

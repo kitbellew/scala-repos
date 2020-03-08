@@ -38,11 +38,7 @@ private[spark] class FileAppender(
   // Thread that reads the input stream and writes to file
   private val writingThread = new Thread("File appending thread for " + file) {
     setDaemon(true)
-    override def run() {
-      Utils.logUncaughtExceptions {
-        appendStreamToFile()
-      }
-    }
+    override def run() { Utils.logUncaughtExceptions { appendStreamToFile() } }
   }
   writingThread.start()
 
@@ -50,14 +46,10 @@ private[spark] class FileAppender(
     * Wait for the appender to stop appending, either because input stream is closed
     * or because of any error in appending
     */
-  def awaitTermination() {
-    writingThread.join()
-  }
+  def awaitTermination() { writingThread.join() }
 
   /** Stop the appender */
-  def stop() {
-    markedForStop = true
-  }
+  def stop() { markedForStop = true }
 
   /** Continuously read chunks from the input stream and append to the file */
   protected def appendStreamToFile() {
@@ -68,20 +60,15 @@ private[spark] class FileAppender(
         val buf = new Array[Byte](bufferSize)
         var n = 0
         while (!markedForStop && n != -1) {
-          try {
-            n = inputStream.read(buf)
-          } catch {
+          try { n = inputStream.read(buf) }
+          catch {
             // An InputStream can throw IOException during read if the stream is closed
             // asynchronously, so once appender has been flagged to stop these will be ignored
             case _: IOException if markedForStop => // do nothing and proceed to stop appending
           }
-          if (n > 0) {
-            appendToFile(buf, n)
-          }
+          if (n > 0) { appendToFile(buf, n) }
         }
-      } {
-        closeFile()
-      }
+      } { closeFile() }
     } catch {
       case e: Exception =>
         logError(s"Error writing stream to file $file", e)
@@ -90,9 +77,7 @@ private[spark] class FileAppender(
 
   /** Append bytes to the file output stream */
   protected def appendToFile(bytes: Array[Byte], len: Int) {
-    if (outputStream == null) {
-      openFile()
-    }
+    if (outputStream == null) { openFile() }
     outputStream.write(bytes, 0, len)
   }
 
@@ -160,9 +145,7 @@ private[spark] object FileAppender extends Logging {
               new TimeBasedRollingPolicy(interval, pattern),
               conf)
         }
-        .getOrElse {
-          new FileAppender(inputStream, file)
-        }
+        .getOrElse { new FileAppender(inputStream, file) }
     }
 
     def createSizeBasedAppender(): FileAppender = {

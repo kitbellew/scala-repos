@@ -143,9 +143,7 @@ class IngestServiceHandler(
             IngestProcessing.select(selectors, bytes, request)
           }
         }
-    } map {
-      _.join
-    }
+    } map { _.join }
   }
 
   def ingestBatch(
@@ -164,9 +162,7 @@ class IngestServiceHandler(
             nels("Ingest request missing body content."))) traverse {
             case (processor, data) =>
               processor.ingest(durability, errorHandling, storeMode, data)
-          } map {
-            _.disjunction
-          }
+          } map { _.disjunction }
         }
 
       case None =>

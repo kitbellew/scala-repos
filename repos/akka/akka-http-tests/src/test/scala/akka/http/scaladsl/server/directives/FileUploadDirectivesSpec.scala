@@ -41,9 +41,7 @@ class FileUploadDirectivesSpec extends RoutingSpec {
             ContentTypes.`text/xml(UTF-8)`).toString
           read(file.get) === xml
         }
-      } finally {
-        file.foreach(_.delete())
-      }
+      } finally { file.foreach(_.delete()) }
     }
   }
 
@@ -152,9 +150,7 @@ class FileUploadDirectivesSpec extends RoutingSpec {
       val buffer = new Array[Byte](1024)
       in.read(buffer)
       new String(buffer, "UTF-8")
-    } finally {
-      in.close()
-    }
+    } finally { in.close() }
   }
 
 }

@@ -9,9 +9,7 @@ trait O {
 }
 
 object Test extends O {
-  def main(args: Array[String]): Unit = {
-    assert(f.sum == 55)
-  }
+  def main(args: Array[String]): Unit = { assert(f.sum == 55) }
 }
 
 // Don't lose this part, it's what (formerly) crashes.

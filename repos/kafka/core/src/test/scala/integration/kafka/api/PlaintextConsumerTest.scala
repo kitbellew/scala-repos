@@ -524,16 +524,12 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     consumer0.assign(List(tp).asJava)
 
     // poll should fail because there is no offset reset strategy set
-    intercept[NoOffsetForPartitionException] {
-      consumer0.poll(50)
-    }
+    intercept[NoOffsetForPartitionException] { consumer0.poll(50) }
 
     // seek to out of range position
     val outOfRangePos = totalRecords + 1
     consumer0.seek(tp, outOfRangePos)
-    val e = intercept[OffsetOutOfRangeException] {
-      consumer0.poll(20000)
-    }
+    val e = intercept[OffsetOutOfRangeException] { consumer0.poll(20000) }
     val outOfRangePartitions = e.offsetOutOfRangePartitions()
     assertNotNull(outOfRangePartitions)
     assertEquals(1, outOfRangePartitions.size)
@@ -563,9 +559,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
     // consuming a too-large record should fail
     consumer0.assign(List(tp).asJava)
-    val e = intercept[RecordTooLargeException] {
-      consumer0.poll(20000)
-    }
+    val e = intercept[RecordTooLargeException] { consumer0.poll(20000) }
     val oversizedPartitions = e.recordTooLargePartitions()
     assertNotNull(oversizedPartitions)
     assertEquals(1, oversizedPartitions.size)

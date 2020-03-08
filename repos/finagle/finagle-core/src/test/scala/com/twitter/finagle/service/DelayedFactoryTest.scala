@@ -20,13 +20,9 @@ class DelayedFactoryTest extends FunSuite {
     val failed = new Exception("failed")
 
     def underlying: ServiceFactory[Int, Int]
-    def completeFuture() {
-      future.setValue(underlying)
-    }
+    def completeFuture() { future.setValue(underlying) }
 
-    def throwFuture() {
-      future.setException(failed)
-    }
+    def throwFuture() { future.setException(failed) }
     def factory: ServiceFactory[Int, Int]
   }
 
@@ -105,9 +101,7 @@ class DelayedFactoryTest extends FunSuite {
         val exc = new Exception("FAIL")
         bufferF.raise(exc)
         assert(bufferF.isDefined)
-        val actual = intercept[Failure] {
-          Await.result(bufferF)
-        }
+        val actual = intercept[Failure] { Await.result(bufferF) }
         assert(actual.getCause == exc)
       }
 
@@ -160,9 +154,7 @@ class DelayedFactoryTest extends FunSuite {
         assert(!bufferF.isDefined)
         throwFuture()
         assert(bufferF.isDefined)
-        val actual = intercept[Exception] {
-          Await.result(bufferF)
-        }
+        val actual = intercept[Exception] { Await.result(bufferF) }
         assert(actual == failed)
       }
 
@@ -177,9 +169,7 @@ class DelayedFactoryTest extends FunSuite {
         throwFuture()
         val bufferF = factory()
         assert(bufferF.isDefined)
-        val actual = intercept[Exception] {
-          Await.result(bufferF)
-        }
+        val actual = intercept[Exception] { Await.result(bufferF) }
         assert(actual == failed)
       }
     }

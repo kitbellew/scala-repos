@@ -94,9 +94,7 @@ trait NamedExpression extends Expression {
         case LongType => "L"
         case _        => ""
       }
-    } else {
-      ""
-    }
+    } else { "" }
 }
 
 abstract class Attribute extends LeafExpression with NamedExpression {
@@ -172,9 +170,7 @@ case class Alias(child: Expression, name: String)(
         exprId,
         qualifiers,
         isGenerated)
-    } else {
-      UnresolvedAttribute(name)
-    }
+    } else { UnresolvedAttribute(name) }
   }
 
   override def toString: String = s"$child AS $name#${exprId.id}$typeSuffix"
@@ -238,9 +234,7 @@ case class AttributeReference(
     case _                      => false
   }
 
-  override def semanticHash(): Int = {
-    this.exprId.hashCode()
-  }
+  override def semanticHash(): Int = { this.exprId.hashCode() }
 
   override def hashCode: Int = {
     // See http://stackoverflow.com/questions/113511/hash-code-implementation
@@ -263,9 +257,8 @@ case class AttributeReference(
     * Returns a copy of this [[AttributeReference]] with changed nullability.
     */
   override def withNullability(newNullability: Boolean): AttributeReference = {
-    if (nullable == newNullability) {
-      this
-    } else {
+    if (nullable == newNullability) { this }
+    else {
       AttributeReference(name, dataType, newNullability, metadata)(
         exprId,
         qualifiers,
@@ -274,9 +267,8 @@ case class AttributeReference(
   }
 
   override def withName(newName: String): AttributeReference = {
-    if (name == newName) {
-      this
-    } else {
+    if (name == newName) { this }
+    else {
       AttributeReference(newName, dataType, nullable, metadata)(
         exprId,
         qualifiers,
@@ -289,9 +281,8 @@ case class AttributeReference(
     */
   override def withQualifiers(
       newQualifiers: Seq[String]): AttributeReference = {
-    if (newQualifiers.toSet == qualifiers.toSet) {
-      this
-    } else {
+    if (newQualifiers.toSet == qualifiers.toSet) { this }
+    else {
       AttributeReference(name, dataType, nullable, metadata)(
         exprId,
         newQualifiers,
@@ -300,9 +291,8 @@ case class AttributeReference(
   }
 
   def withExprId(newExprId: ExprId): AttributeReference = {
-    if (exprId == newExprId) {
-      this
-    } else {
+    if (exprId == newExprId) { this }
+    else {
       AttributeReference(name, dataType, nullable, metadata)(
         newExprId,
         qualifiers,

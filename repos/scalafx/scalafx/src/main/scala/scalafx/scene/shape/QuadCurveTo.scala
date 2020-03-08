@@ -48,13 +48,9 @@ class QuadCurveTo(
     with SFXDelegate[jfxss.QuadCurveTo] {
 
   def controlX: DoubleProperty = delegate.controlXProperty
-  def controlX_=(v: Double) {
-    controlX() = v
-  }
+  def controlX_=(v: Double) { controlX() = v }
 
   def controlY: DoubleProperty = delegate.controlYProperty
-  def controlY_=(v: Double) {
-    controlY() = v
-  }
+  def controlY_=(v: Double) { controlY() = v }
 
 }

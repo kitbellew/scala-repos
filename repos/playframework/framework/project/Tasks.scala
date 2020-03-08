@@ -55,11 +55,8 @@ object Commands {
       }
     }
 
-    if (toggle) {
-      state.log.info("Turning off quick publish")
-    } else {
-      state.log.info("Turning on quick publish")
-    }
+    if (toggle) { state.log.info("Turning off quick publish") }
+    else { state.log.info("Turning on quick publish") }
 
     val newStructure = Load.reapply(
       filtered ++ Seq(

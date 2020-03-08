@@ -126,19 +126,13 @@ abstract class SbtImportNotificationProvider(
       sbtSettings <- Option(SbtSystemSettings.getInstance(project))
       projectSettings <- Option(
         sbtSettings.getLinkedProjectSettings(externalProjectPath))
-    } yield {
-      projectSettings
-    }
+    } yield { projectSettings }
 
   protected def ignoreFile(file: VirtualFile): Unit =
-    ignoredFiles.synchronized {
-      ignoredFiles += file
-    }
+    ignoredFiles.synchronized { ignoredFiles += file }
 
   private def isIgnored(file: VirtualFile): Boolean =
-    ignoredFiles.synchronized {
-      ignoredFiles.contains(file)
-    }
+    ignoredFiles.synchronized { ignoredFiles.contains(file) }
 
   private def isSbtFile(file: VirtualFile): Boolean =
     Option(file.getCanonicalPath).flatMap(getExternalProject).isDefined

@@ -42,9 +42,7 @@ object Accuracy {
         analysis.infos
       )
       .zipWithIndex
-      .collect {
-        case (e, i) if (i % 2) == 0 => e
-      }
+      .collect { case (e, i) if (i % 2) == 0 => e }
   }
 
   def mean(pov: Pov, analysis: Analysis): Option[Int] = {

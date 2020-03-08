@@ -55,9 +55,7 @@ class ESEngineManifests(
         .actionGet()
       if (response.isExists) {
         Some(read[EngineManifest](response.getSourceAsString))
-      } else {
-        None
-      }
+      } else { None }
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
@@ -85,8 +83,6 @@ class ESEngineManifests(
         .prepareDelete(index, estype, esid(id, version))
         .execute()
         .actionGet()
-    } catch {
-      case e: ElasticsearchException => error(e.getMessage)
-    }
+    } catch { case e: ElasticsearchException => error(e.getMessage) }
   }
 }

@@ -60,41 +60,31 @@ class AudioClip(override val delegate: jfxsm.AudioClip)
     * The relative left and right volume levels of the clip.
     */
   def balance: DoubleProperty = delegate.balanceProperty
-  def balance_=(v: Double) {
-    balance() = v
-  }
+  def balance_=(v: Double) { balance() = v }
 
   /**
     * The number of times the clip will be played when play() is called.
     */
   def cycleCount: IntegerProperty = delegate.cycleCountProperty
-  def cycleCount_=(v: Int) {
-    cycleCount() = v
-  }
+  def cycleCount_=(v: Int) { cycleCount() = v }
 
   /**
     * The relative "center" of the clip.
     */
   def pan: DoubleProperty = delegate.panProperty
-  def pan_=(v: Double) {
-    pan() = v
-  }
+  def pan_=(v: Double) { pan() = v }
 
   /**
     * The relative priority of the clip with respect to other clips.
     */
   def priority: IntegerProperty = delegate.priorityProperty
-  def priority_=(v: Int) {
-    priority() = v
-  }
+  def priority_=(v: Int) { priority() = v }
 
   /**
     * The relative rate at which the clip is played.
     */
   def rate: DoubleProperty = delegate.rateProperty
-  def rate_=(v: Double) {
-    rate() = v
-  }
+  def rate_=(v: Double) { rate() = v }
 
   /**
     * Get the source URL used to create this AudioClip.
@@ -105,8 +95,6 @@ class AudioClip(override val delegate: jfxsm.AudioClip)
     * The relative volume level at which the clip is played.
     */
   def volume: DoubleProperty = delegate.volumeProperty
-  def volume_=(v: Double) {
-    volume() = v
-  }
+  def volume_=(v: Double) { volume() = v }
 
 }

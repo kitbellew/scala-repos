@@ -120,17 +120,13 @@ abstract class JxNodeBase extends Node with JxBase {}
 case class JxAttr(in: JsCmd) extends Node with JxBase {
   def child = Nil
 
-  def appendToParent(parentName: String): JsCmd = {
-    Noop
-  }
+  def appendToParent(parentName: String): JsCmd = { Noop }
 }
 
 case class JxFuncAttr(in: JsCmd) extends Node with JxBase {
   def child = Nil
 
-  def appendToParent(parentName: String): JsCmd = {
-    Noop
-  }
+  def appendToParent(parentName: String): JsCmd = { Noop }
 }
 
 case class JxMap(in: JsExp, what: JxYieldFunc) extends Node with JxBase {

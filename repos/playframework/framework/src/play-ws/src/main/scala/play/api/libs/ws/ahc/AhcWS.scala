@@ -275,9 +275,7 @@ case class AhcWSRequest(
       .map { disableEncodingFlag =>
         new RequestBuilder(method, disableEncodingFlag)
       }
-      .getOrElse {
-        new RequestBuilder(method)
-      }
+      .getOrElse { new RequestBuilder(method) }
 
     // Set the URL.
     builder.setUrl(url)
@@ -324,11 +322,8 @@ case class AhcWSRequest(
 
               // extract the content type and the charset
               val charsetOption = Option(HttpUtils.parseCharset(ct))
-              val charset = charsetOption
-                .getOrElse {
-                  StandardCharsets.UTF_8
-                }
-                .name()
+              val charset =
+                charsetOption.getOrElse { StandardCharsets.UTF_8 }.name()
 
               // Get the string body given the given charset...
               val stringBody = bytes.decodeString(charset)
@@ -388,9 +383,7 @@ case class AhcWSRequest(
           response
         }
 
-        override def onThrowable(t: Throwable) = {
-          result.failure(t)
-        }
+        override def onThrowable(t: Throwable) = { result.failure(t) }
       }
     )
     result.future

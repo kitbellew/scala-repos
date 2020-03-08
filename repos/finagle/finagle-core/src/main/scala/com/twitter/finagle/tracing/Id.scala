@@ -46,11 +46,8 @@ object SpanId {
   def apply(spanId: Long): SpanId = new SpanId(spanId)
 
   def fromString(spanId: String): Option[SpanId] =
-    try {
-      Some(SpanId(new RichU64String(spanId).toU64Long))
-    } catch {
-      case NonFatal(_) => None
-    }
+    try { Some(SpanId(new RichU64String(spanId).toU64Long)) }
+    catch { case NonFatal(_) => None }
 }
 
 object TraceId {

@@ -29,9 +29,7 @@ class ScalaTypeHierarchyProvider extends JavaTypeHierarchyProvider {
       case clazz: ScTypeDefinition =>
         if (visited.contains(clazz)) {
           println("clazz.getText = " + clazz.getText)
-        } else {
-          collectSupers(clazz, visited + clazz)
-        }
+        } else { collectSupers(clazz, visited + clazz) }
       case _ =>
     }
   }

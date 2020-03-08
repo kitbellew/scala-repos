@@ -22,9 +22,7 @@ class ScalaStructureViewFactory extends PsiStructureViewFactory {
         if (sf.getName == ScalaLanguageConsoleView.SCALA_CONSOLE) {
           val console = ScalaConsoleInfo.getConsole(sf)
           new ScalaStructureViewBuilder(sf, console)
-        } else {
-          new ScalaStructureViewBuilder(sf)
-        }
+        } else { new ScalaStructureViewBuilder(sf) }
       case _ => null
     }
 }

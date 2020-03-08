@@ -295,7 +295,9 @@ object ConvertableTo {
   implicit final val ConvertableToNatural = new ConvertableToNatural {}
 
   implicit def convertableToComplex[A: Integral]: ConvertableToComplex[A] =
-    new ConvertableToComplex[A] { val algebra = Integral[A] }
+    new ConvertableToComplex[A] {
+      val algebra = Integral[A]
+    }
 }
 
 trait ConvertableFrom[@sp A] extends Any {
@@ -606,5 +608,7 @@ object ConvertableFrom {
   implicit final val ConvertableFromNatural = new ConvertableFromNatural {}
 
   implicit def convertableFromComplex[A: Integral]: ConvertableFromComplex[A] =
-    new ConvertableFromComplex[A] { val algebra = Integral[A] }
+    new ConvertableFromComplex[A] {
+      val algebra = Integral[A]
+    }
 }

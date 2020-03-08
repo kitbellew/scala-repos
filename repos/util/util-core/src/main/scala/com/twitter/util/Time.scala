@@ -167,9 +167,7 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
       (inSeconds, TimeUnit.SECONDS)
     } else if (inNanoseconds % Duration.NanosPerMillisecond == 0) {
       (inMilliseconds, TimeUnit.MILLISECONDS)
-    } else {
-      (inNanoseconds, TimeUnit.NANOSECONDS)
-    }
+    } else { (inNanoseconds, TimeUnit.NANOSECONDS) }
   }
 
   /**
@@ -526,9 +524,7 @@ class TimeFormat(
     val date = format.synchronized(format.parse(str))
     if (date == null) {
       throw new Exception("Unable to parse date-time: " + str)
-    } else {
-      Time.fromMilliseconds(date.getTime())
-    }
+    } else { Time.fromMilliseconds(date.getTime()) }
   }
 
   def format(time: Time): String = {
@@ -558,9 +554,7 @@ sealed class Time private[util] (protected val nanos: Long) extends {
     // when both instances are `Time`s and not a sentinel subclass.
     if (other != null && (other.getClass eq getClass)) {
       other.asInstanceOf[Time].nanos == nanos
-    } else {
-      false
-    }
+    } else { false }
   }
 
   override def hashCode: Int =

@@ -45,9 +45,7 @@ object REPL {
         }
         if (command.shouldStopWithInfo) {
           reporter.echo(command.getInfoMessage(compiler))
-        } else {
-          run(compiler)
-        }
+        } else { run(compiler) }
       } catch {
         case ex @ FatalError(msg) =>
           if (true || command.settings.debug) // !!!
@@ -66,9 +64,7 @@ object REPL {
     Console.print(prompt)
     try {
       val line = Console.readLine()
-      if (line.length() > 0) {
-        action(line)
-      }
+      if (line.length() > 0) { action(line) }
       loop(action)
     } catch {
       case _: java.io.EOFException => //nop

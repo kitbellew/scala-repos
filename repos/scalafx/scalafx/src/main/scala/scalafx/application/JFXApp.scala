@@ -285,9 +285,7 @@ trait JFXApp extends DelayedInit {
     *
     * @param x Class/object construction code to be buffered for delayed execution.
     */
-  def delayedInit(x: => Unit) {
-    subClassInitCode += (() => x)
-  }
+  def delayedInit(x: => Unit) { subClassInitCode += (() => x) }
 
   /** Perform app-related initialization, and execute initialization/construction code for all classes and objects that
     * extend this trait.

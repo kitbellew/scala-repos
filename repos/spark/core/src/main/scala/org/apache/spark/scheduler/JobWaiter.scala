@@ -50,15 +50,11 @@ private[spark] class JobWaiter[T](
     * asynchronously. After the low level scheduler cancels all the tasks belonging to this job, it
     * will fail this job with a SparkException.
     */
-  def cancel() {
-    dagScheduler.cancelJob(jobId)
-  }
+  def cancel() { dagScheduler.cancelJob(jobId) }
 
   override def taskSucceeded(index: Int, result: Any): Unit = {
     // resultHandler call must be synchronized in case resultHandler itself is not thread safe.
-    synchronized {
-      resultHandler(index, result.asInstanceOf[T])
-    }
+    synchronized { resultHandler(index, result.asInstanceOf[T]) }
     if (finishedTasks.incrementAndGet() == totalTasks) {
       jobPromise.success(())
     }

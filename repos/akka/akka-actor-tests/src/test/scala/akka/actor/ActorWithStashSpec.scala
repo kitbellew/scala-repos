@@ -198,9 +198,7 @@ class ActorWithStashSpec
     "allow using whenRestarted" in {
       import ActorDSL._
       val a = actor(new ActWithStash {
-        become {
-          case "die" ⇒ throw new RuntimeException("dying")
-        }
+        become { case "die" ⇒ throw new RuntimeException("dying") }
         whenRestarted { thr ⇒ testActor ! "restarted" }
       })
       EventFilter[RuntimeException]("dying", occurrences = 1) intercept {
@@ -212,9 +210,7 @@ class ActorWithStashSpec
     "allow using whenStopping" in {
       import ActorDSL._
       val a = actor(new ActWithStash {
-        whenStopping {
-          testActor ! "stopping"
-        }
+        whenStopping { testActor ! "stopping" }
       })
       a ! PoisonPill
       expectMsg("stopping")

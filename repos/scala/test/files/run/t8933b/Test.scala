@@ -3,7 +3,5 @@ class MotherClass extends MixinWithSymbol {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    (new MotherClass).symbolFromTrait
-  }
+  def main(args: Array[String]) { (new MotherClass).symbolFromTrait }
 }

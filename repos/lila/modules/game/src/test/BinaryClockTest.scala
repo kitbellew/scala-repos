@@ -26,9 +26,7 @@ class BinaryClockTest extends Specification {
     val clock = Clock(120, 2)
     val bits22 = List("00000010", "00000010")
     "write" in {
-      write(clock) must_== {
-        bits22 ::: List.fill(10)(_0_)
-      }
+      write(clock) must_== { bits22 ::: List.fill(10)(_0_) }
       write(clock.giveTime(chess.White, 0.03f)) must_== {
         bits22 ::: List("10000000", "00000000", "00000011") ::: List.fill(7)(
           _0_)
@@ -50,19 +48,13 @@ class BinaryClockTest extends Specification {
       }
     }
     "read" in {
-      read(bits22 ::: List.fill(11)(_0_)) must_== {
-        clock
-      }
+      read(bits22 ::: List.fill(11)(_0_)) must_== { clock }
       read(
         bits22 ::: List("10000000", "00000000", "00000011") ::: List.fill(8)(
-          _0_)) must_== {
-        clock.giveTime(chess.White, 0.03f)
-      }
+          _0_)) must_== { clock.giveTime(chess.White, 0.03f) }
       read(
         bits22 ::: List("00000000", "00000000", "00000011") ::: List.fill(8)(
-          _0_)) must_== {
-        clock.giveTime(chess.White, -0.03f)
-      }
+          _0_)) must_== { clock.giveTime(chess.White, -0.03f) }
     }
     "isomorphism" in {
 

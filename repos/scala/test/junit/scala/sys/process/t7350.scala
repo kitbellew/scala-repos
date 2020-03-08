@@ -27,9 +27,7 @@ class PipedProcessTest {
     var destroyCount = 0
     def isAlive() = false
     def exitValue(): Int = {
-      if (error) {
-        throw new InterruptedException()
-      }
+      if (error) { throw new InterruptedException() }
       0
     }
     def destroy(): Unit = { destroyCount += 1 }
@@ -38,9 +36,7 @@ class PipedProcessTest {
   class ProcessBuilderMock(process: Process, error: Boolean)
       extends ProcessBuilder.AbstractBuilder {
     override def run(io: ProcessIO): Process = {
-      if (error) {
-        throw new IOException()
-      }
+      if (error) { throw new IOException() }
       process
     }
   }
@@ -99,9 +95,7 @@ class PipedProcessTest {
       new ProcessBuilderMock(b, error = false),
       io,
       false)
-    val f = Future {
-      p.callRunAndExitValue(source, sink)
-    }
+    val f = Future { p.callRunAndExitValue(source, sink) }
     Await.result(f, Duration(1, SECONDS))
     assert(source.releaseCount == 0)
     assert(sink.releaseCount == 0)
@@ -123,9 +117,7 @@ class PipedProcessTest {
       io,
       false)
     val f = Future {
-      ignoring(classOf[IOException]) {
-        p.callRunAndExitValue(source, sink)
-      }
+      ignoring(classOf[IOException]) { p.callRunAndExitValue(source, sink) }
     }
     Await.result(f, Duration(1, SECONDS))
     assert(source.releaseCount == 1)
@@ -148,9 +140,7 @@ class PipedProcessTest {
       io,
       false)
     val f = Future {
-      ignoring(classOf[IOException]) {
-        p.callRunAndExitValue(source, sink)
-      }
+      ignoring(classOf[IOException]) { p.callRunAndExitValue(source, sink) }
     }
     Await.result(f, Duration(1, SECONDS))
     assert(source.releaseCount == 1)
@@ -172,9 +162,7 @@ class PipedProcessTest {
       new ProcessBuilderMock(b, error = false),
       io,
       false)
-    val f = Future {
-      p.callRunAndExitValue(source, sink)
-    }
+    val f = Future { p.callRunAndExitValue(source, sink) }
     Await.result(f, Duration(1, SECONDS))
     assert(source.releaseCount == 1)
     assert(sink.releaseCount == 1)
@@ -195,9 +183,7 @@ class PipedProcessTest {
       new ProcessBuilderMock(b, error = false),
       io,
       false)
-    val f = Future {
-      p.callRunAndExitValue(source, sink)
-    }
+    val f = Future { p.callRunAndExitValue(source, sink) }
     Await.result(f, Duration(1, SECONDS))
     assert(source.releaseCount == 1)
     assert(sink.releaseCount == 1)
@@ -214,11 +200,7 @@ class PipeSourceSinkTest {
   }
 
   class PipeSink extends Process.PipeSink("TestPipeSink") {
-    def ensureRunloopStarted() = {
-      while (sink.size() > 0) {
-        Thread.sleep(1)
-      }
-    }
+    def ensureRunloopStarted() = { while (sink.size() > 0) { Thread.sleep(1) } }
     def isReleased = {
       val field = classOf[Process.PipeSink].getDeclaredField("pipe")
       field.setAccessible(true)
@@ -229,9 +211,7 @@ class PipeSourceSinkTest {
 
   class PipeSource extends Process.PipeSource("TestPipeSource") {
     def ensureRunloopStarted() = {
-      while (source.size() > 0) {
-        Thread.sleep(1)
-      }
+      while (source.size() > 0) { Thread.sleep(1) }
     }
     def isReleased = {
       val field = classOf[Process.PipeSource].getDeclaredField("pipe")

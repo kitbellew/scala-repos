@@ -938,9 +938,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
               case ex: TypeError           => MacroGeneratedTypeError(expandee, ex)
               case _                       => MacroGeneratedException(expandee, realex)
             }
-        } finally {
-          expandee.removeAttachment[MacroRuntimeAttachment]
-        }
+        } finally { expandee.removeAttachment[MacroRuntimeAttachment] }
     }
   }
 

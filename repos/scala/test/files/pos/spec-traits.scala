@@ -1,5 +1,9 @@
-trait A[@specialized(Int) T] { def foo: T }
-class B extends A[Int] { val foo = 10 }
+trait A[@specialized(Int) T] {
+  def foo: T
+}
+class B extends A[Int] {
+  val foo = 10
+}
 class C extends B
 
 // issue 3309
@@ -11,9 +15,7 @@ class Lazy {
 
 // issue 3307
 class Bug3307 {
-  def f[Z](block: String => Z) {
-    block("abc")
-  }
+  def f[Z](block: String => Z) { block("abc") }
 
   ({ () => f { implicit x => println(x) } })()
 }
@@ -58,4 +60,6 @@ object AA {
 }
 
 // issue 3325
-object O { def f[@specialized T] { for (k <- Nil: List[T]) {} } }
+object O {
+  def f[@specialized T] { for (k <- Nil: List[T]) {} }
+}

@@ -22,9 +22,7 @@ class Foo {
   val scalaVersion: Setting[String] = null
 
   def testPatternMatch(s: Setting[_]) {
-    s.key match {
-      case ScopedKey1(scalaHome.key | scalaVersion.key) => ()
-    }
+    s.key match { case ScopedKey1(scalaHome.key | scalaVersion.key) => () }
   }
 }
 

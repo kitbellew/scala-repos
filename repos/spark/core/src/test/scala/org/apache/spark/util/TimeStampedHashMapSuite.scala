@@ -146,11 +146,8 @@ class TimeStampedHashMapSuite extends SparkFunSuite {
 
     def getRandomKey(m: mutable.Map[String, String]): Option[String] = {
       val keys = testMap.keysIterator.toSeq
-      if (keys.nonEmpty) {
-        Some(keys(Random.nextInt(keys.size)))
-      } else {
-        None
-      }
+      if (keys.nonEmpty) { Some(keys(Random.nextInt(keys.size))) }
+      else { None }
     }
 
     val threads = (1 to 25).map(i =>

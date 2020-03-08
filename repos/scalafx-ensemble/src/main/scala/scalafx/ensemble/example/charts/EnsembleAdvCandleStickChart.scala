@@ -160,9 +160,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
 
     def title: String = getTitle
 
-    def title_=(t: String) {
-      setTitle(t)
-    }
+    def title_=(t: String) { setTitle(t) }
 
     def data: ObservableBuffer[jfxsc.XYChart.Series[Number, Number]] = getData
 
@@ -176,9 +174,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
 
     /** Called to update and layout the content for the plot */
     override protected def layoutPlotChildren() {
-      if (data == null) {
-        return
-      }
+      if (data == null) { return }
 
       for (series <- data) {
         val seriesPath: Option[Path] = series.node() match {
@@ -220,11 +216,8 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
 
               seriesPath.foreach { p =>
                 val yAverage = yAxis.displayPosition(dayValues.average)
-                if (p.elements.isEmpty) {
-                  p.elements += MoveTo(x, yAverage)
-                } else {
-                  p.elements += LineTo(x, yAverage)
-                }
+                if (p.elements.isEmpty) { p.elements += MoveTo(x, yAverage) }
+                else { p.elements += LineTo(x, yAverage) }
               }
             case _ =>
           }
@@ -246,12 +239,8 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
         new FadeTransition(500 ms, candle) {
           toValue = 1
         }.play()
-      } else {
-        plotChildren += candle
-      }
-      if (series.node() != null) {
-        series.node().toFront()
-      }
+      } else { plotChildren += candle }
+      if (series.node() != null) { series.node().toFront() }
     }
 
     override protected def dataItemRemoved(
@@ -264,9 +253,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
           onFinished = (_: ActionEvent) => plotChildren -= candle
 
         }.play()
-      } else {
-        plotChildren -= candle
-      }
+      } else { plotChildren -= candle }
     }
 
     override protected def seriesAdded(
@@ -282,9 +269,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
             toValue = 1
           }
           ft.play()
-        } else {
-          plotChildren += candle
-        }
+        } else { plotChildren += candle }
       }
       val seriesPath = new Path {
         styleClass = Seq("candlestick-average-line", "series" + seriesIndex)
@@ -302,9 +287,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
             toValue = 0
             onFinished = (_: ActionEvent) => plotChildren -= candle
           }.play()
-        } else {
-          plotChildren -= candle
-        }
+        } else { plotChildren -= candle }
       }
     }
 
@@ -409,11 +392,8 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
         bar.delegate.prefWidth(-1)
       } else
         candleWidth
-      if (openAboveClose) {
-        bar.resizeRelocate(-cw / 2, 0, cw, closeOffset)
-      } else {
-        bar.resizeRelocate(-cw / 2, closeOffset, cw, closeOffset * -1)
-      }
+      if (openAboveClose) { bar.resizeRelocate(-cw / 2, 0, cw, closeOffset) }
+      else { bar.resizeRelocate(-cw / 2, closeOffset, cw, closeOffset * -1) }
     }
 
     def updateTooltip(open: Double, close: Double, high: Double, low: Double) {
@@ -441,12 +421,18 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
     private val highValue = new Label()
     private val lowValue = new Label()
 
-    val open = new Label("OPEN:") { styleClass += "candlestick-tooltip-label" }
+    val open = new Label("OPEN:") {
+      styleClass += "candlestick-tooltip-label"
+    }
     val close = new Label("CLOSE:") {
       styleClass += "candlestick-tooltip-label"
     }
-    val high = new Label("HIGH:") { styleClass += "candlestick-tooltip-label" }
-    val low = new Label("LOW:") { styleClass += "candlestick-tooltip-label" }
+    val high = new Label("HIGH:") {
+      styleClass += "candlestick-tooltip-label"
+    }
+    val low = new Label("LOW:") {
+      styleClass += "candlestick-tooltip-label"
+    }
 
     GridPane.setConstraints(open, 0, 0)
     GridPane.setConstraints(openValue, 1, 0)

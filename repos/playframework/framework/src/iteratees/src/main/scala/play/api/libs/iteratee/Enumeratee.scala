@@ -659,9 +659,7 @@ object Enumeratee {
                 new CheckDone[From, To] {
                   def continue[A](k: K[To, A]) = Cont(step(k))
                 } &> k(Input.El(transformer(e)))
-              } else {
-                Cont(step(k))
-              }
+              } else { Cont(step(k)) }
             }(pec))
 
           case Input.Empty =>

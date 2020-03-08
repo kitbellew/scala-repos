@@ -227,9 +227,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       storage: StorageProvider,
       @Named(EventModule.busName) eventBus: EventStream,
       taskFailureRepository: TaskFailureRepository): ActorRef = {
-    val supervision = OneForOneStrategy() {
-      case NonFatal(_) => Restart
-    }
+    val supervision = OneForOneStrategy() { case NonFatal(_) => Restart }
 
     import scala.concurrent.ExecutionContext.Implicits.global
     def createSchedulerActions(schedulerActor: ActorRef): SchedulerActions = {
@@ -301,9 +299,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       val candidate = new CandidateImpl(
         new ZGroup(zk, ZooDefs.Ids.OPEN_ACL_UNSAFE, conf.zooKeeperLeaderPath),
         new Supplier[Array[Byte]] {
-          def get(): Array[Byte] = {
-            hostPort.getBytes("UTF-8")
-          }
+          def get(): Array[Byte] = { hostPort.getBytes("UTF-8") }
         })
       return Some(candidate) //scalastyle:off return
     }
@@ -410,9 +406,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       new Gauge[Long] {
         val startedAt = System.currentTimeMillis()
 
-        override def getValue: Long = {
-          System.currentTimeMillis() - startedAt
-        }
+        override def getValue: Long = { System.currentTimeMillis() - startedAt }
       }
     )
 
@@ -453,9 +447,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
   @Singleton
   def provideTaskRepository(
       @Named(ModuleNames.STORE_TASK) store: EntityStore[MarathonTaskState],
-      metrics: Metrics): TaskRepository = {
-    new TaskRepository(store, metrics)
-  }
+      metrics: Metrics): TaskRepository = { new TaskRepository(store, metrics) }
 
   @Provides
   @Singleton

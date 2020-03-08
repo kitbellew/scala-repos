@@ -84,9 +84,7 @@ class JepsenInspiredInsertSpec
     Thread.sleep(math.max(5000, delayMillis * totalCount / nodeCount / 2))
 
   def join(from: RoleName, to: RoleName): Unit = {
-    runOn(from) {
-      cluster join node(to).address
-    }
+    runOn(from) { cluster join node(to).address }
     enterBarrier(from.name + "-joined")
   }
 
@@ -188,9 +186,7 @@ class JepsenInspiredInsertSpec
 
     }
 
-    runOn(controller) {
-      enterBarrier("data-written-2")
-    }
+    runOn(controller) { enterBarrier("data-written-2") }
 
     enterBarrier("after-test-2")
   }

@@ -72,9 +72,7 @@ private object ClassPath {
 
     loader match {
       case urlLoader: URLClassLoader =>
-        for (url <- urlLoader.getURLs) {
-          ents += (url.toURI -> loader)
-        }
+        for (url <- urlLoader.getURLs) { ents += (url.toURI -> loader) }
       case _ =>
     }
 
@@ -184,9 +182,7 @@ private object ClassPath {
           new File(
             jarFile.getParentFile,
             path.replace('/', File.separatorChar)).toURI)
-    } catch {
-      case _: URISyntaxException => None
-    }
+    } catch { case _: URISyntaxException => None }
 
   private[util] def readLines(source: Source): Seq[String] = {
     try {
@@ -199,9 +195,7 @@ private object ClassPath {
     } catch {
       case ex: MalformedInputException =>
         Nil /* skip malformed files (e.g. non UTF-8) */
-    } finally {
-      source.close()
-    }
+    } finally { source.close() }
   }
 }
 

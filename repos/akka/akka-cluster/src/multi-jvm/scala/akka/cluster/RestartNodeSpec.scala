@@ -112,9 +112,7 @@ abstract class RestartNodeSpec
       enterBarrier("started")
 
       // shutdown secondSystem
-      runOn(second) {
-        shutdown(secondSystem, remaining)
-      }
+      runOn(second) { shutdown(secondSystem, remaining) }
       enterBarrier("second-shutdown")
 
       // then immediately start restartedSecondSystem, which has the same address as secondSystem

@@ -72,9 +72,8 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
             index =>
               progressIndicator.setFraction(0.0)
               progressIndicator.setText(index.root)
-              try {
-                index.update(Some(progressIndicator))
-              } catch {
+              try { index.update(Some(progressIndicator)) }
+              catch {
                 case exc: ResolverException =>
                   notifyWarning(exc.getMessage)
                 case exc: LockReleaseFailedException =>
@@ -83,9 +82,7 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
                       "sbt.resolverIndexer.luceneLockException",
                       exc.getMessage))
               } finally {
-                updatingIndexes synchronized {
-                  updatingIndexes -= index
-                }
+                updatingIndexes synchronized { updatingIndexes -= index }
               }
           }
       })

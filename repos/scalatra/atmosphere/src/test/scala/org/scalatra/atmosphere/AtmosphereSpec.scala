@@ -29,9 +29,7 @@ class AtmosphereSpecServlet(
   implicit protected def jsonFormats: Formats = DefaultFormats
   implicit val system = scalatraActorSystem.dispatcher
 
-  get("/echo") {
-    "echo ok"
-  }
+  get("/echo") { "echo ok" }
 
   atmosphere("/test1") {
     new AtmosphereClient {
@@ -57,9 +55,7 @@ class AtmosphereSpecServlet(
     }
   }
 
-  error {
-    case t: Throwable => t.printStackTrace()
-  }
+  error { case t: Throwable => t.printStackTrace() }
 
   override def handle(
       request: HttpServletRequest,
@@ -163,9 +159,7 @@ class AtmosphereSpec extends MutableScalatraSpec {
             }
           })
         .on(new Function[Throwable] {
-          def on(t: Throwable) = {
-            t.printStackTrace
-          }
+          def on(t: Throwable) = { t.printStackTrace }
         })
 
       socket.open(req.build()).fire("echo");

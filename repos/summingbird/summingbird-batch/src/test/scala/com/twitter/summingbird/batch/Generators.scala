@@ -53,9 +53,5 @@ object Generators {
 
   case class SmallLong(get: Long)
   implicit val smallLong: Arbitrary[SmallLong] =
-    Arbitrary {
-      for {
-        v <- Gen.choose(-100L, 100L)
-      } yield SmallLong(v)
-    }
+    Arbitrary { for { v <- Gen.choose(-100L, 100L) } yield SmallLong(v) }
 }

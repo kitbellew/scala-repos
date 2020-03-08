@@ -42,9 +42,7 @@ trait SharedSQLContext extends SQLTestUtils {
     */
   protected override def beforeAll(): Unit = {
     SQLContext.clearSqlListener()
-    if (_ctx == null) {
-      _ctx = new TestSQLContext
-    }
+    if (_ctx == null) { _ctx = new TestSQLContext }
     // Ensure we have initialized the context before calling parent code
     super.beforeAll()
   }
@@ -58,8 +56,6 @@ trait SharedSQLContext extends SQLTestUtils {
         _ctx.sparkContext.stop()
         _ctx = null
       }
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 }

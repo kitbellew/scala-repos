@@ -11,21 +11,13 @@ import org.junit.Assert._
   * Pavel Fatin
   */
 class StringConcatenationFormatterTest extends SimpleTestCase {
-  def testEmpty() {
-    assertEquals("\"\"", format())
-  }
+  def testEmpty() { assertEquals("\"\"", format()) }
 
-  def testText() {
-    assertEquals("\"foo\"", format(Text("foo")))
-  }
+  def testText() { assertEquals("\"foo\"", format(Text("foo"))) }
 
-  def testEscapeChar() {
-    assertEquals("\"\\n\"", format(Text("\n")))
-  }
+  def testEscapeChar() { assertEquals("\"\\n\"", format(Text("\n"))) }
 
-  def testSlash() {
-    assertEquals("\"\\\\\"", format(Text("\\")))
-  }
+  def testSlash() { assertEquals("\"\\\\\"", format(Text("\\"))) }
 
   def testPlainExpression() {
     assertEquals("foo", format(Injection(exp("foo"), None)))
@@ -121,9 +113,7 @@ class StringConcatenationFormatterTest extends SimpleTestCase {
     assertEquals("true", format(Injection(exp("true"), None)))
   }
 
-  def testOther() {
-    assertEquals("", format(UnboundExpression(exp("foo"))))
-  }
+  def testOther() { assertEquals("", format(UnboundExpression(exp("foo")))) }
 
   private def format(parts: StringPart*): String = {
     StringConcatenationFormatter.format(parts)

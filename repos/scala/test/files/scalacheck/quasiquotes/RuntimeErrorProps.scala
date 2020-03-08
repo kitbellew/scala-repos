@@ -3,9 +3,7 @@ import scala.reflect.runtime.universe._, Flag._
 
 object RuntimeErrorProps extends QuasiquoteProperties("errors") {
   def testFails[T](block: => T) = test {
-    assertThrows[IllegalArgumentException] {
-      block
-    }
+    assertThrows[IllegalArgumentException] { block }
   }
 
   property("default param anon function") = testFails {

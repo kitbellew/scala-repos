@@ -47,9 +47,7 @@ trait WebSocketSpec
       block: Application => A): A = {
     val currentApp = new AtomicReference[Application]
     val app = GuiceApplicationBuilder()
-      .routes {
-        case _ => webSocket(currentApp.get())
-      }
+      .routes { case _ => webSocket(currentApp.get()) }
       .build()
     currentApp.set(app)
     running(TestServer(testServerPort, app))(block(app))
@@ -88,9 +86,7 @@ trait WebSocketSpec
 
   def onFramesConsumed[A](onDone: List[A] => Unit): Sink[A, _] =
     consumeFrames[A].mapMaterializedValue { future =>
-      future.onSuccess {
-        case list => onDone(list)
-      }
+      future.onSuccess { case list => onDone(list) }
     }
 
   // We concat with an empty source because otherwise the connection will be closed immediately after the last
@@ -369,11 +365,7 @@ trait WebSocketSpec
               .scheduleOnce(100.millis)(p.success(Some(() -> "foo")))
             p.future
           }
-          (
-            Iteratee.ignore,
-            tick.onDoneEnumerating {
-              cleanedUp.success(true)
-            })
+          (Iteratee.ignore, tick.onDoneEnumerating { cleanedUp.success(true) })
         }
       }
 
@@ -397,9 +389,7 @@ trait WebSocketSpec
                 case msg: String =>
                   messages = msg :: messages
               }
-              override def postStop() = {
-                consumed.success(messages.reverse)
-              }
+              override def postStop() = { consumed.success(messages.reverse) }
             })
           }
       }
@@ -432,9 +422,7 @@ trait WebSocketSpec
         WebSocket.acceptWithActor[String, String] { req => out =>
           Props(new Actor() {
             def receive = PartialFunction.empty
-            override def postStop() = {
-              cleanedUp.success(true)
-            }
+            override def postStop() = { cleanedUp.success(true) }
           })
         }
       }
@@ -568,9 +556,7 @@ trait WebSocketSpec
               Props(new Actor() {
                 messages.foreach { msg => out ! msg }
                 out ! Status.Success(())
-                def receive = {
-                  case msg: Message => ()
-                }
+                def receive = { case msg: Message => () }
               })
             }
           })

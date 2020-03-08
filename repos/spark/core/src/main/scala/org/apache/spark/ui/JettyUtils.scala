@@ -145,11 +145,8 @@ private[spark] object JettyUtils extends Logging {
       path: String,
       servlet: HttpServlet,
       basePath: String): ServletContextHandler = {
-    val prefixedPath = if (basePath == "" && path == "/") {
-      path
-    } else {
-      (basePath + path).stripSuffix("/")
-    }
+    val prefixedPath = if (basePath == "" && path == "/") { path }
+    else { (basePath + path).stripSuffix("/") }
     val contextHandler = new ServletContextHandler
     val holder = new ServletHolder(servlet)
     contextHandler.setContextPath(prefixedPath)
@@ -169,20 +166,14 @@ private[spark] object JettyUtils extends Logging {
       override def doGet(
           request: HttpServletRequest,
           response: HttpServletResponse): Unit = {
-        if (httpMethods.contains("GET")) {
-          doRequest(request, response)
-        } else {
-          response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED)
-        }
+        if (httpMethods.contains("GET")) { doRequest(request, response) }
+        else { response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED) }
       }
       override def doPost(
           request: HttpServletRequest,
           response: HttpServletResponse): Unit = {
-        if (httpMethods.contains("POST")) {
-          doRequest(request, response)
-        } else {
-          response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED)
-        }
+        if (httpMethods.contains("POST")) { doRequest(request, response) }
+        else { response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED) }
       }
       private def doRequest(
           request: HttpServletRequest,
@@ -312,9 +303,7 @@ private[spark] object JettyUtils extends Logging {
         val securePort =
           if (currentPort != 0) {
             (currentPort + 400 - 1024) % (65536 - 1024) + 1024
-          } else {
-            0
-          }
+          } else { 0 }
         val scheme = "https"
         // Create a connector on port securePort to listen for HTTPS requests
         val connector = new SslSelectChannelConnector(factory)
@@ -341,9 +330,7 @@ private[spark] object JettyUtils extends Logging {
       server.setConnectors(connectors.toArray)
 
       val pool = new QueuedThreadPool
-      if (serverName.nonEmpty) {
-        pool.setName(serverName)
-      }
+      if (serverName.nonEmpty) { pool.setName(serverName) }
       pool.setMaxThreads(math.max(pool.getMaxThreads, minThreads))
       pool.setDaemon(true)
       server.setThreadPool(pool)
@@ -378,9 +365,7 @@ private[spark] object JettyUtils extends Logging {
           baseRequest: Request,
           request: HttpServletRequest,
           response: HttpServletResponse): Unit = {
-        if (baseRequest.isSecure) {
-          return
-        }
+        if (baseRequest.isSecure) { return }
         val httpsURI = createRedirectURI(
           scheme,
           baseRequest.getServerName,
@@ -405,9 +390,7 @@ private[spark] object JettyUtils extends Logging {
       query: String) = {
     val redirectServer = if (server.contains(":") && !server.startsWith("[")) {
       s"[${server}]"
-    } else {
-      server
-    }
+    } else { server }
     val authority = s"$redirectServer:$port"
     new URI(scheme, authority, path, query, null).toString
   }

@@ -336,9 +336,7 @@ final class BtreeClientIntegrationSuite
         assert(
           Await.ready(target).poll.get.isThrow,
           "BRANGE failed for " + outerKey + " return should be a throw")
-      } else {
-        validate(outerKey, innerKeys, Await.result(target))
-      }
+      } else { validate(outerKey, innerKeys, Await.result(target)) }
     }
 
     println("Test BRANGE Exclusive Start End succeeded")

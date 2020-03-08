@@ -98,8 +98,6 @@ class MessageCompressionTest extends JUnitSuite {
     try {
       new net.jpountz.lz4.LZ4BlockOutputStream(new ByteArrayOutputStream())
       true
-    } catch {
-      case e: UnsatisfiedLinkError => false
-    }
+    } catch { case e: UnsatisfiedLinkError => false }
   }
 }

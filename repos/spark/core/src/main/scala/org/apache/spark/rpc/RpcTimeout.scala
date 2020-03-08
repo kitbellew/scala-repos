@@ -29,7 +29,9 @@ import org.apache.spark.util.Utils
   * An exception thrown if RpcTimeout modifies a [[TimeoutException]].
   */
 private[rpc] class RpcTimeoutException(message: String, cause: TimeoutException)
-    extends TimeoutException(message) { initCause(cause) }
+    extends TimeoutException(message) {
+  initCause(cause)
+}
 
 /**
   * Associates a timeout with a description so that a when a TimeoutException occurs, additional
@@ -74,9 +76,8 @@ private[spark] class RpcTimeout(
     *         is still not ready
     */
   def awaitResult[T](awaitable: Awaitable[T]): T = {
-    try {
-      Await.result(awaitable, duration)
-    } catch addMessageIfTimeout
+    try { Await.result(awaitable, duration) }
+    catch addMessageIfTimeout
   }
 }
 

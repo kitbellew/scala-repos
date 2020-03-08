@@ -344,20 +344,16 @@ trait ValidatedFunctions {
   final class CatchOnlyPartiallyApplied[T] private[ValidatedFunctions] {
     def apply[A](
         f: => A)(implicit T: ClassTag[T], NT: NotNull[T]): Validated[T, A] =
-      try {
-        valid(f)
-      } catch {
+      try { valid(f) }
+      catch {
         case t if T.runtimeClass.isInstance(t) =>
           invalid(t.asInstanceOf[T])
       }
   }
 
   def catchNonFatal[A](f: => A): Validated[Throwable, A] =
-    try {
-      valid(f)
-    } catch {
-      case scala.util.control.NonFatal(t) => invalid(t)
-    }
+    try { valid(f) }
+    catch { case scala.util.control.NonFatal(t) => invalid(t) }
 
   /**
     * Converts a `Try[A]` to a `Validated[Throwable, A]`.

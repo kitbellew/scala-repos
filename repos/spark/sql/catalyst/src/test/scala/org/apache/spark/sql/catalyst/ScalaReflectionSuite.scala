@@ -326,9 +326,7 @@ class ScalaReflectionSuite extends SparkFunSuite {
             try {
               Thread.currentThread.setContextClassLoader(loader)
               exec()
-            } finally {
-              Thread.currentThread.setContextClassLoader(cl)
-            }
+            } finally { Thread.currentThread.setContextClassLoader(cl) }
           }
         }
       }

@@ -74,9 +74,7 @@ private[twitter] class StreamClientDispatcher[Req: RequestType](
             }
             p.updateIfEmpty(Return(res))
 
-            done ensure {
-              trans.close()
-            }
+            done ensure { trans.close() }
 
           case invalid =>
             Future.exception(

@@ -71,7 +71,9 @@ private[log] class LogCleanerManager(
   @volatile private var dirtiestLogCleanableRatio = 0.0
   newGauge(
     "max-dirty-percent",
-    new Gauge[Int] { def value = (100 * dirtiestLogCleanableRatio).toInt })
+    new Gauge[Int] {
+      def value = (100 * dirtiestLogCleanableRatio).toInt
+    })
 
   /**
     * @return the position processed for all logs.
@@ -114,9 +116,7 @@ private[log] class LogCleanerManager(
                   "Resetting first dirty offset to log start offset %d since the checkpointed offset %d is invalid."
                     .format(logStartOffset, offset))
                 logStartOffset
-              } else {
-                offset
-              }
+              } else { offset }
             }
             LogToClean(topicAndPartition, log, firstDirtyOffset)
         }
@@ -127,9 +127,8 @@ private[log] class LogCleanerManager(
       // and must meet the minimum threshold for dirty byte ratio
       val cleanableLogs = dirtyLogs.filter(ltc =>
         ltc.cleanableRatio > ltc.log.config.minCleanableRatio)
-      if (cleanableLogs.isEmpty) {
-        None
-      } else {
+      if (cleanableLogs.isEmpty) { None }
+      else {
         val filthiest = cleanableLogs.max
         inProgress.put(filthiest.topicPartition, LogCleaningInProgress)
         Some(filthiest)

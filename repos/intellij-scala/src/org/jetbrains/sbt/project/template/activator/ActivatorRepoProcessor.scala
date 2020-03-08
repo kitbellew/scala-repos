@@ -79,11 +79,8 @@ object ActivatorRepoProcessor {
           "utf-8" /*connection.getContentEncoding*/ )
         Some(text)
       } else None
-    } catch {
-      case _: Exception => None
-    } finally {
-      if (connection != null) connection.disconnect()
-    }
+    } catch { case _: Exception => None }
+    finally { if (connection != null) connection.disconnect() }
   }
 
   def downloadFile(

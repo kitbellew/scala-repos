@@ -9,7 +9,5 @@ trait State[S, A] {
 }
 
 class FFF[S, B] {
-  def r(ft: PartialType[State, S]#Apply[B], s: S) = {
-    ft.< ref > state (s)
-  }
+  def r(ft: PartialType[State, S]#Apply[B], s: S) = { ft.< ref > state (s) }
 }

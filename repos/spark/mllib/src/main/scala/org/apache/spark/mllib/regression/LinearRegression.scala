@@ -126,9 +126,7 @@ class LinearRegressionWithSGD private[mllib] (
 
   override protected[mllib] def createModel(
       weights: Vector,
-      intercept: Double) = {
-    new LinearRegressionModel(weights, intercept)
-  }
+      intercept: Double) = { new LinearRegressionModel(weights, intercept) }
 }
 
 /**

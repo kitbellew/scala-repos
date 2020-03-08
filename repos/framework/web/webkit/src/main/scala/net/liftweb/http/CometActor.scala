@@ -121,12 +121,7 @@ trait StatefulComet extends CometActor {
 object CurrentCometActor extends ThreadGlobal[LiftCometActor]
 
 object AddAListener {
-  def apply(who: SimpleActor[Any]) =
-    new AddAListener(
-      who,
-      {
-        case _ => true
-      })
+  def apply(who: SimpleActor[Any]) = new AddAListener(who, { case _ => true })
 }
 
 /**
@@ -226,9 +221,7 @@ trait ListenerManager {
 
     case RemoveAListener(who) =>
       listeners = listeners.filter(_._1 ne who)
-      if (listeners.isEmpty) {
-        onListenersListEmptied()
-      }
+      if (listeners.isEmpty) { onListenersListEmptied() }
   }
 
   /**
@@ -428,9 +421,7 @@ trait LiftCometActor
   /**
     * If the predicate cell changes, the Dependent will be notified
     */
-  def predicateChanged(which: Cell[_]): Unit = {
-    poke()
-  }
+  def predicateChanged(which: Cell[_]): Unit = { poke() }
 
   /**
     * The locale for the session that created the CometActor
@@ -439,9 +430,7 @@ trait LiftCometActor
 
   private var _myLocale = Locale.getDefault()
 
-  private[http] def setCometActorLocale(loc: Locale) {
-    _myLocale = loc
-  }
+  private[http] def setCometActorLocale(loc: Locale) { _myLocale = loc }
 }
 
 /**
@@ -473,9 +462,7 @@ trait MessageCometActor extends BaseCometActor {
 
   override final def render = NodeSeq.Empty
 
-  protected def pushMessage(cmd: => JsCmd) {
-    partialUpdate(cmd)
-  }
+  protected def pushMessage(cmd: => JsCmd) { partialUpdate(cmd) }
 }
 
 /**
@@ -543,17 +530,13 @@ trait BaseCometActor
           render
       theSession.updateFunctionMap(S.functionMap, uniqueId, lastRenderTime)
       ret
-    } else {
-      _realLastRendering
-    }
+    } else { _realLastRendering }
 
   /**
     * set the last rendering... ignore if we're not caching
     */
   private def lastRendering_=(last: RenderOut) {
-    if (!dontCacheRendering) {
-      _realLastRendering = last
-    }
+    if (!dontCacheRendering) { _realLastRendering = last }
   }
 
   private var receivedDelta = false
@@ -734,9 +717,8 @@ trait BaseCometActor
           S.initIfUninitted(theSession) {
             RenderVersion.doWith(uniqueId) {
               S.functionLifespan(true) {
-                try {
-                  what.apply(in)
-                } catch {
+                try { what.apply(in) }
+                catch {
                   case e if exceptionHandler.isDefinedAt(e) =>
                     exceptionHandler(e)
                   case e: Exception =>
@@ -744,9 +726,7 @@ trait BaseCometActor
                 }
 
                 val updatedJs = S.jsToAppend(clearAfterReading = true)
-                if (updatedJs.nonEmpty) {
-                  partialUpdate(updatedJs)
-                }
+                if (updatedJs.nonEmpty) { partialUpdate(updatedJs) }
 
                 if (S.functionMap.size > 0) {
                   theSession.updateFunctionMap(
@@ -765,9 +745,8 @@ trait BaseCometActor
           S.initIfUninitted(theSession) {
             RenderVersion.doWith(uniqueId) {
               S.functionLifespan(true) {
-                try {
-                  what.isDefinedAt(in)
-                } catch {
+                try { what.isDefinedAt(in) }
+                catch {
                   case e if exceptionHandler.isDefinedAt(e) =>
                     exceptionHandler(e); false
                   case e: Exception =>
@@ -797,9 +776,7 @@ trait BaseCometActor
     fixedRender.map(ns =>
       theSession.postPageJavaScript() match {
         case Nil => ns
-        case xs => {
-          ns ++ Script(xs)
-        }
+        case xs  => { ns ++ Script(xs) }
       })
 
   /**
@@ -807,11 +784,8 @@ trait BaseCometActor
     * the template changes or we get a reRender(true)
     */
   private def internalFixedRender: Box[NodeSeq] =
-    if (!cacheFixedRender) {
-      calcFixedRender
-    } else {
-      cachedFixedRender.get
-    }
+    if (!cacheFixedRender) { calcFixedRender }
+    else { cachedFixedRender.get }
 
   private val cachedFixedRender: FatLazy[Box[NodeSeq]] = FatLazy(
     calcFixedRender)
@@ -931,9 +905,7 @@ trait BaseCometActor
 
       _defaultHtml = html
 
-      if (redo) {
-        performReRender(false)
-      }
+      if (redo) { performReRender(false) }
     }
 
     case AskRender =>
@@ -942,9 +914,8 @@ trait BaseCometActor
         case _ => {
           val out =
             if (receivedDelta || alwaysReRenderOnPageLoad) {
-              try {
-                Full(performReRender(false))
-              } catch {
+              try { Full(performReRender(false)) }
+              catch {
                 case e if exceptionHandler.isDefinedAt(e) => {
                   exceptionHandler(e)
                   Empty
@@ -954,9 +925,7 @@ trait BaseCometActor
                   Empty
                 }
               }
-            } else {
-              Empty
-            }
+            } else { Empty }
 
           reply(
             AnswerRender(
@@ -976,9 +945,8 @@ trait BaseCometActor
       S.doCometParams(req.params) {
         val computed: List[Any] =
           msgs.flatMap { f =>
-            try {
-              List(f())
-            } catch {
+            try { List(f()) }
+            catch {
               case e if exceptionHandler.isDefinedAt(e) =>
                 exceptionHandler(e); Nil
               case e: Exception => reportError("Ajax function dispatch", e); Nil
@@ -1018,9 +986,7 @@ trait BaseCometActor
       for {
         ls <- lifespan
         if listeners.isEmpty && (lastListenerTime + ls.millis + 1000L) < millis
-      } {
-        this ! ShutDown
-      }
+      } { this ! ShutDown }
 
     case ReRender(all) => performReRender(all)
 
@@ -1106,9 +1072,7 @@ trait BaseCometActor
     * @param sendAll -- Should the fixed part of the CometActor be
     * rendered.
     */
-  def reRender(sendAll: Boolean) {
-    this ! ReRender(sendAll)
-  }
+  def reRender(sendAll: Boolean) { this ! ReRender(sendAll) }
 
   /**
     * Cause the entire component to be reRendered and pushed out
@@ -1117,9 +1081,7 @@ trait BaseCometActor
     * be sent to the client.  It's a much better practice to use
     * partialUpdate for non-trivial CometActor components.
     */
-  def reRender() {
-    reRender(false)
-  }
+  def reRender() { reRender(false) }
 
   /**
     * Set this method to true if you want to avoid caching the
@@ -1153,27 +1115,17 @@ trait BaseCometActor
   protected def manualWiringDependencyManagement = false
 
   private def performReRender(sendAll: Boolean): RenderOut = {
-    if (!partialUpdateStream_?) {
-      _lastRenderTime = Helpers.nextNum
-    }
+    if (!partialUpdateStream_?) { _lastRenderTime = Helpers.nextNum }
 
-    if (sendAll) {
-      cachedFixedRender.reset
-    }
+    if (sendAll) { cachedFixedRender.reset }
 
-    if (sendAll || !cacheFixedRender) {
-      clearWiringDependencies()
-    }
+    if (sendAll || !cacheFixedRender) { clearWiringDependencies() }
 
     wasLastFullRender = sendAll & hasOuter
-    if (!partialUpdateStream_?) {
-      deltas = Nil
-    }
+    if (!partialUpdateStream_?) { deltas = Nil }
     receivedDelta = false
 
-    if (!dontCacheRendering) {
-      lastRendering = render
-    }
+    if (!dontCacheRendering) { lastRendering = render }
 
     theSession.updateFunctionMap(S.functionMap, uniqueId, lastRenderTime)
 
@@ -1202,11 +1154,7 @@ trait BaseCometActor
     * This method is Actor-safe and may be called from any thread, not
     * just the Actor's message handler thread.
     */
-  override def poke(): Unit = {
-    if (running) {
-      partialUpdate(Noop)
-    }
-  }
+  override def poke(): Unit = { if (running) { partialUpdate(Noop) } }
 
   /**
     * Perform a partial update of the comet component based
@@ -1310,11 +1258,8 @@ trait BaseCometActor
     */
   protected implicit def nsToNsFuncToRenderOut(f: NodeSeq => NodeSeq) = {
     val additionalJs =
-      if (autoIncludeJsonCode) {
-        Full(jsonToIncludeInCode)
-      } else {
-        Empty
-      }
+      if (autoIncludeJsonCode) { Full(jsonToIncludeInCode) }
+      else { Empty }
 
     new RenderOut(
       (Box !! defaultHtml).map(f),
@@ -1333,11 +1278,8 @@ trait BaseCometActor
     */
   protected implicit def arrayToRenderOut(in: Seq[Node]): RenderOut = {
     val additionalJs =
-      if (autoIncludeJsonCode) {
-        Full(jsonToIncludeInCode)
-      } else {
-        Empty
-      }
+      if (autoIncludeJsonCode) { Full(jsonToIncludeInCode) }
+      else { Empty }
 
     new RenderOut(
       Full(in: NodeSeq),
@@ -1349,11 +1291,8 @@ trait BaseCometActor
 
   protected implicit def jsToXmlOrJsCmd(in: JsCmd): RenderOut = {
     val additionalJs =
-      if (autoIncludeJsonCode) {
-        Full(in & jsonToIncludeInCode)
-      } else {
-        Full(in)
-      }
+      if (autoIncludeJsonCode) { Full(in & jsonToIncludeInCode) }
+      else { Full(in) }
 
     new RenderOut(Empty, internalFixedRender, additionalJs, Empty, false)
   }
@@ -1373,16 +1312,12 @@ trait BaseCometActor
   /**
     * Similar with S.error
     */
-  def error(n: String) {
-    error(Text(n))
-  }
+  def error(n: String) { error(Text(n)) }
 
   /**
     * Similar with S.error
     */
-  def error(n: NodeSeq) {
-    notices += ((NoticeType.Error, n, Empty))
-  }
+  def error(n: NodeSeq) { notices += ((NoticeType.Error, n, Empty)) }
 
   /**
     * Similar with S.error
@@ -1394,23 +1329,17 @@ trait BaseCometActor
   /**
     * Similar with S.error
     */
-  def error(id: String, n: String) {
-    error(id, Text(n))
-  }
+  def error(id: String, n: String) { error(id, Text(n)) }
 
   /**
     * Similar with S.notice
     */
-  def notice(n: String) {
-    notice(Text(n))
-  }
+  def notice(n: String) { notice(Text(n)) }
 
   /**
     * Similar with S.notice
     */
-  def notice(n: NodeSeq) {
-    notices += ((NoticeType.Notice, n, Empty))
-  }
+  def notice(n: NodeSeq) { notices += ((NoticeType.Notice, n, Empty)) }
 
   /**
     * Similar with S.notice
@@ -1422,23 +1351,17 @@ trait BaseCometActor
   /**
     * Similar with S.notice
     */
-  def notice(id: String, n: String) {
-    notice(id, Text(n))
-  }
+  def notice(id: String, n: String) { notice(id, Text(n)) }
 
   /**
     * Similar with S.warning
     */
-  def warning(n: String) {
-    warning(Text(n))
-  }
+  def warning(n: String) { warning(Text(n)) }
 
   /**
     * Similar with S.warning
     */
-  def warning(n: NodeSeq) {
-    notices += ((NoticeType.Warning, n, Empty))
-  }
+  def warning(n: NodeSeq) { notices += ((NoticeType.Warning, n, Empty)) }
 
   /**
     * Similar with S.warning
@@ -1450,13 +1373,9 @@ trait BaseCometActor
   /**
     * Similar with S.warning
     */
-  def warning(id: String, n: String) {
-    warning(id, Text(n))
-  }
+  def warning(id: String, n: String) { warning(id, Text(n)) }
 
-  private def clearNotices {
-    notices.clear
-  }
+  private def clearNotices { notices.clear }
 
 }
 

@@ -215,9 +215,7 @@ final class SpecificMutableRow(val values: Array[MutableValue])
 
   override def numFields: Int = values.length
 
-  override def setNullAt(i: Int): Unit = {
-    values(i).isNull = true
-  }
+  override def setNullAt(i: Int): Unit = { values(i).isNull = true }
 
   override def isNullAt(i: Int): Boolean = values(i).isNull
 
@@ -235,11 +233,8 @@ final class SpecificMutableRow(val values: Array[MutableValue])
   override protected def genericGet(i: Int): Any = values(i).boxed
 
   override def update(ordinal: Int, value: Any) {
-    if (value == null) {
-      setNullAt(ordinal)
-    } else {
-      values(ordinal).update(value)
-    }
+    if (value == null) { setNullAt(ordinal) }
+    else { values(ordinal).update(value) }
   }
 
   override def setInt(ordinal: Int, value: Int): Unit = {

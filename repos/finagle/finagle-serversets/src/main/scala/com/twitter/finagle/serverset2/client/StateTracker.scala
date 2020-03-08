@@ -13,13 +13,9 @@ class StateTracker(
   private[this] var lastSample: Time = Time.now
 
   private[this] val timerTask =
-    timer.schedule(Time.now + samplePeriod, samplePeriod) {
-      sample()
-    }
+    timer.schedule(Time.now + samplePeriod, samplePeriod) { sample() }
 
-  def close(deadline: Time): Future[Unit] = {
-    timerTask.close(deadline)
-  }
+  def close(deadline: Time): Future[Unit] = { timerTask.close(deadline) }
 
   def transition(newState: SessionState): Unit = synchronized {
     sample()

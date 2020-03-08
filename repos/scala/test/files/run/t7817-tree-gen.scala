@@ -3,9 +3,19 @@ import scala.tools.partest._
 // Testing that `mkAttributedRef` doesn't include the package object test.`package`,
 // under joint and separate compilation.
 
-package testSep { class C { object O } }
-package testSep2 { object `package` { object PO; def bar = 0 } }
-class DSep { object P }
+package testSep {
+  class C {
+    object O
+  }
+}
+package testSep2 {
+  object `package` {
+    object PO; def bar = 0
+  }
+}
+class DSep {
+  object P
+}
 
 object Test extends CompilerTest {
   import global._

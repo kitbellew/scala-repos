@@ -60,9 +60,7 @@ class ReceiverTrackerSuite extends TestSuiteBase {
             activeReceiver.getCustomBlockGeneratorRateLimit() === newRateLimit,
             "other block generator did not receive rate update")
         }
-      } finally {
-        tracker.stop(false)
-      }
+      } finally { tracker.stop(false) }
     }
   }
 
@@ -124,9 +122,7 @@ private[streaming] class RateTestInputDStream(_ssc: StreamingContext)
 
   override val rateController: Option[RateController] = {
     Some(new RateController(id, new ConstantEstimator(100)) {
-      override def publish(rate: Long): Unit = {
-        publishedRates += 1
-      }
+      override def publish(rate: Long): Unit = { publishedRates += 1 }
     })
   }
 }
@@ -155,9 +151,7 @@ private[streaming] class RateTestReceiver(
     RateTestReceiver.registerReceiver(this)
   }
 
-  override def onStop(): Unit = {
-    RateTestReceiver.deregisterReceiver()
-  }
+  override def onStop(): Unit = { RateTestReceiver.deregisterReceiver() }
 
   override def preferredLocation: Option[String] = host
 
@@ -181,9 +175,7 @@ private[streaming] object RateTestReceiver {
     activeReceiver = receiver
   }
 
-  def deregisterReceiver(): Unit = {
-    activeReceiver = null
-  }
+  def deregisterReceiver(): Unit = { activeReceiver = null }
 
   def getActive(): Option[RateTestReceiver] = Option(activeReceiver)
 }
@@ -198,9 +190,7 @@ class StoppableReceiver extends Receiver[Int](StorageLevel.MEMORY_ONLY) {
   def onStart() {
     val thread = new Thread() {
       override def run() {
-        while (!StoppableReceiver.shouldStop) {
-          Thread.sleep(10)
-        }
+        while (!StoppableReceiver.shouldStop) { Thread.sleep(10) }
         StoppableReceiver.this.stop("stop")
       }
     }

@@ -38,9 +38,7 @@ private case class LassoCalculator(
         val eoc = estimateOneColumn(i)
         val oldCoefficient = resultVec(i)
         resultVec(i) = shrink(eoc.coefficients(0))
-        if (oldCoefficient != resultVec(i)) {
-          improvedResult = true
-        }
+        if (oldCoefficient != resultVec(i)) { improvedResult = true }
       })
     }
 
@@ -51,11 +49,8 @@ private case class LassoCalculator(
     // Soft thresholding
     val sb = math.signum(x)
     val ab = sb * x
-    if (ab > lambda) {
-      sb * (ab - lambda)
-    } else {
-      0.0
-    }
+    if (ab > lambda) { sb * (ab - lambda) }
+    else { 0.0 }
   }
 
   private def copyColumn(column: Int): Unit = {
@@ -71,9 +66,7 @@ private case class LassoCalculator(
 
       var o = outputs(i)
       cfor(0)(j => j < data.cols, j => j + 1)(j => {
-        if (j != column) {
-          o -= data(i, j) * resultVec(j)
-        }
+        if (j != column) { o -= data(i, j) * resultVec(j) }
       })
       outputCopy(i) = o
     })

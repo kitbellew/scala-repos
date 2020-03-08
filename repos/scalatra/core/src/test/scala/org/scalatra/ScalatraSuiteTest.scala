@@ -3,46 +3,28 @@ package org.scalatra
 import org.scalatra.test.scalatest.ScalatraFunSuite
 
 class ScalatraSuiteTestServlet extends ScalatraServlet {
-  before() {
-    contentType = "text/html; charset=utf-8"
-  }
+  before() { contentType = "text/html; charset=utf-8" }
 
-  get("/") {
-    "root"
-  }
+  get("/") { "root" }
 
-  get("/session") {
-    session.getOrElse("name", "error!")
-  }
+  get("/session") { session.getOrElse("name", "error!") }
 
   post("/session") {
     session("name") = params("name")
     session.getOrElse("name", "error!")
   }
 
-  get("/redirect") {
-    redirect("/redirected")
-  }
+  get("/redirect") { redirect("/redirected") }
 
-  get("/echo_params") {
-    params("msg")
-  }
+  get("/echo_params") { params("msg") }
 
-  post("/echo_params") {
-    params("msg")
-  }
+  post("/echo_params") { params("msg") }
 
-  patch("/method") {
-    request.getMethod
-  }
+  patch("/method") { request.getMethod }
 
-  put("/method") {
-    request.getMethod
-  }
+  put("/method") { request.getMethod }
 
-  delete("/method") {
-    request.getMethod
-  }
+  delete("/method") { request.getMethod }
 }
 
 class ScalatraSuiteTest extends ScalatraFunSuite {
@@ -125,21 +107,9 @@ class ScalatraSuiteTest extends ScalatraFunSuite {
     }
   }
 
-  test("put test") {
-    put("/method") {
-      body should equal("PUT")
-    }
-  }
+  test("put test") { put("/method") { body should equal("PUT") } }
 
-  test("delete test") {
-    delete("/method") {
-      body should equal("DELETE")
-    }
-  }
+  test("delete test") { delete("/method") { body should equal("DELETE") } }
 
-  test("patch test") {
-    patch("/method") {
-      body should equal("PATCH")
-    }
-  }
+  test("patch test") { patch("/method") { body should equal("PATCH") } }
 }

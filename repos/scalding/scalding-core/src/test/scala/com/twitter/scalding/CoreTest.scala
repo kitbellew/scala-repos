@@ -603,9 +603,7 @@ class MergeTest extends WordSpec with Matchers {
       .arg("out", "fakeOutput")
       .source(TextLine("fakeInput"), input)
       .sink[(Double, Double)](Tsv("fakeOutput")) { outBuf =>
-        "correctly merge two pipes" in {
-          golden shouldBe outBuf.toMap
-        }
+        "correctly merge two pipes" in { golden shouldBe outBuf.toMap }
       }
       .sink[(Double, Double)](Tsv("out2")) { outBuf =>
         "correctly self merge" in {
@@ -750,9 +748,7 @@ class GroupUniqueSpec extends WordSpec with Matchers {
           "5" -> "three 5",
           "6" -> "just one"))
       .sink[(Long)](Tsv("fakeOut")) { outBuf =>
-        "correctly count unique sizes" in {
-          outBuf.toSet should have size 3
-        }
+        "correctly count unique sizes" in { outBuf.toSet should have size 3 }
       }
       .run
       .finish
@@ -778,12 +774,8 @@ class DiscardTest extends WordSpec with Matchers {
         TextLine("fakeIn"),
         List("0" -> "hello world", "1" -> "foo", "2" -> "bar"))
       .sink[Boolean](Tsv("fakeOut")) { outBuf =>
-        "must reduce down to one line" in {
-          outBuf should have size 1
-        }
-        "must correctly discard word column" in {
-          outBuf(0) shouldBe true
-        }
+        "must reduce down to one line" in { outBuf should have size 1 }
+        "must correctly discard word column" in { outBuf(0) shouldBe true }
       }
       .run
       .finish
@@ -807,9 +799,7 @@ class HistogramTest extends WordSpec with Matchers {
         "must reduce down to a single line for a trivial input" in {
           outBuf should have size 1
         }
-        "must get the result right" in {
-          outBuf(0) shouldBe (2L, 1L)
-        }
+        "must get the result right" in { outBuf(0) shouldBe (2L, 1L) }
       }
       .run
       .finish
@@ -874,9 +864,7 @@ class ToListTest extends WordSpec with Matchers {
         TextLine("fakeIn"),
         List("0" -> "single test", "1" -> "single result"))
       .sink[(Int, String)](Tsv("fakeOut")) { outBuf =>
-        "must have the right number of lines" in {
-          outBuf should have size 2
-        }
+        "must have the right number of lines" in { outBuf should have size 2 }
         "must get the result right" in {
           //need to convert to sets because order
           outBuf(0)._2.split(" ").toSet shouldBe Set("single", "test")
@@ -895,9 +883,7 @@ class ToListTest extends WordSpec with Matchers {
         TextLine("fakeIn"),
         List("0" -> null, "0" -> "a", "0" -> null, "0" -> "b"))
       .sink[(Int, String)](Tsv("fakeOut")) { outBuf =>
-        "must have the right number of lines" in {
-          outBuf should have size 1
-        }
+        "must have the right number of lines" in { outBuf should have size 1 }
         "must return an empty list for null key" in {
           val sSet = outBuf(0)._2.split(" ").toSet
           sSet shouldBe Set("a", "b")
@@ -1133,14 +1119,10 @@ class PivotJob(args: Args) extends Job(args) {
   Tsv("in", ('k, 'w, 'y, 'z)).read
     .unpivot(('w, 'y, 'z) -> ('col, 'val))
     .write(Tsv("unpivot"))
-    .groupBy('k) {
-      _.pivot(('col, 'val) -> ('w, 'y, 'z))
-    }
+    .groupBy('k) { _.pivot(('col, 'val) -> ('w, 'y, 'z)) }
     .write(Tsv("pivot"))
     .unpivot(('w, 'y, 'z) -> ('col, 'val))
-    .groupBy('k) {
-      _.pivot(('col, 'val) -> ('w, 'y, 'z, 'default), 2.0)
-    }
+    .groupBy('k) { _.pivot(('col, 'val) -> ('w, 'y, 'z, 'default), 2.0) }
     .write(Tsv("pivot_with_default"))
 }
 
@@ -1255,9 +1237,7 @@ class HeadLastTest extends WordSpec with Matchers {
 
 class HeadLastUnsortedJob(args: Args) extends Job(args) {
   Tsv("input", ('x, 'y))
-    .groupBy('x) {
-      _.head('y -> 'yh).last('y -> 'yl)
-    }
+    .groupBy('x) { _.head('y -> 'yh).last('y -> 'yl) }
     .write(Tsv("output"))
 }
 
@@ -1603,9 +1583,7 @@ class GroupAllToListTestJob(args: Args) extends Job(args) {
   TypedTsv[(Long, String, Double)]("input")
     .mapTo('a, 'b) { case (id, k, v) => (id, Map(k -> v)) }
     .groupBy('a) { _.sum[Map[String, Double]]('b) }
-    .groupAll {
-      _.toList[(Long, Map[String, Double])](('a, 'b) -> 'abList)
-    }
+    .groupAll { _.toList[(Long, Map[String, Double])](('a, 'b) -> 'abList) }
     .map('abList -> 'abMap) { list: List[(Long, Map[String, Double])] =>
       list.toMap
     }
@@ -1639,9 +1617,7 @@ class ToListGroupAllToListTestJob(args: Args) extends Job(args) {
   TypedTsv[(Long, String)]("input")
     .mapTo('b, 'c) { case (k, v) => (k, v) }
     .groupBy('c) { _.toList[Long]('b -> 'bList) }
-    .groupAll {
-      _.toList[(String, List[Long])](('c, 'bList) -> 'cbList)
-    }
+    .groupAll { _.toList[(String, List[Long])](('c, 'bList) -> 'cbList) }
     .project('cbList)
     .write(Tsv("output"))
 }
@@ -2008,9 +1984,7 @@ class DailySuffixTsvTest extends WordSpec with Matchers {
       .arg("date", strd1 + " " + strd2)
       .source(source("input0"), data)
       .sink[(String, Int)](TypedTsv[(String, Int)]("output0")) { buf =>
-        "read and write data" in {
-          buf shouldBe data
-        }
+        "read and write data" in { buf shouldBe data }
       }
       .run
       .finish

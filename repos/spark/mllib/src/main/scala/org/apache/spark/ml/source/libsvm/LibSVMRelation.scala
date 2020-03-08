@@ -73,9 +73,7 @@ private[libsvm] class LibSVMOutputWriter(
     recordWriter.write(NullWritable.get(), buffer)
   }
 
-  override def close(): Unit = {
-    recordWriter.close(context)
-  }
+  override def close(): Unit = { recordWriter.close(context) }
 }
 
 /**

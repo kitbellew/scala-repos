@@ -30,9 +30,7 @@ final class CrosstableApi(coll: Coll) {
         select(u1, u2),
         BSONDocument("n" -> true)
       )
-      .one[BSONDocument] map {
-      ~_.flatMap(_.getAs[Int]("n"))
-    }
+      .one[BSONDocument] map { ~_.flatMap(_.getAs[Int]("n")) }
 
   def add(game: Game): Funit = game.userIds.distinct.sorted match {
     case List(u1, u2) =>

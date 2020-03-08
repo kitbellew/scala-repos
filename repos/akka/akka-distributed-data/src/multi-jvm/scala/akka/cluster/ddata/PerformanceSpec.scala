@@ -74,9 +74,7 @@ class PerformanceSpec
   val repeatCount = 3 // use at least 10 here for serious tuning
 
   def join(from: RoleName, to: RoleName): Unit = {
-    runOn(from) {
-      cluster join node(to).address
-    }
+    runOn(from) { cluster join node(to).address }
     enterBarrier(from.name + "-joined")
   }
 
@@ -224,9 +222,7 @@ class PerformanceSpec
           println(s"## ${3 * n} GCounter Update took $durationMs ms, $tps TPS")
         }
       }
-      runOn(n4, n5) {
-        enterBarrier("update-done-6")
-      }
+      runOn(n4, n5) { enterBarrier("update-done-6") }
 
       within(20.seconds) {
         awaitAssert {

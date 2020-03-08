@@ -59,11 +59,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     val firstLine = findFirstLine(csvOptions, rdd)
     val firstRow = new LineCsvReader(csvOptions).parseLine(firstLine)
 
-    val header = if (csvOptions.headerFlag) {
-      firstRow
-    } else {
-      firstRow.zipWithIndex.map { case (value, index) => s"C$index" }
-    }
+    val header = if (csvOptions.headerFlag) { firstRow }
+    else { firstRow.zipWithIndex.map { case (value, index) => s"C$index" } }
 
     val parsedRdd = tokenRdd(sqlContext, csvOptions, header, paths)
     val schema = if (csvOptions.inferSchemaFlag) {
@@ -158,9 +155,7 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       rdd
         .filter { line => line.trim.nonEmpty && !line.startsWith(comment) }
         .first()
-    } else {
-      rdd.filter { line => line.trim.nonEmpty }.first()
-    }
+    } else { rdd.filter { line => line.trim.nonEmpty }.first() }
   }
 
   private def readText(

@@ -112,7 +112,5 @@ package object vec {
     */
   def repeat[@spec(Boolean, Int, Long, Double) T: ST](
       v: Array[T],
-      n: Int): Array[T] = {
-    array.flatten(for (i <- 1 to n) yield v)
-  }
+      n: Int): Array[T] = { array.flatten(for (i <- 1 to n) yield v) }
 }

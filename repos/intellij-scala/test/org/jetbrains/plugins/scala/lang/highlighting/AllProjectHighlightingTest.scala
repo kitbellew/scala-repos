@@ -154,9 +154,8 @@ class AllProjectHighlightingTest
 
       val visitor = new ScalaRecursiveElementVisitor {
         override def visitElement(element: ScalaPsiElement) {
-          try {
-            annotator.annotate(element, mock)
-          } catch {
+          try { annotator.annotate(element, mock) }
+          catch {
             case e: Throwable =>
               println(s"Exception in ${file.getName}, Stacktrace: ")
               e.printStackTrace()

@@ -64,9 +64,7 @@ object EmitterSpecs
     compileEmit(v) must beOneOf((head +: streams): _*)
 
   "emitter" should {
-    "emit literal string" in {
-      testEmit("\"foo\"")(Vector(PushString("foo")))
-    }
+    "emit literal string" in { testEmit("\"foo\"")(Vector(PushString("foo"))) }
 
     "emit literal boolean" in {
       testEmit("true")(Vector(PushTrue))
@@ -78,13 +76,9 @@ object EmitterSpecs
       testEmit("23.23123")(Vector(PushNum("23.23123")))
     }
 
-    "emit literal null" in {
-      testEmit("null")(Vector(PushNull))
-    }
+    "emit literal null" in { testEmit("null")(Vector(PushNull)) }
 
-    "emit literal undefined" in {
-      testEmit("undefined")(Vector(PushUndefined))
-    }
+    "emit literal undefined" in { testEmit("undefined")(Vector(PushUndefined)) }
 
     "emit child of import" in {
       testEmit("import std 42")(Vector(PushNum("42")))
@@ -273,9 +267,7 @@ object EmitterSpecs
       testEmit("new 5")(Vector(PushNum("5"), Map1(New)))
     }
 
-    "emit empty object" in {
-      testEmit("{}")(Vector(PushObject))
-    }
+    "emit empty object" in { testEmit("{}")(Vector(PushObject)) }
 
     "emit wrap object for object with single field having constant numeric value" in {
       testEmit("{foo: 1}")(
@@ -653,9 +645,7 @@ object EmitterSpecs
         ))
     }
 
-    "emit empty array" in {
-      testEmit("[]")(Vector(PushArray))
-    }
+    "emit empty array" in { testEmit("[]")(Vector(PushArray)) }
 
     "emit wrap array for array with single element having constant string value" in {
       testEmit("[\"foo\"]")(Vector(PushString("foo"), Map1(WrapArray)))

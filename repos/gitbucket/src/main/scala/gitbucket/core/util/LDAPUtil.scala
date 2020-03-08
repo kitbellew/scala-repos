@@ -157,11 +157,8 @@ object LDAPUtil {
     }
 
     val conn: LDAPConnection =
-      if (ssl) {
-        new LDAPConnection(new LDAPJSSESecureSocketFactory())
-      } else {
-        new LDAPConnection(new LDAPJSSEStartTLSFactory())
-      }
+      if (ssl) { new LDAPConnection(new LDAPJSSESecureSocketFactory()) }
+      else { new LDAPConnection(new LDAPJSSEStartTLSFactory()) }
 
     try {
       // Connect to the server
@@ -183,9 +180,7 @@ object LDAPUtil {
         // Provide more information if something goes wrong
         logger.info("" + e)
 
-        if (conn.isConnected) {
-          conn.disconnect()
-        }
+        if (conn.isConnected) { conn.disconnect() }
         // Returns an error message
         Left(error)
       }
@@ -208,16 +203,13 @@ object LDAPUtil {
       if (results.hasMore) {
         getEntries(
           results,
-          entries :+ (try {
-            Option(results.next)
-          } catch {
+          entries :+ (try { Option(results.next) }
+          catch {
             case ex: LDAPReferralException =>
               None // NOTE(tanacasino): Referral follow is off. so ignores it.(for AD)
           })
         )
-      } else {
-        entries.flatten
-      }
+      } else { entries.flatten }
     }
 
     val filterCond = additionalFilterCondition.getOrElse("") match {
@@ -227,9 +219,7 @@ object LDAPUtil {
 
     getEntries(
       conn.search(baseDN, LDAPConnection.SCOPE_SUB, filterCond, null, false))
-      .collectFirst {
-        case x => x.getDN
-      }
+      .collectFirst { case x => x.getDN }
   }
 
   private def findMailAddress(

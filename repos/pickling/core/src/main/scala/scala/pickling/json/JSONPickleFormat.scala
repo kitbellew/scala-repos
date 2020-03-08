@@ -350,16 +350,12 @@ package json {
     def endEntry(): Unit = {}
     def beginCollection(): PReader = readField("elems")
     def readLength(): Int = {
-      datum match {
-        case JSONArray(list) => list.length
-      }
+      datum match { case JSONArray(list) => list.length }
     }
     private var i = 0
     def readElement(): PReader = {
       val reader = {
-        datum match {
-          case JSONArray(list) => mkNestedReader(list(i))
-        }
+        datum match { case JSONArray(list) => mkNestedReader(list(i)) }
       }
       i += 1
       reader

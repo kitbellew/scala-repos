@@ -70,9 +70,8 @@ object AnnotatorHighlighter {
       el: StubBasedPsiElement[_ <: StubElement[_ <: PsiElement]])
       : PsiElement = {
     val stub: StubElement[_ <: PsiElement] = el.getStub
-    if (stub != null) {
-      stub.getParentStub.getPsi
-    } else el.getParent
+    if (stub != null) { stub.getParentStub.getPsi }
+    else el.getParent
   }
 
   private def getParentByStub(x: PsiElement): PsiElement = {
@@ -296,9 +295,7 @@ object AnnotatorHighlighter {
               .asInstanceOf[PsiMethod]
               .isConstructor) {
           val clazz = PsiTreeUtil.getParentOfType(x, classOf[PsiClass])
-          if (clazz != null) {
-            annotateCollection(clazz)
-          }
+          if (clazz != null) { annotateCollection(clazz) }
         }
         if (isHighlightableScalaTestKeyword(x.asInstanceOf[ScFunction])) {
           annotation.setTextAttributes(DefaultHighlighter.SCALATEST_KEYWORD)
@@ -335,9 +332,7 @@ object AnnotatorHighlighter {
         if (x.getModifierList != null && x.getModifierList.hasModifierProperty(
               "static")) {
           annotation.setTextAttributes(DefaultHighlighter.OBJECT_METHOD_CALL)
-        } else {
-          annotation.setTextAttributes(DefaultHighlighter.METHOD_CALL)
-        }
+        } else { annotation.setTextAttributes(DefaultHighlighter.METHOD_CALL) }
       case x => //println("" + x + " " + x.getText)
     }
   }

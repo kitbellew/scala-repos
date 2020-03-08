@@ -115,9 +115,8 @@ trait TypeComparers {
 
       val before = undoLog.log
       var result = false
-      try {
-        result = isSameType1(tp1, tp2)
-      } finally if (!result) undoLog.undoTo(before)
+      try { result = isSameType1(tp1, tp2) }
+      finally if (!result) undoLog.undoTo(before)
       result
     } finally {
       subsametypeRecursions -= 1
@@ -338,12 +337,8 @@ trait TypeComparers {
             try {
               pendingSubTypes += p
               isSubType1(tp1, tp2, depth)
-            } finally {
-              pendingSubTypes -= p
-            }
-        } else {
-          isSubType1(tp1, tp2, depth)
-        }
+            } finally { pendingSubTypes -= p }
+        } else { isSubType1(tp1, tp2, depth) }
       } finally if (!result) undoLog.undoTo(before)
 
       result
@@ -543,9 +538,7 @@ trait TypeComparers {
         try {
           skolemizationLevel += 1
           isSubType(tp1.skolemizeExistential, tp2, depth)
-        } finally {
-          skolemizationLevel -= 1
-        }
+        } finally { skolemizationLevel -= 1 }
       case _ =>
         thirdTry
     }

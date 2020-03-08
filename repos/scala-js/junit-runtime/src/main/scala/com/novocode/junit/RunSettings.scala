@@ -36,9 +36,8 @@ class RunSettings private (
     if (t == null) "null"
     else {
       if (!logExceptionClass || (!logAssert && t
-            .isInstanceOf[AssertionError])) {
-        t.getMessage
-      } else {
+            .isInstanceOf[AssertionError])) { t.getMessage }
+      else {
         val b = new StringBuilder()
         val cn = decodeName(t.getClass.getName)
         val pos1 = cn.indexOf('$')

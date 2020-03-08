@@ -24,7 +24,9 @@ import org.apache.kafka.common.protocol.Errors
 
 import collection.mutable
 
-private[coordinator] sealed trait GroupState { def state: Byte }
+private[coordinator] sealed trait GroupState {
+  def state: Byte
+}
 
 /**
   * Group is preparing to rebalance
@@ -86,7 +88,9 @@ private[coordinator] case object Stable extends GroupState {
   *         allow offset fetch requests
   * transition: Dead is a final state before group metadata is cleaned up, so there are no transitions
   */
-private[coordinator] case object Dead extends GroupState { val state: Byte = 4 }
+private[coordinator] case object Dead extends GroupState {
+  val state: Byte = 4
+}
 
 private object GroupMetadata {
   private val validPreviousStates: Map[GroupState, Set[GroupState]] =
@@ -152,11 +156,8 @@ private[coordinator] class GroupMetadata(
   def remove(memberId: String) {
     members.remove(memberId)
     if (memberId == leaderId) {
-      leaderId = if (members.isEmpty) {
-        null
-      } else {
-        members.keys.head
-      }
+      leaderId = if (members.isEmpty) { null }
+      else { members.keys.head }
     }
   }
 
@@ -248,9 +249,7 @@ private[coordinator] class GroupMetadata(
     }
   }
 
-  def overview: GroupOverview = {
-    GroupOverview(groupId, protocolType)
-  }
+  def overview: GroupOverview = { GroupOverview(groupId, protocolType) }
 
   private def assertValidTransition(targetState: GroupState) {
     if (!GroupMetadata.validPreviousStates(targetState).contains(state))

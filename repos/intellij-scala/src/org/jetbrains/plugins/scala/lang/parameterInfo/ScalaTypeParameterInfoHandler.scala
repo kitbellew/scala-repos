@@ -62,9 +62,7 @@ class ScalaTypeParameterInfoHandler
   }
 
   def findElementForParameterInfo(
-      context: CreateParameterInfoContext): ScTypeArgs = {
-    findCall(context)
-  }
+      context: CreateParameterInfoContext): ScTypeArgs = { findCall(context) }
 
   def getParameterCloseChars: String = "{},];\n"
 
@@ -74,9 +72,7 @@ class ScalaTypeParameterInfoHandler
     ArrayUtil.EMPTY_OBJECT_ARRAY
 
   def findElementForUpdatingParameterInfo(
-      context: UpdateParameterInfoContext): ScTypeArgs = {
-    findCall(context)
-  }
+      context: UpdateParameterInfoContext): ScTypeArgs = { findCall(context) }
 
   def couldShowInLookup: Boolean = true
 

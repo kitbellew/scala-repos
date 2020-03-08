@@ -33,9 +33,7 @@ object WorksheetViewerInfo {
         case list: List[Editor] =>
           allViewers.put(
             editor,
-            list.filter {
-              case sViewer => sViewer != viewer
-            })
+            list.filter { case sViewer => sViewer != viewer })
       }
     }
   }
@@ -47,9 +45,8 @@ object WorksheetViewerInfo {
     while (i.hasNext) {
       i.next().foreach {
         case e: EditorImpl =>
-          if (!e.isDisposed) try {
-            factory.releaseEditor(e)
-          } catch {
+          if (!e.isDisposed) try { factory.releaseEditor(e) }
+          catch {
             case _: Exception => //ignore
           }
         case _ =>

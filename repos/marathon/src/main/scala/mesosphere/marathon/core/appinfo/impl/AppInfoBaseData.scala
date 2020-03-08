@@ -126,9 +126,7 @@ class AppInfoBaseData(
 
     lazy val taskCountsFuture: Future[TaskCounts] = {
       log.debug(s"calculating task counts for app [${app.id}]")
-      for {
-        tasks <- tasksForStats
-      } yield TaskCounts(tasks)
+      for { tasks <- tasksForStats } yield TaskCounts(tasks)
     }.recover {
       case NonFatal(e) =>
         throw new RuntimeException(
@@ -138,9 +136,9 @@ class AppInfoBaseData(
 
     lazy val taskStatsFuture: Future[TaskStatsByVersion] = {
       log.debug(s"calculating task stats for app [${app.id}]")
-      for {
-        tasks <- tasksForStats
-      } yield TaskStatsByVersion(app.versionInfo, tasks)
+      for { tasks <- tasksForStats } yield TaskStatsByVersion(
+        app.versionInfo,
+        tasks)
     }
 
     lazy val enrichedTasksFuture: Future[Seq[EnrichedTask]] = {

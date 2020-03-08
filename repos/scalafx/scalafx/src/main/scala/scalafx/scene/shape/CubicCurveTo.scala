@@ -55,23 +55,15 @@ class CubicCurveTo(
     with SFXDelegate[jfxss.CubicCurveTo] {
 
   def controlX1: DoubleProperty = delegate.controlX1Property
-  def controlX1_=(v: Double) {
-    controlX1() = v
-  }
+  def controlX1_=(v: Double) { controlX1() = v }
 
   def controlX2: DoubleProperty = delegate.controlX2Property
-  def controlX2_=(v: Double) {
-    controlX2() = v
-  }
+  def controlX2_=(v: Double) { controlX2() = v }
 
   def controlY1: DoubleProperty = delegate.controlY1Property
-  def controlY1_=(v: Double) {
-    controlY1() = v
-  }
+  def controlY1_=(v: Double) { controlY1() = v }
 
   def controlY2: DoubleProperty = delegate.controlY2Property
-  def controlY2_=(v: Double) {
-    controlY2() = v
-  }
+  def controlY2_=(v: Double) { controlY2() = v }
 
 }

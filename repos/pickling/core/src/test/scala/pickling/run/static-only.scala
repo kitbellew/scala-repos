@@ -8,9 +8,13 @@ sealed trait A
 
 sealed trait B extends A
 
-sealed abstract class C extends B { val fld: Int }
+sealed abstract class C extends B {
+  val fld: Int
+}
 
-final class D extends C { val fld = 1 }
+final class D extends C {
+  val fld = 1
+}
 
 final class E extends C {
   val fld = 2

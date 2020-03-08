@@ -27,17 +27,13 @@ class Parent extends Actor {
 }
 
 class Child extends Actor {
-  def receive = {
-    case "ping" => context.parent ! "pong"
-  }
+  def receive = { case "ping" => context.parent ! "pong" }
 }
 //#test-example
 
 //#test-dependentchild
 class DependentChild(parent: ActorRef) extends Actor {
-  def receive = {
-    case "ping" => parent ! "pong"
-  }
+  def receive = { case "ping" => parent ! "pong" }
 }
 //#test-dependentchild
 
@@ -68,9 +64,7 @@ class GenericDependentParent(childMaker: ActorRefFactory => ActorRef)
   * Test specification
   */
 class MockedChild extends Actor {
-  def receive = {
-    case "ping" => sender ! "pong"
-  }
+  def receive = { case "ping" => sender ! "pong" }
 }
 
 class ParentChildSpec extends WordSpec with Matchers with TestKitBase {

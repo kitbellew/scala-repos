@@ -124,9 +124,7 @@ private[mysql] class StdClient(factory: ServiceFactory[Request, Result])
           Future.exception(
             new Exception("Unexpected result %s when preparing %s"
               .format(r, sql)))
-      } ensure {
-        svc.close()
-      }
+      } ensure { svc.close() }
     }
   }
 

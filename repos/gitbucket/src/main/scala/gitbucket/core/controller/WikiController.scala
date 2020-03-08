@@ -185,9 +185,8 @@ trait WikiControllerBase extends ControllerBase {
           from,
           to,
           context.loginAccount.get,
-          None)) {
-      redirect(s"/${repository.owner}/${repository.name}/wiki/")
-    } else {
+          None)) { redirect(s"/${repository.owner}/${repository.name}/wiki/") }
+    else {
       flash += "info" -> "This patch was not able to be reversed."
       redirect(
         s"/${repository.owner}/${repository.name}/wiki/_compare/${from}...${to}")
@@ -226,9 +225,7 @@ trait WikiControllerBase extends ControllerBase {
         if (notReservedPageName(form.pageName)) {
           redirect(s"/${repository.owner}/${repository.name}/wiki/${StringUtil
             .urlEncode(form.pageName)}")
-        } else {
-          redirect(s"/${repository.owner}/${repository.name}/wiki")
-        }
+        } else { redirect(s"/${repository.owner}/${repository.name}/wiki") }
       }
   })
 
@@ -259,9 +256,7 @@ trait WikiControllerBase extends ControllerBase {
         if (notReservedPageName(form.pageName)) {
           redirect(s"/${repository.owner}/${repository.name}/wiki/${StringUtil
             .urlEncode(form.pageName)}")
-        } else {
-          redirect(s"/${repository.owner}/${repository.name}/wiki")
-        }
+        } else { redirect(s"/${repository.owner}/${repository.name}/wiki") }
       }
   })
 
@@ -332,9 +327,7 @@ trait WikiControllerBase extends ControllerBase {
       } else if (notReservedPageName(value) && (value.startsWith("_") || value
                    .startsWith("-"))) {
         Some(s"${name} starts with invalid character.")
-      } else {
-        None
-      }
+      } else { None }
   }
 
   private def notReservedPageName(value: String) =

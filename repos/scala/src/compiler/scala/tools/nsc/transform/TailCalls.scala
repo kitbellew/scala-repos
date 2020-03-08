@@ -207,9 +207,8 @@ abstract class TailCalls extends Transform {
     private var ctx: TailContext = EmptyTailContext
 
     override def transformUnit(unit: CompilationUnit): Unit = {
-      try {
-        super.transformUnit(unit)
-      } finally {
+      try { super.transformUnit(unit) }
+      finally {
         // OPT clear these after each compilation unit
         failPositions.clear()
         failReasons.clear()

@@ -38,9 +38,7 @@ object SexpCompactPrinter extends SexpPrinter {
     if (els.isEmpty) print(SexpNil, sb)
     else {
       sb.append('(')
-      printSeq(els, sb.append(' ')) {
-        print(_, sb)
-      }
+      printSeq(els, sb.append(' ')) { print(_, sb) }
       sb.append(')')
     }
 

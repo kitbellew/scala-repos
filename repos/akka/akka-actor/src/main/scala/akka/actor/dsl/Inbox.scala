@@ -234,9 +234,7 @@ trait Inbox { this: ActorDSL.type ⇒
       * Overridden finalizer which will try to stop the actor once this Inbox
       * is no longer referenced.
       */
-    override def finalize() {
-      system.stop(receiver)
-    }
+    override def finalize() { system.stop(receiver) }
   }
 
   implicit def senderFromInbox(implicit inbox: Inbox): ActorRef = inbox.receiver

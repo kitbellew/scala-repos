@@ -24,9 +24,7 @@ object System {
   def setErr(err: PrintStream): Unit =
     this.err = err
 
-  def currentTimeMillis(): scala.Long = {
-    (new js.Date).getTime().toLong
-  }
+  def currentTimeMillis(): scala.Long = { (new js.Date).getTime().toLong }
 
   private[this] val getHighPrecisionTime: js.Function0[scala.Double] = {
     import js.DynamicImplicits.truthValue
@@ -98,9 +96,8 @@ object System {
       }
     }
 
-    if (src == null || dest == null) {
-      throw new NullPointerException()
-    } else
+    if (src == null || dest == null) { throw new NullPointerException() }
+    else
       (src match {
         case src: Array[AnyRef] =>
           dest match {
@@ -165,9 +162,8 @@ object System {
         } else if (assumingES6 || idHashCodeMap != null) {
           // Use the global WeakMap of attributed id hash codes
           val hash = idHashCodeMap.get(x.asInstanceOf[js.Any])
-          if (!js.isUndefined(hash)) {
-            hash.asInstanceOf[Int]
-          } else {
+          if (!js.isUndefined(hash)) { hash.asInstanceOf[Int] }
+          else {
             val newHash = nextIDHashCode()
             idHashCodeMap.set(x.asInstanceOf[js.Any], newHash)
             newHash
@@ -238,9 +234,7 @@ object System {
       for {
         jsEnvProperties <- environmentInfo.javaSystemProperties
         (key, value) <- jsEnvProperties
-      } {
-        sysProp.setProperty(key, value)
-      }
+      } { sysProp.setProperty(key, value) }
       sysProp
     }
   }

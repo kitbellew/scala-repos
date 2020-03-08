@@ -14,9 +14,7 @@ object InjectTest extends SpecLite {
     implicit def test1AlgebraAFunctor: Functor[Test1Algebra] =
       new Functor[Test1Algebra] {
         def map[A, B](a: Test1Algebra[A])(f: A => B): Test1Algebra[B] =
-          a match {
-            case Test1(k, h) => Test1(k, x => f(h(x)))
-          }
+          a match { case Test1(k, h) => Test1(k, x => f(h(x))) }
       }
   }
 
@@ -36,9 +34,7 @@ object InjectTest extends SpecLite {
     implicit def test2AlgebraAFunctor: Functor[Test2Algebra] =
       new Functor[Test2Algebra] {
         def map[A, B](a: Test2Algebra[A])(f: A => B): Test2Algebra[B] =
-          a match {
-            case Test2(k, h) => Test2(k, x => f(h(x)))
-          }
+          a match { case Test2(k, h) => Test2(k, x => f(h(x))) }
       }
   }
 
@@ -58,9 +54,7 @@ object InjectTest extends SpecLite {
     implicit def test3AlgebraAFunctor: Functor[Test3Algebra] =
       new Functor[Test3Algebra] {
         def map[A, B](a: Test3Algebra[A])(f: A => B): Test3Algebra[B] =
-          a match {
-            case Test3(k, h) => Test3(k, x => f(h(x)))
-          }
+          a match { case Test3(k, h) => Test3(k, x => f(h(x))) }
       }
   }
 

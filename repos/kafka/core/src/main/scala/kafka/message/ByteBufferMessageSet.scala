@@ -82,9 +82,7 @@ object ByteBufferMessageSet {
               message.buffer.arrayOffset,
               message.buffer.limit)
           }
-        } finally {
-          output.close()
-        }
+        } finally { output.close() }
       }
       val buffer =
         ByteBuffer.allocate(messageWriter.size + MessageSet.LogOverhead)
@@ -333,9 +331,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
     this(compressionCodec, new LongRef(0L), messages: _*)
   }
 
-  def this(messages: Message*) {
-    this(NoCompressionCodec, messages: _*)
-  }
+  def this(messages: Message*) { this(NoCompressionCodec, messages: _*) }
 
   def getBuffer = buffer
 
@@ -405,9 +401,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
         message.limit(size)
         topIter.position(topIter.position + size)
         val newMessage = new Message(message)
-        if (isShallow) {
-          new MessageAndOffset(newMessage, offset)
-        } else {
+        if (isShallow) { new MessageAndOffset(newMessage, offset) }
+        else {
           newMessage.compressionCodec match {
             case NoCompressionCodec =>
               innerIter = null
@@ -423,9 +418,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       }
 
       override def makeNext(): MessageAndOffset = {
-        if (isShallow) {
-          makeNextOuter
-        } else {
+        if (isShallow) { makeNextOuter }
+        else {
           if (innerDone())
             makeNextOuter
           else

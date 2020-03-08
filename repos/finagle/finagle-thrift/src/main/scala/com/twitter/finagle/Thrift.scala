@@ -220,9 +220,7 @@ object Thrift
             params[
               com.twitter.finagle.param.ResponseClassifier].responseClassifier
           )
-        } else {
-          ThriftResponseClassifier.DeserializeCtxOnly
-        }
+        } else { ThriftResponseClassifier.DeserializeCtxOnly }
       configured(com.twitter.finagle.param.ResponseClassifier(classifier))
     }
 

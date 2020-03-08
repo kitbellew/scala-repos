@@ -51,29 +51,19 @@ class TextArea(override val delegate: jfxsc.TextArea = new jfxsc.TextArea())
   def this(text: String) = this(new jfxsc.TextArea(text))
 
   def prefColumnCount: IntegerProperty = delegate.prefColumnCountProperty()
-  def prefColumnCount_=(v: Int) {
-    prefColumnCount() = v
-  }
+  def prefColumnCount_=(v: Int) { prefColumnCount() = v }
 
   def prefRowCount: IntegerProperty = delegate.prefRowCountProperty()
-  def prefRowCount_=(v: Int) {
-    prefRowCount() = v
-  }
+  def prefRowCount_=(v: Int) { prefRowCount() = v }
 
   def scrollLeft: DoubleProperty = delegate.scrollLeftProperty()
-  def scrollLeft_=(v: Double) {
-    scrollLeft() = v
-  }
+  def scrollLeft_=(v: Double) { scrollLeft() = v }
 
   def scrollTop: DoubleProperty = delegate.scrollTopProperty()
-  def scrollTop_=(v: Double) {
-    scrollTop() = v
-  }
+  def scrollTop_=(v: Double) { scrollTop() = v }
 
   def wrapText: BooleanProperty = delegate.wrapTextProperty()
-  def wrapText_=(v: Boolean) {
-    wrapText() = v
-  }
+  def wrapText_=(v: Boolean) { wrapText() = v }
 
   def paragraphs = delegate.getParagraphs
 

@@ -137,9 +137,8 @@ object ZkSecurityMigrator extends Logging {
   }
 
   def main(args: Array[String]) {
-    try {
-      run(args)
-    } catch {
+    try { run(args) }
+    catch {
       case e: Exception =>
         e.printStackTrace()
     }
@@ -171,9 +170,7 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
 
   private def setAclIndividually(path: String) = {
     val setPromise = Promise[String]
-    futures.synchronized {
-      futures += setPromise.future
-    }
+    futures.synchronized { futures += setPromise.future }
     setAcl(path, setPromise)
   }
 
@@ -275,9 +272,7 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
 
       @tailrec
       def recurse(): Unit = {
-        val future = futures.synchronized {
-          futures.headOption
-        }
+        val future = futures.synchronized { futures.headOption }
         future match {
           case Some(a) =>
             Await.result(a, 6000 millis)
@@ -288,8 +283,6 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
       }
       recurse()
 
-    } finally {
-      zkUtils.close
-    }
+    } finally { zkUtils.close }
   }
 }

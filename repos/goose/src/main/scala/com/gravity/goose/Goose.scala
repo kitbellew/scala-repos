@@ -55,11 +55,8 @@ class Goose(config: Configuration = new Configuration) {
   def initializeEnvironment() {
 
     val f = new File(config.localStoragePath)
-    try {
-      if (!f.isDirectory) {
-        f.mkdirs()
-      }
-    } catch {
+    try { if (!f.isDirectory) { f.mkdirs() } }
+    catch {
       case e: Exception =>
     }
     if (!f.isDirectory) {

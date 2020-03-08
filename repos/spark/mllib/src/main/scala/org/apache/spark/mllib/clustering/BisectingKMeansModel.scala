@@ -52,9 +52,7 @@ class BisectingKMeansModel private[clustering] (
     * Predicts the index of the cluster that the input point belongs to.
     */
   @Since("1.6.0")
-  def predict(point: Vector): Int = {
-    root.predict(point)
-  }
+  def predict(point: Vector): Int = { root.predict(point) }
 
   /**
     * Predicts the indices of the clusters that the input points belong to.
@@ -75,9 +73,7 @@ class BisectingKMeansModel private[clustering] (
     * Computes the squared distance between the input point and the cluster center it belongs to.
     */
   @Since("1.6.0")
-  def computeCost(point: Vector): Double = {
-    root.computeCost(point)
-  }
+  def computeCost(point: Vector): Double = { root.computeCost(point) }
 
   /**
     * Computes the sum of squared distances between the input points and their corresponding cluster

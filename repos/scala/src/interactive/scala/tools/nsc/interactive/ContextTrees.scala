@@ -56,9 +56,7 @@ trait ContextTrees { self: Global =>
             case None =>
               context
           }
-        } else {
-          context
-        }
+        } else { context }
       }
       def sanitizeContext(c: Context): Context = {
         c.retyping = false

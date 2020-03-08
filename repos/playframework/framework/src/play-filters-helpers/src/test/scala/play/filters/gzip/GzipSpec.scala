@@ -41,9 +41,7 @@ object GzipSpec extends Specification {
       val baosResult = baos.toByteArray
 
       for (i <- 0 until result.length) {
-        if (result(i) != baosResult(i)) {
-          result(i) must_== baosResult(i)
-        }
+        if (result(i) != baosResult(i)) { result(i) must_== baosResult(i) }
       }
 
       result must_== baos.toByteArray
@@ -57,13 +55,9 @@ object GzipSpec extends Specification {
       values.mkString("") must_== new String(check, "utf-8")
     }
 
-    "gzip simple input" in {
-      test("Hello world")
-    }
+    "gzip simple input" in { test("Hello world") }
 
-    "gzip multiple inputs" in {
-      test("Hello", " ", "world")
-    }
+    "gzip multiple inputs" in { test("Hello", " ", "world") }
 
     "gzip large repeating input" in {
       val bigString = Seq.fill(1000)("Hello world").mkString("")
@@ -75,9 +69,7 @@ object GzipSpec extends Specification {
       test(bigString, bigString, bigString)
     }
 
-    "gzip large random input" in {
-      test(scala.util.Random.nextString(10000))
-    }
+    "gzip large random input" in { test(scala.util.Random.nextString(10000)) }
 
     "gzip multiple large random inputs" in {
       test(
@@ -99,11 +91,8 @@ object GzipSpec extends Specification {
 
     def read(resource: String): Array[Byte] = {
       val is = GzipSpec.getClass.getClassLoader.getResourceAsStream(resource)
-      try {
-        IOUtils.toByteArray(is)
-      } finally {
-        is.close()
-      }
+      try { IOUtils.toByteArray(is) }
+      finally { is.close() }
     }
 
     def test(
@@ -127,9 +116,7 @@ object GzipSpec extends Specification {
       result must_== expected
     }
 
-    "gunzip simple input" in {
-      test("Hello world")
-    }
+    "gunzip simple input" in { test("Hello world") }
 
     "gunzip simple input in small chunks" in {
       test("Hello world", chunkSize = Some(5))
@@ -147,9 +134,7 @@ object GzipSpec extends Specification {
       test(Seq.fill(1000)("Hello world").mkString(""), chunkSize = Some(100))
     }
 
-    "gunzip large random input" in {
-      test(scala.util.Random.nextString(10000))
-    }
+    "gunzip large random input" in { test(scala.util.Random.nextString(10000)) }
 
     "gunzip large random input in small chunks" in {
       test(scala.util.Random.nextString(10000), chunkSize = Some(100))

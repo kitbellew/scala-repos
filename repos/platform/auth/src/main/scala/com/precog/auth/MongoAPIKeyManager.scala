@@ -233,9 +233,7 @@ class MongoAPIKeyManager(
       keyValue: MongoPrimitive,
       collection: String)(
       implicit extractor: Extractor[A]): Future[Option[A]] = {
-    database {
-      selectOne().from(collection).where(keyName === keyValue)
-    } map {
+    database { selectOne().from(collection).where(keyName === keyValue) } map {
       _.map(_.deserialize[A])
     }
   }
@@ -244,9 +242,7 @@ class MongoAPIKeyManager(
       keyName: String,
       keyValue: MongoPrimitive,
       collection: String)(implicit extractor: Extractor[A]): Future[Set[A]] = {
-    database {
-      selectAll.from(collection).where(keyName === keyValue)
-    } map {
+    database { selectAll.from(collection).where(keyName === keyValue) } map {
       _.map(_.deserialize[A]).toSet
     }
   }
@@ -259,9 +255,7 @@ class MongoAPIKeyManager(
       selectAll
         .from(collection)
         .where(stringToMongoFilterBuilder(keyName) contains keyValue)
-    } map {
-      _.map(_.deserialize[A]).toSet
-    }
+    } map { _.map(_.deserialize[A]).toSet }
   }
 
   private def findAll[A](collection: String)(
@@ -366,9 +360,7 @@ class MongoAPIKeyManager(
               .into(settings.deletedGrants))
           _ <- database(remove.from(settings.grants).where("grantId" === gid))
         } yield { deletedChildren + leafGrant }
-      } getOrElse {
-        Promise successful deletedChildren
-      }
+      } getOrElse { Promise successful deletedChildren }
     } yield result
   }
 }

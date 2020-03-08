@@ -34,9 +34,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     Dtab.base = Dtab.read("/foo=>/bar; /baz=>/biz")
   }
 
-  after {
-    Dtab.base = saveBase
-  }
+  after { Dtab.base = saveBase }
 
   type Iface = B.ServiceIface
   def ifaceManifest = implicitly[ClassTag[B.ServiceIface]]
@@ -57,9 +55,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       stringer.toString
     }
 
-    def show_me_your_dtab_size() = Future {
-      Dtab.local.length
-    }
+    def show_me_your_dtab_size() = Future { Dtab.local.length }
   }
 
   val processor = new BServiceImpl()

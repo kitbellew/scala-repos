@@ -23,11 +23,8 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
 
   def writeToTempFile(s: String): Unit = {
     val printer = new java.io.PrintWriter(new File(tempFile))
-    try {
-      printer.print(s)
-    } finally {
-      printer.close()
-    }
+    try { printer.print(s) }
+    finally { printer.close() }
   }
 
   def bufToString(buf: Buf): String = buf match {
@@ -35,13 +32,9 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
     case _           => ""
   }
 
-  before {
-    writeToTempFile("foo bar")
-  }
+  before { writeToTempFile("foo bar") }
 
-  after {
-    new File(tempFile).delete()
-  }
+  after { new File(tempFile).delete() }
 
   test("ActivitySource.orElse") {
     val a = failed.orElse(ok)

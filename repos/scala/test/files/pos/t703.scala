@@ -15,9 +15,7 @@ object Go {
     }
   }
   trait D extends B with C {
-    abstract override def f = {
-      super.f;
-    }
+    abstract override def f = { super.f; }
   }
   class Super extends A {
     def f: Unit = Console.println("A")

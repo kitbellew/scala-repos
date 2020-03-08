@@ -1,6 +1,8 @@
 import scala.language.{higherKinds, implicitConversions}
 
-trait Foo { type Out }
+trait Foo {
+  type Out
+}
 
 trait SI {
   val instance: Foo

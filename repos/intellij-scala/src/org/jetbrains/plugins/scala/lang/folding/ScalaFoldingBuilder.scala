@@ -424,9 +424,7 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
             PsiElement] && ch.getNode.getElementType == ScalaTokenTypes.kMATCH) {
         val result = node.getText.substring(index + MATCH_KEYWORD.length)
         return result.indexOf("\n") != -1
-      } else {
-        index += ch.getTextLength
-      }
+      } else { index += ch.getTextLength }
     }
     false
   }
@@ -445,9 +443,7 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
               PsiElement] && ch.getNode.getElementType == TokenType.WHITE_SPACE)
           offset += ch.getTextLength
         return offset
-      } else {
-        offset += ch.getTextLength
-      }
+      } else { offset += ch.getTextLength }
     }
     0
   }

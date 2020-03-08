@@ -8,14 +8,10 @@ object Test extends App {
     sv.take()
   }
 
-  def output(num: Int, msg: String) {
-    println("test" + num + ": " + msg)
-  }
+  def output(num: Int, msg: String) { println("test" + num + ": " + msg) }
 
   def testOnSuccess(): Unit = once { done =>
-    val f = future {
-      output(1, "hai world")
-    }
+    val f = future { output(1, "hai world") }
     f onSuccess {
       case _ =>
         output(1, "kthxbye")
@@ -24,9 +20,7 @@ object Test extends App {
   }
 
   def testOnSuccessWhenCompleted(): Unit = once { done =>
-    val f = future {
-      output(2, "hai world")
-    }
+    val f = future { output(2, "hai world") }
     f onSuccess {
       case _ =>
         output(2, "awsum thx")

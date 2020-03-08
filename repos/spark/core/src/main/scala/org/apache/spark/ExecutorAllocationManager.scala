@@ -221,9 +221,7 @@ private[spark] class ExecutorAllocationManager(
   /**
     * Use a different clock for this allocation manager. This is mainly used for testing.
     */
-  def setClock(newClock: Clock): Unit = {
-    clock = newClock
-  }
+  def setClock(newClock: Clock): Unit = { clock = newClock }
 
   /**
     * Register for scheduler callbacks to decide when to add and remove executors, and start
@@ -234,9 +232,8 @@ private[spark] class ExecutorAllocationManager(
 
     val scheduleTask = new Runnable() {
       override def run(): Unit = {
-        try {
-          schedule()
-        } catch {
+        try { schedule() }
+        catch {
           case ct: ControlThrowable =>
             throw ct
           case t: Throwable =>
@@ -358,9 +355,7 @@ private[spark] class ExecutorAllocationManager(
           s"expire in $sustainedSchedulerBacklogTimeoutS seconds)")
       addTime += sustainedSchedulerBacklogTimeoutS * 1000
       delta
-    } else {
-      0
-    }
+    } else { 0 }
   }
 
   /**
@@ -415,9 +410,7 @@ private[spark] class ExecutorAllocationManager(
           s" (new desired total will be $numExecutorsTarget)")
       numExecutorsToAdd = if (delta == numExecutorsToAdd) {
         numExecutorsToAdd * 2
-      } else {
-        1
-      }
+      } else { 1 }
       delta
     } else {
       logWarning(
@@ -483,9 +476,7 @@ private[spark] class ExecutorAllocationManager(
       executorIds.filter(listener.isExecutorIdle).foreach(onExecutorIdle)
       logInfo(
         s"New executor $executorId has registered (new total is ${executorIds.size})")
-    } else {
-      logWarning(s"Duplicate executor $executorId has registered")
-    }
+    } else { logWarning(s"Duplicate executor $executorId has registered") }
   }
 
   /**
@@ -503,9 +494,7 @@ private[spark] class ExecutorAllocationManager(
           s"Executor $executorId is no longer pending to " +
             s"be removed (${executorsPendingToRemove.size} left)")
       }
-    } else {
-      logWarning(s"Unknown executor $executorId has been removed!")
-    }
+    } else { logWarning(s"Unknown executor $executorId has been removed!") }
   }
 
   /**
@@ -552,9 +541,7 @@ private[spark] class ExecutorAllocationManager(
           if (hasCachedBlocks) {
             // Use a different timeout if the executor has cached blocks.
             now + cachedExecutorIdleTimeoutS * 1000
-          } else {
-            now + executorIdleTimeoutS * 1000
-          }
+          } else { now + executorIdleTimeoutS * 1000 }
         }
         val realTimeout =
           if (timeout <= 0) Long.MaxValue else timeout // overflow

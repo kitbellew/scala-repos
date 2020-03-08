@@ -15,9 +15,7 @@ object ControlUtil {
     try f(resource)
     finally {
       if (resource != null) {
-        ignoring(classOf[Throwable]) {
-          resource.close()
-        }
+        ignoring(classOf[Throwable]) { resource.close() }
       }
     }
 
@@ -33,10 +31,7 @@ object ControlUtil {
     }
 
   def ignore[T](f: => Unit): Unit =
-    try {
-      f
-    } catch {
-      case e: Exception => ()
-    }
+    try { f }
+    catch { case e: Exception => () }
 
 }

@@ -59,9 +59,7 @@ class EventLoggingListenerSuite
     testDirPath = new Path(testDir.getAbsolutePath())
   }
 
-  after {
-    Utils.deleteRecursively(testDir)
-  }
+  after { Utils.deleteRecursively(testDir) }
 
   test("Verify log file exist") {
     // Verify logging directory exists
@@ -81,9 +79,7 @@ class EventLoggingListenerSuite
     assert(!fileSystem.getFileStatus(new Path(eventLogger.logPath)).isDirectory)
   }
 
-  test("Basic event logging") {
-    testEventLogging()
-  }
+  test("Basic event logging") { testEventLogging() }
 
   test("Basic event logging with compression") {
     CompressionCodec.ALL_COMPRESSION_CODECS.foreach { codec =>
@@ -92,9 +88,7 @@ class EventLoggingListenerSuite
     }
   }
 
-  test("End-to-end event logging") {
-    testApplicationEventLogging()
-  }
+  test("End-to-end event logging") { testApplicationEventLogging() }
 
   test("End-to-end event logging with compression") {
     CompressionCodec.ALL_COMPRESSION_CODECS.foreach { codec =>
@@ -194,9 +188,7 @@ class EventLoggingListenerSuite
         JsonProtocol.sparkEventFromJson(parse(lines(1))) === applicationStart)
       assert(
         JsonProtocol.sparkEventFromJson(parse(lines(2))) === applicationEnd)
-    } finally {
-      logData.close()
-    }
+    } finally { logData.close() }
   }
 
   /**
@@ -258,9 +250,7 @@ class EventLoggingListenerSuite
         if (line.contains(event)) {
           val parsedEvent = JsonProtocol.sparkEventFromJson(parse(line))
           val eventType = Utils.getFormattedClassName(parsedEvent)
-          if (eventType == event) {
-            eventSet.remove(event)
-          }
+          if (eventType == event) { eventSet.remove(event) }
         }
       }
     }
@@ -288,9 +278,7 @@ class EventLoggingListenerSuite
       jobStarted = true
     }
 
-    override def onJobEnd(jobEnd: SparkListenerJobEnd) {
-      jobEnded = true
-    }
+    override def onJobEnd(jobEnd: SparkListenerJobEnd) { jobEnded = true }
 
     override def onApplicationEnd(applicationEnd: SparkListenerApplicationEnd) {
       appEnded = true

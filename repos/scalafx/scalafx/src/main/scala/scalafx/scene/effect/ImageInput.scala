@@ -59,8 +59,6 @@ class ImageInput(override val delegate: jfxse.ImageInput = new jfxse.ImageInput)
     * The source Image.
     */
   def source: ObjectProperty[jfxsi.Image] = delegate.sourceProperty
-  def source_=(v: Image) {
-    source() = v
-  }
+  def source_=(v: Image) { source() = v }
 
 }

@@ -38,8 +38,6 @@ private[base] class BaseShutdownHooks extends ShutdownHooks {
   */
 private class DefaultShutdownHooks extends BaseShutdownHooks {
   Runtime.getRuntime.addShutdownHook(new Thread() {
-    override def run(): Unit = {
-      shutdown()
-    }
+    override def run(): Unit = { shutdown() }
   })
 }

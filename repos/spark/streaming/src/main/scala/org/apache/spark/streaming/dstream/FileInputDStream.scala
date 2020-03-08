@@ -327,9 +327,7 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
     _fs
   }
 
-  private def reset() {
-    _fs = null
-  }
+  private def reset() { _fs = null }
 
   @throws(classOf[IOException])
   private def readObject(ois: ObjectInputStream): Unit =

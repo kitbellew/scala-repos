@@ -51,29 +51,21 @@ package object scalding {
       new OrPathFilter(Seq(f) ++ filters)
     }
 
-    def not: PathFilter = {
-      new NotPathFilter(f)
-    }
+    def not: PathFilter = { new NotPathFilter(f) }
 
   }
 
   private[this] class AndPathFilter(filters: Seq[PathFilter])
       extends PathFilter {
-    override def accept(p: Path): Boolean = {
-      filters.forall(_.accept(p))
-    }
+    override def accept(p: Path): Boolean = { filters.forall(_.accept(p)) }
   }
 
   private[this] class OrPathFilter(filters: Seq[PathFilter])
       extends PathFilter {
-    override def accept(p: Path): Boolean = {
-      filters.exists(_.accept(p))
-    }
+    override def accept(p: Path): Boolean = { filters.exists(_.accept(p)) }
   }
 
   private[this] class NotPathFilter(filter: PathFilter) extends PathFilter {
-    override def accept(p: Path): Boolean = {
-      !filter.accept(p)
-    }
+    override def accept(p: Path): Boolean = { !filter.accept(p) }
   }
 }

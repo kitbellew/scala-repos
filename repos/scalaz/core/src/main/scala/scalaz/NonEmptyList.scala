@@ -32,9 +32,7 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
   }
 
   def distinct(implicit A: Order[A]): NonEmptyList[A] =
-    (list.distinct: @unchecked) match {
-      case ICons(x, xs) => nel(x, xs)
-    }
+    (list.distinct: @unchecked) match { case ICons(x, xs) => nel(x, xs) }
 
   def traverse1[F[_], B](f: A => F[B])(
       implicit F: Apply[F]): F[NonEmptyList[B]] = {
@@ -90,9 +88,7 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
 
   /** @since 7.0.2 */
   def sortBy[B](f: A => B)(implicit o: Order[B]): NonEmptyList[A] =
-    (list.sortBy(f): @unchecked) match {
-      case ICons(x, xs) => nel(x, xs)
-    }
+    (list.sortBy(f): @unchecked) match { case ICons(x, xs) => nel(x, xs) }
 
   /** @since 7.0.2 */
   def sortWith(lt: (A, A) => Boolean): NonEmptyList[A] =
@@ -102,9 +98,7 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
 
   /** @since 7.0.2 */
   def sorted(implicit o: Order[A]): NonEmptyList[A] =
-    (list.sorted(o): @unchecked) match {
-      case ICons(x, xs) => nel(x, xs)
-    }
+    (list.sorted(o): @unchecked) match { case ICons(x, xs) => nel(x, xs) }
 
   def size: Int = 1 + tail.length
 

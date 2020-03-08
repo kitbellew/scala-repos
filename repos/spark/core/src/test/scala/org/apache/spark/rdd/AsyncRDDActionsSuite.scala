@@ -45,9 +45,7 @@ class AsyncRDDActionsSuite
     try {
       LocalSparkContext.stop(sc)
       sc = null
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   lazy val zeroPartRdd = new EmptyRDD[Int](sc)
@@ -94,24 +92,16 @@ class AsyncRDDActionsSuite
     val input = Range(1, 1000)
 
     var rdd = sc.parallelize(input, 1)
-    for (num <- Seq(0, 1, 999, 1000)) {
-      testTake(rdd, input, num)
-    }
+    for (num <- Seq(0, 1, 999, 1000)) { testTake(rdd, input, num) }
 
     rdd = sc.parallelize(input, 2)
-    for (num <- Seq(0, 1, 3, 500, 501, 999, 1000)) {
-      testTake(rdd, input, num)
-    }
+    for (num <- Seq(0, 1, 3, 500, 501, 999, 1000)) { testTake(rdd, input, num) }
 
     rdd = sc.parallelize(input, 100)
-    for (num <- Seq(0, 1, 500, 501, 999, 1000)) {
-      testTake(rdd, input, num)
-    }
+    for (num <- Seq(0, 1, 500, 501, 999, 1000)) { testTake(rdd, input, num) }
 
     rdd = sc.parallelize(input, 1000)
-    for (num <- Seq(0, 1, 3, 999, 1000)) {
-      testTake(rdd, input, num)
-    }
+    for (num <- Seq(0, 1, 3, 999, 1000)) { testTake(rdd, input, num) }
   }
 
   /**
@@ -144,9 +134,7 @@ class AsyncRDDActionsSuite
     }
     assert(f.get() === 10)
 
-    failAfter(10 seconds) {
-      sem.acquire(2)
-    }
+    failAfter(10 seconds) { sem.acquire(2) }
   }
 
   /**
@@ -180,13 +168,9 @@ class AsyncRDDActionsSuite
       case t =>
         sem.release()
     }
-    intercept[SparkException] {
-      f.get()
-    }
+    intercept[SparkException] { f.get() }
 
-    failAfter(10 seconds) {
-      sem.acquire(2)
-    }
+    failAfter(10 seconds) { sem.acquire(2) }
   }
 
   /**

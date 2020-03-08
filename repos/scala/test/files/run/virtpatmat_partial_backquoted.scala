@@ -1,5 +1,7 @@
 object Test extends App {
-  class Region { override def toString = "You got me!" }
+  class Region {
+    override def toString = "You got me!"
+  }
   class SymbolType
   case class SymbolInfo(tp: SymbolType, regions: List[Region], x: Any)
 

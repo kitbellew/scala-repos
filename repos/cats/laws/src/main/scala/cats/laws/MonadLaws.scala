@@ -39,5 +39,7 @@ trait MonadLaws[F[_]] extends ApplicativeLaws[F] with FlatMapLaws[F] {
 
 object MonadLaws {
   def apply[F[_]](implicit ev: Monad[F]): MonadLaws[F] =
-    new MonadLaws[F] { def F: Monad[F] = ev }
+    new MonadLaws[F] {
+      def F: Monad[F] = ev
+    }
 }

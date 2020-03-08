@@ -541,10 +541,9 @@ object Serializers {
         writeInt(pos.column)
       }
 
-      if (pos == Position.NoPosition) {
-        writeByte(FormatNoPositionValue)
-      } else if (lastPosition == Position.NoPosition ||
-                 pos.source != lastPosition.source) {
+      if (pos == Position.NoPosition) { writeByte(FormatNoPositionValue) }
+      else if (lastPosition == Position.NoPosition ||
+               pos.source != lastPosition.source) {
         writeFull()
         lastPosition = pos
       } else {
@@ -563,9 +562,7 @@ object Serializers {
           writeByte(Format3MaskValue)
           writeShort(lineDiff)
           writeByte(column)
-        } else {
-          writeFull()
-        }
+        } else { writeFull() }
 
         lastPosition = pos
       }
@@ -605,9 +602,7 @@ object Serializers {
 
     private[this] var foundArguments: Boolean = false
 
-    def deserialize(): Tree = {
-      readTree()
-    }
+    def deserialize(): Tree = { readTree() }
 
     def readTree(): Tree = {
       import input._
@@ -749,9 +744,7 @@ object Serializers {
               case _ =>
                 true
             }
-          } else {
-            defs0
-          }
+          } else { defs0 }
           val optimizerHints = new OptimizerHints(readInt())
           ClassDef(name, kind, superClass, parents, jsName, defs)(
             optimizerHints)
@@ -781,17 +774,13 @@ object Serializers {
           val result2 = if (foundArguments) {
             foundArguments = false
             new RewriteArgumentsTransformer().transformMethodDef(result1)
-          } else {
-            result1
-          }
+          } else { result1 }
           if (useHacks065 && result2.resultType != NoType &&
               isConstructorName(result2.name.name)) {
             result2.copy(resultType = NoType, body = result2.body)(
               result2.optimizerHints,
               result2.hash)(result2.pos)
-          } else {
-            result2
-          }
+          } else { result2 }
         case TagPropertyDef =>
           PropertyDef(
             readPropertyName(),
@@ -805,9 +794,7 @@ object Serializers {
             foundArguments = false
             new RewriteArgumentsTransformer()
               .transformConstructorExportDef(result)
-          } else {
-            result
-          }
+          } else { result }
         case TagJSClassExportDef =>
           JSClassExportDef(readString())
         case TagModuleExportDef =>
@@ -896,9 +883,8 @@ object Serializers {
 
       val first = readByte()
 
-      val result = if (first == FormatNoPositionValue) {
-        Position.NoPosition
-      } else {
+      val result = if (first == FormatNoPositionValue) { Position.NoPosition }
+      else {
         val result = if ((first & FormatFullMask) == FormatFullMaskValue) {
           val file = files(readInt())
           val line = readInt()
@@ -951,9 +937,7 @@ object Serializers {
       } else None
     }
 
-    def readString(): String = {
-      strings(input.readInt())
-    }
+    def readString(): String = { strings(input.readInt()) }
   }
 
   private class RewriteArgumentsTransformer extends Transformers.Transformer {

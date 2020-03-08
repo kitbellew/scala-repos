@@ -46,9 +46,7 @@ object SteppingInmemJournal {
   def getRef(instanceId: String): ActorRef = synchronized(_current(instanceId))
 
   private def putRef(instanceId: String, instance: ActorRef): Unit =
-    synchronized {
-      _current = _current + (instanceId -> instance)
-    }
+    synchronized { _current = _current + (instanceId -> instance) }
   private def remove(instanceId: String): Unit =
     synchronized(_current -= instanceId)
 }
@@ -163,8 +161,6 @@ final class SteppingInmemJournal extends InmemJournal {
       val tokenRecipient +: rest = queuedTokenRecipients
       queuedTokenRecipients = rest
       completed.onComplete(_ ⇒ tokenRecipient ! TokenConsumed)
-    } else {
-      queuedOps = queuedOps :+ op
-    }
+    } else { queuedOps = queuedOps :+ op }
   }
 }

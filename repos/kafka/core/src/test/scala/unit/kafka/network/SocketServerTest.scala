@@ -150,9 +150,8 @@ class SocketServerTest extends JUnitSuite {
     new Random().nextBytes(tooManyBytes)
     val socket = connect()
     sendRequest(socket, tooManyBytes, Some(0))
-    try {
-      receiveResponse(socket)
-    } catch {
+    try { receiveResponse(socket) }
+    catch {
       case e: IOException => // thats fine
     }
   }

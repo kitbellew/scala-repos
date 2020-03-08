@@ -68,7 +68,9 @@ trait JdbcBackend extends RelationalBackend {
 
     override protected[this] def createDatabaseActionContext[T](
         _useSameThread: Boolean): Context =
-      new JdbcActionContext { val useSameThread = _useSameThread }
+      new JdbcActionContext {
+        val useSameThread = _useSameThread
+      }
 
     override protected[this] def createStreamingDatabaseActionContext[T](
         s: Subscriber[_ >: T],
@@ -549,9 +551,7 @@ trait JdbcBackend extends RelationalBackend {
       }
     }
 
-    def close() {
-      if (open) conn.close()
-    }
+    def close() { if (open) conn.close() }
 
     private[slick] def startInTransaction: Unit = {
       if (!isInTransaction) conn.setAutoCommit(false)

@@ -139,9 +139,8 @@ final class FileZipArchive(file: JFile) extends ZipArchive(file) {
     val root = new DirEntry("/")
     val dirs = mutable.HashMap[String, DirEntry]("/" -> root)
     def openZipFile(): ZipFile =
-      try {
-        new ZipFile(file)
-      } catch {
+      try { new ZipFile(file) }
+      catch {
         case ioe: IOException =>
           throw new IOException("Error accessing " + file.getPath, ioe)
       }

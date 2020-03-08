@@ -66,9 +66,7 @@ trait Rand[@specialized(Int, Double) +T] { outer =>
   def samplesVector[U >: T](size: Int)(
       implicit m: ClassTag[U]): DenseVector[U] = {
     val result = new DenseVector[U](new Array[U](size))
-    cfor(0)(i => i < size, i => i + 1)(i => {
-      result(i) = draw()
-    })
+    cfor(0)(i => i < size, i => i + 1)(i => { result(i) = draw() })
     result
   }
 
@@ -137,19 +135,14 @@ private trait PredicateRandDraws[@specialized(Int, Double) T] extends Rand[T] {
 
   def draw() = { // Not the most efficient implementation ever, but meh.
     var x = rand.draw()
-    while (!predicate(x)) {
-      x = rand.draw()
-    }
+    while (!predicate(x)) { x = rand.draw() }
     x
   }
 
   override def drawOpt() = {
     val x = rand.get()
-    if (predicate(x)) {
-      Some(x)
-    } else {
-      None
-    }
+    if (predicate(x)) { Some(x) }
+    else { None }
   }
 }
 

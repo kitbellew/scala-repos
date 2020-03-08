@@ -60,9 +60,7 @@ class FileStreamSource(
         if (providerName == "text") {
           // Add a default schema for "text"
           new StructType().add("value", StringType)
-        } else {
-          throw new IllegalArgumentException("No schema specified")
-        }
+        } else { throw new IllegalArgumentException("No schema specified") }
       } else {
         // There are some existing files. Use them to infer the schema.
         dataFrameBuilder(filesPresent.toArray).schema
@@ -84,9 +82,7 @@ class FileStreamSource(
         logDebug(s"new file: $file")
         newFiles.append(file)
         seenFiles.add(file)
-      } else {
-        logDebug(s"old file: $file")
-      }
+      } else { logDebug(s"old file: $file") }
     }
 
     if (newFiles.nonEmpty) {
@@ -101,14 +97,10 @@ class FileStreamSource(
     * For test only. Run `func` with the internal lock to make sure when `func` is running,
     * the current offset won't be changed and no new batch will be emitted.
     */
-  def withBatchingLocked[T](func: => T): T = synchronized {
-    func
-  }
+  def withBatchingLocked[T](func: => T): T = synchronized { func }
 
   /** Return the latest offset in the source */
-  def currentOffset: LongOffset = synchronized {
-    new LongOffset(maxBatchId)
-  }
+  def currentOffset: LongOffset = synchronized { new LongOffset(maxBatchId) }
 
   /**
     * Returns the next batch of data that is available after `start`, if any is available.
@@ -123,9 +115,7 @@ class FileStreamSource(
       logDebug(s"Return files from batches ${startId + 1}:$endId")
       logDebug(s"Streaming ${files.mkString(", ")}")
       Some(new Batch(end, dataFrameBuilder(files)))
-    } else {
-      None
-    }
+    } else { None }
   }
 
   private def fetchAllFiles(): Seq[String] = {

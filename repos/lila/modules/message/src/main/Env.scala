@@ -40,9 +40,7 @@ final class Env(
 
   system.actorOf(
     Props(new Actor {
-      def receive = {
-        case thread: LichessThread => api.lichessThread(thread)
-      }
+      def receive = { case thread: LichessThread => api.lichessThread(thread) }
     }),
     name = ActorName)
 }

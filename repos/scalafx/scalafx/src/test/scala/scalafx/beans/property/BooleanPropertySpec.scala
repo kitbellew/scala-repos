@@ -74,9 +74,7 @@ class BooleanPropertySpec extends FlatSpec with BeforeAndAfterEach {
     booleanProperty.name should equal("Test Boolean")
   }
 
-  it should "know its bean" in {
-    booleanProperty.bean should equal(bean)
-  }
+  it should "know its bean" in { booleanProperty.bean should equal(bean) }
 
   it should "be bindable to another Boolean Property" in {
     booleanProperty <== booleanProperty2
@@ -209,12 +207,8 @@ class BooleanPropertySpec extends FlatSpec with BeforeAndAfterEach {
     var invalidateCount = 0
     var changeCount = 0
     val binding = booleanProperty2 || booleanProperty3
-    binding onInvalidate {
-      invalidateCount += 1
-    }
-    binding onChange {
-      changeCount += 1
-    }
+    binding onInvalidate { invalidateCount += 1 }
+    binding onChange { changeCount += 1 }
     booleanProperty2() = true
     invalidateCount should equal(1)
     changeCount should equal(1)

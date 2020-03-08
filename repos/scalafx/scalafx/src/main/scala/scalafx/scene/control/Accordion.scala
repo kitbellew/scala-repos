@@ -51,9 +51,7 @@ class Accordion(override val delegate: jfxsc.Accordion = new jfxsc.Accordion)
     */
   def expandedPane: ObjectProperty[jfxsc.TitledPane] =
     delegate.expandedPaneProperty
-  def expandedPane_=(v: TitledPane) {
-    expandedPane() = v
-  }
+  def expandedPane_=(v: TitledPane) { expandedPane() = v }
 
   /**
     * The list of TitledPane in this Accordion.
@@ -66,8 +64,6 @@ class Accordion(override val delegate: jfxsc.Accordion = new jfxsc.Accordion)
     *
     * @param c list of TitledPane in this Accordion to replace prior content.
     */
-  def panes_=(c: Iterable[TitledPane]) {
-    fillSFXCollection(this.panes, c)
-  }
+  def panes_=(c: Iterable[TitledPane]) { fillSFXCollection(this.panes, c) }
 
 }

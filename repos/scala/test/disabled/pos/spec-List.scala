@@ -120,9 +120,8 @@ sealed trait List[@specialized +A]
       else {
         val head0 = ys.head
         val head1 = f(head0)
-        if (head1 == head0) {
-          loop(ys.tail)
-        } else {
+        if (head1 == head0) { loop(ys.tail) }
+        else {
           val ys1 = head1 :: ys.tail.mapConserve(f)
           if (this eq ys) ys1
           else {
@@ -724,9 +723,8 @@ object List extends SeqFactory[List] {
       else {
         val head0 = ys.head
         val head1 = f(head0)
-        if (head1 eq head0) {
-          loop(ys.tail)
-        } else {
+        if (head1 eq head0) { loop(ys.tail) }
+        else {
           val ys1 = head1 :: mapConserve(ys.tail)(f)
           if (xs eq ys) ys1
           else {

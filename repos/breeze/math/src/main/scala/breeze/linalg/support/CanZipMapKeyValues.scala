@@ -83,18 +83,14 @@ object CanZipMapKeyValues {
     def map(from: Array[V], from2: Array[V], fn: (Int, V, V) => RV) = {
       require(from.length == from2.length, "Array lengths don't match!")
       val arr = new Array[RV](from.length)
-      for (i <- 0 until from.length) {
-        arr(i) = fn(i, from(i), from2(i))
-      }
+      for (i <- 0 until from.length) { arr(i) = fn(i, from(i), from2(i)) }
       arr
     }
 
     override def mapActive(
         from: Array[V],
         from2: Array[V],
-        fn: (Int, V, V) => RV): Array[RV] = {
-      map(from, from2, fn)
-    }
+        fn: (Int, V, V) => RV): Array[RV] = { map(from, from2, fn) }
   }
 
   // <editor-fold defaultstate="collapsed" desc=" implicit CanZipMapValues[V, RV] implementations ">

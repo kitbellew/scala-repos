@@ -232,9 +232,7 @@ case class SortMergeJoin(
     }
   }
 
-  override def supportCodegen: Boolean = {
-    joinType == Inner
-  }
+  override def supportCodegen: Boolean = { joinType == Inner }
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
     left.execute() :: right.execute() :: Nil
@@ -395,9 +393,7 @@ case class SortMergeJoin(
              |$value = $isNull ? ${ctx.defaultValue(a.dataType)} : ($valueCode);
            """.stripMargin
           ExprCode(code, isNull, value)
-        } else {
-          ExprCode(s"$value = $valueCode;", "false", value)
-        }
+        } else { ExprCode(s"$value = $valueCode;", "false", value) }
     }
   }
 
@@ -434,9 +430,7 @@ case class SortMergeJoin(
       val beforeCond = evaluateVariables(used.map(_._2))
       val afterCond = evaluateVariables(notUsed.map(_._2))
       (beforeCond, afterCond)
-    } else {
-      (evaluateVariables(variables), "")
-    }
+    } else { (evaluateVariables(variables), "") }
   }
 
   override def doProduce(ctx: CodegenContext): String = {
@@ -488,9 +482,7 @@ case class SortMergeJoin(
          |$rightAfter
      """.stripMargin
       (before, checking)
-    } else {
-      (evaluateVariables(leftVars), "")
-    }
+    } else { (evaluateVariables(leftVars), "") }
 
     s"""
        |while (findNextInnerJoinRows($leftInput, $rightInput)) {
@@ -588,9 +580,8 @@ private[joins] class SortMergeJoinScanner(
       // Advance both the streamed and buffered iterators to find the next pair of matching rows.
       var comp = keyOrdering.compare(streamedRowKey, bufferedRowKey)
       do {
-        if (streamedRowKey.anyNull) {
-          advancedStreamed()
-        } else {
+        if (streamedRowKey.anyNull) { advancedStreamed() }
+        else {
           assert(!bufferedRowKey.anyNull)
           comp = keyOrdering.compare(streamedRowKey, bufferedRowKey)
           if (comp > 0) advancedBufferedToRowWithNullFreeJoinKey()
@@ -687,9 +678,7 @@ private[joins] class SortMergeJoinScanner(
       bufferedRow = null
       bufferedRowKey = null
       false
-    } else {
-      true
-    }
+    } else { true }
   }
 
   /**
@@ -926,16 +915,10 @@ private class SortMergeFullOuterJoinScanner(
       advancedRight()
     }
 
-    if (leftMatches.size <= leftMatched.capacity) {
-      leftMatched.clear()
-    } else {
-      leftMatched = new BitSet(leftMatches.size)
-    }
-    if (rightMatches.size <= rightMatched.capacity) {
-      rightMatched.clear()
-    } else {
-      rightMatched = new BitSet(rightMatches.size)
-    }
+    if (leftMatches.size <= leftMatched.capacity) { leftMatched.clear() }
+    else { leftMatched = new BitSet(leftMatches.size) }
+    if (rightMatches.size <= rightMatched.capacity) { rightMatched.clear() }
+    else { rightMatched = new BitSet(rightMatches.size) }
   }
 
   /**
@@ -990,9 +973,7 @@ private class SortMergeFullOuterJoinScanner(
   def advanceNext(): Boolean = {
     // If we already buffered some matching rows, use them directly
     if (leftIndex <= leftMatches.size || rightIndex <= rightMatches.size) {
-      if (scanNextInBuffered()) {
-        return true
-      }
+      if (scanNextInBuffered()) { return true }
     }
 
     if (leftRow != null && (leftRowKey.anyNull || rightRow == null)) {
@@ -1007,11 +988,8 @@ private class SortMergeFullOuterJoinScanner(
       // Both rows are present and neither have null values,
       // so we populate the buffers with rows matching the next key
       val comp = keyOrdering.compare(leftRowKey, rightRowKey)
-      if (comp <= 0) {
-        findMatchingRows(leftRowKey.copy())
-      } else {
-        findMatchingRows(rightRowKey.copy())
-      }
+      if (comp <= 0) { findMatchingRows(leftRowKey.copy()) }
+      else { findMatchingRows(rightRowKey.copy()) }
       scanNextInBuffered()
       true
     } else {

@@ -10,7 +10,5 @@ package org.scalajs.jsenv
 
 /** A JS console that prints on the console */
 object ConsoleJSConsole extends JSConsole {
-  override def log(msg: Any): Unit = {
-    Console.println(msg)
-  }
+  override def log(msg: Any): Unit = { Console.println(msg) }
 }

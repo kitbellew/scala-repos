@@ -63,9 +63,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
           rule.applyOrElse(afterRuleOnChildren, identity[LogicalPlan])
         }
       }
-    } else {
-      this
-    }
+    } else { this }
   }
 
   /**
@@ -74,9 +72,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     */
   def resolveExpressions(
       r: PartialFunction[Expression, Expression]): LogicalPlan = {
-    this resolveOperators {
-      case p => p.transformExpressions(r)
-    }
+    this resolveOperators { case p => p.transformExpressions(r) }
   }
 
   /**
@@ -188,9 +184,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
       // At least one qualifier matches. See if remaining parts match.
       val remainingParts = nameParts.tail
       resolveAsColumn(remainingParts, resolver, attribute)
-    } else {
-      None
-    }
+    } else { None }
   }
 
   /**
@@ -205,9 +199,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
       attribute: Attribute): Option[(Attribute, List[String])] = {
     if (!attribute.isGenerated && resolver(attribute.name, nameParts.head)) {
       Option((attribute.withName(nameParts.head), nameParts.tail.toList))
-    } else {
-      None
-    }
+    } else { None }
   }
 
   /** Performs attribute resolution given a name and a sequence of possible attributes. */
@@ -228,9 +220,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
         input.flatMap { option =>
           resolveAsTableColumn(nameParts, resolver, option)
         }
-      } else {
-        Seq.empty
-      }
+      } else { Seq.empty }
     }
 
     // If none of attributes match `table.column` pattern, we try to resolve it as a column.

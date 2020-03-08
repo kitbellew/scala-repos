@@ -55,15 +55,9 @@ class BasicFormatsSpec extends FormatSpec with BasicFormats {
     assertFormat(false, SexpNil)
   }
 
-  it should "support Char" in {
-    assertFormat('t', SexpChar('t'))
-  }
+  it should "support Char" in { assertFormat('t', SexpChar('t')) }
 
-  it should "support Unit" in {
-    assertFormat((), SexpNil)
-  }
+  it should "support Unit" in { assertFormat((), SexpNil) }
 
-  it should "support Symbol" in {
-    assertFormat('blah, SexpString("blah"))
-  }
+  it should "support Symbol" in { assertFormat('blah, SexpString("blah")) }
 }

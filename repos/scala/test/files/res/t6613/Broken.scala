@@ -1,1 +1,3 @@
-class Broken() { def broken() = Enummy.Broke.CHIP }
+class Broken() {
+  def broken() = Enummy.Broke.CHIP
+}

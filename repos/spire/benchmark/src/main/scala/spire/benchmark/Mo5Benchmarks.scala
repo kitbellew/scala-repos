@@ -21,9 +21,7 @@ class Mo5Benchmarks extends MyBenchmark {
 
   val len = 5000000
 
-  override protected def setUp(): Unit = {
-    as = init(len)(nextInt)
-  }
+  override protected def setUp(): Unit = { as = init(len)(nextInt) }
 
   def timeHBMo5(reps: Int) = run(reps) {
     val a = as.clone()

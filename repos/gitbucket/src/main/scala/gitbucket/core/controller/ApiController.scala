@@ -252,9 +252,7 @@ trait ApiControllerBase extends ControllerBase {
     */
   post("/api/v3/repos/:owner/:repository/labels")(collaboratorsOnly {
     repository =>
-      (for {
-        data <- extractFromJsonBody[CreateALabel] if data.isValid
-      } yield {
+      (for { data <- extractFromJsonBody[CreateALabel] if data.isValid } yield {
         LockUtil.lock(RepositoryName(repository).fullName) {
           if (getLabel(repository.owner, repository.name, data.name).isEmpty) {
             val labelId = createLabel(
@@ -283,9 +281,7 @@ trait ApiControllerBase extends ControllerBase {
     */
   patch("/api/v3/repos/:owner/:repository/labels/:labelName")(
     collaboratorsOnly { repository =>
-      (for {
-        data <- extractFromJsonBody[CreateALabel] if data.isValid
-      } yield {
+      (for { data <- extractFromJsonBody[CreateALabel] if data.isValid } yield {
         LockUtil.lock(RepositoryName(repository).fullName) {
           getLabel(repository.owner, repository.name, params("labelName")).map {
             label =>
@@ -484,9 +480,7 @@ trait ApiControllerBase extends ControllerBase {
     *
     * legacy route
     */
-  get("/api/v3/repos/:owner/:repo/statuses/:ref") {
-    listStatusesRoute.action()
-  }
+  get("/api/v3/repos/:owner/:repo/statuses/:ref") { listStatusesRoute.action() }
 
   /**
     * https://developer.github.com/v3/repos/statuses/#get-the-combined-status-for-a-specific-ref

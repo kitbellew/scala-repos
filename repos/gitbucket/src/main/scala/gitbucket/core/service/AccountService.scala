@@ -20,9 +20,7 @@ trait AccountService {
       password: String)(implicit s: Session): Option[Account] =
     if (settings.ldapAuthentication) {
       ldapAuthentication(settings, userName, password)
-    } else {
-      defaultAuthentication(userName, password)
-    }
+    } else { defaultAuthentication(userName, password) }
 
   /**
     * Authenticate by internal database.
@@ -106,9 +104,8 @@ trait AccountService {
       implicit s: Session): Map[String, Account] = {
     val map = knowns.map(a => a.userName -> a).toMap
     val needs = userNames -- map.keySet
-    if (needs.isEmpty) {
-      map
-    } else {
+    if (needs.isEmpty) { map }
+    else {
       map ++ Accounts
         .filter(t =>
           (t.userName inSetBind needs) && (t.removed === false.bind, !includeRemoved))
@@ -126,11 +123,8 @@ trait AccountService {
 
   def getAllUsers(includeRemoved: Boolean = true)(
       implicit s: Session): List[Account] =
-    if (includeRemoved) {
-      Accounts sortBy (_.userName) list
-    } else {
-      Accounts filter (_.removed === false.bind) sortBy (_.userName) list
-    }
+    if (includeRemoved) { Accounts sortBy (_.userName) list }
+    else { Accounts filter (_.removed === false.bind) sortBy (_.userName) list }
 
   def createAccount(
       userName: String,

@@ -87,14 +87,11 @@ object Gzip {
           if (state.deflater.needsInput()) {
             // Deflater needs more input, so continue
             Cont(step(state, k))
-          } else {
-            deflateUntilNeedsInput(state, k)
-          }
+          } else { deflateUntilNeedsInput(state, k) }
         } else {
           state.pos += numBytes
-          if (state.pos < bufferSize) {
-            deflateUntilNeedsInput(state, k)
-          } else {
+          if (state.pos < bufferSize) { deflateUntilNeedsInput(state, k) }
+          else {
             // We've filled our buffer, feed it into the k function
             val buffer = state.buffer
             state.reset()
@@ -116,14 +113,11 @@ object Gzip {
           if (state.deflater.finished()) {
             // Deflater is finished, send the trailer
             feedTrailer(state, k)
-          } else {
-            deflateUntilFinished(state, k)
-          }
+          } else { deflateUntilFinished(state, k) }
         } else {
           state.pos += numBytes
-          if (state.pos < bufferSize) {
-            deflateUntilFinished(state, k)
-          } else {
+          if (state.pos < bufferSize) { deflateUntilFinished(state, k) }
+          else {
             val buffer = state.buffer
             state.reset()
             new CheckDoneBytes {
@@ -232,9 +226,7 @@ object Gzip {
       def step[A](
           state: State,
           k: K[Bytes, A]): K[Bytes, Iteratee[Bytes, A]] = {
-        case Input.EOF => {
-          Error("Premature end of gzip stream", Input.EOF)
-        }
+        case Input.EOF => { Error("Premature end of gzip stream", Input.EOF) }
 
         case Input.El(bytes) => {
           state.inflater.setInput(bytes)
@@ -268,9 +260,7 @@ object Gzip {
             // Feed the current buffer
             val buffer = if (state.buffer.length > state.pos) {
               state.buffer.take(state.pos)
-            } else {
-              state.buffer
-            }
+            } else { state.buffer }
             state.crc.update(buffer)
             new CheckDoneBytes {
               def continue[B](k: K[Bytes, B]) = finish(state, k, input)
@@ -279,9 +269,7 @@ object Gzip {
           } else if (state.inflater.needsInput()) {
             // Inflater needs more input, so continue
             Cont(step(state, k))
-          } else {
-            inflateUntilNeedsInput(state, k, input)
-          }
+          } else { inflateUntilNeedsInput(state, k, input) }
         } else {
           state.pos += numBytes
           if (state.pos < bufferSize) {
@@ -313,9 +301,7 @@ object Gzip {
         // Get the left over bytes from the inflater
         val leftOver = if (input.length > state.inflater.getRemaining) {
           Done(Unit, Input.El(input.takeRight(state.inflater.getRemaining)))
-        } else {
-          done()
-        }
+        } else { done() }
 
         // Read the trailer, before sending an EOF
         for {
@@ -392,16 +378,10 @@ object Gzip {
       def readShort(crc: CRC32): Iteratee[Bytes, Int] =
         for {
           bytes <- take(2, "Not enough bytes for extra field length", crc)
-        } yield {
-          littleEndianToShort(bytes)
-        }
+        } yield { littleEndianToShort(bytes) }
 
       def readInt(error: String, crc: CRC32): Iteratee[Bytes, Int] =
-        for {
-          bytes <- take(4, error, crc)
-        } yield {
-          littleEndianToInt(bytes)
-        }
+        for { bytes <- take(4, error, crc) } yield { littleEndianToInt(bytes) }
 
       def take(
           n: Int,

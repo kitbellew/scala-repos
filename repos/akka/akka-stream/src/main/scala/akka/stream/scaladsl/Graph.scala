@@ -239,9 +239,7 @@ final class MergePreferred[T] private (
           new InHandler {
             override def onPush(): Unit = {
               if (preferredEmitting > 0) () // blocked
-              else {
-                emit(out, grab(port), pullPort)
-              }
+              else { emit(out, grab(port), pullPort) }
             }
             override def onUpstreamFinish(): Unit = onComplete()
           }
@@ -606,11 +604,8 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
                   if (idx == outPendingIdx) {
                     push(o, elem)
                     outPendingElem = null
-                    if (!isClosed(in)) {
-                      if (!hasBeenPulled(in)) {
-                        pull(in)
-                      }
-                    } else
+                    if (!isClosed(in)) { if (!hasBeenPulled(in)) { pull(in) } }
+                    else
                       completeStage()
                   }
                 } else if (!hasBeenPulled(in))
@@ -714,11 +709,8 @@ final class Balance[T](val outputPorts: Int, waitForAllDownstreams: Boolean)
               }
 
               if (needDownstreamPulls == 0) {
-                if (isAvailable(in)) {
-                  if (noPending) {
-                    push(o, grab(in))
-                  }
-                } else {
+                if (isAvailable(in)) { if (noPending) { push(o, grab(in)) } }
+                else {
                   if (!hasBeenPulled(in)) pull(in)
                   pendingQueue.enqueue(o)
                 }
@@ -867,9 +859,7 @@ final class Concat[T](inputPorts: Int)
           setHandler(
             i,
             new InHandler {
-              override def onPush() = {
-                push(out, grab(i))
-              }
+              override def onPush() = { push(out, grab(i)) }
 
               override def onUpstreamFinish() = {
                 if (idx == activeStream) {

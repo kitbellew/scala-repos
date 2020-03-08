@@ -6,13 +6,9 @@ import com.intellij.psi.PsiElement
   * Pavel.Fatin, 11.05.2010
   */
 class ContextsIteratorTest extends IteratorTestCase {
-  def testEmpty() = {
-    assertIterates("", "0")
-  }
+  def testEmpty() = { assertIterates("", "0") }
 
-  def testOneParent() = {
-    assertIterates("0", parse("0 (1.1)").getFirstChild)
-  }
+  def testOneParent() = { assertIterates("0", parse("0 (1.1)").getFirstChild) }
 
   def testTwoParents() = {
     assertIterates("1.1, 0", parse("0 (1.1 (2.1))").getFirstChild.getFirstChild)
@@ -28,9 +24,7 @@ class ContextsIteratorTest extends IteratorTestCase {
     assertIterates("0", parse("0 (1.1, 1.2, 1.3)").getFirstChild.getNextSibling)
   }
 
-  def testChildren() = {
-    assertIterates("", "0 (1.1)")
-  }
+  def testChildren() = { assertIterates("", "0 (1.1)") }
 
   def createIterator(element: PsiElement) = new ContextsIterator(element)
 }

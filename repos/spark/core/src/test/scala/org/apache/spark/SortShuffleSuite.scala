@@ -48,11 +48,8 @@ class SortShuffleSuite extends ShuffleSuite with BeforeAndAfterAll {
   }
 
   override def afterEach(): Unit = {
-    try {
-      Utils.deleteRecursively(tempDir)
-    } finally {
-      super.afterEach()
-    }
+    try { Utils.deleteRecursively(tempDir) }
+    finally { super.afterEach() }
   }
 
   test(

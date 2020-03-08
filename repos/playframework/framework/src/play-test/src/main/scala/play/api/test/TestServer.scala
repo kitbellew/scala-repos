@@ -29,9 +29,7 @@ case class TestServer(
     * Starts this server.
     */
   def start() {
-    if (testServerProcess != null) {
-      sys.error("Server already started!")
-    }
+    if (testServerProcess != null) { sys.error("Server already started!") }
 
     try {
       val config = ServerConfig(
@@ -73,9 +71,7 @@ object TestServer {
       config: ServerConfig,
       application: Application): TestServerProcess = {
     val process = new TestServerProcess
-    val serverProvider: ServerProvider = {
-      testServerProvider
-    } getOrElse {
+    val serverProvider: ServerProvider = { testServerProvider } getOrElse {
       ServerProvider.fromConfiguration(
         process.classLoader,
         config.configuration)
@@ -102,9 +98,7 @@ private[play] class TestServerProcess extends ServerProcess {
   override def addShutdownHook(hook: => Unit) = {
     hooks = hooks :+ (() => hook)
   }
-  def shutdown(): Unit = {
-    for (h <- hooks) h.apply()
-  }
+  def shutdown(): Unit = { for (h <- hooks) h.apply() }
 
   override def classLoader = getClass.getClassLoader
   override def args = Seq()

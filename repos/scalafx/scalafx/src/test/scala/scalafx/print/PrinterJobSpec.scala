@@ -44,9 +44,7 @@ class PrinterJobSpec
   lazy val skipingMessage: String =
     if (jfxp.PrinterJob.createPrinterJob == null) {
       "JavaFX did not create a default printer job, system may not have no default printer defined."
-    } else {
-      ""
-    }
+    } else { "" }
 
   override val skipJfxToSfxCause = skipingMessage
 

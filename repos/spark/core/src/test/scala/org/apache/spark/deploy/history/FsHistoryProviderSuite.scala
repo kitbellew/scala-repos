@@ -56,13 +56,9 @@ class FsHistoryProviderSuite
 
   private var testDir: File = null
 
-  before {
-    testDir = Utils.createTempDir()
-  }
+  before { testDir = Utils.createTempDir() }
 
-  after {
-    Utils.deleteRecursively(testDir)
-  }
+  after { Utils.deleteRecursively(testDir) }
 
   /** Create a fake log file using the new log format used in Spark 1.3+ */
   private def newLogFile(
@@ -485,9 +481,7 @@ class FsHistoryProviderSuite
       eventually(timeout(1 second), interval(10 millis)) {
         provider.getConfig().keys should not contain ("HDFS State")
       }
-    } finally {
-      provider.stop()
-    }
+    } finally { provider.stop() }
   }
 
   test("provider reports error after FS leaves safe mode") {
@@ -503,9 +497,7 @@ class FsHistoryProviderSuite
       eventually(timeout(1 second), interval(10 millis)) {
         verify(errorHandler).uncaughtException(any(), any())
       }
-    } finally {
-      provider.stop()
-    }
+    } finally { provider.stop() }
   }
 
   /**
@@ -539,9 +531,7 @@ class FsHistoryProviderSuite
     Utils.tryWithSafeFinally {
       events.foreach(e =>
         writer.write(compact(render(JsonProtocol.sparkEventToJson(e))) + "\n"))
-    } {
-      writer.close()
-    }
+    } { writer.close() }
   }
 
   private def createEmptyFile(file: File) = {

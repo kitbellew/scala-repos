@@ -40,9 +40,7 @@ abstract class ClientResponse {
       }
     }
 
-    def iterator = {
-      headers.keys.map(name => (name -> this(name))).iterator
-    }
+    def iterator = { headers.keys.map(name => (name -> this(name))).iterator }
   }
 
   def charset = {

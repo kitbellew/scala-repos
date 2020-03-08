@@ -83,9 +83,7 @@ private[spark] case class SSLOptions(
       }
 
       Some(sslContextFactory)
-    } else {
-      None
-    }
+    } else { None }
   }
 
   /*
@@ -93,9 +91,8 @@ private[spark] case class SSLOptions(
    * are supported by the current Java security provider for this protocol.
    */
   private val supportedAlgorithms: Set[String] =
-    if (enabledAlgorithms.isEmpty) {
-      Set()
-    } else {
+    if (enabledAlgorithms.isEmpty) { Set() }
+    else {
       var context: SSLContext = null
       try {
         context = SSLContext.getInstance(protocol.orNull)

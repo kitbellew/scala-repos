@@ -227,9 +227,8 @@ trait ScParameter
 
   def getDefaultExpression: Option[ScExpression] = {
     val res = getActualDefaultExpression
-    if (res.isEmpty) {
-      getSuperParameter.flatMap(_.getDefaultExpression)
-    } else res
+    if (res.isEmpty) { getSuperParameter.flatMap(_.getDefaultExpression) }
+    else res
   }
 
   def getDefaultExpressionInSource: Option[ScExpression] = {

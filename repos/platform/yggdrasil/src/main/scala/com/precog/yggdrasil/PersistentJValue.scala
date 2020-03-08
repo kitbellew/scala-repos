@@ -41,9 +41,7 @@ object PersistentJValue {
     def unapply(bytes: Array[Byte]): Option[Array[Byte]] = {
       if (bytes.length > 0 && bytes(bytes.length - 1) == Flag) {
         Some(Arrays.copyOf(bytes, bytes.length - 1))
-      } else {
-        None
-      }
+      } else { None }
     }
   }
 

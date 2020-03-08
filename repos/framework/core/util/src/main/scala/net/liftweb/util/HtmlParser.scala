@@ -369,9 +369,7 @@ trait Html5Parser {
           override def captureText(): Unit = {
             if (capture) {
               val text = buffer.toString()
-              if (text.length() > 0) {
-                hStack.push(createText(text))
-              }
+              if (text.length() > 0) { hStack.push(createText(text)) }
             }
             buffer.setLength(0)
           }
@@ -429,9 +427,7 @@ trait Html5Parser {
             checkHead(e.child(0)) &&
             checkBody(e.child(1))) {
           Some(e.child(1).asInstanceOf[Elem].child(0).asInstanceOf[Elem])
-        } else {
-          None
-        }
+        } else { None }
       }
 
       case _ => None

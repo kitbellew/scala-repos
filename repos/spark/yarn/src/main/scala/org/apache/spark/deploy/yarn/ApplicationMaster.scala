@@ -76,9 +76,7 @@ private[spark] class ApplicationMaster(
     val effectiveNumExecutors =
       if (Utils.isDynamicAllocationEnabled(sparkConf)) {
         sparkConf.get(DYN_ALLOCATION_MAX_EXECUTORS)
-      } else {
-        sparkConf.get(EXECUTOR_INSTANCES).getOrElse(0)
-      }
+      } else { sparkConf.get(EXECUTOR_INSTANCES).getOrElse(0) }
     // By default, effectiveNumExecutors is Int.MaxValue if dynamic allocation is enabled. We need
     // avoid the integer overflow here.
     val defaultMaxNumExecutorFailures = math.max(
@@ -133,9 +131,7 @@ private[spark] class ApplicationMaster(
   private var delegationTokenRenewerOption: Option[AMDelegationTokenRenewer] =
     None
 
-  def getAttemptId(): ApplicationAttemptId = {
-    client.getAttemptId()
-  }
+  def getAttemptId(): ApplicationAttemptId = { client.getAttemptId() }
 
   final def run(): Int = {
     try {
@@ -204,11 +200,8 @@ private[spark] class ApplicationMaster(
         delegationTokenRenewerOption.foreach(_.scheduleLoginFromKeytab())
       }
 
-      if (isClusterMode) {
-        runDriver(securityMgr)
-      } else {
-        runExecutorLauncher(securityMgr)
-      }
+      if (isClusterMode) { runDriver(securityMgr) }
+      else { runExecutorLauncher(securityMgr) }
     } catch {
       case e: Exception =>
         // catch everything else if not specifically handled
@@ -228,11 +221,8 @@ private[spark] class ApplicationMaster(
     * from the application code.
     */
   final def getDefaultFinalStatus(): FinalApplicationStatus = {
-    if (isClusterMode) {
-      FinalApplicationStatus.FAILED
-    } else {
-      FinalApplicationStatus.UNDEFINED
-    }
+    if (isClusterMode) { FinalApplicationStatus.FAILED }
+    else { FinalApplicationStatus.UNDEFINED }
   }
 
   /**
@@ -556,9 +546,7 @@ private[spark] class ApplicationMaster(
       }
     }
 
-    if (!driverUp) {
-      throw new SparkException("Failed to connect to driver!")
-    }
+    if (!driverUp) { throw new SparkException("Failed to connect to driver!") }
 
     sparkConf.set("spark.driver.host", driverHost)
     sparkConf.set("spark.driver.port", driverPort.toString)
@@ -664,9 +652,7 @@ private[spark] class ApplicationMaster(
       extends RpcEndpoint
       with Logging {
 
-    override def onStart(): Unit = {
-      driver.send(RegisterClusterManager(self))
-    }
+    override def onStart(): Unit = { driver.send(RegisterClusterManager(self)) }
 
     override def receive: PartialFunction[Any, Unit] = {
       case x: AddWebUIFilter =>
@@ -685,9 +671,7 @@ private[spark] class ApplicationMaster(
             if (a.requestTotalExecutorsWithPreferredLocalities(
                   requestedTotal,
                   localityAwareTasks,
-                  hostToLocalTaskCount)) {
-              resetAllocatorInterval()
-            }
+                  hostToLocalTaskCount)) { resetAllocatorInterval() }
             context.reply(true)
 
           case None =>
@@ -774,8 +758,6 @@ object ApplicationMaster extends Logging {
   */
 object ExecutorLauncher {
 
-  def main(args: Array[String]): Unit = {
-    ApplicationMaster.main(args)
-  }
+  def main(args: Array[String]): Unit = { ApplicationMaster.main(args) }
 
 }

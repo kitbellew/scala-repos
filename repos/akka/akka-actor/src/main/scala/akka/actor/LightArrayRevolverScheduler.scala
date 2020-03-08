@@ -65,9 +65,8 @@ class LightArrayRevolverScheduler(
 
   private val oneNs = Duration.fromNanos(1L)
   private def roundUp(d: FiniteDuration): FiniteDuration =
-    try {
-      ((d + TickDuration - oneNs) / TickDuration).toLong * TickDuration
-    } catch {
+    try { ((d + TickDuration - oneNs) / TickDuration).toLong * TickDuration }
+    catch {
       case _: IllegalArgumentException ⇒
         d // rounding up Long.MaxValue.nanos overflows
     }
@@ -391,8 +390,12 @@ object LightArrayRevolverScheduler {
     override def isCancelled: Boolean = task eq CancelledTask
   }
 
-  private[this] val CancelledTask = new Runnable { def run = () }
-  private[this] val ExecutedTask = new Runnable { def run = () }
+  private[this] val CancelledTask = new Runnable {
+    def run = ()
+  }
+  private[this] val ExecutedTask = new Runnable {
+    def run = ()
+  }
 
   private val NotCancellable: TimerTask = new TimerTask {
     def cancel(): Boolean = false

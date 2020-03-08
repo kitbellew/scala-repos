@@ -31,9 +31,7 @@ object ParserUtil {
             .get
             .map(_.getPath)
             .toList
-        } else {
-          List(preFile).filter(fileFilter.accept).map(_.getPath)
-        }
+        } else { List(preFile).filter(fileFilter.accept).map(_.getPath) }
       } else if (parent != null) {
         def ensureSuffix(s: String, suffix: String) =
           if (s.endsWith(suffix)) s else s + suffix

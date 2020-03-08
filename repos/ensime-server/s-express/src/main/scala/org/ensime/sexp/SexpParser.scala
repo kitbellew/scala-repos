@@ -126,21 +126,13 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   import CharPredicate.{Digit, Digit19}
 
-  def Integer = rule {
-    optional('-') ~ (Digit19 ~ Digits | Digit)
-  }
+  def Integer = rule { optional('-') ~ (Digit19 ~ Digits | Digit) }
 
-  def Digits = rule {
-    oneOrMore(Digit)
-  }
+  def Digits = rule { oneOrMore(Digit) }
 
-  def Frac = rule {
-    '.' ~ Digits
-  }
+  def Frac = rule { '.' ~ Digits }
 
-  def Exp = rule {
-    ExpPredicate ~ optional(PlusMinusPredicate) ~ Digits
-  }
+  def Exp = rule { ExpPredicate ~ optional(PlusMinusPredicate) ~ Digits }
 
   private def SexpNaNP: Rule1[SexpAtom] = rule {
     "-1.0e+INF" ~ push(SexpNegInf) |
@@ -178,12 +170,8 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
     ';' ~ zeroOrMore(NotNewLinePredicate) ~ ("\n" | EOI)
   }
 
-  private def LeftBrace: Rule0 = rule {
-    Whitespace ~ '(' ~ Whitespace
-  }
+  private def LeftBrace: Rule0 = rule { Whitespace ~ '(' ~ Whitespace }
 
-  private def RightBrace: Rule0 = rule {
-    Whitespace ~ ')' ~ Whitespace
-  }
+  private def RightBrace: Rule0 = rule { Whitespace ~ ')' ~ Whitespace }
 
 }

@@ -32,10 +32,7 @@ object Youtube {
         min <- parseIntOption(minS)
         sec <- parseIntOption(secS)
       } yield 60 * min + sec
-    case SecRegex(secS) =>
-      for {
-        sec <- parseIntOption(secS)
-      } yield sec
-    case _ => None
+    case SecRegex(secS) => for { sec <- parseIntOption(secS) } yield sec
+    case _              => None
   }
 }

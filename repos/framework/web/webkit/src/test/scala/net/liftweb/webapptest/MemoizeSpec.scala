@@ -42,9 +42,7 @@ object MemoizeSpec extends Specification {
 
   "Memoize" should {
     "Session memo should default to empty" >> {
-      S.initIfUninitted(session1) {
-        sessionMemo.get(3) must_== Empty
-      }
+      S.initIfUninitted(session1) { sessionMemo.get(3) must_== Empty }
     }
 
     "Session memo should be settable" >> {
@@ -56,15 +54,11 @@ object MemoizeSpec extends Specification {
     }
 
     "Session memo should survive across calls" >> {
-      S.initIfUninitted(session1) {
-        sessionMemo.get(3) must_== Full(8)
-      }
+      S.initIfUninitted(session1) { sessionMemo.get(3) must_== Full(8) }
     }
 
     "Session memo should not float across sessions" >> {
-      S.initIfUninitted(session2) {
-        sessionMemo.get(3) must_== Empty
-      }
+      S.initIfUninitted(session2) { sessionMemo.get(3) must_== Empty }
     }
 
     "Request memo should work in the same request" >> {
@@ -76,9 +70,7 @@ object MemoizeSpec extends Specification {
     }
 
     "Request memo should not span requests" >> {
-      S.initIfUninitted(session1) {
-        requestMemo(3) must_== Empty
-      }
+      S.initIfUninitted(session1) { requestMemo(3) must_== Empty }
     }
 
   }

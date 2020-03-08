@@ -23,13 +23,9 @@ package scalaguide.xml.scalaxmlrequests {
               (xml \\ "name" headOption)
                 .map(_.text)
                 .map { name => Ok("Hello " + name) }
-                .getOrElse {
-                  BadRequest("Missing parameter [name]")
-                }
+                .getOrElse { BadRequest("Missing parameter [name]") }
             }
-            .getOrElse {
-              BadRequest("Expecting Xml data")
-            }
+            .getOrElse { BadRequest("Expecting Xml data") }
         }
         //#xml-request-body-asXml
 
@@ -43,9 +39,7 @@ package scalaguide.xml.scalaxmlrequests {
           (request.body \\ "name" headOption)
             .map(_.text)
             .map { name => Ok("Hello " + name) }
-            .getOrElse {
-              BadRequest("Missing parameter [name]")
-            }
+            .getOrElse { BadRequest("Missing parameter [name]") }
         }
         //#xml-request-body-parser
 

@@ -183,13 +183,9 @@ class ScalaImportOptimizer extends ImportOptimizer {
       }
 
       def sameInfosWithUpdatedRanges(): Seq[(TextRange, Seq[ImportInfo])] = {
-        optimized
-          .zip {
-            collectRanges(_ => Set.empty, _ => Seq.empty)
-          }
-          .map {
-            case ((_, infos), (range, _)) => (range, infos)
-          }
+        optimized.zip { collectRanges(_ => Set.empty, _ => Seq.empty) }.map {
+          case ((_, infos), (range, _)) => (range, infos)
+        }
       }
     }
   }
@@ -322,9 +318,7 @@ class ScalaImportOptimizer extends ImportOptimizer {
               case _ => initRange(imp)
             }
             namesAtStart = namesAtRangeStart(imp)
-          } else {
-            rangeEnd = imp.getTextRange.getEndOffset
-          }
+          } else { rangeEnd = imp.getTextRange.getEndOffset }
           infos ++= createInfo(imp)
         case _ => addRange()
       }
@@ -359,9 +353,7 @@ object ScalaImportOptimizer {
     val i = optimizers.iterator()
     while (i.hasNext) {
       val opt = i.next()
-      if (opt supports topLevelFile) {
-        return Some(opt)
-      }
+      if (opt supports topLevelFile) { return Some(opt) }
     }
     None
   }
@@ -540,9 +532,7 @@ object ScalaImportOptimizer {
       infos.insert(i, newInfo)
       while (i > 0 && greater(infos(i - 1), infos(i), settings) && swapWithNext(
                infos,
-               i - 1)) {
-        i -= 1
-      }
+               i - 1)) { i -= 1 }
     }
 
     def replace(oldInfos: Seq[ImportInfo], newInfos: Seq[ImportInfo]) = {
@@ -552,9 +542,7 @@ object ScalaImportOptimizer {
         val minIndex = oldIndices.last
         oldIndices.foreach(infos.remove)
         infos.insert(minIndex, newInfos: _*)
-      } else {
-        newInfos.foreach(addLastAndMoveUpwards)
-      }
+      } else { newInfos.foreach(addLastAndMoveUpwards) }
     }
 
     def withAliasedQualifier(info: ImportInfo): ImportInfo = {
@@ -617,9 +605,8 @@ object ScalaImportOptimizer {
       }
     }
 
-    if (actuallyInserted.hasWildcard) {
-      insertInfoWithWildcard()
-    } else if (simpleInfos.size >= settings.classCountToUseImportOnDemand && !actuallyInserted.wildcardHasUnusedImplicit) {
+    if (actuallyInserted.hasWildcard) { insertInfoWithWildcard() }
+    else if (simpleInfos.size >= settings.classCountToUseImportOnDemand && !actuallyInserted.wildcardHasUnusedImplicit) {
       notSimpleInfos += actuallyInserted.toWildcardInfo
       insertInfoWithWildcard()
     } else if (collectImports) {
@@ -751,9 +738,7 @@ object ScalaImportOptimizer {
 
     expr.findImplicitParameters match {
       case Some(seq) =>
-        for (rr <- seq if rr != null) {
-          res ++= rr.importsUsed
-        }
+        for (rr <- seq if rr != null) { res ++= rr.importsUsed }
       case _ =>
     }
     res.toSet

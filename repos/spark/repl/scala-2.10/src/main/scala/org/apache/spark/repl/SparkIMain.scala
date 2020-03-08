@@ -110,9 +110,7 @@ class SparkIMain(
       conf.getOption("spark.repl.classdir").getOrElse(Utils.getLocalDir(conf))
     Utils.createTempDir(root = rootDir, namePrefix = "repl")
   }
-  if (SPARK_DEBUG_REPL) {
-    echo("Output directory: " + outputDir)
-  }
+  if (SPARK_DEBUG_REPL) { echo("Output directory: " + outputDir) }
 
   /**
     * Returns the path to the output directory containing all generated
@@ -467,9 +465,7 @@ class SparkIMain(
                 io.AbstractFile.getDirectory(f)
               else
                 io.AbstractFile.getFile(f)
-            } else {
-              io.AbstractFile.getURL(url)
-            }
+            } else { io.AbstractFile.getURL(url) }
           )
         })
     ).distinct
@@ -1049,9 +1045,7 @@ class SparkIMain(
     * for compiler output.
     */
   @DeveloperApi
-  def close() {
-    reporter.flush()
-  }
+  def close() { reporter.flush() }
 
   /**
     * Captures the session names (which are set by system properties) once, instead of for each line.
@@ -1088,9 +1082,7 @@ class SparkIMain(
 
     def bindError(t: Throwable) = {
       // Immediately throw the exception if we are asked to propagate them
-      if (propagateExceptions) {
-        throw unwrap(t)
-      }
+      if (propagateExceptions) { throw unwrap(t) }
       if (!bindExceptions) // avoid looping if already binding
         throw t
 

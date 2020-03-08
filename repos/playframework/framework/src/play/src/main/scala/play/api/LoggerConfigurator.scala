@@ -72,12 +72,8 @@ object LoggerConfigurator {
         case ex: Exception =>
           ex.printStackTrace()
           None
-      } finally {
-        in.close()
-      }
-    } else {
-      None
-    }
+      } finally { in.close() }
+    } else { None }
   }
 
 }

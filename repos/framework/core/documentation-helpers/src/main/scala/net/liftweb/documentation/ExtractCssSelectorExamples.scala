@@ -37,9 +37,7 @@ object ExtractCssSelectorExamples extends App {
         file <- docsDir.listFiles.toList
         if file.getName.endsWith(".html")
         fileContents <- tryo(Source.fromFile(file).mkString)
-      } yield {
-        FileContents(file.getName.replace('.', '-'), fileContents)
-      }
+      } yield { FileContents(file.getName.replace('.', '-'), fileContents) }
     }
   }
 
@@ -119,9 +117,7 @@ object ExtractCssSelectorExamples extends App {
               for {
                 extractor <- specializedPartExtractor
                 extractedPart <- extractor(part)
-              } {
-                parts ::= extractedPart
-              }
+              } { parts ::= extractedPart }
 
               part
             }
@@ -150,9 +146,7 @@ object ExtractCssSelectorExamples extends App {
     )
   } else {
     val examples =
-      for {
-        extractedContents <- contentsToProcess(args(0))
-      } yield {
+      for { extractedContents <- contentsToProcess(args(0)) } yield {
         extractedContents.flatMap(extractExamplesFromContents _)
       }
 
@@ -219,9 +213,7 @@ object ExtractCssSelectorExamples extends App {
             |${examples.mkString("\n")}
             |  }
             |}""".stripMargin('|'))
-          } finally {
-            Option(stream).map(_.close)
-          }
+          } finally { Option(stream).map(_.close) }
         }
 
       case Failure(message, _, _) => Console.err.println(message)

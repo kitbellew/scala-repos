@@ -70,9 +70,7 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer { self =>
           }
 
           change.onComplete.setDone()
-        } catch {
-          case NonFatal(e) => change.onComplete.setException(e)
-        }
+        } catch { case NonFatal(e) => change.onComplete.setException(e) }
       }
     }
   }

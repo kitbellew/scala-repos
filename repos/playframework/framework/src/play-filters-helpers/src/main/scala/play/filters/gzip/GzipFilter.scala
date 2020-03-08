@@ -57,9 +57,7 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
     def apply(request: RequestHeader) = {
       if (mayCompress(request)) {
         next(request).mapFuture(result => handleResult(request, result))
-      } else {
-        next(request)
-      }
+      } else { next(request) }
     }
   }
 
@@ -126,9 +124,7 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
               header,
               HttpEntity.Chunked(chunks via gzipFlow, contentType)))
       }
-    } else {
-      Future.successful(result)
-    }
+    } else { Future.successful(result) }
   }
 
   private def compressStrictEntity(

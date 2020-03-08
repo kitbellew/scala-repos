@@ -152,9 +152,7 @@ class ScParameterImpl protected (
 
   def isRepeatedParameter: Boolean = {
     val stub = getStub
-    if (stub != null) {
-      return stub.asInstanceOf[ScParameterStub].isRepeated
-    }
+    if (stub != null) { return stub.asInstanceOf[ScParameterStub].isRepeated }
     paramType match {
       case Some(p: ScParameterType) => p.isRepeatedParameter
       case None                     => false
@@ -195,9 +193,7 @@ class ScParameterImpl protected (
         }
       case _ =>
     }
-    for (elem <- toRemove) {
-      elem.getTreeParent.removeChild(elem)
-    }
+    for (elem <- toRemove) { elem.getTreeParent.removeChild(elem) }
   }
 
   override def accept(visitor: ScalaElementVisitor) {

@@ -13,9 +13,7 @@ object LoggingDocSpec {
 
   class MyActor extends Actor {
     val log = Logging(context.system, this)
-    override def preStart() = {
-      log.debug("Starting")
-    }
+    override def preStart() = { log.debug("Starting") }
     override def preRestart(reason: Throwable, message: Option[Any]) {
       log.error(
         reason,
@@ -69,9 +67,7 @@ object LoggingDocSpec {
     }
 
     def receive: Receive = {
-      case r: Req => {
-        log.info(s"Starting new request: ${r.work}")
-      }
+      case r: Req => { log.info(s"Starting new request: ${r.work}") }
     }
   }
 
@@ -142,9 +138,7 @@ class LoggingDocSpec extends AkkaSpec {
       import akka.actor.{Actor, DeadLetter, Props}
 
       class Listener extends Actor {
-        def receive = {
-          case d: DeadLetter => println(d)
-        }
+        def receive = { case d: DeadLetter => println(d) }
       }
 
       val listener = system.actorOf(Props(classOf[Listener], this))
@@ -156,7 +150,9 @@ class LoggingDocSpec extends AkkaSpec {
   "demonstrate superclass subscriptions on eventStream" in {
     def println(s: String) = ()
     //#superclass-subscription-eventstream
-    abstract class AllKindsOfMusic { def artist: String }
+    abstract class AllKindsOfMusic {
+      def artist: String
+    }
     case class Jazz(artist: String) extends AllKindsOfMusic
     case class Electronic(artist: String) extends AllKindsOfMusic
 

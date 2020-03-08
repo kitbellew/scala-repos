@@ -213,9 +213,7 @@ class ScalaImportTypeFix(
       val popup = new BaseListPopupStep[TypeToImport](
         QuickFixBundle.message("class.to.import.chooser.title"),
         classes: _*) {
-        override def getIconFor(aValue: TypeToImport): Icon = {
-          aValue.getIcon
-        }
+        override def getIconFor(aValue: TypeToImport): Icon = { aValue.getIcon }
 
         override def getTextFor(value: TypeToImport): String = {
           ObjectUtils.assertNotNull(value.qualifiedName)
@@ -228,9 +226,7 @@ class ScalaImportTypeFix(
         override def onChosen(
             selectedValue: TypeToImport,
             finalChoice: Boolean): PopupStep[_] = {
-          if (selectedValue == null) {
-            return FINAL_CHOICE
-          }
+          if (selectedValue == null) { return FINAL_CHOICE }
           if (finalChoice) {
             PsiDocumentManager.getInstance(project).commitAllDocuments()
             addImportOrReference(selectedValue)
@@ -256,9 +252,7 @@ class ScalaImportTypeFix(
           }
         }
 
-        override def hasSubstep(selectedValue: TypeToImport): Boolean = {
-          true
-        }
+        override def hasSubstep(selectedValue: TypeToImport): Boolean = { true }
       }
       JBPopupFactory.getInstance
         .createListPopup(popup)
@@ -269,9 +263,8 @@ class ScalaImportTypeFix(
       for (clazz <- classes if !clazz.isValid) return false
 
       PsiDocumentManager.getInstance(project).commitAllDocuments()
-      if (classes.length == 1) {
-        addImportOrReference(classes(0))
-      } else chooseClass()
+      if (classes.length == 1) { addImportOrReference(classes(0)) }
+      else chooseClass()
 
       true
     }

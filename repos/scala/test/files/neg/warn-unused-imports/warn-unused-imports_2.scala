@@ -5,13 +5,17 @@ class Bippo {
 
 package object p1 {
   class A
-  implicit class B(val s: String) { def bippy = s }
+  implicit class B(val s: String) {
+    def bippy = s
+  }
   val c: Bippo = new Bippo
   type D = String
 }
 package object p2 {
   class A
-  implicit class B(val s: String) { def bippy = s }
+  implicit class B(val s: String) {
+    def bippy = s
+  }
   val c: Bippo = new Bippo
   type D = Int
 }

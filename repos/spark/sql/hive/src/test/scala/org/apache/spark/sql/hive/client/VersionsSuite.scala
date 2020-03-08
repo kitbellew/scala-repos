@@ -192,9 +192,7 @@ class VersionsSuite extends SparkFunSuite with Logging {
       client.createTable(table, ignoreIfExists = false)
     }
 
-    test(s"$version: getTable") {
-      client.getTable("default", "src")
-    }
+    test(s"$version: getTable") { client.getTable("default", "src") }
 
     test(s"$version: listTables") {
       assert(client.listTables("default") === Seq("src"))
@@ -204,9 +202,7 @@ class VersionsSuite extends SparkFunSuite with Logging {
       assert(client.currentDatabase === "default")
     }
 
-    test(s"$version: getDatabase") {
-      client.getDatabase("default")
-    }
+    test(s"$version: getDatabase") { client.getDatabase("default") }
 
     test(s"$version: alterTable") {
       client.alterTable(client.getTable("default", "src"))

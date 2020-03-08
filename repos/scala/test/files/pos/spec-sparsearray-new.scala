@@ -14,9 +14,7 @@ class SparseArray[@specialized(Int) T: ClassTag]
     * index.  If the requested index is not found, the return value is
     * negative and can be converted into an insertion point with -(rv+1).
     */
-  private def findOffset(i: Int): Int = {
-    sys.error("impl doesn't matter")
-  }
+  private def findOffset(i: Int): Int = { sys.error("impl doesn't matter") }
 
   override def apply(i: Int): T = { sys.error("ignore") }
   override def update(i: Int, value: T) = sys.error("ignore")

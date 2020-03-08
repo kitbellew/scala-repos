@@ -218,7 +218,9 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
   }
 
   property("unquote iterable of non-parametric type") = test {
-    object O extends Iterable[Tree] { def iterator = List(q"foo").iterator }
+    object O extends Iterable[Tree] {
+      def iterator = List(q"foo").iterator
+    }
     q"f(..$O)"
   }
 
@@ -303,9 +305,7 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
   }
 
   property("empty-tree is not a block") = test {
-    assertThrows[MatchError] {
-      val q"{ ..$stats1 }" = q" "
-    }
+    assertThrows[MatchError] { val q"{ ..$stats1 }" = q" " }
   }
 
   property("empty block is synthetic unit") = test {
@@ -327,9 +327,7 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
     assertEqAst(q"(foo.x = 1)(2)", "(foo.x = 1)(2)")
   }
 
-  property("SI-8385 b") = test {
-    assertEqAst(q"(() => ())()", "(() => ())()")
-  }
+  property("SI-8385 b") = test { assertEqAst(q"(() => ())()", "(() => ())()") }
 
   property("match scrutinee may not be empty") = test {
     assertThrows[IllegalArgumentException] {

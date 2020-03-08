@@ -49,9 +49,7 @@ class ReplicatedDataSerializerSpec
   val address3 =
     UniqueAddress(Address("akka.tcp", system.name, "some.host.org", 4712), 3)
 
-  override def afterAll {
-    shutdown()
-  }
+  override def afterAll { shutdown() }
 
   def checkSerialization(obj: AnyRef): Unit = {
     val blob = serializer.toBinary(obj)
@@ -226,9 +224,7 @@ class ReplicatedDataSerializerSpec
       checkSameContent(m1.merge(m2), m2.merge(m1))
     }
 
-    "serialize DeletedData" in {
-      checkSerialization(DeletedData)
-    }
+    "serialize DeletedData" in { checkSerialization(DeletedData) }
 
     "serialize VersionVector" in {
       checkSerialization(VersionVector())

@@ -72,21 +72,15 @@ object TestActorRefSpec {
       case "complex" ⇒ replyActor ! "complexRequest"
       case "complex2" ⇒ replyActor ! "complexRequest2"
       case "simple" ⇒ replyActor ! "simpleRequest"
-      case "complexReply" ⇒ {
-        counter -= 1
-      }
-      case "simpleReply" ⇒ {
-        counter -= 1
-      }
+      case "complexReply" ⇒ { counter -= 1 }
+      case "simpleReply" ⇒ { counter -= 1 }
     }
   }
 
   class Logger extends Actor {
     var count = 0
     var msg: String = _
-    def receive = {
-      case Warning(_, _, m: String) ⇒ count += 1; msg = m
-    }
+    def receive = { case Warning(_, _, m: String) ⇒ count += 1; msg = m }
   }
 
   class ReceiveTimeoutActor(target: ActorRef) extends Actor {
@@ -246,9 +240,7 @@ class TestActorRefSpec
     "allow access to internals" in {
       class TA extends TActor {
         var s: String = _
-        def receiveT = {
-          case x: String ⇒ s = x
-        }
+        def receiveT = { case x: String ⇒ s = x }
       }
       val ref = TestActorRef(new TA)
       ref ! "hallo"

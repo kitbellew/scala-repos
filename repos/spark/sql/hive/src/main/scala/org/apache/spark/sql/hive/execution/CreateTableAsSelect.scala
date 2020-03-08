@@ -73,9 +73,7 @@ private[hive] case class CreateTableAsSelect(
         tableDesc.copy(schema = query.output.map { c =>
           CatalogColumn(c.name, HiveMetastoreTypes.toMetastoreType(c.dataType))
         })
-      } else {
-        withFormat
-      }
+      } else { withFormat }
 
       hiveContext.sessionState.catalog.client
         .createTable(withSchema, ignoreIfExists = false)

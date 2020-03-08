@@ -114,7 +114,5 @@ private[lobby] final class Socket(
 
   private def playerUrl(fullId: String) = s"/$fullId"
 
-  private def notifySeeks() {
-    notifyAll(makeMessage("reload_seeks"))
-  }
+  private def notifySeeks() { notifyAll(makeMessage("reload_seeks")) }
 }

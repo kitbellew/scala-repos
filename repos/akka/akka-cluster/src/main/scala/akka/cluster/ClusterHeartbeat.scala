@@ -26,9 +26,7 @@ private[cluster] final class ClusterHeartbeatReceiver
   lazy val selfHeartbeatRsp = HeartbeatRsp(
     Cluster(context.system).selfUniqueAddress)
 
-  def receive = {
-    case Heartbeat(from) ⇒ sender() ! selfHeartbeatRsp
-  }
+  def receive = { case Heartbeat(from) ⇒ sender() ! selfHeartbeatRsp }
 
 }
 
@@ -152,9 +150,7 @@ private[cluster] final class ClusterHeartbeatSender
       // This cluster node will be shutdown, but stop this actor immediately
       // to avoid further updates
       context stop self
-    } else {
-      state = state.removeMember(m.uniqueAddress)
-    }
+    } else { state = state.removeMember(m.uniqueAddress) }
 
   def unreachableMember(m: Member): Unit =
     state = state.unreachableMember(m.uniqueAddress)

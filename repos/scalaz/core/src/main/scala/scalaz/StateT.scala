@@ -85,9 +85,7 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
       ev: this.type <~< IndexedStateT[λ[α => M[FF[α]]], S, S2, A])
       : IndexedStateT[FF, S, S2, A] =
     IndexedStateT.createState((m: Monad[FF]) =>
-      (s: S) => {
-        M.copoint(ev(self)(s))
-      })
+      (s: S) => { M.copoint(ev(self)(s)) })
 
   def unliftId[M[_], S <: S1](implicit
       M: Comonad[M],
@@ -100,9 +98,7 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
       W: Monoid[W]): IndexedReaderWriterStateT[F, R, W, S1, S2, A] =
     IndexedReaderWriterStateT((r, s) =>
       F.bind[S1 => F[(S2, A)], (W, A, S2)](getF(F))((sf: (S1 => F[(S2, A)])) =>
-        F.map(sf(s)) {
-          case (s, a) => (W.zero, a, s)
-        }))
+        F.map(sf(s)) { case (s, a) => (W.zero, a, s) }))
 
   def zoom[S0, S3, S <: S1](l: LensFamily[S0, S3, S, S2])(
       implicit F: Functor[F]): IndexedStateT[F, S0, S3, A] =
@@ -313,9 +309,7 @@ private trait StateTMonadState[S, F[_]]
 
 private trait StateTHoist[S] extends Hoist[λ[(g[_], a) => StateT[g, S, a]]] {
 
-  type StateTF[G[_], S] = {
-    type f[x] = StateT[G, S, x]
-  }
+  type StateTF[G[_], S] = { type f[x] = StateT[G, S, x] }
 
   def liftM[G[_], A](ga: G[A])(implicit G: Monad[G]): StateT[G, S, A] =
     StateT(s => G.map(ga)(a => (s, a)))

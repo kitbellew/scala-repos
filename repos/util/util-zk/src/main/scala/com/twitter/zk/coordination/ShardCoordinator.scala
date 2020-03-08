@@ -93,9 +93,7 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
       permit: Permit): Future[Option[Shard]] = {
     zk(shardPath(id)).create(mode = CreateMode.EPHEMERAL) map { node =>
       Some(Shard(id, node, permit))
-    } handle {
-      case err: KeeperException.NodeExistsException => None
-    }
+    } handle { case err: KeeperException.NodeExistsException => None }
   }
 
   private[this] def shardNodes(): Future[Seq[ZNode]] = {
@@ -123,7 +121,5 @@ sealed trait ShardPermit {
 case class Shard(id: Int, private val node: ZNode, private val permit: Permit)
     extends ShardPermit {
 
-  def release() = {
-    node.delete() ensure { permit.release() }
-  }
+  def release() = { node.delete() ensure { permit.release() } }
 }

@@ -82,9 +82,7 @@ trait ScInterpolated extends ScalaPsiElement {
     val childNodes = l.children.map(_.getNode)
     val result = ListBuffer[String]()
     val emptyString = ""
-    for {
-      child <- childNodes
-    } {
+    for { child <- childNodes } {
       child.getElementType match {
         case ScalaTokenTypes.tINTERPOLATED_STRING =>
           child.getText.headOption match {

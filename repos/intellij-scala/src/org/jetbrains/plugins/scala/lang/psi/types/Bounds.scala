@@ -246,9 +246,7 @@ object Bounds {
   def glb(typez: Seq[ScType], checkWeak: Boolean): ScType = {
     if (typez.length == 1) typez(0)
     var res = typez(0)
-    for (i <- 1 until typez.length) {
-      res = glb(res, typez(i), checkWeak)
-    }
+    for (i <- 1 until typez.length) { res = glb(res, typez(i), checkWeak) }
     res
   }
 
@@ -572,9 +570,7 @@ object Bounds {
         }
         i = i + 1
       }
-      if (!break) {
-        res += ((aClass, x, y))
-      }
+      if (!break) { res += ((aClass, x, y)) }
     }
     def checkClasses(
         aClasses: Seq[Options],

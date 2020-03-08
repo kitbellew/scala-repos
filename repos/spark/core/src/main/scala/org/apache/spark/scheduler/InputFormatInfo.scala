@@ -142,9 +142,8 @@ class InputFormatInfo(
     logDebug(
       "mapreduceInputFormat : " + mapreduceInputFormat + ", mapredInputFormat : " +
         mapredInputFormat + ", inputFormatClazz : " + inputFormatClazz)
-    if (mapreduceInputFormat) {
-      prefLocsFromMapreduceInputFormat()
-    } else {
+    if (mapreduceInputFormat) { prefLocsFromMapreduceInputFormat() }
+    else {
       assert(mapredInputFormat)
       prefLocsFromMapredInputFormat()
     }

@@ -46,19 +46,13 @@ package views.html.helper {
       }
     }
 
-    def hasErrors: Boolean = {
-      !errors.isEmpty
-    }
+    def hasErrors: Boolean = { !errors.isEmpty }
 
-    def label: Any = {
-      args.get('_label).getOrElse(messages(field.label))
-    }
+    def label: Any = { args.get('_label).getOrElse(messages(field.label)) }
 
     def hasName: Boolean = args.get('_name).isDefined
 
-    def name: Any = {
-      args.get('_name).getOrElse(messages(field.label))
-    }
+    def name: Any = { args.get('_name).getOrElse(messages(field.label)) }
 
     private def translateMsgArg(msgArg: Any) = msgArg match {
       case key: String       => messages(key)

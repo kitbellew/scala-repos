@@ -6,7 +6,9 @@ object Test extends App {
     println(classTag[T].unapply(x))
   }
 
-  class X(val x: Int) extends AnyVal { override def toString = "X" }
+  class X(val x: Int) extends AnyVal {
+    override def toString = "X"
+  }
   val x = new X(1)
   // the commented line crashes because of SI-6326
   //println(classTag[X].runtimeClass.isAssignableFrom(x.getClass))

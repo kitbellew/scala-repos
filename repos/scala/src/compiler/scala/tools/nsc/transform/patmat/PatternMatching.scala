@@ -67,9 +67,8 @@ trait PatternMatching
             tree,
             transform(sel),
             transformTrees(cases).asInstanceOf[List[CaseDef]]))
-        try {
-          localTyper.typed(translated) setType origTp
-        } catch {
+        try { localTyper.typed(translated) setType origTp }
+        catch {
           case x: (Types#TypeError) =>
             // TODO: this should never happen; error should've been reported during type checking
             reporter.error(

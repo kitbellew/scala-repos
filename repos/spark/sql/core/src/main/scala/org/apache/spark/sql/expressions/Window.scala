@@ -52,9 +52,7 @@ object Window {
     * @since 1.4.0
     */
   @scala.annotation.varargs
-  def partitionBy(cols: Column*): WindowSpec = {
-    spec.partitionBy(cols: _*)
-  }
+  def partitionBy(cols: Column*): WindowSpec = { spec.partitionBy(cols: _*) }
 
   /**
     * Creates a [[WindowSpec]] with the ordering defined.
@@ -70,9 +68,7 @@ object Window {
     * @since 1.4.0
     */
   @scala.annotation.varargs
-  def orderBy(cols: Column*): WindowSpec = {
-    spec.orderBy(cols: _*)
-  }
+  def orderBy(cols: Column*): WindowSpec = { spec.orderBy(cols: _*) }
 
   private def spec: WindowSpec = {
     new WindowSpec(Seq.empty, Seq.empty, UnspecifiedFrame)

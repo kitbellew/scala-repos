@@ -77,9 +77,7 @@ class Partition(
   newGauge(
     "UnderReplicated",
     new Gauge[Int] {
-      def value = {
-        if (isUnderReplicated) 1 else 0
-      }
+      def value = { if (isUnderReplicated) 1 else 0 }
     },
     tags)
 
@@ -147,13 +145,9 @@ class Partition(
     assignedReplicaMap.putIfNotExists(replica.brokerId, replica)
   }
 
-  def assignedReplicas(): Set[Replica] = {
-    assignedReplicaMap.values.toSet
-  }
+  def assignedReplicas(): Set[Replica] = { assignedReplicaMap.values.toSet }
 
-  def removeReplica(replicaId: Int) {
-    assignedReplicaMap.remove(replicaId)
-  }
+  def removeReplica(replicaId: Int) { assignedReplicaMap.remove(replicaId) }
 
   def delete() {
     // need to hold the lock to prevent appendMessagesToLeader() from hitting I/O exceptions due to log being deleted
@@ -175,9 +169,7 @@ class Partition(
     }
   }
 
-  def getLeaderEpoch(): Int = {
-    return this.leaderEpoch
-  }
+  def getLeaderEpoch(): Int = { return this.leaderEpoch }
 
   /**
     * Make the local replica the leader by resetting LogEndOffset for remote replicas (there could be old LogEndOffset
@@ -367,11 +359,8 @@ class Partition(
            * The topic may be configured not to accept messages if there are not enough replicas in ISR
            * in this scenario the request was already appended locally and then added to the purgatory before the ISR was shrunk
            */
-          if (minIsr <= curInSyncReplicas.size) {
-            (true, Errors.NONE.code)
-          } else {
-            (true, Errors.NOT_ENOUGH_REPLICAS_AFTER_APPEND.code)
-          }
+          if (minIsr <= curInSyncReplicas.size) { (true, Errors.NONE.code) }
+          else { (true, Errors.NOT_ENOUGH_REPLICAS_AFTER_APPEND.code) }
         } else
           (false, Errors.NONE.code)
       case None =>
@@ -446,9 +435,7 @@ class Partition(
 
             replicaManager.isrShrinkRate.mark()
             maybeIncrementLeaderHW(leaderReplica)
-          } else {
-            false
-          }
+          } else { false }
 
         case None => false // do nothing if no longer leader
       }
@@ -558,9 +545,7 @@ class Partition(
   /**
     * remove deleted log metrics
     */
-  private def removePartitionMetrics() {
-    removeMetric("UnderReplicated", tags)
-  }
+  private def removePartitionMetrics() { removeMetric("UnderReplicated", tags) }
 
   override def equals(that: Any): Boolean = {
     if (!(that.isInstanceOf[Partition]))
@@ -571,9 +556,7 @@ class Partition(
     false
   }
 
-  override def hashCode(): Int = {
-    31 + topic.hashCode() + 17 * partitionId
-  }
+  override def hashCode(): Int = { 31 + topic.hashCode() + 17 * partitionId }
 
   override def toString(): String = {
     val partitionString = new StringBuilder

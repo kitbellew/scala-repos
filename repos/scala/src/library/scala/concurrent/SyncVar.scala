@@ -107,9 +107,7 @@ class SyncVar[A] {
   }
 
   /** Check whether a value is stored in the synchronized variable. */
-  def isSet: Boolean = synchronized {
-    isDefined
-  }
+  def isSet: Boolean = synchronized { isDefined }
 
   // TODO: this method should be private
   // [Heather] the reason why: it doesn't take into consideration

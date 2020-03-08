@@ -51,9 +51,7 @@ private[sql] class CacheManager extends Logging {
     val lock = cacheLock.readLock()
     lock.lock()
     try f
-    finally {
-      lock.unlock()
-    }
+    finally { lock.unlock() }
   }
 
   /** Acquires a write lock on the cache for the duration of `f`. */
@@ -61,9 +59,7 @@ private[sql] class CacheManager extends Logging {
     val lock = cacheLock.writeLock()
     lock.lock()
     try f
-    finally {
-      lock.unlock()
-    }
+    finally { lock.unlock() }
   }
 
   /** Clears all cached tables. */
@@ -73,9 +69,7 @@ private[sql] class CacheManager extends Logging {
   }
 
   /** Checks if the cache is empty. */
-  private[sql] def isEmpty: Boolean = readLock {
-    cachedData.isEmpty
-  }
+  private[sql] def isEmpty: Boolean = readLock { cachedData.isEmpty }
 
   /**
     * Caches the data produced by the logical representation of the given [[Queryable]].
@@ -134,15 +128,11 @@ private[sql] class CacheManager extends Logging {
 
   /** Optionally returns cached data for the given [[Queryable]] */
   private[sql] def lookupCachedData(query: Queryable): Option[CachedData] =
-    readLock {
-      lookupCachedData(query.queryExecution.analyzed)
-    }
+    readLock { lookupCachedData(query.queryExecution.analyzed) }
 
   /** Optionally returns cached data for the given [[LogicalPlan]]. */
   private[sql] def lookupCachedData(plan: LogicalPlan): Option[CachedData] =
-    readLock {
-      cachedData.find(cd => plan.sameResult(cd.plan))
-    }
+    readLock { cachedData.find(cd => plan.sameResult(cd.plan)) }
 
   /** Replaces segments of the given logical plan with cached versions where possible. */
   private[sql] def useCachedData(plan: LogicalPlan): LogicalPlan = {

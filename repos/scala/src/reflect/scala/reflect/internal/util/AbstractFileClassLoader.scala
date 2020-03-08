@@ -115,9 +115,7 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
       implTitle: String,
       implVersion: String,
       implVendor: String,
-      sealBase: URL): Package = {
-    throw new UnsupportedOperationException()
-  }
+      sealBase: URL): Package = { throw new UnsupportedOperationException() }
 
   override def getPackage(name: String): Package = findAbstractDir(name) match {
     case null => super.getPackage(name)

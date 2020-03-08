@@ -46,11 +46,8 @@ class Timer(
 
   def add(timerTask: TimerTask): Unit = {
     readLock.lock()
-    try {
-      addTimerTaskEntry(new TimerTaskEntry(timerTask))
-    } finally {
-      readLock.unlock()
-    }
+    try { addTimerTaskEntry(new TimerTaskEntry(timerTask)) }
+    finally { readLock.unlock() }
   }
 
   private def addTimerTaskEntry(timerTaskEntry: TimerTaskEntry): Unit = {
@@ -78,13 +75,9 @@ class Timer(
           bucket.flush(reinsert)
           bucket = delayQueue.poll()
         }
-      } finally {
-        writeLock.unlock()
-      }
+      } finally { writeLock.unlock() }
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   def size(): Int = taskCounter.get

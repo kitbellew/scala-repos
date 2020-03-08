@@ -78,9 +78,7 @@ class GroupManager @Singleton @Inject() (
     * @return the group if it is found, otherwise None
     */
   def group(id: PathId, version: Timestamp): Future[Option[Group]] = {
-    groupRepo.group(zkName, version).map {
-      _.flatMap(_.findGroup(_.id == id))
-    }
+    groupRepo.group(zkName, version).map { _.flatMap(_.findGroup(_.id == id)) }
   }
 
   /**

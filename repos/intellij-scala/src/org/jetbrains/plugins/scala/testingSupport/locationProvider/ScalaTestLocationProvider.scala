@@ -145,9 +145,7 @@ class ScalaTestLocationProvider extends SMTestLocator {
     assert(lineNum > 0)
     val doc: Document =
       PsiDocumentManager.getInstance(project).getDocument(psiFile)
-    if (doc == null) {
-      return null
-    }
+    if (doc == null) { return null }
     val lineCount: Int = doc.getLineCount
     var lineStartOffset: Int = 0
     var endOffset: Int = 0
@@ -163,9 +161,7 @@ class ScalaTestLocationProvider extends SMTestLocator {
     var found = false
     while (offset <= endOffset && !found) {
       elementAtLine = psiFile.findElementAt(offset)
-      if (!elementAtLine.isInstanceOf[PsiWhiteSpace]) {
-        found = true
-      }
+      if (!elementAtLine.isInstanceOf[PsiWhiteSpace]) { found = true }
       val length: Int = elementAtLine.getTextLength
       offset += (if (length > 1) length - 1 else 1)
     }

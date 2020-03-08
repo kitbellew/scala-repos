@@ -26,12 +26,7 @@ object ZipWith {
         }
 
       def manyApp =
-        n =>
-          xs =>
-            ss =>
-              n match {
-                case Succ(i) => zw.manyApp(i)(zapp(xs, ss))
-              }
+        n => xs => ss => n match { case Succ(i) => zw.manyApp(i)(zapp(xs, ss)) }
     }
 }
 

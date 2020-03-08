@@ -179,9 +179,7 @@ class PrimitiveApiTest
         response.data.values.foreach(pdata =>
           ErrorMapping.maybeThrowException(pdata.error))
         fail("Expected exception when fetching message with invalid offset")
-      } catch {
-        case e: OffsetOutOfRangeException => "this is good"
-      }
+      } catch { case e: OffsetOutOfRangeException => "this is good" }
     }
 
     {
@@ -196,9 +194,7 @@ class PrimitiveApiTest
         response.data.values.foreach(pdata =>
           ErrorMapping.maybeThrowException(pdata.error))
         fail("Expected exception when fetching message with invalid partition")
-      } catch {
-        case e: UnknownTopicOrPartitionException => "this is good"
-      }
+      } catch { case e: UnknownTopicOrPartitionException => "this is good" }
     }
 
     // restore set request handler logger to a higher level
@@ -206,9 +202,7 @@ class PrimitiveApiTest
   }
 
   @Test
-  def testProduceAndMultiFetch() {
-    produceAndMultiFetch(producer)
-  }
+  def testProduceAndMultiFetch() { produceAndMultiFetch(producer) }
 
   private def multiProduce(producer: Producer[String, String]) {
     val topics = Map("test4" -> 0, "test1" -> 0, "test2" -> 0, "test3" -> 0)
@@ -238,9 +232,7 @@ class PrimitiveApiTest
   }
 
   @Test
-  def testMultiProduce() {
-    multiProduce(producer)
-  }
+  def testMultiProduce() { multiProduce(producer) }
 
   @Test
   def testConsumerEmptyTopic() {

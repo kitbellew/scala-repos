@@ -22,9 +22,7 @@ class SystemTest {
       val testIn = new java.io.ByteArrayInputStream(Array[Byte]())
       System.setIn(testIn)
       assertTrue(System.in eq testIn)
-    } finally {
-      System.setIn(savedIn)
-    }
+    } finally { System.setIn(savedIn) }
   }
 
   @Test def setOut(): Unit = {
@@ -33,9 +31,7 @@ class SystemTest {
       val testOut = new java.io.PrintStream(new java.io.ByteArrayOutputStream)
       System.setOut(testOut)
       assertTrue(System.out eq testOut)
-    } finally {
-      System.setOut(savedOut)
-    }
+    } finally { System.setOut(savedOut) }
   }
 
   @Test def setErr(): Unit = {
@@ -44,9 +40,7 @@ class SystemTest {
       val testErr = new java.io.PrintStream(new java.io.ByteArrayOutputStream)
       System.setErr(testErr)
       assertTrue(System.err eq testErr)
-    } finally {
-      System.setErr(savedErr)
-    }
+    } finally { System.setErr(savedErr) }
   }
 
   @Test def arraycopy(): Unit = {
@@ -54,11 +48,8 @@ class SystemTest {
     val object1 = Array[Any](() => true, 1, "2", '3', 4.0, true, object0)
 
     System.arraycopy(object1, 1, object0, 1, 5)
-    if (executingInJVM) {
-      assertEquals("[1234.0true]", object0.mkString)
-    } else {
-      assertEquals("[1234true]", object0.mkString)
-    }
+    if (executingInJVM) { assertEquals("[1234.0true]", object0.mkString) }
+    else { assertEquals("[1234true]", object0.mkString) }
 
     val string0 = Array("a", "b", "c", "d", "e", "f")
     val string1 = Array("1", "2", "3", "4")
@@ -82,9 +73,7 @@ class SystemTest {
   @Test def arraycopy_with_range_overlaps_for_the_same_array(): Unit = {
     val array = new Array[Int](10)
 
-    for (i <- 1 to 6) {
-      array(i) = i
-    }
+    for (i <- 1 to 6) { array(i) = i }
 
     assertArrayEquals(Array(0, 1, 2, 3, 4, 5, 6, 0, 0, 0), array)
     System.arraycopy(array, 0, array, 3, 7)

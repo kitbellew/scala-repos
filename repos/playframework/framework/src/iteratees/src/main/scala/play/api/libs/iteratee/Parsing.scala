@@ -51,9 +51,8 @@ object Parsing {
           previousMatches: List[MatchInfo[Array[Byte]]],
           piece: Array[Byte],
           startScan: Int): (List[MatchInfo[Array[Byte]]], Array[Byte]) = {
-        if (piece.length < needleSize) {
-          (previousMatches, piece)
-        } else {
+        if (piece.length < needleSize) { (previousMatches, piece) }
+        else {
           val fullMatch = Range(needleSize - 1, -1, -1).forall(scan =>
             needle(scan) == piece(scan + startScan))
           if (fullMatch) {

@@ -842,9 +842,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
       }
 
       containsUserId must haveSize(21)
-      containsUserId collect {
-        case obj => obj("userId")
-      } mustEqual Set(
+      containsUserId collect { case obj => obj("userId") } mustEqual Set(
         SString("user-1000"),
         SString("user-1001"),
         SString("user-1002"),
@@ -873,9 +871,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
       }
 
       containsPageId must haveSize(5)
-      containsPageId collect {
-        case obj => obj("pageId")
-      } mustEqual Set(
+      containsPageId collect { case obj => obj("pageId") } mustEqual Set(
         SString("page-0"),
         SString("page-1"),
         SString("page-2"),
@@ -949,9 +945,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       results must haveSize(16 + 570)
 
-      val maps = results.toSeq collect {
-        case (ids, SObject(obj)) => obj
-      }
+      val maps = results.toSeq collect { case (ids, SObject(obj)) => obj }
 
       val india = maps filter { _.values forall { _ == SString("India") } }
       india.size mustEqual (16)
@@ -976,9 +970,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       results must haveSize(16)
 
-      val maps = results.toSeq collect {
-        case (ids, SObject(obj)) => obj
-      }
+      val maps = results.toSeq collect { case (ids, SObject(obj)) => obj }
 
       val india = maps filter { _.values forall { _ == SString("India") } }
       india.size mustEqual (16)
@@ -1649,9 +1641,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       resultsE must haveSize(52)
 
-      val results = resultsE collect {
-        case (ids, sv) if ids.length == 1 => sv
-      }
+      val results = resultsE collect { case (ids, sv) if ids.length == 1 => sv }
 
       results must contain(SObject(
         Map("count" -> SDecimal(BigDecimal("319")), "state" -> SString("01"))))
@@ -2962,9 +2952,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       resultsE must haveSize(20)
 
-      val results = resultsE collect {
-        case (ids, sv) if ids.length == 1 => sv
-      }
+      val results = resultsE collect { case (ids, sv) if ids.length == 1 => sv }
 
       results must contain(
         SObject(Map(
@@ -3361,9 +3349,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       totalResult must haveSize(1)
 
-      val total = totalResult.collectFirst {
-        case (_, SDecimal(d)) => d
-      }.get
+      val total = totalResult.collectFirst { case (_, SDecimal(d)) => d }.get
 
       val result = evalE(input)
 
@@ -3392,9 +3378,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       totalResult must haveSize(1)
 
-      val total = totalResult.collectFirst {
-        case (_, SDecimal(d)) => d
-      }.get
+      val total = totalResult.collectFirst { case (_, SDecimal(d)) => d }.get
 
       val result = evalE(input)
 

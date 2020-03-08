@@ -42,9 +42,7 @@ private[streaming] class RateLimitedOutputStream(
     out.write(b)
   }
 
-  override def write(bytes: Array[Byte]) {
-    write(bytes, 0, bytes.length)
-  }
+  override def write(bytes: Array[Byte]) { write(bytes, 0, bytes.length) }
 
   @tailrec
   override final def write(bytes: Array[Byte], offset: Int, length: Int) {
@@ -56,13 +54,9 @@ private[streaming] class RateLimitedOutputStream(
     }
   }
 
-  override def flush() {
-    out.flush()
-  }
+  override def flush() { out.flush() }
 
-  override def close() {
-    out.close()
-  }
+  override def close() { out.close() }
 
   @tailrec
   private def waitToWrite(numBytes: Int) {

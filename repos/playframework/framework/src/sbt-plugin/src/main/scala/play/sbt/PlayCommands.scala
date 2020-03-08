@@ -83,9 +83,7 @@ object PlayCommands {
       h2ServerClass
         .getMethod("main", classOf[Array[String]])
         .invoke(null, Array.empty[String])
-    } catch {
-      case e: Exception => e.printStackTrace
-    }
+    } catch { case e: Exception => e.printStackTrace }
     state
   }
 

@@ -10,15 +10,11 @@ import org.scalatest.junit.JUnitRunner
 class SizedSinkTest extends FunSuite {
 
   test("SizedSink#apply must be given a positive approxSize") {
-    intercept[IllegalArgumentException] {
-      SizedSink(0)
-    }
+    intercept[IllegalArgumentException] { SizedSink(0) }
   }
 
   test("constructor must be given power of 2 for capacity") {
-    intercept[IllegalArgumentException] {
-      new SizedSink(3, () => 1L)
-    }
+    intercept[IllegalArgumentException] { new SizedSink(3, () => 1L) }
   }
 
   test("event and events") {

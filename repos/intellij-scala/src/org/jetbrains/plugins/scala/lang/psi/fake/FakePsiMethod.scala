@@ -61,9 +61,7 @@ class FakePsiMethod(
 
   def isDeprecated: Boolean = false
 
-  def hasModifierProperty(name: String): Boolean = {
-    hasModifier(name)
-  }
+  def hasModifierProperty(name: String): Boolean = { hasModifier(name) }
 
   def isExtensionMethod: Boolean = false
 

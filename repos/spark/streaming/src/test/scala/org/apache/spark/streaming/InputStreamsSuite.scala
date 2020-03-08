@@ -104,9 +104,7 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         // (whether the elements were received one in each interval is not verified)
         val output: Array[String] = outputQueue.asScala.flatMap(x => x).toArray
         assert(output.length === expectedOutput.size)
-        for (i <- output.indices) {
-          assert(output(i) === expectedOutput(i))
-        }
+        for (i <- output.indices) { assert(output(i) === expectedOutput(i)) }
       }
     }
   }
@@ -193,9 +191,7 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
           outputQueue.asScala.flatten.toList.map(i => i(0).toByte)
         assert(obtainedOutput.toSeq === expectedOutput)
       }
-    } finally {
-      if (testDir != null) Utils.deleteRecursively(testDir)
-    }
+    } finally { if (testDir != null) Utils.deleteRecursively(testDir) }
   }
 
   test("file input stream - newFilesOnly = true") {
@@ -267,9 +263,7 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       for (i <- input.indices) {
         // Enqueue more than 1 item per tick but they should dequeue one at a time
         inputIterator.take(2).foreach { i =>
-          queue.synchronized {
-            queue += ssc.sparkContext.makeRDD(Seq(i))
-          }
+          queue.synchronized { queue += ssc.sparkContext.makeRDD(Seq(i)) }
         }
         clock.advance(batchDuration.milliseconds)
       }
@@ -313,18 +307,14 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       // Enqueue the first 3 items (one by one), they should be merged in the next batch
       val inputIterator = input.toIterator
       inputIterator.take(3).foreach { i =>
-        queue.synchronized {
-          queue += ssc.sparkContext.makeRDD(Seq(i))
-        }
+        queue.synchronized { queue += ssc.sparkContext.makeRDD(Seq(i)) }
       }
       clock.advance(batchDuration.milliseconds)
       Thread.sleep(1000)
 
       // Enqueue the remaining items (again one by one), merged in the final batch
       inputIterator.foreach { i =>
-        queue.synchronized {
-          queue += ssc.sparkContext.makeRDD(Seq(i))
-        }
+        queue.synchronized { queue += ssc.sparkContext.makeRDD(Seq(i)) }
       }
       clock.advance(batchDuration.milliseconds)
       Thread.sleep(1000)
@@ -431,16 +421,11 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         }
 
         // Verify that all the files have been read
-        val expectedOutput = if (newFilesOnly) {
-          input.map(_.toString).toSet
-        } else {
-          (Seq(0) ++ input).map(_.toString).toSet
-        }
+        val expectedOutput = if (newFilesOnly) { input.map(_.toString).toSet }
+        else { (Seq(0) ++ input).map(_.toString).toSet }
         assert(outputQueue.asScala.flatten.toSet === expectedOutput)
       }
-    } finally {
-      if (testDir != null) Utils.deleteRecursively(testDir)
-    }
+    } finally { if (testDir != null) Utils.deleteRecursively(testDir) }
   }
 }
 
@@ -462,9 +447,7 @@ class TestServer(portToBind: Int = 0) extends Logging {
           if (startLatch.getCount == 1) {
             // The first connection is a test connection to implement "waitForStart", so skip it
             // and send a signal
-            if (!clientSocket.isClosed) {
-              clientSocket.close()
-            }
+            if (!clientSocket.isClosed) { clientSocket.close() }
             startLatch.countDown()
           } else {
             // Real connections
@@ -488,17 +471,13 @@ class TestServer(portToBind: Int = 0) extends Logging {
               case e: SocketException => logError("TestServer error", e)
             } finally {
               logInfo("Connection closed")
-              if (!clientSocket.isClosed) {
-                clientSocket.close()
-              }
+              if (!clientSocket.isClosed) { clientSocket.close() }
             }
           }
         }
       } catch {
         case ie: InterruptedException =>
-      } finally {
-        serverSocket.close()
-      }
+      } finally { serverSocket.close() }
     }
   }
 
@@ -517,13 +496,8 @@ class TestServer(portToBind: Int = 0) extends Logging {
   private def waitForStart(millis: Long): Boolean = {
     // We will create a test connection to the server so that we can make sure it has started.
     val socket = new Socket("localhost", port)
-    try {
-      startLatch.await(millis, TimeUnit.MILLISECONDS)
-    } finally {
-      if (!socket.isClosed) {
-        socket.close()
-      }
-    }
+    try { startLatch.await(millis, TimeUnit.MILLISECONDS) }
+    finally { if (!socket.isClosed) { socket.close() } }
   }
 
   def send(msg: String) { queue.put(msg) }
@@ -556,9 +530,7 @@ class MultiThreadTestReceiver(numThreads: Int, numRecordsPerThread: Int)
     })
   }
 
-  def onStop() {
-    executorPool.shutdown()
-  }
+  def onStop() { executorPool.shutdown() }
 }
 
 object MultiThreadTestReceiver {

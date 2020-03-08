@@ -70,17 +70,11 @@ abstract class GitCommand() extends Command {
     this.callback = callback
   }
 
-  override def setErrorStream(err: OutputStream): Unit = {
-    this.err = err
-  }
+  override def setErrorStream(err: OutputStream): Unit = { this.err = err }
 
-  override def setOutputStream(out: OutputStream): Unit = {
-    this.out = out
-  }
+  override def setOutputStream(out: OutputStream): Unit = { this.out = out }
 
-  override def setInputStream(in: InputStream): Unit = {
-    this.in = in
-  }
+  override def setInputStream(in: InputStream): Unit = { this.in = in }
 
 }
 

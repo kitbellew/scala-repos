@@ -105,9 +105,8 @@ object SQLConf {
         key,
         defaultValue,
         { v =>
-          try {
-            v.toInt
-          } catch {
+          try { v.toInt }
+          catch {
             case _: NumberFormatException =>
               throw new IllegalArgumentException(
                 s"$key should be int, but was $v")
@@ -127,9 +126,8 @@ object SQLConf {
         key,
         defaultValue,
         { v =>
-          try {
-            v.toLong
-          } catch {
+          try { v.toLong }
+          catch {
             case _: NumberFormatException =>
               throw new IllegalArgumentException(
                 s"$key should be long, but was $v")
@@ -149,13 +147,11 @@ object SQLConf {
         key,
         defaultValue,
         { v =>
-          try {
-            v.toLong
-          } catch {
+          try { v.toLong }
+          catch {
             case _: NumberFormatException =>
-              try {
-                Utils.byteStringAsBytes(v)
-              } catch {
+              try { Utils.byteStringAsBytes(v) }
+              catch {
                 case _: NumberFormatException =>
                   throw new IllegalArgumentException(
                     s"$key should be long, but was $v")
@@ -176,9 +172,8 @@ object SQLConf {
         key,
         defaultValue,
         { v =>
-          try {
-            v.toDouble
-          } catch {
+          try { v.toDouble }
+          catch {
             case _: NumberFormatException =>
               throw new IllegalArgumentException(
                 s"$key should be double, but was $v")
@@ -198,9 +193,8 @@ object SQLConf {
         key,
         defaultValue,
         { v =>
-          try {
-            v.toBoolean
-          } catch {
+          try { v.toBoolean }
+          catch {
             case _: IllegalArgumentException =>
               throw new IllegalArgumentException(
                 s"$key should be boolean, but was $v")
@@ -900,15 +894,9 @@ class SQLConf
     settings.put(key, value)
   }
 
-  def unsetConf(key: String): Unit = {
-    settings.remove(key)
-  }
+  def unsetConf(key: String): Unit = { settings.remove(key) }
 
-  def unsetConf(entry: SQLConfEntry[_]): Unit = {
-    settings.remove(entry.key)
-  }
+  def unsetConf(entry: SQLConfEntry[_]): Unit = { settings.remove(entry.key) }
 
-  def clear(): Unit = {
-    settings.clear()
-  }
+  def clear(): Unit = { settings.clear() }
 }

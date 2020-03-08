@@ -17,9 +17,7 @@ object FutureTest extends SpecLite {
 
   "Future" should {
     "not deadlock when using Nondeterminism#chooseAny" in {
-      withTimeout(2000) {
-        deadlocks(3).unsafePerformSync.length must_== 4
-      }
+      withTimeout(2000) { deadlocks(3).unsafePerformSync.length must_== 4 }
     }
     "have a run method that returns" in {
       "when constructed from Future.now" in prop { (n: Int) =>

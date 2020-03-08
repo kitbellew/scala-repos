@@ -138,9 +138,7 @@ private[kafka] class ZookeeperConsumerConnector(
       new DefaultDecoder(),
       new DefaultDecoder())
 
-  def commitOffsets() {
-    underlying.commitOffsets(true)
-  }
+  def commitOffsets() { underlying.commitOffsets(true) }
 
   def commitOffsets(retryOnFailure: Boolean) {
     underlying.commitOffsets(retryOnFailure)
@@ -157,7 +155,5 @@ private[kafka] class ZookeeperConsumerConnector(
     underlying.setConsumerRebalanceListener(consumerRebalanceListener)
   }
 
-  def shutdown() {
-    underlying.shutdown
-  }
+  def shutdown() { underlying.shutdown }
 }

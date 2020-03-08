@@ -125,12 +125,8 @@ class ReadOnlyBooleanPropertySpec extends FlatSpec with BeforeAndAfterEach {
     var invalidateCount = 0
     var changeCount = 0
     val binding = booleanProperty1 || booleanProperty2
-    binding onInvalidate {
-      invalidateCount += 1
-    }
-    binding onChange {
-      changeCount += 1
-    }
+    binding onInvalidate { invalidateCount += 1 }
+    binding onChange { changeCount += 1 }
     booleanProperty1() = true
     invalidateCount should equal(1)
     changeCount should equal(1)

@@ -45,9 +45,7 @@ trait UnrolledParArrayCombiner[T] extends Combiner[T, ParArray[T]] {
     new ParArray(arrayseq)
   }
 
-  def clear() {
-    buff.clear()
-  }
+  def clear() { buff.clear() }
 
   override def sizeHint(sz: Int) = {
     buff.lastPtr.next = new Unrolled(0, new Array[Any](sz), null, buff)

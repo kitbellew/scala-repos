@@ -132,9 +132,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         result = x :: result
       else {
         val min = result.min
-        if (ord.compare(x, min) < 0) {
-          result = x :: result.filter(_ != min)
-        }
+        if (ord.compare(x, min) < 0) { result = x :: result.filter(_ != min) }
       }
     }
 

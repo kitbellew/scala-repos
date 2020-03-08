@@ -33,9 +33,7 @@ class ScalaStatementGroupSelectioner extends ExtendWordSelectionHandlerBase {
       editor: Editor): java.util.List[TextRange] = {
     val parent: PsiElement = e.getParent
 
-    if (!parent.isInstanceOf[ScBlock]) {
-      return new util.ArrayList[TextRange]
-    }
+    if (!parent.isInstanceOf[ScBlock]) { return new util.ArrayList[TextRange] }
 
     def back(e: PsiElement) = e.getPrevSibling
     def forward(e: PsiElement) = e.getNextSibling
@@ -65,9 +63,7 @@ class ScalaStatementGroupSelectioner extends ExtendWordSelectionHandlerBase {
           if (ScalaPsiUtil.isLineTerminator(leaf)) {
             val strings: Array[String] =
               LineTokenizer.tokenize(leaf.getText.toCharArray, false)
-            if (strings.length > 2) {
-              return current
-            }
+            if (strings.length > 2) { return current }
           }
         case _ =>
       }
@@ -80,9 +76,7 @@ class ScalaStatementGroupSelectioner extends ExtendWordSelectionHandlerBase {
       start: PsiElement,
       step: PsiElement => PsiElement): PsiElement = {
     var current = start
-    while (current.isInstanceOf[PsiWhiteSpace]) {
-      current = step(current)
-    }
+    while (current.isInstanceOf[PsiWhiteSpace]) { current = step(current) }
     current
   }
 }

@@ -137,11 +137,8 @@ final class Algebraic private (val expr: Algebraic.Expr)
   def nroot(k: Int): Algebraic =
     if (k < 0) {
       new Algebraic(Expr.Div(Expr.ConstantLong(1), Expr.KRoot(this.expr, -k)))
-    } else if (k > 0) {
-      new Algebraic(Expr.KRoot(this.expr, k))
-    } else {
-      throw new ArithmeticException("divide by zero (0-root)")
-    }
+    } else if (k > 0) { new Algebraic(Expr.KRoot(this.expr, k)) }
+    else { throw new ArithmeticException("divide by zero (0-root)") }
 
   /** Raise this number to the `k`-th power. */
   def pow(k: Int): Algebraic =
@@ -150,16 +147,11 @@ final class Algebraic private (val expr: Algebraic.Expr)
     } else if (k == 0) {
       if (signum == 0) {
         throw new ArithmeticException("undeterminate result (0^0)")
-      } else {
-        One
-      }
-    } else if (k == 1) {
-      this
-    } else if (k < 0) {
+      } else { One }
+    } else if (k == 1) { this }
+    else if (k < 0) {
       new Algebraic(Expr.Div(Expr.ConstantLong(1), this.pow(-k).expr))
-    } else {
-      new Algebraic(Expr.Pow(this.expr, k))
-    }
+    } else { new Algebraic(Expr.Pow(this.expr, k)) }
 
   def <(that: Algebraic): Boolean = compare(that) < 0
   def >(that: Algebraic): Boolean = compare(that) > 0
@@ -189,11 +181,8 @@ final class Algebraic private (val expr: Algebraic.Expr)
     case (that: Complex[_])    => that == this
     case (that: Quaternion[_]) => that == this
     case (that: BigDecimal) =>
-      try {
-        toBigDecimal(that.mc) == that
-      } catch {
-        case ae: ArithmeticException => false
-      }
+      try { toBigDecimal(that.mc) == that }
+      catch { case ae: ArithmeticException => false }
     case _ => unifiedPrimitiveEquals(that)
   }
 
@@ -204,9 +193,8 @@ final class Algebraic private (val expr: Algebraic.Expr)
     !(this === that)
 
   override def hashCode: Int =
-    if (isWhole && isValidLong) {
-      unifiedPrimitiveHashcode
-    } else {
+    if (isWhole && isValidLong) { unifiedPrimitiveHashcode }
+    else {
       val x = toBigDecimal(java.math.MathContext.DECIMAL64)
       x.underlying.unscaledValue.hashCode + 23 * x.scale.hashCode + 17
     }
@@ -237,14 +225,9 @@ final class Algebraic private (val expr: Algebraic.Expr)
   override def toString: String = {
     val approx = toBigDecimal(MathContext.DECIMAL64)
     if (this == Algebraic(approx)) {
-      if (approx.signum == 0) {
-        "Algebraic(0)"
-      } else {
-        s"Algebraic(${approx.bigDecimal.stripTrailingZeros})"
-      }
-    } else {
-      s"Algebraic(~$approx)"
-    }
+      if (approx.signum == 0) { "Algebraic(0)" }
+      else { s"Algebraic(${approx.bigDecimal.stripTrailingZeros})" }
+    } else { s"Algebraic(~$approx)" }
   }
 
   /**
@@ -445,9 +428,7 @@ final class Algebraic private (val expr: Algebraic.Expr)
           def findRoots(poly: Polynomial[Rational]): Roots[Rational] = fail
         }
       Some(evaluateWith[Rational])
-    } else {
-      None
-    }
+    } else { None }
 
   /**
     * Evaluates this algebraic expression with a different number type. All
@@ -526,9 +507,7 @@ object Algebraic extends AlgebraicInstances {
       throw new IllegalArgumentException("cannot construct inifinite Algebraic")
     } else if (java.lang.Double.isNaN(n)) {
       throw new IllegalArgumentException("cannot construct Algebraic from NaN")
-    } else {
-      new Algebraic(Expr.ConstantDouble(n))
-    }
+    } else { new Algebraic(Expr.ConstantDouble(n)) }
 
   /** Returns an Algebraic expression equivalent to `n`. */
   def apply(n: BigInt): Algebraic =
@@ -555,9 +534,8 @@ object Algebraic extends AlgebraicInstances {
     * @return an algebraic whose value is the i-th root of the polynomial
     */
   def root(poly: Polynomial[Rational], i: Int): Algebraic = {
-    if (i < 0) {
-      throw new ArithmeticException(s"invalid real root index: $i")
-    } else {
+    if (i < 0) { throw new ArithmeticException(s"invalid real root index: $i") }
+    else {
       val zpoly = Roots.removeFractions(poly)
       val intervals = Roots.isolateRoots(zpoly)
       if (i >= intervals.size) {
@@ -821,11 +799,8 @@ object Algebraic extends AlgebraicInstances {
       def flagBits: Int = Flags.DoubleLeaf.bits
 
       def upperBound: BitBound =
-        if (value == 0d) {
-          new BitBound(0)
-        } else {
-          new BitBound(ceil(log(abs(value))).toLong)
-        }
+        if (value == 0d) { new BitBound(0) }
+        else { new BitBound(ceil(log(abs(value))).toLong) }
 
       def signum: Int =
         if (value < 0d) -1
@@ -842,9 +817,8 @@ object Algebraic extends AlgebraicInstances {
       def flagBits: Int = Flags.BigDecimalLeaf.bits
 
       def upperBound: BitBound =
-        if (value.signum == 0) {
-          new BitBound(0)
-        } else {
+        if (value.signum == 0) { new BitBound(0) }
+        else {
           // We just need a couple of digits, really.
           val mc = new MathContext(4, RoundingMode.UP)
           new BitBound(ceil(log(value.abs(mc))).toLong)
@@ -939,14 +913,11 @@ object Algebraic extends AlgebraicInstances {
           val digits = min(digits0, min(maxDigits, Int.MaxValue)).toInt
           val approx =
             toBigDecimal(digits + 1).setScale(digits, RoundingMode.DOWN)
-          if (approx.signum != 0 || digits >= maxDigits) {
-            approx.signum
-          } else if (digits == Int.MaxValue) {
+          if (approx.signum != 0 || digits >= maxDigits) { approx.signum }
+          else if (digits == Int.MaxValue) {
             throw new ArithmeticException(
               "required precision to calculate sign is too high")
-          } else {
-            loop(2 * digits0)
-          }
+          } else { loop(2 * digits0) }
         }
 
         loop(4)
@@ -991,11 +962,8 @@ object Algebraic extends AlgebraicInstances {
     case class Div(lhs: Expr, rhs: Expr) extends BinaryExpr {
       def upperBound: BitBound = lhs.upperBound - rhs.lowerBound
       def signum: Int =
-        if (rhs.signum == 0) {
-          throw new ArithmeticException("divide by 0")
-        } else {
-          lhs.signum * rhs.signum
-        }
+        if (rhs.signum == 0) { throw new ArithmeticException("divide by 0") }
+        else { lhs.signum * rhs.signum }
       def toBigDecimal(digits: Int): JBigDecimal = checked {
         val lDigits = digits + 2 - rhs.lowerBound.decimalDigits
         val rDigits = max(
@@ -1057,11 +1025,8 @@ object Algebraic extends AlgebraicInstances {
           if (k < 0) throw new ArithmeticException("divide by 0")
           else if (k == 0) throw new ArithmeticException("indeterminate")
           else 0
-        } else if (k % 2 == 0) {
-          if (s < 0) 1 else s
-        } else {
-          s
-        }
+        } else if (k % 2 == 0) { if (s < 0) 1 else s }
+        else { s }
       }
       def toBigDecimal(digits: Int): JBigDecimal = {
         // We could possibly do better here. Investigate.
@@ -1259,9 +1224,8 @@ object Algebraic extends AlgebraicInstances {
         case _ =>
           approx.setScale(scale, RoundingMode.DOWN)
       }
-    } else if (approx.signum > 0) {
-      roundPositive(exact, approx, scale, mode)
-    } else {
+    } else if (approx.signum > 0) { roundPositive(exact, approx, scale, mode) }
+    else {
       val adjustedMode = mode match {
         case CEILING => FLOOR
         case FLOOR   => CEILING
@@ -1334,36 +1298,24 @@ object Algebraic extends AlgebraicInstances {
             }
             if (roundUp) truncated.add(epsilon)
             else truncated
-          } else if (remainder < dangerZoneStart) {
-            truncated
-          } else {
-            truncated.add(epsilon)
-          }
+          } else if (remainder < dangerZoneStart) { truncated }
+          else { truncated.add(epsilon) }
 
         case CEILING | UP =>
           if (remainder <= 1 && exact <= Algebraic(BigDecimal(truncated))) {
             truncated
-          } else {
-            truncated.add(epsilon)
-          }
+          } else { truncated.add(epsilon) }
 
         case FLOOR | DOWN =>
           if (remainder <= 0) {
             if (exact < Algebraic(BigDecimal(truncated))) {
               truncated.subtract(epsilon)
-            } else {
-              truncated
-            }
+            } else { truncated }
           } else if (remainder >= (unscale - 1)) {
             val roundedUp = truncated.add(epsilon)
-            if (exact >= Algebraic(BigDecimal(roundedUp))) {
-              roundedUp
-            } else {
-              truncated
-            }
-          } else {
-            truncated
-          }
+            if (exact >= Algebraic(BigDecimal(roundedUp))) { roundedUp }
+            else { truncated }
+          } else { truncated }
       }
 
       rounded
@@ -1505,9 +1457,8 @@ object Algebraic extends AlgebraicInstances {
       // Also, the upper and lower bounds could be much tighter if we actually
       // partially perform the division.
       val a = n.numerator.abs.bitLength + 1
-      if (n.denominator == BigInt(1)) {
-        Bound(0, a, a, a - 1, a)
-      } else {
+      if (n.denominator == BigInt(1)) { Bound(0, a, a, a - 1, a) }
+      else {
         val b = n.denominator.bitLength + 1
         Bound(b, a, max(a, b), a - b - 1, a - b + 1)
       }
@@ -1608,9 +1559,8 @@ object Algebraic extends AlgebraicInstances {
 
     private def pow(sub: Bound, k: Int): Bound = {
       @tailrec def sum(acc: Long, k: Int, extra: Long): Long =
-        if (k == 1) {
-          checked(acc + extra)
-        } else {
+        if (k == 1) { checked(acc + extra) }
+        else {
           val x =
             if ((k & 1) == 1) checked(acc + extra)
             else extra
@@ -1622,9 +1572,8 @@ object Algebraic extends AlgebraicInstances {
           sum(sub.l, k - 1, sub.l),
           sum(sub.u, k - 1, sub.u)
         )
-      } else if (k == 1) {
-        sub
-      } else if (k == 0) {
+      } else if (k == 1) { sub }
+      else if (k == 0) {
         throw new IllegalArgumentException("exponent cannot be 0")
       } else {
         throw new IllegalArgumentException("exponent cannot be negative")

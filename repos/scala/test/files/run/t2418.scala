@@ -4,7 +4,5 @@ class Foo {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
-    println((new Foo))
-  }
+  def main(args: Array[String]): Unit = { println((new Foo)) }
 }

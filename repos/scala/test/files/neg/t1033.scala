@@ -7,7 +7,5 @@ object A {
     new B
     20
   }
-  def main(args: Array[String]) {
-    f
-  }
+  def main(args: Array[String]) { f }
 }

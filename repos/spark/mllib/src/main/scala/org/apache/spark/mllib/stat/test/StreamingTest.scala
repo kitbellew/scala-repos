@@ -36,9 +36,7 @@ import org.apache.spark.util.StatCounter
 case class BinarySample @Since("1.6.0") (
     @Since("1.6.0") isExperiment: Boolean,
     @Since("1.6.0") value: Double) {
-  override def toString: String = {
-    s"($isExperiment, $value)"
-  }
+  override def toString: String = { s"($isExperiment, $value)" }
 }
 
 /**
@@ -136,9 +134,7 @@ class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
     data.transform { (rdd, time) =>
       if (time.milliseconds > data.slideDuration.milliseconds * peacePeriod) {
         rdd
-      } else {
-        data.context.sparkContext.parallelize(Seq())
-      }
+      } else { data.context.sparkContext.parallelize(Seq()) }
     }
   }
 

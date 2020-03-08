@@ -611,11 +611,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
       def messageListId = "Hello"
 
       def collapseUnless[A](isEmptyCond: Boolean)(f: => A): Box[A] = {
-        if (!isEmptyCond) {
-          Empty
-        } else {
-          Full(f)
-        }
+        if (!isEmptyCond) { Empty }
+        else { Full(f) }
       }
 
       ".noMail" #> collapseUnless(
@@ -629,9 +626,7 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
     "other Andreas test" in {
       def renderBlogEntrySummary = {
-        ".blogEntry" #> ((ns: NodeSeq) => {
-          ("*" #> "Horse").apply(ns)
-        })
+        ".blogEntry" #> ((ns: NodeSeq) => { ("*" #> "Horse").apply(ns) })
       }
 
       def render = {

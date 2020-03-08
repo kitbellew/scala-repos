@@ -39,13 +39,9 @@ class ExecutorAllocationManagerSuite
 
   private val contexts = new mutable.ListBuffer[SparkContext]()
 
-  before {
-    contexts.clear()
-  }
+  before { contexts.clear() }
 
-  after {
-    contexts.foreach(_.stop())
-  }
+  after { contexts.foreach(_.stop()) }
 
   test("verify min/max executors") {
     val conf = new SparkConf()
@@ -1145,21 +1141,15 @@ private object ExecutorAllocationManagerSuite extends PrivateMethodTester {
 
   private def removeExecutor(
       manager: ExecutorAllocationManager,
-      id: String): Boolean = {
-    manager invokePrivate _removeExecutor(id)
-  }
+      id: String): Boolean = { manager invokePrivate _removeExecutor(id) }
 
   private def onExecutorAdded(
       manager: ExecutorAllocationManager,
-      id: String): Unit = {
-    manager invokePrivate _onExecutorAdded(id)
-  }
+      id: String): Unit = { manager invokePrivate _onExecutorAdded(id) }
 
   private def onExecutorRemoved(
       manager: ExecutorAllocationManager,
-      id: String): Unit = {
-    manager invokePrivate _onExecutorRemoved(id)
-  }
+      id: String): Unit = { manager invokePrivate _onExecutorRemoved(id) }
 
   private def onSchedulerBacklogged(
       manager: ExecutorAllocationManager): Unit = {
@@ -1173,15 +1163,11 @@ private object ExecutorAllocationManagerSuite extends PrivateMethodTester {
 
   private def onExecutorIdle(
       manager: ExecutorAllocationManager,
-      id: String): Unit = {
-    manager invokePrivate _onExecutorIdle(id)
-  }
+      id: String): Unit = { manager invokePrivate _onExecutorIdle(id) }
 
   private def onExecutorBusy(
       manager: ExecutorAllocationManager,
-      id: String): Unit = {
-    manager invokePrivate _onExecutorBusy(id)
-  }
+      id: String): Unit = { manager invokePrivate _onExecutorBusy(id) }
 
   private def localityAwareTasks(manager: ExecutorAllocationManager): Int = {
     manager invokePrivate _localityAwareTasks()

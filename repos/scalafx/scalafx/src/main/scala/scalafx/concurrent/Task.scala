@@ -71,9 +71,7 @@ abstract class Task[T](override val delegate: jfxc.Task[T])
     * The onFailed event handler is called whenever the Task state transitions to the FAILED state.
     */
   def onFailed = delegate.onFailedProperty
-  def onFailed_=(v: jfxe.EventHandler[jfxc.WorkerStateEvent]) {
-    onFailed() = v
-  }
+  def onFailed_=(v: jfxe.EventHandler[jfxc.WorkerStateEvent]) { onFailed() = v }
 
   /**
     * The onRunning event handler is called whenever the Task state transitions to the RUNNING state.

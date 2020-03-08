@@ -509,9 +509,7 @@ class KafkaServer(
                 null)
               val clientResponse = networkClient
                 .blockingSendAndReceive(request, socketTimeoutMs)
-                .getOrElse {
-                  throw socketTimeoutException
-                }
+                .getOrElse { throw socketTimeoutException }
 
               val shutdownResponse = new ControlledShutdownResponse(
                 clientResponse.responseBody)
@@ -814,9 +812,8 @@ class KafkaServer(
   }
 
   private def generateBrokerId: Int = {
-    try {
-      zkUtils.getBrokerSequenceId(config.maxReservedBrokerId)
-    } catch {
+    try { zkUtils.getBrokerSequenceId(config.maxReservedBrokerId) }
+    catch {
       case e: Exception =>
         error("Failed to generate broker.id due to ", e)
         throw new GenerateBrokerIdException("Failed to generate broker.id", e)

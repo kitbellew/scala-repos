@@ -62,11 +62,8 @@ class TopicTest {
     val validTopicNames = new ArrayBuffer[String]()
     validTopicNames += ("valid", "TOPIC", "nAmEs", "ar6", "VaL1d", "_0-9_.")
     for (i <- 0 until validTopicNames.size) {
-      try {
-        Topic.validate(validTopicNames(i))
-      } catch {
-        case e: Exception => fail("Should not throw exception.")
-      }
+      try { Topic.validate(validTopicNames(i)) }
+      catch { case e: Exception => fail("Should not throw exception.") }
     }
   }
 

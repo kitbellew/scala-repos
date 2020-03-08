@@ -41,9 +41,8 @@ private[sql] object InferSchema {
       configOptions.samplingRatio > 0,
       s"samplingRatio (${configOptions.samplingRatio}) should be greater than 0")
     val shouldHandleCorruptRecord = configOptions.permissive
-    val schemaData = if (configOptions.samplingRatio > 0.99) {
-      json
-    } else {
+    val schemaData = if (configOptions.samplingRatio > 0.99) { json }
+    else {
       json.sample(withReplacement = false, configOptions.samplingRatio, 1)
     }
 
@@ -151,9 +150,7 @@ private[sql] object InferSchema {
             if (configOptions.floatAsBigDecimal) {
               val v = parser.getDecimalValue
               DecimalType(v.precision(), v.scale())
-            } else {
-              DoubleType
-            }
+            } else { DoubleType }
         }
 
       case VALUE_TRUE | VALUE_FALSE => BooleanType
@@ -165,9 +162,7 @@ private[sql] object InferSchema {
     */
   private def canonicalizeType(tpe: DataType): Option[DataType] = tpe match {
     case at @ ArrayType(elementType, _) =>
-      for {
-        canonicalType <- canonicalizeType(elementType)
-      } yield {
+      for { canonicalType <- canonicalizeType(elementType) } yield {
         at.copy(canonicalType)
       }
 
@@ -176,13 +171,10 @@ private[sql] object InferSchema {
         field <- fields
         if field.name.length > 0
         canonicalType <- canonicalizeType(field.dataType)
-      } yield {
-        field.copy(dataType = canonicalType)
-      }
+      } yield { field.copy(dataType = canonicalType) }
 
-      if (canonicalFields.length > 0) {
-        Some(StructType(canonicalFields))
-      } else {
+      if (canonicalFields.length > 0) { Some(StructType(canonicalFields)) }
+      else {
         // per SPARK-8093: empty structs should be deleted
         None
       }
@@ -253,9 +245,7 @@ private[sql] object InferSchema {
           if (range + scale > 38) {
             // DecimalType can't support precision > 38
             DoubleType
-          } else {
-            DecimalType(range + scale, scale)
-          }
+          } else { DecimalType(range + scale, scale) }
 
         case (StructType(fields1), StructType(fields2)) =>
           val newFields =

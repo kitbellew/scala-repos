@@ -11,9 +11,7 @@ final class JUnitSlaveRunner(
     runSettings: RunSettings)
     extends JUnitBaseRunner(args, remoteArgs, testClassLoader, runSettings) {
 
-  def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
-    taskDefs.map(newTask)
-  }
+  def tasks(taskDefs: Array[TaskDef]): Array[Task] = { taskDefs.map(newTask) }
 
   def done(): String = {
     send(

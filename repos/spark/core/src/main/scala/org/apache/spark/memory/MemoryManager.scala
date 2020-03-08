@@ -184,9 +184,7 @@ private[spark] abstract class MemoryManager(
         conf.getSizeAsBytes("spark.memory.offHeap.size", 0) > 0,
         "spark.memory.offHeap.size must be > 0 when spark.memory.offHeap.enabled == true")
       MemoryMode.OFF_HEAP
-    } else {
-      MemoryMode.ON_HEAP
-    }
+    } else { MemoryMode.ON_HEAP }
   }
 
   /**

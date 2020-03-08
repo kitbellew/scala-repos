@@ -122,11 +122,7 @@ class VectorSerializer
       (
         {
           case JArray(x) =>
-            val v = x.toArray.map { y =>
-              y match {
-                case JDouble(z) => z
-              }
-            }
+            val v = x.toArray.map { y => y match { case JDouble(z) => z } }
             new DenseVector(v)
         },
         {

@@ -26,9 +26,7 @@ case class LogNormal(mu: Double, sigma: Double)(implicit rand: RandBasis = Rand)
   /**
     * Gets one sample from the distribution. Equivalent to sample()
     */
-  def draw(): Double = {
-    exp(myGaussian.draw())
-  }
+  def draw(): Double = { exp(myGaussian.draw()) }
 
   def unnormalizedLogPdf(x: Double): Double = {
     if (x <= 0.0) return Double.NegativeInfinity

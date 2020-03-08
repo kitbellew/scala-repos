@@ -34,9 +34,7 @@ package object map {
         (k, vs) <- other
         v <- vs
       } builder.addBinding(k, v)
-      builder.map {
-        case (k, vs) => (k, vs.toSet)
-      }(collection.breakOut)
+      builder.map { case (k, vs) => (k, vs.toSet) }(collection.breakOut)
     }
 
   }

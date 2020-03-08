@@ -51,9 +51,7 @@ class Cell[T](override val delegate: jfxsc.Cell[T] = new jfxsc.Cell[T])
     * A property representing whether this cell is allowed to be put into an editing state.
     */
   def editable: BooleanProperty = delegate.editableProperty
-  def editable_=(v: Boolean) {
-    editable() = v
-  }
+  def editable_=(v: Boolean) { editable() = v }
 
   /**
     * Property representing whether this cell is currently in its editing state.
@@ -69,41 +67,31 @@ class Cell[T](override val delegate: jfxsc.Cell[T] = new jfxsc.Cell[T])
     * The data value associated with this Cell.
     */
   def item: ObjectProperty[T] = delegate.itemProperty
-  def item_=(v: T) {
-    item.set(v)
-  }
+  def item_=(v: T) { item.set(v) }
 
   /**
     * Indicates whether or not this cell has been selected.
     */
   def selected: ReadOnlyBooleanProperty = delegate.selectedProperty
-  def selected_=(s: Boolean) {
-    delegate.updateSelected(s)
-  }
+  def selected_=(s: Boolean) { delegate.updateSelected(s) }
 
   /**
     * Call this function to transition from an editing state into a non-editing state, without
     * saving any user input.
     */
-  def cancelEdit() {
-    delegate.cancelEdit()
-  }
+  def cancelEdit() { delegate.cancelEdit() }
 
   /**
     * Call this function to transition from an editing state into a non-editing state, and in the
     * process saving any user input.
     */
-  def commitEdit(newValue: T) {
-    delegate.commitEdit(newValue)
-  }
+  def commitEdit(newValue: T) { delegate.commitEdit(newValue) }
 
   /**
     * Call this function to transition from a non-editing state into an editing state, if the cell
     * is editable.
     */
-  def startEdit() {
-    delegate.startEdit()
-  }
+  def startEdit() { delegate.startEdit() }
 
   // TODO: implement updateItem(T item, boolean empty)
   // might be difficult since updateItem is a protected method which needs to be defined in the delegate's class

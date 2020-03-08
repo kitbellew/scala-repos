@@ -1,7 +1,9 @@
 import scala.language.reflectiveCalls
 
 trait A {
-  trait Concrete { def conco: Int = 1 }
+  trait Concrete {
+    def conco: Int = 1
+  }
   type Foo <: { def bippy: Int }
   type Bar <: { def barry: Int }
 

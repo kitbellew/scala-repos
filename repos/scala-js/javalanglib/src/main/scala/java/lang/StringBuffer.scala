@@ -123,9 +123,7 @@ class StringBuffer(private var content: String)
         append("\u0000")
         index += 1
       }
-    } else {
-      content = substring(0, newLength)
-    }
+    } else { content = substring(0, newLength) }
   }
 
   def insert(index: Int, b: scala.Boolean): StringBuffer =

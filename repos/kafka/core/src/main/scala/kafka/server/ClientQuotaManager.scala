@@ -206,9 +206,7 @@ class ClientQuotaManager(
     try {
       quotaSensor = metrics.getSensor(quotaSensorName)
       throttleTimeSensor = metrics.getSensor(throttleTimeSensorName)
-    } finally {
-      lock.readLock().unlock()
-    }
+    } finally { lock.readLock().unlock() }
 
     /* If the sensor is null, try to create it else return the created sensor
      * Either of the sensors can be null, hence null checks on both
@@ -249,9 +247,7 @@ class ClientQuotaManager(
             ClientQuotaManagerConfig.InactiveSensorExpirationTimeSeconds)
           quotaSensor.add(clientRateMetricName(clientId), new Rate())
         }
-      } finally {
-        lock.writeLock().unlock()
-      }
+      } finally { lock.writeLock().unlock() }
     }
     // return the read or created sensors
     ClientSensors(quotaSensor, throttleTimeSensor)
@@ -300,9 +296,7 @@ class ClientQuotaManager(
           s"Sensor for clientId $clientId already exists. Changing quota to ${quota.bound()} in MetricConfig")
         allMetrics.get(quotaMetricName).config(getQuotaMetricConfig(quota))
       }
-    } finally {
-      lock.writeLock().unlock()
-    }
+    } finally { lock.writeLock().unlock() }
   }
 
   private def clientRateMetricName(clientId: String): MetricName = {
@@ -314,7 +308,5 @@ class ClientQuotaManager(
       clientId)
   }
 
-  def shutdown() = {
-    throttledRequestReaper.shutdown()
-  }
+  def shutdown() = { throttledRequestReaper.shutdown() }
 }

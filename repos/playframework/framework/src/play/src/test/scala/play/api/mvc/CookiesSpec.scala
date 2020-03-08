@@ -68,9 +68,8 @@ object CookiesSpec extends Specification {
     }
 
     "throw error if no cookie" in withApplication {
-      {
-        c("no-cookie")
-      }.must(throwA[RuntimeException](message = "Cookie doesn't exist"))
+      { c("no-cookie") }
+        .must(throwA[RuntimeException](message = "Cookie doesn't exist"))
     }
   }
 

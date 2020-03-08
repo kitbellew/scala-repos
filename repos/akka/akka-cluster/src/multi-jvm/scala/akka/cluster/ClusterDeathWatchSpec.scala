@@ -117,8 +117,9 @@ abstract class ClusterDeathWatchSpec
 
       runOn(second, third, fourth) {
         system.actorOf(
-          Props(new Actor { def receive = Actor.emptyBehavior })
-            .withDeploy(Deploy.local),
+          Props(new Actor {
+            def receive = Actor.emptyBehavior
+          }).withDeploy(Deploy.local),
           name = "subject")
         enterBarrier("subjected-started")
         enterBarrier("watch-established")
@@ -158,9 +159,7 @@ abstract class ClusterDeathWatchSpec
         system.actorOf(
           Props(new Actor {
             context.watch(context.actorFor(path))
-            def receive = {
-              case t: Terminated ⇒ testActor ! t.actor.path
-            }
+            def receive = { case t: Terminated ⇒ testActor ! t.actor.path }
           }).withDeploy(Deploy.local),
           name = "observer3")
 
@@ -174,8 +173,9 @@ abstract class ClusterDeathWatchSpec
       20 seconds) {
       runOn(fifth) {
         system.actorOf(
-          Props(new Actor { def receive = Actor.emptyBehavior })
-            .withDeploy(Deploy.local),
+          Props(new Actor {
+            def receive = Actor.emptyBehavior
+          }).withDeploy(Deploy.local),
           name = "subject5")
       }
       enterBarrier("subjected-started")
@@ -290,9 +290,7 @@ abstract class ClusterDeathWatchSpec
           endActor ! EndActor.SendEnd
           endProbe.expectMsg(EndActor.EndAck)
 
-        } finally {
-          shutdown(endSystem, 10 seconds)
-        }
+        } finally { shutdown(endSystem, 10 seconds) }
         // no barrier here, because it is not part of testConductor roles any more
 
       }

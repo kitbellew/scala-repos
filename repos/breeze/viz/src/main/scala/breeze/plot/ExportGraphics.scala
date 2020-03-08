@@ -27,23 +27,14 @@ object ExportGraphics {
       dpi: Int = 72) = {
     lazy val fos = new FileOutputStream(file)
     if (file.getName.toLowerCase.endsWith(".png")) {
-      try {
-        writePNG(fos, draw, width, height, dpi)
-      } finally {
-        fos.close()
-      }
+      try { writePNG(fos, draw, width, height, dpi) }
+      finally { fos.close() }
     } else if (file.getName.toLowerCase.endsWith(".eps")) {
-      try {
-        writeEPS(fos, draw, width, height)
-      } finally {
-        fos.close()
-      }
+      try { writeEPS(fos, draw, width, height) }
+      finally { fos.close() }
     } else if (file.getName.toLowerCase.endsWith(".pdf")) {
-      try {
-        writePDF(fos, draw, width, height)
-      } finally {
-        fos.close()
-      }
+      try { writePDF(fos, draw, width, height) }
+      finally { fos.close() }
 //    } else if (file.getName.toLowerCase.endsWith(".svg")) {
 //      try {
 //        writeSVG(fos,draw,width,height)
@@ -122,9 +113,7 @@ object ExportGraphics {
       g2d.dispose()
 
       cb.addTemplate(tp, 1, 0, 0, 1, 0, 0)
-    } finally {
-      document.close()
-    }
+    } finally { document.close() }
   }
 
 //  /**

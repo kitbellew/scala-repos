@@ -74,18 +74,15 @@ trait FutureSupport extends AsyncSupport {
                   case e: HaltException =>
                     renderHaltException(e)
                   case e =>
-                    try {
-                      renderResponse(errorHandler(e))
-                    } catch {
+                    try { renderResponse(errorHandler(e)) }
+                    catch {
                       case e: Throwable =>
                         ScalatraBase.runCallbacks(Failure(e))
                         renderUncaughtException(e)
                         ScalatraBase.runRenderCallbacks(Failure(e))
                     }
                 }
-              } finally {
-                context.complete()
-              }
+              } finally { context.complete() }
             }
           }
         }
@@ -112,9 +109,8 @@ trait FutureSupport extends AsyncSupport {
             event.getThrowable match {
               case e: HaltException => renderHaltException(e)
               case e =>
-                try {
-                  renderResponse(errorHandler(e))
-                } catch {
+                try { renderResponse(errorHandler(e)) }
+                catch {
                   case e: Throwable =>
                     ScalatraBase.runCallbacks(Failure(e))
                     renderUncaughtException(e)

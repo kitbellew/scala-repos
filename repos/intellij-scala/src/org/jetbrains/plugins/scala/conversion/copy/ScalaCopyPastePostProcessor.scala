@@ -149,9 +149,7 @@ class ScalaCopyPastePostProcessor
           bindingsToRestore.filter(it => selectedPahts.contains(it.path))
         else
           Seq.empty
-      } else {
-        bindingsToRestore
-      }
+      } else { bindingsToRestore }
     }
   }
 

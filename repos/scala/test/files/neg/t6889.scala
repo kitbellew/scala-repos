@@ -5,9 +5,7 @@ package foo {
   package object unrelated {
     implicit def bippyDingo[A](x: bippy.Bippy[A]): AnyRef = Nil
   }
-  package unrelated {
-    trait Unrelated
-  }
+  package unrelated { trait Unrelated }
 }
 
 object Test {

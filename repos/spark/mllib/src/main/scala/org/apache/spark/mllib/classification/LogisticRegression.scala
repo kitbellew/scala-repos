@@ -258,9 +258,7 @@ class LogisticRegressionWithSGD private[mllib] (
 
   override protected[mllib] def createModel(
       weights: Vector,
-      intercept: Double) = {
-    new LogisticRegressionModel(weights, intercept)
-  }
+      intercept: Double) = { new LogisticRegressionModel(weights, intercept) }
 }
 
 /**
@@ -393,9 +391,7 @@ class LogisticRegressionWithLBFGS
   private def multiLabelValidator: RDD[LabeledPoint] => Boolean = { data =>
     if (numOfLinearPredictor > 1) {
       DataValidators.multiLabelValidator(numOfLinearPredictor + 1)(data)
-    } else {
-      DataValidators.binaryLabelValidator(data)
-    }
+    } else { DataValidators.binaryLabelValidator(data) }
   }
 
   /**
@@ -500,8 +496,6 @@ class LogisticRegressionWithLBFGS
         case x: L1Updater        => runWithMlLogisitcRegression(1.0)
         case _                   => super.run(input, initialWeights)
       }
-    } else {
-      super.run(input, initialWeights)
-    }
+    } else { super.run(input, initialWeights) }
   }
 }

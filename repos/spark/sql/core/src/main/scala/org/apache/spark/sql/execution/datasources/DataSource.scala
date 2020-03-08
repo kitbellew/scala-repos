@@ -141,9 +141,8 @@ case class DataSource(
       case format: FileFormat =>
         val caseInsensitiveOptions = new CaseInsensitiveMap(options)
         val path = caseInsensitiveOptions.getOrElse(
-          "path", {
-            throw new IllegalArgumentException("'path' is not specified")
-          })
+          "path",
+          { throw new IllegalArgumentException("'path' is not specified") })
         val metadataPath =
           caseInsensitiveOptions.getOrElse("metadataPath", s"$path/_metadata")
 

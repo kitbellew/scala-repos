@@ -729,9 +729,7 @@ abstract class Stream[+A]
             n += 1
             cursor = cursor.tail
           }
-          if (cursor.nonEmpty) {
-            b append sep append cursor.head
-          }
+          if (cursor.nonEmpty) { b append sep append cursor.head }
         } else {
           // Cycle.
           // If we have a prefix of length P followed by a cycle of length C,
@@ -1040,11 +1038,8 @@ abstract class Stream[+A]
     var st: Stream[A] = this
     while (st.nonEmpty) {
       val h = asTraversable(st.head)
-      if (h.isEmpty) {
-        st = st.tail
-      } else {
-        return h.toStream #::: st.tail.flatten
-      }
+      if (h.isEmpty) { st = st.tail }
+      else { return h.toStream #::: st.tail.flatten }
     }
     Stream.empty
   }

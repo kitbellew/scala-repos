@@ -142,9 +142,8 @@ private[server] object ForwardedHeaderHandler {
       */
     private def unquote(s: String): String = {
       if (s.length >= 2 && s.charAt(0) == '"' && s.charAt(
-            s.length - 1) == '"') {
-        s.substring(1, s.length - 1)
-      } else s
+            s.length - 1) == '"') { s.substring(1, s.length - 1) }
+      else s
     }
 
     /**
@@ -188,9 +187,7 @@ private[server] object ForwardedHeaderHandler {
             // If the lengths vary, then discard the protoHeaders because we can't tell which
             // proto matches which header. The connections will all appear to be insecure by
             // default.
-            forHeaders.map {
-              case f => ForwardedEntry(Some(f), None)
-            }
+            forHeaders.map { case f => ForwardedEntry(Some(f), None) }
           }
       }
 

@@ -94,11 +94,8 @@ private[fpm] class FPTree[T] extends Serializable {
             (item :: t, c)
         }
     } ++ {
-      if (count > 0) {
-        Iterator.single((Nil, count))
-      } else {
-        Iterator.empty
-      }
+      if (count > 0) { Iterator.single((Nil, count)) }
+      else { Iterator.empty }
     }
   }
 
@@ -114,9 +111,7 @@ private[fpm] class FPTree[T] extends Serializable {
               case (t, c) =>
                 (item :: t, c)
             }
-        } else {
-          Iterator.empty
-        }
+        } else { Iterator.empty }
     }
   }
 }

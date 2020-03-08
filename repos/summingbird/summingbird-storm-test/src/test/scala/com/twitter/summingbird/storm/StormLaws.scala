@@ -91,9 +91,7 @@ object StormLaws {
     outputList.toList
   }
 
-  def append(x: Int): Unit = {
-    StormLaws.outputList += x
-  }
+  def append(x: Int): Unit = { StormLaws.outputList += x }
 
   def runWithOutSummer(original: List[Int])(
       mkJob: (

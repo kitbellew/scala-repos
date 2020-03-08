@@ -15,7 +15,5 @@ object Test {
     println("traversable")
     new Fooable[Coll[T]] {}
   }
-  def main(args: Array[String]) {
-    implicitly[Fooable[List[Any]]]
-  }
+  def main(args: Array[String]) { implicitly[Fooable[List[Any]]] }
 }

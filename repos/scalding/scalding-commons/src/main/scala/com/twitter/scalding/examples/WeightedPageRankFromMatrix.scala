@@ -78,9 +78,7 @@ class WeightedPageRankFromMatrix(args: Args) extends Job(args) {
       val newArgs =
         args + ("currentIteration", Some((currentIteration + 1).toString))
       Some(clone(newArgs))
-    } else {
-      None
-    }
+    } else { None }
   }
 
   /**
@@ -106,9 +104,7 @@ class WeightedPageRankFromMatrix(args: Args) extends Job(args) {
       val M_hat = d * M
 
       M_hat.write(Tsv(rootDir + "/constants/M_hat"))
-    } else {
-      matrixFromTsv(rootDir + "/constants/M_hat")
-    }
+    } else { matrixFromTsv(rootDir + "/constants/M_hat") }
   }
 
   /**
@@ -121,9 +117,7 @@ class WeightedPageRankFromMatrix(args: Args) extends Job(args) {
       val priorVector = ((1 - d) / n) * onesVector.toMatrix(0)
 
       priorVector.getCol(0).write(Tsv(rootDir + "/constants/priorVector"))
-    } else {
-      colVectorFromTsv(rootDir + "/constants/priorVector")
-    }
+    } else { colVectorFromTsv(rootDir + "/constants/priorVector") }
   }
 
   def matrixFromTsv(input: String): Matrix[Int, Int, Double] =

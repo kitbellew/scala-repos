@@ -93,9 +93,7 @@ object ScalaTestingWithDatabases extends Specification {
 
       try {
         database.getConnection().getMetaData.getDatabaseProductName must_== "H2"
-      } finally {
-        database.shutdown()
-      }
+      } finally { database.shutdown() }
     }
 
     "allow connecting to an in memory database with more options" in {
@@ -249,11 +247,7 @@ object ScalaTestingWithDatabases extends Specification {
                 "create table test (id bigint not null, name varchar(255));",
                 "drop table test;"
               )
-            )) {
-
-            block(database)
-
-          }
+            )) { block(database) }
         }
       }
       //#with-evolutions-custom

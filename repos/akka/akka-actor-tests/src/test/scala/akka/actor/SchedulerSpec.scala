@@ -306,11 +306,8 @@ trait SchedulerSpec
       val barrier = TestLatch()
       import system.dispatcher
       val job = system.scheduler.scheduleOnce(timeout)(barrier.countDown())
-      try {
-        Await.ready(barrier, 5000 milliseconds)
-      } finally {
-        job.cancel()
-      }
+      try { Await.ready(barrier, 5000 milliseconds) }
+      finally { job.cancel() }
     }
 
     "survive being stressed without cancellation" taggedAs TimingTest in {
@@ -585,8 +582,9 @@ class LightArrayRevolverSchedulerSpec
     val prb = TestProbe()
     val tf = system.asInstanceOf[ActorSystemImpl].threadFactory
     val sched =
-      new { @volatile var time = start }
-      with LARS(config.withFallback(system.settings.config), log, tf) {
+      new {
+        @volatile var time = start
+      } with LARS(config.withFallback(system.settings.config), log, tf) {
         override protected def clock(): Long = {
           // println(s"clock=$time")
           time

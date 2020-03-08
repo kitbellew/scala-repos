@@ -95,9 +95,7 @@ class ScalaTool extends ScalaMatchingTask {
       val st = s.trim
       if (Platforms.isPermissible(st))
         (if (input != "") List(st) else Nil)
-      else {
-        buildError("Platform " + st + " does not exist.")
-      }
+      else { buildError("Platform " + st + " does not exist.") }
     }
   }
 
@@ -174,9 +172,7 @@ class ScalaTool extends ScalaMatchingTask {
 
   private def getProperties: String =
     properties
-      .map({
-        case (name, value) => "-D" + name + "=\"" + value + "\""
-      })
+      .map({ case (name, value) => "-D" + name + "=\"" + value + "\"" })
       .mkString("", " ", "")
 
   /*============================================================================*\

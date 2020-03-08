@@ -21,11 +21,8 @@ object Files {
     val buf = new ByteArrayOutputStream(
       math.min(limit, file.length().intValue()))
     val in = new FileInputStream(file)
-    try {
-      StreamIO.copy(in, buf)
-    } finally {
-      in.close()
-    }
+    try { StreamIO.copy(in, buf) }
+    finally { in.close() }
     buf.toByteArray()
   }
 
@@ -40,11 +37,9 @@ object Files {
     * Returns whether or not the entire delete was successful
     */
   def delete(file: File): Boolean = {
-    if (!file.exists) {
-      true
-    } else if (file.isFile) {
-      file.delete()
-    } else {
+    if (!file.exists) { true }
+    else if (file.isFile) { file.delete() }
+    else {
       file.listFiles.foreach { f => delete(f) }
       file.delete()
     }

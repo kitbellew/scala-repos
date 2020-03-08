@@ -58,9 +58,7 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
     *
     * This is meant to be used in a `before` block.
     */
-  def traceLogger(level: Level) {
-    traceLogger("", level)
-  }
+  def traceLogger(level: Level) { traceLogger("", level) }
 
   /**
     * Set up logging to record messages sent to the given logger at the given level, and not send
@@ -255,9 +253,7 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
     }
 
     "configure logging" should {
-      def before(): Unit = {
-        Logger.clearHandlers()
-      }
+      def before(): Unit = { Logger.clearHandlers() }
 
       "file handler" in {
         withTempFolder {
@@ -368,11 +364,8 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
           assert(Logger.get("w3c").getLevel == Level.OFF)
           assert(Logger.get("stats").getLevel == Level.INFO)
           assert(Logger.get("bad_jobs").getLevel == Level.INFO)
-          try {
-            Logger.get("").getHandlers()(0).asInstanceOf[ThrottledHandler]
-          } catch {
-            case _: ClassCastException => fail("not a ThrottledHandler")
-          }
+          try { Logger.get("").getHandlers()(0).asInstanceOf[ThrottledHandler] }
+          catch { case _: ClassCastException => fail("not a ThrottledHandler") }
           try {
             Logger
               .get("")
@@ -380,20 +373,14 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
               .asInstanceOf[ThrottledHandler]
               .handler
               .asInstanceOf[FileHandler]
-          } catch {
-            case _: ClassCastException => fail("not a FileHandler")
-          }
+          } catch { case _: ClassCastException => fail("not a FileHandler") }
           assert(Logger.get("w3c").getHandlers().size == 0)
           try {
             Logger.get("stats").getHandlers()(0).asInstanceOf[ScribeHandler]
-          } catch {
-            case _: ClassCastException => fail("not a ScribeHandler")
-          }
+          } catch { case _: ClassCastException => fail("not a ScribeHandler") }
           try {
             Logger.get("bad_jobs").getHandlers()(0).asInstanceOf[FileHandler]
-          } catch {
-            case _: ClassCastException => fail("not a FileHandler")
-          }
+          } catch { case _: ClassCastException => fail("not a FileHandler") }
 
         }
       }
@@ -402,9 +389,7 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
     "java logging" should {
       val logger = javalog.Logger.getLogger("")
 
-      def before() = {
-        traceLogger(Level.INFO)
-      }
+      def before() = { traceLogger(Level.INFO) }
 
       "single arg calls" in {
         before()

@@ -15,9 +15,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 
 object EventBusSpec {
   class TestActorWrapperActor(testActor: ActorRef) extends Actor {
-    def receive = {
-      case x ⇒ testActor forward x
-    }
+    def receive = { case x ⇒ testActor forward x }
   }
 }
 
@@ -151,9 +149,7 @@ abstract class EventBusSpec(
       expectNoMsg(1 second)
     }
 
-    "cleanup subscriber" in {
-      disposeSubscriber(system, subscriber)
-    }
+    "cleanup subscriber" in { disposeSubscriber(system, subscriber) }
   }
 }
 

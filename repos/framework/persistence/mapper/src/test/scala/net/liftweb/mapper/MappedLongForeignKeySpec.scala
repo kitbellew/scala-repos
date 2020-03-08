@@ -39,9 +39,8 @@ object MappedLongForeignKeySpec
   def before = MapperSpecsModel.cleanup()
 
   "MappedLongForeignKey" should {
-    (try {
-      provider.setupDB
-    } catch {
+    (try { provider.setupDB }
+    catch {
       case e if !provider.required_? =>
         1 must be_==(2).orSkip(
           "Provider %s not available: %s".format(provider, e))

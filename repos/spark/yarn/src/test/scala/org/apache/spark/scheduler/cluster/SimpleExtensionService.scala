@@ -28,7 +28,5 @@ private[spark] class SimpleExtensionService extends SchedulerExtensionService {
     started.set(true)
   }
 
-  override def stop(): Unit = {
-    started.set(false)
-  }
+  override def stop(): Unit = { started.set(false) }
 }

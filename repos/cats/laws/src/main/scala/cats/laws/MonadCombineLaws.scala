@@ -20,5 +20,7 @@ trait MonadCombineLaws[F[_]]
 
 object MonadCombineLaws {
   def apply[F[_]](implicit ev: MonadCombine[F]): MonadCombineLaws[F] =
-    new MonadCombineLaws[F] { def F: MonadCombine[F] = ev }
+    new MonadCombineLaws[F] {
+      def F: MonadCombine[F] = ev
+    }
 }

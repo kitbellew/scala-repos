@@ -67,25 +67,17 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
     notifyAll(makeMessage(t, data))
   }
 
-  def notifyAll(t: String) {
-    notifyAll(makeMessage(t))
-  }
+  def notifyAll(t: String) { notifyAll(makeMessage(t)) }
 
-  def notifyAll(msg: JsObject) {
-    members.values.foreach(_ push msg)
-  }
+  def notifyAll(msg: JsObject) { members.values.foreach(_ push msg) }
 
   def notifyAllAsync[A: Writes](t: String, data: A) = Future {
     notifyAll(t, data)
   }
 
-  def notifyAllAsync(t: String) = Future {
-    notifyAll(t)
-  }
+  def notifyAllAsync(t: String) = Future { notifyAll(t) }
 
-  def notifyAllAsync(msg: JsObject) = Future {
-    notifyAll(msg)
-  }
+  def notifyAllAsync(msg: JsObject) = Future { notifyAll(msg) }
 
   def notifyMember[A: Writes](t: String, data: A)(member: M) {
     member push makeMessage(t, data)
@@ -114,9 +106,7 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
     }
   }
 
-  def onDeploy(d: Deploy) {
-    notifyAll(makeMessage(d.event.key, d.html))
-  }
+  def onDeploy(d: Deploy) { notifyAll(makeMessage(d.event.key, d.html)) }
 
   private val resyncMessage = makeMessage("resync")
 
@@ -127,13 +117,9 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
     }
   }
 
-  protected def resync(uid: String) {
-    withMember(uid)(resync)
-  }
+  protected def resync(uid: String) { withMember(uid)(resync) }
 
-  protected def resyncNow(member: M) {
-    member push resyncMessage
-  }
+  protected def resyncNow(member: M) { member push resyncMessage }
 
   def addMember(uid: String, member: M) {
     eject(uid)
@@ -175,7 +161,5 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
         "anons" -> anons)
   }
 
-  def withMember(uid: String)(f: M => Unit) {
-    members get uid foreach f
-  }
+  def withMember(uid: String)(f: M => Unit) { members get uid foreach f }
 }

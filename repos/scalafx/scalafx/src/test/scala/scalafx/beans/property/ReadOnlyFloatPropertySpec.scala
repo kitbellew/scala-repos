@@ -69,9 +69,7 @@ class ReadOnlyFloatPropertySpec extends FlatSpec with BeforeAndAfterEach {
     readOnlyFloatProperty.name should equal("Test Read-only Float")
   }
 
-  it should "know its bean" in {
-    readOnlyFloatProperty.bean should equal(bean)
-  }
+  it should "know its bean" in { readOnlyFloatProperty.bean should equal(bean) }
 
   it should "be bindable to another Float Property" in {
     floatProperty1 <== readOnlyFloatProperty
@@ -249,12 +247,8 @@ class ReadOnlyFloatPropertySpec extends FlatSpec with BeforeAndAfterEach {
     var invalidateCount = 0
     var changeCount = 0
     val binding = readOnlyFloatProperty * floatProperty2
-    binding onInvalidate {
-      invalidateCount += 1
-    }
-    binding onChange {
-      changeCount += 1
-    }
+    binding onInvalidate { invalidateCount += 1 }
+    binding onChange { changeCount += 1 }
     floatProperty2() = 1
     invalidateCount should equal(1)
     changeCount should equal(1)

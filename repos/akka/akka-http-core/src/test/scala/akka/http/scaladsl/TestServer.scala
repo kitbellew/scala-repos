@@ -58,9 +58,7 @@ object TestServer extends App {
     println("Server online at http://localhost:9001")
     println("Press RETURN to stop...")
     Console.readLine()
-  } finally {
-    system.terminate()
-  }
+  } finally { system.terminate() }
 
   ////////////// helpers //////////////
 

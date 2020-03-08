@@ -32,9 +32,8 @@ object RefineStat {
         }
         return true
       case ScalaTokenTypes.kVAR | ScalaTokenTypes.kVAL | ScalaTokenTypes.kDEF =>
-        if (Dcl.parse(builder, isMod = false)) {
-          return true
-        } else {
+        if (Dcl.parse(builder, isMod = false)) { return true }
+        else {
           EmptyDcl.parse(builder, isMod = false)
           return true
         }

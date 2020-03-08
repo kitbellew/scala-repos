@@ -28,10 +28,7 @@ class KafkaTimer(metric: Timer) {
 
   def time[A](f: => A): A = {
     val ctx = metric.time
-    try {
-      f
-    } finally {
-      ctx.stop()
-    }
+    try { f }
+    finally { ctx.stop() }
   }
 }

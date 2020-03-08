@@ -76,9 +76,7 @@ class WrappedArrayBuilder[A](tag: ClassTag[A])
     capacity = size
   }
 
-  override def sizeHint(size: Int) {
-    if (capacity < size) resize(size)
-  }
+  override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
   private def ensureSize(size: Int) {
     if (capacity < size) {

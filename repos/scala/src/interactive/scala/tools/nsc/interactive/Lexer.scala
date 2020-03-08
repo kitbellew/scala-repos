@@ -168,9 +168,7 @@ class Lexer(rd: Reader) {
 
   private val sb = new StringBuilder
 
-  private def putChar() {
-    sb += ch; nextChar()
-  }
+  private def putChar() { sb += ch; nextChar() }
 
   private def putAcceptString(str: String) {
     str foreach acceptChar
@@ -238,9 +236,7 @@ class Lexer(rd: Reader) {
           case _ => error("illegal escape character: '" + ch + "'")
         }
         nextChar()
-      } else {
-        putChar()
-      }
+      } else { putChar() }
     }
     acceptChar(delim)
     token = StringLit(sb.toString)

@@ -54,7 +54,9 @@ object hlist {
     *
     * @author Miles Sabin
     */
-  trait Reverse[L <: HList] extends DepFn1[L] { type Out <: HList }
+  trait Reverse[L <: HList] extends DepFn1[L] {
+    type Out <: HList
+  }
 
   object Reverse {
     def apply[L <: HList](implicit reverse: Reverse[L]): Aux[L, reverse.Out] =

@@ -93,9 +93,7 @@ class CachedTableSuite extends QueryTest with TestHiveSingleton {
   }
 
   test("correct error on uncache of non-cached table") {
-    intercept[IllegalArgumentException] {
-      hiveContext.uncacheTable("src")
-    }
+    intercept[IllegalArgumentException] { hiveContext.uncacheTable("src") }
   }
 
   test("'CACHE TABLE' and 'UNCACHE TABLE' HiveQL statement") {

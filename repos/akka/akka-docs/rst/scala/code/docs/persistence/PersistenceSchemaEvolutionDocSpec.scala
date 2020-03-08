@@ -37,18 +37,17 @@ class PersistenceSchemaEvolutionDocSpec extends WordSpec {
   val system = ActorSystem(
     "PersistenceSchemaEvolutionDocSpec",
     ConfigFactory.parseString(customSerializerConfig))
-  try {
-    SerializationExtension(system)
-  } finally {
-    TestKit.shutdownActorSystem(system, 10.seconds, false)
-  }
+  try { SerializationExtension(system) }
+  finally { TestKit.shutdownActorSystem(system, 10.seconds, false) }
 
 }
 
 class ProtobufReadOptional {
 
   //#protobuf-read-optional-model
-  sealed abstract class SeatType { def code: String }
+  sealed abstract class SeatType {
+    def code: String
+  }
   object SeatType {
     def fromString(s: String) = s match {
       case Window.code => Window
@@ -56,10 +55,18 @@ class ProtobufReadOptional {
       case Other.code  => Other
       case _           => Unknown
     }
-    case object Window extends SeatType { override val code = "W" }
-    case object Aisle extends SeatType { override val code = "A" }
-    case object Other extends SeatType { override val code = "O" }
-    case object Unknown extends SeatType { override val code = "" }
+    case object Window extends SeatType {
+      override val code = "W"
+    }
+    case object Aisle extends SeatType {
+      override val code = "A"
+    }
+    case object Other extends SeatType {
+      override val code = "O"
+    }
+    case object Unknown extends SeatType {
+      override val code = ""
+    }
 
   }
 

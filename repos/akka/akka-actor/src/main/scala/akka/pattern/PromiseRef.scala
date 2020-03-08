@@ -105,9 +105,7 @@ object FutureRef {
     */
   private[akka] def wrap[T](
       actorRef: ActorRef,
-      future: Future[T]): FutureRef[T] = {
-    new FutureRefImpl(actorRef, future)
-  }
+      future: Future[T]): FutureRef[T] = { new FutureRefImpl(actorRef, future) }
 
   /**
     * Constructs a new FutureRef which will be completed with the first message sent to it.

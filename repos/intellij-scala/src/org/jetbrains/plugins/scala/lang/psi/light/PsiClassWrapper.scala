@@ -138,9 +138,7 @@ class PsiClassWrapper(
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   private def getEmptyConstructor: PsiMethod = new EmptyPrivateConstructor(this)
 
-  def getConstructors: Array[PsiMethod] = {
-    Array(getEmptyConstructor)
-  }
+  def getConstructors: Array[PsiMethod] = { Array(getEmptyConstructor) }
 
   def getInnerClasses: Array[PsiClass] = {
     definition match {
@@ -161,13 +159,9 @@ class PsiClassWrapper(
 
   def getInitializers: Array[PsiClassInitializer] = Array.empty
 
-  def getAllFields: Array[PsiField] = {
-    PsiClassImplUtil.getAllFields(this)
-  }
+  def getAllFields: Array[PsiField] = { PsiClassImplUtil.getAllFields(this) }
 
-  def getAllMethods: Array[PsiMethod] = {
-    PsiClassImplUtil.getAllMethods(this)
-  }
+  def getAllMethods: Array[PsiMethod] = { PsiClassImplUtil.getAllMethods(this) }
 
   def getAllInnerClasses: Array[PsiClass] = {
     PsiClassImplUtil.getAllInnerClasses(this)
@@ -211,21 +205,13 @@ class PsiClassWrapper(
     PsiClassImplUtil.findInnerByName(this, name, checkBases)
   }
 
-  def getLBrace: PsiElement = {
-    definition.getLBrace
-  }
+  def getLBrace: PsiElement = { definition.getLBrace }
 
-  def getRBrace: PsiElement = {
-    definition.getRBrace
-  }
+  def getRBrace: PsiElement = { definition.getRBrace }
 
-  def getNameIdentifier: PsiIdentifier = {
-    definition.getNameIdentifier
-  }
+  def getNameIdentifier: PsiIdentifier = { definition.getNameIdentifier }
 
-  def getScope: PsiElement = {
-    definition.getScope
-  }
+  def getScope: PsiElement = { definition.getScope }
 
   def isInheritor(baseClass: PsiClass, checkDeep: Boolean): Boolean = {
     definition match {
@@ -245,9 +231,7 @@ class PsiClassWrapper(
     }
   }
 
-  def getContainingClass: PsiClass = {
-    definition.getContainingClass
-  }
+  def getContainingClass: PsiClass = { definition.getContainingClass }
 
   def getVisibleSignatures: util.Collection[HierarchicalMethodSignature] = {
     PsiSuperMethodImplUtil.getVisibleSignatures(this)
@@ -294,9 +278,7 @@ class PsiClassWrapper(
     true
   }
 
-  override def getContainingFile: PsiFile = {
-    definition.getContainingFile
-  }
+  override def getContainingFile: PsiFile = { definition.getContainingFile }
 
   override def isValid: Boolean = definition.isValid
 
@@ -304,9 +286,7 @@ class PsiClassWrapper(
 
   override def getPrevSibling: PsiElement = definition.getPrevSibling
 
-  override def getContext: PsiElement = {
-    definition.getContext
-  }
+  override def getContext: PsiElement = { definition.getContext }
 
   override def getParent: PsiElement = definition.getParent
 
@@ -314,33 +294,23 @@ class PsiClassWrapper(
     definition.getResolveScope
   }
 
-  override def getUseScope: SearchScope = {
-    definition.getUseScope
-  }
+  override def getUseScope: SearchScope = { definition.getUseScope }
 
   override def toString: String = {
     "PsiClassWrapper(" + definition.toString + ")"
   }
 
-  override def getIcon(flags: Int): Icon = {
-    definition.getIcon(flags)
-  }
+  override def getIcon(flags: Int): Icon = { definition.getIcon(flags) }
 
-  def getModifierList: PsiModifierList = {
-    definition.getModifierList
-  }
+  def getModifierList: PsiModifierList = { definition.getModifierList }
 
   def hasModifierProperty(name: String): Boolean = {
     definition.hasModifierProperty(name)
   }
 
-  def getDocComment: PsiDocComment = {
-    definition.getDocComment
-  }
+  def getDocComment: PsiDocComment = { definition.getDocComment }
 
-  def isDeprecated: Boolean = {
-    definition.isDeprecated
-  }
+  def isDeprecated: Boolean = { definition.isDeprecated }
 
   override def getPresentation: ItemPresentation = {
     definition.getPresentation //todo: ?
@@ -350,13 +320,9 @@ class PsiClassWrapper(
     definition.navigate(requestFocus)
   }
 
-  override def canNavigate: Boolean = {
-    definition.canNavigate
-  }
+  override def canNavigate: Boolean = { definition.canNavigate }
 
-  override def canNavigateToSource: Boolean = {
-    definition.canNavigateToSource
-  }
+  override def canNavigateToSource: Boolean = { definition.canNavigateToSource }
 
   override def getTextRange: TextRange = definition.getTextRange
 

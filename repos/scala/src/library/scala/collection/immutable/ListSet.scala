@@ -184,10 +184,7 @@ class ListSet[A]
     /** `-` can be used to remove a single element from a set.
       */
     override def -(e: A): ListSet[A] =
-      if (e == head) self
-      else {
-        val tail = self - e; new tail.Node(head)
-      }
+      if (e == head) self else { val tail = self - e; new tail.Node(head) }
 
     override def tail: ListSet[A] = self
   }

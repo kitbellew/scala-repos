@@ -72,49 +72,37 @@ class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)
     */
   def accelerator: ObjectProperty[jfxsi.KeyCombination] =
     delegate.acceleratorProperty
-  def accelerator_=(v: KeyCombination) {
-    accelerator() = v
-  }
+  def accelerator_=(v: KeyCombination) { accelerator() = v }
 
   /**
     *
     */
   def disable: BooleanProperty = delegate.disableProperty
-  def disable_=(v: Boolean) {
-    disable() = v
-  }
+  def disable_=(v: Boolean) { disable() = v }
 
   /**
     *
     */
   def graphic: ObjectProperty[jfxs.Node] = delegate.graphicProperty
-  def graphic_=(v: Node) {
-    graphic() = v
-  }
+  def graphic_=(v: Node) { graphic() = v }
 
   /**
     *
     */
   def id: StringProperty = delegate.idProperty
-  def id_=(v: String) {
-    id() = v
-  }
+  def id_=(v: String) { id() = v }
 
   /**
     * MnemonicParsing property to enable/disable text parsing.
     */
   def mnemonicParsing: BooleanProperty = delegate.mnemonicParsingProperty
-  def mnemonicParsing_=(v: Boolean) {
-    mnemonicParsing() = v
-  }
+  def mnemonicParsing_=(v: Boolean) { mnemonicParsing() = v }
 
   /**
     *
     */
   def onAction = delegate.onActionProperty
-  def onAction_=(v: jfxe.EventHandler[jfxe.ActionEvent]) {
-    onAction() = v
-  }
+  def onAction_=(v: jfxe.EventHandler[jfxe.ActionEvent]) { onAction() = v }
 
   /**
     *
@@ -132,25 +120,19 @@ class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)
     *
     */
   def style: StringProperty = delegate.styleProperty
-  def style_=(v: String) {
-    style() = v
-  }
+  def style_=(v: String) { style() = v }
 
   /**
     *
     */
   def text: StringProperty = delegate.textProperty
-  def text_=(v: String) {
-    text() = v
-  }
+  def text_=(v: String) { text() = v }
 
   /**
     *
     */
   def visible: BooleanProperty = delegate.visibleProperty
-  def visible_=(v: Boolean) {
-    visible() = v
-  }
+  def visible_=(v: Boolean) { visible() = v }
 
   /**
     * Returns an observable map of properties on this menu item for use primarily by application
@@ -163,9 +145,7 @@ class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)
     * setUserData(java.lang.Object) method.
     */
   def userData: AnyRef = delegate.getUserData
-  def userData_=(v: AnyRef) {
-    delegate.setUserData(v)
-  }
+  def userData_=(v: AnyRef) { delegate.setUserData(v) }
 
   /**
     * The event handler that is associated with invocation of an accelerator for a MenuItem.

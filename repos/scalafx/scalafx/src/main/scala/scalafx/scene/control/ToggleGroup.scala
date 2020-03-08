@@ -63,8 +63,6 @@ class ToggleGroup(
     *
     * @param c list of toggles to replace prior toggles.
     */
-  def toggles_=(c: Iterable[Toggle]) {
-    fillSFXCollection(this.toggles, c)
-  }
+  def toggles_=(c: Iterable[Toggle]) { fillSFXCollection(this.toggles, c) }
 
 }

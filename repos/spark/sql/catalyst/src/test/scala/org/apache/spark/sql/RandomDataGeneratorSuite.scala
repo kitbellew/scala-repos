@@ -41,11 +41,8 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
       .getOrElse {
         fail(s"Random data generator was not defined for $dataType")
       }
-    if (nullable) {
-      assert(Iterator.fill(100)(generator()).contains(null))
-    } else {
-      assert(!Iterator.fill(100)(generator()).contains(null))
-    }
+    if (nullable) { assert(Iterator.fill(100)(generator()).contains(null)) }
+    else { assert(!Iterator.fill(100)(generator()).contains(null)) }
     for (_ <- 1 to 10) {
       val generatedValue = generator()
       toCatalyst(generatedValue)
@@ -65,9 +62,7 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
        if RandomDataGenerator
          .forType(arrayType.elementType, arrayType.containsNull)
          .isDefined) {
-    test(s"$arrayType") {
-      testRandomDataGeneration(arrayType)
-    }
+    test(s"$arrayType") { testRandomDataGeneration(arrayType) }
   }
 
   val atomicTypesWithDataGenerators =
@@ -82,18 +77,14 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
        // For these reasons, we don't support generation of maps with decimal keys.
        if !keyType.isInstanceOf[DecimalType]) {
     val mapType = MapType(keyType, valueType)
-    test(s"$mapType") {
-      testRandomDataGeneration(mapType)
-    }
+    test(s"$mapType") { testRandomDataGeneration(mapType) }
   }
 
   for (colOneType <- atomicTypesWithDataGenerators;
        colTwoType <- atomicTypesWithDataGenerators) {
     val structType = StructType(
       StructField("a", colOneType) :: StructField("b", colTwoType) :: Nil)
-    test(s"$structType") {
-      testRandomDataGeneration(structType)
-    }
+    test(s"$structType") { testRandomDataGeneration(structType) }
   }
 
   test("check size of generated map") {

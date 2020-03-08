@@ -225,9 +225,7 @@ trait Solver extends parser.AST with typer.Binder {
         inner(left) compose flip(invertLeft)(right)
       } else if (!inLeft && inRight) {
         inner(right) compose flip(invertRight)(left)
-      } else {
-        const(None)
-      }
+      } else { const(None) }
     }
 
     def simplify(tree: Expr) =
@@ -240,9 +238,8 @@ trait Solver extends parser.AST with typer.Binder {
         results: Set[List[Expr]]): Set[List[Expr]] = {
       val filteredWork = work filterNot { xs => seen(xs.head) }
       // println("Examining: " + (filteredWork map { _.head } map printInfix))
-      if (filteredWork.isEmpty) {
-        results
-      } else {
+      if (filteredWork.isEmpty) { results }
+      else {
         val (results2, newWork) = filteredWork partition { xs =>
           isSimplified(xs.head)
         }

@@ -223,9 +223,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
     val containingClass =
       if (fun.isSynthetic) fun.containingClass else getContextClass(fun)
     val message = ScalaBundle.message("cannot.evaluate.local.method")
-    if (contextClass == null) {
-      throw EvaluationException(message)
-    }
+    if (contextClass == null) { throw EvaluationException(message) }
     val thisEvaluator: Evaluator = containingClass match {
       case obj: ScObject if isStable(obj) =>
         stableObjectEvaluator(obj)
@@ -1425,9 +1423,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
     }
     val explicitArgs = constr.arguments.flatMap(_.exprs)
     val explEvaluators =
-      for {
-        arg <- explicitArgs
-      } yield {
+      for { arg <- explicitArgs } yield {
         val eval = evaluatorFor(arg)
         val param = ScalaPsiUtil.parameterOf(arg).flatMap(_.psiParam)
         if (param.exists(!isOfPrimitiveType(_))) boxEvaluator(eval)

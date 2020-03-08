@@ -83,9 +83,7 @@ private[streaming] class ReceivedBlockTracker(
   private var lastAllocatedBatchTime: Time = null
 
   // Recover block information from write ahead logs
-  if (recoverFromWriteAheadLog) {
-    recoverPastEvents()
-  }
+  if (recoverFromWriteAheadLog) { recoverPastEvents() }
 
   /** Add received block. This event will get written to the write ahead log (if enabled). */
   def addBlock(receivedBlockInfo: ReceivedBlockInfo): Boolean = {
@@ -157,9 +155,7 @@ private[streaming] class ReceivedBlockTracker(
     synchronized {
       timeToAllocatedBlocks
         .get(batchTime)
-        .map {
-          _.getBlocksOfStream(streamId)
-        }
+        .map { _.getBlocksOfStream(streamId) }
         .getOrElse(Seq.empty)
     }
   }
@@ -174,9 +170,7 @@ private[streaming] class ReceivedBlockTracker(
     * is primarily used for testing.
     */
   def getUnallocatedBlocks(streamId: Int): Seq[ReceivedBlockInfo] =
-    synchronized {
-      getReceivedBlockQueue(streamId).toSeq
-    }
+    synchronized { getReceivedBlockQueue(streamId).toSeq }
 
   /**
     * Clean up block information of old batches. If waitForCompletion is true, this method
@@ -200,9 +194,7 @@ private[streaming] class ReceivedBlockTracker(
   }
 
   /** Stop the block tracker. */
-  def stop() {
-    writeAheadLogOption.foreach { _.close() }
-  }
+  def stop() { writeAheadLogOption.foreach { _.close() } }
 
   /**
     * Recover all the tracker actions from the write ahead logs to recover the state (unallocated
@@ -269,9 +261,7 @@ private[streaming] class ReceivedBlockTracker(
             e)
           false
       }
-    } else {
-      true
-    }
+    } else { true }
   }
 
   /** Get the queue of received blocks belonging to a particular stream */

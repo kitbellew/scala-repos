@@ -171,9 +171,7 @@ class BlockMatrix @Since("1.3.0") (
   def this(
       blocks: RDD[((Int, Int), Matrix)],
       rowsPerBlock: Int,
-      colsPerBlock: Int) = {
-    this(blocks, rowsPerBlock, colsPerBlock, 0L, 0L)
-  }
+      colsPerBlock: Int) = { this(blocks, rowsPerBlock, colsPerBlock, 0L, 0L) }
 
   @Since("1.3.0")
   override def numRows(): Long = {

@@ -72,27 +72,21 @@ abstract class BrowseServiceSpecs[M[+_]](
       client
         .size("", Path("/foo/bar1/baz/quux1"))
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case JNum(result) => result mustEqual 10
-      }
+        .copoint must beLike { case JNum(result) => result mustEqual 10 }
     }
 
     "find correct size for multi-column path" in {
       client
         .size("", Path("/foo/bar"))
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case JNum(result) => result mustEqual 60
-      }
+        .copoint must beLike { case JNum(result) => result mustEqual 60 }
     }
 
     "find default (0) size for non-existent path" in {
       client
         .size("", Path("/not/really"))
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case JNum(result) => result mustEqual 0
-      }
+        .copoint must beLike { case JNum(result) => result mustEqual 0 }
     }
   }
 
@@ -125,9 +119,7 @@ abstract class BrowseServiceSpecs[M[+_]](
       client
         .structure("", Path("/bar/foo"), CPath.Identity)
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case result => result must_== JUndefined
-      }
+        .copoint must beLike { case result => result must_== JUndefined }
     }
   }
 }

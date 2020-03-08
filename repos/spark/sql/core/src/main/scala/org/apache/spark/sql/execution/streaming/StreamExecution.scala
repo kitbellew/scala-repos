@@ -199,9 +199,7 @@ class StreamExecution(
             replacements ++= output.zip(newPlan.output)
             newPlan
           }
-          .getOrElse {
-            LocalRelation(output)
-          }
+          .getOrElse { LocalRelation(output) }
     }
 
     // Rewire the plan to use the new attributes that were returned by the source.
@@ -284,9 +282,7 @@ class StreamExecution(
         "Cannot wait for termination on a query that has not started")
     }
     terminationLatch.await()
-    if (streamDeathCause != null) {
-      throw streamDeathCause
-    }
+    if (streamDeathCause != null) { throw streamDeathCause }
   }
 
   override def awaitTermination(timeoutMs: Long): Boolean = {
@@ -296,11 +292,8 @@ class StreamExecution(
     }
     require(timeoutMs > 0, "Timeout has to be positive")
     terminationLatch.await(timeoutMs, TimeUnit.MILLISECONDS)
-    if (streamDeathCause != null) {
-      throw streamDeathCause
-    } else {
-      !isActive
-    }
+    if (streamDeathCause != null) { throw streamDeathCause }
+    else { !isActive }
   }
 
   override def toString: String = {

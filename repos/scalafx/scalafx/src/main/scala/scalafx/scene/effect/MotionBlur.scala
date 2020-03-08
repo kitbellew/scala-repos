@@ -53,16 +53,12 @@ class MotionBlur(override val delegate: jfxse.MotionBlur = new jfxse.MotionBlur)
     * The angle of the motion effect, in degrees.
     */
   def angle: DoubleProperty = delegate.angleProperty
-  def angle_=(v: Double) {
-    angle() = v
-  }
+  def angle_=(v: Double) { angle() = v }
 
   /**
     * The radius of the blur kernel.
     */
   def radius: DoubleProperty = delegate.radiusProperty
-  def radius_=(v: Double) {
-    radius() = v
-  }
+  def radius_=(v: Double) { radius() = v }
 
 }

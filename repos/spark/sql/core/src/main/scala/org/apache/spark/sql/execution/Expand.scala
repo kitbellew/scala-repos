@@ -84,9 +84,7 @@ case class Expand(
             result = groups(idx)(input)
             idx += 1
 
-            if (idx == groups.length && iter.hasNext) {
-              idx = 0
-            }
+            if (idx == groups.length && iter.hasNext) { idx = 0 }
 
             numOutputRows += 1
             result

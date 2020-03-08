@@ -655,9 +655,7 @@ class ShardRegion(
           case (shardId, stats) ⇒ (shardId, stats.entityCount)
         }.toMap)
       }
-      .recover {
-        case x: AskTimeoutException ⇒ ShardRegionStats(Map.empty)
-      }
+      .recover { case x: AskTimeoutException ⇒ ShardRegionStats(Map.empty) }
       .pipeTo(ref)
   }
 

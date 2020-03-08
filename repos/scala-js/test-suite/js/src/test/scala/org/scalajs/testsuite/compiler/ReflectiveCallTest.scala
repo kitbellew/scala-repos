@@ -19,8 +19,12 @@ import java.lang.{Float => JFloat, Double => JDouble}
 class ReflectiveCallTest {
 
   @Test def should_allow_subtyping_in_return_types(): Unit = {
-    class A { def x: Int = 1 }
-    class B extends A { override def x: Int = 2 }
+    class A {
+      def x: Int = 1
+    }
+    class B extends A {
+      override def x: Int = 2
+    }
 
     object Generator {
       def generate(): B = new B

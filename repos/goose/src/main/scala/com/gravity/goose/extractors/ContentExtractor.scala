@@ -129,9 +129,7 @@ trait ContentExtractor {
   private def getMetaContent(doc: Document, metaName: String): String = {
     val meta: Elements = doc.select(metaName)
     var content: String = null
-    if (meta.size > 0) {
-      content = meta.first.attr("content")
-    }
+    if (meta.size > 0) { content = meta.first.attr("content") }
     if (string.isNullOrEmpty(content)) string.empty else content.trim
   }
 
@@ -157,14 +155,10 @@ trait ContentExtractor {
     if (meta.size() > 0) {
       val href = Option(meta.first().attr("href")).getOrElse("").trim
       if (href.nonEmpty) href else article.finalUrl
-    } else {
-      article.finalUrl
-    }
+    } else { article.finalUrl }
   }
 
-  def getDomain(url: String): String = {
-    new URL(url).getHost
-  }
+  def getDomain(url: String): String = { new URL(url).getHost }
 
   def extractTags(article: Article): Set[String] = {
     val node = article.doc
@@ -228,9 +222,7 @@ trait ContentExtractor {
           boostScore =
             -math.pow(booster, 2.asInstanceOf[Float]).asInstanceOf[Float]
           val negscore: Float = math.abs(boostScore) + negativeScoring
-          if (negscore > 40) {
-            boostScore = 5
-          }
+          if (negscore > 40) { boostScore = 5 }
         }
       }
 
@@ -246,9 +238,7 @@ trait ContentExtractor {
       updateScore(node.parent.parent, upscore / 2)
       updateNodeCount(node.parent, 1)
       updateNodeCount(node.parent.parent, 1)
-      if (!parentNodes.contains(node.parent)) {
-        parentNodes.add(node.parent)
-      }
+      if (!parentNodes.contains(node.parent)) { parentNodes.add(node.parent) }
       if (!parentNodes.contains(node.parent.parent)) {
         parentNodes.add(node.parent.parent)
       }
@@ -270,9 +260,7 @@ trait ContentExtractor {
         topNode = e
         topNodeScore = score
       }
-      if (topNode == null) {
-        topNode = e
-      }
+      if (topNode == null) { topNode = e }
     }
     printTraceLog(topNode)
     if (topNode == null) None else Some(topNode)
@@ -345,16 +333,12 @@ trait ContentExtractor {
     */
   private def isHighLinkDensity(e: Element): Boolean = {
     val links: Elements = e.getElementsByTag("a")
-    if (links.size == 0) {
-      return false
-    }
+    if (links.size == 0) { return false }
     val text: String = e.text.trim
     val words: Array[String] = SPACE_SPLITTER.split(text)
     val numberOfWords: Float = words.length
     val sb: StringBuilder = new StringBuilder
-    for (link <- links) {
-      sb.append(link.text)
-    }
+    for (link <- links) { sb.append(link.text) }
     val linkText: String = sb.toString()
     val linkWords: Array[String] = SPACE_SPLITTER.split(linkText)
     val numberOfLinkWords: Float = linkWords.length
@@ -367,9 +351,7 @@ trait ContentExtractor {
         e.text,
         50))
 
-    if (score > 1) {
-      return true
-    }
+    if (score > 1) { return true }
     false
   }
 
@@ -391,9 +373,7 @@ trait ContentExtractor {
       val grvScoreString: String = node.attr("gravityScore")
       if (string.isNullOrEmpty(grvScoreString)) return None
       Some(Integer.parseInt(grvScoreString))
-    } catch {
-      case e: Exception => None
-    }
+    } catch { case e: Exception => None }
   }
 
   /**
@@ -410,11 +390,7 @@ trait ContentExtractor {
       currentScore =
         if (string.isNullOrEmpty(scoreString)) 0
         else Integer.parseInt(scoreString)
-    } catch {
-      case e: NumberFormatException => {
-        currentScore = 0
-      }
-    }
+    } catch { case e: NumberFormatException => { currentScore = 0 } }
     val newScore: Int = currentScore + addToScore
     node.attr("gravityScore", Integer.toString(newScore))
   }
@@ -432,11 +408,7 @@ trait ContentExtractor {
       currentScore =
         if (string.isNullOrEmpty(countString)) 0
         else Integer.parseInt(countString)
-    } catch {
-      case e: NumberFormatException => {
-        currentScore = 0
-      }
-    }
+    } catch { case e: NumberFormatException => { currentScore = 0 } }
     val newScore: Int = currentScore + addToCount
     node.attr("gravityNodes", Integer.toString(newScore))
   }
@@ -475,12 +447,8 @@ trait ContentExtractor {
         }
       }
     } catch {
-      case e: NullPointerException => {
-        warn(e.toString, e)
-      }
-      case e: Exception => {
-        warn(e.toString, e)
-      }
+      case e: NullPointerException => { warn(e.toString, e) }
+      case e: Exception            => { warn(e.toString, e) }
     }
     trace(logPrefix + "extractVideos:  done looking videos")
     goodMovies.toList
@@ -489,18 +457,12 @@ trait ContentExtractor {
   def isTableTagAndNoParagraphsExist(e: Element): Boolean = {
 
     val subParagraphs: Elements = e.getElementsByTag("p")
-    for (p <- subParagraphs) {
-      if (p.text.length < 25) {
-        p.remove()
-      }
-    }
+    for (p <- subParagraphs) { if (p.text.length < 25) { p.remove() } }
     val subParagraphs2: Elements = e.getElementsByTag("p")
     if (subParagraphs2.size == 0 && !(e.tagName == "td")) {
       trace("Removing node because it doesn't have any paragraphs")
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   /**
@@ -520,9 +482,8 @@ trait ContentExtractor {
       trace(logPrefix + "CLEANUP  NODE: " + e.id + " class: " + e.attr("class"))
       if (isHighLinkDensity(e) || isTableTagAndNoParagraphsExist(
             e) || !isNodeScoreThreshholdMet(node, e)) {
-        try {
-          e.remove()
-        } catch {
+        try { e.remove() }
+        catch {
           case ex: IllegalArgumentException =>
             trace("Cannot remove node: " + ex.toString)
         }
@@ -564,9 +525,8 @@ trait ContentExtractor {
     } else {
 
       val potentialParagraphs: Elements = currentSibling.getElementsByTag("p")
-      if (potentialParagraphs.first == null) {
-        None
-      } else {
+      if (potentialParagraphs.first == null) { None }
+      else {
 
         Some((for {
           firstParagraph <- potentialParagraphs
@@ -609,10 +569,7 @@ trait ContentExtractor {
     val baselineScoreForSiblingParagraphs: Int = getBaselineScoreForSiblings(
       topNode)
     val results = walkSiblings(topNode) { currentNode =>
-      {
-        getSiblingContent(currentNode, baselineScoreForSiblingParagraphs)
-
-      }
+      { getSiblingContent(currentNode, baselineScoreForSiblingParagraphs) }
     }.reverse.flatMap(itm => itm)
     topNode.child(0).before(results.mkString)
     topNode

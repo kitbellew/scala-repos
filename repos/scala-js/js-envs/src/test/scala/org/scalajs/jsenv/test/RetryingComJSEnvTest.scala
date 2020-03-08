@@ -34,9 +34,7 @@ class RetryingComJSEnvTest extends JSEnvTest with ComTests {
 
     def jsRunner(
         libs: Seq[ResolvedJSDependency],
-        code: VirtualJSFile): JSRunner = {
-      baseEnv.jsRunner(libs, code)
-    }
+        code: VirtualJSFile): JSRunner = { baseEnv.jsRunner(libs, code) }
 
     def asyncRunner(
         libs: Seq[ResolvedJSDependency],

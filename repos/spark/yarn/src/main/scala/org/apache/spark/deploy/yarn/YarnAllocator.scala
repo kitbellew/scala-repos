@@ -210,9 +210,7 @@ private[yarn] class YarnAllocator(
         s"Driver requested a total number of $requestedTotal executor(s).")
       targetNumExecutors = requestedTotal
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   /**
@@ -223,9 +221,7 @@ private[yarn] class YarnAllocator(
       val container = executorIdToContainer.get(executorId).get
       internalReleaseContainer(container)
       numExecutorsRunning -= 1
-    } else {
-      logWarning(s"Attempted to kill unknown executor $executorId!")
-    }
+    } else { logWarning(s"Attempted to kill unknown executor $executorId!") }
   }
 
   /**
@@ -484,9 +480,7 @@ private[yarn] class YarnAllocator(
       val containerRequest = matchingRequests.get(0).iterator.next
       amClient.removeContainerRequest(containerRequest)
       containersToUse += allocatedContainer
-    } else {
-      remaining += allocatedContainer
-    }
+    } else { remaining += allocatedContainer }
   }
 
   /**
@@ -592,11 +586,8 @@ private[yarn] class YarnAllocator(
                 ". Diagnostics: " + completedContainer.getDiagnostics)
 
         }
-        if (exitCausedByApp) {
-          logWarning(containerExitReason)
-        } else {
-          logInfo(containerExitReason)
-        }
+        if (exitCausedByApp) { logWarning(containerExitReason) }
+        else { logInfo(containerExitReason) }
         ExecutorExited(exitStatus, exitCausedByApp, containerExitReason)
       } else {
         // If we have already released this container, then it must mean
@@ -612,11 +603,8 @@ private[yarn] class YarnAllocator(
         containerSet <- allocatedHostToContainersMap.get(host)
       } {
         containerSet.remove(containerId)
-        if (containerSet.isEmpty) {
-          allocatedHostToContainersMap.remove(host)
-        } else {
-          allocatedHostToContainersMap.update(host, containerSet)
-        }
+        if (containerSet.isEmpty) { allocatedHostToContainersMap.remove(host) }
+        else { allocatedHostToContainersMap.update(host, containerSet) }
 
         allocatedContainerToHostMap.remove(containerId)
       }
@@ -701,13 +689,10 @@ private[yarn] class YarnAllocator(
     val preferredHosts = hostToLocalTaskCount.keySet
     pendingAllocations.foreach { cr =>
       val nodes = cr.getNodes
-      if (nodes == null) {
-        localityFree += cr
-      } else if (nodes.asScala.toSet.intersect(preferredHosts).nonEmpty) {
+      if (nodes == null) { localityFree += cr }
+      else if (nodes.asScala.toSet.intersect(preferredHosts).nonEmpty) {
         localityMatched += cr
-      } else {
-        localityUnMatched += cr
-      }
+      } else { localityUnMatched += cr }
     }
 
     (localityMatched.toSeq, localityUnMatched.toSeq, localityFree.toSeq)

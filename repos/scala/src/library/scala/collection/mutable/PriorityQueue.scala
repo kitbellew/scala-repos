@@ -158,9 +158,7 @@ class PriorityQueue[A](implicit val ord: Ordering[A])
   def dequeueAll[A1 >: A, That](
       implicit bf: CanBuildFrom[_, A1, That]): That = {
     val b = bf.apply()
-    while (nonEmpty) {
-      b += dequeue()
-    }
+    while (nonEmpty) { b += dequeue() }
     b.result()
   }
 

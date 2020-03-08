@@ -33,9 +33,7 @@ trait Arrow[=>:[_, _]] extends Split[=>:] with Strong[=>:] with Category[=>:] {
 
   /** Pass `C` through untouched. */
   def second[A, B, C](f: (A =>: B)): ((C, A) =>: (C, B)) = {
-    def swap[X, Y] = arr[(X, Y), (Y, X)] {
-      case (x, y) => (y, x)
-    }
+    def swap[X, Y] = arr[(X, Y), (Y, X)] { case (x, y) => (y, x) }
 
     >>>(<<<(first[A, B, C](f), swap), swap)
   }
@@ -67,7 +65,9 @@ trait Arrow[=>:[_, _]] extends Split[=>:] with Strong[=>:] with Category[=>:] {
     <<<[A, B, C](arr(f), fab)
 
   ////
-  val arrowSyntax = new scalaz.syntax.ArrowSyntax[=>:] { def F = Arrow.this }
+  val arrowSyntax = new scalaz.syntax.ArrowSyntax[=>:] {
+    def F = Arrow.this
+  }
 }
 
 object Arrow {

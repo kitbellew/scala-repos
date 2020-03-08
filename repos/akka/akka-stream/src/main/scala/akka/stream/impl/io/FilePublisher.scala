@@ -71,9 +71,8 @@ private[akka] final class FilePublisher(
   private var chan: FileChannel = _
 
   override def preStart() = {
-    try {
-      chan = FileChannel.open(f.toPath, FilePublisher.Read)
-    } catch {
+    try { chan = FileChannel.open(f.toPath, FilePublisher.Read) }
+    catch {
       case ex: Exception ⇒
         onErrorThenStop(ex)
     }
@@ -134,9 +133,8 @@ private[akka] final class FilePublisher(
   override def postStop(): Unit = {
     super.postStop()
 
-    try {
-      if (chan ne null) chan.close()
-    } catch {
+    try { if (chan ne null) chan.close() }
+    catch {
       case ex: Exception ⇒
         completionPromise.success(IOResult(readBytesTotal, Failure(ex)))
     }

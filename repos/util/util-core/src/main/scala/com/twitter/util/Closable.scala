@@ -161,7 +161,5 @@ object Closable {
     * Close the given closable when `obj` is collected.
     */
   def closeOnCollect(closable: Closable, obj: Object): Unit =
-    refs.synchronized {
-      refs.put(new PhantomReference(obj, refq), closable)
-    }
+    refs.synchronized { refs.put(new PhantomReference(obj, refq), closable) }
 }

@@ -80,9 +80,7 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
         objectRef,
         suitableMethods get 0,
         context)
-    } else {
-      MethodNotFound()
-    }
+    } else { MethodNotFound() }
   }
 
   private def tryToGetSize(
@@ -96,9 +94,7 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
             objectRef,
             context) || isStreamView(objectRef.referenceType()))
         return Success[String]("?")
-    } catch {
-      case e: EvaluateException => return Fail(e)
-    }
+    } catch { case e: EvaluateException => return Fail(e) }
 
     invoke("size") match {
       case result @ Success(_) => result
@@ -140,9 +136,7 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
 
     val myChildren = new util.ArrayList[DebuggerTreeNode]()
 
-    def returnChildren() {
-      builder.setChildren(myChildren)
-    }
+    def returnChildren() { builder.setChildren(myChildren) }
     value match {
       case objectRef: ObjectReference
           if ScalaCollectionRenderer.nonEmpty(objectRef, evaluationContext) =>
@@ -305,9 +299,7 @@ object NonStrictCollectionsRenderer {
           .createExpressionFromText(
             name,
             PositionUtil getContextElement context)
-      } catch {
-        case e: IncorrectOperationException => null
-      }
+      } catch { case e: IncorrectOperationException => null }
     }
 
     override def getName: String = name

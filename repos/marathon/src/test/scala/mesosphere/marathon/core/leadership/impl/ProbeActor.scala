@@ -13,13 +13,9 @@ object ProbeActor {
 
 class ProbeActor(testProbe: TestProbe) extends Actor {
 
-  override def preStart(): Unit = {
-    testProbe.ref ! ProbeActor.PreStart(self)
-  }
+  override def preStart(): Unit = { testProbe.ref ! ProbeActor.PreStart(self) }
 
-  override def postStop(): Unit = {
-    testProbe.ref ! ProbeActor.PostStop(self)
-  }
+  override def postStop(): Unit = { testProbe.ref ! ProbeActor.PostStop(self) }
 
   override def receive: Receive = LoggingReceive {
     case any: Any =>

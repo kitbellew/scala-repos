@@ -56,9 +56,7 @@ class CookieSupportTest extends ScalatraFunSuite {
   addServlet(classOf[CookieSupportServlet], "/*")
 
   test("GET /getcookie with no cookies set should return 'None'") {
-    get("/foo/getcookie") {
-      body should equal("None")
-    }
+    get("/foo/getcookie") { body should equal("None") }
   }
 
   test("POST /setcookie with a value should return the value") {
@@ -73,9 +71,7 @@ class CookieSupportTest extends ScalatraFunSuite {
       post("/foo/setcookie", "cookieval" -> "The value") {
         body should equal("OK")
       }
-      get("/foo/getcookie") {
-        body should equal("The value")
-      }
+      get("/foo/getcookie") { body should equal("The value") }
     }
   }
 
@@ -120,9 +116,7 @@ class CookieSupportTest extends ScalatraFunSuite {
         "/foo/setcookie",
         Map(
           "cookieval" -> "The value",
-          "anothercookieval" -> "Another Cookie")) {
-        body should equal("OK")
-      }
+          "anothercookieval" -> "Another Cookie")) { body should equal("OK") }
       get("/foo/getcookie") {
         body should equal("The value")
         header("X-Another-Cookie") should equal("Another Cookie")

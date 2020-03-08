@@ -66,9 +66,7 @@ abstract class SparkPlan
   // constructor has run.
   val subexpressionEliminationEnabled: Boolean = if (sqlContext != null) {
     sqlContext.conf.subexpressionEliminationEnabled
-  } else {
-    false
-  }
+  } else { false }
 
   /**
     * Whether the "prepare" method is called.
@@ -123,9 +121,7 @@ abstract class SparkPlan
     * Returns the result of this query as an RDD[InternalRow] by delegating to doExecute after
     * preparations. Concrete implementations of SparkPlan should override doExecute.
     */
-  final def execute(): RDD[InternalRow] = executeQuery {
-    doExecute()
-  }
+  final def execute(): RDD[InternalRow] = executeQuery { doExecute() }
 
   /**
     * Returns the result of this query as a broadcast variable by delegating to doBroadcast after
@@ -309,9 +305,7 @@ abstract class SparkPlan
     * This is modeled after RDD.take but never runs any job locally on the driver.
     */
   def executeTake(n: Int): Array[InternalRow] = {
-    if (n == 0) {
-      return new Array[InternalRow](0)
-    }
+    if (n == 0) { return new Array[InternalRow](0) }
 
     val childRDD = getByteArrayRdd(n)
 
@@ -326,11 +320,8 @@ abstract class SparkPlan
         // If we didn't find any rows after the first iteration, just try all partitions next.
         // Otherwise, interpolate the number of partitions we need to try, but overestimate it
         // by 50%.
-        if (buf.size == 0) {
-          numPartsToTry = totalParts - 1
-        } else {
-          numPartsToTry = (1.5 * n * partsScanned / buf.size).toInt
-        }
+        if (buf.size == 0) { numPartsToTry = totalParts - 1 }
+        else { numPartsToTry = (1.5 * n * partsScanned / buf.size).toInt }
       }
       numPartsToTry =
         math.max(0, numPartsToTry) // guard against negative num of partitions
@@ -350,11 +341,8 @@ abstract class SparkPlan
       partsScanned += p.size
     }
 
-    if (buf.size > n) {
-      buf.take(n).toArray
-    } else {
-      buf.toArray
-    }
+    if (buf.size > n) { buf.take(n).toArray }
+    else { buf.toArray }
   }
 
   private[this] def isTesting: Boolean = sys.props.contains("spark.testing")

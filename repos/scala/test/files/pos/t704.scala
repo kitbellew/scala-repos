@@ -1,6 +1,8 @@
 trait D {
   private val x = "xxxx should appear twice"
-  private object xxxx { Console.println(x) }
+  private object xxxx {
+    Console.println(x)
+  }
   def get_xxxx: AnyRef = xxxx
 }
 

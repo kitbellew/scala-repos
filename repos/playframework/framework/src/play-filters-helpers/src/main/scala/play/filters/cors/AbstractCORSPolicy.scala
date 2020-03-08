@@ -329,14 +329,10 @@ private[cors] trait AbstractCORSPolicy {
   // http://tools.ietf.org/html/rfc6454#section-7.1
   private def isValidOrigin(origin: String): Boolean = {
     // Checks for encoded characters. Helps prevent CRLF injection.
-    if (origin.contains("%")) {
-      false
-    } else {
-      try {
-        new URI(origin).getScheme ne null
-      } catch {
-        case _: URISyntaxException => false
-      }
+    if (origin.contains("%")) { false }
+    else {
+      try { new URI(origin).getScheme ne null }
+      catch { case _: URISyntaxException => false }
     }
   }
 

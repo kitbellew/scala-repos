@@ -10,11 +10,8 @@ trait LocalConductors extends Conductors with IntegrationPatience {
     conductor.thread {
       val saved = Local.save()
       Local.restore(outer)
-      try {
-        fn
-      } finally {
-        Local.restore(saved)
-      }
+      try { fn }
+      finally { Local.restore(saved) }
     }
   }
 
@@ -23,11 +20,8 @@ trait LocalConductors extends Conductors with IntegrationPatience {
     conductor.whenFinished {
       val saved = Local.save()
       Local.restore(outer)
-      try {
-        fn
-      } finally {
-        Local.restore(saved)
-      }
+      try { fn }
+      finally { Local.restore(saved) }
     }
   }
 }

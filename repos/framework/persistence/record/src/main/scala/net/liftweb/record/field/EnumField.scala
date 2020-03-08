@@ -58,9 +58,7 @@ trait EnumTypedField[EnumType <: Enumeration]
         setBox(Empty)
       else
         setBox(Failure(notOptionalErrorMessage))
-    } else {
-      setBox(asInt(s).flatMap(fromInt))
-    }
+    } else { setBox(asInt(s).flatMap(fromInt)) }
 
   /** Label for the selection item representing Empty, show when this field is optional. Defaults to the empty string. */
   def emptyOptionLabel: String = ""

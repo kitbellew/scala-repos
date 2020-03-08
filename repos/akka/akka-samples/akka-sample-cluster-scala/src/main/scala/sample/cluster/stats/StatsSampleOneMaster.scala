@@ -14,9 +14,7 @@ object StatsSampleOneMaster {
     if (args.isEmpty) {
       startup(Seq("2551", "2552", "0"))
       StatsSampleOneMasterClient.main(Array.empty)
-    } else {
-      startup(args)
-    }
+    } else { startup(args) }
   }
 
   def startup(ports: Seq[String]): Unit = {

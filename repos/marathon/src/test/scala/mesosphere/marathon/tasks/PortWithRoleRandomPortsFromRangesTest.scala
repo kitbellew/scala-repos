@@ -19,9 +19,7 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
   private[this] def portRange(
       role: String,
       begin: Long,
-      end: Long): PortRange = {
-    PortRange(role, begin.toInt, end.toInt)
-  }
+      end: Long): PortRange = { PortRange(role, begin.toInt, end.toInt) }
 
   private[this] def withRandomSeeds(
       input: Seq[PortRange],

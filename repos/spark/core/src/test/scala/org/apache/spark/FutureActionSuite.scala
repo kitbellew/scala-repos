@@ -28,9 +28,7 @@ class FutureActionSuite
     with Matchers
     with LocalSparkContext {
 
-  before {
-    sc = new SparkContext("local", "FutureActionSuite")
-  }
+  before { sc = new SparkContext("local", "FutureActionSuite") }
 
   test("simple async action") {
     val rdd = sc.parallelize(1 to 10, 2)

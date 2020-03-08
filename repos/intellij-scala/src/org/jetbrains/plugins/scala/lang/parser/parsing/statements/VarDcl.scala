@@ -35,9 +35,8 @@ object VarDcl {
         builder.getTokenType match {
           case ScalaTokenTypes.tCOLON => {
             builder.advanceLexer //Ate :
-            if (Type.parse(builder)) {
-              returnMarker.drop
-            } else {
+            if (Type.parse(builder)) { returnMarker.drop }
+            else {
               builder error ScalaBundle.message("wrong.type")
               returnMarker.drop
             }
@@ -54,9 +53,7 @@ object VarDcl {
             builder.error("Expected expression")
             return true
           }
-          case _ => {
-            return true
-          }
+          case _ => { return true }
         }
       case _ =>
         builder error ScalaBundle.message("identifier.expected")

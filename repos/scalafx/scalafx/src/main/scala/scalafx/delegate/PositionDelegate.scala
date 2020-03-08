@@ -54,16 +54,12 @@ trait PositionDelegate[J <: Object with Positioned] extends SFXDelegate[J] {
     * X Position
     */
   def x: DoubleProperty = delegate.xProperty()
-  def x_=(v: Double) {
-    x() = v
-  }
+  def x_=(v: Double) { x() = v }
 
   /**
     * Y Position
     */
   def y: DoubleProperty = delegate.yProperty()
-  def y_=(v: Double) {
-    y() = v
-  }
+  def y_=(v: Double) { y() = v }
 
 }

@@ -2,7 +2,9 @@ object Test {
   trait Universe {
     type Type
     type TypeTag[A] >: Null <: TypeTagApi[A]
-    trait TypeTagApi[A] { def tpe: Type }
+    trait TypeTagApi[A] {
+      def tpe: Type
+    }
   }
   trait JavaUniverse extends Universe
 

@@ -329,13 +329,8 @@ private[sql] class DefaultWriterContainer(
     }
 
     def abortTask(): Unit = {
-      try {
-        if (writer != null) {
-          writer.close()
-        }
-      } finally {
-        super.abortTask()
-      }
+      try { if (writer != null) { writer.close() } }
+      finally { super.abortTask() }
     }
   }
 }
@@ -498,9 +493,7 @@ private[sql] class DynamicPartitionWriterContainer(
         logError("Aborting task.", cause)
         // call failure callbacks first, so we could have a chance to cleanup the writer.
         TaskContext.get().asInstanceOf[TaskContextImpl].markTaskFailed(cause)
-        if (currentWriter != null) {
-          currentWriter.close()
-        }
+        if (currentWriter != null) { currentWriter.close() }
         abortTask()
         throw new SparkException("Task failed while writing rows.", cause)
     }

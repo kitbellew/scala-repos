@@ -24,9 +24,7 @@ object WaitTestSupport {
 
   def waitUntil(description: String, maxWait: FiniteDuration)(
       fn: => Boolean) = {
-    waitFor(description, maxWait) {
-      if (fn) Some(true) else None
-    }
+    waitFor(description, maxWait) { if (fn) Some(true) else None }
   }
 
   def waitFor[T](description: String, maxWait: FiniteDuration)(

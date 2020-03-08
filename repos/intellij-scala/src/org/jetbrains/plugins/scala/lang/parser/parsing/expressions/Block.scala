@@ -68,9 +68,7 @@ object Block {
         if (BlockStat.parse(builder)) {
           i = i + 1
           tts ::= builder.getTokenType
-        } else {
-          continue = false
-        }
+        } else { continue = false }
       }
     }
     if (tts.drop(1).headOption.contains(ScalaTokenTypes.tSEMICOLON))
@@ -102,9 +100,8 @@ object Block {
     } else {
       val bm = builder.mark()
       val count = parseImpl(builder)
-      if (count > 1) {
-        bm.done(ScalaElementTypes.BLOCK)
-      } else {
+      if (count > 1) { bm.done(ScalaElementTypes.BLOCK) }
+      else {
         if (!needNode) bm.drop() else bm.done(ScalaElementTypes.BLOCK)
 //        bm.done(ScalaElementTypes.BLOCK)
       }

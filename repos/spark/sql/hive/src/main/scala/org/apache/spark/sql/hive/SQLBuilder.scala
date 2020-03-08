@@ -69,11 +69,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
 
     // Keep the qualifier information by using it as sub-query name, if there is only one qualifier
     // present.
-    val finalName = if (qualifiers.length == 1) {
-      qualifiers.head
-    } else {
-      newSubqueryName()
-    }
+    val finalName = if (qualifiers.length == 1) { qualifiers.head }
+    else { newSubqueryName() }
 
     // Canonicalizer will remove all naming information, we should add it back by adding an extra
     // Project and alias the outputs.
@@ -281,9 +278,7 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       // LATERAL VIEW format, and generate:
       // SELECT col FROM (SELECT 1) sub_q0 LATERAL VIEW EXPLODE(ARRAY(1, 2)) sub_q1 AS col
       s"(SELECT 1) ${newSubqueryName()}"
-    } else {
-      toSQL(g.child)
-    }
+    } else { toSQL(g.child) }
 
     // The final SQL string for Generate contains 7 parts:
     //   1. the SQL of child, can be a table or sub-query

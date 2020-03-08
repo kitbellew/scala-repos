@@ -93,9 +93,7 @@ object ScalaI18nUtil {
       AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER,
       null)
     val isI18n: Boolean = mustBePropertyKey(project, expr, annotationParams)
-    if (!isI18n) {
-      expr.putUserData(CACHE, NULL)
-    }
+    if (!isI18n) { expr.putUserData(CACHE, NULL) }
     isI18n
   }
 
@@ -157,9 +155,7 @@ object ScalaI18nUtil {
                       null,
                       annFqn,
                       annotationAttributeValues,
-                      nonNlsTargets)) {
-                  return true
-                }
+                      nonNlsTargets)) { return true }
               case _ =>
             }
           case _ =>
@@ -224,27 +220,17 @@ object ScalaI18nUtil {
       @Nullable nonNlsTargets: mutable.HashSet[PsiModifierListOwner])
       : Boolean = {
     var processed = myProcessed
-    if (processed != null) {
-      if (processed.contains(method)) return false
-    } else {
-      processed = new mutable.HashSet[PsiMethod]
-    }
+    if (processed != null) { if (processed.contains(method)) return false }
+    else { processed = new mutable.HashSet[PsiMethod] }
     processed.add(method)
     val params: Array[PsiParameter] = method.getParameterList.getParameters
     var param: PsiParameter = null
     if (idx >= params.length) {
-      if (params.length == 0) {
-        return false
-      }
+      if (params.length == 0) { return false }
       val lastParam: PsiParameter = params(params.length - 1)
-      if (lastParam.isVarArgs) {
-        param = lastParam
-      } else {
-        return false
-      }
-    } else {
-      param = params(idx)
-    }
+      if (lastParam.isVarArgs) { param = lastParam }
+      else { return false }
+    } else { param = params(idx) }
     val annotation: PsiAnnotation = AnnotationUtil.findAnnotation(param, annFqn)
     if (annotation != null) {
       if (annotationAttributeValues != null) {
@@ -260,9 +246,7 @@ object ScalaI18nUtil {
       }
       return true
     }
-    if (nonNlsTargets != null) {
-      nonNlsTargets.add(param)
-    }
+    if (nonNlsTargets != null) { nonNlsTargets.add(param) }
     val superMethods: Array[PsiMethod] = method.findSuperMethods
     for (superMethod <- superMethods) {
       if (isMethodParameterAnnotatedWith(
@@ -393,20 +377,13 @@ object ScalaI18nUtil {
               val value: String =
                 result.getElement.asInstanceOf[IProperty].getValue
               var format: MessageFormat = null
-              try {
-                format = new MessageFormat(value)
-              } catch {
-                case e: Exception => {
-                  flag = false
-                }
-              }
+              try { format = new MessageFormat(value) }
+              catch { case e: Exception => { flag = false } }
               if (flag) {
                 try {
                   val count: Int = format.getFormatsByArgumentIndex.length
                   maxCount = Math.max(maxCount, count)
-                } catch {
-                  case ignored: IllegalArgumentException => {}
-                }
+                } catch { case ignored: IllegalArgumentException => {} }
               }
             }
           }
@@ -498,9 +475,7 @@ object ScalaI18nUtil {
       documentManager.commitDocument(
         documentManager.getDocument(file.getContainingFile))
       val existingProperty: IProperty = file.findPropertyByKey(key)
-      if (existingProperty == null) {
-        file.addProperty(key, value)
-      }
+      if (existingProperty == null) { file.addProperty(key, value) }
     }
   }
 

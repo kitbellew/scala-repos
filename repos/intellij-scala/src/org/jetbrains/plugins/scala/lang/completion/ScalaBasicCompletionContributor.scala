@@ -204,9 +204,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                             clazz,
                             renamedMap)
                           addElement(lookupElement)
-                        } else {
-                          addElement(el)
-                        }
+                        } else { addElement(el) }
                       }
                     case _ if lookingForAnnotations =>
                     case f: FakePsiMethod

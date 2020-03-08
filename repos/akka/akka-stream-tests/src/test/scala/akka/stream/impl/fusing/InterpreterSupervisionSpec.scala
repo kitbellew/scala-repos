@@ -24,9 +24,7 @@ object InterpreterSupervisionSpec {
       ctx.push(sum)
     }
 
-    override def onPull(ctx: Context[Int]): SyncDirective = {
-      ctx.pull()
-    }
+    override def onPull(ctx: Context[Int]): SyncDirective = { ctx.pull() }
 
     override def decide(t: Throwable): Supervision.Directive =
       Supervision.Restart

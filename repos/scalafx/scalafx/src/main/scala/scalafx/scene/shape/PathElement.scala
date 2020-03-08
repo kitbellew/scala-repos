@@ -42,7 +42,5 @@ object PathElement {
 abstract class PathElement(override val delegate: jfxss.PathElement)
     extends SFXDelegate[jfxss.PathElement] {
   def absolute: BooleanProperty = delegate.absoluteProperty
-  def absolute_=(v: Boolean) {
-    absolute() = v
-  }
+  def absolute_=(v: Boolean) { absolute() = v }
 }

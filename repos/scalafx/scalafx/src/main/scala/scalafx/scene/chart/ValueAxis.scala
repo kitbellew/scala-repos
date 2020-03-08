@@ -51,35 +51,23 @@ abstract class ValueAxis[T <: Number](override val delegate: jfxsc.ValueAxis[T])
     with SFXDelegate[jfxsc.ValueAxis[T]] {
 
   def lowerBound: DoubleProperty = delegate.lowerBoundProperty
-  def lowerBound_=(v: Double) {
-    lowerBound() = v
-  }
+  def lowerBound_=(v: Double) { lowerBound() = v }
 
   def minorTickCount: IntegerProperty = delegate.minorTickCountProperty
-  def minorTickCount_=(v: Int) {
-    minorTickCount() = v
-  }
+  def minorTickCount_=(v: Int) { minorTickCount() = v }
 
   def minorTickLength: DoubleProperty = delegate.minorTickLengthProperty
-  def minorTickLength_=(v: Double) {
-    minorTickLength() = v
-  }
+  def minorTickLength_=(v: Double) { minorTickLength() = v }
 
   def minorTickVisible: BooleanProperty = delegate.minorTickVisibleProperty
-  def minorTickVisible_=(v: Boolean) {
-    minorTickVisible() = v
-  }
+  def minorTickVisible_=(v: Boolean) { minorTickVisible() = v }
 
   def scale: ReadOnlyDoubleProperty = delegate.scaleProperty
 
   def tickLabelFormatter: ObjectProperty[jfxu.StringConverter[T]] =
     delegate.tickLabelFormatterProperty
-  def tickLabelFormatter_=(v: StringConverter[T]) {
-    tickLabelFormatter() = v
-  }
+  def tickLabelFormatter_=(v: StringConverter[T]) { tickLabelFormatter() = v }
 
   def upperBound: DoubleProperty = delegate.upperBoundProperty
-  def upperBound_=(v: Double) {
-    upperBound() = v
-  }
+  def upperBound_=(v: Double) { upperBound() = v }
 }

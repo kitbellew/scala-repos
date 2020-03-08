@@ -1,10 +1,18 @@
 trait Param[T]
-trait Abs { type T }
+trait Abs {
+  type T
+}
 trait Cyclic1[A <: Param[A]] // works
 trait Cyclic2[A <: Abs { type T <: A }]
-trait Cyclic3 { type A <: Abs { type T = A } }
-trait Cyclic4 { type A <: Param[A] } // works
-trait Cyclic5 { type AA <: Abs; type A <: AA { type T = A } }
+trait Cyclic3 {
+  type A <: Abs { type T = A }
+}
+trait Cyclic4 {
+  type A <: Param[A]
+} // works
+trait Cyclic5 {
+  type AA <: Abs; type A <: AA { type T = A }
+}
 
 trait IterableTemplate {
   type Elem

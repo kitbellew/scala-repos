@@ -52,9 +52,7 @@ class Squarer(square: Quantity, root: Quantity) extends Constraint {
     case (_, Some(x))            => square.setValue(x * x, this)
     case _                       =>
   }
-  def dropValue: Unit = {
-    square.forgetValue(this); root.forgetValue(this);
-  }
+  def dropValue: Unit = { square.forgetValue(this); root.forgetValue(this); }
   square connect this;
   root connect this;
 }
@@ -64,9 +62,7 @@ class Eq(a: Quantity, b: Quantity) extends Constraint {
     case (Some(x), _) => b.setValue(x, this);
     case (_, Some(y)) => a.setValue(y, this);
   }
-  def dropValue {
-    a.forgetValue(this); b.forgetValue(this);
-  }
+  def dropValue { a.forgetValue(this); b.forgetValue(this); }
   a connect this;
   b connect this;
 }
@@ -103,9 +99,7 @@ class Quantity() {
       if (v != v1) sys.error("Error! contradiction: " + v + " and " + v1);
     case None =>
       informant = setter; value = Some(v);
-      for (c <- constraints; if !(c == informant)) {
-        c.newValue;
-      }
+      for (c <- constraints; if !(c == informant)) { c.newValue; }
   }
   def setValue(v: Double): Unit = setValue(v, NoConstraint);
 
@@ -149,9 +143,7 @@ class Quantity() {
     root;
   }
 
-  def ===(that: Quantity): Constraint = {
-    new Eq(this, that);
-  }
+  def ===(that: Quantity): Constraint = { new Eq(this, that); }
 
   override def toString(): String = value match {
     case None    => "  ?"

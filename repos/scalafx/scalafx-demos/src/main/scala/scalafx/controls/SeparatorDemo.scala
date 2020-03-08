@@ -45,9 +45,13 @@ object SeparatorDemo extends JFXApp {
 
   val pnlSeparator = new FlowPane {
     children = List(
-      new Button { text = "Button 1" },
+      new Button {
+        text = "Button 1"
+      },
       separator,
-      new Button { text = "Button 2" })
+      new Button {
+        text = "Button 2"
+      })
     minHeight = 100
     prefHeight = 100
     minWidth = 100

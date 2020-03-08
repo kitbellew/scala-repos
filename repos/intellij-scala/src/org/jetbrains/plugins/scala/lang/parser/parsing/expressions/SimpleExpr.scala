@@ -95,9 +95,7 @@ object SimpleExpr extends ParserNode with ScalaTokenTypes {
               }
               if (builder.getTokenType != ScalaTokenTypes.tRPARENTHESIS) {
                 builder error ErrMsg("rparenthesis.expected")
-              } else {
-                builder.advanceLexer()
-              }
+              } else { builder.advanceLexer() }
               builder.restoreNewlinesState
               newMarker = simpleMarker.precede
               simpleMarker.done(
@@ -127,9 +125,7 @@ object SimpleExpr extends ParserNode with ScalaTokenTypes {
             val tMarker = marker.precede
             marker.done(ScalaElementTypes.PLACEHOLDER_EXPR)
             subparse(tMarker)
-          } else {
-            marker.drop()
-          }
+          } else { marker.drop() }
         case ScalaTokenTypes.tDOT =>
           state = true
           builder.advanceLexer() //Ate .
@@ -149,9 +145,7 @@ object SimpleExpr extends ParserNode with ScalaTokenTypes {
             val tMarker = marker.precede
             marker.done(ScalaElementTypes.METHOD_CALL)
             subparse(tMarker)
-          } else {
-            marker.drop()
-          }
+          } else { marker.drop() }
         case ScalaTokenTypes.tLSQBRACKET =>
           state = true
           TypeArgs.parse(builder, isPattern = false)

@@ -250,9 +250,7 @@ object ColumnDefinitionProviderImpl {
         Please check your nested case classes.
         """
       )
-    } else {
-      formats
-    }
+    } else { formats }
   }
 
   def getColumnDefn[T](c: Context)(

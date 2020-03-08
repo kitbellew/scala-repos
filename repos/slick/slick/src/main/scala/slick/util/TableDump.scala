@@ -74,9 +74,7 @@ class TableDump(maxColumnWidth: Int = 20) {
         b.append(c)
         b.append(s.charAt(i + 1))
         i += 1
-      } else {
-        b.append(c)
-      }
+      } else { b.append(c) }
       cps += 1
       i += 1
     }

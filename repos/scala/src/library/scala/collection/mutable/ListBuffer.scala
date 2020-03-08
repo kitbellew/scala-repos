@@ -138,9 +138,7 @@ final class ListBuffer[A]
     if (exported) copy()
     if (n == 0) {
       val newElem = new ::(x, start.tail)
-      if (last0 eq start) {
-        last0 = newElem
-      }
+      if (last0 eq start) { last0 = newElem }
       start = newElem
     } else {
       var cursor = start
@@ -150,9 +148,7 @@ final class ListBuffer[A]
         i += 1
       }
       val newElem = new ::(x, cursor.tail.tail)
-      if (last0 eq cursor.tail) {
-        last0 = newElem
-      }
+      if (last0 eq cursor.tail) { last0 = newElem }
       cursor.asInstanceOf[::[A]].tl = newElem
     }
   }
@@ -344,9 +340,8 @@ final class ListBuffer[A]
     if (n < 0 || n >= len) throw new IndexOutOfBoundsException(n.toString())
     if (exported) copy()
     var old = start.head
-    if (n == 0) {
-      start = start.tail
-    } else {
+    if (n == 0) { start = start.tail }
+    else {
       var cursor = start
       var i = 1
       while (i < n) {

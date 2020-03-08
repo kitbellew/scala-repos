@@ -17,9 +17,7 @@ class Algorithm
 
   @transient lazy val logger = Logger[this.type]
 
-  def train(data: TrainingData): Model = {
-    new Model
-  }
+  def train(data: TrainingData): Model = { new Model }
 
   def predict(model: Model, query: Query): PredictedResult = {
     // Prefix the query with the model data

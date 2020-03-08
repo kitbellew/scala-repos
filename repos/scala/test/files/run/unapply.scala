@@ -37,21 +37,11 @@ object Foo {
     case y: Bar => Some(y.size, y.name)
     case _      => None
   }
-  def doMatch1(b: Bar) = b match {
-    case Foo(s: Int, n: String) => (s, n)
-  }
-  def doMatch2(b: Bar) = b match {
-    case Fii() => null
-  }
-  def doMatch3(b: Bar) = b match {
-    case Faa(n: String) => n
-  }
-  def doMatch4(b: Bar) = (b: Any) match {
-    case FaaPrecise(n: String) => n
-  }
-  def doMatch5(b: Bar) = (b: Any) match {
-    case FaaPreciseSome(n: String) => n
-  }
+  def doMatch1(b: Bar) = b match { case Foo(s: Int, n: String)           => (s, n) }
+  def doMatch2(b: Bar) = b match { case Fii()                            => null }
+  def doMatch3(b: Bar) = b match { case Faa(n: String)                   => n }
+  def doMatch4(b: Bar) = (b: Any) match { case FaaPrecise(n: String)     => n }
+  def doMatch5(b: Bar) = (b: Any) match { case FaaPreciseSome(n: String) => n }
   def run() {
     val b = new Bar
     assert(doMatch1(b) == (50, "medium"))
@@ -60,9 +50,7 @@ object Foo {
     assert(doMatch4(b) == "medium")
     assert(doMatch5(b) == "medium")
     implicit val bc: Int = 3
-    assert(7 == (4 match {
-      case VarFoo(x) => x
-    }))
+    assert(7 == (4 match { case VarFoo(x) => x }))
   }
 }
 
@@ -80,9 +68,8 @@ object Mas {
   }
   def run() {
     val b = new Baz
-    assert((60, "too large") == (b match {
-      case Gaz(s: Int, n: String) => (s, n)
-    }))
+    assert(
+      (60, "too large") == (b match { case Gaz(s: Int, n: String) => (s, n) }))
   }
 }
 
@@ -119,7 +106,5 @@ object Test1256 {
     }
   }
 
-  def run() {
-    assert(!(new Buffer).jp.isDefinedAt(42))
-  }
+  def run() { assert(!(new Buffer).jp.isDefinedAt(42)) }
 }

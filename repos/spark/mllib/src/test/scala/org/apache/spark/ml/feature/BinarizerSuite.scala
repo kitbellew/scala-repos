@@ -36,9 +36,7 @@ class BinarizerSuite
     data = Array(0.1, -0.5, 0.2, -0.3, 0.8, 0.7, -0.1, -0.4)
   }
 
-  test("params") {
-    ParamsSuite.checkParams(new Binarizer)
-  }
+  test("params") { ParamsSuite.checkParams(new Binarizer) }
 
   test("Binarize continuous features with default parameter") {
     val defaultBinarized: Array[Double] =

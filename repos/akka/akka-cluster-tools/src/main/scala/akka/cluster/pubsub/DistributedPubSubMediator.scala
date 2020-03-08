@@ -594,9 +594,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     case Send(path, msg, localAffinity) ⇒
       val routees = registry(selfAddress).content.get(path) match {
         case Some(valueHolder) if localAffinity ⇒
-          (for {
-            routee ← valueHolder.routee
-          } yield routee).toVector
+          (for { routee ← valueHolder.routee } yield routee).toVector
         case _ ⇒
           (for {
             (_, bucket) ← registry
@@ -657,9 +655,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       val key = mkKey(sender())
       forwardMessages(key, sender())
 
-    case GetTopics ⇒ {
-      sender ! CurrentTopics(getCurrentTopics())
-    }
+    case GetTopics ⇒ { sender ! CurrentTopics(getCurrentTopics()) }
 
     case msg @ Subscribed(ack, ref) ⇒
       ref ! ack
@@ -839,9 +835,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   }
 
   def otherHasNewerVersions(otherVersions: Map[Address, Long]): Boolean =
-    otherVersions.exists {
-      case (owner, v) ⇒ v > registry(owner).version
-    }
+    otherVersions.exists { case (owner, v) ⇒ v > registry(owner).version }
 
   /**
     * Gossip to peer nodes.

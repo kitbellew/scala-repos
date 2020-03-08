@@ -80,9 +80,7 @@ private[util] class BatchedWriteAheadLog(
       if (active) {
         walWriteQueue.offer(Record(byteBuffer, time, promise))
         true
-      } else {
-        false
-      }
+      } else { false }
     }
     if (putSuccessfully) {
       Await.result(
@@ -129,9 +127,7 @@ private[util] class BatchedWriteAheadLog(
   override def close(): Unit = {
     logInfo(
       s"BatchedWriteAheadLog shutting down at time: ${System.currentTimeMillis()}.")
-    synchronized {
-      active = false
-    }
+    synchronized { active = false }
     batchedWriterThread.interrupt()
     batchedWriterThread.join()
     while (!walWriteQueue.isEmpty) {
@@ -150,9 +146,8 @@ private[util] class BatchedWriteAheadLog(
       new Runnable {
         override def run(): Unit = {
           while (active) {
-            try {
-              flushRecords()
-            } catch {
+            try { flushRecords() }
+            catch {
               case NonFatal(e) =>
                 logWarning("Encountered exception in Batched Writer Thread.", e)
             }
@@ -195,9 +190,7 @@ private[util] class BatchedWriteAheadLog(
       case NonFatal(e) =>
         logWarning(s"BatchedWriteAheadLog Writer failed to write $buffer", e)
         buffer.foreach(_.promise.failure(e))
-    } finally {
-      buffer.clear()
-    }
+    } finally { buffer.clear() }
   }
 
   /** Method for querying the queue length. Should only be used in tests. */

@@ -87,9 +87,7 @@ class MetadataSuite extends SparkFunSuite {
 
   test("metadata json conversion") {
     val json = metadata.json
-    withClue("toJson must produce a valid JSON string") {
-      parse(json)
-    }
+    withClue("toJson must produce a valid JSON string") { parse(json) }
     val parsed = Metadata.fromJson(json)
     assert(parsed === metadata)
     assert(parsed.## === metadata.##)

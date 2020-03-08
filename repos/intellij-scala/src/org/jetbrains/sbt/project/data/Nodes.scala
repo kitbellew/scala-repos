@@ -184,13 +184,9 @@ abstract class Node[T] {
 
   protected def data: T
 
-  def add(node: Node[_]) {
-    children :+= node
-  }
+  def add(node: Node[_]) { children :+= node }
 
-  def addAll(nodes: Seq[Node[_]]) {
-    children ++= nodes
-  }
+  def addAll(nodes: Seq[Node[_]]) { children ++= nodes }
 
   def toDataNode: DataNode[T] = toDataNode(None)
 

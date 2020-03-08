@@ -56,9 +56,7 @@ object LogisticRegressionDataGenerator {
       val rnd = new Random(42 + idx)
 
       val y = if (idx % 2 == 0) 0.0 else 1.0
-      val x = Array.fill[Double](nfeatures) {
-        rnd.nextGaussian() + (y * eps)
-      }
+      val x = Array.fill[Double](nfeatures) { rnd.nextGaussian() + (y * eps) }
       LabeledPoint(y, Vectors.dense(x))
     }
     data

@@ -91,9 +91,7 @@ class JavaCompiler(
 
   def askTypecheckFiles(files: List[SourceFileInfo]): Unit = {
     reportHandler.clearAllJavaNotes()
-    for (sf <- files) {
-      internSource(sf)
-    }
+    for (sf <- files) { internSource(sf) }
     typecheckAll()
   }
 
@@ -154,9 +152,7 @@ class JavaCompiler(
       offset: Int,
       maxResults: Int,
       caseSens: Boolean
-  ): CompletionInfoList = {
-    completionsAt(file, offset, maxResults, caseSens)
-  }
+  ): CompletionInfoList = { completionsAt(file, offset, maxResults, caseSens) }
 
   protected def pathToPoint(
       file: SourceFileInfo,

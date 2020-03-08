@@ -1,8 +1,6 @@
 package foo {
   object C {
-    def foo {
-      Console.println("foo")
-    }
+    def foo { Console.println("foo") }
   }
 }
 

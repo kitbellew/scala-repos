@@ -55,23 +55,17 @@ class Scentry[UserType <: AnyRef](
     request.get(scentryAuthKey).orNull.asInstanceOf[UserType]
 
   def store = _store
-  def store_=(newStore: ScentryAuthStore) {
-    _store = newStore
-  }
+  def store_=(newStore: ScentryAuthStore) { _store = newStore }
 
   def isAuthenticated(implicit
       request: HttpServletRequest,
-      response: HttpServletResponse) = {
-    userOption.isDefined
-  }
+      response: HttpServletResponse) = { userOption.isDefined }
 
   //def session = app.session
   def params(implicit request: HttpServletRequest): Params = app.params(request)
   def redirect(uri: String)(implicit
       request: HttpServletRequest,
-      response: HttpServletResponse) {
-    app.redirect(uri)(request, response)
-  }
+      response: HttpServletResponse) { app.redirect(uri)(request, response) }
 
   def register(strategy: => ScentryStrategy[UserType]) {
     register(strategy.name, ((_: ScalatraBase) => strategy))

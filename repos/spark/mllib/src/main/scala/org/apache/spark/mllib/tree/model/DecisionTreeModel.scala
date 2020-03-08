@@ -55,9 +55,7 @@ class DecisionTreeModel @Since("1.0.0") (
     * @return Double prediction from the trained model
     */
   @Since("1.0.0")
-  def predict(features: Vector): Double = {
-    topNode.predict(features)
-  }
+  def predict(features: Vector): Double = { topNode.predict(features) }
 
   /**
     * Predict values for the given data set using the model trained.
@@ -85,18 +83,14 @@ class DecisionTreeModel @Since("1.0.0") (
     * Get number of nodes in tree, including leaf nodes.
     */
   @Since("1.1.0")
-  def numNodes: Int = {
-    1 + topNode.numDescendants
-  }
+  def numNodes: Int = { 1 + topNode.numDescendants }
 
   /**
     * Get depth of tree.
     * E.g.: Depth 0 means 1 leaf node.  Depth 1 means 1 internal node and 2 leaf nodes.
     */
   @Since("1.1.0")
-  def depth: Int = {
-    topNode.subtreeDepth
-  }
+  def depth: Int = { topNode.subtreeDepth }
 
   /**
     * Print a summary of the model.
@@ -160,7 +154,8 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
         feature: Int,
         threshold: Double,
         featureType: Int,
-        categories: Seq[Double]) { // TODO: Change to List once SPARK-3365 is fixed
+        categories: Seq[
+          Double]) { // TODO: Change to List once SPARK-3365 is fixed
       def toSplit: Split = {
         new Split(
           feature,
@@ -333,9 +328,7 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
         id: Int,
         dataMap: Map[Int, NodeData],
         nodes: mutable.Map[Int, Node]): Node = {
-      if (nodes.contains(id)) {
-        return nodes(id)
-      }
+      if (nodes.contains(id)) { return nodes(id) }
       val data = dataMap(id)
       val node =
         if (data.isLeaf) {

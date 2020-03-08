@@ -39,9 +39,7 @@ trait Versioning {
     buffer.flip()
 
     try {
-      while (buffer.remaining() > 0) {
-        channel.write(buffer)
-      }
+      while (buffer.remaining() > 0) { channel.write(buffer) }
       Success(PrecogUnit)
     } catch {
       case ioe: IOException =>
@@ -53,18 +51,13 @@ trait Versioning {
       channel: ReadableByteChannel): Validation[IOException, Int] = {
     val buffer = ByteBuffer.allocate(4)
     try {
-      while (buffer.remaining() > 0) {
-        channel.read(buffer)
-      }
+      while (buffer.remaining() > 0) { channel.read(buffer) }
       buffer.flip()
 
       val magic0: Short = buffer.getShort()
       val version0: Int = buffer.getShort()
-      if (magic0 == magic) {
-        Success(version0)
-      } else {
-        Failure(new IOException("Incorrect magic number found."))
-      }
+      if (magic0 == magic) { Success(version0) }
+      else { Failure(new IOException("Incorrect magic number found.")) }
     } catch {
       case ioe: IOException =>
         Failure(ioe)

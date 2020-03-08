@@ -36,17 +36,13 @@ private[spark] trait ListenerBus[L <: AnyRef, E] extends Logging {
   /**
     * Add a listener to listen events. This method is thread-safe and can be called in any thread.
     */
-  final def addListener(listener: L): Unit = {
-    listeners.add(listener)
-  }
+  final def addListener(listener: L): Unit = { listeners.add(listener) }
 
   /**
     * Remove a listener and it won't receive any events. This method is thread-safe and can be called
     * in any thread.
     */
-  final def removeListener(listener: L): Unit = {
-    listeners.remove(listener)
-  }
+  final def removeListener(listener: L): Unit = { listeners.remove(listener) }
 
   /**
     * Post the event to all registered listeners. The `postToAll` caller should guarantee calling
@@ -59,9 +55,8 @@ private[spark] trait ListenerBus[L <: AnyRef, E] extends Logging {
     val iter = listeners.iterator
     while (iter.hasNext) {
       val listener = iter.next()
-      try {
-        doPostEvent(listener, event)
-      } catch {
+      try { doPostEvent(listener, event) }
+      catch {
         case NonFatal(e) =>
           logError(
             s"Listener ${Utils.getFormattedClassName(listener)} threw an exception",

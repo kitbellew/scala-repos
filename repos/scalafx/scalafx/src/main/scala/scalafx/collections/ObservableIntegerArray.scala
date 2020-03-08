@@ -97,9 +97,7 @@ class ObservableIntegerArray(
       srcIdx: Int,
       dest: Array[Int],
       destIdx: Int,
-      length: Int) {
-    delegate.copyTo(srcIdx, dest, destIdx, length)
-  }
+      length: Int) { delegate.copyTo(srcIdx, dest, destIdx, length) }
 
   /**
     * @inheritdoc
@@ -108,9 +106,7 @@ class ObservableIntegerArray(
       srcIdx: Int,
       dest: ObservableIntegerArray,
       destIdx: Int,
-      length: Int) {
-    delegate.copyTo(srcIdx, dest.delegate, destIdx, length)
-  }
+      length: Int) { delegate.copyTo(srcIdx, dest.delegate, destIdx, length) }
 
   /**
     * @inheritdoc
@@ -120,9 +116,7 @@ class ObservableIntegerArray(
   /**
     * @inheritdoc.
     */
-  override def addAll(elems: Int*) = {
-    delegate.addAll(elems: _*)
-  }
+  override def addAll(elems: Int*) = { delegate.addAll(elems: _*) }
 
   /**
     * @inheritdoc.
@@ -148,9 +142,7 @@ class ObservableIntegerArray(
   /**
     * @inheritdoc.
     */
-  override def setAll(elements: Int*) {
-    delegate.setAll(elements: _*)
-  }
+  override def setAll(elements: Int*) { delegate.setAll(elements: _*) }
 
   /**
     * @inheritdoc.
@@ -176,9 +168,7 @@ class ObservableIntegerArray(
   /**
     * @inheritdoc
     */
-  override def set(idx: Int, elem: Int) {
-    delegate.set(idx, elem)
-  }
+  override def set(idx: Int, elem: Int) { delegate.set(idx, elem) }
 
   /**
     * @inheritdoc
@@ -194,9 +184,7 @@ class ObservableIntegerArray(
       destIdx: Int,
       src: ObservableIntegerArray,
       srcIdx: Int,
-      length: Int) {
-    delegate.set(destIdx, src.delegate, srcIdx, length)
-  }
+      length: Int) { delegate.set(destIdx, src.delegate, srcIdx, length) }
 
   /**
     * @inheritdoc

@@ -44,9 +44,7 @@ class SameResultSuite extends SparkFunSuite {
     }
   }
 
-  test("relations") {
-    assertSameResult(testRelation, testRelation2)
-  }
+  test("relations") { assertSameResult(testRelation, testRelation2) }
 
   test("projections") {
     assertSameResult(testRelation.select('a), testRelation2.select('a))

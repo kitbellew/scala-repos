@@ -55,9 +55,7 @@ object SplitPane {
       * Represents the location where the divider should ideally be positioned, between 0.0 and 1.0 (inclusive).
       */
     def position: DoubleProperty = delegate.positionProperty
-    def position_=(v: Double) {
-      position() = v
-    }
+    def position_=(v: Double) { position() = v }
 
   }
 
@@ -85,9 +83,7 @@ class SplitPane(override val delegate: jfxsc.SplitPane = new jfxsc.SplitPane)
     */
   def orientation: ObjectProperty[jfxg.Orientation] =
     delegate.orientationProperty
-  def orientation_=(v: Orientation) {
-    orientation() = v
-  }
+  def orientation_=(v: Orientation) { orientation() = v }
 
   /**
     * Returns an array of double containing the position of each divider.

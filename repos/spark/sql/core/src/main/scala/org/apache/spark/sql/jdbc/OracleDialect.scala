@@ -40,9 +40,7 @@ private case object OracleDialect extends JdbcDialect {
       // This is sub-optimal as we have to pick a precision/scale in advance whereas the data
       //  in Oracle is allowed to have different precision/scale for each value.
       Option(DecimalType(DecimalType.MAX_PRECISION, 10))
-    } else {
-      None
-    }
+    } else { None }
   }
 
   override def getJDBCType(dt: DataType): Option[JdbcType] = dt match {

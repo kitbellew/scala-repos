@@ -72,9 +72,7 @@ class EndToEndTest extends FunSuite {
       val clientRes = Await.result(client(streamRequest), 1.second)
       var result = ""
       val latch = new CountDownLatch(1)
-      (clientRes.error ?) ensure {
-        Future { latch.countDown() }
-      }
+      (clientRes.error ?) ensure { Future { latch.countDown() } }
 
       clientRes.messages.foreach {
         case Buf.Utf8(str) =>
@@ -264,9 +262,7 @@ class EndToEndTest extends FunSuite {
       var result = ""
       val latch = new CountDownLatch(1)
 
-      (clientRes.error ?) ensure {
-        Future { latch.countDown() }
-      }
+      (clientRes.error ?) ensure { Future { latch.countDown() } }
 
       clientRes.messages.foreach {
         case Buf.Utf8(str) =>

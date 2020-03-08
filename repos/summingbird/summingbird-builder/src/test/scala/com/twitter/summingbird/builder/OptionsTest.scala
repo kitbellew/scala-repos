@@ -45,9 +45,7 @@ class TestJob1(env: Env) extends AbstractJob(env) {
       .groupAndSumTo(CompoundStore.fromOffline[Long, Long](
         new InitialBatchedStore(BatchID(12L), null)))
       .set(BMonoidIsCommutative(true))
-  } catch {
-    case t: Throwable => t.printStackTrace
-  }
+  } catch { case t: Throwable => t.printStackTrace }
 }
 
 class OptionsTest extends WordSpec {

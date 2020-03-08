@@ -45,15 +45,11 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
       try {
         downloaded = ActivatorRepoProcessor.downloadStringFromRepo(
           s"$urlString/$PROPERTIES")
-      } catch {
-        case io: IOException => error("Can't download index", io)
-      }
+      } catch { case io: IOException => error("Can't download index", io) }
 
       downloaded flatMap {
         case str =>
-          str.split('\n').find {
-            case s => s.trim startsWith CACHE_HASH
-          } map {
+          str.split('\n').find { case s => s.trim startsWith CACHE_HASH } map {
             case hashStr => hashStr.trim.stripPrefix(CACHE_HASH)
           }
       }
@@ -124,17 +120,13 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
           searcher.search(new lucene.search.MatchAllDocsQuery, reader.maxDoc())
         val data = docs.scoreDocs.map { case doc => reader document doc.doc }
 
-        data.map {
-          case docData => Keys.from(docData)
-        }.toMap
+        data.map { case docData => Keys.from(docData) }.toMap
       }
     } catch {
       case io: IOException =>
         error("Can't process templates list", io)
         Map.empty
-    } finally {
-      if (reader != null) reader.close()
-    }
+    } finally { if (reader != null) reader.close() }
   }
 
   private def getOrDownloadTemplate(
@@ -155,11 +147,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
         return
       }
 
-      try {
-        FileUtil.copy(cachedTemplate, pathTo)
-      } catch {
-        case _: IOException => onError(a)
-      }
+      try { FileUtil.copy(cachedTemplate, pathTo) }
+      catch { case _: IOException => onError(a) }
     }
 
     ActivatorRepoProcessor.downloadTemplateFromRepo(
@@ -219,9 +208,7 @@ object ActivatorCachedRepoProcessor {
   private val INDEX_CACHE_NAME = "activator_template_index"
   private val log = Logger.getInstance(classOf[ActivatorCachedRepoProcessor])
 
-  def logError(msg: String) {
-    log.error(msg)
-  }
+  def logError(msg: String) { log.error(msg) }
 
   def logError(msg: String, ex: Throwable) {
     val newMsg =

@@ -34,9 +34,7 @@ class FinagleClientThriftServerTest extends FunSuite {
       def add(a: Int, b: Int): Int = { throw new AnException }
       def add_one(a: Int, b: Int) = {}
       def complex_return(someString: String) = new SomeStruct(123, someString)
-      def someway() {
-        somewayPromise() = Return.Unit
-      }
+      def someway() { somewayPromise() = Return.Unit }
       def show_me_your_dtab() = ""
       def show_me_your_dtab_size() = 0
     }
@@ -116,9 +114,7 @@ class FinagleClientThriftServerTest extends FunSuite {
 
       val client = new B.ServiceToClient(service, new TBinaryProtocol.Factory())
 
-      intercept[Exception] {
-        Await.result(client.add(1, 2))
-      }
+      intercept[Exception] { Await.result(client.add(1, 2)) }
       testServer.shutdown()
     }
 

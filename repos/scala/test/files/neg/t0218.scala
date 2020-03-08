@@ -5,7 +5,5 @@ trait APQ {
 
   type PP = P
 
-  def pq(numQueens: Int, numRows: Int): List[Placement] = {
-    List(new PP)
-  }
+  def pq(numQueens: Int, numRows: Int): List[Placement] = { List(new PP) }
 }

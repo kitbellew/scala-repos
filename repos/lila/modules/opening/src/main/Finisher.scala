@@ -73,9 +73,8 @@ private[opening] final class Finisher(api: OpeningApi, openingColl: Coll) {
       case Glicko.Result.Win  => results.addResult(u1, u2)
       case Glicko.Result.Loss => results.addResult(u2, u1)
     }
-    try {
-      system.updateRatings(results)
-    } catch {
+    try { system.updateRatings(results) }
+    catch {
       case e: Exception => lila.log("opening").error("update ratings", e)
     }
   }

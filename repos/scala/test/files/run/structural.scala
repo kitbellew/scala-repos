@@ -2,8 +2,12 @@ import scala.language.{reflectiveCalls}
 
 object test1 {
 
-  val o1 = new Object { override def toString = "ohone" }
-  val o2 = new Object { override def toString = "ohtwo" }
+  val o1 = new Object {
+    override def toString = "ohone"
+  }
+  val o2 = new Object {
+    override def toString = "ohtwo"
+  }
 
   val t1 = new Tata("tieone")
   val t2 = new Tata("tietwo")
@@ -19,11 +23,15 @@ object test1 {
     val a = 1
     val b = 2
     val c = "hey"
-    def d(x: AnyRef) = new Object { override def toString = "dee" }
+    def d(x: AnyRef) = new Object {
+      override def toString = "dee"
+    }
     def e(x: Tata) = new Tata("iei")
     def f(x: Int) = x + 1
     def g(x: Int) = { v = x }
-    def h(x: Unit) = new Object { override def toString = "eitch" }
+    def h(x: Unit) = new Object {
+      override def toString = "eitch"
+    }
     def i(x: Array[Int]) = x(0)
     def j(x: Array[AnyRef]) = x(0)
     def k(x: Array[Char]) = x(0)
@@ -124,31 +132,45 @@ object test1 {
   Rec.g(11)
 
   this.l(Rec)
-  this.mb(new Object { def e[T](x: T): T = x })
+  this.mb(new Object {
+    def e[T](x: T): T = x
+  })
   this.m1(Rec)
   this.m2[Tata](Rec)
   this.m3[Tata](new Rec3[Tata], t1)
 }
 
 object test2 {
-  class C extends { def f() { println("1") } }
+  class C extends {
+    def f() { println("1") }
+  }
   val x1 = new C
   x1.f()
 
-  abstract class D extends { def f() }
-  val x2 = new D { def f() { println("2") } }
+  abstract class D extends {
+    def f()
+  }
+  val x2 = new D {
+    def f() { println("2") }
+  }
   x2.f()
 
-  val x3 = new { def f() { println("3") } }
+  val x3 = new {
+    def f() { println("3") }
+  }
   def run(x: { def f() }) { x.f() }
   run(x3)
 
   type T = { def f() }
-  val x4 = new AnyRef { def f() { println("4") } } // ok!
+  val x4 = new AnyRef {
+    def f() { println("4") }
+  } // ok!
   //val x4 = new T { def f() { println("4") } }        // error! (bug #1241)
   x4.f()
 
-  val x5: T = new { def f() { println("5") } }
+  val x5: T = new {
+    def f() { println("5") }
+  }
   x5.f()
 }
 
@@ -161,9 +183,8 @@ object test3 {
   }
 
   def m(r: { def f: Nothing }) =
-    try {
-      r.f
-    } catch {
+    try { r.f }
+    catch {
       case e: Exc       => println("caught")
       case e: Throwable => println(e)
     }

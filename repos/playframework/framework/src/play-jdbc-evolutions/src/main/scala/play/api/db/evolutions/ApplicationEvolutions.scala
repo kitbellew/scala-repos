@@ -101,14 +101,9 @@ class ApplicationEvolutions @Inject() (
       val s = c.createStatement()
       createLockTableIfNecessary(url, c, s, dbConfig)
       lock(url, c, s, dbConfig)
-      try {
-        block
-      } finally {
-        unlock(c, s)
-      }
-    } else {
-      block
-    }
+      try { block }
+      finally { unlock(c, s) }
+    } else { block }
   }
 
   private def createLockTableIfNecessary(
@@ -318,18 +313,14 @@ class DefaultEvolutionsConfigParser @Inject() (configuration: Configuration)
       if (rootConfig.underlying.hasPath(deprecated)) {
         rootConfig.reportDeprecation(s"$baseKey.$path", deprecated)
         rootConfig.get[A](deprecated)
-      } else {
-        config.get[A](path)
-      }
+      } else { config.get[A](path) }
     }
 
     // Find all the defined datasources, both using the old format, and the new format
     def loadDatasources(path: String) = {
       if (rootConfig.underlying.hasPath(path)) {
         rootConfig.get[PlayConfig](path).subKeys
-      } else {
-        Set.empty[String]
-      }
+      } else { Set.empty[String] }
     }
     val datasources = config.get[PlayConfig]("db").subKeys ++
       loadDatasources("applyEvolutions") ++

@@ -1,5 +1,3 @@
 class ScalaClassOne extends ClassTwo.Child {
-  def func4() = {
-    func2
-  }
+  def func4() = { func2 }
 }

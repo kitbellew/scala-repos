@@ -71,9 +71,7 @@ class ServiceRegistry extends Actor with ActorLogging {
       classOf[ClusterEvent.LeaderChanged])
   }
 
-  override def postStop(): Unit = {
-    cluster.unsubscribe(self)
-  }
+  override def postStop(): Unit = { cluster.unsubscribe(self) }
 
   def receive = {
     case Register(name, service) ⇒

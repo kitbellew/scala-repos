@@ -77,9 +77,7 @@ private[deploy] class ExecutorRunner(
     shutdownHook = ShutdownHookManager.addShutdownHook { () =>
       // It's possible that we arrive here before calling `fetchAndRunExecutor`, then `state` will
       // be `ExecutorState.RUNNING`. In this case, we should set `state` to `FAILED`.
-      if (state == ExecutorState.RUNNING) {
-        state = ExecutorState.FAILED
-      }
+      if (state == ExecutorState.RUNNING) { state = ExecutorState.FAILED }
       killProcess(Some("Worker shutting down"))
     }
   }
@@ -93,12 +91,8 @@ private[deploy] class ExecutorRunner(
     var exitCode: Option[Int] = None
     if (process != null) {
       logInfo("Killing process!")
-      if (stdoutAppender != null) {
-        stdoutAppender.stop()
-      }
-      if (stderrAppender != null) {
-        stderrAppender.stop()
-      }
+      if (stdoutAppender != null) { stdoutAppender.stop() }
+      if (stderrAppender != null) { stderrAppender.stop() }
       exitCode = Utils.terminateProcess(process, EXECUTOR_TERMINATE_TIMEOUT_MS)
       if (exitCode.isEmpty) {
         logWarning(
@@ -108,9 +102,7 @@ private[deploy] class ExecutorRunner(
     }
     try {
       worker.send(ExecutorStateChanged(appId, execId, state, message, exitCode))
-    } catch {
-      case e: IllegalStateException => logWarning(e.getMessage(), e)
-    }
+    } catch { case e: IllegalStateException => logWarning(e.getMessage(), e) }
   }
 
   /** Stop this executor runner, including killing the process it launched */
@@ -120,11 +112,8 @@ private[deploy] class ExecutorRunner(
       workerThread.interrupt()
       workerThread = null
       state = ExecutorState.KILLED
-      try {
-        ShutdownHookManager.removeShutdownHook(shutdownHook)
-      } catch {
-        case e: IllegalStateException => None
-      }
+      try { ShutdownHookManager.removeShutdownHook(shutdownHook) }
+      catch { case e: IllegalStateException => None }
     }
   }
 

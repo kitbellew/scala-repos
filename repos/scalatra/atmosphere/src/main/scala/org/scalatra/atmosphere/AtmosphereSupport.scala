@@ -188,9 +188,7 @@ trait AtmosphereSupport
           atmosphereFramework.doCometSupport(
             AtmosphereRequest.wrap(request),
             AtmosphereResponse.wrap(response))
-      } else {
-        super.handle(request, response)
-      }
+      } else { super.handle(request, response) }
     }
   }
 
@@ -258,9 +256,7 @@ trait AtmosphereSupport
     val transport = cometEvent.getHttpServletRequest.getParameter(
       HeaderConfig.X_ATMOSPHERE_TRANSPORT)
     if (transport != null && transport.equalsIgnoreCase(
-          HeaderConfig.WEBSOCKET_TRANSPORT)) {
-      cometEvent.close()
-    }
+          HeaderConfig.WEBSOCKET_TRANSPORT)) { cometEvent.close() }
   }
 
   /**
@@ -279,9 +275,7 @@ trait AtmosphereSupport
     val transport = cometEvent.getHttpServletRequest.getParameter(
       HeaderConfig.X_ATMOSPHERE_TRANSPORT)
     if (transport != null && transport.equalsIgnoreCase(
-          HeaderConfig.WEBSOCKET_TRANSPORT)) {
-      cometEvent.close()
-    }
+          HeaderConfig.WEBSOCKET_TRANSPORT)) { cometEvent.close() }
   }
 
   /**

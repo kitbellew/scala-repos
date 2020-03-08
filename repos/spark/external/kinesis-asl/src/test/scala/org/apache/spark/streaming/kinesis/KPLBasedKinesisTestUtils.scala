@@ -32,11 +32,8 @@ import com.google.common.util.concurrent.{FutureCallback, Futures}
 private[kinesis] class KPLBasedKinesisTestUtils extends KinesisTestUtils {
   override protected def getProducer(
       aggregate: Boolean): KinesisDataGenerator = {
-    if (!aggregate) {
-      new SimpleDataGenerator(kinesisClient)
-    } else {
-      new KPLDataGenerator(regionName)
-    }
+    if (!aggregate) { new SimpleDataGenerator(kinesisClient) }
+    else { new KPLDataGenerator(regionName) }
   }
 }
 

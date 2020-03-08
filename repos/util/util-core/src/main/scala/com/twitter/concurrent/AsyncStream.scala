@@ -183,14 +183,11 @@ sealed abstract class AsyncStream[+A] {
       }
     }
 
-    if (concurrencyLevel == 1) {
-      mapF(f)
-    } else if (concurrencyLevel < 1) {
+    if (concurrencyLevel == 1) { mapF(f) }
+    else if (concurrencyLevel < 1) {
       throw new IllegalArgumentException(
         s"concurrencyLevel must be at least one. got: $concurrencyLevel")
-    } else {
-      embed(step(Nil, () => this))
-    }
+    } else { embed(step(Nil, () => this)) }
   }
 
   /**
@@ -579,9 +576,8 @@ sealed abstract class AsyncStream[+A] {
         case (items, remaining) =>
           Cons(Future.value(items), () => remaining().grouped(groupSize))
       })
-    } else if (groupSize == 1) {
-      map(Seq(_))
-    } else {
+    } else if (groupSize == 1) { map(Seq(_)) }
+    else {
       throw new IllegalArgumentException(
         s"groupSize must be positive, but was $groupSize")
     }

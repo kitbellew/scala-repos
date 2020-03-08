@@ -18,9 +18,7 @@ object Test {
     }
   }
 
-  def g(idx: Int, len: Int) = {
-    f(source.slice(idx, idx + len))
-  }
+  def g(idx: Int, len: Int) = { f(source.slice(idx, idx + len)) }
 
   def main(args: Array[String]): Unit = {
     g(97, 1)

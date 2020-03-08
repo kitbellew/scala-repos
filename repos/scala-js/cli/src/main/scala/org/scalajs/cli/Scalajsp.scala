@@ -59,9 +59,7 @@ object Scalajsp {
     } {
       val vfile = options.jar map { jar =>
         readFromJar(jar, fileName)
-      } getOrElse {
-        readFromFile(fileName)
-      }
+      } getOrElse { readFromFile(fileName) }
 
       displayFileContent(vfile, options)
     }
@@ -115,9 +113,7 @@ object Scalajsp {
           IO.readInputStreamToByteArray(jarFile.getInputStream(entry))
         new MemVirtualSerializedScalaJSIRFile(name).withContent(content)
       }
-    } finally {
-      jarFile.close()
-    }
+    } finally { jarFile.close() }
   }
 
   private val stdout =

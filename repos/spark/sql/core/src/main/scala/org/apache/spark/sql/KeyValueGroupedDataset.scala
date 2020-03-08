@@ -211,9 +211,7 @@ class KeyValueGroupedDataset[K, V] private[sql] (
     *
     * @since 1.6.0
     */
-  def reduce(f: ReduceFunction[V]): Dataset[(K, V)] = {
-    reduce(f.call _)
-  }
+  def reduce(f: ReduceFunction[V]): Dataset[(K, V)] = { reduce(f.call _) }
 
   // This is here to prevent us from adding overloads that would be ambiguous.
   @scala.annotation.varargs
@@ -239,9 +237,7 @@ class KeyValueGroupedDataset[K, V] private[sql] (
     val keyColumn = if (resolvedKEncoder.flat) {
       assert(groupingAttributes.length == 1)
       groupingAttributes.head
-    } else {
-      Alias(CreateStruct(groupingAttributes), "key")()
-    }
+    } else { Alias(CreateStruct(groupingAttributes), "key")() }
     val aggregate =
       Aggregate(groupingAttributes, keyColumn +: namedColumns, logicalPlan)
     val execution = new QueryExecution(sqlContext, aggregate)

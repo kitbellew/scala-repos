@@ -1,7 +1,5 @@
 case class B(var x: Int) {
-  def succ() {
-    x = x + 1
-  }
+  def succ() { x = x + 1 }
 }
 
 object Test {

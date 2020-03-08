@@ -1,5 +1,9 @@
-abstract class Obj { type S }
-class ObjImpl extends Obj { type S = String }
+abstract class Obj {
+  type S
+}
+class ObjImpl extends Obj {
+  type S = String
+}
 
 abstract class A {
   type MyObj <: Obj

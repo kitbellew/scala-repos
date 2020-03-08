@@ -16,9 +16,7 @@ object pidigits {
 
     i = i - 10
 
-    if (i < N) {
-      System.out.println(pi_digits(N - i) + "\t:" + N)
-    }
+    if (i < N) { System.out.println(pi_digits(N - i) + "\t:" + N) }
   }
 
   def compose(a: Array[BigInt], b: Array[BigInt]): Array[BigInt] = {

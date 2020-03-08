@@ -50,9 +50,7 @@ abstract class SkinBase[C <: jfxsc.Control] protected (
   /**
     * Called by a `Skinnable` when the `Skin` is replaced on the `Skinnable`.
     */
-  def dispose() {
-    delegate.dispose()
-  }
+  def dispose() { delegate.dispose() }
 
   /**
     * Returns the children of the skin.

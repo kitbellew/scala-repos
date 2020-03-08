@@ -37,13 +37,9 @@ object KuhnMunkres extends BipartiteMatching {
       if (costs.length > costs(0).length) {
         val newCosts = Array.fill(costs(0).length, costs.length)(0.0)
         for (i <- 0 until costs.length;
-             j <- 0 until costs(0).length) {
-          newCosts(j)(i) = costs(i)(j)
-        }
+             j <- 0 until costs(0).length) { newCosts(j)(i) = costs(i)(j) }
         (newCosts.map { row => row.toSeq }.toSeq, true)
-      } else {
-        (costs, false)
-      }
+      } else { (costs, false) }
 
     val C: Array[Array[Double]] = padMatrix(costs2);
     val n = C.size;
@@ -92,25 +88,19 @@ object KuhnMunkres extends BipartiteMatching {
       }
     }
 
-    def findStarInRow(row: Int) = {
-      marked(row).indexWhere(1 == _)
-    }
+    def findStarInRow(row: Int) = { marked(row).indexWhere(1 == _) }
 
     def findStarInCol(col: Int) = {
       Iterator.range(0, n).indexWhere(i => marked(i)(col) == 1)
     }
 
-    def findPrimeInRow(row: Int) = {
-      marked(row).indexWhere(2 == _)
-    }
+    def findPrimeInRow(row: Int) = { marked(row).indexWhere(2 == _) }
 
     def convertPath(path: Array[Array[Int]], count: Int) = {
       for (i <- 0 to count) {
         if (marked(path(i)(0))(path(i)(1)) == 1)
           marked(path(i)(0))(path(i)(1)) = 0
-        else {
-          marked(path(i)(0))(path(i)(1)) = 1
-        }
+        else { marked(path(i)(0))(path(i)(1)) = 1 }
       }
     }
 
@@ -119,9 +109,7 @@ object KuhnMunkres extends BipartiteMatching {
         i <- 0 until n;
         min = C(i).reduceLeft(_ min _);
         j <- 0 until n
-      } {
-        C(i)(j) -= min;
-      }
+      } { C(i)(j) -= min; }
 
       2;
     }
@@ -152,11 +140,8 @@ object KuhnMunkres extends BipartiteMatching {
         count += 1
       }
 
-      if (count >= n) {
-        7
-      } else {
-        4
-      }
+      if (count >= n) { 7 }
+      else { 4 }
     }
 
     def step4() = {
@@ -196,9 +181,7 @@ object KuhnMunkres extends BipartiteMatching {
           count += 1;
           path(count)(0) = row;
           path(count)(1) = path(count - 1)(1);
-        } else {
-          done = true;
-        }
+        } else { done = true; }
 
         if (!done) {
           val col = findPrimeInRow(path(count)(0));
@@ -256,9 +239,7 @@ object KuhnMunkres extends BipartiteMatching {
       val answers2 = Array.fill(costs2(0).length)(-1)
       for (i <- 0 until answers.length) {
         val j = answers(i)
-        if (j != -1) {
-          answers2(j) = i
-        }
+        if (j != -1) { answers2(j) = i }
       }
       answers = answers2
     }

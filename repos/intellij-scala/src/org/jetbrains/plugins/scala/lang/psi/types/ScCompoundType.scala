@@ -31,9 +31,7 @@ case class ScCompoundType(
     hash
   }
 
-  def visitType(visitor: ScalaTypeVisitor) {
-    visitor.visitCompoundType(this)
-  }
+  def visitType(visitor: ScalaTypeVisitor) { visitor.visitCompoundType(this) }
 
   override def typeDepth: Int = {
     val depths = signatureMap.map {

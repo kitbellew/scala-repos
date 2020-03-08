@@ -81,55 +81,41 @@ class ColumnConstraints(
     * The horizontal fill policy for the column.
     */
   def fillWidth: BooleanProperty = delegate.fillWidthProperty
-  def fillWidth_=(v: Boolean) {
-    fillWidth() = v
-  }
+  def fillWidth_=(v: Boolean) { fillWidth() = v }
 
   /**
     * The horizontal alignment for the column.
     */
   def halignment: ObjectProperty[jfxg.HPos] = delegate.halignmentProperty
-  def halignment_=(v: HPos) {
-    halignment() = v
-  }
+  def halignment_=(v: HPos) { halignment() = v }
 
   /**
     * The horizontal grow priority for the column.
     */
   def hgrow: ObjectProperty[jfxsl.Priority] = delegate.hgrowProperty
-  def hgrow_=(v: Priority) {
-    hgrow() = v
-  }
+  def hgrow_=(v: Priority) { hgrow() = v }
 
   /**
     * The maximum width for the column.
     */
   def maxWidth: DoubleProperty = delegate.maxWidthProperty
-  def maxWidth_=(v: Double) {
-    maxWidth() = v
-  }
+  def maxWidth_=(v: Double) { maxWidth() = v }
 
   /**
     * The minimum width for the column.
     */
   def minWidth: DoubleProperty = delegate.minWidthProperty
-  def minWidth_=(v: Double) {
-    minWidth() = v
-  }
+  def minWidth_=(v: Double) { minWidth() = v }
 
   /**
     * The width percentage of the column.
     */
   def percentWidth: DoubleProperty = delegate.percentWidthProperty
-  def percentWidth_=(v: Double) {
-    percentWidth() = v
-  }
+  def percentWidth_=(v: Double) { percentWidth() = v }
 
   /**
     * The preferred width for the column.
     */
   def prefWidth: DoubleProperty = delegate.prefWidthProperty
-  def prefWidth_=(v: Double) {
-    prefWidth() = v
-  }
+  def prefWidth_=(v: Double) { prefWidth() = v }
 }

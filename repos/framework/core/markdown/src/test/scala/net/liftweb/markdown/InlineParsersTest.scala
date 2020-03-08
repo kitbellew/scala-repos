@@ -38,9 +38,8 @@ class InlineParsersTest
   ///////////////////////////////////////////////////////////////
   def runSucceedingParsingTests(p: Parser[String], l: List[(String, String)]) {
     for ((a, b) <- l) {
-      try {
-        apply(p, a) should equal(b)
-      } catch {
+      try { apply(p, a) should equal(b) }
+      catch {
         case e: Throwable =>
           println("Input causing the failure was: '" + a + "'."); throw e;
       }
@@ -233,9 +232,7 @@ class InlineParsersTest
     runSucceedingParsingTests((elem('!') ~> directImg), imageTests)
   }
 
-  it should "create line breaks" in {
-    runSucceedingParsingTests(br, brTests)
-  }
+  it should "create line breaks" in { runSucceedingParsingTests(br, brTests) }
 
   it should "parse simplified xml identifiers" in {
     runSucceedingParsingTests(xmlName, xmlNameTests)

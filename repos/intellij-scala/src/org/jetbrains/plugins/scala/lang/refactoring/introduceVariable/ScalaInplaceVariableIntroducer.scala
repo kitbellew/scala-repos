@@ -111,9 +111,7 @@ class ScalaInplaceVariableIntroducer(
             setDeclaration(declaration)
             if (nameIsValid != (named.isDefined && isIdentifier(
                   input.trim,
-                  myFile.getLanguage))) {
-              nameIsValid = !nameIsValid
-            }
+                  myFile.getLanguage))) { nameIsValid = !nameIsValid }
             resetBalloonPanel(nameIsValid)
           } else {
             nameIsValid = false
@@ -299,18 +297,13 @@ class ScalaInplaceVariableIntroducer(
             protected def run(result: Result[Unit]): Unit = {
               commitDocument()
               setGreedyToRightToFalse()
-              if (needInferType) {
-                addTypeAnnotation(selectedType)
-              } else {
-                removeTypeAnnotation()
-              }
+              if (needInferType) { addTypeAnnotation(selectedType) }
+              else { removeTypeAnnotation() }
             }
           }
           writeAction.execute()
           ApplicationManager.getApplication.runReadAction(new Runnable {
-            def run(): Unit = {
-              if (needInferType) resetGreedyToRightBack()
-            }
+            def run(): Unit = { if (needInferType) resetGreedyToRightBack() }
           })
         }
       })
@@ -446,9 +439,7 @@ class ScalaInplaceVariableIntroducer(
     } catch {
       //templateState can contain null private fields
       case exc: NullPointerException =>
-    } finally {
-      myEditor.getSelectionModel.removeSelection()
-    }
+    } finally { myEditor.getSelectionModel.removeSelection() }
     super.finish(success)
   }
 }

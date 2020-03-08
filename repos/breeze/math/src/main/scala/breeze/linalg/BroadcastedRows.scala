@@ -108,9 +108,7 @@ object BroadcastedRows {
       /** Maps all key-value pairs from the given collection. */
       override def foreach[U](
           from: BroadcastedRows[T, RowType],
-          fn: (RowType) => U): Unit = {
-        iter(from.underlying, Axis._1)(fn)
-      }
+          fn: (RowType) => U): Unit = { iter(from.underlying, Axis._1)(fn) }
     }
 
   }

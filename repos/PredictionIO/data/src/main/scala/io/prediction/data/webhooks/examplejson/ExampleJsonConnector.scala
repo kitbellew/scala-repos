@@ -62,9 +62,8 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
 
   override def toEventJson(data: JObject): JObject = {
     val common =
-      try {
-        data.extract[Common]
-      } catch {
+      try { data.extract[Common] }
+      catch {
         case e: Exception =>
           throw new ConnectorException(
             s"Cannot extract Common field from ${data}. ${e.getMessage()}",

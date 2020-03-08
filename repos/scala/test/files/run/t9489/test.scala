@@ -4,7 +4,5 @@ class T {
 }
 
 object Test extends T {
-  def main(args: Array[String]): Unit = {
-    f(new A)
-  }
+  def main(args: Array[String]): Unit = { f(new A) }
 }

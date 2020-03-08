@@ -27,7 +27,9 @@ package immutable
 trait MapProxy[A, +B] extends Map[A, B] with MapProxyLike[A, B, Map[A, B]] {
   override def repr = this
   private def newProxy[B1 >: B](newSelf: Map[A, B1]): MapProxy[A, B1] =
-    new MapProxy[A, B1] { val self = newSelf }
+    new MapProxy[A, B1] {
+      val self = newSelf
+    }
 
   override def empty = newProxy(self.empty)
   override def updated[B1 >: B](key: A, value: B1) =

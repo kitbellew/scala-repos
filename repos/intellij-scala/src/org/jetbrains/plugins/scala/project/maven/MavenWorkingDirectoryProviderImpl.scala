@@ -10,9 +10,8 @@ import org.jetbrains.idea.maven.project.MavenProjectsManager
 class MavenWorkingDirectoryProviderImpl
     extends ScalaTestDefaultWorkingDirectoryProvider {
   override def getWorkingDirectory(module: Module): String =
-    if (module == null) {
-      null
-    } else {
+    if (module == null) { null }
+    else {
       Option(
         MavenProjectsManager.getInstance(module.getProject).findProject(module))
         .map(_.getDirectory)

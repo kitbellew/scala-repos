@@ -27,9 +27,7 @@ class Response[T] {
 
   /** Set provisional data, more to come
     */
-  def setProvisionally(x: T) = synchronized {
-    data = Some(Left(x))
-  }
+  def setProvisionally(x: T) = synchronized { data = Some(Left(x)) }
 
   /** Set final data, and mark response as complete.
     */
@@ -52,9 +50,8 @@ class Response[T] {
     */
   def get: Either[T, Throwable] = synchronized {
     while (!complete) {
-      try {
-        wait()
-      } catch {
+      try { wait() }
+      catch {
         case exc: InterruptedException => {
           Thread.currentThread().interrupt()
           raise(exc)
@@ -73,9 +70,8 @@ class Response[T] {
     val start = System.currentTimeMillis
     var current = start
     while (!complete && start + timeout > current) {
-      try {
-        wait(timeout - (current - start))
-      } catch {
+      try { wait(timeout - (current - start)) }
+      catch {
         case exc: InterruptedException => {
           Thread.currentThread().interrupt()
           raise(exc)

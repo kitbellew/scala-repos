@@ -96,9 +96,7 @@ class WebSocketExampleSpec extends WordSpec with Matchers {
     //#websocket-routing
     val route =
       path("greeter") {
-        get {
-          handleWebSocketMessages(greeterWebSocketService)
-        }
+        get { handleWebSocketMessages(greeterWebSocketService) }
       }
     //#websocket-routing
 

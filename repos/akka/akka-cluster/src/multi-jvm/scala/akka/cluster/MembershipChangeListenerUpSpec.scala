@@ -64,9 +64,7 @@ abstract class MembershipChangeListenerUpSpec
         latch.await
       }
 
-      runOn(third) {
-        enterBarrier("listener-1-registered")
-      }
+      runOn(third) { enterBarrier("listener-1-registered") }
 
       enterBarrier("after-1")
     }
@@ -91,9 +89,7 @@ abstract class MembershipChangeListenerUpSpec
       )
       enterBarrier("listener-2-registered")
 
-      runOn(third) {
-        cluster.join(first)
-      }
+      runOn(third) { cluster.join(first) }
 
       latch.await
 

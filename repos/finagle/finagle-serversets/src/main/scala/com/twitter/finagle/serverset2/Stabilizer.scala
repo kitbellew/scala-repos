@@ -19,9 +19,7 @@ private[serverset2] object Epoch {
     new Epoch(
       new Event[Unit] {
         override def register(w: Witness[Unit]): Closable =
-          timer.schedule(period) {
-            w.notify(())
-          }
+          timer.schedule(period) { w.notify(()) }
       },
       period)
 }
@@ -178,13 +176,9 @@ private[serverset2] object Stabilizer {
         case State(limbo, active, last) =>
           val all =
             merge(limbo.getOrElse(Set.empty), active.getOrElse(Set.empty))
-          if (all.nonEmpty) {
-            Addr.Bound(all)
-          } else if (limbo != None || active != None) {
-            Addr.Neg
-          } else {
-            last
-          }
+          if (all.nonEmpty) { Addr.Bound(all) }
+          else if (limbo != None || active != None) { Addr.Neg }
+          else { last }
       }
 
       // Trigger at most one change to state per batchEpoch
@@ -220,9 +214,7 @@ private[serverset2] object Stabilizer {
                   }
               }
           }
-          .collect {
-            case States(Some(publish), _, _, _) => publish
-          }
+          .collect { case States(Some(publish), _, _, _) => publish }
 
       batchedUpdates.register(Witness(u))
     }

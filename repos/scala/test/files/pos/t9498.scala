@@ -1,5 +1,9 @@
-trait Inv[A] { def head: A }
-trait Cov[+A] { def head: A }
+trait Inv[A] {
+  def head: A
+}
+trait Cov[+A] {
+  def head: A
+}
 
 class Test {
   def inv(i: Inv[Inv[String]]) = i match {
@@ -14,9 +18,7 @@ class Test {
       x.head: String // was: found A, required String
   }
 
-  def cov1(c: Cov[Cov[String]]) = c match {
-    case l: Cov[a] => l.head.head
-  }
+  def cov1(c: Cov[Cov[String]]) = c match { case l: Cov[a] => l.head.head }
   cov1(null): String // was: found A, required String
 
   def cov3(c: Cov[Cov[String]]): String = c match {

@@ -1,5 +1,10 @@
 class A2 extends A1 {
-  def f2 = { def g = 5; class A { def a = 0 }; new A; g }
+  def f2 = {
+    def g = 5;
+    class A {
+      def a = 0
+    }; new A; g
+  }
 }
 
 object Test extends A2 {

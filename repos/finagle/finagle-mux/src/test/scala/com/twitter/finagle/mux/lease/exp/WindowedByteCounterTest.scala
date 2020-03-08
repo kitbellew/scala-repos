@@ -31,20 +31,14 @@ class WindowedByteCounterTest
       val nfo = new JvmInfo(fakePool, fakeBean)
       val counter = new WindowedByteCounter(nfo, Local.save())
       counter.start()
-      eventually {
-        assert(counter.getState == Thread.State.TIMED_WAITING)
-      }
+      eventually { assert(counter.getState == Thread.State.TIMED_WAITING) }
 
       @volatile var closed = false
       @volatile var prev = 0
       val nextPeriod = { () =>
-        eventually {
-          assert(counter.getState == Thread.State.TIMED_WAITING)
-        }
+        eventually { assert(counter.getState == Thread.State.TIMED_WAITING) }
         ctl.advance(WindowedByteCounter.P)
-        eventually {
-          assert(counter.passCount != prev)
-        }
+        eventually { assert(counter.passCount != prev) }
 
         prev = counter.passCount
 

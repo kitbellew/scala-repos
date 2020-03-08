@@ -70,9 +70,7 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
               if (casUnique.equals(generateCasUnique(currentValue))) {
                 data(key) = Entry(value, expiry)
                 Stored()
-              } else {
-                NotStored()
-              }
+              } else { NotStored() }
             case _ =>
               NotStored()
           }

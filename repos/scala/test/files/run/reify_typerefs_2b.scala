@@ -10,9 +10,7 @@ package foo {
 }
 
 object Test extends App {
-  val code = reify {
-    List(foo.Expression, foo.Expression)
-  };
+  val code = reify { List(foo.Expression, foo.Expression) };
 
   val toolbox = cm.mkToolBox()
   val evaluated = toolbox.eval(code.tree)

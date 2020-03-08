@@ -81,15 +81,11 @@ object ActorSystemSpec {
   }
 
   class Terminater extends Actor {
-    def receive = {
-      case "run" ⇒ context.stop(self)
-    }
+    def receive = { case "run" ⇒ context.stop(self) }
   }
 
   class Strategy extends SupervisorStrategyConfigurator {
-    def create() = OneForOneStrategy() {
-      case _ ⇒ SupervisorStrategy.Escalate
-    }
+    def create() = OneForOneStrategy() { case _ ⇒ SupervisorStrategy.Escalate }
   }
 
   final case class FastActor(latch: TestLatch, testActor: ActorRef)
@@ -225,9 +221,7 @@ class ActorSystemSpec
         expectTerminated(a)
         EventFilter
           .info(pattern = "not delivered", occurrences = 1)
-          .intercept {
-            a ! "boom"
-          }(sys)
+          .intercept { a ! "boom" }(sys)
       } finally shutdown(sys)
     }
 
@@ -327,9 +321,7 @@ class ActorSystemSpec
           created :+= t
           if (created.size % 1000 == 0)
             Thread.sleep(50) // in case of unfair thread scheduling
-        } catch {
-          case _: IllegalStateException ⇒ failing = true
-        }
+        } catch { case _: IllegalStateException ⇒ failing = true }
 
         if (!failing && system.uptime >= 10) {
           println(created.last)
@@ -361,15 +353,11 @@ class ActorSystemSpec
             "akka.actor.guardian-supervisor-strategy=akka.actor.StoppingSupervisorStrategy")
           .withFallback(AkkaSpec.testConf))
       val a = system.actorOf(Props(new Actor {
-        def receive = {
-          case "die" ⇒ throw new Exception("hello")
-        }
+        def receive = { case "die" ⇒ throw new Exception("hello") }
       }))
       val probe = TestProbe()
       probe.watch(a)
-      EventFilter[Exception]("hello", occurrences = 1) intercept {
-        a ! "die"
-      }
+      EventFilter[Exception]("hello", occurrences = 1) intercept { a ! "die" }
       val t = probe.expectMsg(
         Terminated(a)(existenceConfirmed = true, addressTerminated = false))
       t.existenceConfirmed should ===(true)
@@ -385,9 +373,7 @@ class ActorSystemSpec
             "akka.actor.guardian-supervisor-strategy=\"akka.actor.ActorSystemSpec$Strategy\"")
           .withFallback(AkkaSpec.testConf))
       val a = system.actorOf(Props(new Actor {
-        def receive = {
-          case "die" ⇒ throw new Exception("hello")
-        }
+        def receive = { case "die" ⇒ throw new Exception("hello") }
       }))
       EventFilter[Exception]("hello") intercept {
         a ! "die"
@@ -406,9 +392,7 @@ class ActorSystemSpec
 
       try {
         val ref = system2.actorOf(Props(new Actor {
-          def receive = {
-            case "ping" ⇒ sender() ! "pong"
-          }
+          def receive = { case "ping" ⇒ sender() ! "pong" }
         }))
 
         val probe = TestProbe()
@@ -417,9 +401,7 @@ class ActorSystemSpec
 
         ecProbe.expectMsg(1.second, "called")
         probe.expectMsg(1.second, "pong")
-      } finally {
-        shutdown(system2)
-      }
+      } finally { shutdown(system2) }
     }
 
     "not use passed in ExecutionContext if executor is configured" in {
@@ -437,9 +419,7 @@ class ActorSystemSpec
 
       try {
         val ref = system2.actorOf(Props(new Actor {
-          def receive = {
-            case "ping" ⇒ sender() ! "pong"
-          }
+          def receive = { case "ping" ⇒ sender() ! "pong" }
         }))
 
         val probe = TestProbe()
@@ -448,9 +428,7 @@ class ActorSystemSpec
 
         ecProbe.expectNoMsg()
         probe.expectMsg(1.second, "pong")
-      } finally {
-        shutdown(system2)
-      }
+      } finally { shutdown(system2) }
     }
 
     "not allow top-level actor creation with custom guardian" in {
@@ -462,9 +440,7 @@ class ActorSystemSpec
         Some(Props.empty))
       sys.start()
       try {
-        intercept[UnsupportedOperationException] {
-          sys.actorOf(Props.empty)
-        }
+        intercept[UnsupportedOperationException] { sys.actorOf(Props.empty) }
         intercept[UnsupportedOperationException] {
           sys.actorOf(Props.empty, "empty")
         }

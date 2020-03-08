@@ -14,29 +14,13 @@ object AnonFunOnListString {
     d(l)
   }
 
-  def a(l: List[String]) {
+  def a(l: List[String]) { l.foreach(noop(_)) }
 
-    l.foreach(noop(_))
+  def b(l: List[String]) { l.find(_.isEmpty) }
 
-  }
+  def c(l: List[String]) { l.map(_.size) }
 
-  def b(l: List[String]) {
-
-    l.find(_.isEmpty)
-
-  }
-
-  def c(l: List[String]) {
-
-    l.map(_.size)
-
-  }
-
-  def d(l: List[String]) {
-
-    l.foldLeft(0)(_ + _.size)
-
-  }
+  def d(l: List[String]) { l.foldLeft(0)(_ + _.size) }
 
 }
 

@@ -39,9 +39,7 @@ class StateMapSuite extends SparkFunSuite {
 
   test("EmptyStateMap") {
     val map = new EmptyStateMap[Int, Int]
-    intercept[scala.NotImplementedError] {
-      map.put(1, 1, 1)
-    }
+    intercept[scala.NotImplementedError] { map.put(1, 1, 1) }
     assert(map.get(1) === None)
     assert(map.getByTime(10000).isEmpty)
     assert(map.getAll().isEmpty)
@@ -463,7 +461,5 @@ private[streaming] final class KryoState(var state: String)
     case _               => false
   }
 
-  override def hashCode(): Int = {
-    if (state == null) 0 else state.hashCode()
-  }
+  override def hashCode(): Int = { if (state == null) 0 else state.hashCode() }
 }

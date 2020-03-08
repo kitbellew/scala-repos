@@ -399,9 +399,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
   /**
     * Display the danger zone.
     */
-  get("/:owner/:repository/settings/danger")(ownerOnly {
-    html.danger(_)
-  })
+  get("/:owner/:repository/settings/danger")(ownerOnly { html.danger(_) })
 
   /**
     * Transfer repository ownership.
@@ -466,14 +464,9 @@ trait RepositorySettingsControllerBase extends ControllerBase {
             params("owner"),
             params("repository"),
             value).isDefined != needExists) {
-        Some(if (needExists) {
-          "URL had not been registered yet."
-        } else {
-          "URL had been registered already."
-        })
-      } else {
-        None
-      }
+        Some(if (needExists) { "URL had not been registered yet." }
+        else { "URL had been registered already." })
+      } else { None }
   }
 
   private def webhookEvents = new ValueType[Set[WebHook.Event]] {
@@ -491,9 +484,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         messages: Messages): Seq[(String, String)] =
       if (convert(name, params, messages).isEmpty) {
         Seq(name -> messages("error.required").format(name))
-      } else {
-        Nil
-      }
+      } else { Nil }
   }
 
   /**

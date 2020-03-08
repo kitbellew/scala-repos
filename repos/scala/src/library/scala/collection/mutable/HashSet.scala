@@ -79,20 +79,15 @@ class HashSet[A] private[collection] (contents: FlatHashTable.Contents[A])
 
   override def clone() = new HashSet[A] ++= this
 
-  private def writeObject(s: java.io.ObjectOutputStream) {
-    serializeTo(s)
-  }
+  private def writeObject(s: java.io.ObjectOutputStream) { serializeTo(s) }
 
-  private def readObject(in: java.io.ObjectInputStream) {
-    init(in, x => ())
-  }
+  private def readObject(in: java.io.ObjectInputStream) { init(in, x => ()) }
 
   /** Toggles whether a size map is used to track hash map statistics.
     */
   def useSizeMap(t: Boolean) =
-    if (t) {
-      if (!isSizeMapDefined) sizeMapInitAndRebuild()
-    } else sizeMapDisable()
+    if (t) { if (!isSizeMapDefined) sizeMapInitAndRebuild() }
+    else sizeMapDisable()
 
 }
 

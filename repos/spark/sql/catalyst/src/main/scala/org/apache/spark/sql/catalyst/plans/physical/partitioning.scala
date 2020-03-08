@@ -188,9 +188,7 @@ object Partitioning {
           if (a.numPartitions != b.numPartitions) {
             assert(!a.compatibleWith(b) && !b.compatibleWith(a))
             false
-          } else {
-            a.compatibleWith(b) && b.compatibleWith(a)
-          }
+          } else { a.compatibleWith(b) && b.compatibleWith(a) }
       }
       .forall(_ == true)
   }

@@ -484,9 +484,8 @@ abstract class RefChecks
                 mb)) || // m relaxes o's access boundary
               other.isJavaDefined) // overriding a protected java member, see #3946
             }
-          if (!isOverrideAccessOK) {
-            overrideAccessError()
-          } else if (other.isClass) {
+          if (!isOverrideAccessOK) { overrideAccessError() }
+          else if (other.isClass) {
             overrideError(
               "cannot be used here - class definitions cannot be overridden")
           } else if (!other.isDeferred && member.isClass) {
@@ -1075,13 +1074,9 @@ abstract class RefChecks
     private var currentLevel: LevelInfo = null
     private val symIndex = perRunCaches.newMap[Symbol, Int]()
 
-    private def pushLevel() {
-      currentLevel = new LevelInfo(currentLevel)
-    }
+    private def pushLevel() { currentLevel = new LevelInfo(currentLevel) }
 
-    private def popLevel() {
-      currentLevel = currentLevel.outer
-    }
+    private def popLevel() { currentLevel = currentLevel.outer }
 
     private def enterSyms(stats: List[Tree]) {
       var index = -1
@@ -1320,9 +1315,7 @@ abstract class RefChecks
           }
         }
         // warn only if they have no common supertype below Object
-        else if (!haveSubclassRelationship) {
-          warnIfLubless()
-        }
+        else if (!haveSubclassRelationship) { warnIfLubless() }
       }
     }
 

@@ -113,9 +113,8 @@ class SparkEnv(
       // current working dir in executor which we do not need to delete.
       driverTmpDirToDelete match {
         case Some(path) => {
-          try {
-            Utils.deleteRecursively(new File(path))
-          } catch {
+          try { Utils.deleteRecursively(new File(path)) }
+          catch {
             case e: Exception =>
               logWarning(s"Exception while deleting Spark temp dir: $path", e)
           }
@@ -163,24 +162,18 @@ object SparkEnv extends Logging {
   private[spark] val driverSystemName = "sparkDriver"
   private[spark] val executorSystemName = "sparkExecutor"
 
-  def set(e: SparkEnv) {
-    env = e
-  }
+  def set(e: SparkEnv) { env = e }
 
   /**
     * Returns the SparkEnv.
     */
-  def get: SparkEnv = {
-    env
-  }
+  def get: SparkEnv = { env }
 
   /**
     * Returns the ThreadLocal SparkEnv.
     */
   @deprecated("Use SparkEnv.get instead", "1.2.0")
-  def getThreadLocal: SparkEnv = {
-    env
-  }
+  def getThreadLocal: SparkEnv = { env }
 
   /**
     * Create a SparkEnv for the driver.
@@ -326,16 +319,11 @@ object SparkEnv extends Logging {
       if (isDriver) {
         logInfo("Registering " + name)
         rpcEnv.setupEndpoint(name, endpointCreator)
-      } else {
-        RpcUtils.makeDriverRef(name, conf, rpcEnv)
-      }
+      } else { RpcUtils.makeDriverRef(name, conf, rpcEnv) }
     }
 
-    val mapOutputTracker = if (isDriver) {
-      new MapOutputTrackerMaster(conf)
-    } else {
-      new MapOutputTrackerWorker(conf)
-    }
+    val mapOutputTracker = if (isDriver) { new MapOutputTrackerMaster(conf) }
+    else { new MapOutputTrackerWorker(conf) }
 
     // Have to assign trackerEndpoint after initialization as MapOutputTrackerEndpoint
     // requires the MapOutputTracker itself
@@ -362,9 +350,7 @@ object SparkEnv extends Logging {
     val memoryManager: MemoryManager =
       if (useLegacyMemoryManager) {
         new StaticMemoryManager(conf, numUsableCores)
-      } else {
-        UnifiedMemoryManager(conf, numUsableCores)
-      }
+      } else { UnifiedMemoryManager(conf, numUsableCores) }
 
     val blockTransferService =
       new NettyBlockTransferService(conf, securityManager, numUsableCores)
@@ -413,9 +399,7 @@ object SparkEnv extends Logging {
     // directory.
     val sparkFilesDir: String = if (isDriver) {
       Utils.createTempDir(Utils.getLocalDir(conf), "userFiles").getAbsolutePath
-    } else {
-      "."
-    }
+    } else { "." }
 
     val outputCommitCoordinator = mockOutputCommitCoordinator.getOrElse {
       new OutputCommitCoordinator(conf, isDriver)
@@ -446,9 +430,7 @@ object SparkEnv extends Logging {
     // Add a reference to tmp dir created by driver, we will delete this tmp dir when stop() is
     // called, and we only need to do it for driver. Because driver may run as a service, and if we
     // don't delete this tmp dir when sc is stopped, then will create too many tmp dirs.
-    if (isDriver) {
-      envInstance.driverTmpDirToDelete = Some(sparkFilesDir)
-    }
+    if (isDriver) { envInstance.driverTmpDirToDelete = Some(sparkFilesDir) }
 
     envInstance
   }
@@ -476,9 +458,7 @@ object SparkEnv extends Logging {
     val schedulerMode =
       if (!conf.contains("spark.scheduler.mode")) {
         Seq(("spark.scheduler.mode", schedulingMode))
-      } else {
-        Seq[(String, String)]()
-      }
+      } else { Seq[(String, String)]() }
     val sparkProperties = (conf.getAll ++ schedulerMode).sorted
 
     // System properties that are not java classpaths

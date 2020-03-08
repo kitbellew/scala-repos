@@ -64,9 +64,7 @@ case class ControlledShutdownRequest(
       4 /* broker id */
   }
 
-  override def toString(): String = {
-    describe(true)
-  }
+  override def toString(): String = { describe(true) }
 
   override def handleError(
       e: Throwable,

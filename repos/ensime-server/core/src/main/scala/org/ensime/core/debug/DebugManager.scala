@@ -47,9 +47,7 @@ class DebugManager(
   def tryPendingBreaksForSourcename(sourceName: String): Unit = {
     for (breaks <- pendingBreaksBySourceName.get(sourceName)) {
       val toTry = mutable.HashSet() ++ breaks
-      for (bp <- toTry) {
-        setBreakpoint(bp.file, bp.line)
-      }
+      for (bp <- toTry) { setBreakpoint(bp.file, bp.line) }
     }
   }
 
@@ -70,18 +68,14 @@ class DebugManager(
       bps.retain { _ != clearBp }
     }
     val toRemove = activeBreakpoints.filter { _ == clearBp }
-    for (vm <- maybeVM) {
-      vm.clearBreakpoints(toRemove)
-    }
+    for (vm <- maybeVM) { vm.clearBreakpoints(toRemove) }
     activeBreakpoints --= toRemove
   }
 
   def clearAllBreakpoints(): Unit = {
     pendingBreaksBySourceName.clear()
     activeBreakpoints = Set.empty
-    for (vm <- maybeVM) {
-      vm.clearAllBreakpoints()
-    }
+    for (vm <- maybeVM) { vm.clearAllBreakpoints() }
   }
 
   def moveActiveBreaksToPending(): Unit = {
@@ -116,11 +110,8 @@ class DebugManager(
 
   def withVM[T](action: (VM => T)): Option[T] = {
     maybeVM.synchronized {
-      try {
-        for (vm <- maybeVM) yield {
-          action(vm)
-        }
-      } catch {
+      try { for (vm <- maybeVM) yield { action(vm) } }
+      catch {
         case e: VMDisconnectedException =>
           log.error(e, "Attempted interaction with disconnected VM:")
           disconnectDebugVM()
@@ -142,9 +133,8 @@ class DebugManager(
   private def handleRPCWithVMAndThread(threadId: DebugThreadId)(
       action: ((VM, ThreadReference) => RpcResponse)): RpcResponse = {
     withVM { vm =>
-      (for (thread <- vm.threadById(threadId)) yield {
-        action(vm, thread)
-      }).getOrElse {
+      (for (thread <- vm.threadById(threadId))
+        yield { action(vm, thread) }).getOrElse {
         log.warning(s"Could not find thread: $threadId")
         FalseResponse
       }
@@ -238,9 +228,7 @@ class DebugManager(
     case e: MethodExitEvent  =>
   }
 
-  def disposeCurrentVM(): Unit = {
-    withVM { vm => vm.dispose() }
-  }
+  def disposeCurrentVM(): Unit = { withVM { vm => vm.dispose() } }
   def handleStartupFailure(e: Exception): RpcResponse = {
     maybeVM = None
     log.error(e, "Failure during VM startup")
@@ -291,9 +279,7 @@ class DebugManager(
       sender ! handleRPCWithVM() { vm => TrueResponse }
     case DebugStopReq =>
       sender ! handleRPCWithVM() { vm =>
-        if (vm.mode.shouldExit) {
-          vm.exit(0)
-        }
+        if (vm.mode.shouldExit) { vm.exit(0) }
         vm.dispose()
         TrueResponse
       }

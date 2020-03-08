@@ -7,13 +7,9 @@ package scala.test.scaladoc.prefix {
 
     class B extends A
 
-    package a {
-      class C
-    }
+    package a { class C }
 
-    package b {
-      class C
-    }
+    package b { class C }
 
     package c {
       class C
@@ -36,7 +32,5 @@ package scala.test.scaladoc.prefix {
     }
   }
 
-  package pack2 {
-    class Z extends pack1.A
-  }
+  package pack2 { class Z extends pack1.A }
 }

@@ -155,9 +155,7 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   // ******************************************************************************************
 
   def `media-type`: RuleN[String :: String :: Seq[(String, String)] :: HNil] =
-    rule {
-      `type` ~ '/' ~ subtype ~ zeroOrMore(ws(';') ~ parameter)
-    }
+    rule { `type` ~ '/' ~ subtype ~ zeroOrMore(ws(';') ~ parameter) }
 
   def `type` = rule { token }
 
@@ -321,9 +319,7 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   }
 
   // http://www.rfc-editor.org/errata_search.php?rfc=6265
-  def `path-value` = rule {
-    capture(zeroOrMore(`av-octet`)) ~ OWS
-  }
+  def `path-value` = rule { capture(zeroOrMore(`av-octet`)) ~ OWS }
 
   def `secure-av` = rule {
     ignoreCase("secure") ~ OWS ~> { (cookie: HttpCookie) ⇒
@@ -370,9 +366,7 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
     `bytes-unit` ~ (`byte-range-resp` | `unsatisfied-range`)
   }
 
-  def `byte-range` = rule {
-    `first-byte-pos` ~ ws('-') ~ `last-byte-pos`
-  }
+  def `byte-range` = rule { `first-byte-pos` ~ ws('-') ~ `last-byte-pos` }
 
   def `byte-range-resp` = rule {
     `byte-range` ~ ws('/') ~ (`complete-length` ~> (Some(_)) | ws('*') ~ push(

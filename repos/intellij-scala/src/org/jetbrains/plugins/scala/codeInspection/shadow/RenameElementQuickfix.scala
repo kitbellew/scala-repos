@@ -25,9 +25,7 @@ class RenameElementQuickfix(myRef: PsiElement, name: String)
     if (!elem.isValid) return
     val action: AnAction = new RenameElementAction
     val event: AnActionEvent = actionEventForElement(project, action)
-    invokeLater {
-      action.actionPerformed(event)
-    }
+    invokeLater { action.actionPerformed(event) }
   }
 
   private def actionEventForElement(

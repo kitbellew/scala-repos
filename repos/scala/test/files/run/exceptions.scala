@@ -30,11 +30,8 @@ object exceptions {
     val key = 2000;
     val map: IntMap[String] = new Empty[String];
     val value =
-      try {
-        map.lookup(key)
-      } catch {
-        case e: Throwable => e.getMessage()
-      }
+      try { map.lookup(key) }
+      catch { case e: Throwable => e.getMessage() }
     check("lookup(" + key + ")", value, "KO");
   }
 
@@ -44,9 +41,7 @@ object exceptions {
 
 object Test {
 
-  def main(args: Array[String]): Unit = {
-    exceptions.test;
-  }
+  def main(args: Array[String]): Unit = { exceptions.test; }
 
 }
 

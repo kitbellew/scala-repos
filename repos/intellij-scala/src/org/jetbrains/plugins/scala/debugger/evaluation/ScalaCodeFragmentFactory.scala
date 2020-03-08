@@ -67,9 +67,7 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
           i += 1
         }
         val psiClass: PsiClass = nameRef.get
-        if (psiClass != null) {
-          return ScType.designator(psiClass)
-        }
+        if (psiClass != null) { return ScType.designator(psiClass) }
       }
       null
     }
@@ -146,9 +144,7 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
           }
         })
         val newContext: PsiElement = codeFragment.findElementAt(offset)
-        if (newContext != null) {
-          context = newContext
-        }
+        if (newContext != null) { context = newContext }
       }
     }
     context

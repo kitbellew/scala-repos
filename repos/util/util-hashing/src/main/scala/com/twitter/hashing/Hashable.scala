@@ -172,11 +172,8 @@ object Hashable extends LowPriorityHashable {
         rv = rv ^ (key(i) & 0xff)
         var j = 0
         while (j < 8) {
-          if ((rv & 1) != 0) {
-            rv = (rv >> 1) ^ 0xEDB88320L
-          } else {
-            rv >>= 1
-          }
+          if ((rv & 1) != 0) { rv = (rv >> 1) ^ 0xEDB88320L }
+          else { rv >>= 1 }
           j += 1
         }
         i += 1

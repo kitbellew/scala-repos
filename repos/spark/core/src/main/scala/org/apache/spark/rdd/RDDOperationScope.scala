@@ -52,9 +52,7 @@ private[spark] class RDDOperationScope(
     val parent: Option[RDDOperationScope] = None,
     val id: String = RDDOperationScope.nextScopeId().toString) {
 
-  def toJson: String = {
-    RDDOperationScope.jsonMapper.writeValueAsString(this)
-  }
+  def toJson: String = { RDDOperationScope.jsonMapper.writeValueAsString(this) }
 
   /**
     * Return a list of scopes that this scope is a part of, including this scope itself.
@@ -152,9 +150,7 @@ private[spark] object RDDOperationScope extends Logging {
           new RDDOperationScope(name, oldScope).toJson)
       }
       // Optionally disallow the child body to override our scope
-      if (!allowNesting) {
-        sc.setLocalProperty(noOverrideKey, "true")
-      }
+      if (!allowNesting) { sc.setLocalProperty(noOverrideKey, "true") }
       body
     } finally {
       // Remember to restore any state that was modified before exiting

@@ -68,30 +68,22 @@ class FlashMap extends MutableMapWithIndifferentAccess[Any] with Serializable {
   /**
     * Removes all flagged entries.
     */
-  def sweep(): Unit = {
-    flagged foreach { key => m -= key }
-  }
+  def sweep(): Unit = { flagged foreach { key => m -= key } }
 
   /**
     * Clears all flags so no entries are removed on the next sweep.
     */
-  def keep(): Unit = {
-    flagged.clear()
-  }
+  def keep(): Unit = { flagged.clear() }
 
   /**
     * Clears the flag for the specified key so its entry is not removed on the next sweep.
     */
-  def keep(key: String): Unit = {
-    flagged -= key
-  }
+  def keep(key: String): Unit = { flagged -= key }
 
   /**
     * Flags all current keys so the entire map is cleared on the next sweep.
     */
-  def flag(): Unit = {
-    flagged ++= m.keys
-  }
+  def flag(): Unit = { flagged ++= m.keys }
 
   /**
     * Sets a value for the current request only.  It will be removed before the next request unless explicitly kept.
@@ -156,17 +148,13 @@ trait FlashMapSupport extends Handler {
          * Only the outermost FlashMapSupport sweeps it at the end.
          * This deals with both nested filters and redirects to other servlets.
          */
-        if (isOutermost) {
-          f.sweep()
-        }
+        if (isOutermost) { f.sweep() }
         flashMapSetSession(f)
       }
 
       if (isOutermost) {
         req(LockKey) = "locked"
-        if (sweepUnusedFlashEntries(req)) {
-          f.flag()
-        }
+        if (sweepUnusedFlashEntries(req)) { f.flag() }
       }
 
       super.handle(req, res)
@@ -190,9 +178,7 @@ trait FlashMapSupport extends Handler {
     req.get(SessionKey).map(_.asInstanceOf[FlashMap]).getOrElse {
       val map = session
         .get(SessionKey)
-        .map {
-          _.asInstanceOf[FlashMap]
-        }
+        .map { _.asInstanceOf[FlashMap] }
         .getOrElse(new FlashMap)
 
       req.setAttribute(SessionKey, map)

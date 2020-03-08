@@ -9,9 +9,8 @@ object Ansi {
     else colorSequence + s + NORMAL
 
   def filterAnsi(s: String): String = {
-    if (s == null) {
-      null
-    } else {
+    if (s == null) { null }
+    else {
       var r: String = ""
       val len = s.length
       var i = 0
@@ -21,9 +20,7 @@ object Ansi {
           i += 1
           while (i < len && s.charAt(i) != 'm')
             i += 1
-        } else {
-          r += c
-        }
+        } else { r += c }
         i += 1
       }
       r

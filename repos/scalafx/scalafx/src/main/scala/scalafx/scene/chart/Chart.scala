@@ -45,28 +45,18 @@ abstract class Chart(override val delegate: jfxsc.Chart)
     extends Region(delegate)
     with SFXDelegate[jfxsc.Chart] {
   def animated: BooleanProperty = delegate.animatedProperty
-  def animated_=(v: Boolean) {
-    animated() = v
-  }
+  def animated_=(v: Boolean) { animated() = v }
 
   def legendSide: ObjectProperty[jfxg.Side] = delegate.legendSideProperty
-  def legendSide_=(v: Side) {
-    legendSide() = v
-  }
+  def legendSide_=(v: Side) { legendSide() = v }
 
   def legendVisible: BooleanProperty = delegate.legendVisibleProperty
-  def legendVisible_=(v: Boolean) {
-    legendVisible() = v
-  }
+  def legendVisible_=(v: Boolean) { legendVisible() = v }
 
   def title: StringProperty = delegate.titleProperty
-  def title_=(v: String) {
-    title() = v
-  }
+  def title_=(v: String) { title() = v }
 
   def titleSide: ObjectProperty[jfxg.Side] = delegate.titleSideProperty
-  def titleSide_=(v: Side) {
-    titleSide() = v
-  }
+  def titleSide_=(v: Side) { titleSide() = v }
 
 }

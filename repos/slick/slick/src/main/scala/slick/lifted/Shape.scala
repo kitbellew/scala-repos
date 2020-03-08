@@ -206,9 +206,7 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
       ConstArray.from(
         shapes.iterator
           .zip(getIterator(value))
-          .map {
-            case (p, f) => p.toNode(f.asInstanceOf[p.Mixed])
-          }
+          .map { case (p, f) => p.toNode(f.asInstanceOf[p.Mixed]) }
           .toIterable))
 }
 
@@ -281,7 +279,9 @@ class CaseClassShape[
   def buildValue(elems: IndexedSeq[Any]) =
     mapLifted(TupleSupport.buildTuple(elems).asInstanceOf[LiftedTuple])
   def copy(s: Seq[Shape[_ <: ShapeLevel, _, _, _]]) =
-    new CaseClassShape(mapLifted, mapPlain) { override val shapes = s }
+    new CaseClassShape(mapLifted, mapPlain) {
+      override val shapes = s
+    }
 }
 
 /** A generic Product class shape that can be used to lift a class of

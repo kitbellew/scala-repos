@@ -161,9 +161,7 @@ private[akka] class ReplayFilter(
           buffer.add(r)
         }
 
-      } catch {
-        case e: IllegalStateException if mode == Fail ⇒ fail(e)
-      }
+      } catch { case e: IllegalStateException if mode == Fail ⇒ fail(e) }
 
     case msg @ (_: RecoverySuccess | _: ReplayMessagesFailure) ⇒
       if (debugEnabled)

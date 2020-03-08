@@ -43,9 +43,10 @@ object JavaLangObject {
           static = false,
           Ident("getClass__jl_Class", Some("getClass__jl_Class")),
           Nil,
-          ClassType(ClassClass), {
-            GetClass(This()(ThisType))
-          })(OptimizerHints.empty.withInline(true), None),
+          ClassType(ClassClass),
+          { GetClass(This()(ThisType)) })(
+          OptimizerHints.empty.withInline(true),
+          None),
         /* def hashCode(): Int = System.identityHashCode(this) */
         MethodDef(
           static = false,

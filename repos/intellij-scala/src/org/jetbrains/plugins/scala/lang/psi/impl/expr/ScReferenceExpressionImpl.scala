@@ -558,9 +558,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
             s,
             getResolveScope,
             returnType)
-        } else {
-          ResolveUtils.javaPolymorphicType(method, s, getResolveScope)
-        }
+        } else { ResolveUtils.javaPolymorphicType(method, s, getResolveScope) }
       case _ => return Failure("Cannot resolve expression", Some(this))
     }
     qualifier match {

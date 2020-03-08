@@ -399,9 +399,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   implicit def dm_csc_OpAdd[@expand.args(Int, Double, Float, Long) T]
       : OpAdd.Impl2[DenseMatrix[T], CSCMatrix[T], DenseMatrix[T]] = {
     new OpAdd.Impl2[DenseMatrix[T], CSCMatrix[T], DenseMatrix[T]] {
-      def apply(a: DenseMatrix[T], b: CSCMatrix[T]): DenseMatrix[T] = {
-        b + a
-      }
+      def apply(a: DenseMatrix[T], b: CSCMatrix[T]): DenseMatrix[T] = { b + a }
     }
   }
 
@@ -430,9 +428,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   implicit def dm_csc_OpAdd_Semi[T: Semiring: ClassTag]
       : OpAdd.Impl2[DenseMatrix[T], CSCMatrix[T], DenseMatrix[T]] = {
     new OpAdd.Impl2[DenseMatrix[T], CSCMatrix[T], DenseMatrix[T]] {
-      def apply(a: DenseMatrix[T], b: CSCMatrix[T]): DenseMatrix[T] = {
-        b + a
-      }
+      def apply(a: DenseMatrix[T], b: CSCMatrix[T]): DenseMatrix[T] = { b + a }
     }
   }
 
@@ -708,9 +704,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
               lastOffset,
               math.min(b.activeSize, c + 1),
               c)
-            if (newBOffset < 0) {
-              lastOffset = ~newBOffset
-            } else {
+            if (newBOffset < 0) { lastOffset = ~newBOffset }
+            else {
               while (rr < rrlast) {
                 val r = a.rowIndices(rr)
                 res.add(r, a.data(rr) * b.valueAt(newBOffset))
@@ -1047,9 +1042,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
               lastOffset,
               math.min(b.activeSize, c + 1),
               c)
-            if (newBOffset < 0) {
-              lastOffset = ~newBOffset
-            } else {
+            if (newBOffset < 0) { lastOffset = ~newBOffset }
+            else {
               while (rr < rrlast) {
                 val r = a.rowIndices(rr)
                 res.add(r, ring.*(a.data(rr), b.valueAt(newBOffset)))

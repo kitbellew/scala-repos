@@ -86,11 +86,8 @@ object OpenSSL {
       ciphers: String,
       nextProtos: String,
       useCache: Boolean = true): Option[Engine] = {
-    try {
-      synchronized {
-        if (null == linker) linker = new Linker()
-      }
-    } catch {
+    try { synchronized { if (null == linker) linker = new Linker() } }
+    catch {
       case e: Exception =>
         // This is a warning rather than a Throwable because we fall back to JSSE
         log.log(

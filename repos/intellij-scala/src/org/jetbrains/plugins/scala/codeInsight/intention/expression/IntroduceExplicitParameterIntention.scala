@@ -80,9 +80,7 @@ class IntroduceExplicitParameterIntention
     var needComma = false
     var needBraces = false
 
-    for (m <- Extensions.getExtensions(Macro.EP_NAME)) {
-      macros.add(m.getName)
-    }
+    for (m <- Extensions.getExtensions(Macro.EP_NAME)) { macros.add(m.getName) }
 
     for (u <- underscores) {
       if (needComma) buf.append(",")
@@ -107,12 +105,8 @@ class IntroduceExplicitParameterIntention
               val indexStr = res.replaceAll(name, "")
               if (indexStr != "") index = Integer.valueOf(indexStr)
 
-              while (usedNames.contains(name + index)) {
-                index = index + 1
-              }
-            } else {
-              return res
-            }
+              while (usedNames.contains(name + index)) { index = index + 1 }
+            } else { return res }
             res = name + index
             res
           }
@@ -121,11 +115,8 @@ class IntroduceExplicitParameterIntention
 
       var un = names(0)
       if (macros.contains(un)) {
-        if (names.length > 1) {
-          un = names(1)
-        } else {
-          un = "value"
-        }
+        if (names.length > 1) { un = names(1) }
+        else { un = "value" }
       }
 
       usedNames.add(un)
@@ -248,9 +239,7 @@ class IntroduceExplicitParameterIntention
 
             override def templateFinished(
                 template: Template,
-                brokenOff: Boolean) {
-              clearHighlighters()
-            }
+                brokenOff: Boolean) { clearHighlighters() }
 
             private def addHighlights(
                 ranges: mutable.HashMap[TextRange, TextAttributes],

@@ -67,9 +67,7 @@ object Previous {
     // TODO: this arbitrarily chooses a Format.
     // The need to choose is a fundamental problem with this approach, but this should at least make a stable choice.
     def recordReference[T](key: ScopedKey[Task[T]], format: Format[T]): Unit =
-      synchronized {
-        map = map.put(key, new Referenced(key, format))
-      }
+      synchronized { map = map.put(key, new Referenced(key, format)) }
     def getReferences: IMap[ScopedTaskKey, Referenced] = synchronized { map }
   }
 

@@ -199,9 +199,7 @@ private[storage] class BlockInfoManager extends Logging {
             return Some(info)
           }
       }
-      if (blocking) {
-        wait()
-      }
+      if (blocking) { wait() }
     } while (blocking)
     None
   }
@@ -241,9 +239,7 @@ private[storage] class BlockInfoManager extends Logging {
             return Some(info)
           }
       }
-      if (blocking) {
-        wait()
-      }
+      if (blocking) { wait() }
     } while (blocking)
     None
   }
@@ -259,9 +255,7 @@ private[storage] class BlockInfoManager extends Logging {
           if (info.writerTask != currentTaskAttemptId) {
             throw new SparkException(
               s"Task $currentTaskAttemptId has not locked block $blockId for writing")
-          } else {
-            info
-          }
+          } else { info }
         case None =>
           throw new SparkException(s"Block $blockId does not exist")
       }
@@ -351,9 +345,7 @@ private[storage] class BlockInfoManager extends Logging {
   def releaseAllLocksForTask(taskAttemptId: TaskAttemptId): Seq[BlockId] = {
     val blocksWithReleasedLocks = mutable.ArrayBuffer[BlockId]()
 
-    val readLocks = synchronized {
-      readLocksByTask.remove(taskAttemptId).get
-    }
+    val readLocks = synchronized { readLocksByTask.remove(taskAttemptId).get }
     val writeLocks = synchronized {
       writeLocksByTask.remove(taskAttemptId).getOrElse(Seq.empty)
     }
@@ -377,18 +369,14 @@ private[storage] class BlockInfoManager extends Logging {
       }
     }
 
-    synchronized {
-      notifyAll()
-    }
+    synchronized { notifyAll() }
     blocksWithReleasedLocks
   }
 
   /**
     * Returns the number of blocks tracked.
     */
-  def size: Int = synchronized {
-    infos.size
-  }
+  def size: Int = synchronized { infos.size }
 
   /**
     * Return the number of map entries in this pin counter's internal data structures.

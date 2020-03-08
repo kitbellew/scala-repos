@@ -162,8 +162,6 @@ class Counter2Test extends FunSuite with Checkers {
           (2, 'b, 4.0 / 6.0)))
   }
 
-  test("ufuncs") {
-    breeze.numerics.exp(Counter2((1, 2, 3.0)))
-  }
+  test("ufuncs") { breeze.numerics.exp(Counter2((1, 2, 3.0))) }
 
 }

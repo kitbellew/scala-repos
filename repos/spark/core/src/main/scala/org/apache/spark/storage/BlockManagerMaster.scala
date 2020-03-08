@@ -79,9 +79,7 @@ private[spark] class BlockManagerMaster(
     * Check if block manager master has a block. Note that this can be used to check for only
     * those blocks that are reported to block manager master.
     */
-  def contains(blockId: BlockId): Boolean = {
-    !getLocations(blockId).isEmpty
-  }
+  def contains(blockId: BlockId): Boolean = { !getLocations(blockId).isEmpty }
 
   /** Get ids of other nodes in the cluster from the driver */
   def getPeers(blockManagerId: BlockManagerId): Seq[BlockManagerId] = {
@@ -108,9 +106,7 @@ private[spark] class BlockManagerMaster(
       case e: Exception =>
         logWarning(s"Failed to remove RDD $rddId - ${e.getMessage}", e)
     }(ThreadUtils.sameThread)
-    if (blocking) {
-      timeout.awaitResult(future)
-    }
+    if (blocking) { timeout.awaitResult(future) }
   }
 
   /** Remove all blocks belonging to the given shuffle. */
@@ -121,9 +117,7 @@ private[spark] class BlockManagerMaster(
       case e: Exception =>
         logWarning(s"Failed to remove shuffle $shuffleId - ${e.getMessage}", e)
     }(ThreadUtils.sameThread)
-    if (blocking) {
-      timeout.awaitResult(future)
-    }
+    if (blocking) { timeout.awaitResult(future) }
   }
 
   /** Remove all blocks belonging to the given broadcast. */
@@ -140,9 +134,7 @@ private[spark] class BlockManagerMaster(
             s" with removeFromMaster = $removeFromMaster - ${e.getMessage}",
           e)
     }(ThreadUtils.sameThread)
-    if (blocking) {
-      timeout.awaitResult(future)
-    }
+    if (blocking) { timeout.awaitResult(future) }
   }
 
   /**

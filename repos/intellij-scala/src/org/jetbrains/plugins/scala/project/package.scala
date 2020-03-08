@@ -96,9 +96,7 @@ package object project {
           if (library.isScalaSdk) {
             result = Some(new ScalaSdk(library))
             false
-          } else {
-            true
-          }
+          } else { true }
         }
       })
 

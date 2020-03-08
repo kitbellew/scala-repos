@@ -70,9 +70,7 @@ object Assign {
   val it1 = Def.inputTask {
     tsk.parsed //"as" //dummy.value.parsed
   }
-  val it2 = Def.inputTask {
-    "lit"
-  }
+  val it2 = Def.inputTask { "lit" }
 
   val it3: Initialize[InputTask[String]] = Def.inputTask[String] {
     tsk.parsed.value + itsk.parsed.value.toString + isk.value
@@ -82,9 +80,7 @@ object Assign {
 		dummyt.value.parsed
 	}*/
   // should compile: can use a setting to define the parser
-  val it5 = Def.inputTask {
-    dummys.parsed
-  }
+  val it5 = Def.inputTask { dummys.parsed }
   val it6 = Def.inputTaskDyn {
     val d3 = dummy3.parsed
     val x = d3._1
@@ -92,9 +88,7 @@ object Assign {
     Def.task { tk.value + i }
   }
 
-  val it7 = Def.inputTask {
-    it5.parsed
-  }
+  val it7 = Def.inputTask { it5.parsed }
 
   def bool: Initialize[Boolean] = Def.setting { true }
   def enabledOnly[T](key: Initialize[T]): Initialize[Seq[T]] = Def.setting {

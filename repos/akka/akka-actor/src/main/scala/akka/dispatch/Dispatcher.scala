@@ -76,13 +76,11 @@ class Dispatcher(
     * INTERNAL API
     */
   protected[akka] def executeTask(invocation: TaskInvocation) {
-    try {
-      executorService execute invocation
-    } catch {
+    try { executorService execute invocation }
+    catch {
       case e: RejectedExecutionException ⇒
-        try {
-          executorService execute invocation
-        } catch {
+        try { executorService execute invocation }
+        catch {
           case e2: RejectedExecutionException ⇒
             eventStream.publish(
               Error(

@@ -204,9 +204,7 @@ object KafkaConfig {
 
   private val LogConfigPrefix = "log."
 
-  def main(args: Array[String]) {
-    System.out.println(configDef.toHtmlTable)
-  }
+  def main(args: Array[String]) { System.out.println(configDef.toHtmlTable) }
 
   /** ********* Zookeeper Configuration ***********/
   val ZkConnectProp = "zookeeper.connect"
@@ -1754,9 +1752,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   private def getMap(
       propName: String,
       propValue: String): Map[String, String] = {
-    try {
-      CoreUtils.parseCsvMap(propValue)
-    } catch {
+    try { CoreUtils.parseCsvMap(propValue) }
+    catch {
       case e: Exception =>
         throw new IllegalArgumentException(
           "Error parsing configuration property '%s': %s"
@@ -1814,9 +1811,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
                  KafkaConfig.AdvertisedPortProp) != null) {
       CoreUtils.listenerListToEndPoints(
         "PLAINTEXT://" + advertisedHostName + ":" + advertisedPort)
-    } else {
-      getListeners()
-    }
+    } else { getListeners() }
   }
 
   validateValues()

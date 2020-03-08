@@ -37,9 +37,7 @@ class ProactiveClosureSerializationSuite
 
   test("throws expected serialization exceptions on actions") {
     val (data, uc) = fixture
-    val ex = intercept[SparkException] {
-      data.map(uc.op(_)).count()
-    }
+    val ex = intercept[SparkException] { data.map(uc.op(_)).count() }
     assert(ex.getMessage.contains("Task not serializable"))
   }
 
@@ -57,9 +55,7 @@ class ProactiveClosureSerializationSuite
 
     test(s"$name transformations throw proactive serialization exceptions") {
       val (data, uc) = fixture
-      val ex = intercept[SparkException] {
-        xf(data, uc)
-      }
+      val ex = intercept[SparkException] { xf(data, uc) }
       assert(
         ex.getMessage.contains("Task not serializable"),
         s"RDD.$name doesn't proactively throw NotSerializableException")

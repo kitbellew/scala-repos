@@ -173,9 +173,7 @@ private[math] object Division {
           }
         }
       }
-      if (quot != null) {
-        quot(i) = guessDigit
-      }
+      if (quot != null) { quot(i) = guessDigit }
       // Step D7
       j -= 1
       i -= 1
@@ -267,9 +265,8 @@ private[math] object Division {
         rem = (rem << 1) + (temp & 1)
         if ((divisor & 1) != 0) {
           // the divisor is odd
-          if (quot <= rem) {
-            rem -= quot
-          } else {
+          if (quot <= rem) { rem -= quot }
+          else {
             if (quot - rem <= bLong) {
               rem += bLong - quot
               quot -= 1
@@ -314,9 +311,8 @@ private[math] object Division {
       // double the remainder and add 1 if a is odd
       rem = (rem << 1) + (a & 1)
       if ((b & 1) != 0) { // the divisor is odd
-        if (quot <= rem) {
-          rem -= quot
-        } else {
+        if (quot <= rem) { rem -= quot }
+        else {
           if (quot - rem <= bLong) {
             rem += bLong - quot
             quot -= 1
@@ -547,9 +543,8 @@ private[math] object Division {
       k = howManyIterations(u, n)
       if (k != 0) {
         BitLevel.inplaceShiftLeft(u, k)
-        if (coefU >= coefV) {
-          BitLevel.inplaceShiftLeft(r, k)
-        } else {
+        if (coefU >= coefV) { BitLevel.inplaceShiftLeft(r, k) }
+        else {
           BitLevel.inplaceShiftRight(s, Math.min(coefV - coefU, k))
           if (k - (coefV - coefU) > 0)
             BitLevel.inplaceShiftLeft(r, k - coefV + coefU)
@@ -559,9 +554,8 @@ private[math] object Division {
       k = howManyIterations(v, n)
       if (k != 0) {
         BitLevel.inplaceShiftLeft(v, k)
-        if (coefV >= coefU) {
-          BitLevel.inplaceShiftLeft(s, k)
-        } else {
+        if (coefV >= coefU) { BitLevel.inplaceShiftLeft(s, k) }
+        else {
           BitLevel.inplaceShiftRight(r, Math.min(coefU - coefV, k))
           if (k - (coefU - coefV) > 0)
             BitLevel.inplaceShiftLeft(s, k - coefU + coefV)
@@ -676,9 +670,7 @@ private[math] object Division {
     if (k > m) {
       val r2 = monPro(p.subtract(r), BigInteger.ONE, p, n1)
       monPro(r2, BigInteger.getPowerOfTwo(2 * m - k), p, n1)
-    } else {
-      monPro(p.subtract(r), BigInteger.getPowerOfTwo(m - k), p, n1)
-    }
+    } else { monPro(p.subtract(r), BigInteger.getPowerOfTwo(m - k), p, n1) }
   }
 
   /** Calculates a modInverse raised to the power of two.
@@ -899,9 +891,7 @@ private[math] object Division {
             if (j < acc3) {
               acc3 = j
               lowexp = (lowexp << (i - j)) ^ 1
-            } else {
-              lowexp = lowexp ^ (1 << (j - acc3))
-            }
+            } else { lowexp = lowexp ^ (1 << (j - acc3)) }
           }
           j += 1
         }
@@ -912,9 +902,7 @@ private[math] object Division {
         }
         res = monPro(pows((lowexp - 1) >> 1), res, modulus, n2)
         i = acc3
-      } else {
-        res = monPro(res, res, modulus, n2)
-      }
+      } else { res = monPro(res, res, modulus, n2) }
       i -= 1
     }
     res
@@ -960,14 +948,10 @@ private[math] object Division {
   private def howManyIterations(bi: BigInteger, n: Int): Int = {
     var i = n - 1
     if (bi.sign > 0) {
-      while (!bi.testBit(i)) {
-        i -= 1
-      }
+      while (!bi.testBit(i)) { i -= 1 }
       n - 1 - i
     } else {
-      while (bi.testBit(i)) {
-        i -= 1
-      }
+      while (bi.testBit(i)) { i -= 1 }
       n - 1 - Math.max(i, bi.getLowestSetBit)
     }
   }
@@ -1011,8 +995,6 @@ private[math] object Division {
       outerCarry >>>= 32
     }
     res(modulusLen << 1) = outerCarry.toInt
-    for (j <- 0 until modulusLen + 1) {
-      res(j) = res(j + modulusLen)
-    }
+    for (j <- 0 until modulusLen + 1) { res(j) = res(j + modulusLen) }
   }
 }

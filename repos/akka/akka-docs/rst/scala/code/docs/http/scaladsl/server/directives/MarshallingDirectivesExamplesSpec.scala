@@ -100,9 +100,7 @@ class MarshallingDirectivesExamplesSpec extends RoutingSpec {
       person
     }
 
-    val route = post {
-      handleWith(updatePerson)
-    }
+    val route = post { handleWith(updatePerson) }
 
     // tests:
     Post(

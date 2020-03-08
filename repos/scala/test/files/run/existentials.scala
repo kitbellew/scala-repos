@@ -106,7 +106,9 @@ object Test extends App {
   new fooW.Line
 }
 
-trait FooBar[A <: Option[_]] { def foo: A }
+trait FooBar[A <: Option[_]] {
+  def foo: A
+}
 trait SubFooBar[B <: Option[_]] extends FooBar[B]
 
 object Test1 {

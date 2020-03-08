@@ -230,19 +230,15 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
         // be sure to make it a local though, so it doesn't
         // change from under us.
         val l = lastReturnedPos
-        if (l >= 0 && l < end) {
-          mid = l
-        }
+        if (l >= 0 && l < end) { mid = l }
 
         // unroll the loop once. We're going to
         // check mid and mid+1, because if we're
         // iterating in order this will give us O(1) access
         val mi = index(mid)
-        if (mi == i) {
-          found = true
-        } else if (mi > i) {
-          end = mid - 1
-        } else {
+        if (mi == i) { found = true }
+        else if (mi > i) { end = mid - 1 }
+        else {
           // mi < i
           begin = mid + 1
         }
@@ -256,9 +252,8 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
           if (mi == i) {
             mid = mid + 1
             found = true
-          } else if (mi > i) {
-            end = mid
-          } else {
+          } else if (mi > i) { end = mid }
+          else {
             // mi < i
             begin = mid + 2
           }
@@ -388,9 +383,7 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
       var _nz = 0
       var i = 0
       while (i < used) {
-        if (data(i) != default) {
-          _nz += 1
-        }
+        if (data(i) != default) { _nz += 1 }
         i += 1
       }
       _nz
@@ -431,9 +424,7 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
   /**
     * Like compact, but doesn't look for defaultValues that can be removed.
     */
-  def quickCompact() {
-    reserve(used)
-  }
+  def quickCompact() { reserve(used) }
 
   def concatenate(that: SparseArray[V])(
       implicit man: ClassTag[V]): SparseArray[V] = {
@@ -482,17 +473,13 @@ object SparseArray {
         i += 1
       }
       rv
-    } else {
-      new SparseArray[T](length)
-    }
+    } else { new SparseArray[T](length) }
   }
 
   def create[@specialized(Int, Float, Double) T: ClassTag: Zero](length: Int)(
       values: (Int, T)*) = {
     val rv = new SparseArray[T](length)
-    for ((k, v) <- values) {
-      rv(k) = v
-    }
+    for ((k, v) <- values) { rv(k) = v }
     rv
   }
 
@@ -502,9 +489,7 @@ object SparseArray {
     var i = 0
     while (i < length) {
       val v = fn(i)
-      if (v != rv.default) {
-        rv(i) = v
-      }
+      if (v != rv.default) { rv(i) = v }
       i += 1
     }
     rv.compact()

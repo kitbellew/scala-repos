@@ -104,9 +104,7 @@ object ExtractValue {
     } else if (fields.indexWhere(checkField, ordinal + 1) != -1) {
       throw new AnalysisException(
         s"Ambiguous reference to fields ${fields.filter(checkField).mkString(", ")}")
-    } else {
-      ordinal
-    }
+    } else { ordinal }
   }
 }
 
@@ -188,15 +186,11 @@ case class GetArrayStructFields(
     val result = new Array[Any](length)
     var i = 0
     while (i < length) {
-      if (array.isNullAt(i)) {
-        result(i) = null
-      } else {
+      if (array.isNullAt(i)) { result(i) = null }
+      else {
         val row = array.getStruct(i, numFields)
-        if (row.isNullAt(ordinal)) {
-          result(i) = null
-        } else {
-          result(i) = row.get(ordinal, field.dataType)
-        }
+        if (row.isNullAt(ordinal)) { result(i) = null }
+        else { result(i) = row.get(ordinal, field.dataType) }
       }
       i += 1
     }
@@ -266,11 +260,8 @@ case class GetArrayItem(child: Expression, ordinal: Expression)
     val baseValue = value.asInstanceOf[ArrayData]
     val index = ordinal.asInstanceOf[Number].intValue()
     if (index >= baseValue.numElements() || index < 0 || baseValue.isNullAt(
-          index)) {
-      null
-    } else {
-      baseValue.get(index, dataType)
-    }
+          index)) { null }
+    else { baseValue.get(index, dataType) }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -329,18 +320,12 @@ case class GetMapValue(child: Expression, key: Expression)
     var i = 0
     var found = false
     while (i < length && !found) {
-      if (keys.get(i, keyType) == ordinal) {
-        found = true
-      } else {
-        i += 1
-      }
+      if (keys.get(i, keyType) == ordinal) { found = true }
+      else { i += 1 }
     }
 
-    if (!found || values.isNullAt(i)) {
-      null
-    } else {
-      values.get(i, dataType)
-    }
+    if (!found || values.isNullAt(i)) { null }
+    else { values.get(i, dataType) }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {

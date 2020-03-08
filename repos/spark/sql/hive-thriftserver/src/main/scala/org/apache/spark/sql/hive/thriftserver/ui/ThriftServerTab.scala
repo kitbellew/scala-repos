@@ -40,9 +40,7 @@ private[thriftserver] class ThriftServerTab(sparkContext: SparkContext)
   attachPage(new ThriftServerSessionPage(this))
   parent.attachTab(this)
 
-  def detach() {
-    getSparkUI(sparkContext).detachTab(this)
-  }
+  def detach() { getSparkUI(sparkContext).detachTab(this) }
 }
 
 private[thriftserver] object ThriftServerTab {

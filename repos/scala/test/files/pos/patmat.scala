@@ -21,9 +21,7 @@ object Foo1258 {
   case object baz
   def foo(bar: AnyRef) = {
     val Baz = baz
-    bar match {
-      case Baz => ()
-    }
+    bar match { case Baz => () }
   }
 }
 
@@ -74,7 +72,9 @@ object TestIfOpt { //compile-only "test EqualsPatternClass in combination with M
 }
 
 object Go { // bug #1277 compile-only
-  trait Core { def next: Position = null }
+  trait Core {
+    def next: Position = null
+  }
   trait Dir
   val NEXT = new Dir {}
 
@@ -90,9 +90,7 @@ object Go { // bug #1277 compile-only
 trait Outer { // bug #1282 compile-only
   object No
   trait File {
-    (null: AnyRef) match {
-      case No => false
-    }
+    (null: AnyRef) match { case No => false }
   }
 }
 
@@ -102,9 +100,7 @@ class Test806_818 { // #806, #811 compile only -- type of bind
     trait NodeImpl
     trait OtherImpl extends NodeImpl
     trait DoubleQuoteImpl extends NodeImpl
-    def asDQ(node: OtherImpl) = node match {
-      case dq: DoubleQuoteImpl => dq
-    }
+    def asDQ(node: OtherImpl) = node match { case dq: DoubleQuoteImpl => dq }
   }
 
   trait IfElseMatcher {
@@ -160,8 +156,6 @@ object Ticket710 {
     sealed class Parent()
     case object Child extends Parent()
     val x: Parent = Child
-    x match {
-      case Child => ()
-    }
+    x match { case Child => () }
   }
 }

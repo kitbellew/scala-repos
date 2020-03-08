@@ -76,9 +76,7 @@ class SimpleConsumer(
     * This handles a bug found in Java 1.7 and below, where interrupting a thread can not correctly unblock
     * the thread from waiting on ReadableByteChannel.read().
     */
-  def disconnectToHandleJavaIOBug() = {
-    disconnect()
-  }
+  def disconnectToHandleJavaIOBug() = { disconnect() }
 
   def close() {
     lock synchronized {
@@ -141,9 +139,7 @@ class SimpleConsumer(
     val aggregateTimer =
       fetchRequestAndResponseStats.getFetchRequestAndResponseAllBrokersStats.requestTimer
     aggregateTimer.time {
-      specificTimer.time {
-        response = sendRequest(request)
-      }
+      specificTimer.time { response = sendRequest(request) }
     }
     val fetchResponse =
       FetchResponse.readFrom(response.payload(), request.versionId)
@@ -193,9 +189,7 @@ class SimpleConsumer(
     OffsetFetchResponse.readFrom(sendRequest(request).payload())
 
   private def getOrMakeConnection() {
-    if (!isClosed && !blockingChannel.isConnected) {
-      connect()
-    }
+    if (!isClosed && !blockingChannel.isConnected) { connect() }
   }
 
   /**

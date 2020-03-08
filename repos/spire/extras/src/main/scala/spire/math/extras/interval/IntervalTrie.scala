@@ -390,9 +390,7 @@ object IntervalTrie {
       } else if (lower ne null) {
         result = Interval.fromBounds(lower, Unbound())
         lower = null
-      } else {
-        Iterator.empty.next()
-      }
+      } else { Iterator.empty.next() }
       result
     }
 
@@ -453,9 +451,8 @@ object IntervalTrie {
         case Above(x)  => Closed(ise.fromLong(x))
         case Below(x)  => Open(ise.fromLong(x))
       }
-      if (isEmpty) {
-        Interval.empty[T]
-      } else {
+      if (isEmpty) { Interval.empty[T] }
+      else {
         val lower = if (belowAll) Unbound[T]() else lowerBound(tree)
         val upper = if (aboveAll) Unbound[T]() else upperBound(tree)
         Interval.fromBounds(lower, upper)

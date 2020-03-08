@@ -37,11 +37,7 @@ trait ParFlatHashTable[T] extends scala.collection.mutable.FlatHashTable[T] {
 
     if (hasNext) scan()
 
-    private[this] def scan() {
-      while (itertable(idx) eq null) {
-        idx += 1
-      }
-    }
+    private[this] def scan() { while (itertable(idx) eq null) { idx += 1 } }
 
     def newIterator(index: Int, until: Int, totalsize: Int): IterableSplitter[T]
 

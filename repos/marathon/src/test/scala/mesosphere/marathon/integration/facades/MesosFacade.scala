@@ -34,9 +34,7 @@ object MesosFacade {
     override def toString: String = {
       s"{" + resources.toSeq
         .sortBy(_._1)
-        .map {
-          case (k, v) => s"$k: $v"
-        }
+        .map { case (k, v) => s"$k: $v" }
         .mkString(", ") + " }"
     }
   }

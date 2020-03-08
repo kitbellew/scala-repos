@@ -51,9 +51,7 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
   ignore(
     "array: throw exception if putting columns of different types into an array") {
     val df = Seq((0, "str")).toDF("a", "b")
-    intercept[AnalysisException] {
-      df.select(array("a", "b"))
-    }
+    intercept[AnalysisException] { df.select(array("a", "b")) }
   }
 
   test("struct with column name") {
@@ -208,9 +206,7 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
         "7192385c3c0605de55bb9476ce1d90748190ecb32a8eed7f5207b30cf6a1fe89")
     )
 
-    intercept[IllegalArgumentException] {
-      df.select(sha2($"a", 1024))
-    }
+    intercept[IllegalArgumentException] { df.select(sha2($"a", 1024)) }
   }
 
   test("misc crc32 function") {
@@ -392,15 +388,9 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     )
 
     // In hive, this errors because null has no type information
-    intercept[AnalysisException] {
-      df.select(array_contains(df("a"), null))
-    }
-    intercept[AnalysisException] {
-      df.selectExpr("array_contains(a, null)")
-    }
-    intercept[AnalysisException] {
-      df.selectExpr("array_contains(null, 1)")
-    }
+    intercept[AnalysisException] { df.select(array_contains(df("a"), null)) }
+    intercept[AnalysisException] { df.selectExpr("array_contains(a, null)") }
+    intercept[AnalysisException] { df.selectExpr("array_contains(null, 1)") }
 
     checkAnswer(
       df.selectExpr("array_contains(array(array(1), null)[0], 1)"),

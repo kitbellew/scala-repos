@@ -61,9 +61,7 @@ object IO {
   }
 
   def delete(file: File) {
-    if (file.isDirectory) {
-      file.listFiles().foreach(delete)
-    }
+    if (file.isDirectory) { file.listFiles().foreach(delete) }
     file.delete()
   }
 
@@ -128,10 +126,7 @@ object IO {
   }
 
   def using[A <: Closeable, B](closeable: A)(fn: (A) => B): B = {
-    try {
-      fn(closeable)
-    } finally {
-      Try(closeable.close())
-    }
+    try { fn(closeable) }
+    finally { Try(closeable.close()) }
   }
 }

@@ -252,9 +252,7 @@ private[akka] object FanOut {
             outputs(id).subreceive(RequestMore(null, demand))
           }
         case SubstreamCancel(id) ⇒
-          if (unmarkCancelled) {
-            unmarkOutput(id)
-          }
+          if (unmarkCancelled) { unmarkOutput(id) }
           if (marked(id) && !cancelled(id)) markedCancelled += 1
           cancelled(id) = true
           onCancel(id)

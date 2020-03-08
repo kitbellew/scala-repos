@@ -14,9 +14,7 @@ object prodcons {
     var c = 0;
     val cDone = new SyncVar[Boolean];
 
-    spawn {
-      while (p < n) { p = p + 1; buffer put (p); }
-    }
+    spawn { while (p < n) { p = p + 1; buffer put (p); } }
 
     spawn {
       var v: Int = _;

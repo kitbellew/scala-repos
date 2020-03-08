@@ -52,9 +52,7 @@ object Exponential
 
   def sufficientStatisticFor(t: Double) = SufficientStatistic(1, t)
 
-  def mle(stats: SufficientStatistic) = {
-    stats.n / stats.v
-  }
+  def mle(stats: SufficientStatistic) = { stats.n / stats.v }
 
   def likelihoodFunction(stats: SufficientStatistic) =
     new DiffFunction[Double] {

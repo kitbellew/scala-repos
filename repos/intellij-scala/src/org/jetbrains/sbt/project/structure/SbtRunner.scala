@@ -58,9 +58,7 @@ class SbtRunner(
       val message =
         s"SBT $SinceSbtVersion+ required. Please update the project definition"
       Left(new UnsupportedOperationException(message))
-    } else {
-      read1(directory, majorSbtVersion, options, listener)
-    }
+    } else { read1(directory, majorSbtVersion, options, listener) }
   }
 
   private def checkFilePresence: Option[String] = {
@@ -122,9 +120,7 @@ class SbtRunner(
               }
               .getOrElse(Left(new ImportCancelledException))
         }
-      } catch {
-        case e: Exception => Left(e)
-      }
+      } catch { case e: Exception => Left(e) }
     }
   }
 
@@ -161,9 +157,7 @@ class SbtRunner(
       handler.setShouldDestroyProcessRecursively(false)
       handler.destroyProcess()
       None
-    } else {
-      Some(output.toString)
-    }
+    } else { Some(output.toString) }
   }
 
   private def path(file: File): String = file.getAbsolutePath.replace('\\', '/')
@@ -215,9 +209,7 @@ object SbtRunner {
         val attributes = manifest.getMainAttributes
         Option(attributes.getValue(name))
       }
-    } finally {
-      jar.close()
-    }
+    } finally { jar.close() }
   }
 
   private def sbtVersionInBootPropertiesOf(jar: File): Option[String] = {
@@ -256,9 +248,7 @@ object SbtRunner {
             .takeWhile(!_.trim.startsWith("["))
           sectionLines.flatMap(findProperty).toMap
         }
-    } finally {
-      jar.close()
-    }
+    } finally { jar.close() }
   }
 
   private def sbtVersionIn(directory: File): Option[String] = {

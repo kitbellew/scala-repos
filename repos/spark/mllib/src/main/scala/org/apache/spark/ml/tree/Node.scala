@@ -98,11 +98,8 @@ private[ml] object Node {
         impurity = oldNode.impurity,
         impurityStats = null)
     } else {
-      val gain = if (oldNode.stats.nonEmpty) {
-        oldNode.stats.get.gain
-      } else {
-        0.0
-      }
+      val gain = if (oldNode.stats.nonEmpty) { oldNode.stats.get.gain }
+      else { 0.0 }
       new InternalNode(
         prediction = oldNode.predict.predict,
         impurity = oldNode.impurity,
@@ -184,11 +181,8 @@ final class InternalNode private[ml] (
   }
 
   override private[ml] def predictImpl(features: Vector): LeafNode = {
-    if (split.shouldGoLeft(features)) {
-      leftChild.predictImpl(features)
-    } else {
-      rightChild.predictImpl(features)
-    }
+    if (split.shouldGoLeft(features)) { leftChild.predictImpl(features) }
+    else { rightChild.predictImpl(features) }
   }
 
   override private[tree] def numDescendants: Int = {
@@ -251,18 +245,12 @@ private object InternalNode {
     val featureStr = s"feature ${split.featureIndex}"
     split match {
       case contSplit: ContinuousSplit =>
-        if (left) {
-          s"$featureStr <= ${contSplit.threshold}"
-        } else {
-          s"$featureStr > ${contSplit.threshold}"
-        }
+        if (left) { s"$featureStr <= ${contSplit.threshold}" }
+        else { s"$featureStr > ${contSplit.threshold}" }
       case catSplit: CategoricalSplit =>
         val categoriesStr = catSplit.leftCategories.mkString("{", ",", "}")
-        if (left) {
-          s"$featureStr in $categoriesStr"
-        } else {
-          s"$featureStr not in $categoriesStr"
-        }
+        if (left) { s"$featureStr in $categoriesStr" }
+        else { s"$featureStr not in $categoriesStr" }
     }
   }
 }
@@ -342,26 +330,20 @@ private[tree] class LearningNode(
   def predictImpl(
       binnedFeatures: Array[Int],
       splits: Array[Array[Split]]): Int = {
-    if (this.isLeaf || this.split.isEmpty) {
-      this.id
-    } else {
+    if (this.isLeaf || this.split.isEmpty) { this.id }
+    else {
       val split = this.split.get
       val featureIndex = split.featureIndex
       val splitLeft =
         split.shouldGoLeft(binnedFeatures(featureIndex), splits(featureIndex))
       if (this.leftChild.isEmpty) {
         // Not yet split. Return next layer of nodes to train
-        if (splitLeft) {
-          LearningNode.leftChildIndex(this.id)
-        } else {
-          LearningNode.rightChildIndex(this.id)
-        }
+        if (splitLeft) { LearningNode.leftChildIndex(this.id) }
+        else { LearningNode.rightChildIndex(this.id) }
       } else {
         if (splitLeft) {
           this.leftChild.get.predictImpl(binnedFeatures, splits)
-        } else {
-          this.rightChild.get.predictImpl(binnedFeatures, splits)
-        }
+        } else { this.rightChild.get.predictImpl(binnedFeatures, splits) }
       }
     }
   }
@@ -436,9 +418,7 @@ private[tree] object LearningNode {
     while (levelsToGo > 0) {
       if ((nodeIndex & (1 << levelsToGo - 1)) == 0) {
         tmpNode = tmpNode.leftChild.get
-      } else {
-        tmpNode = tmpNode.rightChild.get
-      }
+      } else { tmpNode = tmpNode.rightChild.get }
       levelsToGo -= 1
     }
     tmpNode

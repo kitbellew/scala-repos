@@ -59,7 +59,5 @@ class BooleanProperty(
   def this(bean: Object, name: String, initialValue: Boolean) =
     this(new jfxbp.SimpleBooleanProperty(bean, name, initialValue))
 
-  def value_=(v: Boolean) {
-    delegate.set(v)
-  }
+  def value_=(v: Boolean) { delegate.set(v) }
 }

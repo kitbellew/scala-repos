@@ -79,46 +79,34 @@ class Stage(override val delegate: jfxs.Stage = new jfxs.Stage)
     * The property is read only because it can be changed externally by the underlying platform and therefore must not be bindable.
     */
   def alwaysOnTop: ReadOnlyBooleanProperty = delegate.alwaysOnTopProperty
-  def alwaysOnTop_=(value: Boolean) {
-    delegate.setAlwaysOnTop(value)
-  }
+  def alwaysOnTop_=(value: Boolean) { delegate.setAlwaysOnTop(value) }
 
   def fullScreenExitHint: ObjectProperty[String] =
     delegate.fullScreenExitHintProperty
-  def fullScreenExitHint_=(value: String) {
-    fullScreenExitHint() = value
-  }
+  def fullScreenExitHint_=(value: String) { fullScreenExitHint() = value }
 
   /**
     * Specifies the Full Screen exit key combination
     */
   def fullScreenExitKey: ObjectProperty[jfxsi.KeyCombination] =
     delegate.fullScreenExitKeyProperty
-  def fullScreenExitKey_=(value: KeyCombination) {
-    fullScreenExitKey() = value
-  }
+  def fullScreenExitKey_=(value: KeyCombination) { fullScreenExitKey() = value }
 
   /**
     * Specifies whether this Stage should be a full-screen, undecorated window.
     */
   def fullScreen: ReadOnlyBooleanProperty = delegate.fullScreenProperty
-  def fullScreen_=(value: Boolean) {
-    delegate.setFullScreen(value)
-  }
+  def fullScreen_=(value: Boolean) { delegate.setFullScreen(value) }
 
   /** Defines whether the Stage is maximized or not. */
   def maximized: ReadOnlyBooleanProperty = delegate.maximizedProperty
-  def maximized_=(value: Boolean) {
-    delegate.setMaximized(value)
-  }
+  def maximized_=(value: Boolean) { delegate.setMaximized(value) }
 
   /**
     * Defines the title of the Stage.
     */
   def title: StringProperty = delegate.titleProperty
-  def title_=(v: String) {
-    title() = v
-  }
+  def title_=(v: String) { title() = v }
 
   /**
     * Gets the icon images to be used in the window decorations and when minimized.
@@ -134,48 +122,36 @@ class Stage(override val delegate: jfxs.Stage = new jfxs.Stage)
     * Defines whether the Stage is resizable or not by the user.
     */
   def resizable: BooleanProperty = delegate.resizableProperty
-  def resizable_=(v: Boolean) {
-    resizable() = v
-  }
+  def resizable_=(v: Boolean) { resizable() = v }
 
   /**
     * Specify the scene to be used on this stage.
     */
-  def scene_=(s: Scene) {
-    delegate.setScene(s.delegate)
-  }
+  def scene_=(s: Scene) { delegate.setScene(s.delegate) }
 
   /**
     * Defines the minimum width of this Stage.
     */
   def minWidth: Double = delegate.getMinWidth
-  def minWidth_=(w: Double) {
-    delegate.setMinWidth(w)
-  }
+  def minWidth_=(w: Double) { delegate.setMinWidth(w) }
 
   /**
     * Defines the minimum height of this Stage.
     */
   def minHeight: Double = delegate.getMinHeight
-  def minHeight_=(h: Double) {
-    delegate.setMinHeight(h)
-  }
+  def minHeight_=(h: Double) { delegate.setMinHeight(h) }
 
   /**
     * Defines the maximum width of this Stage.
     */
   def maxWidth: Double = delegate.getMaxWidth
-  def maxWidth_=(w: Double) {
-    delegate.setMaxWidth(w)
-  }
+  def maxWidth_=(w: Double) { delegate.setMaxWidth(w) }
 
   /**
     * Defines the maximum height of this Stage.
     */
   def maxHeight: Double = delegate.getMaxHeight
-  def maxHeight_=(h: Double) {
-    delegate.setMaxHeight(h)
-  }
+  def maxHeight_=(h: Double) { delegate.setMaxHeight(h) }
 
   /**
     * Attempts to show or hide this Window.
@@ -195,9 +171,7 @@ class Stage(override val delegate: jfxs.Stage = new jfxs.Stage)
   /**
     * Closes this Stage.
     */
-  def close() {
-    delegate.close()
-  }
+  def close() { delegate.close() }
 
   /**
     * Retrieves the modality attribute for this stage.
@@ -213,53 +187,39 @@ class Stage(override val delegate: jfxs.Stage = new jfxs.Stage)
   /**
     * Specifies the modality for this stage.
     */
-  def initModality(modality: Modality) {
-    delegate.initModality(modality)
-  }
+  def initModality(modality: Modality) { delegate.initModality(modality) }
 
   /**
     * Specifies the owner Window for this stage, or null for a top-level,
     * unowned stage.
     */
-  def initOwner(owner: Window) {
-    delegate.initOwner(owner)
-  }
+  def initOwner(owner: Window) { delegate.initOwner(owner) }
 
   /**
     * Specifies the style for this stage.
     */
-  def initStyle(style: StageStyle) {
-    delegate.initStyle(style)
-  }
+  def initStyle(style: StageStyle) { delegate.initStyle(style) }
 
   /**
     * Attempts to show this Window by setting visibility to true.
     */
-  def show() {
-    delegate.show()
-  }
+  def show() { delegate.show() }
 
   /**
     * Shows this stage and waits for it to be hidden (closed) before returning to the caller.
     * This method temporarily blocks processing of the current event, and starts a nested event loop to handle other events.
     * This method must be called on the FX Application thread.
     */
-  def showAndWait() {
-    delegate.showAndWait()
-  }
+  def showAndWait() { delegate.showAndWait() }
 
   /**
     * Send the Window to the background.
     */
-  def toBack() {
-    delegate.toBack()
-  }
+  def toBack() { delegate.toBack() }
 
   /**
     * Bring the Window to the foreground.
     */
-  def toFront() {
-    delegate.toFront()
-  }
+  def toFront() { delegate.toFront() }
 
 }

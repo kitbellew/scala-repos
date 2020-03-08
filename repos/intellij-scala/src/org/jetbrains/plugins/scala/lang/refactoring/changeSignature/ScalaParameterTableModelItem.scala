@@ -37,9 +37,7 @@ class ScalaParameterTableModelItem(
     if (trimmed.endsWith("*")) {
       parameter.isRepeatedParameter = true
       trimmed = trimmed.dropRight(1).trim
-    } else {
-      parameter.isRepeatedParameter = false
-    }
+    } else { parameter.isRepeatedParameter = false }
 
     if (typeText.isEmpty) {
       problems += RefactoringBundle.message(
@@ -56,9 +54,7 @@ class ScalaParameterTableModelItem(
     if (arrow != "") {
       parameter.isByName = true
       trimmed = trimmed.drop(arrow.length).trim
-    } else {
-      parameter.isByName = false
-    }
+    } else { parameter.isByName = false }
     if (parameter.isByName && parameter.isRepeatedParameter) {
       problems += "Parameter could not be repeated and by-name in the same time"
     }
@@ -69,9 +65,7 @@ class ScalaParameterTableModelItem(
     if (typeElem == null || typeElem.getType().isEmpty) {
       problems += s"Could not understand type $trimmed"
       parameter.scType = null
-    } else {
-      parameter.scType = typeElem.getType().getOrAny
-    }
+    } else { parameter.scType = typeElem.getType().getOrAny }
   }
 
   private def generateTypeText(parameter: ScalaParameterInfo) = {

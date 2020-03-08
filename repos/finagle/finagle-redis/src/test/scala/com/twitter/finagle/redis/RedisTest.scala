@@ -65,11 +65,8 @@ trait RedisClientTest extends RedisTest with BeforeAndAfterAll {
         .hostConnectionLimit(1)
         .buildFactory())
     Await.result(client.flushAll)
-    try {
-      testCode(client)
-    } finally {
-      client.release
-    }
+    try { testCode(client) }
+    finally { client.release }
   }
 }
 
@@ -86,9 +83,7 @@ trait RedisClientServerIntegrationTest
     .build()
 
   private[this] val service = new Service[Command, Reply] {
-    def apply(cmd: Command): Future[Reply] = {
-      svcClient(cmd)
-    }
+    def apply(cmd: Command): Future[Reply] = { svcClient(cmd) }
   }
 
   private[this] val server = ServerBuilder()
@@ -111,11 +106,8 @@ trait RedisClientServerIntegrationTest
       .retries(2)
       .build()
     Await.result(client(FlushAll))
-    try {
-      testCode(client)
-    } finally {
-      client.close()
-    }
+    try { testCode(client) }
+    finally { client.close() }
   }
 
   protected def assertMBulkReply(

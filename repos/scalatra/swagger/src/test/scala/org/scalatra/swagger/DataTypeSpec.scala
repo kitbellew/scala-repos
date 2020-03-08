@@ -8,9 +8,7 @@ class DataTypeSpec extends Specification {
 
   "DataType.apply[T]" should {
 
-    "return a correct unit datatype" in {
-      DataType[Unit] must_== DataType.Void
-    }
+    "return a correct unit datatype" in { DataType[Unit] must_== DataType.Void }
     "return a correct string datatype" in {
       DataType[String] must_== DataType.String
       DataType[java.lang.String] must_== DataType.String

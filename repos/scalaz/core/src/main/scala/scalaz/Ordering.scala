@@ -13,9 +13,15 @@ sealed abstract class Ordering(val toInt: Int, val name: String)
 }
 
 object Ordering extends OrderingInstances {
-  case object LT extends Ordering(-1, "LT") { def complement = GT }
-  case object EQ extends Ordering(0, "EQ") { def complement = EQ }
-  case object GT extends Ordering(1, "GT") { def complement = LT }
+  case object LT extends Ordering(-1, "LT") {
+    def complement = GT
+  }
+  case object EQ extends Ordering(0, "EQ") {
+    def complement = EQ
+  }
+  case object GT extends Ordering(1, "GT") {
+    def complement = LT
+  }
 
   def fromLessThan[A](a1: A, a2: A)(f: (A, A) => Boolean): Ordering =
     if (f(a1, a2)) LT

@@ -104,7 +104,5 @@ class LineChart[X, Y](override val delegate: jfxsc.LineChart[X, Y])
   }
 
   def createSymbols: BooleanProperty = delegate.createSymbolsProperty
-  def createSymbols_=(v: Boolean) {
-    createSymbols() = v
-  }
+  def createSymbols_=(v: Boolean) { createSymbols() = v }
 }

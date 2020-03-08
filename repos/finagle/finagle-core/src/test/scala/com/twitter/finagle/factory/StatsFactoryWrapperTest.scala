@@ -22,9 +22,7 @@ class StatsFactoryWrapperTest extends FunSuite with MockitoSugar {
 
     when(underlying(any[ClientConnection])) thenReturn Future.exception(t)
 
-    intercept[Throwable] {
-      Await.result(statsFac(ClientConnection.nil))
-    }
+    intercept[Throwable] { Await.result(statsFac(ClientConnection.nil)) }
 
     val expected =
       Map(List("failures", t.getClass.getName, rex.getClass.getName) -> 1)

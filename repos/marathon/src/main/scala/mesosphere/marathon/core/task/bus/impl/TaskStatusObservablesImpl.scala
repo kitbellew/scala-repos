@@ -14,9 +14,7 @@ private[bus] class TaskStatusObservablesImpl(
   override def forAppId(appId: PathId): Observable[TaskStatusUpdate] = {
     Observable.create { observer =>
       eventStream.subscribe(observer, appId)
-      Subscription {
-        eventStream.unsubscribe(observer, appId)
-      }
+      Subscription { eventStream.unsubscribe(observer, appId) }
     }
   }
 }

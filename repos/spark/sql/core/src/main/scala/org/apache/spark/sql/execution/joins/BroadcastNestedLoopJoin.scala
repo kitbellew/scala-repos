@@ -55,9 +55,8 @@ case class BroadcastNestedLoopJoin(
   }
 
   private[this] def genResultProjection: InternalRow => InternalRow = {
-    if (joinType == LeftSemi) {
-      UnsafeProjection.create(output, output)
-    } else {
+    if (joinType == LeftSemi) { UnsafeProjection.create(output, output) }
+    else {
       // Always put the stream side on left to simplify implementation
       // both of left and right side could be null
       UnsafeProjection.create(
@@ -104,11 +103,8 @@ case class BroadcastNestedLoopJoin(
 
       streamedIter.flatMap { streamedRow =>
         val joinedRows = buildRows.iterator.map(r => joinedRow(streamedRow, r))
-        if (condition.isDefined) {
-          joinedRows.filter(boundCondition)
-        } else {
-          joinedRows
-        }
+        if (condition.isDefined) { joinedRows.filter(boundCondition) }
+        else { joinedRows }
       }
     }
   }
@@ -139,9 +135,7 @@ case class BroadcastNestedLoopJoin(
 
         private def findNextMatch(): Boolean = {
           if (streamRow == null) {
-            if (!streamedIter.hasNext) {
-              return false
-            }
+            if (!streamedIter.hasNext) { return false }
             streamRow = streamedIter.next()
             nextIndex = 0
             foundMatch = false
@@ -192,9 +186,7 @@ case class BroadcastNestedLoopJoin(
       if (condition.isDefined) {
         streamedIter.filter(l =>
           buildRows.exists(r => boundCondition(joinedRow(l, r))))
-      } else {
-        streamedIter.filter(r => !buildRows.isEmpty)
-      }
+      } else { streamedIter.filter(r => !buildRows.isEmpty) }
     }
   }
 
@@ -239,9 +231,7 @@ case class BroadcastNestedLoopJoin(
       var i = 0
       val rel = relation.value
       while (i < rel.length) {
-        if (matchedBroadcastRows.get(i)) {
-          buf += rel(i).copy()
-        }
+        if (matchedBroadcastRows.get(i)) { buf += rel(i).copy() }
         i += 1
       }
       return sparkContext.makeRDD(buf.toSeq)

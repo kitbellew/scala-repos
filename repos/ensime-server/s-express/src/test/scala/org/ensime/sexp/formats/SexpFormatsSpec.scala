@@ -21,11 +21,7 @@ class SexpFormatsSpec extends FormatSpec with SexpFormats {
     assertFormat(SexpSymbol("hello"))
   }
 
-  it should "support SexpList" in {
-    assertFormat(SexpList(foo, bar))
-  }
+  it should "support SexpList" in { assertFormat(SexpList(foo, bar)) }
 
-  it should "support SexpCons" in {
-    assertFormat(SexpCons(foo, bar))
-  }
+  it should "support SexpCons" in { assertFormat(SexpCons(foo, bar)) }
 }

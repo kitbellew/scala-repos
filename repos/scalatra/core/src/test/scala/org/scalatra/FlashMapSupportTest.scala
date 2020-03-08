@@ -5,9 +5,7 @@ import javax.servlet.http.HttpServletRequest
 import org.scalatra.test.scalatest.ScalatraFunSuite
 
 class FlashMapSupportTestServlet extends ScalatraServlet with FlashMapSupport {
-  post("/message") {
-    flash("message") = "posted"
-  }
+  post("/message") { flash("message") = "posted" }
 
   get("/message") {
     flash.get("message") foreach { x =>
@@ -61,13 +59,9 @@ class FlashMapSupportTest extends ScalatraFunSuite {
     session {
       post("/message") {}
 
-      get("/message") {
-        header("message") should equal("posted")
-      }
+      get("/message") { header("message") should equal("posted") }
 
-      get("/message") {
-        header("message") should equal(null)
-      }
+      get("/message") { header("message") should equal(null) }
     }
   }
 
@@ -75,27 +69,21 @@ class FlashMapSupportTest extends ScalatraFunSuite {
     session {
       post("/commit") {}
 
-      get("/message") {
-        header("message") should equal("oops")
-      }
+      get("/message") { header("message") should equal("oops") }
     }
   }
 
   test("flash map is session-scoped") {
     post("/message") {}
 
-    get("/message") {
-      header("message") should equal(null)
-    }
+    get("/message") { header("message") should equal(null) }
   }
 
   test(
     "messages should be available in outer filter when flash map supports are nested") {
     session {
       post("/message") {}
-      get("/filter") {
-        header("message") should equal("posted")
-      }
+      get("/filter") { header("message") should equal("posted") }
     }
   }
 
@@ -105,9 +93,7 @@ class FlashMapSupportTest extends ScalatraFunSuite {
 
       get("/unused", "sweep" -> "false") {}
 
-      get("/message") {
-        header("message") should equal("posted")
-      }
+      get("/message") { header("message") should equal("posted") }
     }
   }
 
@@ -118,9 +104,7 @@ class FlashMapSupportTest extends ScalatraFunSuite {
 
       get("/unused", "sweep" -> "true") {}
 
-      get("/message") {
-        header("message") should equal(null)
-      }
+      get("/message") { header("message") should equal(null) }
     }
   }
 }
@@ -133,12 +117,8 @@ class FlashMapSupportTwoServletsTest extends ScalatraFunSuite {
   test("should clear message when displayed in other servlet") {
     session {
       post("/second/redirect") {}
-      get("/first/message") {
-        header("message") should equal("redirected")
-      }
-      get("/first/message") {
-        header("message") should equal(null)
-      }
+      get("/first/message") { header("message") should equal("redirected") }
+      get("/first/message") { header("message") should equal(null) }
     }
   }
 
@@ -146,9 +126,7 @@ class FlashMapSupportTwoServletsTest extends ScalatraFunSuite {
     session {
       get("/first/message") {}
       post("/second/redirect") {}
-      get("/first/message") {
-        header("message") should equal("redirected")
-      }
+      get("/first/message") { header("message") should equal("redirected") }
     }
   }
 }

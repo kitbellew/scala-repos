@@ -53,11 +53,8 @@ class CodeWriter(writer: Writer) {
     if (step == null)
       newspace
     else if (!line) {
-      try {
-        writer.write(nl)
-      } catch {
-        case e: Throwable => sys.error("IO error")
-      }
+      try { writer.write(nl) }
+      catch { case e: Throwable => sys.error("IO error") }
       line = align
       align = true
       space = false
@@ -125,9 +122,7 @@ class CodeWriter(writer: Writer) {
       space = false
       line = false
       this
-    } catch {
-      case e: Throwable => sys.error("IO error")
-    }
+    } catch { case e: Throwable => sys.error("IO error") }
 
   override def toString(): String = writer.toString()
 }

@@ -243,9 +243,7 @@ class SquerylRecordSpec extends Specification with AroundExample {
     }
 
     "support many to many relations" >> {
-      transactionWithRollback {
-        td.e1.rooms must haveSize(2)
-      }
+      transactionWithRollback { td.e1.rooms must haveSize(2) }
     }
 
     "support date/time queries" >> {
@@ -350,9 +348,7 @@ class SquerylRecordSpec extends Specification with AroundExample {
         bridge.save
         val company2 = Company.findForParam(id.toString)
         company2.isDefined must_== true
-        company2.foreach(c2 => {
-          c2.postCode.get must_== "10001"
-        })
+        company2.foreach(c2 => { c2.postCode.get must_== "10001" })
         val allCompanies = Company.findForList(0, 1000)
         allCompanies.size must be_>(0)
         bridge.delete_!
@@ -368,9 +364,7 @@ class SquerylRecordSpec extends Specification with AroundExample {
         .country(Countries.USA)
         .postCode("90210")
       //First insert the company in one transaction
-      transaction {
-        companies.insert(company)
-      }
+      transaction { companies.insert(company) }
       //Retrieve and modify in another transaction
       val innerUpdate = new Thread(new Runnable {
         override def run() {

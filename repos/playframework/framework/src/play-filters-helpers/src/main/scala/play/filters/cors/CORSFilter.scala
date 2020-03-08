@@ -59,9 +59,7 @@ class CORSFilter(
       request: RequestHeader): Future[Result] = {
     if (pathPrefixes.exists(request.path.startsWith)) {
       filterRequest(f, request)
-    } else {
-      f(request)
-    }
+    } else { f(request) }
   }
 }
 

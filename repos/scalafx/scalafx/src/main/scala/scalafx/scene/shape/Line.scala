@@ -45,22 +45,14 @@ class Line(override val delegate: jfxss.Line = new jfxss.Line())
     extends Shape(delegate)
     with SFXDelegate[jfxss.Line] {
   def endX: DoubleProperty = delegate.endXProperty
-  def endX_=(v: Double) {
-    endX() = v
-  }
+  def endX_=(v: Double) { endX() = v }
 
   def endY: DoubleProperty = delegate.endYProperty
-  def endY_=(v: Double) {
-    endY() = v
-  }
+  def endY_=(v: Double) { endY() = v }
 
   def startX: DoubleProperty = delegate.startXProperty
-  def startX_=(v: Double) {
-    startX() = v
-  }
+  def startX_=(v: Double) { startX() = v }
 
   def startY: DoubleProperty = delegate.startYProperty
-  def startY_=(v: Double) {
-    startY() = v
-  }
+  def startY_=(v: Double) { startY() = v }
 }

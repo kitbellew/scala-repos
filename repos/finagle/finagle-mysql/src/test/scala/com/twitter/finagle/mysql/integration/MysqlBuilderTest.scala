@@ -15,9 +15,7 @@ class MysqlBuilderTest extends FunSuite with IntegrationClient {
     Trace.enable()
     var annotations: List[Annotation] = Nil
     val mockTracer = new Tracer {
-      def record(record: Record) = {
-        annotations ::= record.annotation
-      }
+      def record(record: Record) = { annotations ::= record.annotation }
       def sampleTrace(traceId: TraceId): Option[Boolean] = Some(true)
     }
 

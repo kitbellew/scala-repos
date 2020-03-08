@@ -555,9 +555,8 @@ private[hive] class HiveMetastoreCatalog(
                     Array.empty[datasources.PartitionDirectory])
                 }
 
-          if (useCached) {
-            Some(logical)
-          } else {
+          if (useCached) { Some(logical) }
+          else {
             // If the cached relation is not updated, we invalidate it right away.
             cachedDataSourceTables.invalidate(tableIdentifier)
             None
@@ -664,9 +663,7 @@ private[hive] class HiveMetastoreCatalog(
     */
   object ParquetConversions extends Rule[LogicalPlan] {
     override def apply(plan: LogicalPlan): LogicalPlan = {
-      if (!plan.resolved || plan.analyzed) {
-        return plan
-      }
+      if (!plan.resolved || plan.analyzed) { return plan }
 
       plan transformUp {
         // Write path
@@ -747,9 +744,8 @@ private[hive] class HiveMetastoreCatalog(
         HiveNativeCommand(sql)
 
       case p @ CreateTableAsSelect(table, child, allowExisting) =>
-        val schema = if (table.schema.nonEmpty) {
-          table.schema
-        } else {
+        val schema = if (table.schema.nonEmpty) { table.schema }
+        else {
           child.output.map { a =>
             CatalogColumn(
               a.name,
@@ -787,9 +783,7 @@ private[hive] class HiveMetastoreCatalog(
             table.withNewStorage(
               serde =
                 Some("org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"))
-          } else {
-            table
-          }
+          } else { table }
 
           val QualifiedTableName(dbName, tblName) = getQualifiedTableName(table)
 
@@ -864,9 +858,7 @@ private[hive] class HiveMetastoreCatalog(
     */
   override def registerTable(
       tableIdent: TableIdentifier,
-      plan: LogicalPlan): Unit = {
-    throw new UnsupportedOperationException
-  }
+      plan: LogicalPlan): Unit = { throw new UnsupportedOperationException }
 
   /**
     * UNIMPLEMENTED: It needs to be decided how we will persist in-memory tables to the metastore.
@@ -1042,9 +1034,7 @@ private[hive] case class MetastoreRelation(
   def getHiveQlPartitions(predicates: Seq[Expression] = Nil): Seq[Partition] = {
     val rawPartitions = if (sqlContext.conf.metastorePartitionPruning) {
       client.getPartitionsByFilter(table, predicates)
-    } else {
-      allPartitions
-    }
+    } else { allPartitions }
 
     rawPartitions.map { p =>
       val tPartition = new org.apache.hadoop.hive.metastore.api.Partition
@@ -1125,9 +1115,8 @@ private[hive] case class MetastoreRelation(
       .getPartitionsByFilter(table, Nil)
       .flatMap(_.storage.locationUri)
       .toArray
-    if (partLocations.nonEmpty) {
-      partLocations
-    } else {
+    if (partLocations.nonEmpty) { partLocations }
+    else {
       Array(
         table.storage.locationUri.getOrElse(
           sys.error(s"Could not get the location of ${table.qualifiedName}.")))

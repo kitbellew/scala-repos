@@ -311,9 +311,7 @@ abstract class ScalaTestingTestCase(
           System
             .setProperty("idea.dynamic.classpath", useDynamicClassPath.toString)
           disposeOnTearDown(new Disposable {
-            def dispose() {
-              descriptor.dispose()
-            }
+            def dispose() { descriptor.dispose() }
           })
           val handler: ProcessHandler = descriptor.getProcessHandler
           assert(handler != null)

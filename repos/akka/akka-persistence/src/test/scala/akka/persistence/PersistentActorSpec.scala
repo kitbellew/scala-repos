@@ -589,9 +589,7 @@ object PersistentActorSpec {
         }
     }
 
-    def receiveRecover = {
-      case _ ⇒ ()
-    }
+    def receiveRecover = { case _ ⇒ () }
 
     override def preStart(): Unit = {
       probe ! "preStart"

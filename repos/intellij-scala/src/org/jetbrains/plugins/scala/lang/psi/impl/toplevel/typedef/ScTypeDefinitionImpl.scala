@@ -117,9 +117,7 @@ abstract class ScTypeDefinitionImpl protected (
             this,
             superReference = false),
           Some(this))
-      } else {
-        Success(ScType.designator(this), Some(this))
-      }
+      } else { Success(ScType.designator(this), Some(this)) }
     } else {
       if (parentClass != null) {
         Success(

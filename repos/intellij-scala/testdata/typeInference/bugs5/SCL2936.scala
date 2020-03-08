@@ -4,12 +4,8 @@ object SCL2936 {
   }
 
   class Test {
-    def stuff(v: MyEnum.Value) {
-      println(v.toString)
-    }
-    def main(args: Array[String]) {
-      stuff( /*start*/ MyEnum(1) /*end*/ )
-    }
+    def stuff(v: MyEnum.Value) { println(v.toString) }
+    def main(args: Array[String]) { stuff( /*start*/ MyEnum(1) /*end*/ ) }
   }
 }
 //SCL2936.MyEnum.Value

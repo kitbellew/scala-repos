@@ -55,7 +55,5 @@ object A {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    A.method
-  }
+  def main(args: Array[String]) { A.method }
 }

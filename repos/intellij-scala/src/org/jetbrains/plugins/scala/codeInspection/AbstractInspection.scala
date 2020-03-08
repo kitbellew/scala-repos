@@ -15,9 +15,7 @@ abstract class AbstractInspection(id: String, name: String)
       AbstractInspection.formatName(getClass))
   }
 
-  def this(name: String) {
-    this(AbstractInspection.formatId(getClass), name)
-  }
+  def this(name: String) { this(AbstractInspection.formatId(getClass), name) }
 
   override def getDisplayName: String = name
 

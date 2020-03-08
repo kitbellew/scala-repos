@@ -118,9 +118,7 @@ class SparseVector[@spec(Double, Int, Float, Long) V](
       size)
   }
 
-  def reserve(nnz: Int): Unit = {
-    array.reserve(nnz)
-  }
+  def reserve(nnz: Int): Unit = { array.reserve(nnz) }
 
   def compact(): Unit = {
     //ToDo 3: will require changes if non-zero defaults are implemented
@@ -165,9 +163,7 @@ class SparseVector[@spec(Double, Int, Float, Long) V](
   def allVisitableIndicesActive: Boolean = true
 
   @deprecated("Used asCSCRow instead", "0.12")
-  def asCSCMatrix(implicit man: ClassTag[V]): CSCMatrix[V] = {
-    asCscRow
-  }
+  def asCSCMatrix(implicit man: ClassTag[V]): CSCMatrix[V] = { asCscRow }
 
   def asCscRow(implicit man: ClassTag[V]): CSCMatrix[V] = {
     // zero SV
@@ -230,9 +226,7 @@ object SparseVector
   def apply[V: ClassTag: Zero](length: Int)(
       values: (Int, V)*): SparseVector[V] = {
     val r = zeros[V](length)
-    for ((i, v) <- values) {
-      r(i) = v
-    }
+    for ((i, v) <- values) { r(i) = v }
     r
   }
 
@@ -277,9 +271,7 @@ object SparseVector
   // implicits
   class CanCopySparseVector[@spec(Double, Int, Float, Long) V: ClassTag: Zero]
       extends CanCopy[SparseVector[V]] {
-    def apply(v1: SparseVector[V]) = {
-      v1.copy
-    }
+    def apply(v1: SparseVector[V]) = { v1.copy }
   }
 
   implicit def canCopySparse[@spec(
@@ -365,18 +357,14 @@ object SparseVector
   implicit def canCreateZeros[V: ClassTag: Zero]
       : CanCreateZeros[SparseVector[V], Int] = {
     new CanCreateZeros[SparseVector[V], Int] {
-      def apply(d: Int): SparseVector[V] = {
-        zeros[V](d)
-      }
+      def apply(d: Int): SparseVector[V] = { zeros[V](d) }
     }
   }
 
   implicit def canCreateZerosLike[V: ClassTag: Zero]
       : CanCreateZerosLike[SparseVector[V], SparseVector[V]] = {
     new CanCreateZerosLike[SparseVector[V], SparseVector[V]] {
-      def apply(d: SparseVector[V]): SparseVector[V] = {
-        zeros[V](d.length)
-      }
+      def apply(d: SparseVector[V]): SparseVector[V] = { zeros[V](d.length) }
     }
   }
 

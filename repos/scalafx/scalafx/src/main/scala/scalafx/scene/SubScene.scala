@@ -118,18 +118,14 @@ class SubScene(override val delegate: jfxs.SubScene)
     *
     * @param c list of Nodes children from this Scene's `root` to replace prior content.
     */
-  def content_=(c: Iterable[Node]) {
-    fillSFXCollection(this.content, c)
-  }
+  def content_=(c: Iterable[Node]) { fillSFXCollection(this.content, c) }
 
   /**
     * Sets a Node child, replacing the prior content. If you want append to current content, use `add` or similar.
     *
     * @param n Node child to replace prior content.
     */
-  def content_=(n: Node) {
-    fillSFXCollectionWithOne(this.content, n)
-  }
+  def content_=(n: Node) { fillSFXCollectionWithOne(this.content, n) }
 
   /** Specifies the type of camera use for rendering this SubScene. */
   def camera: ObjectProperty[jfxs.Camera] = delegate.cameraProperty
@@ -145,9 +141,7 @@ class SubScene(override val delegate: jfxs.SubScene)
 
   /** Defines the height of this SubScene. */
   def height: DoubleProperty = delegate.heightProperty
-  def height_=(v: Double) {
-    height() = v
-  }
+  def height_=(v: Double) { height() = v }
 
   /**
     * The URL of the user-agent stylesheet that will be used by this Scene in place of the the platform-default
@@ -181,9 +175,7 @@ class SubScene(override val delegate: jfxs.SubScene)
 
   /** Defines the width of this SubScene. */
   def width: DoubleProperty = delegate.widthProperty
-  def width_=(v: Double) {
-    width() = v
-  }
+  def width_=(v: Double) { width() = v }
 
   /** Return true if this SubScene is anti-aliased otherwise false. */
   def isAntiAliasing: Boolean = delegate.isAntiAliasing

@@ -172,9 +172,8 @@ private[hive] class HadoopTableReader(
     def verifyPartitionPath(
         partitionToDeserializer: Map[HivePartition, Class[_ <: Deserializer]])
         : Map[HivePartition, Class[_ <: Deserializer]] = {
-      if (!sc.conf.verifyPartitionPath) {
-        partitionToDeserializer
-      } else {
+      if (!sc.conf.verifyPartitionPath) { partitionToDeserializer }
+      else {
         var existPathSet = collection.mutable.Set[String]()
         var pathPatternSet = collection.mutable.Set[String]()
         partitionToDeserializer.filter {
@@ -225,9 +224,7 @@ private[hive] class HadoopTableReader(
         // 'partValues[i]' contains the value for the partitioning column at 'partCols[i]'.
         val partValues = if (partSpec == null) {
           Array.fill(partCols.size)(new String)
-        } else {
-          partCols.map(col => new String(partSpec.get(col))).toArray
-        }
+        } else { partCols.map(col => new String(partSpec.get(col))).toArray }
 
         // Create local references so that the outer object isn't serialized.
         val tableDesc = relation.tableDesc
@@ -279,9 +276,7 @@ private[hive] class HadoopTableReader(
     // Even if we don't use any partitions, we still need an empty RDD
     if (hivePartitionRDDs.size == 0) {
       new EmptyRDD[InternalRow](sc.sparkContext)
-    } else {
-      new UnionRDD(hivePartitionRDDs(0).context, hivePartitionRDDs)
-    }
+    } else { new UnionRDD(hivePartitionRDDs(0).context, hivePartitionRDDs) }
   }
 
   /**
@@ -345,9 +340,7 @@ private[hive] object HiveTableUtil {
       } else {
         storageHandler.configureOutputJobProperties(tableDesc, jobProperties)
       }
-      if (!jobProperties.isEmpty) {
-        tableDesc.setJobProperties(jobProperties)
-      }
+      if (!jobProperties.isEmpty) { tableDesc.setJobProperties(jobProperties) }
     }
   }
 }
@@ -476,11 +469,8 @@ private[hive] object HadoopTableReader extends HiveInspectors with Logging {
       var i = 0
       while (i < fieldRefs.length) {
         val fieldValue = soi.getStructFieldData(raw, fieldRefs(i))
-        if (fieldValue == null) {
-          mutableRow.setNullAt(fieldOrdinals(i))
-        } else {
-          unwrappers(i)(fieldValue, mutableRow, fieldOrdinals(i))
-        }
+        if (fieldValue == null) { mutableRow.setNullAt(fieldOrdinals(i)) }
+        else { unwrappers(i)(fieldValue, mutableRow, fieldOrdinals(i)) }
         i += 1
       }
 

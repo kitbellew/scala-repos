@@ -105,9 +105,7 @@ trait EvaluatingPerfTestRunner[M[+_], T]
         sys.error("Error parsing query:\n" + (forest flatMap { _.errors } map {
           _.toString
         } mkString "\n"))
-      } else if (valid.size > 1) {
-        sys.error("Ambiguous parse tree.")
-      }
+      } else if (valid.size > 1) { sys.error("Ambiguous parse tree.") }
 
       val tree = valid.head
 

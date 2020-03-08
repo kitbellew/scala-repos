@@ -24,9 +24,7 @@ class FlowErrorDocSpec extends AkkaSpec {
     // result here will be a Future completed with Failure(ArithmeticException)
     //#stop
 
-    intercept[ArithmeticException] {
-      Await.result(result, 3.seconds)
-    }
+    intercept[ArithmeticException] { Await.result(result, 3.seconds) }
   }
 
   "demonstrate resume stream" in {

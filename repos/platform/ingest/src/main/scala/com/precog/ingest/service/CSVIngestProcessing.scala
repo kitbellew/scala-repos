@@ -110,9 +110,7 @@ class CSVIngestProcessing(
         s map {
           case s if s.length == 1 => success(s.charAt(0))
           case _                  => failure("Expected a single character but found a string.")
-        } getOrElse {
-          success(default)
-        } toValidationNel
+        } getOrElse { success(default) } toValidationNel
       }
 
       val delimiterV = charOrError(delimiter, ',')
@@ -128,9 +126,8 @@ class CSVIngestProcessing(
     @tailrec final def readBatch(
         reader: CSVReader,
         batch: Vector[Array[String]]): (Boolean, Vector[Array[String]]) = {
-      if (batch.size >= batchSize) {
-        (false, batch)
-      } else {
+      if (batch.size >= batchSize) { (false, batch) }
+      else {
         val nextRow = reader.readNext()
         if (nextRow == null) (true, batch)
         else readBatch(reader, batch :+ nextRow)
@@ -232,9 +229,7 @@ class CSVIngestProcessing(
       M.point(reader.readNext()) flatMap { header =>
         if (header == null) {
           M.point(NotIngested("No CSV data was found in the request content."))
-        } else {
-          readBatches(normalizeHeaders(header), reader, 0, 0, Vector())
-        }
+        } else { readBatches(normalizeHeaders(header), reader, 0, 0, Vector()) }
       }
     }
 

@@ -45,9 +45,7 @@ class ScalaRecursiveElementVisitor extends ScalaElementVisitor {
     if (referencesStack.nonEmpty && referencesStack.top == element) {
       referencesStack.pop()
       referencesStack.push(null)
-    } else {
-      element.acceptChildren(this)
-    }
+    } else { element.acceptChildren(this) }
   }
 
   override def visitReferenceExpression(ref: ScReferenceExpression) {
@@ -55,9 +53,7 @@ class ScalaRecursiveElementVisitor extends ScalaElementVisitor {
       referencesStack.push(ref)
       visitReference(ref)
       visitExpression(ref)
-    } finally {
-      referencesStack.pop()
-    }
+    } finally { referencesStack.pop() }
   }
 
   override def visitTypeProjection(proj: ScTypeProjection) {
@@ -65,9 +61,7 @@ class ScalaRecursiveElementVisitor extends ScalaElementVisitor {
       referencesStack.push(proj)
       visitReference(proj)
       visitTypeElement(proj)
-    } finally {
-      referencesStack.pop()
-    }
+    } finally { referencesStack.pop() }
   }
 }
 

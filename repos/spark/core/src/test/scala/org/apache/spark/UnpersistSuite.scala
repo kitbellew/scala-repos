@@ -30,11 +30,8 @@ class UnpersistSuite extends SparkFunSuite with LocalSparkContext {
     assert(sc.persistentRdds.isEmpty === true)
 
     failAfter(Span(3000, Millis)) {
-      try {
-        while (!sc.getRDDStorageInfo.isEmpty) {
-          Thread.sleep(200)
-        }
-      } catch {
+      try { while (!sc.getRDDStorageInfo.isEmpty) { Thread.sleep(200) } }
+      catch {
         case _: Throwable => { Thread.sleep(10) }
         // Do nothing. We might see exceptions because block manager
         // is racing this thread to remove entries from the driver.

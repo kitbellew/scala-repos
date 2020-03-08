@@ -154,11 +154,8 @@ private[spark] class ExternalSorter[K, V, C](
     })
 
   private def comparator: Option[Comparator[K]] = {
-    if (ordering.isDefined || aggregator.isDefined) {
-      Some(keyComparator)
-    } else {
-      None
-    }
+    if (ordering.isDefined || aggregator.isDefined) { Some(keyComparator) }
+    else { None }
   }
 
   // Information about a spilled file. Includes sizes in bytes of "batches" written by the
@@ -296,9 +293,8 @@ private[spark] class ExternalSorter[K, V, C](
           openWriter()
         }
       }
-      if (objectsWritten > 0) {
-        flush()
-      } else if (writer != null) {
+      if (objectsWritten > 0) { flush() }
+      else if (writer != null) {
         val w = writer
         writer = null
         w.revertPartialWritesAndClose()
@@ -308,13 +304,9 @@ private[spark] class ExternalSorter[K, V, C](
       if (!success) {
         // This code path only happens if an exception was thrown above before we set success;
         // close our stuff and let the exception be thrown further
-        if (writer != null) {
-          writer.revertPartialWritesAndClose()
-        }
+        if (writer != null) { writer.revertPartialWritesAndClose() }
         if (file.exists()) {
-          if (!file.delete()) {
-            logWarning(s"Error deleting ${file}")
-          }
+          if (!file.delete()) { logWarning(s"Error deleting ${file}") }
         }
       }
     }
@@ -353,9 +345,7 @@ private[spark] class ExternalSorter[K, V, C](
         // No aggregator given, but we have an ordering (e.g. used by reduce tasks in sortByKey);
         // sort the elements without trying to merge them
         (p, mergeSort(iterators, ordering.get))
-      } else {
-        (p, iterators.iterator.flatten)
-      }
+      } else { (p, iterators.iterator.flatten) }
     }
   }
 
@@ -379,14 +369,10 @@ private[spark] class ExternalSorter[K, V, C](
       override def hasNext: Boolean = !heap.isEmpty
 
       override def next(): Product2[K, C] = {
-        if (!hasNext) {
-          throw new NoSuchElementException
-        }
+        if (!hasNext) { throw new NoSuchElementException }
         val firstBuf = heap.dequeue()
         val firstPair = firstBuf.next()
-        if (firstBuf.hasNext) {
-          heap.enqueue(firstBuf)
-        }
+        if (firstBuf.hasNext) { heap.enqueue(firstBuf) }
         firstPair
       }
     }
@@ -417,9 +403,7 @@ private[spark] class ExternalSorter[K, V, C](
         override def hasNext: Boolean = sorted.hasNext
 
         override def next(): Iterator[Product2[K, C]] = {
-          if (!hasNext) {
-            throw new NoSuchElementException
-          }
+          if (!hasNext) { throw new NoSuchElementException }
           keys.clear()
           combiners.clear()
           val firstPair = sorted.next()
@@ -458,9 +442,7 @@ private[spark] class ExternalSorter[K, V, C](
         override def hasNext: Boolean = sorted.hasNext
 
         override def next(): Product2[K, C] = {
-          if (!hasNext) {
-            throw new NoSuchElementException
-          }
+          if (!hasNext) { throw new NoSuchElementException }
           val elem = sorted.next()
           val k = elem._1
           var c = elem._2
@@ -557,9 +539,7 @@ private[spark] class ExternalSorter[K, V, C](
       * If no more pairs are left, return null.
       */
     private def readNextItem(): (K, C) = {
-      if (finished || deserializeStream == null) {
-        return null
-      }
+      if (finished || deserializeStream == null) { return null }
       val k = deserializeStream.readKey().asInstanceOf[K]
       val c = deserializeStream.readValue().asInstanceOf[C]
       lastPartitionId = partitionId
@@ -575,9 +555,7 @@ private[spark] class ExternalSorter[K, V, C](
       // If we've finished reading the last partition, remember that we're done
       if (partitionId == numPartitions) {
         finished = true
-        if (deserializeStream != null) {
-          deserializeStream.close()
-        }
+        if (deserializeStream != null) { deserializeStream.close() }
       }
       (k, c)
     }
@@ -592,9 +570,7 @@ private[spark] class ExternalSorter[K, V, C](
         override def hasNext: Boolean = {
           if (nextItem == null) {
             nextItem = readNextItem()
-            if (nextItem == null) {
-              return false
-            }
+            if (nextItem == null) { return false }
           }
           assert(lastPartitionId >= myPartition)
           // Check that we're still in the right partition; note that readNextItem will have returned
@@ -603,9 +579,7 @@ private[spark] class ExternalSorter[K, V, C](
         }
 
         override def next(): Product2[K, C] = {
-          if (!hasNext) {
-            throw new NoSuchElementException
-          }
+          if (!hasNext) { throw new NoSuchElementException }
           val item = nextItem
           nextItem = null
           item
@@ -706,9 +680,7 @@ private[spark] class ExternalSorter[K, V, C](
             serInstance,
             fileBufferSize,
             writeMetrics)
-          for (elem <- elements) {
-            writer.write(elem._1, elem._2)
-          }
+          for (elem <- elements) { writer.write(elem._1, elem._2) }
           writer.commitAndClose()
           val segment = writer.fileSegment()
           lengths(id) = segment.length
@@ -757,9 +729,7 @@ private[spark] class ExternalSorter[K, V, C](
       data.hasNext && data.head._1._1 == partitionId
 
     override def next(): Product2[K, C] = {
-      if (!hasNext) {
-        throw new NoSuchElementException
-      }
+      if (!hasNext) { throw new NoSuchElementException }
       val elem = data.next()
       (elem._1._2, elem._2)
     }

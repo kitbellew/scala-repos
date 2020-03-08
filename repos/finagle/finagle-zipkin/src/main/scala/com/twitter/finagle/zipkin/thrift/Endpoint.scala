@@ -41,9 +41,7 @@ object Endpoint {
     try {
       val ipv4 = Endpoint.toIpv4(InetAddress.getLoopbackAddress)
       Endpoint(ipv4, 0)
-    } catch {
-      case NonFatal(_) => Endpoint.Unknown
-    }
+    } catch { case NonFatal(_) => Endpoint.Unknown }
   }
 
   def toIpv4(inetAddress: InetAddress): Int =

@@ -58,11 +58,8 @@ trait HasColumnProjection {
       LOG.warn(
         "withColumns is deprecated. Please use withColumnProjections, which uses a different glob syntax")
       Some(DeprecatedColumnProjectionString(deprecated))
-    } else if (strict.nonEmpty) {
-      Some(StrictColumnProjectionString(strict))
-    } else {
-      None
-    }
+    } else if (strict.nonEmpty) { Some(StrictColumnProjectionString(strict)) }
+    else { None }
   }
 }
 

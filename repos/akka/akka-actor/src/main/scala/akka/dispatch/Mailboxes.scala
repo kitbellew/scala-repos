@@ -78,9 +78,7 @@ private[akka] class Mailboxes(
         case (m, (k, v)) ⇒
           dynamicAccess
             .getClassFor[Any](k)
-            .map {
-              case x ⇒ m.updated(x, v.toString)
-            }
+            .map { case x ⇒ m.updated(x, v.toString) }
             .recover {
               case e ⇒
                 throw new ConfigurationException(
@@ -201,9 +199,7 @@ private[akka] class Mailboxes(
       }
     } else if (hasMailboxRequirement) {
       verifyRequirements(lookupByQueueType(mailboxRequirement))
-    } else {
-      verifyRequirements(lookup(DefaultMailboxId))
-    }
+    } else { verifyRequirements(lookup(DefaultMailboxId)) }
   }
 
   /**

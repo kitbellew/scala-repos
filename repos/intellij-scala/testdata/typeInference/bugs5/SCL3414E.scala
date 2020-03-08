@@ -5,9 +5,7 @@ class AA {
 }
 
 class BB extends AA {
-  override def foo = {
-    z.b()
-  }
+  override def foo = { z.b() }
 
   def z = foo
 

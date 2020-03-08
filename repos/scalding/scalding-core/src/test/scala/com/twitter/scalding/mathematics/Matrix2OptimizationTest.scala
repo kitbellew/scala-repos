@@ -239,9 +239,7 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
         combinedUnoptimizedPlan))
     }
 
-    "not break A*(B+C)" in {
-      planWithSum shouldBe (optimize(planWithSum)._2)
-    }
+    "not break A*(B+C)" in { planWithSum shouldBe (optimize(planWithSum)._2) }
 
     "handle an unoptimized global plan" in {
       optimizedGlobalPlan shouldBe (optimize(unoptimizedGlobalPlan)._2)
@@ -260,9 +258,7 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
       optimizedGraphVectorPlan shouldBe (optimize(optimizedGraphVectorPlan)._2)
     }
 
-    "handle a G^8 plan" in {
-      optimizedGraph8 shouldBe (optimize(g ^ 8)._2)
-    }
+    "handle a G^8 plan" in { optimizedGraph8 shouldBe (optimize(g ^ 8)._2) }
 
   }
 }
@@ -304,9 +300,7 @@ object Matrix2Props extends Properties("Matrix2") {
       val colGen = Gen.choose(1, 1000)
       val nextCols = colGen.sample.get
       (literal(globM, SparseHint(sparsity, nextRows, nextCols)), nextCols)
-    } else {
-      (literal(globM, SparseHint(sparsity, nextRows, cols)), cols)
-    }
+    } else { (literal(globM, SparseHint(sparsity, nextRows, cols)), cols) }
   }
 
   def productChainGen(
@@ -350,9 +344,12 @@ object Matrix2Props extends Properties("Matrix2") {
   implicit def arbT: Arbitrary[Matrix2[Any, Any, Double]] =
     Arbitrary(genFormula(0))
 
-  val genProdSeq = for {
-    v <- Gen.choose(1, 10)
-  } yield productChainGen(0, v, 0, Nil).toIndexedSeq
+  val genProdSeq =
+    for { v <- Gen.choose(1, 10) } yield productChainGen(
+      0,
+      v,
+      0,
+      Nil).toIndexedSeq
 
   implicit def arbSeq: Arbitrary[IndexedSeq[MatrixLiteral[Any, Any, Double]]] =
     Arbitrary(genProdSeq)
@@ -404,9 +401,7 @@ object Matrix2Props extends Properties("Matrix2") {
             leftp @ MatrixLiteral(_, _),
             rightp @ MatrixLiteral(_, _),
             _,
-            _) => {
-          (Some(Product(leftp, rightp, ring)), Nil)
-        }
+            _) => { (Some(Product(leftp, rightp, ring)), Nil) }
         case Product(
             left @ Product(_, _, _, _),
             right @ MatrixLiteral(_, _),
@@ -460,9 +455,7 @@ object Matrix2Props extends Properties("Matrix2") {
             left @ MatrixLiteral(_, _),
             right @ MatrixLiteral(_, _),
             _,
-            _) => {
-          Some(new LabeledTree((start, start + 1), None, None))
-        }
+            _) => { Some(new LabeledTree((start, start + 1), None, None)) }
         case Product(
             left @ MatrixLiteral(_, _),
             right @ Product(_, _, _, _),

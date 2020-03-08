@@ -38,9 +38,7 @@ object TestParentActor {
 class TestParentActor(probe: ActorRef, supervisorProps: Props) extends Actor {
   val supervisor = context.actorOf(supervisorProps)
 
-  def receive = {
-    case other ⇒ probe.forward(other)
-  }
+  def receive = { case other ⇒ probe.forward(other) }
 }
 
 class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
@@ -134,9 +132,7 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
           sender ! "PONG"
       }
 
-      override def postStop(): Unit = {
-        latch.await(3, TimeUnit.SECONDS)
-      }
+      override def postStop(): Unit = { latch.await(3, TimeUnit.SECONDS) }
     }
 
     "accept commands while child is terminating" in {

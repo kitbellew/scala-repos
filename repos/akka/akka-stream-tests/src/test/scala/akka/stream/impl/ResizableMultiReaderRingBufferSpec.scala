@@ -181,7 +181,9 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
         val buf = new TestBuffer(
           1,
           1 << bit,
-          new Cursors { def cursors = activeCursors })
+          new Cursors {
+            def cursors = activeCursors
+          })
         sb.setLength(0)
         while (activeCursors.nonEmpty) {
           log(s"Buf: ${buf.inspect}\n")

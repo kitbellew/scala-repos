@@ -37,9 +37,7 @@ class FileSpec extends FlatSpec with Matchers {
     assert(!scoped.exists())
   }
 
-  it should "help define new files" in {
-    File("foo"): File
-  }
+  it should "help define new files" in { File("foo"): File }
 
   it should "help create children files" in {
     val foo = File("foo")

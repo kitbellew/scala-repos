@@ -369,11 +369,8 @@ object Dist extends DistInstances8 {
     } else if (maxBytes < 8) {
       val n = (8 - maxBytes) * 8
       new DistFromGen(g => SafeLong(g.nextLong >>> n))
-    } else if (maxBytes == 8) {
-      new DistFromGen(g => SafeLong(g.nextLong))
-    } else {
-      bigint(maxBytes).map(SafeLong(_))
-    }
+    } else if (maxBytes == 8) { new DistFromGen(g => SafeLong(g.nextLong)) }
+    else { bigint(maxBytes).map(SafeLong(_)) }
 
   def bigint(maxBytes: Int): Dist[BigInt] = new Dist[BigInt] {
     def apply(gen: Generator): BigInt =
@@ -447,53 +444,73 @@ object Dist extends DistInstances8 {
 
 trait DistInstances0 {
   implicit def semiring[A](implicit ev: Semiring[A]): Semiring[Dist[A]] =
-    new DistSemiring[A] { def alg = ev }
+    new DistSemiring[A] {
+      def alg = ev
+    }
 }
 
 trait DistInstances1 extends DistInstances0 {
   implicit def rig[A](implicit ev: Rig[A]): Rig[Dist[A]] =
-    new DistRig[A] { def alg = ev }
+    new DistRig[A] {
+      def alg = ev
+    }
 
   implicit def rng[A](implicit ev: Rng[A]): Rng[Dist[A]] =
-    new DistRng[A] { def alg = ev }
+    new DistRng[A] {
+      def alg = ev
+    }
 }
 
 trait DistInstances2 extends DistInstances1 {
   implicit def ring[A](implicit ev: Ring[A]): Ring[Dist[A]] =
-    new DistRing[A] { def alg = ev }
+    new DistRing[A] {
+      def alg = ev
+    }
 }
 
 trait DistInstances3 extends DistInstances2 {
   implicit def euclideanRing[A](
       implicit ev: EuclideanRing[A]): EuclideanRing[Dist[A]] =
-    new DistEuclideanRing[A] { def alg = ev }
+    new DistEuclideanRing[A] {
+      def alg = ev
+    }
 }
 
 trait DistInstances4 extends DistInstances3 {
   implicit def field[A](implicit ev: Field[A]): Field[Dist[A]] =
-    new DistField[A] { def alg = ev }
+    new DistField[A] {
+      def alg = ev
+    }
 }
 
 trait DistInstances5 extends DistInstances4 {
   implicit def module[V, K](
       implicit ev: Module[V, K]): Module[Dist[V], Dist[K]] =
-    new DistModule[V, K] { def alg = ev }
+    new DistModule[V, K] {
+      def alg = ev
+    }
 }
 
 trait DistInstances6 extends DistInstances5 {
   implicit def vectorSpace[V, K](
       implicit ev: VectorSpace[V, K]): VectorSpace[Dist[V], Dist[K]] =
-    new DistVectorSpace[V, K] { def alg = ev }
+    new DistVectorSpace[V, K] {
+      def alg = ev
+    }
 }
 
 trait DistInstances7 extends DistInstances6 {
   implicit def NormedVectorSpace[V, K](implicit
       ev: NormedVectorSpace[V, K]): NormedVectorSpace[Dist[V], Dist[K]] =
-    new DistNormedVectorSpace[V, K] { def alg = ev }
+    new DistNormedVectorSpace[V, K] {
+      def alg = ev
+    }
 }
 
 trait DistInstances8 extends DistInstances7 {
   implicit def InnerProductSpace[V, K](implicit
       ev: InnerProductSpace[V, K]): InnerProductSpace[Dist[V], Dist[K]] =
-    new DistInnerProductSpace[V, K] { def alg = ev }
+    new DistInnerProductSpace[V, K] {
+      def alg = ev
+    }
 }

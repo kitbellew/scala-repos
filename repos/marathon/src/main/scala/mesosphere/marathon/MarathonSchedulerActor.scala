@@ -75,9 +75,7 @@ class MarathonSchedulerActor private (
     leaderInfo.subscribe(self)
   }
 
-  override def postStop(): Unit = {
-    leaderInfo.unsubscribe(self)
-  }
+  override def postStop(): Unit = { leaderInfo.unsubscribe(self) }
 
   def receive: Receive = suspended
 
@@ -224,9 +222,7 @@ class MarathonSchedulerActor private (
       origSender: ActorRef,
       cancellationHandler: Cancellable): Receive =
     sharedHandlers.andThen[Unit] { _ =>
-      if (tryDeploy(plan, origSender)) {
-        cancellationHandler.cancel()
-      }
+      if (tryDeploy(plan, origSender)) { cancellationHandler.cancel() }
     } orElse {
       case CancellationTimeoutExceeded =>
         val reason = new TimeoutException(
@@ -253,9 +249,7 @@ class MarathonSchedulerActor private (
       unstashAll()
       context.become(started)
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   /**
@@ -270,9 +264,7 @@ class MarathonSchedulerActor private (
     if (conflicts.isEmpty) {
       lockedApps ++= appIds
       Try(f)
-    } else {
-      Failure(new LockingFailedException("Failed to acquire locks."))
-    }
+    } else { Failure(new LockingFailedException("Failed to acquire locks.")) }
   }
 
   /**
@@ -290,9 +282,7 @@ class MarathonSchedulerActor private (
     val plan = cmd.plan
     val ids = plan.affectedApplicationIds
 
-    val res = withLockFor(ids) {
-      deploy(driver, plan)
-    }
+    val res = withLockFor(ids) { deploy(driver, plan) }
 
     res match {
       case Success(_) =>
@@ -578,9 +568,7 @@ class SchedulerActions(
         .take(launchedCount - targetCount)
       val taskIds: Iterable[TaskID] = toKill.flatMap(_.launchedMesosId)
       log.info(s"Killing tasks: ${taskIds.map(_.getValue)}")
-      for (taskId <- taskIds) {
-        driver.killTask(taskId)
-      }
+      for (taskId <- taskIds) { driver.killTask(taskId) }
     } else {
       log.info(
         s"Already running ${app.instances} instances of ${app.id}. Not scaling.")

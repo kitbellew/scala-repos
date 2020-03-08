@@ -81,11 +81,7 @@ private[spark] object TaskLocation {
             "Illegal executor location format: " + str)
         }
         new ExecutorCacheTaskLocation(splits(1), splits(2))
-      } else {
-        new HostTaskLocation(str)
-      }
-    } else {
-      new HDFSCacheTaskLocation(hstr)
-    }
+      } else { new HostTaskLocation(str) }
+    } else { new HDFSCacheTaskLocation(hstr) }
   }
 }

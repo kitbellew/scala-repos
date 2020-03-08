@@ -19,9 +19,7 @@ import akka.testkit.TestEvent._
 object RemoteScatterGatherMultiJvmSpec extends MultiNodeConfig {
 
   class SomeActor extends Actor {
-    def receive = {
-      case "hit" ⇒ sender() ! self
-    }
+    def receive = { case "hit" ⇒ sender() ! self }
   }
 
   val first = role("first")

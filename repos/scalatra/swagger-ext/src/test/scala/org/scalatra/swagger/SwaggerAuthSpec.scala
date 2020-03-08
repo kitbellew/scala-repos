@@ -78,9 +78,7 @@ object SwaggerAuthSpec {
       with CorsSupport
       with SwaggerAuthBase[User] {
 
-    error {
-      case t: Throwable => t.printStackTrace()
-    }
+    error { case t: Throwable => t.printStackTrace() }
 
     protected val userManifest = manifest[User]
 
@@ -100,18 +98,14 @@ object SwaggerAuthSpec {
       u.map(_.login) == Some("tom")
     }
 
-    private val allowsAuthenticated = (u: Option[User]) => {
-      u.isDefined
-    }
+    private val allowsAuthenticated = (u: Option[User]) => { u.isDefined }
 
     private val noJohn = (u: Option[User]) => {
       val uu = u.map(_.login)
       uu.isDefined && uu != Some("john")
     }
 
-    get("/", operation(apiOperation[Unit]("getPets"))) {
-      "OK"
-    }
+    get("/", operation(apiOperation[Unit]("getPets"))) { "OK" }
 
     get(
       "/authenticated",
@@ -126,9 +120,7 @@ object SwaggerAuthSpec {
 
     get(
       "/kate-and-tom",
-      operation(apiOperation[Unit]("getKateAndTom").allows(noJohn))) {
-      "OK"
-    }
+      operation(apiOperation[Unit]("getKateAndTom").allows(noJohn))) { "OK" }
   }
 
   class AdminApi(implicit protected val swagger: SwaggerWithAuth)
@@ -155,9 +147,7 @@ object SwaggerAuthSpec {
 
     post(
       "/blah",
-      operation(apiOperation[Unit]("createBlah").allows(isAllowed))) {
-      "OK"
-    }
+      operation(apiOperation[Unit]("createBlah").allows(isAllowed))) { "OK" }
   }
 }
 class SwaggerAuthSpec extends MutableScalatraSpec {

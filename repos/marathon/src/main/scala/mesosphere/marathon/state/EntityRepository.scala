@@ -20,18 +20,14 @@ trait EntityRepository[T <: MarathonState[_, T]]
     * Returns the entity with the supplied id and version.
     */
   protected def entity(id: String, version: Timestamp): Future[Option[T]] =
-    timedRead {
-      this.store.fetch(versionKey(id, version))
-    }
+    timedRead { this.store.fetch(versionKey(id, version)) }
 
   /**
     * Returns the id for all entities.
     */
   def allIds(): Future[Iterable[String]] = timedRead {
     this.store.names().map { names =>
-      names.collect {
-        case name: String if noVersionKey(name) => name
-      }
+      names.collect { case name: String if noVersionKey(name) => name }
     }
   }
 

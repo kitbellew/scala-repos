@@ -133,9 +133,7 @@ class TimestampValue(
     * @param timeZone The timezone in which to interpret the timestamp.
     */
   private[this] def fromString(str: String, timeZone: TimeZone): Timestamp = {
-    if (str == Zero.toString) {
-      return Zero
-    }
+    if (str == Zero.toString) { return Zero }
 
     val parsePosition = new ParsePosition(0)
     val format = TwitterDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -184,9 +182,7 @@ class TimestampValue(
   private[this] def fromBytes(
       bytes: Array[Byte],
       timeZone: TimeZone): Timestamp = {
-    if (bytes.isEmpty) {
-      return Zero
-    }
+    if (bytes.isEmpty) { return Zero }
 
     var year, month, day, hour, min, sec, micro = 0
     val br = BufferReader(bytes)
@@ -197,9 +193,7 @@ class TimestampValue(
       year = br.readUnsignedShort()
       month = br.readUnsignedByte()
       day = br.readUnsignedByte()
-    } else {
-      return Zero
-    }
+    } else { return Zero }
 
     // if the time-part is 00:00:00, it isn't included.
     if (br.readable(3)) {
@@ -209,9 +203,7 @@ class TimestampValue(
     }
 
     // if the sub-seconds are 0, they aren't included.
-    if (br.readable(4)) {
-      micro = br.readInt()
-    }
+    if (br.readable(4)) { micro = br.readInt() }
 
     val cal = Calendar.getInstance(timeZone)
     cal.set(year, month - 1, day, hour, min, sec)
@@ -304,9 +296,7 @@ object DateValue extends Injectable[Date] with Extractable[Date] {
     * MySQL binary protocol.
     */
   private[this] def fromBytes(bytes: Array[Byte]): Date = {
-    if (bytes.isEmpty) {
-      return Zero
-    }
+    if (bytes.isEmpty) { return Zero }
 
     var year, month, day = 0
     val br = BufferReader(bytes)
@@ -315,9 +305,7 @@ object DateValue extends Injectable[Date] with Extractable[Date] {
       year = br.readUnsignedShort()
       month = br.readUnsignedByte()
       day = br.readUnsignedByte()
-    } else {
-      return Zero
-    }
+    } else { return Zero }
 
     val cal = Calendar.getInstance
     cal.set(year, month - 1, day)

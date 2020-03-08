@@ -212,9 +212,7 @@ object TournamentRepo {
           "private" -> BSONDocument("$exists" -> false)
         ))
       .sort(BSONDocument("startsAt" -> 1))
-      .toList[Tournament](none) map {
-      _.filter(_.isStillWorthEntering)
-    }
+      .toList[Tournament](none) map { _.filter(_.isStillWorthEntering) }
 
   private def isPromotable(tour: Tournament) =
     tour.startsAt isBefore DateTime.now.plusMinutes {

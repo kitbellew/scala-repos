@@ -118,9 +118,7 @@ class StringHandler(
 
   def flush() = {}
 
-  def get = {
-    buffer.toString
-  }
+  def get = { buffer.toString }
 
   def clear() = {
     buffer.setLength(0)

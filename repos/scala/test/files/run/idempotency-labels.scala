@@ -14,9 +14,6 @@ object Test extends App {
   val tlabel = tb.typecheck(label.tree)
   println(tlabel)
   val rtlabel = tb.untypecheck(tlabel)
-  try {
-    println(tb.eval(rtlabel))
-  } catch {
-    case _: ToolBoxError => println("error!")
-  }
+  try { println(tb.eval(rtlabel)) }
+  catch { case _: ToolBoxError => println("error!") }
 }

@@ -98,9 +98,8 @@ trait Managed[+T] { selfT =>
       val t = selfT.make()
 
       val u =
-        try {
-          f(t.get).make()
-        } catch {
+        try { f(t.get).make() }
+        catch {
           case e: Exception =>
             t.dispose()
             throw e
@@ -131,7 +130,9 @@ trait Managed[+T] { selfT =>
 }
 
 object Managed {
-  def singleton[T](t: Disposable[T]) = new Managed[T] { def make() = t }
+  def singleton[T](t: Disposable[T]) = new Managed[T] {
+    def make() = t
+  }
   def const[T](t: T) = singleton(Disposable.const(t))
 }
 

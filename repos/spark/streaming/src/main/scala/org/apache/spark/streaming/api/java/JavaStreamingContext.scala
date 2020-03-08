@@ -532,9 +532,7 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
     * fault-tolerance. The graph will be checkpointed every batch interval.
     * @param directory HDFS-compatible directory where the checkpoint data will be reliably stored
     */
-  def checkpoint(directory: String) {
-    ssc.checkpoint(directory)
-  }
+  def checkpoint(directory: String) { ssc.checkpoint(directory) }
 
   /**
     * Sets each DStreams in this context to remember RDDs it generated in the last given duration.
@@ -543,9 +541,7 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
     * if the developer wishes to query old data outside the DStream computation).
     * @param duration Minimum duration that each DStream should remember its RDDs
     */
-  def remember(duration: Duration) {
-    ssc.remember(duration)
-  }
+  def remember(duration: Duration) { ssc.remember(duration) }
 
   /** Add a [[org.apache.spark.streaming.scheduler.StreamingListener]] object for
     * receiving system events related to streaming.
@@ -572,24 +568,18 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
     *   </li>
     * </ul>
     */
-  def getState(): StreamingContextState = {
-    ssc.getState()
-  }
+  def getState(): StreamingContextState = { ssc.getState() }
 
   /**
     * Start the execution of the streams.
     */
-  def start(): Unit = {
-    ssc.start()
-  }
+  def start(): Unit = { ssc.start() }
 
   /**
     * Wait for the execution to stop. Any exceptions that occurs during the execution
     * will be thrown in this thread.
     */
-  def awaitTermination(): Unit = {
-    ssc.awaitTermination()
-  }
+  def awaitTermination(): Unit = { ssc.awaitTermination() }
 
   /**
     * Wait for the execution to stop. Any exceptions that occurs during the execution
@@ -606,9 +596,7 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
   /**
     * Stop the execution of the streams. Will stop the associated JavaSparkContext as well.
     */
-  def stop(): Unit = {
-    ssc.stop()
-  }
+  def stop(): Unit = { ssc.stop() }
 
   /**
     * Stop the execution of the streams.
@@ -650,9 +638,7 @@ object JavaStreamingContext {
   ): JavaStreamingContext = {
     val ssc = StreamingContext.getOrCreate(
       checkpointPath,
-      () => {
-        creatingFunc.call().ssc
-      })
+      () => { creatingFunc.call().ssc })
     new JavaStreamingContext(ssc)
   }
 
@@ -674,9 +660,7 @@ object JavaStreamingContext {
   ): JavaStreamingContext = {
     val ssc = StreamingContext.getOrCreate(
       checkpointPath,
-      () => {
-        creatingFunc.call().ssc
-      },
+      () => { creatingFunc.call().ssc },
       hadoopConf)
     new JavaStreamingContext(ssc)
   }
@@ -702,9 +686,7 @@ object JavaStreamingContext {
   ): JavaStreamingContext = {
     val ssc = StreamingContext.getOrCreate(
       checkpointPath,
-      () => {
-        creatingFunc.call().ssc
-      },
+      () => { creatingFunc.call().ssc },
       hadoopConf,
       createOnError)
     new JavaStreamingContext(ssc)

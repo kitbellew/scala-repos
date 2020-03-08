@@ -46,9 +46,7 @@ class MacroDepHygiene extends WordSpec {
       assert(isTupleSetterAvailable[B])
     }
 
-    "fail if not a case class" in {
-      assert(!isTupleSetterAvailable[C])
-    }
+    "fail if not a case class" in { assert(!isTupleSetterAvailable[C]) }
   }
 
   "TupleConverter macro" should {
@@ -66,8 +64,6 @@ class MacroDepHygiene extends WordSpec {
       assert(isTupleConverterAvailable[B])
     }
 
-    "fail if not a case class" in {
-      assert(!isTupleConverterAvailable[C])
-    }
+    "fail if not a case class" in { assert(!isTupleConverterAvailable[C]) }
   }
 }

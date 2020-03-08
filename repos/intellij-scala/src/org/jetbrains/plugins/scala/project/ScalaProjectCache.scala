@@ -13,14 +13,10 @@ class ScalaProjectCache(project: Project, events: ScalaProjectEvents)
   private val cache = new ConcurrentHashMap[AnyRef, AnyRef]()
 
   events.addScalaProjectListener(new ScalaProjectListener {
-    def onScalaProjectChanged() {
-      cache.clear()
-    }
+    def onScalaProjectChanged() { cache.clear() }
   })
 
-  override def projectClosed(): Unit = {
-    cache.clear()
-  }
+  override def projectClosed(): Unit = { cache.clear() }
 
   def getOrUpdate[K <: AnyRef, V <: AnyRef](key: K)(value: => V): V = {
     Option(cache.get(key).asInstanceOf[V]).getOrElse {

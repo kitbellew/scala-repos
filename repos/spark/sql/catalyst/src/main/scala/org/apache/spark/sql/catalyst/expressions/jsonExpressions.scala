@@ -51,15 +51,11 @@ private[this] object JsonPathParser extends RegexParsers {
 
   def root: Parser[Char] = '$'
 
-  def long: Parser[Long] = "\\d+".r ^? {
-    case x => x.toLong
-  }
+  def long: Parser[Long] = "\\d+".r ^? { case x => x.toLong }
 
   // parse `[*]` and `[123]` subscripts
   def subscript: Parser[List[PathInstruction]] =
-    for {
-      operand <- '[' ~> ('*' ^^^ Wildcard | long ^^ Index) <~ ']'
-    } yield {
+    for { operand <- '[' ~> ('*' ^^^ Wildcard | long ^^ Index) <~ ']' } yield {
       Subscript :: operand :: Nil
     }
 
@@ -67,9 +63,7 @@ private[this] object JsonPathParser extends RegexParsers {
   def named: Parser[List[PathInstruction]] =
     for {
       name <- '.' ~> "[^\\.\\[]+".r | "[\\'" ~> "[^\\'\\?]+" <~ "\\']"
-    } yield {
-      Key :: Named(name) :: Nil
-    }
+    } yield { Key :: Named(name) :: Nil }
 
   // child wildcards: `..`, `.*` or `['*']`
   def wildcard: Parser[List[PathInstruction]] =
@@ -129,15 +123,10 @@ case class GetJsonObject(json: Expression, path: Expression)
 
   override def eval(input: InternalRow): Any = {
     val jsonStr = json.eval(input).asInstanceOf[UTF8String]
-    if (jsonStr == null) {
-      return null
-    }
+    if (jsonStr == null) { return null }
 
-    val parsed = if (path.foldable) {
-      parsedPath
-    } else {
-      parsePath(path.eval(input).asInstanceOf[UTF8String])
-    }
+    val parsed = if (path.foldable) { parsedPath }
+    else { parsePath(path.eval(input).asInstanceOf[UTF8String]) }
 
     if (parsed.isDefined) {
       try {
@@ -150,26 +139,16 @@ case class GetJsonObject(json: Expression, path: Expression)
                 parser.nextToken()
                 evaluatePath(parser, generator, RawStyle, parsed.get)
             }
-            if (matched) {
-              UTF8String.fromBytes(output.toByteArray)
-            } else {
-              null
-            }
+            if (matched) { UTF8String.fromBytes(output.toByteArray) }
+            else { null }
         }
-      } catch {
-        case _: JsonProcessingException => null
-      }
-    } else {
-      null
-    }
+      } catch { case _: JsonProcessingException => null }
+    } else { null }
   }
 
   private def parsePath(path: UTF8String): Option[List[PathInstruction]] = {
-    if (path != null) {
-      JsonPathParser.parse(path.toString)
-    } else {
-      None
-    }
+    if (path != null) { JsonPathParser.parse(path.toString) }
+    else { None }
   }
 
   // advance to the desired array index, assumes to start at the START_ARRAY token
@@ -210,9 +189,7 @@ case class GetJsonObject(json: Expression, path: Expression)
         // there is no array wildcard or slice parent, emit this string without quotes
         if (p.hasTextCharacters) {
           g.writeRaw(p.getTextCharacters, p.getTextOffset, p.getTextLength)
-        } else {
-          g.writeRaw(p.getText)
-        }
+        } else { g.writeRaw(p.getText) }
         true
 
       case (START_ARRAY, Nil) if style == FlattenStyle =>
@@ -234,9 +211,7 @@ case class GetJsonObject(json: Expression, path: Expression)
           if (dirty) {
             // once a match has been found we can skip other fields
             p.skipChildren()
-          } else {
-            dirty = evaluatePath(p, g, style, xs)
-          }
+          } else { dirty = evaluatePath(p, g, style, xs) }
         }
         dirty
 
@@ -279,9 +254,8 @@ case class GetJsonObject(json: Expression, path: Expression)
         }
 
         val buf = buffer.getBuffer
-        if (dirty > 1) {
-          g.writeRawValue(buf.toString)
-        } else if (dirty == 1) {
+        if (dirty > 1) { g.writeRawValue(buf.toString) }
+        else if (dirty == 1) {
           // remove outer array tokens
           g.writeRawValue(buf.substring(1, buf.length() - 1))
         } // else do not write anything
@@ -314,9 +288,7 @@ case class GetJsonObject(json: Expression, path: Expression)
         // exact field match
         if (p.nextToken() != JsonToken.VALUE_NULL) {
           evaluatePath(p, g, style, xs)
-        } else {
-          false
-        }
+        } else { false }
 
       case (FIELD_NAME, Wildcard :: xs) =>
         // wildcard field match
@@ -386,9 +358,7 @@ case class JsonTuple(children: Seq[Expression])
 
   override def eval(input: InternalRow): TraversableOnce[InternalRow] = {
     val json = jsonExpr.eval(input).asInstanceOf[UTF8String]
-    if (json == null) {
-      return nullRow
-    }
+    if (json == null) { return nullRow }
 
     try {
       Utils.tryWithResource(jsonFactory.createParser(json.getBytes)) { parser =>
@@ -404,9 +374,7 @@ case class JsonTuple(children: Seq[Expression])
       parser: JsonParser,
       input: InternalRow): Seq[InternalRow] = {
     // only objects are supported
-    if (parser.nextToken() != JsonToken.START_OBJECT) {
-      return nullRow
-    }
+    if (parser.nextToken() != JsonToken.START_OBJECT) { return nullRow }
 
     // evaluate the field names as String rather than UTF8String to
     // optimize lookups from the json token, which is also a String

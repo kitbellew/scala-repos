@@ -55,9 +55,7 @@ class Performance(
         val (t, r) = time(result.repCount, test)
         parameters.restBetweenTests foreach { Thread.sleep }
         benchmark(test, result.add(t, r))
-      } else {
-        result
-      }
+      } else { result }
     }
 
     def attemptGC() = {
@@ -69,11 +67,8 @@ class Performance(
 
     def repeatsRequired(reps: Int = 1): Int = {
       val (t, _) = time(reps, test)
-      if (t < parameters.runMillisGoal * 1000000L) {
-        repeatsRequired(reps * 2)
-      } else {
-        reps
-      }
+      if (t < parameters.runMillisGoal * 1000000L) { repeatsRequired(reps * 2) }
+      else { reps }
     }
 
     def noop = ()
@@ -83,9 +78,7 @@ class Performance(
         noop,
         BenchmarkResults(0, 10, 0, Vector.empty[Long], Vector.empty[Unit]))
       baseline.meanRepTime()
-    } else {
-      0.0
-    }
+    } else { 0.0 }
 
     benchmark(
       test,
@@ -102,9 +95,7 @@ class Performance(
       if (r < repeat - 1) {
         f
         rep(r + 1)
-      } else {
-        f
-      }
+      } else { f }
     }
     val start = System.nanoTime()
     val r = rep()
@@ -182,14 +173,10 @@ Measurement overhead:        %10.02f%%
         baseline * 100.0 / mean
       ))
   }
-  def ptile(p: Double): Int = {
-    (p * (testRuns - 1)).toInt
-  }
+  def ptile(p: Double): Int = { (p * (testRuns - 1)).toInt }
   def meanRepTime(): Double = {
     val denom = timings.length * repCount * 1000000000.0
-    timings.foldLeft(0.0) {
-      case (acc, el) => acc + (el / denom)
-    }
+    timings.foldLeft(0.0) { case (acc, el) => acc + (el / denom) }
   }
 }
 

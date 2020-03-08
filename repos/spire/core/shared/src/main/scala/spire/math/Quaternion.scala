@@ -192,22 +192,17 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
     if (!isReal) {
       val n = (r + abs).sqrt
       Quaternion(n, i / n, j / n, k / n) / f.fromInt(2).sqrt
-    } else if (r.signum >= 0) {
-      Quaternion(r.sqrt)
-    } else {
-      Quaternion(f.zero, r.abs.sqrt, f.zero, f.zero)
-    }
+    } else if (r.signum >= 0) { Quaternion(r.sqrt) }
+    else { Quaternion(f.zero, r.abs.sqrt, f.zero, f.zero) }
 
   def nroot(m: Int)(implicit
       f: Field[A],
       o: IsReal[A],
       n0: NRoot[A],
       tr: Trig[A]): Quaternion[A] =
-    if (m <= 0) {
-      throw new IllegalArgumentException(s"illegal root: $m")
-    } else if (m == 1) {
-      this
-    } else if (!isReal) {
+    if (m <= 0) { throw new IllegalArgumentException(s"illegal root: $m") }
+    else if (m == 1) { this }
+    else if (!isReal) {
       val s = pureAbs
       val n = abs
       val t = acos(r / n)
@@ -215,11 +210,8 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
       val e = if (sin(t).signum >= 0) v else -v
       val tm = t / m
       (e * sin(tm) + cos(tm)) * n.nroot(m)
-    } else if (r.signum >= 0) {
-      Quaternion(r.nroot(m))
-    } else {
-      Quaternion(Complex(r).nroot(m))
-    }
+    } else if (r.signum >= 0) { Quaternion(r.nroot(m)) }
+    else { Quaternion(Complex(r).nroot(m)) }
 
   def unit(implicit f: Field[A], o: IsReal[A], n: NRoot[A]): Quaternion[A] =
     Quaternion(r.pow(2), i.pow(2), j.pow(2), k.pow(2)) / abs
@@ -281,23 +273,17 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
       o: IsReal[A],
       n0: NRoot[A],
       tr: Trig[A]): Quaternion[A] =
-    if (k0.signum < 0) {
-      Quaternion.zero
-    } else if (k0 == f.zero) {
-      Quaternion.one
-    } else if (k0 == f.one) {
-      this
-    } else if (!isReal) {
+    if (k0.signum < 0) { Quaternion.zero }
+    else if (k0 == f.zero) { Quaternion.one }
+    else if (k0 == f.one) { this }
+    else if (!isReal) {
       val s = (i ** 2 + j ** 2 + k ** 2).sqrt
       val v = Quaternion(f.zero, i / s, j / s, k / s)
       val n = abs
       val t = acos(r / n)
       (Quaternion(cos(t * k0)) + v * sin(t * k0)) * n.fpow(k0)
-    } else if (r.signum >= 0) {
-      Quaternion(r.fpow(k0))
-    } else {
-      Quaternion(Complex(r).pow(Complex(k0)))
-    }
+    } else if (r.signum >= 0) { Quaternion(r.fpow(k0)) }
+    else { Quaternion(Complex(r).pow(Complex(k0))) }
 
   def floor(implicit o: IsReal[A]): Quaternion[A] =
     Quaternion(r.floor, i.floor, j.floor, k.floor)

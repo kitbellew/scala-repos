@@ -105,9 +105,7 @@ object ProvenanceComputationSpecs
             }
 
             case IdentityPolicy.Synthesize => {
-              tree.provenance must beLike {
-                case DynamicProvenance(_) => ok
-              }
+              tree.provenance must beLike { case DynamicProvenance(_) => ok }
               tree.errors filterNot isWarning must beEmpty
             }
 
@@ -159,9 +157,7 @@ object ProvenanceComputationSpecs
           }
 
           case IdentityPolicy.Synthesize => {
-            tree.provenance must beLike {
-              case DynamicProvenance(_) => ok
-            }
+            tree.provenance must beLike { case DynamicProvenance(_) => ok }
           }
 
           case IdentityPolicy.Strip => {
@@ -188,16 +184,12 @@ object ProvenanceComputationSpecs
 
       {
         val tree = parseSingle("a := 1 (new 1)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
       {
         val tree = parseSingle("a := 1 (distinct(1))")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -230,9 +222,7 @@ object ProvenanceComputationSpecs
 
     "identify new as dynamic" in {
       val tree = compileSingle("new 1")
-      tree.provenance must beLike {
-        case DynamicProvenance(_) => ok
-      }
+      tree.provenance must beLike { case DynamicProvenance(_) => ok }
       tree.errors must beEmpty
     }
 
@@ -270,9 +260,7 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("//a ~ //b (new 1)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -336,9 +324,7 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("{ a: 1, b: 2, c: new 2 }")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
       {
@@ -369,9 +355,7 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("[1, 2, new 3]")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
       {
@@ -396,9 +380,7 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("(new 1).foo")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -418,9 +400,7 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("(new 1)@foo")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -446,17 +426,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("(new 1)[2]")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1[new 2]")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -690,9 +666,7 @@ object ProvenanceComputationSpecs
             }
 
             case IdentityPolicy.Synthesize => {
-              tree.provenance must beLike {
-                case DynamicProvenance(_) => ok
-              }
+              tree.provenance must beLike { case DynamicProvenance(_) => ok }
               tree.errors filterNot isWarning must beEmpty
             }
 
@@ -749,9 +723,7 @@ object ProvenanceComputationSpecs
           }
 
           case IdentityPolicy.Synthesize => {
-            tree.provenance must beLike {
-              case DynamicProvenance(_) => ok
-            }
+            tree.provenance must beLike { case DynamicProvenance(_) => ok }
             tree.errors filterNot isWarning must beEmpty
           }
 
@@ -808,9 +780,7 @@ object ProvenanceComputationSpecs
           }
 
           case IdentityPolicy.Synthesize => {
-            tree.provenance must beLike {
-              case DynamicProvenance(_) => ok
-            }
+            tree.provenance must beLike { case DynamicProvenance(_) => ok }
             tree.errors filterNot isWarning must beEmpty
           }
 
@@ -856,33 +826,25 @@ object ProvenanceComputationSpecs
     "identify load dispatch with non-static params as dynamic" in {
       {
         val tree = compileSingle("load(42)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("a := 42 load(a)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("load(count(42))")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("load(new 42)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
       {
@@ -915,33 +877,25 @@ object ProvenanceComputationSpecs
     "identify load dispatch with non-static params as dynamic" in {
       {
         val tree = compileSingle("relativeLoad(42)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("a := 42 relativeLoad(a)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("relativeLoad(count(42))")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("relativeLoad(new 42)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
       {
@@ -960,9 +914,7 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("id(a) := a id(new 42)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
@@ -983,9 +935,7 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("id(a) := a + 5 id(new 42)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
@@ -998,9 +948,7 @@ object ProvenanceComputationSpecs
 
     "identify dispatch to new-modified identity function as dynamic" in {
       val tree = compileSingle("id(a) := a + new 42 id(24)")
-      tree.provenance must beLike {
-        case DynamicProvenance(_) => ok
-      }
+      tree.provenance must beLike { case DynamicProvenance(_) => ok }
       tree.errors must beEmpty
     }
 
@@ -1108,9 +1056,7 @@ object ProvenanceComputationSpecs
           | histogram""".stripMargin
 
         val tree = compileSingle(input)
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -1130,9 +1076,7 @@ object ProvenanceComputationSpecs
         | fun""".stripMargin
 
       val tree = compileSingle(input)
-      tree.provenance must beLike {
-        case DynamicProvenance(_) => ok
-      }
+      tree.provenance must beLike { case DynamicProvenance(_) => ok }
       tree.errors must beEmpty
     }
 
@@ -1170,17 +1114,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 where 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 where new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -1205,17 +1145,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 with 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 with new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -1612,9 +1548,7 @@ object ProvenanceComputationSpecs
               }
 
               case IdentityPolicy.Synthesize => {
-                tree.provenance must beLike {
-                  case DynamicProvenance(_) => ok
-                }
+                tree.provenance must beLike { case DynamicProvenance(_) => ok }
                 tree.errors filterNot isWarning must beEmpty
               }
 
@@ -2211,17 +2145,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 + 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 + new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2247,17 +2177,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 - 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 - new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2283,17 +2209,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 * 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 * new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2319,17 +2241,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 / 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 / new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2355,17 +2273,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 % 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 % new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2391,17 +2305,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 < 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 < new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2427,17 +2337,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 <= 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 <= new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2463,17 +2369,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 > 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 > new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2499,17 +2401,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 >= 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 >= new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2535,17 +2433,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 = 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 = new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2571,17 +2465,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 != 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 != new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2607,17 +2497,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 & 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 & new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2643,17 +2529,13 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new 1 | 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
 
       {
         val tree = compileSingle("1 | new 2")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2673,9 +2555,7 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("!(new 1)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2695,9 +2575,7 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("neg (new 1)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2717,9 +2595,7 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("(new 1)")
-        tree.provenance must beLike {
-          case DynamicProvenance(_) => ok
-        }
+        tree.provenance must beLike { case DynamicProvenance(_) => ok }
         tree.errors must beEmpty
       }
     }
@@ -2902,9 +2778,7 @@ object ProvenanceComputationSpecs
         }
       }
     }
-  } else {
-    "specification examples" >> skipped
-  }
+  } else { "specification examples" >> skipped }
 
   private def parseSingle(str: LineStream): Expr = {
     val set = parse(str)

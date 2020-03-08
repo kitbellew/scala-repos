@@ -122,9 +122,7 @@ case class Perfs(
   }
 
   def inShort =
-    perfs map {
-      case (name, perf) => s"$name:${perf.intRating}"
-    } mkString ", "
+    perfs map { case (name, perf) => s"$name:${perf.intRating}" } mkString ", "
 
   def updateStandard = copy(
     standard = {

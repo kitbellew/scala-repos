@@ -10,12 +10,7 @@ object Msg {
   def render {
     val msgs: TSeq = (List[(Any, Any)]().flatMap {
       case (a, b) => {
-        a match {
-          case _ =>
-            b match {
-              case _ => sys.error("stub")
-            }
-        }
+        a match { case _ => b match { case _ => sys.error("stub") } }
       }
     } /*: Seq[T] Adding this type annotation avoids the compile error.*/ )
   }

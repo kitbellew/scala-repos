@@ -62,53 +62,41 @@ trait Property[@specialized(Int, Long, Float, Double, Boolean) T, J <: Any]
     *
     * @param v The new value
     */
-  def update(v: T) {
-    value_=(v)
-  }
+  def update(v: T) { value_=(v) }
 
   /**
     * Create a unidirectional binding for this Property.
     *
     * @param v JavaFX ObservableValue this Property should be bound to.
     */
-  def <==(v: JFXObservableValue[_ <: J]) {
-    delegate.bind(v)
-  }
+  def <==(v: JFXObservableValue[_ <: J]) { delegate.bind(v) }
 
   /**
     * Create a unidirectional binding for this Property.
     *
     * @param v ScalaFX ObservableValue this Property should be bound to.
     */
-  def <==(v: ObservableValue[_ <: T, _ <: J]) {
-    delegate.bind(v.delegate)
-  }
+  def <==(v: ObservableValue[_ <: T, _ <: J]) { delegate.bind(v.delegate) }
 
   /**
     * Create a bidirectional binding between this Property and another ScalaFX Property.
     *
     * @param  v the other ScalaFX Property
     */
-  def <==>(v: Property[T, J]) {
-    delegate.bindBidirectional(v.delegate)
-  }
+  def <==>(v: Property[T, J]) { delegate.bindBidirectional(v.delegate) }
 
   /**
     * Create a bidirectional binding between this Property and another JavaFX Property.
     *
     * @param  v the other JavaFX Property
     */
-  def <==>(v: jfxbp.Property[J]) {
-    delegate.bindBidirectional(v)
-  }
+  def <==>(v: jfxbp.Property[J]) { delegate.bindBidirectional(v) }
 
   /**
     * Remove the unidirectional binding for this Property. If the Property is not bound,
     * calling this method has no effect.
     */
-  def unbind() {
-    delegate.unbind()
-  }
+  def unbind() { delegate.unbind() }
 
   /**
     * Remove a bidirectional binding between this Property and another ScalaFX one. If no
@@ -116,9 +104,7 @@ trait Property[@specialized(Int, Long, Float, Double, Boolean) T, J <: Any]
     *
     * @param v - the other Property
     */
-  def unbind(v: Property[T, J]) {
-    delegate.unbindBidirectional(v.delegate)
-  }
+  def unbind(v: Property[T, J]) { delegate.unbindBidirectional(v.delegate) }
 
   /**
     * Remove a bidirectional binding between this Property and another JavaFX one. If no
@@ -126,9 +112,7 @@ trait Property[@specialized(Int, Long, Float, Double, Boolean) T, J <: Any]
     *
     * @param v - the other Property
     */
-  def unbind(v: jfxbp.Property[J]) {
-    delegate.unbindBidirectional(v)
-  }
+  def unbind(v: jfxbp.Property[J]) { delegate.unbindBidirectional(v) }
 
   /**
     * Returns a new [[scalafx.animation.Tweenable]] from a End Value.

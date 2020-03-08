@@ -405,9 +405,7 @@ class ReceivedBlockTrackerSuite
             Utils
               .deserialize[Array[Array[Byte]]](byteBuffer.array())
               .map(ByteBuffer.wrap)
-          } else {
-            Array(byteBuffer)
-          }
+          } else { Array(byteBuffer) }
         validBuffer.map(b =>
           Utils.deserialize[ReceivedBlockTrackerLogEvent](b.array()))
       }

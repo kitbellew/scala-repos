@@ -1,8 +1,6 @@
 package test
 
-package p {
-  class A(a: String = "")
-}
+package p { class A(a: String = "") }
 
 package object po {
   type A = p.A

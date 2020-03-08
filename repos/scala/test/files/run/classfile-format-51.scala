@@ -185,9 +185,7 @@ object Driver {
         generateClass()
         compile()
         ()
-      } otherwise {
-        ()
-      }
+      } otherwise { () }
     } finally System.setErr(prevErr)
   }
 }

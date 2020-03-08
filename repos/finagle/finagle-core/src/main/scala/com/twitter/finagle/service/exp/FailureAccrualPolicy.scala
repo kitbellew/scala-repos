@@ -92,9 +92,7 @@ object FailureAccrualPolicy {
         val duration = nextMarkDeadFor.head
         nextMarkDeadFor = nextMarkDeadFor.tail
         Some(duration)
-      } else {
-        None
-      }
+      } else { None }
     }
 
     def revived(): Unit = synchronized {
@@ -129,9 +127,7 @@ object FailureAccrualPolicy {
 
     private[this] var consecutiveFailures = 0L
 
-    def recordSuccess(): Unit = synchronized {
-      consecutiveFailures = 0
-    }
+    def recordSuccess(): Unit = synchronized { consecutiveFailures = 0 }
 
     def markDeadOnFailure(): Option[Duration] = synchronized {
       consecutiveFailures += 1
@@ -139,9 +135,7 @@ object FailureAccrualPolicy {
         val duration = nextMarkDeadFor.head
         nextMarkDeadFor = nextMarkDeadFor.tail
         Some(duration)
-      } else {
-        None
-      }
+      } else { None }
     }
 
     def revived(): Unit = synchronized {

@@ -55,9 +55,7 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
       warehousePath.delete()
       metastorePath.delete()
       scratchDirPath.delete()
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   /**
@@ -134,9 +132,8 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
     new ProcessOutputCapturer(process.getErrorStream, captureOutput("stderr"))
       .start()
 
-    try {
-      Await.result(foundAllExpectedAnswers.future, timeout)
-    } catch {
+    try { Await.result(foundAllExpectedAnswers.future, timeout) }
+    catch {
       case cause: Throwable =>
         val message =
           s"""
@@ -155,9 +152,7 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
          """.stripMargin
         logError(message, cause)
         fail(message, cause)
-    } finally {
-      process.destroy()
-    }
+    } finally { process.destroy() }
   }
 
   test("Simple commands") {

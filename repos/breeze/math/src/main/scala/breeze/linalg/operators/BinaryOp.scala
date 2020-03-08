@@ -81,9 +81,7 @@ trait BinaryRegistry[A, B, Op, +R]
         case some @ Some(m) =>
           m.asInstanceOf[UImpl2[Op, A, B, R]].apply(a, b)
       }
-    } else {
-      slowPath(a, b, ac, bc, pair)
-    }
+    } else { slowPath(a, b, ac, bc, pair) }
 
   }
 

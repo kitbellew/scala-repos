@@ -92,9 +92,7 @@ object SparkKMeans {
         tempDist += squaredDistance(kPoints(i), newPoints(i))
       }
 
-      for (newP <- newPoints) {
-        kPoints(newP._1) = newP._2
-      }
+      for (newP <- newPoints) { kPoints(newP._1) = newP._2 }
       println("Finished iteration (delta = " + tempDist + ")")
     }
 

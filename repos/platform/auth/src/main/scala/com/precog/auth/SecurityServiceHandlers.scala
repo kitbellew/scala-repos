@@ -96,9 +96,7 @@ class SecurityServiceHandlers(
               .toSuccess(badRequest(missingContentMessage))
               .sequence[Future, JValue]
             response <- content.map(create(authAPIKey, _)).sequence[Future, R]
-          } yield {
-            response.toEither.merge
-          }
+          } yield { response.toEither.merge }
         }
   }
 

@@ -35,21 +35,17 @@ private[sql] object FrequentItems extends Logging {
       * from existing items.
       */
     def add(key: Any, count: Long): this.type = {
-      if (baseMap.contains(key)) {
-        baseMap(key) += count
-      } else {
-        if (baseMap.size < size) {
-          baseMap += key -> count
-        } else {
+      if (baseMap.contains(key)) { baseMap(key) += count }
+      else {
+        if (baseMap.size < size) { baseMap += key -> count }
+        else {
           val minCount = baseMap.values.min
           val remainder = count - minCount
           if (remainder >= 0) {
             baseMap += key -> count // something will get kicked out, so we can add this
             baseMap.retain((k, v) => v > minCount)
             baseMap.transform((k, v) => v - minCount)
-          } else {
-            baseMap.transform((k, v) => v - count)
-          }
+          } else { baseMap.transform((k, v) => v - count) }
         }
       }
       this

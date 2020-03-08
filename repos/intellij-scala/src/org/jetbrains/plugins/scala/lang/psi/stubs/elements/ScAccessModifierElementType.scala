@@ -29,9 +29,7 @@ class ScAccessModifierElementType[Func <: ScAccessModifier]
     dataStream.writeBoolean(stub.isThis)
     val hasId = stub.getIdText != None
     dataStream.writeBoolean(hasId)
-    if (hasId) {
-      dataStream.writeName(stub.getIdText.get)
-    }
+    if (hasId) { dataStream.writeName(stub.getIdText.get) }
   }
 
   def indexStub(stub: ScAccessModifierStub, sink: IndexSink) {}

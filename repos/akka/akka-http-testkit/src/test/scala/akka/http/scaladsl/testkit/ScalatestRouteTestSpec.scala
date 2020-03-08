@@ -33,9 +33,7 @@ class ScalatestRouteTestSpec
     "a test using a directive and some checks" in {
       val pinkHeader = RawHeader("Fancy", "pink")
       Get() ~> addHeader(pinkHeader) ~> {
-        respondWithHeader(pinkHeader) {
-          complete("abc")
-        }
+        respondWithHeader(pinkHeader) { complete("abc") }
       } ~> check {
         status shouldEqual OK
         responseEntity shouldEqual HttpEntity(
@@ -46,11 +44,7 @@ class ScalatestRouteTestSpec
     }
 
     "proper rejection collection" in {
-      Post("/abc", "content") ~> {
-        (get | put) {
-          complete("naah")
-        }
-      } ~> check {
+      Post("/abc", "content") ~> { (get | put) { complete("naah") } } ~> check {
         rejections shouldEqual List(MethodRejection(GET), MethodRejection(PUT))
       }
     }

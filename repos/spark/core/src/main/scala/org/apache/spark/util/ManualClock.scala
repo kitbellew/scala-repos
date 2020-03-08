@@ -32,9 +32,7 @@ private[spark] class ManualClock(private var time: Long) extends Clock {
   def this() = this(0L)
 
   def getTimeMillis(): Long =
-    synchronized {
-      time
-    }
+    synchronized { time }
 
   /**
     * @param timeToSet new time (in milliseconds) that the clock should represent
@@ -57,9 +55,7 @@ private[spark] class ManualClock(private var time: Long) extends Clock {
     * @return current time reported by the clock when waiting finishes
     */
   def waitTillTime(targetTime: Long): Long = synchronized {
-    while (time < targetTime) {
-      wait(10)
-    }
+    while (time < targetTime) { wait(10) }
     getTimeMillis()
   }
 }

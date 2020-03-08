@@ -102,9 +102,7 @@ case class One[V, A](v: V, a1: A)(implicit r: Reducer[A, V])
 
   def map[B, V2](f: A => B)(implicit r: Reducer[B, V2]) = one(f(a1))
 
-  def foreach(f: A => Unit) {
-    f(a1)
-  }
+  def foreach(f: A => Unit) { f(a1) }
 
   def iterator = Iterator.single(a1)
 
@@ -135,9 +133,7 @@ case class Two[V, A](v: V, a1: A, a2: A)(implicit r: Reducer[A, V])
 
   def rtail = one(a1)
 
-  def toTree = {
-    deep(v, one(a1), empty[V, Node[V, A]], one(a2))
-  }
+  def toTree = { deep(v, one(a1), empty[V, Node[V, A]], one(a2)) }
 
   def map[B, V2](f: A => B)(implicit r: Reducer[B, V2]) = two(f(a1), f(a2))
 
@@ -184,9 +180,7 @@ case class Three[V, A](v: V, a1: A, a2: A, a3: A)(implicit r: Reducer[A, V])
 
   def rtail = two(a1, a2)
 
-  def toTree = {
-    deep(v, two(a1, a2), empty[V, Node[V, A]], one(a3))
-  }
+  def toTree = { deep(v, two(a1, a2), empty[V, Node[V, A]], one(a3)) }
 
   def map[B, V2](f: A => B)(implicit r: Reducer[B, V2]) =
     three(f(a1), f(a2), f(a3))
@@ -241,9 +235,7 @@ case class Four[V, A](v: V, a1: A, a2: A, a3: A, a4: A)(
 
   def rtail = three(a1, a2, a3)
 
-  def toTree = {
-    deep(v, two(a1, a2), empty[V, Node[V, A]], two(a3, a4))
-  }
+  def toTree = { deep(v, two(a1, a2), empty[V, Node[V, A]], two(a3, a4)) }
 
   def map[B, V2](f: A => B)(implicit r: Reducer[B, V2]) =
     four(f(a1), f(a2), f(a3), f(a4))
@@ -1036,9 +1028,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     def mkNode(x: B)(y: B)(z: B): Node[V2, B] = node3(x, y, z)
     node.fold(
       (v, a, b) => F.apply2(f(a), f(b))((x, y) => node2(x, y)),
-      (v, a, b, c) => {
-        F.ap(f(c))(F.ap(f(b))(F.map(f(a))(x => mkNode(x) _)))
-      })
+      (v, a, b, c) => { F.ap(f(c))(F.ap(f(b))(F.map(f(a))(x => mkNode(x) _))) })
   }
 
   private def traverseFinger[F[_], A, B, V2](digit: Finger[V, A])(f: A => F[B])(

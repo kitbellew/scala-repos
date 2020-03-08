@@ -200,9 +200,7 @@ object StandardMetrics {
       */
     def unapply(nodeMetrics: NodeMetrics): Option[
       (Address, Long, Option[Double], Option[Double], Option[Double], Int)] = {
-      for {
-        processors ← nodeMetrics.metric(Processors)
-      } yield (
+      for { processors ← nodeMetrics.metric(Processors) } yield (
         nodeMetrics.address,
         nodeMetrics.timestamp,
         nodeMetrics.metric(SystemLoadAverage).map(_.smoothValue),
@@ -354,9 +352,7 @@ final case class NodeMetrics(
       latest ← latestNode.metrics
       current ← currentNode.metrics
       if (latest sameAs current)
-    } yield {
-      current :+ latest
-    }
+    } yield { current :+ latest }
     // Append metrics missing from either latest or current.
     // Equality is based on the [[Metric.name]] and [[Set]] doesn't replace existing elements.
     val merged = updated union latestNode.metrics union currentNode.metrics

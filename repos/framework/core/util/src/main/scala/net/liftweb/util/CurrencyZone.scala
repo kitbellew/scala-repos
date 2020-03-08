@@ -33,21 +33,27 @@ trait DollarCurrency extends TwoFractionDigits {
 object AU extends CurrencyZone {
   type Currency = AUD
   var locale = new Locale("en", "AU")
-  def make(x: BigDecimal) = new Currency { def amount = x }
+  def make(x: BigDecimal) = new Currency {
+    def amount = x
+  }
   abstract class AUD extends AbstractCurrency("AUD") with DollarCurrency {}
 }
 
 object US extends CurrencyZone {
   type Currency = USD
   var locale = Locale.US
-  def make(x: BigDecimal) = new Currency { def amount = x }
+  def make(x: BigDecimal) = new Currency {
+    def amount = x
+  }
   abstract class USD extends AbstractCurrency("USD") with DollarCurrency {}
 }
 
 object GB extends CurrencyZone {
   type Currency = GBP
   var locale = Locale.UK
-  def make(x: BigDecimal) = new Currency { def amount = x }
+  def make(x: BigDecimal) = new Currency {
+    def amount = x
+  }
   abstract class GBP extends AbstractCurrency("GBP") with TwoFractionDigits {
     def currencySymbol = "£"
   }

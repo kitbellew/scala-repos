@@ -67,16 +67,12 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
   def afterAll(): Unit = system.terminate()
 
   def withSimpleServer[T](block: WSClient => T): T =
-    withServer {
-      case _ => Action(Ok)
-    }(block)
+    withServer { case _ => Action(Ok) }(block)
 
   def withServer[T](routes: (String, String) => Handler)(
       block: WSClient => T): T = {
     val app = GuiceApplicationBuilder()
-      .routes({
-        case (method, path) => routes(method, path)
-      })
+      .routes({ case (method, path) => routes(method, path) })
       .build()
     running(TestServer(testServerPort, app))(
       block(app.injector.instanceOf[WSClient]))
@@ -351,9 +347,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           //#stream-to-file
           await(downloadedFile) must_== file
 
-        } finally {
-          file.delete()
-        }
+        } finally { file.delete() }
       }
 
       "stream to a result" in withServer {
@@ -382,9 +376,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
                   case _ =>
                     Ok.chunked(body).as(contentType)
                 }
-              } else {
-                BadGateway
-              }
+              } else { BadGateway }
           }
         }
         //#stream-to-result
@@ -429,17 +421,11 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
     "work with for comprehensions" in withServer {
       case ("GET", "/one") =>
-        Action {
-          Ok(s"http://localhost:$testServerPort/two")
-        }
+        Action { Ok(s"http://localhost:$testServerPort/two") }
       case ("GET", "/two") =>
-        Action {
-          Ok(s"http://localhost:$testServerPort/three")
-        }
+        Action { Ok(s"http://localhost:$testServerPort/three") }
       case ("GET", "/three") =>
-        Action {
-          Ok("finished!")
-        }
+        Action { Ok("finished!") }
     } { ws =>
       val urlOne = s"http://localhost:$testServerPort/one"
       val exceptionUrl = s"http://localhost:$testServerPort/fallback"

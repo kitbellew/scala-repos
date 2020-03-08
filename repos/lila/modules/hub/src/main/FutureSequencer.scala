@@ -79,9 +79,7 @@ object FutureSequencer {
                 error = Timeout(timeout)
               )(context.system)
             }
-            .andThenAnyway {
-              self ! Done
-            }
+            .andThenAnyway { self ! Done }
         case FSequencer.WithQueueSize(f) =>
           f(queue.size)
           self ! Done

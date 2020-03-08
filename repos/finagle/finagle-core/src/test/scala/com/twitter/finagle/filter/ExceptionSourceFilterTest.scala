@@ -18,9 +18,7 @@ class ExceptionSourceFilterTest extends FunSuite with MockitoSugar {
     val e = new SourcedException {}
     when(service(anyInt)).thenReturn(Future.exception(e))
     val composed = new ExceptionSourceFilter("name") andThen service
-    val actual = intercept[SourcedException] {
-      Await.result(composed(0))
-    }
+    val actual = intercept[SourcedException] { Await.result(composed(0)) }
     assert(actual.serviceName == "name")
   }
 
@@ -29,9 +27,7 @@ class ExceptionSourceFilterTest extends FunSuite with MockitoSugar {
     val e = new Failure("everything sucks")
     when(service(anyInt)).thenReturn(Future.exception(e))
     val composed = new ExceptionSourceFilter("name") andThen service
-    val actual = intercept[Failure] {
-      Await.result(composed(0))
-    }
+    val actual = intercept[Failure] { Await.result(composed(0)) }
     assert(actual.getSource(Failure.Source.Service) == Some("name"))
   }
 }

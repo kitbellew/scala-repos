@@ -34,14 +34,12 @@ object Resources {
     urlConnection match {
       case file: FileURLConnection => new File(file.getURL.toURI).isDirectory
       case jar: JarURLConnection =>
-        if (jar.getJarEntry.isDirectory) {
-          true
-        } else {
+        if (jar.getJarEntry.isDirectory) { true }
+        else {
           // JarEntry.isDirectory is rubbish....
           val is = jar.getJarFile.getInputStream(jar.getJarEntry)
-          if (is == null) {
-            true
-          } else {
+          if (is == null) { true }
+          else {
             is.close()
             false
           }
@@ -58,9 +56,7 @@ object Resources {
   def closeUrlConnection(connection: URLConnection): Unit = {
     connection match {
       case jar: JarURLConnection =>
-        if (!jar.getUseCaches) {
-          jar.getJarFile.close()
-        }
+        if (!jar.getUseCaches) { jar.getJarFile.close() }
       case other =>
         other.getInputStream.close()
     }
@@ -104,8 +100,6 @@ object Resources {
         if (stream != null) stream.close()
         isDir
       }
-    } finally {
-      zip.close()
-    }
+    } finally { zip.close() }
   }
 }

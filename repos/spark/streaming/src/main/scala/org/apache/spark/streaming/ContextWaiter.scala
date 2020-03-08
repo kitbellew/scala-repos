@@ -36,9 +36,7 @@ private[streaming] class ContextWaiter {
     try {
       error = e
       condition.signalAll()
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
   def notifyStop(): Unit = {
@@ -46,9 +44,7 @@ private[streaming] class ContextWaiter {
     try {
       stopped = true
       condition.signalAll()
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
   /**
@@ -59,9 +55,7 @@ private[streaming] class ContextWaiter {
     lock.lock()
     try {
       if (timeout < 0) {
-        while (!stopped && error == null) {
-          condition.await()
-        }
+        while (!stopped && error == null) { condition.await() }
       } else {
         var nanos = TimeUnit.MILLISECONDS.toNanos(timeout)
         while (!stopped && error == null && nanos > 0) {
@@ -72,8 +66,6 @@ private[streaming] class ContextWaiter {
       if (error != null) throw error
       // already stopped or timeout
       stopped
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 }

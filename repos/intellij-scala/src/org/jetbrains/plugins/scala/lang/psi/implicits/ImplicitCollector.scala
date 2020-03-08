@@ -216,9 +216,7 @@ class ImplicitCollector(
 
     previousRecursionState match {
       case Some(m) =>
-        ScalaRecursionManager.usingPreviousRecursionMap(m) {
-          calc()
-        }
+        ScalaRecursionManager.usingPreviousRecursionMap(m) { calc() }
       case _ => calc()
     }
   }
@@ -703,9 +701,7 @@ class ImplicitCollector(
                     } else if (!withLocalTypeInference && !hasTypeParametersInType) {
                       substedFunType = subst.subst(funType)
                     } else return None
-                  } else {
-                    substedFunType = subst.subst(funType)
-                  }
+                  } else { substedFunType = subst.subst(funType) }
 
                   if (substedFunType conforms tp) {
                     if (checkFast || noReturnType) Some(c, ScSubstitutor.empty)

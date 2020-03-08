@@ -73,28 +73,18 @@ class DropShadow(
     this(new jfxse.DropShadow(radius, offsetX, offsetY, color))
 
   def blurType: ObjectProperty[jfxse.BlurType] = delegate.blurTypeProperty
-  def blurType_=(bt: BlurType) {
-    blurType() = bt
-  }
+  def blurType_=(bt: BlurType) { blurType() = bt }
 
   def offsetX: DoubleProperty = delegate.offsetXProperty
-  def offsetX_=(d: Double) {
-    offsetX() = d
-  }
+  def offsetX_=(d: Double) { offsetX() = d }
 
   def offsetY: DoubleProperty = delegate.offsetYProperty
-  def offsetY_=(d: Double) {
-    offsetY() = d
-  }
+  def offsetY_=(d: Double) { offsetY() = d }
 
   def radius: DoubleProperty = delegate.radiusProperty
-  def radius_=(d: Double) {
-    radius() = d
-  }
+  def radius_=(d: Double) { radius() = d }
 
   def spread: DoubleProperty = delegate.spreadProperty
-  def spread_=(d: Double) {
-    spread() = d
-  }
+  def spread_=(d: Double) { spread() = d }
 
 }

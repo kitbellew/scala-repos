@@ -251,9 +251,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
 // Get next token ------------------------------------------------------------
 
     def nextToken() {
-      if (next.token == EMPTY) {
-        fetchToken()
-      } else {
+      if (next.token == EMPTY) { fetchToken() }
+      else {
         this copyFrom next
         next.token = EMPTY
       }
@@ -297,9 +296,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
                 if (in.ch == 'x' || in.ch == 'X') {
                   in.next()
                   base = 16
-                } else {
-                  base = 8
-                }
+                } else { base = 8 }
                 getNumber()
                 return
 
@@ -317,9 +314,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
                   token = STRINGLIT
                   setName()
                   in.next()
-                } else {
-                  syntaxError("unclosed string literal")
-                }
+                } else { syntaxError("unclosed string literal") }
                 return
 
               case '\'' =>
@@ -329,9 +324,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
                   in.next()
                   token = CHARLIT
                   setName()
-                } else {
-                  syntaxError("unclosed character literal")
-                }
+                } else { syntaxError("unclosed character literal") }
                 return
 
               case '=' =>
@@ -681,9 +674,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       if (in.ch == 'e' || in.ch == 'E') {
         val lookahead = in.copy
         lookahead.next()
-        if (lookahead.ch == '+' || lookahead.ch == '-') {
-          lookahead.next()
-        }
+        if (lookahead.ch == '+' || lookahead.ch == '-') { lookahead.next() }
         if ('0' <= lookahead.ch && lookahead.ch <= '9') {
           putChar(in.ch)
           in.next()
@@ -788,9 +779,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       if (base <= 10 &&
           (in.ch == 'e' || in.ch == 'E' ||
           in.ch == 'f' || in.ch == 'F' ||
-          in.ch == 'd' || in.ch == 'D')) {
-        return getFraction()
-      }
+          in.ch == 'd' || in.ch == 'D')) { return getFraction() }
       setName()
       if (in.ch == 'l' || in.ch == 'L') {
         in.next()

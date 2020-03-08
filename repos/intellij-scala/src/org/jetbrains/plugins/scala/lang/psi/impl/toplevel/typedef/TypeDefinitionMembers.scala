@@ -125,9 +125,7 @@ object TypeDefinitionMembers {
         map: Map,
         place: Option[PsiElement],
         base: Boolean) {
-      def addSignature(s: Signature) {
-        map addToMap (s, new Node(s, subst))
-      }
+      def addSignature(s: Signature) { map addToMap (s, new Node(s, subst)) }
 
       if (template.qualifiedName == "scala.AnyVal") {
         //we need to add Object members
@@ -285,9 +283,7 @@ object TypeDefinitionMembers {
               sign.namedElement) match {
               case m: PsiMember => nonBridge(place, m)
               case _            => false
-            })) {
-          map addToMap (sign, new Node(sign, sign.substitutor))
-        }
+            })) { map addToMap (sign, new Node(sign, sign.substitutor)) }
       }
     }
   }
@@ -309,9 +305,7 @@ object TypeDefinitionMembers {
 
     def isImplicit(t: PsiNamedElement) = false
 
-    def same(t1: PsiNamedElement, t2: PsiNamedElement): Boolean = {
-      t1 eq t2
-    }
+    def same(t1: PsiNamedElement, t2: PsiNamedElement): Boolean = { t1 eq t2 }
 
     def isPrivate(t: PsiNamedElement): Boolean = {
       t match {
@@ -439,9 +433,7 @@ object TypeDefinitionMembers {
         map: Map,
         place: Option[PsiElement],
         base: Boolean) {
-      def addSignature(s: Signature) {
-        map addToMap (s, new Node(s, subst))
-      }
+      def addSignature(s: Signature) { map addToMap (s, new Node(s, subst)) }
 
       if (template.qualifiedName == "scala.AnyVal") {
         //we need to add Object members
@@ -642,9 +634,7 @@ object TypeDefinitionMembers {
         if (ScalaPsiUtil.nameContext(sign.namedElement) match {
               case m: PsiMember => nonBridge(place, m)
               case _            => false
-            }) {
-          map addToMap (sign, new Node(sign, sign.substitutor))
-        }
+            }) { map addToMap (sign, new Node(sign, sign.substitutor)) }
       }
     }
 
@@ -689,9 +679,7 @@ object TypeDefinitionMembers {
     clazz match {
       case o: ScObject =>
         val qual = o.qualifiedName
-        if (qual == "scala" || qual == "scala.Predef") {
-          return o.getHardTypes
-        }
+        if (qual == "scala" || qual == "scala.Predef") { return o.getHardTypes }
       case _ =>
     }
 
@@ -1277,9 +1265,7 @@ object TypeDefinitionMembers {
     if (processMethodRefs) {
       if (processOnlyStable) {
         if (!process(parameterlessSignatures())) return false
-      } else {
-        if (!process(signatures())) return false
-      }
+      } else { if (!process(signatures())) return false }
     }
 
     //inner classes

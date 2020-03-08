@@ -5,9 +5,7 @@ trait A extends DelayedInit {
     body
     postConstructionCode
   }
-  def postConstructionCode: Unit = {
-    print("\n A+")
-  }
+  def postConstructionCode: Unit = { print("\n A+") }
 }
 trait B extends A {
   print(" -B")
@@ -49,7 +47,9 @@ object Test {
     p("new C { }")
     f(new C {})
     p("new C { 5 }")
-    f(new C { 5 })
+    f(new C {
+      5
+    })
 
     p("new D()")
     f(new D())
@@ -57,19 +57,33 @@ object Test {
     f(new D() {})
 
     p("new D() { val x = 5 }")
-    f(new D() { val x = 5 })
+    f(new D() {
+      val x = 5
+    })
     p("new { val x = 5 } with D()")
-    f(new { val x = 5 } with D())
+    f(new {
+      val x = 5
+    } with D())
 
     p("new E() { val x = 5 }")
-    f(new E() { val x = 5 })
+    f(new E() {
+      val x = 5
+    })
     p("new { val x = 5 } with E()")
-    f(new { val x = 5 } with E())
+    f(new {
+      val x = 5
+    } with E())
 
     p("new { val x = 5 } with E() { }")
-    f(new { val x = 5 } with E() {})
+    f(new {
+      val x = 5
+    } with E() {})
     p("new { val x = 5 } with E() { 5 }")
-    f(new { val x = 5 } with E() { 5 })
+    f(new {
+      val x = 5
+    } with E() {
+      5
+    })
 
     println("")
   }

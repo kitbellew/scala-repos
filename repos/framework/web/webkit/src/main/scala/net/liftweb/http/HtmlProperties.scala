@@ -267,13 +267,9 @@ final case class OldHtmlProperties(userAgent: Box[String])
     * setDocType.
     */
   def docType: Box[String] = {
-    if (S.skipDocType) {
-      Empty
-    } else if (S.getDocType._1) {
-      S.getDocType._2
-    } else {
-      Full(DocType.xhtmlTransitional)
-    }
+    if (S.skipDocType) { Empty }
+    else if (S.getDocType._1) { S.getDocType._2 }
+    else { Full(DocType.xhtmlTransitional) }
   }
   def encoding: Box[String] =
     Full(LiftRules.calculateXmlHeader(null, <ignore/>, contentType))
@@ -284,9 +280,7 @@ final case class OldHtmlProperties(userAgent: Box[String])
     val key = req -> accept
     if (LiftRules.determineContentType.isDefinedAt(key)) {
       Full(LiftRules.determineContentType(key))
-    } else {
-      Empty
-    }
+    } else { Empty }
   }
 
   def htmlParser: InputStream => Box[NodeSeq] = PCDataXmlParser.apply _
@@ -310,9 +304,7 @@ final case class OldHtmlProperties(userAgent: Box[String])
       case (Full(dt), Full(enc)) if dt.length > 0 && enc.length > 0 =>
         if (LiftRules.calcIE6ForResponse() && LiftRules.flipDocTypeForIE6) {
           Full(dt.trim + "\n" + enc.trim + "\n")
-        } else {
-          Full(enc.trim + "\n" + dt.trim + "\n")
-        }
+        } else { Full(enc.trim + "\n" + dt.trim + "\n") }
 
       case (Full(dt), _) if dt.length > 0 => Full(dt.trim + "\n")
 
@@ -340,9 +332,7 @@ final case class Html5Properties(userAgent: Box[String])
   def docType: Box[String] = Full("<!DOCTYPE html>")
   def encoding: Box[String] = Empty
 
-  def contentType: Box[String] = {
-    Full("text/html; charset=utf-8")
-  }
+  def contentType: Box[String] = { Full("text/html; charset=utf-8") }
 
   def htmlParser: InputStream => Box[Elem] = Html5.parse _
 
@@ -373,9 +363,7 @@ final case class XHtmlInHtml5OutProperties(userAgent: Box[String])
   def docType: Box[String] = Full("<!DOCTYPE html>")
   def encoding: Box[String] = Empty
 
-  def contentType: Box[String] = {
-    Full("text/html; charset=utf-8")
-  }
+  def contentType: Box[String] = { Full("text/html; charset=utf-8") }
 
   def htmlParser: InputStream => Box[NodeSeq] = PCDataXmlParser.apply _
 

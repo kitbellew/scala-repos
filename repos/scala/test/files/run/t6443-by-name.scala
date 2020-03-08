@@ -8,7 +8,9 @@ object Test {
   trait T {
     type U
   }
-  object X extends T { type U = Int }
+  object X extends T {
+    type U = Int
+  }
 
   def lazyDep(t: T)(u: => t.U) {
     println("1")

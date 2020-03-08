@@ -73,14 +73,10 @@ abstract class Message extends HttpMessageProxy {
   def getCookies(): JIterator[Cookie] = cookies.valuesIterator.asJava
 
   /** Add a cookie */
-  def addCookie(cookie: Cookie) {
-    cookies += cookie
-  }
+  def addCookie(cookie: Cookie) { cookies += cookie }
 
   /** Remove a cookie */
-  def removeCookie(name: String) {
-    cookies -= name
-  }
+  def removeCookie(name: String) { cookies -= name }
 
   /** Accept header */
   def accept: Seq[String] =
@@ -274,11 +270,8 @@ abstract class Message extends HttpMessageProxy {
     contentType match {
       case Some(contentType) =>
         val parts = StringUtils.split(contentType, ";", 2)
-        if (parts.length == 2) {
-          this.contentType = value + ";" + parts(1)
-        } else {
-          this.contentType = value
-        }
+        if (parts.length == 2) { this.contentType = value + ";" + parts(1) }
+        else { this.contentType = value }
       case None =>
         this.contentType = value
     }
@@ -345,11 +338,8 @@ abstract class Message extends HttpMessageProxy {
   /** Get the content as a string. */
   def contentString: String = {
     val encoding =
-      try {
-        Charset.forName(charset getOrElse "UTF-8")
-      } catch {
-        case _: Throwable => Message.Utf8
-      }
+      try { Charset.forName(charset getOrElse "UTF-8") }
+      catch { case _: Throwable => Message.Utf8 }
     getContent.toString(encoding)
   }
 
@@ -395,9 +385,7 @@ abstract class Message extends HttpMessageProxy {
     new InputStreamReader(getInputStream())
 
   /** Append string to content. */
-  def write(string: String) {
-    write(string.getBytes("UTF-8"))
-  }
+  def write(string: String) { write(string.getBytes("UTF-8")) }
 
   /** Append bytes to content. */
   def write(bytes: Array[Byte]) {
@@ -460,9 +448,7 @@ abstract class Message extends HttpMessageProxy {
   }
 
   /** Clear content (set to ""). */
-  def clearContent() {
-    setContent(ChannelBuffers.EMPTY_BUFFER)
-  }
+  def clearContent() { setContent(ChannelBuffers.EMPTY_BUFFER) }
 
   /** End the response stream. */
   def close() = writer.close()

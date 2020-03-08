@@ -82,9 +82,7 @@ object CanvasDoodleTest extends JFXApp {
 
   // Fill the Canvas with a Blue rectangle when the user double-clicks
   canvas.onMouseClicked = (e: MouseEvent) => {
-    if (e.clickCount > 1) {
-      reset(Color.Blue)
-    }
+    if (e.clickCount > 1) { reset(Color.Blue) }
   }
 
   /**

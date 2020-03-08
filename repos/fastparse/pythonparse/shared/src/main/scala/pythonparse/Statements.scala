@@ -239,9 +239,7 @@ class Statements(indent: Int) {
           .!
           .map(_.length) ~~ Lexical.comment.!.?)
       P(Lexical.nonewlinewscomment.? ~~ (endLine | commentLine).repX(1))
-        .map {
-          _.collectFirst { case (s, None) => s }
-        }
+        .map { _.collectFirst { case (s, None) => s } }
         .filter(_.isDefined)
         .map(_.get)
     }

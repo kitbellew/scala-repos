@@ -30,13 +30,9 @@ private[netty] abstract class NettyRpcCallContext(
 
   protected def send(message: Any): Unit
 
-  override def reply(response: Any): Unit = {
-    send(response)
-  }
+  override def reply(response: Any): Unit = { send(response) }
 
-  override def sendFailure(e: Throwable): Unit = {
-    send(RpcFailure(e))
-  }
+  override def sendFailure(e: Throwable): Unit = { send(RpcFailure(e)) }
 
 }
 
@@ -48,9 +44,7 @@ private[netty] class LocalNettyRpcCallContext(
     p: Promise[Any])
     extends NettyRpcCallContext(senderAddress) {
 
-  override protected def send(message: Any): Unit = {
-    p.success(message)
-  }
+  override protected def send(message: Any): Unit = { p.success(message) }
 }
 
 /**

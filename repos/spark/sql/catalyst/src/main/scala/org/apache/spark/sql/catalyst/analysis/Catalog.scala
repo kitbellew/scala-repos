@@ -68,11 +68,8 @@ trait Catalog {
           "for temporary tables. If the table name has dots (.) in it, please quote the " +
           "table name with backticks (`).")
     }
-    if (conf.caseSensitiveAnalysis) {
-      tableIdent.table
-    } else {
-      tableIdent.table.toLowerCase
-    }
+    if (conf.caseSensitiveAnalysis) { tableIdent.table }
+    else { tableIdent.table.toLowerCase }
   }
 }
 
@@ -81,17 +78,13 @@ class SimpleCatalog(val conf: CatalystConf) extends Catalog {
 
   override def registerTable(
       tableIdent: TableIdentifier,
-      plan: LogicalPlan): Unit = {
-    tables.put(getTableName(tableIdent), plan)
-  }
+      plan: LogicalPlan): Unit = { tables.put(getTableName(tableIdent), plan) }
 
   override def unregisterTable(tableIdent: TableIdentifier): Unit = {
     tables.remove(getTableName(tableIdent))
   }
 
-  override def unregisterAllTables(): Unit = {
-    tables.clear()
-  }
+  override def unregisterAllTables(): Unit = { tables.clear() }
 
   override def tableExists(tableIdent: TableIdentifier): Boolean = {
     tables.containsKey(getTableName(tableIdent))
@@ -135,11 +128,8 @@ trait OverrideCatalog extends Catalog {
 
   private def getOverriddenTable(
       tableIdent: TableIdentifier): Option[LogicalPlan] = {
-    if (tableIdent.database.isDefined) {
-      None
-    } else {
-      Option(overrides.get(getTableName(tableIdent)))
-    }
+    if (tableIdent.database.isDefined) { None }
+    else { Option(overrides.get(getTableName(tableIdent))) }
   }
 
   abstract override def tableExists(tableIdent: TableIdentifier): Boolean = {
@@ -185,9 +175,7 @@ trait OverrideCatalog extends Catalog {
     }
   }
 
-  override def unregisterAllTables(): Unit = {
-    overrides.clear()
-  }
+  override def unregisterAllTables(): Unit = { overrides.clear() }
 }
 
 /**
@@ -215,9 +203,7 @@ object EmptyCatalog extends Catalog {
 
   override def registerTable(
       tableIdent: TableIdentifier,
-      plan: LogicalPlan): Unit = {
-    throw new UnsupportedOperationException
-  }
+      plan: LogicalPlan): Unit = { throw new UnsupportedOperationException }
 
   override def unregisterTable(tableIdent: TableIdentifier): Unit = {
     throw new UnsupportedOperationException

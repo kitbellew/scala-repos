@@ -165,9 +165,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
           // will be null, and the client connection should be used to contact the executor.
           val executorAddress = if (executorRef.address != null) {
             executorRef.address
-          } else {
-            context.senderAddress
-          }
+          } else { context.senderAddress }
           logInfo(
             s"Registered executor $executorRef ($executorAddress) with ID $executorId")
           addressToExecutorId(executorAddress) = executorId
@@ -355,9 +353,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
       shouldDisable
     }
 
-    override def onStop() {
-      reviveThread.shutdownNow()
-    }
+    override def onStop() { reviveThread.shutdownNow() }
   }
 
   var driverEndpoint: RpcEndpointRef = null
@@ -366,9 +362,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
   override def start() {
     val properties = new ArrayBuffer[(String, String)]
     for ((key, value) <- scheduler.sc.conf.getAll) {
-      if (key.startsWith("spark.")) {
-        properties += ((key, value))
-      }
+      if (key.startsWith("spark.")) { properties += ((key, value)) }
     }
 
     // TODO (prashant) send conf instead of properties
@@ -435,9 +429,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
     }
   }
 
-  override def reviveOffers() {
-    driverEndpoint.send(ReviveOffers)
-  }
+  override def reviveOffers() { driverEndpoint.send(ReviveOffers) }
 
   override def killTask(
       taskId: Long,
@@ -562,9 +554,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
     *         false.
     */
   final override def killExecutors(executorIds: Seq[String]): Boolean =
-    synchronized {
-      killExecutors(executorIds, replace = false, force = false)
-    }
+    synchronized { killExecutors(executorIds, replace = false, force = false) }
 
   /**
     * Request that the cluster manager kill the specified executors.
@@ -603,9 +593,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
     if (!replace) {
       doRequestTotalExecutors(
         numExistingExecutors + numPendingExecutors - executorsPendingToRemove.size)
-    } else {
-      numPendingExecutors += knownExecutors.size
-    }
+    } else { numPendingExecutors += knownExecutors.size }
 
     !executorsToKill.isEmpty && doKillExecutors(executorsToKill)
   }

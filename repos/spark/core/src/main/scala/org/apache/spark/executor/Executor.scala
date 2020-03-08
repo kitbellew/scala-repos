@@ -160,9 +160,7 @@ private[spark] class Executor(
 
   def killTask(taskId: Long, interruptThread: Boolean): Unit = {
     val tr = runningTasks.get(taskId)
-    if (tr != null) {
-      tr.kill(interruptThread)
-    }
+    if (tr != null) { tr.kill(interruptThread) }
   }
 
   def stop(): Unit = {
@@ -170,9 +168,7 @@ private[spark] class Executor(
     heartbeater.shutdown()
     heartbeater.awaitTermination(10, TimeUnit.SECONDS)
     threadPool.shutdown()
-    if (!isLocal) {
-      env.stop()
-    }
+    if (!isLocal) { env.stop() }
   }
 
   /** Returns the total amount of time this JVM process has spent in garbage collection. */
@@ -205,9 +201,7 @@ private[spark] class Executor(
     def kill(interruptThread: Boolean): Unit = {
       logInfo(s"Executor is trying to kill $taskName (TID $taskId)")
       killed = true
-      if (task != null) {
-        task.kill(interruptThread)
-      }
+      if (task != null) { task.kill(interruptThread) }
     }
 
     override def run(): Unit = {
@@ -264,9 +258,7 @@ private[spark] class Executor(
                     "spark.unsafe.exceptionOnMemoryLeak",
                     false) && !threwException) {
                 throw new SparkException(errMsg)
-              } else {
-                logError(errMsg)
-              }
+              } else { logError(errMsg) }
             }
 
             if (releasedLocks.nonEmpty) {
@@ -277,17 +269,13 @@ private[spark] class Executor(
                     "spark.storage.exceptionOnPinLeak",
                     false) && !threwException) {
                 throw new SparkException(errMsg)
-              } else {
-                logError(errMsg)
-              }
+              } else { logError(errMsg) }
             }
           }
         val taskFinish = System.currentTimeMillis()
 
         // If the task has been killed, let's fail it.
-        if (task.killed) {
-          throw new TaskKilledException
-        }
+        if (task.killed) { throw new TaskKilledException }
 
         val resultSer = env.serializer.newInstance()
         val beforeSerialization = System.currentTimeMillis()
@@ -378,14 +366,11 @@ private[spark] class Executor(
                 m.setJvmGCTime(computeTotalGcTime() - startGCTime)
               }
               task.collectAccumulatorUpdates(taskFailed = true)
-            } else {
-              Seq.empty[AccumulableInfo]
-            }
+            } else { Seq.empty[AccumulableInfo] }
 
           val serializedTaskEndReason = {
-            try {
-              ser.serialize(new ExceptionFailure(t, accumulatorUpdates))
-            } catch {
+            try { ser.serialize(new ExceptionFailure(t, accumulatorUpdates)) }
+            catch {
               case _: NotSerializableException =>
                 // t is not serializable so just send the stacktrace
                 ser.serialize(
@@ -406,9 +391,7 @@ private[spark] class Executor(
             SparkUncaughtExceptionHandler.uncaughtException(t)
           }
 
-      } finally {
-        runningTasks.remove(taskId)
-      }
+      } finally { runningTasks.remove(taskId) }
     }
   }
 
@@ -432,9 +415,7 @@ private[spark] class Executor(
     }
     if (userClassPathFirst) {
       new ChildFirstURLClassLoader(urls, currentLoader)
-    } else {
-      new MutableURLClassLoader(urls, currentLoader)
-    }
+    } else { new MutableURLClassLoader(urls, currentLoader) }
   }
 
   /**
@@ -469,9 +450,7 @@ private[spark] class Executor(
           System.exit(1)
           null
       }
-    } else {
-      parent
-    }
+    } else { parent }
   }
 
   /**

@@ -34,23 +34,15 @@ class AppendOnlyMapSuite extends SparkFunSuite {
     intercept[IllegalArgumentException] {
       new AppendOnlyMap[Int, Int](1 << 30) // Invalid map size: bigger than 2^29
     }
-    intercept[IllegalArgumentException] {
-      new AppendOnlyMap[Int, Int](-1)
-    }
-    intercept[IllegalArgumentException] {
-      new AppendOnlyMap[Int, Int](0)
-    }
+    intercept[IllegalArgumentException] { new AppendOnlyMap[Int, Int](-1) }
+    intercept[IllegalArgumentException] { new AppendOnlyMap[Int, Int](0) }
   }
 
   test("object keys and values") {
     val map = new AppendOnlyMap[String, String]()
-    for (i <- 1 to 100) {
-      map("" + i) = "" + i
-    }
+    for (i <- 1 to 100) { map("" + i) = "" + i }
     assert(map.size === 100)
-    for (i <- 1 to 100) {
-      assert(map("" + i) === "" + i)
-    }
+    for (i <- 1 to 100) { assert(map("" + i) === "" + i) }
     assert(map("0") === null)
     assert(map("101") === null)
     assert(map(null) === null)
@@ -63,13 +55,9 @@ class AppendOnlyMapSuite extends SparkFunSuite {
 
   test("primitive keys and values") {
     val map = new AppendOnlyMap[Int, Int]()
-    for (i <- 1 to 100) {
-      map(i) = i
-    }
+    for (i <- 1 to 100) { map(i) = i }
     assert(map.size === 100)
-    for (i <- 1 to 100) {
-      assert(map(i) === i)
-    }
+    for (i <- 1 to 100) { assert(map(i) === i) }
     assert(map(0) === null)
     assert(map(101) === null)
     val set = new HashSet[(Int, Int)]
@@ -81,9 +69,7 @@ class AppendOnlyMapSuite extends SparkFunSuite {
 
   test("null keys") {
     val map = new AppendOnlyMap[String, String]()
-    for (i <- 1 to 100) {
-      map("" + i) = "" + i
-    }
+    for (i <- 1 to 100) { map("" + i) = "" + i }
     assert(map.size === 100)
     assert(map(null) === null)
     map(null) = "hello"
@@ -93,9 +79,7 @@ class AppendOnlyMapSuite extends SparkFunSuite {
 
   test("null values") {
     val map = new AppendOnlyMap[String, String]()
-    for (i <- 1 to 100) {
-      map("" + i) = null
-    }
+    for (i <- 1 to 100) { map("" + i) = null }
     assert(map.size === 100)
     assert(map("1") === null)
     assert(map(null) === null)
@@ -107,9 +91,7 @@ class AppendOnlyMapSuite extends SparkFunSuite {
 
   test("changeValue") {
     val map = new AppendOnlyMap[String, String]()
-    for (i <- 1 to 100) {
-      map("" + i) = "" + i
-    }
+    for (i <- 1 to 100) { map("" + i) = "" + i }
     assert(map.size === 100)
     for (i <- 1 to 100) {
       val res = map.changeValue(
@@ -153,20 +135,14 @@ class AppendOnlyMapSuite extends SparkFunSuite {
 
   test("inserting in capacity-1 map") {
     val map = new AppendOnlyMap[String, String](1)
-    for (i <- 1 to 100) {
-      map("" + i) = "" + i
-    }
+    for (i <- 1 to 100) { map("" + i) = "" + i }
     assert(map.size === 100)
-    for (i <- 1 to 100) {
-      assert(map("" + i) === "" + i)
-    }
+    for (i <- 1 to 100) { assert(map("" + i) === "" + i) }
   }
 
   test("destructive sort") {
     val map = new AppendOnlyMap[String, String]()
-    for (i <- 1 to 100) {
-      map("" + i) = "" + i
-    }
+    for (i <- 1 to 100) { map("" + i) = "" + i }
     map.update(null, "happy new year!")
 
     try {
@@ -174,9 +150,7 @@ class AppendOnlyMapSuite extends SparkFunSuite {
       map.update("1", "2013")
       map.changeValue("1", (hadValue, oldValue) => "2014")
       map.iterator
-    } catch {
-      case e: IllegalStateException => fail()
-    }
+    } catch { case e: IllegalStateException => fail() }
 
     val it = map.destructiveSortedIterator(new Comparator[String] {
       def compare(key1: String, key2: String): Int = {

@@ -58,17 +58,13 @@ class DatePicker(
     * The calendar system used for parsing, displaying, and choosing dates in the DatePicker control.
     */
   def chronology = delegate.chronologyProperty
-  def chronology_=(value: Chronology) {
-    chronology() = value
-  }
+  def chronology_=(value: Chronology) { chronology() = value }
 
   /**
     * Converts the input text to an object of type `LocalDate` and vice versa.
     */
   def converter = delegate.converterProperty
-  def converter_=(value: StringConverter[LocalDate]) {
-    converter() = value
-  }
+  def converter_=(value: StringConverter[LocalDate]) { converter() = value }
 
   /**
     * A custom cell factory can be provided to customize individual day cells in the `DatePicker` popup.
@@ -76,9 +72,7 @@ class DatePicker(
   def dayCellFactory = delegate.dayCellFactoryProperty
   def dayCellFactory_=(value: DatePicker => DateCell) {
     dayCellFactory() = new jfxu.Callback[jfxsc.DatePicker, jfxsc.DateCell] {
-      def call(result: jfxsc.DatePicker) = {
-        value(result)
-      }
+      def call(result: jfxsc.DatePicker) = { value(result) }
     }
   }
 
@@ -91,7 +85,5 @@ class DatePicker(
     * Whether the `DatePicker` popup should display a column showing week numbers.
     */
   def showWeekNumbers = delegate.showWeekNumbersProperty
-  def showWeekNumbers_=(value: Boolean) = {
-    showWeekNumbers() = value
-  }
+  def showWeekNumbers_=(value: Boolean) = { showWeekNumbers() = value }
 }

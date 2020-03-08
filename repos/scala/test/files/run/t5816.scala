@@ -11,7 +11,5 @@ object Test extends App {
   }
 
   var y = 3
-  printSource(reify {
-    5 + y
-  })
+  printSource(reify { 5 + y })
 }

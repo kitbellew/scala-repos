@@ -24,9 +24,7 @@ class ScalaIntroduceParameterUsageProcessor
 
   override def findUsages(info: ChangeInfo): Array[UsageInfo] = info match {
     case isIntroduceParameter(data) if data.replaceAll =>
-      for {
-        occ <- data.occurrences
-      } yield {
+      for { occ <- data.occurrences } yield {
         val file = data.methodToSearchFor.getContainingFile
         val doc =
           PsiDocumentManager.getInstance(data.getProject).getDocument(file)

@@ -243,11 +243,8 @@ object LiftJavaScriptSpec extends Specification {
     override def around[T: AsResult](test: => T): Result = {
       val savedDefaultLocale = Locale.getDefault
       Locale.setDefault(locale)
-      try {
-        AsResult(test)
-      } finally {
-        Locale.setDefault(savedDefaultLocale)
-      }
+      try { AsResult(test) }
+      finally { Locale.setDefault(savedDefaultLocale) }
     }
   }
 }

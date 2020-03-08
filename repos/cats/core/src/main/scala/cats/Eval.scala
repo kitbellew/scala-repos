@@ -310,7 +310,9 @@ private[cats] trait EvalInstances extends EvalInstances0 {
     }
 
   implicit def evalGroup[A: Group]: Group[Eval[A]] =
-    new EvalGroup[A] { val algebra: Group[A] = Group[A] }
+    new EvalGroup[A] {
+      val algebra: Group[A] = Group[A]
+    }
 }
 
 private[cats] trait EvalInstances0 extends EvalInstances1 {
@@ -321,7 +323,9 @@ private[cats] trait EvalInstances0 extends EvalInstances1 {
     }
 
   implicit def evalMonoid[A: Monoid]: Monoid[Eval[A]] =
-    new EvalMonoid[A] { val algebra = Monoid[A] }
+    new EvalMonoid[A] {
+      val algebra = Monoid[A]
+    }
 }
 
 private[cats] trait EvalInstances1 {
@@ -332,7 +336,9 @@ private[cats] trait EvalInstances1 {
     }
 
   implicit def evalSemigroup[A: Semigroup]: Semigroup[Eval[A]] =
-    new EvalSemigroup[A] { val algebra = Semigroup[A] }
+    new EvalSemigroup[A] {
+      val algebra = Semigroup[A]
+    }
 }
 
 trait EvalSemigroup[A] extends Semigroup[Eval[A]] {

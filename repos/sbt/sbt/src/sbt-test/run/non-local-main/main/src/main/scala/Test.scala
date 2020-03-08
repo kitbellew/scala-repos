@@ -1,5 +1,3 @@
 object Test {
-  def main(args: Array[String]): Unit = {
-    println("SUCCESS")
-  }
+  def main(args: Array[String]): Unit = { println("SUCCESS") }
 }

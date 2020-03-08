@@ -38,9 +38,7 @@ class BoundedBlockingQueue[E <: AnyRef](
         notFull.await()
       require(backing.offer(e))
       notEmpty.signal()
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
   def take(): E = { //Blocks until not empty
@@ -52,9 +50,7 @@ class BoundedBlockingQueue[E <: AnyRef](
       require(e ne null)
       notFull.signal()
       e
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
   def offer(e: E): Boolean = { //Tries to do it immediately, if fail return false
@@ -67,9 +63,7 @@ class BoundedBlockingQueue[E <: AnyRef](
         notEmpty.signal()
         true
       }
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
   def offer(e: E, timeout: Long, unit: TimeUnit): Boolean = { //Tries to do it within the timeout, return false if fail
@@ -86,9 +80,7 @@ class BoundedBlockingQueue[E <: AnyRef](
       require(backing.offer(e)) //Should never fail
       notEmpty.signal()
       true
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
   def poll(timeout: Long, unit: TimeUnit): E = { //Tries to do it within the timeout, returns null if fail
@@ -103,9 +95,8 @@ class BoundedBlockingQueue[E <: AnyRef](
             result = null.asInstanceOf[E]
             true
           case null =>
-            try {
-              nanos = notEmpty.awaitNanos(nanos)
-            } catch {
+            try { nanos = notEmpty.awaitNanos(nanos) }
+            catch {
               case ie: InterruptedException =>
                 notEmpty.signal()
                 throw ie
@@ -118,9 +109,7 @@ class BoundedBlockingQueue[E <: AnyRef](
         }
       }
       result
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
   def poll(): E = { //Tries to remove the head of the queue immediately, if fail, return null
@@ -132,9 +121,7 @@ class BoundedBlockingQueue[E <: AnyRef](
           notFull.signal()
           e
       }
-    } finally {
-      lock.unlock
-    }
+    } finally { lock.unlock }
   }
 
   override def remove(e: AnyRef): Boolean = { //Tries to do it immediately, if fail, return false
@@ -145,55 +132,38 @@ class BoundedBlockingQueue[E <: AnyRef](
         notFull.signal()
         true
       } else false
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
   override def contains(e: AnyRef): Boolean = {
     if (e eq null) throw new NullPointerException
     lock.lock()
-    try {
-      backing contains e
-    } finally {
-      lock.unlock()
-    }
+    try { backing contains e }
+    finally { lock.unlock() }
   }
 
   override def clear(): Unit = {
     lock.lock()
-    try {
-      backing.clear
-    } finally {
-      lock.unlock()
-    }
+    try { backing.clear }
+    finally { lock.unlock() }
   }
 
   def remainingCapacity(): Int = {
     lock.lock()
-    try {
-      maxCapacity - backing.size()
-    } finally {
-      lock.unlock()
-    }
+    try { maxCapacity - backing.size() }
+    finally { lock.unlock() }
   }
 
   def size(): Int = {
     lock.lock()
-    try {
-      backing.size()
-    } finally {
-      lock.unlock()
-    }
+    try { backing.size() }
+    finally { lock.unlock() }
   }
 
   def peek(): E = {
     lock.lock()
-    try {
-      backing.peek()
-    } finally {
-      lock.unlock()
-    }
+    try { backing.peek() }
+    finally { lock.unlock() }
   }
 
   def drainTo(c: Collection[_ >: E]): Int = drainTo(c, Int.MaxValue)
@@ -216,19 +186,14 @@ class BoundedBlockingQueue[E <: AnyRef](
           }
         }
         n
-      } finally {
-        lock.unlock()
-      }
+      } finally { lock.unlock() }
     }
   }
 
   override def containsAll(c: Collection[_]): Boolean = {
     lock.lock()
-    try {
-      backing containsAll c
-    } finally {
-      lock.unlock()
-    }
+    try { backing containsAll c }
+    finally { lock.unlock() }
   }
 
   override def removeAll(c: Collection[_]): Boolean = {
@@ -240,9 +205,7 @@ class BoundedBlockingQueue[E <: AnyRef](
         if (sz > 0) notEmpty.signal() //FIXME needed?
         true
       } else false
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
   override def retainAll(c: Collection[_]): Boolean = {
@@ -254,9 +217,7 @@ class BoundedBlockingQueue[E <: AnyRef](
         if (sz > 0) notEmpty.signal()
         true
       } else false
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
   def iterator(): Iterator[E] = {
@@ -290,40 +251,27 @@ class BoundedBlockingQueue[E <: AnyRef](
                 return ()
               }
             }
-          } finally {
-            lock.unlock()
-          }
+          } finally { lock.unlock() }
         }
       }
-    } finally {
-      lock.unlock
-    }
+    } finally { lock.unlock }
   }
 
   override def toArray(): Array[AnyRef] = {
     lock.lock()
-    try {
-      backing.toArray
-    } finally {
-      lock.unlock()
-    }
+    try { backing.toArray }
+    finally { lock.unlock() }
   }
 
   override def isEmpty(): Boolean = {
     lock.lock()
-    try {
-      backing.isEmpty()
-    } finally {
-      lock.unlock()
-    }
+    try { backing.isEmpty() }
+    finally { lock.unlock() }
   }
 
   override def toArray[X](a: Array[X with AnyRef]) = {
     lock.lock()
-    try {
-      backing.toArray[X](a)
-    } finally {
-      lock.unlock()
-    }
+    try { backing.toArray[X](a) }
+    finally { lock.unlock() }
   }
 }

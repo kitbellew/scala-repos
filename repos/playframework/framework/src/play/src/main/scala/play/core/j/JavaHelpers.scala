@@ -85,9 +85,7 @@ trait JavaHelpers {
       } else {
         if (javaContext.flash.isDirty) {
           wResult.flashing(Flash(javaContext.flash.asScala.toMap))
-        } else {
-          wResult
-        }
+        } else { wResult }
       }
     }
   }
@@ -144,9 +142,7 @@ trait JavaHelpers {
         FutureConverters
           .toScala(cs)
           .map(createResult(javaContext, _))(trampoline))
-    } finally {
-      JContext.current.remove()
-    }
+    } finally { JContext.current.remove() }
   }
 
   /**
@@ -178,9 +174,7 @@ trait JavaHelpers {
     try {
       JContext.current.set(javaContext)
       block(javaContext)
-    } finally {
-      JContext.current.remove()
-    }
+    } finally { JContext.current.remove() }
 
   }
 
@@ -210,9 +204,7 @@ class RequestHeaderImpl(header: RequestHeader) extends JRequestHeader {
 
   def acceptLanguages = header.acceptLanguages.map(new play.i18n.Lang(_)).asJava
 
-  def queryString = {
-    header.queryString.mapValues(_.toArray).asJava
-  }
+  def queryString = { header.queryString.mapValues(_.toArray).asJava }
 
   def acceptedTypes = header.acceptedTypes.asJava
 
@@ -229,18 +221,14 @@ class RequestHeaderImpl(header: RequestHeader) extends JRequestHeader {
     else null
   }
 
-  def cookie(name: String): JCookie = {
-    cookies().get(name)
-  }
+  def cookie(name: String): JCookie = { cookies().get(name) }
 
   def getHeader(headerName: String): String = {
     val header: Array[String] = headers.get(headerName)
     if (header == null) null else header(0)
   }
 
-  def hasHeader(headerName: String): Boolean = {
-    getHeader(headerName) != null
-  }
+  def hasHeader(headerName: String): Boolean = { getHeader(headerName) != null }
 
   private def createHeaderMap(
       headers: Headers): java.util.Map[String, Array[String]] = {

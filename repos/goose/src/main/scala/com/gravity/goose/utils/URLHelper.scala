@@ -69,29 +69,19 @@ object URLHelper extends Logging {
   def tryToURL(url: String): Option[URL] = {
     val finalUrl = if (url.contains("#!")) {
       ESCAPED_FRAGMENT_REPLACEMENT.replaceAll(url)
-    } else {
-      url
-    }
+    } else { url }
 
-    try {
-      Some(new URL(finalUrl))
-    } catch {
-      case _: Exception => None
-    }
+    try { Some(new URL(finalUrl)) }
+    catch { case _: Exception => None }
   }
 
   def tryToURI(url: String): Option[URI] = {
     val finalUrl = if (url.contains("#!")) {
       ESCAPED_FRAGMENT_REPLACEMENT.replaceAll(url)
-    } else {
-      url
-    }
+    } else { url }
 
-    try {
-      Some(URI.create(finalUrl))
-    } catch {
-      case _: Exception => None
-    }
+    try { Some(URI.create(finalUrl)) }
+    catch { case _: Exception => None }
   }
 
   def tryToHttpGet(url: String): Option[HttpGet] = {

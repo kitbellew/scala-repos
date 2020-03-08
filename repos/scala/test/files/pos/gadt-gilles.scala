@@ -18,11 +18,7 @@ object Test1 {
 
   trait T[U, V <: U]
 
-  def f(r: Any) = r match {
-
-    case t: T[u, v] => new T[u, v] {}
-
-  }
+  def f(r: Any) = r match { case t: T[u, v] => new T[u, v] {} }
 
 }
 object Test2 {
@@ -31,10 +27,6 @@ object Test2 {
 
   val x: T[Int, Int] = new T[Int, Int] {}
 
-  x match {
-
-    case t: T[u, v] => new T[u, v] {}
-
-  }
+  x match { case t: T[u, v] => new T[u, v] {} }
 
 }

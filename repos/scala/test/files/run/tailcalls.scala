@@ -205,9 +205,7 @@ class FancyTailCalls {
 
   def tcTryLocal(x: Int, v: Int): Int = {
     try {
-      def loop(n: Int): Int = {
-        if (n == 0) v else loop(n - 1)
-      }
+      def loop(n: Int): Int = { if (n == 0) v else loop(n - 1) }
       loop(x)
     } finally {}
   }
@@ -253,9 +251,7 @@ class NonTailCall {
     try {
       if (n == 0) 0
       else f1(n - 1)
-    } finally {
-      Console.print(" " + n)
-    }
+    } finally { Console.print(" " + n) }
 
   final def f2(n: Int): Int = synchronized {
     if (n == 0) 0
@@ -272,15 +268,10 @@ object Test {
     print("test " + name)
     try {
       val actual: Int = closure
-      if (actual == expected) {
-        print(" was successful")
-      } else {
-        print(" failed: expected " + expected + ", found " + actual)
-      }
+      if (actual == expected) { print(" was successful") }
+      else { print(" failed: expected " + expected + ", found " + actual) }
     } catch {
-      case exception: Throwable => {
-        print(" raised exception " + exception)
-      }
+      case exception: Throwable => { print(" raised exception " + exception) }
     }
     println
   }
@@ -289,11 +280,8 @@ object Test {
     print("test " + name)
     try {
       val actual: Boolean = closure
-      if (actual == expected) {
-        print(" was successful")
-      } else {
-        print(" failed: expected " + expected + ", found " + actual)
-      }
+      if (actual == expected) { print(" was successful") }
+      else { print(" failed: expected " + expected + ", found " + actual) }
     } catch {
       case exception: Throwable => {
         Console.print(" raised exception " + exception);
@@ -304,14 +292,11 @@ object Test {
 
   def check_overflow(name: String, closure: => Int) {
     print("test " + name)
-    try {
-      val actual: Int = closure;
-    } catch {
+    try { val actual: Int = closure; }
+    catch {
       case exception: compat.Platform.StackOverflowError =>
         println(" was successful")
-      case exception: Throwable => {
-        print(" raised exception " + exception)
-      }
+      case exception: Throwable => { print(" raised exception " + exception) }
     }
     println
   }
@@ -451,11 +436,7 @@ object Test {
       } yield (x + y)
 
   def rec(n: Int): TailRec[Int] =
-    if (n == 1) done(n)
-    else
-      for {
-        x <- tailcall(rec(n - 1))
-      } yield x
+    if (n == 1) done(n) else for { x <- tailcall(rec(n - 1)) } yield x
 
   assert(isEven((1 to 100000).toList).result)
   //assert(fib(40).result == 102334155) // Commented out, as it takes a long time

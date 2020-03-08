@@ -46,9 +46,7 @@ class ServerMediator(project: Project) extends ProjectComponent {
         }
 
         if (!CompileServerLauncher.instance.running) {
-          invokeAndWait {
-            CompileServerLauncher.instance.tryToStart(project)
-          }
+          invokeAndWait { CompileServerLauncher.instance.tryToStart(project) }
         }
       }
     }

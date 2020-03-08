@@ -16,11 +16,8 @@ object cosineDistance extends UFunc {
       override def apply(v: T, v2: U): Double = {
         val denom = norm(v) * norm(v2)
         val dotProduct = dot(v, v2)
-        if (denom == 0.0) {
-          0.0
-        } else {
-          1 - dotProduct / denom
-        }
+        if (denom == 0.0) { 0.0 }
+        else { 1 - dotProduct / denom }
       }
     }
   }

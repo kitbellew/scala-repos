@@ -61,9 +61,7 @@ class Netty4ChannelInitializerTest
       srv.writeAndFlush("hi")
 
       // ChannelExceptionHandler records it.
-      eventually {
-        assert(sr.counters(Seq("write_timeout")) == 1)
-      }
+      eventually { assert(sr.counters(Seq("write_timeout")) == 1) }
     }
   }
 
@@ -86,9 +84,7 @@ class Netty4ChannelInitializerTest
       // to mark time so we're stuck sleeping.
       srv.pipeline.fireChannelReadComplete()
 
-      eventually {
-        assert(sr.counters(Seq("read_timeout")) == 1)
-      }
+      eventually { assert(sr.counters(Seq("read_timeout")) == 1) }
     }
   }
 }

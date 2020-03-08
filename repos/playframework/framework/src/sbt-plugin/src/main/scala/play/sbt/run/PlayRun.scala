@@ -215,9 +215,7 @@ object PlayRun {
 
       // Call back myself
       twiddleRunMonitor(watched, newState, reloader, Some(newWatchState))
-    } else {
-      ()
-    }
+    } else { () }
   }
 
   val playPrefixAndAssetsSetting = playPrefixAndAssets := {
@@ -304,19 +302,14 @@ object PlayRun {
         // Things are working without passing system properties, and I'm unsure that they need to be passed explicitly. If def main(args: Array[String]){
         // problem occurs in this area then at least we know what to look at.
         val args = Seq(stagingBin) ++
-          properties.map {
-            case (key, value) => s"-D$key=$value"
-          } ++
+          properties.map { case (key, value) => s"-D$key=$value" } ++
           javaProductionOptions ++
           Seq("-Dhttp.port=" + httpPort.getOrElse("disabled"))
         val builder = new java.lang.ProcessBuilder(args.asJava)
         new Thread {
           override def run() {
-            if (noExitSbt) {
-              Process(builder).!
-            } else {
-              System.exit(Process(builder).!)
-            }
+            if (noExitSbt) { Process(builder).! }
+            else { System.exit(Process(builder).!) }
           }
         }.start()
 
@@ -330,11 +323,8 @@ object PlayRun {
 
         println()
 
-        if (noExitSbt) {
-          state
-        } else {
-          state.copy(remainingCommands = Seq.empty)
-        }
+        if (noExitSbt) { state }
+        else { state.copy(remainingCommands = Seq.empty) }
     }
 
   }
@@ -354,10 +344,7 @@ object PlayRun {
       }
       println()
 
-      if (args.contains("--no-exit-sbt")) {
-        state
-      } else {
-        state.copy(remainingCommands = Seq.empty)
-      }
+      if (args.contains("--no-exit-sbt")) { state }
+      else { state.copy(remainingCommands = Seq.empty) }
   }
 }

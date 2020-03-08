@@ -12,7 +12,5 @@ object Test extends App {
   println("method descriptors")
 
   val mds = info.getMethodDescriptors
-  for (md <- mds) {
-    println(s"${md.getName} -- ${md.getMethod}")
-  }
+  for (md <- mds) { println(s"${md.getName} -- ${md.getMethod}") }
 }

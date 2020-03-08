@@ -128,9 +128,7 @@ class OpenHashMap[Key, Value](initialSize: Int)
   private[this] def addEntry(entry: Entry) =
     if (entry != null) table(findIndex(entry.key, entry.hash)) = entry
 
-  override def update(key: Key, value: Value) {
-    put(key, hashOf(key), value)
-  }
+  override def update(key: Key, value: Value) { put(key, hashOf(key), value) }
 
   @deprecatedOverriding(
     "+= should not be overridden in order to maintain consistency with put.",
@@ -186,9 +184,7 @@ class OpenHashMap[Key, Value](initialSize: Int)
     var entry = table(index)
     while (entry != null) {
       if (entry.hash == hash &&
-          entry.key == key) {
-        return entry.value
-      }
+          entry.key == key) { return entry.value }
 
       j = 5 * j + 1 + perturb
       perturb >>= 5

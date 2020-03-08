@@ -44,9 +44,7 @@ class EqualityToSameElementsTest extends OperationsOnCollectionInspectionTest {
     )
   }
 
-  def testSeqSeqEquals(): Unit = {
-    checkTextHasNoErrors("Seq(1) == Seq(1)")
-  }
+  def testSeqSeqEquals(): Unit = { checkTextHasNoErrors("Seq(1) == Seq(1)") }
 
   def testArraysNotEquals(): Unit = {
     doTest(

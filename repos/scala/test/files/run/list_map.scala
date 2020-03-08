@@ -20,7 +20,5 @@ object Test {
     assert((empty - 1) eq empty)
   }
 
-  def main(args: Array[String]) {
-    testImmutableMinus()
-  }
+  def main(args: Array[String]) { testImmutableMinus() }
 }

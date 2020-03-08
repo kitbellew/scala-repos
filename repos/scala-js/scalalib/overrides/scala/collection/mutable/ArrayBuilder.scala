@@ -139,9 +139,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -169,9 +167,7 @@ object ArrayBuilder {
           super.++=(xs)
       }
 
-    def clear() {
-      size = 0
-    }
+    def clear() { size = 0 }
 
     def result() = {
       if (capacity != 0 && capacity == size) elems
@@ -207,9 +203,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -236,9 +230,7 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() {
-      size = 0
-    }
+    def clear() { size = 0 }
 
     def result() = {
       if (capacity != 0 && capacity == size) elems
@@ -274,9 +266,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -303,9 +293,7 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() {
-      size = 0
-    }
+    def clear() { size = 0 }
 
     def result() = {
       if (capacity != 0 && capacity == size) elems
@@ -341,9 +329,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -370,9 +356,7 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() {
-      size = 0
-    }
+    def clear() { size = 0 }
 
     def result() = {
       if (capacity != 0 && capacity == size) elems
@@ -408,9 +392,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -437,9 +419,7 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() {
-      size = 0
-    }
+    def clear() { size = 0 }
 
     def result() = {
       if (capacity != 0 && capacity == size) elems
@@ -475,9 +455,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -504,9 +482,7 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() {
-      size = 0
-    }
+    def clear() { size = 0 }
 
     def result() = {
       if (capacity != 0 && capacity == size) elems
@@ -542,9 +518,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -571,9 +545,7 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() {
-      size = 0
-    }
+    def clear() { size = 0 }
 
     def result() = {
       if (capacity != 0 && capacity == size) elems
@@ -609,9 +581,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -638,9 +608,7 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() {
-      size = 0
-    }
+    def clear() { size = 0 }
 
     def result() = {
       if (capacity != 0 && capacity == size) elems
@@ -673,9 +641,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -702,9 +668,7 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() {
-      size = 0
-    }
+    def clear() { size = 0 }
 
     def result() = {
       if (capacity != 0 && capacity == size) elems
@@ -740,9 +704,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -769,9 +731,7 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() {
-      size = 0
-    }
+    def clear() { size = 0 }
 
     def result() = {
       if (capacity != 0 && capacity == size) elems

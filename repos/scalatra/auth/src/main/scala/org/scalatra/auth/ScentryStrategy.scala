@@ -14,9 +14,7 @@ trait ScentryStrategy[UserType <: AnyRef] {
     else registrar.register(name, createStrategy _)
   }
 
-  def createStrategy(app: ScalatraBase): this.type = {
-    throwOverrideException
-  }
+  def createStrategy(app: ScalatraBase): this.type = { throwOverrideException }
 
   private def throwOverrideException = {
     throw new RuntimeException(

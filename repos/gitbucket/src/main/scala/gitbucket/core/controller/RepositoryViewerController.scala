@@ -142,20 +142,15 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   /**
     * Displays the file list of the repository root and the default branch.
     */
-  get("/:owner/:repository")(referrersOnly {
-    fileList(_)
-  })
+  get("/:owner/:repository")(referrersOnly { fileList(_) })
 
   /**
     * Displays the file list of the specified path and branch.
     */
   get("/:owner/:repository/tree/*")(referrersOnly { repository =>
     val (id, path) = splitPath(repository, multiParams("splat").head)
-    if (path.isEmpty) {
-      fileList(repository, id)
-    } else {
-      fileList(repository, id, path)
-    }
+    if (path.isEmpty) { fileList(repository, id) }
+    else { fileList(repository, id, path) }
   })
 
   /**
@@ -329,46 +324,43 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     * Displays the file content of the specified branch or commit.
     */
   val blobRoute =
-    get("/:owner/:repository/blob/*")(referrersOnly {
-      repository =>
-        val (id, path) = splitPath(repository, multiParams("splat").head)
-        val raw = params.get("raw").getOrElse("false").toBoolean
-        using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
-          git =>
-            val revCommit =
-              JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(id))
-            getPathObjectId(git, path, revCommit).map {
-              objectId =>
-                if (raw) {
-                  // Download (This route is left for backword compatibility)
-                  JGitUtil.getObjectLoaderFromId(git, objectId) { loader =>
-                    contentType = FileUtil.getMimeType(path)
-                    response.setContentLength(loader.getSize.toInt)
-                    loader.copyTo(response.outputStream)
-                    ()
-                  } getOrElse NotFound
-                } else {
-                  html.blob(
-                    id,
-                    repository,
-                    path.split("/").toList,
-                    JGitUtil.getContentInfo(git, path, objectId),
-                    new JGitUtil.CommitInfo(
-                      JGitUtil.getLastModifiedCommit(git, revCommit, path)),
-                    hasWritePermission(
-                      repository.owner,
-                      repository.name,
-                      context.loginAccount),
-                    request.paths(2) == "blame"
-                  )
-                }
-            } getOrElse NotFound
-        }
+    get("/:owner/:repository/blob/*")(referrersOnly { repository =>
+      val (id, path) = splitPath(repository, multiParams("splat").head)
+      val raw = params.get("raw").getOrElse("false").toBoolean
+      using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
+        git =>
+          val revCommit =
+            JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(id))
+          getPathObjectId(git, path, revCommit).map {
+            objectId =>
+              if (raw) {
+                // Download (This route is left for backword compatibility)
+                JGitUtil.getObjectLoaderFromId(git, objectId) { loader =>
+                  contentType = FileUtil.getMimeType(path)
+                  response.setContentLength(loader.getSize.toInt)
+                  loader.copyTo(response.outputStream)
+                  ()
+                } getOrElse NotFound
+              } else {
+                html.blob(
+                  id,
+                  repository,
+                  path.split("/").toList,
+                  JGitUtil.getContentInfo(git, path, objectId),
+                  new JGitUtil.CommitInfo(
+                    JGitUtil.getLastModifiedCommit(git, revCommit, path)),
+                  hasWritePermission(
+                    repository.owner,
+                    repository.name,
+                    context.loginAccount),
+                  request.paths(2) == "blame"
+                )
+              }
+          } getOrElse NotFound
+      }
     })
 
-  get("/:owner/:repository/blame/*") {
-    blobRoute.action()
-  }
+  get("/:owner/:repository/blame/*") { blobRoute.action() }
 
   /**
     * Blame data.
@@ -447,9 +439,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
               }
           }
       }
-    } catch {
-      case e: MissingObjectException => NotFound
-    }
+    } catch { case e: MissingObjectException => NotFound }
   })
 
   post("/:owner/:repository/commit/:id/comment/new", commentForm)(
@@ -692,9 +682,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   /**
     * Displays tags.
     */
-  get("/:owner/:repository/tags")(referrersOnly {
-    html.tags(_)
-  })
+  get("/:owner/:repository/tags")(referrersOnly { html.tags(_) })
 
   /**
     * Download repository contents as an archive.
@@ -986,9 +974,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     val revision = name.stripSuffix(suffix)
     val workDir =
       getDownloadWorkDir(repository.owner, repository.name, session.getId)
-    if (workDir.exists) {
-      FileUtils.deleteDirectory(workDir)
-    }
+    if (workDir.exists) { FileUtils.deleteDirectory(workDir) }
     workDir.mkdirs
 
     val filename = repository.name + "-" +
@@ -1023,8 +1009,6 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
   override protected def renderUncaughtException(e: Throwable)(implicit
       request: HttpServletRequest,
-      response: HttpServletResponse): Unit = {
-    e.printStackTrace()
-  }
+      response: HttpServletResponse): Unit = { e.printStackTrace() }
 
 }

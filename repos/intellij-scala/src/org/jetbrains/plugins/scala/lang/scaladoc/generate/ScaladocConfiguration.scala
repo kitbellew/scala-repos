@@ -18,9 +18,7 @@ class ScaladocConfiguration(
     private val project: Project,
     private val scope: AnalysisScope)
     extends ModuleRunProfile {
-  def getModules: Array[Module] = {
-    Module.EMPTY_ARRAY
-  }
+  def getModules: Array[Module] = { Module.EMPTY_ARRAY }
 
   def getState(
       executor: Executor,

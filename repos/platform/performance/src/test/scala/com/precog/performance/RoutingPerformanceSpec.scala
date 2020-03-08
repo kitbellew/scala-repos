@@ -124,9 +124,7 @@ trait RoutingPerformanceSpec extends Specification with PerformanceSpec {
         result.report("routing actor", System.out)
 
         true must_== true
-      } finally {
-        system.shutdown
-      }
+      } finally { system.shutdown }
     }
   }
 }
@@ -151,9 +149,8 @@ class MockIngestActor(toSend: Int, messageBatch: Seq[IngestMessage])
       sent = 0
     case GetMessages(replyTo) =>
       sent += 1
-      if (sent < toSend) {
-        replyTo ! IngestData(messageBatch)
-      } else {
+      if (sent < toSend) { replyTo ! IngestData(messageBatch) }
+      else {
         barrier.countDown
         replyTo ! NoIngestData
       }
@@ -169,9 +166,7 @@ class MockProjectionActors(projectionActor: ActorRef) extends Actor {
     case AcquireProjectionBatch(descs) =>
       var map = Map.empty[ProjectionDescriptor, ActorRef]
       val descItr = descs.iterator
-      while (descItr.hasNext) {
-        map += (descItr.next -> projectionActor)
-      }
+      while (descItr.hasNext) { map += (descItr.next -> projectionActor) }
       sender ! ProjectionBatchAcquired(map)
     case ReleaseProjection(_)      =>
     case ReleaseProjectionBatch(_) => sender ! ()

@@ -13,9 +13,7 @@ class ConcurrentRingBufferBench extends StdBenchAnnotations {
   var b: ConcurrentRingBuffer[Int] = _
 
   @Setup
-  def setup() {
-    b = new ConcurrentRingBuffer[Int](size)
-  }
+  def setup() { b = new ConcurrentRingBuffer[Int](size) }
 
   @Benchmark
   def timePutAndGet(): Option[Int] = {

@@ -79,11 +79,8 @@ private[spark] class Distribution(
 private[spark] object Distribution {
 
   def apply(data: Traversable[Double]): Option[Distribution] = {
-    if (data.size > 0) {
-      Some(new Distribution(data))
-    } else {
-      None
-    }
+    if (data.size > 0) { Some(new Distribution(data)) }
+    else { None }
   }
 
   def showQuantiles(

@@ -56,9 +56,8 @@ object ExitGuard {
       guards.collect { case ((_, gs)) => gs }.getOrElse(Nil)
     }
 
-    if (snap.isEmpty) {
-      "There are no active guards."
-    } else {
+    if (snap.isEmpty) { "There are no active guards." }
+    else {
       s"${snap.size} active guard(s):" + snap
         .map(_.reason)
         .mkString(start = "\n", sep = "\n", end = "")
@@ -73,9 +72,7 @@ object ExitGuard {
       override def run() {
         while (true) {
           try Thread.sleep(Long.MaxValue)
-          catch {
-            case _: InterruptedException => return
-          }
+          catch { case _: InterruptedException => return }
         }
       }
     }

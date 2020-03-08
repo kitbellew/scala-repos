@@ -114,11 +114,8 @@ case class Multinomial[T, I](params: T)(implicit
     import wrapped.mutaVspace._
     var acc: Wrapper = null.asInstanceOf[Wrapper]
     for ((k, v) <- params.activeIterator) {
-      if (acc == null) {
-        acc = wrap(f(k)) * (v / sum)
-      } else {
-        axpy(v / sum, wrap(f(k)), acc)
-      }
+      if (acc == null) { acc = wrap(f(k)) * (v / sum) }
+      else { axpy(v / sum, wrap(f(k)), acc) }
     }
     assert(acc != null)
     unwrap(acc)
@@ -162,9 +159,7 @@ object Multinomial {
         prior: conjugateFamily.Parameter,
         evidence: TraversableOnce[I]) = {
       val localCopy: T = space.copy(prior)
-      for (e <- evidence) {
-        localCopy(e) += 1.0
-      }
+      for (e <- evidence) { localCopy(e) += 1.0 }
       localCopy
 
     }
@@ -201,9 +196,7 @@ object Multinomial {
       }
     }
 
-    def distribution(p: Parameter) = {
-      new Multinomial(numerics.exp(p))
-    }
+    def distribution(p: Parameter) = { new Multinomial(numerics.exp(p)) }
   }
 
 }

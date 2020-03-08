@@ -45,9 +45,7 @@ object RunServer extends Logging {
     val driverClassPathPrefix =
       if (driverClassPathIndex != -1) {
         Seq(ca.common.sparkPassThrough(driverClassPathIndex + 1))
-      } else {
-        Seq()
-      }
+      } else { Seq() }
     val extraClasspaths =
       driverClassPathPrefix ++ WorkflowUtils.thirdPartyClasspaths
 
@@ -55,23 +53,17 @@ object RunServer extends Logging {
       ca.common.sparkPassThrough.indexOf("--deploy-mode")
     val deployMode = if (deployModeIndex != -1) {
       ca.common.sparkPassThrough(deployModeIndex + 1)
-    } else {
-      "client"
-    }
+    } else { "client" }
 
     val mainJar =
       if (ca.build.uberJar) {
         if (deployMode == "cluster") {
           em.files.filter(_.startsWith("hdfs")).head
-        } else {
-          em.files.filterNot(_.startsWith("hdfs")).head
-        }
+        } else { em.files.filterNot(_.startsWith("hdfs")).head }
       } else {
         if (deployMode == "cluster") {
           em.files.filter(_.contains("pio-assembly")).head
-        } else {
-          core.getCanonicalPath
-        }
+        } else { core.getCanonicalPath }
       }
 
     val jarFiles = (em.files ++ Option(
@@ -87,26 +79,18 @@ object RunServer extends Logging {
           "io.prediction.workflow.CreateServer",
           "--name",
           s"PredictionIO Engine Instance: ${engineInstanceId}") ++
-        (if (!ca.build.uberJar) {
-           Seq("--jars", jarFiles)
-         } else Seq()) ++
-        (if (extraFiles.size > 0) {
-           Seq("--files", extraFiles.mkString(","))
-         } else {
-           Seq()
-         }) ++
+        (if (!ca.build.uberJar) { Seq("--jars", jarFiles) }
+         else Seq()) ++
+        (if (extraFiles.size > 0) { Seq("--files", extraFiles.mkString(",")) }
+         else { Seq() }) ++
         (if (extraClasspaths.size > 0) {
            Seq("--driver-class-path", extraClasspaths.mkString(":"))
-         } else {
-           Seq()
-         }) ++
+         } else { Seq() }) ++
         (if (ca.common.sparkKryo) {
            Seq(
              "--conf",
              "spark.serializer=org.apache.spark.serializer.KryoSerializer")
-         } else {
-           Seq()
-         }) ++
+         } else { Seq() }) ++
         Seq(
           mainJar,
           "--engineInstanceId",
@@ -122,9 +106,7 @@ object RunServer extends Logging {
         ) ++
         (if (ca.accessKey.accessKey != "") {
            Seq("--accesskey", ca.accessKey.accessKey)
-         } else {
-           Seq()
-         }) ++
+         } else { Seq() }) ++
         (if (ca.eventServer.enabled) Seq("--feedback") else Seq()) ++
         (if (ca.common.batch != "") Seq("--batch", ca.common.batch)
          else Seq()) ++
@@ -142,9 +124,7 @@ object RunServer extends Logging {
         "CLASSPATH" -> "",
         "SPARK_YARN_USER_ENV" -> pioEnvVars).run()
     Runtime.getRuntime.addShutdownHook(new Thread(new Runnable {
-      def run(): Unit = {
-        proc.destroy()
-      }
+      def run(): Unit = { proc.destroy() }
     }))
     proc.exitValue()
   }
@@ -173,9 +153,7 @@ object RunServer extends Logging {
     ) ++
       (if (ca.accessKey.accessKey != "") {
          Seq("--accesskey", ca.accessKey.accessKey)
-       } else {
-         Nil
-       }) ++
+       } else { Nil }) ++
       (if (ca.eventServer.enabled) Seq("--feedback") else Nil) ++
       (if (ca.common.batch != "") Seq("--batch", ca.common.batch) else Nil) ++
       (if (ca.common.verbose) Seq("--verbose") else Nil) ++

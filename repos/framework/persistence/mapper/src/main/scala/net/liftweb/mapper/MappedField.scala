@@ -378,9 +378,7 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * field.set(new_value) <br />
     * are all the same
     */
-  def update[Q <% FieldType](v: Q) {
-    this.set(v)
-  }
+  def update[Q <% FieldType](v: Q) { this.set(v) }
 
   def apply[Q <% FieldType](v: Q): OwnerType = {
     this.set(v)
@@ -406,13 +404,9 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     else throw new Exception("Do not have permissions to set this field")
   }
 
-  def :=[Q <% FieldType](v: Q): FieldType = {
-    set(v)
-  }
+  def :=[Q <% FieldType](v: Q): FieldType = { set(v) }
 
-  def :=(v: FieldType): FieldType = {
-    set(v)
-  }
+  def :=(v: FieldType): FieldType = { set(v) }
 
   private var _name: String = null
 
@@ -425,9 +419,7 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * The name of this field
     */
   final def name = synchronized {
-    if (_name eq null) {
-      fieldOwner.checkNames
-    }
+    if (_name eq null) { fieldOwner.checkNames }
     _name
   }
 
@@ -445,9 +437,7 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
   override def displayName: String =
     MapperRules.displayNameCalculator.vend(fieldOwner, S.locale, name)
 
-  def resetDirty {
-    if (safe_?) dirty_?(false)
-  }
+  def resetDirty { if (safe_?) dirty_?(false) }
 
   /**
     *  Attempt to figure out what the incoming value is and set the field to that value.  Return true if

@@ -60,9 +60,7 @@ class ScalaAggregateFunction(schema: StructType)
     }
   }
 
-  def evaluate(buffer: Row): Any = {
-    Row.fromSeq(buffer.toSeq)
-  }
+  def evaluate(buffer: Row): Any = { Row.fromSeq(buffer.toSeq) }
 }
 
 class ScalaAggregateFunctionWithoutInputSchema
@@ -91,9 +89,7 @@ class ScalaAggregateFunctionWithoutInputSchema
     buffer1.update(0, buffer1.getLong(0) + buffer2.getLong(0))
   }
 
-  def evaluate(buffer: Row): Any = {
-    buffer.getLong(0)
-  }
+  def evaluate(buffer: Row): Any = { buffer.getLong(0) }
 }
 
 class LongProductSum extends UserDefinedAggregateFunction {
@@ -110,9 +106,7 @@ class LongProductSum extends UserDefinedAggregateFunction {
 
   def deterministic: Boolean = true
 
-  def initialize(buffer: MutableAggregationBuffer): Unit = {
-    buffer(0) = 0L
-  }
+  def initialize(buffer: MutableAggregationBuffer): Unit = { buffer(0) = 0L }
 
   def update(buffer: MutableAggregationBuffer, input: Row): Unit = {
     if (!(input.isNullAt(0) || input.isNullAt(1))) {
@@ -1042,9 +1036,7 @@ class TungstenAggregationQueryWithControlledFallbackSuite
   // Override it to make sure we call the actually overridden checkAnswer.
   override protected def checkAnswer(
       df: => DataFrame,
-      expectedAnswer: Row): Unit = {
-    checkAnswer(df, Seq(expectedAnswer))
-  }
+      expectedAnswer: Row): Unit = { checkAnswer(df, Seq(expectedAnswer)) }
 
   // Override it to make sure we call the actually overridden checkAnswer.
   override protected def checkAnswer(

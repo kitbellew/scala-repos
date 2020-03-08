@@ -6,8 +6,6 @@ package object foo {
 
 package foo {
   object Baz {
-    def main(args: Array[String]): Unit = {
-      "abc".bippy
-    }
+    def main(args: Array[String]): Unit = { "abc".bippy }
   }
 }

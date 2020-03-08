@@ -35,7 +35,9 @@ class LocalActorRefProviderSpec
   "An LocalActorRefProvider" must {
 
     "find actor refs using actorFor" in {
-      val a = system.actorOf(Props(new Actor { def receive = { case _ ⇒ } }))
+      val a = system.actorOf(Props(new Actor {
+        def receive = { case _ ⇒ }
+      }))
       val b = system.actorFor(a.path)
       a should ===(b)
     }
@@ -70,9 +72,7 @@ class LocalActorRefProviderSpec
       filterEvents(
         EventFilter.warning(
           s"unhandled message from Actor[$deadLettersPath]: $message",
-          occurrences = 1)) {
-        rootGuardian ! message
-      }
+          occurrences = 1)) { rootGuardian ! message }
     }
   }
 
@@ -86,9 +86,7 @@ class LocalActorRefProviderSpec
       filterEvents(
         EventFilter.warning(
           s"unhandled message from Actor[$deadLettersPath]: $message",
-          occurrences = 1)) {
-        userGuardian ! message
-      }
+          occurrences = 1)) { userGuardian ! message }
     }
   }
 
@@ -102,9 +100,7 @@ class LocalActorRefProviderSpec
       filterEvents(
         EventFilter.warning(
           s"unhandled message from Actor[$deadLettersPath]: $message",
-          occurrences = 1)) {
-        systemGuardian ! message
-      }
+          occurrences = 1)) { systemGuardian ! message }
     }
   }
 
@@ -149,7 +145,9 @@ class LocalActorRefProviderSpec
           for (j ← 1 to 4)
             yield Future(
               system.actorOf(
-                Props(new Actor { def receive = { case _ ⇒ } }),
+                Props(new Actor {
+                  def receive = { case _ ⇒ }
+                }),
                 address))
         val set = Set() ++ actors.map(a ⇒
           Await.ready(a, timeout.duration).value match {

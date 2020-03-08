@@ -21,13 +21,9 @@ class LangSpec extends PlaySpecification {
         .build()
       val langs = app.injector.instanceOf[Langs]
 
-      "with exact match" in {
-        langs.preferred(Seq(esEs)) must_== esEs
-      }
+      "with exact match" in { langs.preferred(Seq(esEs)) must_== esEs }
 
-      "with just language match" in {
-        langs.preferred(Seq(de)) must_== de
-      }
+      "with just language match" in { langs.preferred(Seq(de)) must_== de }
 
       "with just language match country specific" in {
         langs.preferred(Seq(es)) must_== esEs
@@ -41,9 +37,7 @@ class LangSpec extends PlaySpecification {
         langs.preferred(Seq(Lang("ES-es"))) must_== esEs
       }
 
-      "in order" in {
-        langs.preferred(Seq(esEs, enUs)) must_== esEs
-      }
+      "in order" in { langs.preferred(Seq(esEs, enUs)) must_== esEs }
     }
 
     "normalize before comparison" in {
@@ -70,9 +64,7 @@ class LangSpec extends PlaySpecification {
         Lang.get("en_US") must_== None
       }
 
-      "with extraneous characters" in {
-        Lang.get("en-ÚS") must_== None
-      }
+      "with extraneous characters" in { Lang.get("en-ÚS") must_== None }
     }
 
     "allow alpha-3/ISO 639-2 language codes" in {
@@ -94,13 +86,9 @@ class LangSpec extends PlaySpecification {
           .build()
         val langs = app.injector.instanceOf[Langs]
 
-        "with exact match" in {
-          langs.preferred(Seq(crhUA)) must_== crhUA
-        }
+        "with exact match" in { langs.preferred(Seq(crhUA)) must_== crhUA }
 
-        "with just language match" in {
-          langs.preferred(Seq(ber)) must_== ber
-        }
+        "with just language match" in { langs.preferred(Seq(ber)) must_== ber }
 
         "with just language match country specific" in {
           langs.preferred(Seq(ast)) must_== astES
@@ -114,9 +102,7 @@ class LangSpec extends PlaySpecification {
           langs.preferred(Seq(Lang("AST-es"))) must_== astES
         }
 
-        "in order" in {
-          langs.preferred(Seq(astES, crhUA)) must_== astES
-        }
+        "in order" in { langs.preferred(Seq(astES, crhUA)) must_== astES }
 
       }
     }
@@ -142,9 +128,7 @@ class LangSpec extends PlaySpecification {
           .build()
         val langs = app.injector.instanceOf[Langs]
 
-        "with exact match" in {
-          langs.preferred(Seq(zhHans)) must_== zhHans
-        }
+        "with exact match" in { langs.preferred(Seq(zhHans)) must_== zhHans }
 
         "with just language match script specific" in {
           langs.preferred(Seq(az)) must_== azCyrl

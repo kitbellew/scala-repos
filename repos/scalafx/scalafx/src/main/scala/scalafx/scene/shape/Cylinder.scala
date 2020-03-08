@@ -63,13 +63,9 @@ class Cylinder(override val delegate: jfxss.Cylinder = new jfxss.Cylinder())
 
   /** Defines the height or the Y dimension of the cylinder. */
   def height: DoubleProperty = delegate.heightProperty
-  def height_=(v: Double) {
-    height() = v
-  }
+  def height_=(v: Double) { height() = v }
 
   /** Defines the radius in the Z plane of the cylinder. */
   def radius: DoubleProperty = delegate.radiusProperty
-  def radius_=(v: Double) {
-    radius() = v
-  }
+  def radius_=(v: Double) { radius() = v }
 }

@@ -47,9 +47,7 @@ private[sql] class GroupableUDT extends UserDefinedType[GroupableData] {
   override def serialize(groupableData: GroupableData): Int = groupableData.data
 
   override def deserialize(datum: Any): GroupableData = {
-    datum match {
-      case data: Int => GroupableData(data)
-    }
+    datum match { case data: Int => GroupableData(data) }
   }
 
   override def userClass: Class[GroupableData] = classOf[GroupableData]
@@ -109,9 +107,7 @@ class AnalysisErrorSuite extends AnalysisTest {
       plan: LogicalPlan,
       errorMessages: Seq[String],
       caseSensitive: Boolean = true): Unit = {
-    test(name) {
-      assertAnalysisError(plan, errorMessages, caseSensitive)
-    }
+    test(name) { assertAnalysisError(plan, errorMessages, caseSensitive) }
   }
 
   val dateLit = Literal.create(null, DateType)

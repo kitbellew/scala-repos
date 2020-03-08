@@ -23,9 +23,7 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
     implicit val port = testServerPort
     lazy val app: Application = GuiceApplicationBuilder()
       .configure(configuration)
-      .routes {
-        case _ => JAction(app, controller)
-      }
+      .routes { case _ => JAction(app, controller) }
       .build()
 
     running(TestServer(port, app)) {

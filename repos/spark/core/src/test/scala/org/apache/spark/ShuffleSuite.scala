@@ -259,9 +259,7 @@ abstract class ShuffleSuite
     val a = sc.parallelize(1 to 10, 2)
     val b = a.map { x => (new NonJavaSerializableClass(x), x) }
     // default Java serializer cannot handle the non serializable class.
-    val thrown = intercept[SparkException] {
-      b.sortByKey().collect()
-    }
+    val thrown = intercept[SparkException] { b.sortByKey().collect() }
 
     assert(thrown.getClass === classOf[SparkException])
     assert(thrown.getMessage.toLowerCase.contains("serializable"))
@@ -307,12 +305,8 @@ abstract class ShuffleSuite
       .getFile(new ShuffleDataBlockId(0, 0, 0))
     assert(hashFile.exists() || sortFile.exists())
 
-    if (hashFile.exists()) {
-      hashFile.delete()
-    }
-    if (sortFile.exists()) {
-      sortFile.delete()
-    }
+    if (hashFile.exists()) { hashFile.delete() }
+    if (sortFile.exists()) { sortFile.delete() }
 
     // This count should retry the execution of the previous stage and rerun shuffle.
     rdd.count()

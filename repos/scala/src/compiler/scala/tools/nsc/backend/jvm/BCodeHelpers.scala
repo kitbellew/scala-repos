@@ -107,9 +107,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       // not into the anonymous function class. The originalOwner chain is Z - f - C.
       if (sym.originalOwner.rawowner == sym.rawowner) sym.originalOwner
       else sym.rawowner
-    } else {
-      origOwner
-    }
+    } else { origOwner }
   }
 
   def nextEnclosingClass(sym: Symbol): Symbol =
@@ -159,9 +157,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
     def enclosingMethod(sym: Symbol): Option[Symbol] = {
       if (sym.isClass || sym == NoSymbol) None
-      else if (sym.isMethod) {
-        if (doesNotExist(sym)) None else Some(sym)
-      } else enclosingMethod(nextEnclosing(sym))
+      else if (sym.isMethod) { if (doesNotExist(sym)) None else Some(sym) }
+      else enclosingMethod(nextEnclosing(sym))
     }
     enclosingMethod(nextEnclosing(classSym))
   }
@@ -220,9 +217,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
           classDesc(enclosingClass),
           methodOpt.map(_.javaSimpleName.toString).orNull,
           methodOpt.map(methodDesc).orNull))
-    } else {
-      None
-    }
+    } else { None }
   }
 
   /**
@@ -250,11 +245,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       val originalReporter = global.reporter
       val storeReporter = new reporters.StoreReporter()
       global.reporter = storeReporter
-      try {
-        sym.info
-      } finally {
-        global.reporter = originalReporter
-      }
+      try { sym.info }
+      finally { global.reporter = originalReporter }
       sym.isErroneous
     }
 
@@ -269,9 +261,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       // The mixin phase uses typeOfThis for the self parameter in implementation class methods.
       val selfSym = classSym.typeOfThis.typeSymbol
       if (selfSym != classSym) Some(classSymToInternalName(selfSym)) else None
-    } else {
-      None
-    }
+    } else { None }
 
     val isEffectivelyFinal = classSym.isEffectivelyFinal
 
@@ -337,9 +327,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
   def getFileForClassfile(
       base: AbstractFile,
       clsName: String,
-      suffix: String): AbstractFile = {
-    getFile(base, clsName, suffix)
-  }
+      suffix: String): AbstractFile = { getFile(base, clsName, suffix) }
 
   /*
    * must-single-thread
@@ -349,9 +337,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       cName: String,
       cunit: CompilationUnit): _root_.scala.tools.nsc.io.AbstractFile =
     _root_.scala.util
-      .Try {
-        outputDirectory(csym)
-      }
+      .Try { outputDirectory(csym) }
       .recover {
         case ex: Throwable =>
           reporter.error(
@@ -821,9 +807,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         case sb @ ScalaSigBytes(bytes) =>
           // see http://www.scala-lang.org/sid/10 (Storage of pickled Scala signatures in class files)
           // also JVMS Sec. 4.7.16.1 The element_value structure and JVMS Sec. 4.4.7 The CONSTANT_Utf8_info Structure.
-          if (sb.fitsInOneString) {
-            av.visit(name, strEncode(sb))
-          } else {
+          if (sb.fitsInOneString) { av.visit(name, strEncode(sb)) }
+          else {
             val arrAnnotV: asm.AnnotationVisitor = av.visitArray(name)
             for (arg <- arrEncode(sb)) { arrAnnotV.visit(name, arg) }
             arrAnnotV.visitEnd()
@@ -854,9 +839,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     def emitAssocs(
         av: asm.AnnotationVisitor,
         assocs: List[(Name, ClassfileAnnotArg)]) {
-      for ((name, value) <- assocs) {
-        emitArgument(av, name.toString(), value)
-      }
+      for ((name, value) <- assocs) { emitArgument(av, name.toString(), value) }
       av.visitEnd()
     }
 

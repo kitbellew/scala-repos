@@ -112,9 +112,7 @@ object UniqueKeyedService extends java.io.Serializable {
                   .format(requested, s)
               toTry(e, msg)
           }
-        } else {
-          super.satisfiable(requested, mode)
-        }
+        } else { super.satisfiable(requested, mode) }
       }
     }
 }

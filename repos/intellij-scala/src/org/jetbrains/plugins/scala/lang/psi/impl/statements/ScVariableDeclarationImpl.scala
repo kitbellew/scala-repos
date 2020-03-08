@@ -42,9 +42,8 @@ class ScVariableDeclarationImpl private (
 
   def typeElement: Option[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
-      stub.asInstanceOf[ScVariableStub].getTypeElement
-    } else findChild(classOf[ScTypeElement])
+    if (stub != null) { stub.asInstanceOf[ScVariableStub].getTypeElement }
+    else findChild(classOf[ScTypeElement])
   }
 
   def getIdList: ScIdList = findChildByClass(classOf[ScIdList])

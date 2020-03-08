@@ -80,9 +80,7 @@ private[hive] object SparkSQLCLIDriver extends Logging {
 
   def main(args: Array[String]) {
     val oproc = new OptionsProcessor()
-    if (!oproc.process_stage1(args)) {
-      System.exit(1)
-    }
+    if (!oproc.process_stage1(args)) { System.exit(1) }
 
     val cliConf = new HiveConf(classOf[SessionState])
     // Override the location of the metastore since this is only used for local execution.
@@ -96,13 +94,9 @@ private[hive] object SparkSQLCLIDriver extends Logging {
       sessionState.out = new PrintStream(System.out, true, "UTF-8")
       sessionState.info = new PrintStream(System.err, true, "UTF-8")
       sessionState.err = new PrintStream(System.err, true, "UTF-8")
-    } catch {
-      case e: UnsupportedEncodingException => System.exit(3)
-    }
+    } catch { case e: UnsupportedEncodingException => System.exit(3) }
 
-    if (!oproc.process_stage2(sessionState)) {
-      System.exit(2)
-    }
+    if (!oproc.process_stage2(sessionState)) { System.exit(2) }
 
     // Set all properties specified via command line.
     val conf: HiveConf = sessionState.getConf
@@ -150,9 +144,7 @@ private[hive] object SparkSQLCLIDriver extends Logging {
       sessionState.out = new PrintStream(System.out, true, "UTF-8")
       sessionState.info = new PrintStream(System.err, true, "UTF-8")
       sessionState.err = new PrintStream(System.err, true, "UTF-8")
-    } catch {
-      case e: UnsupportedEncodingException => System.exit(3)
-    }
+    } catch { case e: UnsupportedEncodingException => System.exit(3) }
 
     if (sessionState.database != null) {
       SparkSQLEnv.hiveContext.runSqlHive(s"USE ${sessionState.database}")
@@ -204,9 +196,8 @@ private[hive] object SparkSQLCLIDriver extends Logging {
     ShutdownHookManager.addShutdownHook { () =>
       reader.getHistory match {
         case h: FileHistory =>
-          try {
-            h.flush()
-          } catch {
+          try { h.flush() }
+          catch {
             case e: IOException =>
               logWarning(
                 "WARNING: Failed to write command history file: " + e.getMessage)
@@ -244,9 +235,7 @@ private[hive] object SparkSQLCLIDriver extends Logging {
 
     while (line != null) {
       if (!line.startsWith("--")) {
-        if (prefix.nonEmpty) {
-          prefix += '\n'
-        }
+        if (prefix.nonEmpty) { prefix += '\n' }
 
         if (line.trim().endsWith(";") && !line.trim().endsWith("\\;")) {
           line = prefix + line
@@ -280,18 +269,15 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
 
   private val console = new SessionState.LogHelper(LOG)
 
-  private val isRemoteMode = {
-    SparkSQLCLIDriver.isRemoteMode(sessionState)
-  }
+  private val isRemoteMode = { SparkSQLCLIDriver.isRemoteMode(sessionState) }
 
   private val conf: Configuration =
     if (sessionState != null) sessionState.getConf else new Configuration()
 
   // Force initializing SparkSQLEnv. This is put here but not object SparkSQLCliDriver
   // because the Hive unit tests do not go through the main() code path.
-  if (!isRemoteMode) {
-    SparkSQLEnv.init()
-  } else {
+  if (!isRemoteMode) { SparkSQLEnv.init() }
+  else {
     // Hive 1.2 + not supported in CLI
     throw new RuntimeException("Remote operations not supported")
   }
@@ -331,9 +317,7 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
           val out = sessionState.out
           val err = sessionState.err
           val start: Long = System.currentTimeMillis()
-          if (sessionState.getIsVerbose) {
-            out.println(cmd)
-          }
+          if (sessionState.getIsVerbose) { out.println(cmd) }
           val rc = driver.run(cmd)
           val end = System.currentTimeMillis()
           val timeTaken: Double = (end - start) / 1000.0
@@ -380,14 +364,10 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
           }
 
           val cret = driver.close()
-          if (ret == 0) {
-            ret = cret
-          }
+          if (ret == 0) { ret = cret }
 
           var responseMsg = s"Time taken: $timeTaken seconds"
-          if (counter != 0) {
-            responseMsg += s", Fetched $counter row(s)"
-          }
+          if (counter != 0) { responseMsg += s", Fetched $counter row(s)" }
           console.printInfo(responseMsg, null)
           // Destroy the driver to release all the locks.
           driver.destroy()

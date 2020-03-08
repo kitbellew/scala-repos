@@ -44,9 +44,7 @@ class ReplicatedCacheSpec
   val replicatedCache = system.actorOf(ReplicatedCache.props)
 
   def join(from: RoleName, to: RoleName): Unit = {
-    runOn(from) {
-      cluster join node(to).address
-    }
+    runOn(from) { cluster join node(to).address }
     enterBarrier(from.name + "-joined")
   }
 
@@ -64,9 +62,7 @@ class ReplicatedCacheSpec
     }
 
     "replicate cached entry" in within(10.seconds) {
-      runOn(node1) {
-        replicatedCache ! new PutInCache("key1", "A")
-      }
+      runOn(node1) { replicatedCache ! new PutInCache("key1", "A") }
 
       awaitAssert {
         val probe = TestProbe()
@@ -96,9 +92,7 @@ class ReplicatedCacheSpec
     }
 
     "replicate evicted entry" in within(15.seconds) {
-      runOn(node1) {
-        replicatedCache ! new PutInCache("key2", "B")
-      }
+      runOn(node1) { replicatedCache ! new PutInCache("key2", "B") }
 
       awaitAssert {
         val probe = TestProbe()
@@ -107,9 +101,7 @@ class ReplicatedCacheSpec
       }
       enterBarrier("key2-replicated")
 
-      runOn(node3) {
-        replicatedCache ! new Evict("key2")
-      }
+      runOn(node3) { replicatedCache ! new Evict("key2") }
 
       awaitAssert {
         val probe = TestProbe()

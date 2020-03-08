@@ -28,9 +28,7 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
     inst.start()
   }
 
-  after {
-    inst.stop()
-  }
+  after { inst.stop() }
 
   def toSpan(d: Duration): Span = Span(d.inNanoseconds, Nanoseconds)
 

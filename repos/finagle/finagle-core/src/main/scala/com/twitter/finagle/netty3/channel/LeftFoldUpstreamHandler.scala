@@ -128,21 +128,15 @@ private[channel] class LeftFoldHandlerToChannelHandler(
 
   override def channelConnected(
       ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
-    state = state.channelConnected(ctx, e)
-  }
+      e: ChannelStateEvent) { state = state.channelConnected(ctx, e) }
 
   override def channelDisconnected(
       ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
-    state = state.channelDisconnected(ctx, e)
-  }
+      e: ChannelStateEvent) { state = state.channelDisconnected(ctx, e) }
 
   override def channelInterestChanged(
       ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
-    state = state.channelInterestChanged(ctx, e)
-  }
+      e: ChannelStateEvent) { state = state.channelInterestChanged(ctx, e) }
 
   override def channelOpen(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
     state = state.channelOpen(ctx, e)
@@ -150,21 +144,15 @@ private[channel] class LeftFoldHandlerToChannelHandler(
 
   override def channelUnbound(
       ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
-    state = state.channelUnbound(ctx, e)
-  }
+      e: ChannelStateEvent) { state = state.channelUnbound(ctx, e) }
 
   override def childChannelClosed(
       ctx: ChannelHandlerContext,
-      e: ChildChannelStateEvent) {
-    state = state.childChannelClosed(ctx, e)
-  }
+      e: ChildChannelStateEvent) { state = state.childChannelClosed(ctx, e) }
 
   override def childChannelOpen(
       ctx: ChannelHandlerContext,
-      e: ChildChannelStateEvent) {
-    state = state.childChannelOpen(ctx, e)
-  }
+      e: ChildChannelStateEvent) { state = state.childChannelOpen(ctx, e) }
 
   override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent) {
     state = state.exceptionCaught(ctx, e)
@@ -176,7 +164,5 @@ private[channel] class LeftFoldHandlerToChannelHandler(
 
   override def writeComplete(
       ctx: ChannelHandlerContext,
-      e: WriteCompletionEvent) {
-    state = state.writeComplete(ctx, e)
-  }
+      e: WriteCompletionEvent) { state = state.writeComplete(ctx, e) }
 }

@@ -62,11 +62,8 @@ object StringUtil {
     */
   def convertLineSeparator(content: String, lineSeparator: String): String = {
     val lf = content.replace("\r\n", "\n").replace("\r", "\n")
-    if (lineSeparator == "CRLF") {
-      lf.replace("\n", "\r\n")
-    } else {
-      lf
-    }
+    if (lineSeparator == "CRLF") { lf.replace("\n", "\r\n") }
+    else { lf }
   }
 
   /**
@@ -79,9 +76,7 @@ object StringUtil {
   def appendNewLine(content: String, lineSeparator: String): String = {
     if (lineSeparator == "CRLF") {
       if (content.endsWith("\r\n")) content else content + "\r\n"
-    } else {
-      if (content.endsWith("\n")) content else content + "\n"
-    }
+    } else { if (content.endsWith("\n")) content else content + "\n" }
   }
 
   /**

@@ -116,9 +116,7 @@ object KMeansModel extends Loader[KMeansModel] {
   private case class Cluster(id: Int, point: Vector)
 
   private object Cluster {
-    def apply(r: Row): Cluster = {
-      Cluster(r.getInt(0), r.getAs[Vector](1))
-    }
+    def apply(r: Row): Cluster = { Cluster(r.getInt(0), r.getAs[Vector](1)) }
   }
 
   private[clustering] object SaveLoadV1_0 {

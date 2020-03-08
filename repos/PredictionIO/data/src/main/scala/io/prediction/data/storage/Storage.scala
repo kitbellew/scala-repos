@@ -295,13 +295,11 @@ object Storage extends Logging {
     val rawClassName = sourceType + "." + classPrefix + originalClassName.last
     val className = "io.prediction.data.storage." + rawClassName
     val clazz =
-      try {
-        Class.forName(className)
-      } catch {
+      try { Class.forName(className) }
+      catch {
         case e: ClassNotFoundException =>
-          try {
-            Class.forName(rawClassName)
-          } catch {
+          try { Class.forName(rawClassName) }
+          catch {
             case e: ClassNotFoundException =>
               throw new StorageClientException(
                 "No storage backend " +
@@ -311,9 +309,8 @@ object Storage extends Logging {
           }
       }
     val constructor = clazz.getConstructors()(0)
-    try {
-      constructor.newInstance(ctorArgs: _*).asInstanceOf[T]
-    } catch {
+    try { constructor.newInstance(ctorArgs: _*).asInstanceOf[T] }
+    catch {
       case e: IllegalArgumentException =>
         error(
           "Unable to instantiate data object with class '" +

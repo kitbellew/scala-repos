@@ -104,11 +104,8 @@ object ImportZkOffsets extends Logging {
     for ((partition, offset) <- partitionOffsets) {
       debug("updating [" + partition + "] with offset [" + offset + "]")
 
-      try {
-        zkUtils.updatePersistentPath(partition, offset.toString)
-      } catch {
-        case e: Throwable => e.printStackTrace()
-      }
+      try { zkUtils.updatePersistentPath(partition, offset.toString) }
+      catch { case e: Throwable => e.printStackTrace() }
     }
   }
 }

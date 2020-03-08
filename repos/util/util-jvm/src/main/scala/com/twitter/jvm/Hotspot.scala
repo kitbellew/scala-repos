@@ -162,9 +162,8 @@ class Hotspot extends Jvm {
         def getSafepointCount: Long
       }]
     }
-    try {
-      asSafepointBean(runtimeBean)
-    } catch {
+    try { asSafepointBean(runtimeBean) }
+    catch {
       // Handles possible name changes in new jdk versions
       case t: Throwable =>
         log.log(Level.WARNING, "failed to get runtimeBean", t)

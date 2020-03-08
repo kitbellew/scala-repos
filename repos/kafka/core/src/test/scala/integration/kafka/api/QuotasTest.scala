@@ -280,9 +280,7 @@ class QuotasTest extends KafkaServerTestHarness {
     consumer.subscribe(List(topic1))
     var numConsumed = 0
     while (numConsumed < numRecords) {
-      for (cr <- consumer.poll(100)) {
-        numConsumed += 1
-      }
+      for (cr <- consumer.poll(100)) { numConsumed += 1 }
     }
   }
 }

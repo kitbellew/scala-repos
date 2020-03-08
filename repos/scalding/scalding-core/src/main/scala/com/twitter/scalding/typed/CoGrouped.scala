@@ -395,7 +395,9 @@ abstract class CoGroupedJoiner[K](
     val leftMost = iters.head
 
     def toIterable(didx: Int) =
-      new Iterable[CTuple] { def iterator = jc.getIterator(didx).asScala }
+      new Iterable[CTuple] {
+        def iterator = jc.getIterator(didx).asScala
+      }
 
     val rest = restIndices.map(toIterable(_))
     joinFunction

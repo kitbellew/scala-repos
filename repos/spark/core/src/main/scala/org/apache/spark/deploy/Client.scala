@@ -179,18 +179,14 @@ private class ClientEndpoint(
       if (success) {
         activeMasterEndpoint = master
         pollAndReportStatus(driverId.get)
-      } else if (!Utils.responseFromBackup(message)) {
-        System.exit(-1)
-      }
+      } else if (!Utils.responseFromBackup(message)) { System.exit(-1) }
 
     case KillDriverResponse(master, driverId, success, message) =>
       logInfo(message)
       if (success) {
         activeMasterEndpoint = master
         pollAndReportStatus(driverId)
-      } else if (!Utils.responseFromBackup(message)) {
-        System.exit(-1)
-      }
+      } else if (!Utils.responseFromBackup(message)) { System.exit(-1) }
   }
 
   override def onDisconnected(remoteAddress: RpcAddress): Unit = {
@@ -227,9 +223,7 @@ private class ClientEndpoint(
     System.exit(-1)
   }
 
-  override def onStop(): Unit = {
-    forwardMessageThread.shutdownNow()
-  }
+  override def onStop(): Unit = { forwardMessageThread.shutdownNow() }
 }
 
 /**

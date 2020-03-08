@@ -39,9 +39,7 @@ final case class Message(s: String)
 class FirstActor extends Actor {
   val child = context.actorOf(Props[MyActor], name = "myChild")
   //#plus-some-behavior
-  def receive = {
-    case x => sender() ! x
-  }
+  def receive = { case x => sender() ! x }
   //#plus-some-behavior
 }
 //#context-actorOf
@@ -65,9 +63,7 @@ class DemoActorWrapper extends Actor {
   }
 
   class DemoActor(magicNumber: Int) extends Actor {
-    def receive = {
-      case x: Int => sender() ! (x + magicNumber)
-    }
+    def receive = { case x: Int => sender() ! (x + magicNumber) }
   }
 
   class SomeOtherActor extends Actor {
@@ -106,9 +102,7 @@ class ActorWithMessagesWrapper {
 class Hook extends Actor {
   var child: ActorRef = _
   //#preStart
-  override def preStart() {
-    child = context.actorOf(Props[MyActor], "child")
-  }
+  override def preStart() { child = context.actorOf(Props[MyActor], "child") }
   //#preStart
   def receive = Actor.emptyBehavior
   //#postStop
@@ -277,9 +271,7 @@ class ActorDocSpec extends AkkaSpec("""
       class FirstActor extends Actor {
         import context._
         val myActor = actorOf(Props[MyActor], name = "myactor")
-        def receive = {
-          case x => myActor ! x
-        }
+        def receive = { case x => myActor ! x }
       }
       //#import-context
 

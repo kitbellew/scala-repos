@@ -46,9 +46,7 @@ object QuickLinker {
           def relativePath: String = s"<dummy relative path from $getClass>"
         }
         IRContainer.File(vf)
-      } else {
-        sys.error("Illegal IR file / Jar: " + file)
-      }
+      } else { sys.error("Illegal IR file / Jar: " + file) }
     }
 
     val ir = cache.cached(irContainers)

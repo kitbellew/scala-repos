@@ -55,9 +55,7 @@ case class TestBrowser(webDriver: WebDriver, baseUrl: Option[String])
     val wait =
       new FluentWait[WebDriver](webDriver).withTimeout(timeout, timeUnit)
     val f = new Function[WebDriver, T]() {
-      def apply(driver: WebDriver): T = {
-        block
-      }
+      def apply(driver: WebDriver): T = { block }
     }
     wait.until(f)
   }

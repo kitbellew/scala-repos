@@ -22,9 +22,7 @@ import org.apache.spark._
 object AdaptiveSchedulingSuiteState {
   var tasksRun = 0
 
-  def clear(): Unit = {
-    tasksRun = 0
-  }
+  def clear(): Unit = { tasksRun = 0 }
 }
 
 class AdaptiveSchedulingSuite extends SparkFunSuite with LocalSparkContext {
@@ -42,9 +40,7 @@ class AdaptiveSchedulingSuite extends SparkFunSuite with LocalSparkContext {
       assert(AdaptiveSchedulingSuiteState.tasksRun == 3)
       assert(shuffled.collect().toSet == Set((1, 1), (2, 2), (3, 3)))
       assert(AdaptiveSchedulingSuiteState.tasksRun == 3)
-    } finally {
-      AdaptiveSchedulingSuiteState.clear()
-    }
+    } finally { AdaptiveSchedulingSuiteState.clear() }
   }
 
   test("fetching multiple map output partitions per reduce") {

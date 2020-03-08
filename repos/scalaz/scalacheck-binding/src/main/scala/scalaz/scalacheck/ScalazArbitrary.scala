@@ -133,13 +133,10 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
           .traverseS(s) { n =>
             for {
               sum <- State.get[Int]
-              r <- if (sum >= size) {
-                State.state[Int, Option[Int]](None)
-              } else if ((sum + n) > size) {
+              r <- if (sum >= size) { State.state[Int, Option[Int]](None) }
+              else if ((sum + n) > size) {
                 State((s: Int) => (s + n) -> Option(size - sum))
-              } else {
-                State((s: Int) => (s + n) -> Option(n))
-              }
+              } else { State((s: Int) => (s + n) -> Option(n)) }
             } yield r
           }
           .eval(0)

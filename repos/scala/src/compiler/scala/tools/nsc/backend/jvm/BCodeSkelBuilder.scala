@@ -77,9 +77,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
     def tpeTK(tree: Tree): BType = typeToBType(tree.tpe)
 
-    def log(msg: => AnyRef) {
-      global synchronized { global.log(msg) }
-    }
+    def log(msg: => AnyRef) { global synchronized { global.log(msg) } }
 
     /* ---------------- helper utils for generating classes and fields ---------------- */
 
@@ -101,9 +99,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       val hasStaticCtor = methodSymbols(cd) exists (_.isStaticConstructor)
       if (!hasStaticCtor) {
         // but needs one ...
-        if (isCZStaticModule || isCZParcelable) {
-          fabricateStaticInit()
-        }
+        if (isCZStaticModule || isCZParcelable) { fabricateStaticInit() }
       }
 
       val optSerial: Option[Long] = serialVUID(claszSymbol)

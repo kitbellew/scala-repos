@@ -56,9 +56,7 @@ class ZkAsyncSemaphore(
   private[this] class ZkSemaphorePermit(node: ZNode) extends Permit {
     val zkPath = node.path
     val sequenceNumber = sequenceNumberOf(zkPath)
-    override def release() {
-      node.delete()
-    }
+    override def release() { node.delete() }
   }
 
   @volatile
@@ -281,11 +279,8 @@ class ZkAsyncSemaphore(
 
   private[this] def numPermitsOf(node: ZNode): Future[Int] = {
     node.getData() map { data =>
-      try {
-        new String(data.bytes, Charset.forName("UTF8")).toInt
-      } catch {
-        case err: NumberFormatException => -1
-      }
+      try { new String(data.bytes, Charset.forName("UTF8")).toInt }
+      catch { case err: NumberFormatException => -1 }
     }
   }
 

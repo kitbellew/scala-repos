@@ -105,9 +105,7 @@ object Timed extends TimedOps with TimedIntervalBetweenOps {
     private val _start = new AtomicLong
     private val _stop = new AtomicLong
 
-    def start(): Unit = {
-      _start.compareAndSet(0, System.nanoTime())
-    }
+    def start(): Unit = { _start.compareAndSet(0, System.nanoTime()) }
 
     def stop(): FiniteDuration = {
       _stop.compareAndSet(0, System.nanoTime())

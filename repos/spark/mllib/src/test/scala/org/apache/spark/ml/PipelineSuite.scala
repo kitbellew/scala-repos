@@ -91,9 +91,7 @@ class PipelineSuite
     val pipeline = new Pipeline()
       .setStages(Array(estimator, estimator))
     val dataset = mock[DataFrame]
-    intercept[IllegalArgumentException] {
-      pipeline.fit(dataset)
-    }
+    intercept[IllegalArgumentException] { pipeline.fit(dataset) }
   }
 
   test("PipelineModel.copy") {
@@ -137,9 +135,7 @@ class PipelineSuite
     val unWritablePipeline = new Pipeline().setStages(Array(unWritableStage))
     withClue(
       "Pipeline.write should fail when Pipeline contains non-Writable stage") {
-      intercept[UnsupportedOperationException] {
-        unWritablePipeline.write
-      }
+      intercept[UnsupportedOperationException] { unWritablePipeline.write }
     }
   }
 
@@ -185,9 +181,7 @@ class PipelineSuite
         Array(unWritableStage.asInstanceOf[Transformer]))
     withClue(
       "PipelineModel.write should fail when PipelineModel contains non-Writable stage") {
-      intercept[UnsupportedOperationException] {
-        unWritablePipeline.write
-      }
+      intercept[UnsupportedOperationException] { unWritablePipeline.write }
     }
   }
 

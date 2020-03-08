@@ -353,13 +353,10 @@ object CSRFTokenSigner {
     * timing attacks.
     */
   def constantTimeEquals(a: String, b: String): Boolean = {
-    if (a.length != b.length) {
-      false
-    } else {
+    if (a.length != b.length) { false }
+    else {
       var equal = 0
-      for (i <- 0 until a.length) {
-        equal |= a(i) ^ b(i)
-      }
+      for (i <- 0 until a.length) { equal |= a(i) ^ b(i) }
       equal == 0
     }
   }
@@ -376,9 +373,7 @@ class AESCrypterProvider @Inject() (config: CryptoConfig)
   */
 class AESCTRCrypter @Inject() (config: CryptoConfig) extends AESCrypter {
 
-  def encryptAES(value: String): String = {
-    encryptAES(value, config.secret)
-  }
+  def encryptAES(value: String): String = { encryptAES(value, config.secret) }
 
   @deprecated("This method will be removed in future versions ", "2.5.0")
   def encryptAES(value: String, privateKey: String): String = {
@@ -418,29 +413,20 @@ class AESCTRCrypter @Inject() (config: CryptoConfig) extends AESCrypter {
   }
 
   @deprecated("This method will be removed in future versions ", "2.5.0")
-  def decryptAES(value: String): String = {
-    decryptAES(value, config.secret)
-  }
+  def decryptAES(value: String): String = { decryptAES(value, config.secret) }
 
   @deprecated("This method will be removed in future versions ", "2.5.0")
   def decryptAES(value: String, privateKey: String): String = {
     val seperator = "-"
     val sepIndex = value.indexOf(seperator)
-    if (sepIndex < 0) {
-      decryptAESVersion0(value, privateKey)
-    } else {
+    if (sepIndex < 0) { decryptAESVersion0(value, privateKey) }
+    else {
       val version = value.substring(0, sepIndex)
       val data = value.substring(sepIndex + 1, value.length())
       version match {
-        case "1" => {
-          decryptAESVersion1(data, privateKey)
-        }
-        case "2" => {
-          decryptAESVersion2(data, privateKey)
-        }
-        case _ => {
-          throw new CryptoException("Unknown version")
-        }
+        case "1" => { decryptAESVersion1(data, privateKey) }
+        case "2" => { decryptAESVersion2(data, privateKey) }
+        case _   => { throw new CryptoException("Unknown version") }
       }
     }
   }

@@ -74,13 +74,9 @@ package object sbt {
     def isOutsideOf(root: File): Boolean =
       !FileUtil.isAncestor(root, file, false)
 
-    def write(lines: String*) {
-      writeLinesTo(file, lines: _*)
-    }
+    def write(lines: String*) { writeLinesTo(file, lines: _*) }
 
-    def copyTo(destination: File) {
-      copy(file, destination)
-    }
+    def copyTo(destination: File) { copy(file, destination) }
   }
 
   private object RichFile {
@@ -144,11 +140,8 @@ package object sbt {
   }
 
   def using[A <: Closeable, B](resource: A)(block: A => B): B = {
-    try {
-      block(resource)
-    } finally {
-      resource.close()
-    }
+    try { block(resource) }
+    finally { resource.close() }
   }
 
   def writeLinesTo(file: File, lines: String*) {
@@ -175,11 +168,8 @@ package object sbt {
   def usingTempFile[T](prefix: String, suffix: Option[String] = None)(
       block: File => T): T = {
     val file = FileUtil.createTempFile(prefix, suffix.orNull, true)
-    try {
-      block(file)
-    } finally {
-      file.delete()
-    }
+    try { block(file) }
+    finally { file.delete() }
   }
 
   private val NameWithExtension = """(.+)(\..+?)""".r

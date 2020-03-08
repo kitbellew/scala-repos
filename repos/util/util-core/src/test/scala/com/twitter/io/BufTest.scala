@@ -128,12 +128,8 @@ class BufTest
       Buf.ByteArray.Owned(a2) concat
       Buf.ByteArray.Owned(a3)
 
-    intercept[IllegalArgumentException] {
-      buf.slice(-1, 0)
-    }
-    intercept[IllegalArgumentException] {
-      buf.slice(1, 0)
-    }
+    intercept[IllegalArgumentException] { buf.slice(-1, 0) }
+    intercept[IllegalArgumentException] { buf.slice(1, 0) }
   }
 
   test("Buf.Utf8: English") {

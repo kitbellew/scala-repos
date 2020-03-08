@@ -25,9 +25,7 @@ import scala.tools.nsc.util.ClassFileLookup
   *  @version 1.0
   */
 abstract class ClassfileParser {
-  val symbolTable: SymbolTable {
-    def settings: Settings
-  }
+  val symbolTable: SymbolTable { def settings: Settings }
   val loaders: SymbolLoaders {
     val symbolTable: ClassfileParser.this.symbolTable.type
   }
@@ -565,9 +563,8 @@ abstract class ClassfileParser {
     val jflags = readFieldFlags()
     val sflags = jflags.toScalaFlags
 
-    if ((sflags & PRIVATE) != 0L && !optimized) {
-      in.skip(4); skipAttributes()
-    } else {
+    if ((sflags & PRIVATE) != 0L && !optimized) { in.skip(4); skipAttributes() }
+    else {
       val name = readName()
       val info = readType()
       val sym =

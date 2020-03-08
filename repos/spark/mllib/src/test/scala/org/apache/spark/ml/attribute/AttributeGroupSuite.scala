@@ -43,9 +43,7 @@ class AttributeGroupSuite extends SparkFunSuite {
     assert(group.indexOf("size") === 4)
     assert(group.indexOf("clicked") === 5)
     assert(!group.hasAttr("abc"))
-    intercept[NoSuchElementException] {
-      group("abc")
-    }
+    intercept[NoSuchElementException] { group("abc") }
     assert(
       group === AttributeGroup.fromMetadata(group.toMetadataImpl, group.name))
     assert(group === AttributeGroup.fromStructField(group.toStructField()))

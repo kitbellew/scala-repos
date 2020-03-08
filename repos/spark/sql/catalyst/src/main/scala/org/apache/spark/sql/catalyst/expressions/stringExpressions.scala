@@ -516,13 +516,11 @@ case class StringLocate(substr: Expression, str: Expression, start: Expression)
       0
     } else {
       val r = substr.eval(input)
-      if (r == null) {
-        null
-      } else {
+      if (r == null) { null }
+      else {
         val l = str.eval(input)
-        if (l == null) {
-          null
-        } else {
+        if (l == null) { null }
+        else {
           l.asInstanceOf[UTF8String]
             .indexOf(r.asInstanceOf[UTF8String], s.asInstanceOf[Int]) + 1
         }
@@ -626,9 +624,8 @@ case class FormatString(children: Expression*)
 
   override def eval(input: InternalRow): Any = {
     val pattern = children(0).eval(input)
-    if (pattern == null) {
-      null
-    } else {
+    if (pattern == null) { null }
+    else {
       val sb = new StringBuffer()
       val formatter = new java.util.Formatter(sb, Locale.US)
 
@@ -651,9 +648,7 @@ case class FormatString(children: Expression*)
           // Java primitives get boxed in order to allow null values.
           s"(${v._2.isNull}) ? (${ctx.boxedType(v._1)}) null : " +
             s"new ${ctx.boxedType(v._1)}(${v._2.value})"
-        } else {
-          s"(${v._2.isNull}) ? null : ${v._2.value}"
-        }
+        } else { s"(${v._2.isNull}) ? null : ${v._2.value}" }
       s + "," + nullSafeString
     })
 
@@ -887,11 +882,8 @@ case class Ascii(child: Expression)
 
   protected override def nullSafeEval(string: Any): Any = {
     val bytes = string.asInstanceOf[UTF8String].getBytes
-    if (bytes.length > 0) {
-      bytes(0).asInstanceOf[Int]
-    } else {
-      0
-    }
+    if (bytes.length > 0) { bytes(0).asInstanceOf[Int] }
+    else { 0 }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -1068,9 +1060,7 @@ case class FormatNumber(x: Expression, d: Expression)
 
   override protected def nullSafeEval(xObject: Any, dObject: Any): Any = {
     val dValue = dObject.asInstanceOf[Int]
-    if (dValue < 0) {
-      return null
-    }
+    if (dValue < 0) { return null }
 
     if (dValue != lastDValue) {
       // construct a new DecimalFormat only if a new dValue

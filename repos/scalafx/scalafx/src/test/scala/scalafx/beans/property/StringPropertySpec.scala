@@ -76,9 +76,7 @@ class StringPropertySpec extends FlatSpec with BeforeAndAfterEach {
     stringProperty.name should equal("Test String")
   }
 
-  it should "know its bean" in {
-    stringProperty.bean should equal(bean)
-  }
+  it should "know its bean" in { stringProperty.bean should equal(bean) }
 
   it should "be bindable to another String Property" in {
     stringProperty <== stringProperty2

@@ -67,9 +67,7 @@ case class ScalarSubquery(
       TypeCheckResult.TypeCheckFailure(
         "Scalar subquery must return only one column, but got " +
           query.schema.length.toString)
-    } else {
-      TypeCheckResult.TypeCheckSuccess
-    }
+    } else { TypeCheckResult.TypeCheckSuccess }
   }
 
   override def foldable: Boolean = false

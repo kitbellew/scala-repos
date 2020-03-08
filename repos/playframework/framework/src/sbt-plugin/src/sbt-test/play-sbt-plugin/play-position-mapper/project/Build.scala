@@ -24,9 +24,7 @@ object ApplicationBuild extends Build {
     def trace(t: => Throwable) = ()
     def success(message: => String) = ()
     def log(level: Level.Value, message: => String) = {
-      if (level == Level.Error) synchronized {
-        messages = message :: messages
-      }
+      if (level == Level.Error) synchronized { messages = message :: messages }
     }
   }
 
@@ -57,9 +55,7 @@ object ApplicationBuild extends Build {
     .settings(
       version := appVersion,
       extraLoggers ~= { currentFunction => (key: ScopedKey[_]) =>
-        {
-          bufferLogger +: currentFunction(key)
-        }
+        { bufferLogger +: currentFunction(key) }
       },
       scalaVersion := sys.props.get("scala.version").getOrElse("2.11.7"),
       checkLogContainsTask,

@@ -129,9 +129,7 @@ class NettyBlockTransferService(
           blockFetchStarter,
           blockIds,
           listener).start()
-      } else {
-        blockFetchStarter.createAndStart(blockIds, listener)
-      }
+      } else { blockFetchStarter.createAndStart(blockIds, listener) }
     } catch {
       case e: Exception =>
         logError("Exception while beginning fetchBlocks", e)
@@ -184,11 +182,7 @@ class NettyBlockTransferService(
   }
 
   override def close(): Unit = {
-    if (server != null) {
-      server.close()
-    }
-    if (clientFactory != null) {
-      clientFactory.close()
-    }
+    if (server != null) { server.close() }
+    if (clientFactory != null) { clientFactory.close() }
   }
 }

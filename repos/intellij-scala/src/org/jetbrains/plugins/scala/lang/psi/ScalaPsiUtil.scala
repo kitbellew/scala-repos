@@ -138,9 +138,7 @@ object ScalaPsiUtil {
   }
 
   def debug(message: => String, logger: Logger) {
-    if (logger.isDebugEnabled) {
-      logger.debug(message)
-    }
+    if (logger.isDebugEnabled) { logger.debug(message) }
   }
 
   def functionArrow(project: Project): String = {
@@ -276,9 +274,7 @@ object ScalaPsiUtil {
                 checkImplicits = true,
                 isShape = false,
                 None))
-            .map {
-              case (res, _) => res.getOrAny
-            }
+            .map { case (res, _) => res.getOrAny }
         val qual = "scala.Tuple" + exprTypes.length
         val tupleClass = ScalaPsiManager
           .instance(manager.getProject)
@@ -300,9 +296,7 @@ object ScalaPsiUtil {
     if (sibling == null) return null.asInstanceOf[T]
     var child: PsiElement = sibling.getNextSibling
     while (child != null) {
-      if (aClass.isInstance(child)) {
-        return child.asInstanceOf[T]
-      }
+      if (aClass.isInstance(child)) { return child.asInstanceOf[T] }
       child = child.getNextSibling
     }
     null.asInstanceOf[T]
@@ -1144,9 +1138,7 @@ object ScalaPsiUtil {
           cc.orNull
         case _ => elem
       }
-    } catch {
-      case _: PsiInvalidElementAccessException => null
-    }
+    } catch { case _: PsiInvalidElementAccessException => null }
   }
 
   def getSettings(project: Project): ScalaCodeStyleSettings = {
@@ -1185,9 +1177,7 @@ object ScalaPsiUtil {
         writeBuffer = true
       }
       if (writeBuffer) buffer.append(child.getPsi)
-      if (child.getTextRange.getEndOffset >= endOffset) {
-        writeBuffer = false
-      }
+      if (child.getTextRange.getEndOffset >= endOffset) { writeBuffer = false }
       child = child.getTreeNext
     }
     buffer.toSeq
@@ -1228,13 +1218,9 @@ object ScalaPsiUtil {
 
       val children = parent.getChildrenStubs
       val index = children.indexOf(stub)
-      if (index == -1) {
-        elem.getPrevSibling
-      } else if (index == 0) {
-        null
-      } else {
-        children.get(index - 1).getPsi
-      }
+      if (index == -1) { elem.getPrevSibling }
+      else if (index == 0) { null }
+      else { children.get(index - 1).getPsi }
     }
     elem match {
       case st: ScalaStubBasedElementImpl[_] =>
@@ -1266,13 +1252,9 @@ object ScalaPsiUtil {
 
         val children = parent.getChildrenStubs
         val index = children.indexOf(stub)
-        if (index == -1) {
-          elem.getNextSibling
-        } else if (index >= children.size - 1) {
-          null
-        } else {
-          children.get(index + 1).getPsi
-        }
+        if (index == -1) { elem.getNextSibling }
+        else if (index >= children.size - 1) { null }
+        else { children.get(index + 1).getPsi }
       case _ => elem.getNextSibling
     }
   }
@@ -1975,9 +1957,7 @@ object ScalaPsiUtil {
   @tailrec
   def parameterOf(exp: ScExpression): Option[Parameter] = {
     def fromMatchedParams(matched: Seq[(ScExpression, Parameter)]) = {
-      matched.collectFirst {
-        case (e, p) if e == exp => p
-      }
+      matched.collectFirst { case (e, p) if e == exp => p }
     }
     exp match {
       case ScAssignStmt(ResolvesTo(p: ScParameter), Some(expr)) =>
@@ -2023,9 +2003,8 @@ object ScalaPsiUtil {
       case _ => None
     }
 
-    if (fun == null) {
-      None
-    } else if (fun.isSyntheticCopy) {
+    if (fun == null) { None }
+    else if (fun.isSyntheticCopy) {
       fun.containingClass match {
         case td: ScClass if td.isCase => paramFromConstructor(td)
         case _                        => None
@@ -2045,17 +2024,13 @@ object ScalaPsiUtil {
       case _ =>
     }
 
-    if (e.isInstanceOf[ScParameter]) {
-      return true
-    }
+    if (e.isInstanceOf[ScParameter]) { return true }
 
     val parent = e.getParent
 
     if (parent.isInstanceOf[ScGenerator] ||
         parent.isInstanceOf[ScEnumerator] ||
-        parent.isInstanceOf[ScCaseClause]) {
-      return true
-    }
+        parent.isInstanceOf[ScCaseClause]) { return true }
 
     e.parentsInFile
       .takeWhile(!_.isScope)
@@ -2085,9 +2060,7 @@ object ScalaPsiUtil {
             case expected if isSAMEnabled(expr) =>
               toSAMType(expected, expr.getResolveScope).isDefined
             case _ => false
-          }) {
-        return None
-      }
+          }) { return None }
       expr match {
         case ref: ScReferenceExpression
             if !ref.getParent.isInstanceOf[MethodInvocation] =>
@@ -2416,9 +2389,8 @@ object ScalaPsiUtil {
     modifierList.accessModifier match {
       case Some(mod) => mod.replace(newElem)
       case None =>
-        if (modifierList.children.isEmpty) {
-          modifierList.add(newElem)
-        } else {
+        if (modifierList.children.isEmpty) { modifierList.add(newElem) }
+        else {
           val mod = modifierList.getFirstChild
           modifierList.addBefore(newElem, mod)
           modifierList.addBefore(

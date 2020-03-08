@@ -93,9 +93,7 @@ class Parquet346TBaseRecordConverter[T <: TBase[_, _]](
   */
 object Parquet346StructTypeRepairer extends StateVisitor[ThriftType, Unit] {
 
-  def repair(fromMetadata: StructType): StructType = {
-    visit(fromMetadata, ())
-  }
+  def repair(fromMetadata: StructType): StructType = { visit(fromMetadata, ()) }
 
   def copyRecurse(field: ThriftField): ThriftField = {
     new ThriftField(

@@ -50,9 +50,8 @@ class ZookeeperTopicEventWatcher(
   def shutdown() {
     lock.synchronized {
       info("Shutting down topic event watcher.")
-      if (zkUtils != null) {
-        stopWatchingTopicEvents()
-      } else {
+      if (zkUtils != null) { stopWatchingTopicEvents() }
+      else {
         warn(
           "Cannot shutdown since the embedded zookeeper client has already closed.")
       }

@@ -26,9 +26,7 @@ object Concurrent {
     val p = Promise[A]()
     timer.schedule(
       new java.util.TimerTask {
-        def run() {
-          p.success(v)
-        }
+        def run() { p.success(v) }
       },
       unit.toMillis(delay))
     p.future
@@ -713,9 +711,7 @@ object Concurrent {
 
       def noCords() = iteratees.single().isEmpty
 
-      def close() {
-        closeFlag = true
-      }
+      def close() { closeFlag = true }
 
       def closed() = closeFlag
 
@@ -911,14 +907,10 @@ object Concurrent {
                   doneIteratee.success(done.it)
                   folder(done)
                 }
-                case Step.Cont(k) => {
-                  folder(Step.Cont(k.andThen(wrap)))
-                }
-                case err => folder(err)
+                case Step.Cont(k) => { folder(Step.Cont(k.andThen(wrap))) }
+                case err          => folder(err)
               }(ec)
-              toReturn.onFailure {
-                case e => doneIteratee.failure(e)
-              }(dec)
+              toReturn.onFailure { case e => doneIteratee.failure(e) }(dec)
               toReturn
             }
           }
@@ -948,9 +940,7 @@ object Concurrent {
       val (consumeRemaining, remaining) = Concurrent.joined[E]
       result.success((a, remaining))
       consumeRemaining
-    }(dec)).onFailure {
-      case e => result.tryFailure(e)
-    }(dec)
+    }(dec)).onFailure { case e => result.tryFailure(e) }(dec)
 
     result.future
   }

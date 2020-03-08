@@ -440,9 +440,7 @@ private[stream] object Fusing {
           }
           val down = m.subModules.foldLeft(oldDownstreams)((set, m) ⇒
             set -- m.downstreams)
-          down.foreach {
-            case (start, end) ⇒ struct.wire(start, end, indent)
-          }
+          down.foreach { case (start, end) ⇒ struct.wire(start, end, indent) }
           // now rewrite the materialized value computation based on the copied modules and their computation nodes
           val matNodeMapping
               : ju.Map[MaterializedValueNode, MaterializedValueNode] =
@@ -601,9 +599,8 @@ private[stream] object Fusing {
         orig: T,
         mapd: T,
         map: ju.Map[T, List[T]]): Unit = {
-      if (map.containsKey(orig)) {
-        map.put(orig, mapd :: map.get(orig))
-      } else map.put(orig, mapd :: Nil)
+      if (map.containsKey(orig)) { map.put(orig, mapd :: map.get(orig)) }
+      else map.put(orig, mapd :: Nil)
     }
 
     private def removeMapping[T](orig: T, map: ju.Map[T, List[T]]): T =

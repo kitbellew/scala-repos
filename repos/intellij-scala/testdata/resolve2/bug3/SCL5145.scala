@@ -1,9 +1,7 @@
 import language.dynamics
 
 class Foo extends Dynamic {
-  def selectDynamic(name: String) {
-    println("selectDynamic: " + name)
-  }
+  def selectDynamic(name: String) { println("selectDynamic: " + name) }
   def applyDynamic(name: String)(args: Any*): String = {
     println("applyDynamic: " + name)
     "test"

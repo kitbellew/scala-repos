@@ -87,9 +87,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -155,9 +153,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -222,9 +218,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -289,9 +283,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -356,9 +348,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -423,9 +413,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -490,9 +478,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -557,9 +543,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
@@ -621,9 +605,7 @@ object ArrayBuilder {
       capacity = size
     }
 
-    override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
-    }
+    override def sizeHint(size: Int) { if (capacity < size) resize(size) }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {

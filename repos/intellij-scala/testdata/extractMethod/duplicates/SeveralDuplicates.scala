@@ -6,9 +6,7 @@ object SeveralDuplicates {
     println(2 + 1)
   }
 
-  def bar() {
-    println(3 + 1)
-  }
+  def bar() { println(3 + 1) }
 
   println(4 + 1)
 }

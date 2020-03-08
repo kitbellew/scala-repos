@@ -187,16 +187,12 @@ trait ClassfileIndexer {
         name: String,
         outerName: String,
         innerName: String,
-        access: Int): Unit = {
-      addRef(ClassName.fromInternal(name))
-    }
+        access: Int): Unit = { addRef(ClassName.fromInternal(name)) }
 
     override def visitOuterClass(
         owner: String,
         name: String,
-        desc: String): Unit = {
-      addRef(ClassName.fromInternal(owner))
-    }
+        desc: String): Unit = { addRef(ClassName.fromInternal(owner)) }
 
     private val annVisitor: AnnotationVisitor = new AnnotationVisitor(ASM5) {
       override def visitAnnotation(name: String, desc: String) = handleAnn(desc)
@@ -238,9 +234,7 @@ trait ClassfileIndexer {
         start: Label,
         end: Label,
         index: Int
-    ): Unit = {
-      internalRefs :+= ClassName.fromDescriptor(desc)
-    }
+    ): Unit = { internalRefs :+= ClassName.fromDescriptor(desc) }
 
     override def visitMultiANewArrayInsn(desc: String, dims: Int): Unit = {
       internalRefs :+= ClassName.fromDescriptor(desc)

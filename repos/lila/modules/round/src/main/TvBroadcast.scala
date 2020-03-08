@@ -11,9 +11,7 @@ private final class TvBroadcast extends Actor {
 
   context.system.lilaBus.subscribe(self, 'moveEvent, 'changeFeaturedGame)
 
-  override def postStop() {
-    context.system.lilaBus.unsubscribe(self)
-  }
+  override def postStop() { context.system.lilaBus.unsubscribe(self) }
 
   private val (enumerator, channel) = Concurrent.broadcast[JsValue]
 

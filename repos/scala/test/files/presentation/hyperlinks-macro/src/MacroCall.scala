@@ -1,11 +1,7 @@
 object Test {
   def foo = 0
 
-  scala.reflect.runtime.universe.reify {
-    foo /*#*/
-  }
+  scala.reflect.runtime.universe.reify { foo /*#*/ }
 
-  identity {
-    foo /*#*/
-  }
+  identity { foo /*#*/ }
 }

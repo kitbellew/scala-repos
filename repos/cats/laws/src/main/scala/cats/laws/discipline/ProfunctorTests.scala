@@ -40,5 +40,7 @@ trait ProfunctorTests[F[_, _]] extends Laws {
 
 object ProfunctorTests {
   def apply[F[_, _]: Profunctor]: ProfunctorTests[F] =
-    new ProfunctorTests[F] { def laws: ProfunctorLaws[F] = ProfunctorLaws[F] }
+    new ProfunctorTests[F] {
+      def laws: ProfunctorLaws[F] = ProfunctorLaws[F]
+    }
 }

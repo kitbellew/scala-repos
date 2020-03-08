@@ -106,11 +106,8 @@ object ConfigurationSpec extends Specification {
         Map("item" -> "uhoh, it's gonna blow")
       );
       {
-        try {
-          conf.getStringList("item")
-        } catch {
-          case NonFatal(e) => copyViaSerialize(e)
-        }
+        try { conf.getStringList("item") }
+        catch { case NonFatal(e) => copyViaSerialize(e) }
       } must not(throwA[Exception])
     }
 
@@ -120,12 +117,8 @@ object ConfigurationSpec extends Specification {
         Configuration.load(
           Environment(new File("."), ClassLoader.getSystemClassLoader, mode))
       }
-      "in dev mode" in {
-        load(Mode.Dev) must throwA[PlayException]
-      }
-      "in prod mode" in {
-        load(Mode.Prod) must throwA[PlayException]
-      }
+      "in dev mode" in { load(Mode.Dev) must throwA[PlayException] }
+      "in prod mode" in { load(Mode.Prod) must throwA[PlayException] }
       "but not in test mode" in {
         load(Mode.Test) must not(throwA[PlayException])
       }

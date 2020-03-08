@@ -425,11 +425,8 @@ class NaiveBayes private (
       .map(p => (p.label, p.features))
       .combineByKey[(Long, DenseVector)](
         createCombiner = (v: Vector) => {
-          if (modelType == Bernoulli) {
-            requireZeroOneBernoulliValues(v)
-          } else {
-            requireNonnegativeValues(v)
-          }
+          if (modelType == Bernoulli) { requireZeroOneBernoulliValues(v) }
+          else { requireNonnegativeValues(v) }
           (1L, v.copy.toDense)
         },
         mergeValue = (c: (Long, DenseVector), v: Vector) => {

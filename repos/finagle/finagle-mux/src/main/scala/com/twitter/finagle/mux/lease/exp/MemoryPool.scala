@@ -21,9 +21,7 @@ private[lease] class BeanMemoryPool(pool: MemoryPoolMXBean) extends MemoryPool {
 private[lease] class FakeMemoryPool(original: MemoryPoolInfo)
     extends MemoryPool {
   @volatile private[this] var _snapshot: MemoryPoolInfo = original
-  def setSnapshot(snap: MemoryPoolInfo) {
-    _snapshot = snap
-  }
+  def setSnapshot(snap: MemoryPoolInfo) { _snapshot = snap }
 
   def snapshot() = _snapshot
 }

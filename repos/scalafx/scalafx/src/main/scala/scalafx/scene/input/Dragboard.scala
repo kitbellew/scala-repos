@@ -61,9 +61,7 @@ class Dragboard(override val delegate: jfxsi.Dragboard)
 
   /** The image used as a drag view. */
   def dragView: Image = delegate.getDragView
-  def dragView_=(image: Image): Unit = {
-    delegate.setDragView(image)
-  }
+  def dragView_=(image: Image): Unit = { delegate.setDragView(image) }
 
   /**
     * Sets the visual representation of data being transfered in a drag and drop gesture.

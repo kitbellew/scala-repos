@@ -149,9 +149,7 @@ object Security {
         block: (AuthenticatedRequest[A, U]) => Future[Result]) = {
       userinfo(request).map { user =>
         block(new AuthenticatedRequest(user, request))
-      } getOrElse {
-        Future.successful(onUnauthorized(request))
-      }
+      } getOrElse { Future.successful(onUnauthorized(request)) }
     }
   }
 

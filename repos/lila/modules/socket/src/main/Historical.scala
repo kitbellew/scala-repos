@@ -22,7 +22,5 @@ trait Historical[M <: SocketMember, Metadata] { self: SocketActor[M] =>
       else message.fullMsg
     }
   }
-  def sendMessage(member: M)(message: Message) {
-    sendMessage(message)(member)
-  }
+  def sendMessage(member: M)(message: Message) { sendMessage(message)(member) }
 }

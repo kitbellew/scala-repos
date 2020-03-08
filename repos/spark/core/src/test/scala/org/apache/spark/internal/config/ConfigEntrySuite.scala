@@ -134,9 +134,7 @@ class ConfigEntrySuite extends SparkFunSuite {
     assert(conf.get(enum) === "b")
 
     conf.set(enum, "d")
-    val enumError = intercept[IllegalArgumentException] {
-      conf.get(enum)
-    }
+    val enumError = intercept[IllegalArgumentException] { conf.get(enum) }
     assert(
       enumError.getMessage === s"The value of ${enum.key} should be one of a, b, c, but was d")
   }

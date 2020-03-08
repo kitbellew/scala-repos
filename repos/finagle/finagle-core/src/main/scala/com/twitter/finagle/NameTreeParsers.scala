@@ -52,9 +52,7 @@ private class NameTreeParsers private (str: String) {
       true
     }
 
-  private[this] def eat(char: Char) {
-    if (!maybeEat(char)) illegal(char, peek)
-  }
+  private[this] def eat(char: Char) { if (!maybeEat(char)) illegal(char, peek) }
 
   private[this] def eatWhitespace() {
     while (!atEnd && str(idx).isWhitespace)
@@ -124,9 +122,7 @@ private class NameTreeParsers private (str: String) {
       sb += peek
       next()
     }
-    if (sb.length == 1 && sb.charAt(0) == '.') {
-      illegal("weight", '.')
-    }
+    if (sb.length == 1 && sb.charAt(0) == '.') { illegal("weight", '.') }
     sb.toString.toDouble // can fail if string is too long
   }
 
@@ -139,9 +135,7 @@ private class NameTreeParsers private (str: String) {
     else {
       val labels = Buffer[Buf]()
 
-      do {
-        labels += parseLabel()
-      } while (maybeEat('/'))
+      do { labels += parseLabel() } while (maybeEat('/'))
 
       Path(labels: _*)
     }

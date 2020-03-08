@@ -46,9 +46,7 @@ class ALSSuite
     sc.setCheckpointDir(tempDir.getAbsolutePath)
   }
 
-  override def afterAll(): Unit = {
-    super.afterAll()
-  }
+  override def afterAll(): Unit = { super.afterAll() }
 
   test("LocalIndexEncoder") {
     val random = new Random
@@ -99,9 +97,7 @@ class ALSSuite
       Vectors.dense(ne0.ata) ~== Vectors.dense(82.0, 98.0, 118.0) relTol 1e-8)
     assert(Vectors.dense(ne0.atb) ~== Vectors.dense(114.0, 138.0) relTol 1e-8)
 
-    intercept[IllegalArgumentException] {
-      ne0.add(Array(1.0f), 2.0)
-    }
+    intercept[IllegalArgumentException] { ne0.add(Array(1.0f), 2.0) }
     intercept[IllegalArgumentException] {
       ne0.add(Array(1.0f, 2.0f, 3.0f), 4.0)
     }
@@ -253,9 +249,7 @@ class ALSSuite
         if (x < trainingFraction) {
           val noise = noiseStd * random.nextGaussian()
           training += Rating(userId, itemId, rating + noise.toFloat)
-        } else {
-          test += Rating(userId, itemId, rating)
-        }
+        } else { test += Rating(userId, itemId, rating) }
       }
     }
     logInfo(
@@ -302,9 +296,7 @@ class ALSSuite
           if (x < trainingFraction) {
             val noise = noiseStd * random.nextGaussian()
             training += Rating(userId, itemId, rating + noise.toFloat)
-          } else {
-            test += Rating(userId, itemId, rating)
-          }
+          } else { test += Rating(userId, itemId, rating) }
         }
       }
     }
@@ -332,9 +324,7 @@ class ALSSuite
     require(size > 0 && size < Int.MaxValue / 3)
     require(b > a)
     val ids = mutable.Set.empty[Int]
-    while (ids.size < size) {
-      ids += random.nextInt()
-    }
+    while (ids.size < size) { ids += random.nextInt() }
     val width = b - a
     ids.toSeq.sorted.map(id =>
       (id, Array.fill(rank)(a + random.nextFloat() * width)))

@@ -1,6 +1,8 @@
 trait Global {
   trait Tree
-  trait Symbol { def foo: Boolean }
+  trait Symbol {
+    def foo: Boolean
+  }
 }
 
 trait IMain { self: MemberHandlers =>

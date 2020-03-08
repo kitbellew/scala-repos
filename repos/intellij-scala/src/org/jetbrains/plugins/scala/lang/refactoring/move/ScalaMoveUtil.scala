@@ -175,9 +175,7 @@ object ScalaMoveUtil {
             clazz.getContainingFile,
             clazz.getTextRange.getStartOffset,
             clazz.getProject)
-        } finally {
-          clazz.putCopyableUserData(ASSOCIATIONS_KEY, null)
-        }
+        } finally { clazz.putCopyableUserData(ASSOCIATIONS_KEY, null) }
       }
     }
     restoreInner(aClass)

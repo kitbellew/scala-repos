@@ -66,7 +66,9 @@ class PersistenceQuerySpec
 }
 
 object ExampleQueryModels {
-  case class OldModel(value: String) { def promote = NewModel(value) }
+  case class OldModel(value: String) {
+    def promote = NewModel(value)
+  }
   case class NewModel(value: String)
 }
 

@@ -87,9 +87,7 @@ class ConcurrentActivationTest
           activatedConsumerNames -> deactivatedConsumerNames)
         assertContainsSameElements(
           activatedProducerNames -> deactivatedProducerNames)
-      } finally {
-        system.eventStream.publish(TestEvent.UnMute(eventFilter))
-      }
+      } finally { system.eventStream.publish(TestEvent.UnMute(eventFilter)) }
     }
   }
 }
@@ -200,9 +198,7 @@ class EchoConsumer(endpoint: String) extends Actor with Consumer {
 
   def endpointUri = endpoint
 
-  def receive = {
-    case msg: CamelMessage ⇒ sender() ! msg
-  }
+  def receive = { case msg: CamelMessage ⇒ sender() ! msg }
 
   /**
     * Returns the route definition handler for creating a custom route to this consumer.

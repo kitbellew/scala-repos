@@ -65,17 +65,13 @@ abstract class TextInputControl(override val delegate: jfxsc.TextInputControl)
     * Indicates whether this TextInputControl can be edited by the user.
     */
   def editable: BooleanProperty = delegate.editableProperty
-  def editable_=(v: Boolean) {
-    editable() = v
-  }
+  def editable_=(v: Boolean) { editable() = v }
 
   /**
     * The default font to use for text in the TextInputControl.
     */
   def font: ObjectProperty[jfxst.Font] = delegate.fontProperty()
-  def font_=(v: jfxst.Font) {
-    ObjectProperty.fillProperty[jfxst.Font](font, v)
-  }
+  def font_=(v: jfxst.Font) { ObjectProperty.fillProperty[jfxst.Font](font, v) }
 
   /**
     * The number of characters in the text input.
@@ -107,18 +103,14 @@ abstract class TextInputControl(override val delegate: jfxsc.TextInputControl)
     * The textual content of this TextInputControl.
     */
   def text: StringProperty = delegate.textProperty
-  def text_=(v: String) {
-    text() = v
-  }
+  def text_=(v: String) { text() = v }
 
   /**
     * The prompt text to display in the TextInputControl, or null if no prompt text is displayed.
     * @since 2.2
     */
   def promptText: StringProperty = delegate.promptTextProperty()
-  def promptText_=(v: String) {
-    promptText() = v
-  }
+  def promptText_=(v: String) { promptText() = v }
 
   /**
     * The property contains currently attached `TextFormatter`.

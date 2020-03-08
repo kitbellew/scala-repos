@@ -420,9 +420,7 @@ class ApplicationCacheSuite
     }
     var cause = ex.getCause
     assert(cause !== null)
-    if (!cause.isInstanceOf[NoSuchElementException]) {
-      throw cause
-    }
+    if (!cause.isInstanceOf[NoSuchElementException]) { throw cause }
   }
 
   test("Large Scale Application Eviction") {

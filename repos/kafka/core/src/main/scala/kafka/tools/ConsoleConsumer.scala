@@ -46,9 +46,8 @@ object ConsoleConsumer extends Logging {
 
   def main(args: Array[String]) {
     val conf = new ConsumerConfig(args)
-    try {
-      run(conf)
-    } catch {
+    try { run(conf) }
+    catch {
       case e: Throwable =>
         error("Unknown error when running consumer: ", e)
         System.exit(1);
@@ -132,9 +131,8 @@ object ConsoleConsumer extends Logging {
       skipMessageOnError: Boolean) {
     while (messageCount < maxMessages || maxMessages == -1) {
       val msg: BaseConsumerRecord =
-        try {
-          consumer.receive()
-        } catch {
+        try { consumer.receive() }
+        catch {
           case nse: StreamEndException =>
             trace(
               "Caught StreamEndException because consumer is shutdown, ignore and terminate.")
@@ -449,9 +447,7 @@ object ConsoleConsumer extends Logging {
     try {
       val zk = ZkUtils.createZkClient(zkUrl, 30 * 1000, 30 * 1000)
       zk.exists(path)
-    } catch {
-      case _: Throwable => false
-    }
+    } catch { case _: Throwable => false }
   }
 }
 

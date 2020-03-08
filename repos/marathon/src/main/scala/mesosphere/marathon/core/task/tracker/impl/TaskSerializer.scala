@@ -24,11 +24,8 @@ object TaskSerializer {
         hasAttribute: Protos.MarathonTask => Boolean,
         getAttribute: Protos.MarathonTask => T): Option[T] = {
 
-      if (hasAttribute(proto)) {
-        Some(getAttribute(proto))
-      } else {
-        None
-      }
+      if (hasAttribute(proto)) { Some(getAttribute(proto)) }
+      else { None }
     }
 
     def agentInfo: Task.AgentInfo = {
@@ -59,9 +56,7 @@ object TaskSerializer {
           proto.getPortsList.iterator().asScala.map(_.intValue()).toVector)
       } else if (proto.getNetworksCount != 0) {
         Task.NetworkInfoList(proto.getNetworksList.asScala)
-      } else {
-        Task.NoNetworking
-      }
+      } else { Task.NoNetworking }
 
     def launchedTask: Option[Task.Launched] = {
       if (proto.hasStagedAt) {
@@ -72,9 +67,7 @@ object TaskSerializer {
             networking = networking
           )
         )
-      } else {
-        None
-      }
+      } else { None }
     }
 
     constructTask(

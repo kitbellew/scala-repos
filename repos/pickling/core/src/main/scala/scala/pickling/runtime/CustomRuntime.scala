@@ -133,11 +133,7 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
       (tag, pickler)
     }
 
-    builder.putField(
-      name,
-      b => {
-        pickler1.pickle(value, b)
-      })
+    builder.putField(name, b => { pickler1.pickle(value, b) })
   }
 
   def pickle(picklee: (Any, Any), builder: PBuilder): Unit = {
@@ -162,14 +158,12 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
     val tag1 = reader1.beginEntry()
 
     val value = {
-      if (reader1.atPrimitive) {
-        reader1.readPrimitive()
-      } else {
+      if (reader1.atPrimitive) { reader1.readPrimitive() }
+      else {
         val unpickler1 = internal.currentRuntime.picklers
           .genUnpickler(reflectRuntime.currentMirror, tag1)
-        try {
-          unpickler1.unpickle(tag1, reader1)
-        } catch {
+        try { unpickler1.unpickle(tag1, reader1) }
+        catch {
           case PicklingException(msg, cause) =>
             throw PicklingException(
               s"""error in unpickle of '${this.getClass.getName}':

@@ -1124,22 +1124,15 @@ object BoundedControlAwareMailbox {
           if (size.get < capacity) signalNotFull()
 
           item
-        } else {
-          dequeue()
-        }
-      } else {
-        null
-      }
+        } else { dequeue() }
+      } else { null }
     }
 
     private def signalNotFull() {
       putLock.lock()
 
-      try {
-        notFull.signal()
-      } finally {
-        putLock.unlock()
-      }
+      try { notFull.signal() }
+      finally { putLock.unlock() }
     }
 
     private final def enqueueWithTimeout(
@@ -1157,9 +1150,8 @@ object BoundedControlAwareMailbox {
             stop = remaining <= 0
           }
 
-          if (stop) {
-            false
-          } else {
+          if (stop) { false }
+          else {
             q.add(envelope)
             val c = size.incrementAndGet()
 
@@ -1167,9 +1159,7 @@ object BoundedControlAwareMailbox {
 
             true
           }
-        } finally {
-          putLock.unlock()
-        }
+        } finally { putLock.unlock() }
 
       if (!inserted) {
         receiver

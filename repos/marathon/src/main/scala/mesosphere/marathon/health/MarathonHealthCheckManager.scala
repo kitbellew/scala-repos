@@ -145,9 +145,7 @@ class MarathonHealthCheckManager @Inject() (
       for {
         (version, activeHealthChecks) <- ahcs(appId)
         activeHealthCheck <- activeHealthChecks
-      } {
-        remove(appId, version, activeHealthCheck.healthCheck)
-      }
+      } { remove(appId, version, activeHealthCheck.healthCheck) }
     }
 
   override def reconcileWith(appId: PathId): Future[Unit] =

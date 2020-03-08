@@ -785,7 +785,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         else if (bSym.isAbstractType)
           new DocTemplateImpl(bSym, inTpl)
             with TypeBoundsImpl
-            with AbstractType { override def isAbstractType = true }
+            with AbstractType {
+            override def isAbstractType = true
+          }
         else if (bSym.isModule)
           new DocTemplateImpl(bSym, inTpl) with Object {}
         else if (bSym.isTrait)

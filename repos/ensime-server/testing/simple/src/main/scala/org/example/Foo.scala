@@ -7,9 +7,7 @@ object Foo extends App {
   }
 
   class Foo extends Bar {
-    def testMethod(i: Int, s: String) = {
-      i + s.length
-    }
+    def testMethod(i: Int, s: String) = { i + s.length }
   }
   val map = Map[String, Int]()
   val foo = new Foo()

@@ -79,9 +79,7 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
   protected def calculateObjective(
       f: DF,
       x: T,
-      history: History): (Double, T) = {
-    f.calculate(x)
-  }
+      history: History): (Double, T) = { f.calculate(x) }
 
   def infiniteIterations(f: DF, state: State): Iterator[State] = {
     var failedOnce = false
@@ -139,9 +137,7 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
     }
   }
 
-  def minimize(f: DF, init: T): T = {
-    minimizeAndReturnState(f, init).x
-  }
+  def minimize(f: DF, init: T): T = { minimizeAndReturnState(f, init).x }
 
   def minimizeAndReturnState(f: DF, init: T): State = {
     iterations(f, init).last
@@ -305,9 +301,7 @@ object FirstOrderMinimizer {
         newGrad: T,
         newVal: Double,
         oldState: State[T, _, _],
-        oldInfo: Info): Info = {
-      (oldInfo :+ newVal).takeRight(historyLength)
-    }
+        oldInfo: Info): Info = { (oldInfo :+ newVal).takeRight(historyLength) }
 
     override def apply(
         state: State[T, _, _],
@@ -317,9 +311,7 @@ object FirstOrderMinimizer {
                                                                                    else
                                                                                      1.0)) {
         Some(FunctionValuesConverged)
-      } else {
-        None
-      }
+      } else { None }
     }
 
     override def initialInfo: Info = IndexedSeq(Double.PositiveInfinity)
@@ -388,19 +380,14 @@ object FirstOrderMinimizer {
             f"External function failed to improve sufficiently! current ${newValue}%.3f old: ${oldInfo.bestValue}%.3f")
           oldInfo.copy(numFailures = oldInfo.numFailures + 1)
         }
-      } else {
-        oldInfo
-      }
+      } else { oldInfo }
     }
 
     override def apply(
         state: State[T, _, _],
         info: Info): Option[ConvergenceReason] = {
-      if (info.numFailures >= numFailures) {
-        Some(MonitorFunctionNotImproving)
-      } else {
-        None
-      }
+      if (info.numFailures >= numFailures) { Some(MonitorFunctionNotImproving) }
+      else { None }
     }
 
     override def initialInfo: Info = Info(Double.PositiveInfinity, 0)
@@ -474,9 +461,7 @@ object FirstOrderMinimizer {
         : Iterator[FirstOrderMinimizer[T, BatchDiffFunction[T]]#State] = {
       val it = if (useStochastic) {
         this.iterations(f.withRandomBatches(batchSize), init)(space)
-      } else {
-        iterations(f: DiffFunction[T], init)
-      }
+      } else { iterations(f: DiffFunction[T], init) }
 
       it.asInstanceOf[Iterator[
         FirstOrderMinimizer[T, BatchDiffFunction[T]]#State]]

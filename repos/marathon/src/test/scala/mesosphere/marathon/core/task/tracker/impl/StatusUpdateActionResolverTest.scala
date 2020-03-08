@@ -54,8 +54,6 @@ class StatusUpdateActionResolverTest
     val taskTracker = mock[TaskTracker]
     val actionResolver = new StatusUpdateActionResolver(clock, taskTracker)
 
-    def verifyNoMoreInteractions(): Unit = {
-      noMoreInteractions(taskTracker)
-    }
+    def verifyNoMoreInteractions(): Unit = { noMoreInteractions(taskTracker) }
   }
 }

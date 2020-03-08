@@ -147,9 +147,7 @@ class MemoizeTest extends FunSuite {
     }
     assert(memoizer.snap.isEmpty)
 
-    intercept[RuntimeException] {
-      memoizer(2)
-    }
+    intercept[RuntimeException] { memoizer(2) }
     assert(memoizer.snap.isEmpty)
 
     assert(2 == memoizer(1))

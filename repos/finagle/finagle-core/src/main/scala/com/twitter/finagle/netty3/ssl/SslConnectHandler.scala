@@ -38,9 +38,7 @@ private[netty3] class SslListenerConnectionHandler(
         override def operationComplete(f: ChannelFuture): Unit =
           if (f.isSuccess) {
             SslListenerConnectionHandler.super.channelConnected(ctx, e)
-          } else {
-            Channels.close(ctx.getChannel)
-          }
+          } else { Channels.close(ctx.getChannel) }
       })
   }
 
@@ -99,9 +97,7 @@ class SslConnectHandler(
         val wrappedConnectFuture = Channels.future(de.getChannel, true)
         de.getFuture.addListener(new ChannelFutureListener {
           override def operationComplete(f: ChannelFuture): Unit =
-            if (f.isCancelled) {
-              wrappedConnectFuture.cancel()
-            }
+            if (f.isCancelled) { wrappedConnectFuture.cancel() }
         })
 
         // Proxy failures here so that if the connect fails, it is

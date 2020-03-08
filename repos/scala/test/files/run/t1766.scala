@@ -7,7 +7,9 @@ object Test extends App {
     def this(i: Int) = this("bar")
 
     def f = {
-      val v: { def n: Int } = new { val n = 3 }
+      val v: { def n: Int } = new {
+        val n = 3
+      }
       v.n
     }
 

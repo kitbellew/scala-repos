@@ -50,9 +50,7 @@ private[ui] class ExecutorThreadDumpPage(parent: ExecutorsTab)
                 else 0
               if (v1 == v2) {
                 threadTrace1.threadName.toLowerCase < threadTrace2.threadName.toLowerCase
-              } else {
-                v1 > v2
-              }
+              } else { v1 > v2 }
             }
           }
           .map { thread =>

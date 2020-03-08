@@ -53,14 +53,10 @@ case class ReusedExchange(override val output: Seq[Attribute], child: Exchange)
     plan.sameResult(child)
   }
 
-  def doExecute(): RDD[InternalRow] = {
-    child.execute()
-  }
+  def doExecute(): RDD[InternalRow] = { child.execute() }
 
   override protected[sql] def doExecuteBroadcast[T]()
-      : broadcast.Broadcast[T] = {
-    child.executeBroadcast()
-  }
+      : broadcast.Broadcast[T] = { child.executeBroadcast() }
 
   // Do not repeat the same tree in explain.
   override def treeChildren: Seq[SparkPlan] = Nil
@@ -73,9 +69,7 @@ case class ReusedExchange(override val output: Seq[Attribute], child: Exchange)
 case class ReuseExchange(conf: SQLConf) extends Rule[SparkPlan] {
 
   def apply(plan: SparkPlan): SparkPlan = {
-    if (!conf.exchangeReuseEnabled) {
-      return plan
-    }
+    if (!conf.exchangeReuseEnabled) { return plan }
     // Build a hash map using schema of exchanges to avoid O(N*N) sameResult calls.
     val exchanges = mutable.HashMap[StructType, ArrayBuffer[Exchange]]()
     plan.transformUp {

@@ -65,9 +65,7 @@ object AclCommand {
         CommandLineUtils
           .parseKeyValueArgs(authorizerProperties, acceptMissingValue = false)
           .asScala
-      } else {
-        Map.empty[String, Any]
-      }
+      } else { Map.empty[String, Any] }
 
     val authorizerClass = opts.options.valueOf(opts.authorizerOpt)
     val authZ = CoreUtils.createObject[Authorizer](authorizerClass)
@@ -139,9 +137,7 @@ object AclCommand {
 
     //if none of the --producer or --consumer options are specified , just construct ACLs from CLI options.
     if (!opts.options.has(opts.producerOpt) && !opts.options.has(
-          opts.consumerOpt)) {
-      resourceToAcls ++= getCliResourceToAcls(opts)
-    }
+          opts.consumerOpt)) { resourceToAcls ++= getCliResourceToAcls(opts) }
 
     //users are allowed to specify both --producer and --consumer options in a single command.
     if (opts.options.has(opts.producerOpt))

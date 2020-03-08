@@ -28,7 +28,9 @@ trait CartesianTests[F[_]] extends Laws {
 
 object CartesianTests {
   def apply[F[_]: Cartesian](implicit ev: Isomorphisms[F]): CartesianTests[F] =
-    new CartesianTests[F] { val laws: CartesianLaws[F] = CartesianLaws[F] }
+    new CartesianTests[F] {
+      val laws: CartesianLaws[F] = CartesianLaws[F]
+    }
 
   trait Isomorphisms[F[_]] {
     def associativity[A, B, C](fs: (F[(A, (B, C))], F[((A, B), C)]))(

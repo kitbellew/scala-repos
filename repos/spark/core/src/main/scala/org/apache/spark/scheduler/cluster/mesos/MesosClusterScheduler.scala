@@ -404,9 +404,7 @@ private[spark] class MesosClusterScheduler(
 
     val prefixEnv = if (!entries.isEmpty) {
       Utils.libraryPathEnvPrefix(entries)
-    } else {
-      ""
-    }
+    } else { "" }
     val envBuilder = Environment.newBuilder()
     desc.command.environment.foreach {
       case (k, v) =>
@@ -722,9 +720,7 @@ private[spark] class MesosClusterScheduler(
           finishedDrivers += state
         }
         state.mesosTaskStatus = Option(status)
-      } else {
-        logError(s"Unable to find driver $taskId in status update")
-      }
+      } else { logError(s"Unable to find driver $taskId in status update") }
     }
   }
 
@@ -746,18 +742,14 @@ private[spark] class MesosClusterScheduler(
       queuedDrivers.remove(index)
       queuedDriversState.expunge(id)
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   private def removeFromLaunchedDrivers(id: String): Boolean = {
     if (launchedDrivers.remove(id).isDefined) {
       launchedDriversState.expunge(id)
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   private def removeFromPendingRetryDrivers(id: String): Boolean = {
@@ -766,9 +758,7 @@ private[spark] class MesosClusterScheduler(
       pendingRetryDrivers.remove(index)
       pendingRetryDriversState.expunge(id)
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   def getQueuedDriversSize: Int = queuedDrivers.size

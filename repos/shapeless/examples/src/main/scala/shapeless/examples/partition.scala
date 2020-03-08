@@ -57,9 +57,7 @@ object ADTPartitionExample extends App {
   }
 
   object Partitioner {
-    type Aux[C <: Coproduct, Out0 <: HList] = Partitioner[C] {
-      type Out = Out0
-    }
+    type Aux[C <: Coproduct, Out0 <: HList] = Partitioner[C] { type Out = Out0 }
 
     implicit def cnilPartitioner: Aux[CNil, HNil] = new Partitioner[CNil] {
       type Out = HNil

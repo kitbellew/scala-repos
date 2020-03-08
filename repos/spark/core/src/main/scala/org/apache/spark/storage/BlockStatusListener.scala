@@ -89,9 +89,7 @@ private[spark] class BlockStatusListener extends SparkListener {
 
   override def onBlockManagerRemoved(
       blockManagerRemoved: SparkListenerBlockManagerRemoved): Unit =
-    synchronized {
-      blockManagers -= blockManagerRemoved.blockManagerId
-    }
+    synchronized { blockManagers -= blockManagerRemoved.blockManagerId }
 
   def allExecutorStreamBlockStatus: Seq[ExecutorStreamBlockStatus] =
     synchronized {

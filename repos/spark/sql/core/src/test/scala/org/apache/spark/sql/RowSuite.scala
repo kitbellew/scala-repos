@@ -72,9 +72,7 @@ class RowSuite extends SparkFunSuite with SharedSQLContext {
     assert(row.getAs[Int]("a") === 1)
     assert(row.getAs[Seq[Int]]("b") === Seq(1))
 
-    intercept[IllegalArgumentException] {
-      row.getAs[Int]("c")
-    }
+    intercept[IllegalArgumentException] { row.getAs[Int]("c") }
   }
 
   test("float NaN == NaN") {

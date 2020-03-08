@@ -18,9 +18,7 @@ trait CanCreateZeros[+T, I] {
 object ArrayCanCreateZeros {
   class OpArray[@specialized V: ClassTag: Semiring]
       extends CanCreateZeros[Array[V], Int] {
-    override def apply(d: Int) = {
-      Array.fill(d)(implicitly[Semiring[V]].zero)
-    }
+    override def apply(d: Int) = { Array.fill(d)(implicitly[Semiring[V]].zero) }
   }
   implicit object OpArrayI extends OpArray[Int]
   implicit object OpArrayS extends OpArray[Short]

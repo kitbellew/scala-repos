@@ -332,9 +332,7 @@ class ScalaChangeSignatureUsageProcessor
       param = parameters(oldIdx)
       newName = paramInfo.getName
       if oldName == param.name /*skip overriders with other param name*/ && newName != param.name
-    } {
-      addParameterUsages(param, oldIdx, newName, results)
-    }
+    } { addParameterUsages(param, oldIdx, newName, results) }
   }
 
   private def addParameterUsages(

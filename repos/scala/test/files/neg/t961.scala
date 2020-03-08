@@ -8,7 +8,5 @@ object Temp {
       case _         => false
     }
   }
-  B() match {
-    case B() => Console.println("match")
-  }
+  B() match { case B() => Console.println("match") }
 }

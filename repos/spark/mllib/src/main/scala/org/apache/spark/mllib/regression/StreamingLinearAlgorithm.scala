@@ -72,9 +72,7 @@ abstract class StreamingLinearAlgorithm[
     *
     */
   @Since("1.1.0")
-  def latestModel(): M = {
-    model.get
-  }
+  def latestModel(): M = { model.get }
 
   /**
     * Update the model by training on batches of data from a DStream.

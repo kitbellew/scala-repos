@@ -30,9 +30,7 @@ object ClassParam {
     //parse modifiers
     val modifierMarker = builder.mark
     var isModifier = false
-    while (Modifier.parse(builder)) {
-      isModifier = true
-    }
+    while (Modifier.parse(builder)) { isModifier = true }
     modifierMarker.done(ScalaElementTypes.MODIFIERS)
     //Look for var or val
     builder.getTokenType match {

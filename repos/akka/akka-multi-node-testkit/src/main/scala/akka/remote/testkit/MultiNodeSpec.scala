@@ -293,9 +293,7 @@ abstract class MultiNodeSpec(
       Await.result(w, remainingOr(testConductor.Settings.QueryTimeout.duration))
   }
 
-  final override def multiNodeSpecBeforeAll {
-    atStartup()
-  }
+  final override def multiNodeSpecBeforeAll { atStartup() }
 
   final override def multiNodeSpecAfterAll {
     // wait for all nodes to remove themselves before we shut the conductor down
@@ -366,9 +364,7 @@ abstract class MultiNodeSpec(
     * to the `roleMap`).
     */
   def runOn(nodes: RoleName*)(thunk: ⇒ Unit): Unit = {
-    if (isNode(nodes: _*)) {
-      thunk
-    }
+    if (isNode(nodes: _*)) { thunk }
   }
 
   /**

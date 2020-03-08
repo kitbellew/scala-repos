@@ -53,12 +53,8 @@ object TestServer extends App {
               }</b>. Access has been granted!</body></html>)
             }
           } ~
-          path("ping") {
-            complete("PONG!")
-          } ~
-          path("crash") {
-            complete(sys.error("BOOM!"))
-          }
+          path("ping") { complete("PONG!") } ~
+          path("crash") { complete(sys.error("BOOM!")) }
       } ~ pathPrefix("inner")(getFromResourceDirectory("someDir"))
     },
     interface = "localhost",

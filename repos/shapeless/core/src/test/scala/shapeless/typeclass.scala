@@ -117,24 +117,16 @@ class ProductTypeClassTests {
   illTyped("""implicitly[Image[Cases[Int, String]]]""")
 
   @Test
-  def testManualSingle {
-    assertEquals(fooResult, Image[Foo])
-  }
+  def testManualSingle { assertEquals(fooResult, Image[Foo]) }
 
   @Test
-  def testManualEmpty {
-    assertEquals(barResult, Image[Bar])
-  }
+  def testManualEmpty { assertEquals(barResult, Image[Bar]) }
 
   @Test
-  def testManualTuple {
-    assertEquals(tupleResult, Image[(Int, String)])
-  }
+  def testManualTuple { assertEquals(tupleResult, Image[(Int, String)]) }
 
   @Test
-  def testManualUnit {
-    assertEquals(unitResult, Image[Unit])
-  }
+  def testManualUnit { assertEquals(unitResult, Image[Unit]) }
 
   @Test
   def testAutoSingle {
@@ -198,29 +190,19 @@ class TypeClassTests {
     )
 
   @Test
-  def testManualSingle {
-    assertEquals(fooResult, Image[Foo])
-  }
+  def testManualSingle { assertEquals(fooResult, Image[Foo]) }
 
   @Test
-  def testManualEmpty {
-    assertEquals(barResult, Image[Bar])
-  }
+  def testManualEmpty { assertEquals(barResult, Image[Bar]) }
 
   @Test
-  def testManualMulti {
-    assertEquals(casesResult, Image[Cases[Int, String]])
-  }
+  def testManualMulti { assertEquals(casesResult, Image[Cases[Int, String]]) }
 
   @Test
-  def testManualTuple {
-    assertEquals(tupleResult, Image[(Int, String)])
-  }
+  def testManualTuple { assertEquals(tupleResult, Image[(Int, String)]) }
 
   @Test
-  def testManualUnit {
-    assertEquals(unitResult, Image[Unit])
-  }
+  def testManualUnit { assertEquals(unitResult, Image[Unit]) }
 
   @Test
   def testAutoSingle {

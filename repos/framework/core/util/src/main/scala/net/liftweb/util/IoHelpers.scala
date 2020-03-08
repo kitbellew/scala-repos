@@ -61,9 +61,7 @@ trait IoHelpers {
       t2.join
       if (res == 0) Full(stdOut)
       else Failure(stdErr, Empty, Empty)
-    } catch {
-      case e: Throwable => Failure(e.getMessage, Full(e), Empty)
-    }
+    } catch { case e: Throwable => Failure(e.getMessage, Full(e), Empty) }
   }
 
   /**
@@ -116,11 +114,8 @@ trait IoHelpers {
     * Executes by-name function f and then closes the Cloaseables parameters
     */
   def doClose[T](is: java.io.Closeable*)(f: => T): T = {
-    try {
-      f
-    } finally {
-      is.foreach(stream => tryo { stream.close })
-    }
+    try { f }
+    finally { is.foreach(stream => tryo { stream.close }) }
   }
 }
 

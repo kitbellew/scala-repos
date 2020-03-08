@@ -559,9 +559,7 @@ object QuadraticMinimizer {
     var absColSum = 0.0
     var maxColSum = 0.0
     for (c <- 0 until H.cols) {
-      for (r <- 0 until H.rows) {
-        absColSum += abs(H(r, c))
-      }
+      for (r <- 0 until H.rows) { absColSum += abs(H(r, c)) }
       if (absColSum > maxColSum) maxColSum = absColSum
       absColSum = 0.0
     }

@@ -34,9 +34,7 @@ object BackendReporting {
   def methodSignature(
       classInternalName: InternalName,
       name: String,
-      desc: String) = {
-    classInternalName + "::" + name + desc
-  }
+      desc: String) = { classInternalName + "::" + name + desc }
 
   def methodSignature(
       classInternalName: InternalName,

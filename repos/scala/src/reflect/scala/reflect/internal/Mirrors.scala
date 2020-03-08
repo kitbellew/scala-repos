@@ -17,7 +17,9 @@ trait Mirrors extends api.Mirrors {
   // root symbols hold a strong reference to the enclosing mirror
   // this prevents the mirror from being collected
   // if there are any symbols created by that mirror
-  trait RootSymbol extends Symbol { def mirror: Mirror }
+  trait RootSymbol extends Symbol {
+    def mirror: Mirror
+  }
 
   abstract class RootsBase(rootOwner: Symbol)
       extends scala.reflect.api.Mirror[Mirrors.this.type] { thisMirror =>

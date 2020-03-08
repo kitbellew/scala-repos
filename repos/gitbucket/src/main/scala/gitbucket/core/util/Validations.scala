@@ -17,9 +17,7 @@ trait Validations {
         Some(s"${name} contains invalid character.")
       } else if (value.startsWith("_") || value.startsWith("-")) {
         Some(s"${name} starts with invalid character.")
-      } else {
-        None
-      }
+      } else { None }
   }
 
   /**
@@ -34,9 +32,7 @@ trait Validations {
         Some(s"${name} contains invalid character.")
       } else if (value.startsWith("_") || value.startsWith("-")) {
         Some(s"${name} starts with invalid character.")
-      } else {
-        None
-      }
+      } else { None }
   }
 
   /**

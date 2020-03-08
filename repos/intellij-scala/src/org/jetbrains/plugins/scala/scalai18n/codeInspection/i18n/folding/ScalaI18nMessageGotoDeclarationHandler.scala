@@ -30,25 +30,20 @@ class ScalaI18nMessageGotoDeclarationHandler
     var flag = true
     while (element != null && i > 0 && flag) {
       val node: ASTNode = element.getNode
-      if (node != null && node.getUserData(KEY) != null) {
-        flag = false
-      } else {
+      if (node != null && node.getUserData(KEY) != null) { flag = false }
+      else {
         i -= 1
         element = element.getParent
       }
     }
-    if (element.isInstanceOf[ScLiteral]) {
-      return resolve(element)
-    }
+    if (element.isInstanceOf[ScLiteral]) { return resolve(element) }
     element match {
       case methodCall: ScMethodCall =>
         var foldRegion: FoldRegion = null
         for (region <- editor.getFoldingModel.getAllFoldRegions) {
           val psiElement: PsiElement =
             EditorFoldingInfo.get(editor).getPsiElement(region)
-          if (methodCall == psiElement) {
-            foldRegion = region
-          }
+          if (methodCall == psiElement) { foldRegion = region }
         }
         if (foldRegion == null || foldRegion.isExpanded) return null
         for (expression <- methodCall.args.exprsArray) {

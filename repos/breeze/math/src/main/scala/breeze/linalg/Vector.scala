@@ -74,9 +74,7 @@ trait Vector[@spec(Int, Double, Float) V] extends VectorLike[V, Vector[V]] {
     case _ => false
   }
 
-  def toDenseVector(implicit cm: ClassTag[V]) = {
-    DenseVector(toArray)
-  }
+  def toDenseVector(implicit cm: ClassTag[V]) = { DenseVector(toArray) }
 
   /**Returns copy of this [[breeze.linalg.Vector]] as a [[scala.Array]]*/
   def toArray(implicit cm: ClassTag[V]) = {
@@ -124,9 +122,7 @@ trait Vector[@spec(Int, Double, Float) V] extends VectorLike[V, Vector[V]] {
 
   /** See [[scala.collection.mutable.ArrayOps.reduceLeft]].
     */
-  def reduceLeft[B >: V](op: (B, V) => B): B = {
-    valuesIterator.reduceLeft(op)
-  }
+  def reduceLeft[B >: V](op: (B, V) => B): B = { valuesIterator.reduceLeft(op) }
 
   /** See [[scala.collection.mutable.ArrayOps.reduceRight]].
     */
@@ -138,9 +134,7 @@ trait Vector[@spec(Int, Double, Float) V] extends VectorLike[V, Vector[V]] {
     */
   def scan[E1 >: V](z: E1)(op: (E1, E1) => E1)(implicit
       cm: ClassTag[V],
-      cm1: ClassTag[E1]): Vector[E1] = {
-    Vector[E1](toArray.scan(z)(op))
-  }
+      cm1: ClassTag[E1]): Vector[E1] = { Vector[E1](toArray.scan(z)(op)) }
 
   /** See [[scala.collection.mutable.ArrayOps.scanLeft]].
     */
@@ -230,9 +224,7 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
       scale: OpMulScalar.Impl2[Vector[V], V, Vector[V]],
       ring: Ring[V]) = {
     new OpNeg.Impl[Vector[V], Vector[V]] {
-      override def apply(a: Vector[V]) = {
-        scale(a, ring.negate(ring.one))
-      }
+      override def apply(a: Vector[V]) = { scale(a, ring.negate(ring.one)) }
     }
   }
 
@@ -264,9 +256,7 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
     override def mapActive(
         from: Vector[V],
         from2: Vector[V],
-        fn: (Int, V, V) => RV): Vector[RV] = {
-      map(from, from2, fn)
-    }
+        fn: (Int, V, V) => RV): Vector[RV] = { map(from, from2, fn) }
   }
 
   implicit def zipMapKV[V, R: ClassTag]: CanZipMapKeyValuesVector[V, R] =
@@ -312,9 +302,7 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
       def isTraversableAgain(from: Vector[V]): Boolean = true
 
       def traverse(from: Vector[V], fn: ValuesVisitor[V]): Unit = {
-        for (v <- from.valuesIterator) {
-          fn.visit(v)
-        }
+        for (v <- from.valuesIterator) { fn.visit(v) }
       }
 
     }
@@ -356,9 +344,7 @@ trait VectorOps { this: Vector.type =>
       override def bindingMissing(a: Vector[T], b: Vector[T]): Vector[T] = {
         require(b.length == a.length, "Vectors must be the same length!")
         val result = a.copy
-        for ((k, v) <- b.activeIterator) {
-          result(k) = op(a(k), v)
-        }
+        for ((k, v) <- b.activeIterator) { result(k) = op(a(k), v) }
         result
       }
     }
@@ -370,9 +356,7 @@ trait VectorOps { this: Vector.type =>
       def apply(a: Vector[T], b: Vector[T]): Vector[T] = {
         require(b.length == a.length, "Vectors must be the same length!")
         val result = a.copy
-        for ((k, v) <- b.activeIterator) {
-          result(k) = r.-(a(k), v)
-        }
+        for ((k, v) <- b.activeIterator) { result(k) = r.-(a(k), v) }
         result
       }
     }
@@ -384,9 +368,7 @@ trait VectorOps { this: Vector.type =>
       def apply(a: Vector[T], b: Vector[T]): Vector[T] = {
         require(b.length == a.length, "Vectors must be the same length!")
         val result = a.copy
-        for ((k, v) <- b.activeIterator) {
-          result(k) = r.+(a(k), v)
-        }
+        for ((k, v) <- b.activeIterator) { result(k) = r.+(a(k), v) }
         result
       }
     }
@@ -587,9 +569,7 @@ trait VectorOps { this: Vector.type =>
     new BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
-        for ((k, v) <- b.activeIterator) {
-          a(k) = op(a(k), v)
-        }
+        for ((k, v) <- b.activeIterator) { a(k) = op(a(k), v) }
       }
     }
 
@@ -707,13 +687,10 @@ trait VectorOps { this: Vector.type =>
       T] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
-        if (a.activeSize > b.activeSize) {
-          bindingMissing(b, a)
-        } else {
+        if (a.activeSize > b.activeSize) { bindingMissing(b, a) }
+        else {
           var result: T = zero
-          for ((k, v) <- a.activeIterator) {
-            result += v * b(k)
-          }
+          for ((k, v) <- a.activeIterator) { result += v * b(k) }
           result
         }
       }
@@ -733,9 +710,8 @@ trait VectorOps { this: Vector.type =>
       val s = implicitly[Semiring[T]]
       override def bindingMissing(a: Vector[T], b: Vector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
-        if (a.activeSize > b.activeSize) {
-          bindingMissing(b, a)
-        } else {
+        if (a.activeSize > b.activeSize) { bindingMissing(b, a) }
+        else {
           var result: T = s.zero
           for ((k, v) <- a.activeIterator) {
             result = s.+(result, s.*(v, b(k)))
@@ -974,9 +950,7 @@ trait VectorOps { this: Vector.type =>
     new OpMulInner.Impl2[Vector[T], Vector[T], T] {
       override def apply(v: Vector[T], v2: Vector[T]): T = {
         var acc = field.zero
-        for (i <- 0 until v.length) {
-          acc = field.+(acc, field.*(v(i), v2(i)))
-        }
+        for (i <- 0 until v.length) { acc = field.+(acc, field.*(v(i), v2(i))) }
         acc
       }
     }
@@ -1002,9 +976,7 @@ trait VectorOps { this: Vector.type =>
       def apply(a: Vector[V], b: Vector[V]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
 
-        for (i <- 0 until a.length) {
-          a(i) = b(i)
-        }
+        for (i <- 0 until a.length) { a(i) = b(i) }
 
       }
     }
@@ -1014,9 +986,7 @@ trait VectorOps { this: Vector.type =>
 
     new OpSet.InPlaceImpl2[Vector[V], V] {
       def apply(a: Vector[V], b: V): Unit = {
-        for (i <- 0 until a.length) {
-          a(i) = b
-        }
+        for (i <- 0 until a.length) { a(i) = b }
 
       }
     }
@@ -1028,9 +998,7 @@ trait VectorOps { this: Vector.type =>
       val ring = implicitly[Semiring[V]]
       def apply(a: Vector[V], s: V, b: Vector[V]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
-        for (i <- 0 until a.length) {
-          a(i) = ring.+(a(i), ring.*(s, b(i)))
-        }
+        for (i <- 0 until a.length) { a(i) = ring.+(a(i), ring.*(s, b(i))) }
 
       }
     }
@@ -1087,9 +1055,7 @@ trait VectorConstructors[Vec[T] <: Vector[T]] {
     * @return
     */
   def fill[@spec(Double, Int, Float, Long) V: ClassTag](size: Int)(
-      v: => V): Vec[V] = {
-    apply(Array.fill(size)(v))
-  }
+      v: => V): Vec[V] = { apply(Array.fill(size)(v)) }
 
   /**
     * Analogous to Array.tabulate
@@ -1099,9 +1065,7 @@ trait VectorConstructors[Vec[T] <: Vector[T]] {
     * @return
     */
   def tabulate[@spec(Double, Int, Float, Long) V: ClassTag](size: Int)(
-      f: Int => V): Vec[V] = {
-    apply(Array.tabulate(size)(f))
-  }
+      f: Int => V): Vec[V] = { apply(Array.tabulate(size)(f)) }
 
   /**
     * Analogous to Array.tabulate, but taking a scala.Range to iterate over, instead of an index.
@@ -1123,9 +1087,7 @@ trait VectorConstructors[Vec[T] <: Vector[T]] {
 
   implicit def canCreateZeros[V: ClassTag: Zero]: CanCreateZeros[Vec[V], Int] =
     new CanCreateZeros[Vec[V], Int] {
-      def apply(d: Int): Vec[V] = {
-        zeros[V](d)
-      }
+      def apply(d: Int): Vec[V] = { zeros[V](d) }
     }
 
   implicit def canTabulate[V: ClassTag: Zero]: CanTabulate[Int, Vec[V], V] =
@@ -1161,9 +1123,7 @@ trait VectorConstructors[Vec[T] <: Vector[T]] {
     require(end - start > step)
     val size: Int = math.floor((end - start) / step).toInt
     val data = new Array[Float](size)
-    cfor(0)(i => i < size, i => i + 1)(i => {
-      data(i) = (start + i * step)
-    })
+    cfor(0)(i => i < size, i => i + 1)(i => { data(i) = (start + i * step) })
     apply(data)
   }
 
@@ -1173,9 +1133,7 @@ trait VectorConstructors[Vec[T] <: Vector[T]] {
     require(end - start > step)
     val size: Int = math.floor((end - start) / step).toInt
     val data = new Array[Double](size)
-    cfor(0)(i => i < size, i => i + 1)(i => {
-      data(i) = (start + i * step)
-    })
+    cfor(0)(i => i < size, i => i + 1)(i => { data(i) = (start + i * step) })
     apply(data)
   }
 }

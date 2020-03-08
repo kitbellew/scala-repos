@@ -33,9 +33,7 @@ trait HadoopSharedPlatformTest extends BeforeAndAfterAll { this: Suite =>
   def initialize() = cluster.initialize()
 
   override def beforeAll() {
-    cluster.synchronized {
-      initialize()
-    }
+    cluster.synchronized { initialize() }
     super.beforeAll()
   }
 
@@ -47,9 +45,7 @@ trait HadoopSharedPlatformTest extends BeforeAndAfterAll { this: Suite =>
       // Necessary because afterAll can be called from a different thread and we want to make sure that the state
       // is visible. Note that this assumes there is no contention for LocalCluster (which LocalCluster ensures),
       // otherwise there could be deadlock.
-      cluster.synchronized {
-        cluster.shutdown()
-      }
+      cluster.synchronized { cluster.shutdown() }
     }
   }
 }

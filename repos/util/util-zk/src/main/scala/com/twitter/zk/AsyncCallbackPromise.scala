@@ -41,9 +41,7 @@ class ExistsCallbackPromise(znode: ZNode)
     extends AsyncCallbackPromise[ZNode.Exists]
     with AsyncCallback.StatCallback {
   def processResult(rc: Int, path: String, ctx: AnyRef, stat: Stat) {
-    process(rc, path) {
-      znode(stat)
-    }
+    process(rc, path) { znode(stat) }
   }
 }
 
@@ -55,11 +53,7 @@ class ChildrenCallbackPromise(znode: ZNode)
       path: String,
       ctx: AnyRef,
       children: JList[String],
-      stat: Stat) {
-    process(rc, path) {
-      znode(stat, children.asScala.toSeq)
-    }
-  }
+      stat: Stat) { process(rc, path) { znode(stat, children.asScala.toSeq) } }
 }
 
 class DataCallbackPromise(znode: ZNode)
@@ -70,9 +64,5 @@ class DataCallbackPromise(znode: ZNode)
       path: String,
       ctx: AnyRef,
       bytes: Array[Byte],
-      stat: Stat) {
-    process(rc, path) {
-      znode(stat, bytes)
-    }
-  }
+      stat: Stat) { process(rc, path) { znode(stat, bytes) } }
 }

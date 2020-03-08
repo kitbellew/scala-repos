@@ -181,13 +181,9 @@ object ReplayLogProducer extends Logging {
                 messageAndMetadata.timestamp,
                 messageAndMetadata.key(),
                 messageAndMetadata.message()))
-            if (config.isSync) {
-              response.get()
-            }
+            if (config.isSync) { response.get() }
             messageCount += 1
-          } catch {
-            case ie: Exception => error("Skipping this message", ie)
-          }
+          } catch { case ie: Exception => error("Skipping this message", ie) }
         }
       } catch {
         case e: ConsumerTimeoutException =>

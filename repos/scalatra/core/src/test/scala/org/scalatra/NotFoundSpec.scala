@@ -41,9 +41,7 @@ class NotFoundSpec extends ScalatraSpec {
       post("/no-get") { "foo" }
       put("/no-get") { "foo" }
 
-      error {
-        case t: Throwable => t.printStackTrace()
-      }
+      error { case t: Throwable => t.printStackTrace() }
     },
     "/default/*")
 

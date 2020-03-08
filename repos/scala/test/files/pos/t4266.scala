@@ -7,9 +7,7 @@ object Test {
   ] {
     def domain: D;
 
-    def checkKey(k1: A1) {
-      domain._1.contains(k1)
-    }
+    def checkKey(k1: A1) { domain._1.contains(k1) }
   }
 
   trait DomainLike[A] {

@@ -24,9 +24,7 @@ object DebuggerTestUtil {
             "please define a valid JDK_18_x64 or JDK_18, " +
             s"current - ${sys.env("JDK_18_x64")} or ${sys.env("JDK_18")}"))
       val jdk = JavaSdk.getInstance.createJdk(jdk8Name, path)
-      inWriteAction {
-        jdkTable.addJdk(jdk)
-      }
+      inWriteAction { jdkTable.addJdk(jdk) }
       jdk
     }
   }
@@ -105,9 +103,8 @@ object DebuggerTestUtil {
           sys.env.getOrElse(s"JDK_1$versionMajor", null)))
         .map(_ + "/jre") // teamcity style
     )
-    if (priorityPaths.exists(_.isDefined)) {
-      priorityPaths.flatten.headOption
-    } else {
+    if (priorityPaths.exists(_.isDefined)) { priorityPaths.flatten.headOption }
+    else {
       val fullSearchPaths = paths flatMap { p => versionStrings.map((p, _)) }
       for ((path, ver) <- fullSearchPaths) {
         inJvm(path, ver) match {

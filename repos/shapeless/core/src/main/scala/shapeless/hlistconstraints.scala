@@ -42,9 +42,7 @@ object UnaryTCConstraint extends LowPriorityUnaryTCConstraint {
   def apply[L <: HList, TC[_]](
       implicit utcc: UnaryTCConstraint[L, TC]): UnaryTCConstraint[L, TC] = utcc
 
-  type *->*[TC[_]] = {
-    type λ[L <: HList] = UnaryTCConstraint[L, TC]
-  }
+  type *->*[TC[_]] = { type λ[L <: HList] = UnaryTCConstraint[L, TC] }
 
   implicit def hnilUnaryTC[TC[_]] = new UnaryTCConstraint[HNil, TC] {}
   implicit def hlistUnaryTC[H, T <: HList, TC[_]](
@@ -61,9 +59,7 @@ object BasisConstraint {
   def apply[L <: HList, M <: HList](
       implicit bc: BasisConstraint[L, M]): BasisConstraint[L, M] = bc
 
-  type Basis[M <: HList] = {
-    type λ[L <: HList] = BasisConstraint[L, M]
-  }
+  type Basis[M <: HList] = { type λ[L <: HList] = BasisConstraint[L, M] }
 
   implicit def hnilBasis[M <: HList] = new BasisConstraint[HNil, M] {}
   implicit def hlistBasis[H, T <: HList, M <: HList](implicit
@@ -81,9 +77,7 @@ object LUBConstraint {
   def apply[L <: HList, B](
       implicit lc: LUBConstraint[L, B]): LUBConstraint[L, B] = lc
 
-  type <<:[B] = {
-    type λ[L <: HList] = LUBConstraint[L, B]
-  }
+  type <<:[B] = { type λ[L <: HList] = LUBConstraint[L, B] }
 
   implicit def hnilLUB[T] = new LUBConstraint[HNil, T] {}
   implicit def hlistLUB[H, T <: HList, B](implicit
@@ -103,9 +97,7 @@ object KeyConstraint {
   def apply[L <: HList, M <: HList](
       implicit kc: KeyConstraint[L, M]): KeyConstraint[L, M] = kc
 
-  type Keys[M <: HList] = {
-    type λ[L <: HList] = KeyConstraint[L, M]
-  }
+  type Keys[M <: HList] = { type λ[L <: HList] = KeyConstraint[L, M] }
 
   implicit def hnilKeys[M <: HList] = new KeyConstraint[HNil, M] {}
   implicit def hlistKeys[K, V, T <: HList, M <: HList](implicit
@@ -124,9 +116,7 @@ object ValueConstraint {
   def apply[L <: HList, M <: HList](
       implicit vc: ValueConstraint[L, M]): ValueConstraint[L, M] = vc
 
-  type Values[M <: HList] = {
-    type λ[L <: HList] = ValueConstraint[L, M]
-  }
+  type Values[M <: HList] = { type λ[L <: HList] = ValueConstraint[L, M] }
 
   implicit def hnilValues[M <: HList] = new ValueConstraint[HNil, M] {}
   implicit def hlistValues[K, V, T <: HList, M <: HList](implicit
@@ -147,9 +137,7 @@ object NotContainsConstraint {
       implicit ncc: NotContainsConstraint[L, U]): NotContainsConstraint[L, U] =
     ncc
 
-  type NotContains[U] = {
-    type λ[L <: HList] = NotContainsConstraint[L, U]
-  }
+  type NotContains[U] = { type λ[L <: HList] = NotContainsConstraint[L, U] }
 
   implicit def hnilNotContains[U] = new NotContainsConstraint[HNil, U] {}
   implicit def hlistNotContains[H, T <: HList, U](implicit

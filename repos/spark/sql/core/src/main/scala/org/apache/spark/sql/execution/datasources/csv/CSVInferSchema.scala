@@ -88,9 +88,8 @@ private[csv] object CSVInferSchema {
       typeSoFar: DataType,
       field: String,
       nullValue: String = ""): DataType = {
-    if (field == null || field.isEmpty || field == nullValue) {
-      typeSoFar
-    } else {
+    if (field == null || field.isEmpty || field == nullValue) { typeSoFar }
+    else {
       typeSoFar match {
         case NullType      => tryParseInteger(field)
         case IntegerType   => tryParseInteger(field)
@@ -107,49 +106,33 @@ private[csv] object CSVInferSchema {
   }
 
   private def tryParseInteger(field: String): DataType =
-    if ((allCatch opt field.toInt).isDefined) {
-      IntegerType
-    } else {
-      tryParseLong(field)
-    }
+    if ((allCatch opt field.toInt).isDefined) { IntegerType }
+    else { tryParseLong(field) }
 
   private def tryParseLong(field: String): DataType =
-    if ((allCatch opt field.toLong).isDefined) {
-      LongType
-    } else {
-      tryParseDouble(field)
-    }
+    if ((allCatch opt field.toLong).isDefined) { LongType }
+    else { tryParseDouble(field) }
 
   private def tryParseDouble(field: String): DataType = {
-    if ((allCatch opt field.toDouble).isDefined) {
-      DoubleType
-    } else {
-      tryParseTimestamp(field)
-    }
+    if ((allCatch opt field.toDouble).isDefined) { DoubleType }
+    else { tryParseTimestamp(field) }
   }
 
   def tryParseTimestamp(field: String): DataType = {
     if ((allCatch opt DateTimeUtils.stringToTime(field)).isDefined) {
       TimestampType
-    } else {
-      tryParseBoolean(field)
-    }
+    } else { tryParseBoolean(field) }
   }
 
   def tryParseBoolean(field: String): DataType = {
-    if ((allCatch opt field.toBoolean).isDefined) {
-      BooleanType
-    } else {
-      stringType()
-    }
+    if ((allCatch opt field.toBoolean).isDefined) { BooleanType }
+    else { stringType() }
   }
 
   // Defining a function to return the StringType constant is necessary in order to work around
   // a Scala compiler issue which leads to runtime incompatibilities with certain Spark versions;
   // see issue #128 for more details.
-  private def stringType(): DataType = {
-    StringType
-  }
+  private def stringType(): DataType = { StringType }
 
   private val numericPrecedence: IndexedSeq[DataType] =
     HiveTypeCoercion.numericPrecedence
@@ -193,9 +176,8 @@ private[csv] object CSVTypeCast {
       nullValue: String = ""): Any = {
 
     if (datum == nullValue && nullable && (!castType
-          .isInstanceOf[StringType])) {
-      null
-    } else {
+          .isInstanceOf[StringType])) { null }
+    else {
       castType match {
         case _: ByteType    => datum.toByte
         case _: ShortType   => datum.toShort
@@ -255,9 +237,8 @@ private[csv] object CSVTypeCast {
           throw new IllegalArgumentException(
             s"Unsupported special character for delimiter: $str")
       }
-    } else if (str.length == 1) {
-      str.charAt(0)
-    } else {
+    } else if (str.length == 1) { str.charAt(0) }
+    else {
       throw new IllegalArgumentException(
         s"Delimiter cannot be more than one character: $str")
     }

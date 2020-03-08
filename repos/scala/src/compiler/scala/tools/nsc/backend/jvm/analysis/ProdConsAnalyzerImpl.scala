@@ -87,9 +87,7 @@ trait ProdConsAnalyzerImpl {
       val outputNumber = outputValueSlots(prod).indexOf(slot)
       _consumersOfOutputsFrom
         .get(prod)
-        .map(v => {
-          v(outputNumber)
-        })
+        .map(v => { v(outputNumber) })
         .getOrElse(Set.empty)
     })
   }
@@ -144,9 +142,7 @@ trait ProdConsAnalyzerImpl {
               .toSet
           }
         )
-      } else {
-        Set(insn)
-      }
+      } else { Set(insn) }
     }
     producersForValueAt(insn, slot).flatMap(initialProducers(_, slot))
   }
@@ -177,9 +173,7 @@ trait ProdConsAnalyzerImpl {
             } yield ultimateConsumer
           }
         )
-      } else {
-        Set(insn)
-      }
+      } else { Set(insn) }
     }
     consumersOfValueAt(insn, slot).flatMap(ultimateConsumers(_, slot))
   }
@@ -260,9 +254,8 @@ trait ProdConsAnalyzerImpl {
     if (isLoad(copyOp)) {
       val slot = copyOp.asInstanceOf[VarInsnNode].`var`
       (frame.getLocal(slot), slot)
-    } else if (isStore(copyOp)) {
-      stackValue(0)
-    } else
+    } else if (isStore(copyOp)) { stackValue(0) }
+    else
       (copyOp.getOpcode: @switch) match {
         case DUP =>
           stackValue(
@@ -422,9 +415,8 @@ trait ProdConsAnalyzerImpl {
   /** Returns the frame slots holding the values consumed by executing `insn`. */
   private def inputValueSlots(insn: AbstractInsnNode): Seq[Int] = {
     if (insn.getOpcode == -1) return Seq.empty
-    if (isLoad(insn)) {
-      Seq(insn.asInstanceOf[VarInsnNode].`var`)
-    } else if (insn.getOpcode == IINC) {
+    if (isLoad(insn)) { Seq(insn.asInstanceOf[VarInsnNode].`var`) }
+    else if (insn.getOpcode == IINC) {
       Seq(insn.asInstanceOf[IincInsnNode].`var`)
     } else {
       val frame = frameAt(insn)
@@ -441,9 +433,8 @@ trait ProdConsAnalyzerImpl {
     case ExceptionProducer(_, frame)       => Seq(frame.stackTop)
     case _ =>
       if (insn.getOpcode == -1) return Seq.empty
-      if (isStore(insn)) {
-        Seq(insn.asInstanceOf[VarInsnNode].`var`)
-      } else if (insn.getOpcode == IINC) {
+      if (isStore(insn)) { Seq(insn.asInstanceOf[VarInsnNode].`var`) }
+      else if (insn.getOpcode == IINC) {
         Seq(insn.asInstanceOf[IincInsnNode].`var`)
       } else {
         val frame = frameAt(insn)

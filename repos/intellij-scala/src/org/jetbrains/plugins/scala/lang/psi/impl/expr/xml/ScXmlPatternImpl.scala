@@ -41,9 +41,7 @@ class ScXmlPatternImpl(node: ASTNode)
     val pattBuff: ArrayBuffer[ScPattern] = new ArrayBuffer[ScPattern]
     pattBuff ++= super.subpatterns
     val args = findChildrenByClassScala(classOf[ScPatterns])
-    for (arg <- args) {
-      pattBuff ++= arg.patterns
-    }
+    for (arg <- args) { pattBuff ++= arg.patterns }
     pattBuff.toSeq
   }
 

@@ -67,9 +67,8 @@ class HttpExecutionContext(
         val oldHttpContext = Http.Context.current.get()
         thread.setContextClassLoader(contextClassLoader)
         Http.Context.current.set(httpContext)
-        try {
-          runnable.run()
-        } finally {
+        try { runnable.run() }
+        finally {
           thread.setContextClassLoader(oldContextClassLoader)
           Http.Context.current.set(oldHttpContext)
         }
@@ -80,9 +79,8 @@ class HttpExecutionContext(
 
   override def prepare(): ExecutionContext = {
     val delegatePrepared = delegate.prepare()
-    if (delegatePrepared eq delegate) {
-      this
-    } else {
+    if (delegatePrepared eq delegate) { this }
+    else {
       new HttpExecutionContext(
         contextClassLoader,
         httpContext,

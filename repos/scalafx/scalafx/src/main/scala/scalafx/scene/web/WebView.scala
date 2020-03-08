@@ -76,9 +76,7 @@ class WebView(override val delegate: jfxsw.WebView = new jfxsw.WebView)
     * Scale factor applied to font.
     */
   def fontScale: DoubleProperty = delegate.fontScaleProperty
-  def fontScale_=(v: Double) {
-    fontScale() = v
-  }
+  def fontScale_=(v: Double) { fontScale() = v }
 
   /**
     * Height of this WebView.
@@ -89,49 +87,37 @@ class WebView(override val delegate: jfxsw.WebView = new jfxsw.WebView)
     * Maximum height property.
     */
   def maxHeight: DoubleProperty = delegate.maxHeightProperty
-  def maxHeight_=(v: Double) {
-    maxHeight() = v
-  }
+  def maxHeight_=(v: Double) { maxHeight() = v }
 
   /**
     * Maximum width property.
     */
   def maxWidth: DoubleProperty = delegate.maxWidthProperty
-  def maxWidth_=(v: Double) {
-    maxWidth() = v
-  }
+  def maxWidth_=(v: Double) { maxWidth() = v }
 
   /**
     * Minimum height property.
     */
   def minHeight: DoubleProperty = delegate.minHeightProperty
-  def minHeight_=(v: Double) {
-    minHeight() = v
-  }
+  def minHeight_=(v: Double) { minHeight() = v }
 
   /**
     * Minimum width property.
     */
   def minWidth: DoubleProperty = delegate.minWidthProperty
-  def minWidth_=(v: Double) {
-    minWidth() = v
-  }
+  def minWidth_=(v: Double) { minWidth() = v }
 
   /**
     * Preferred height property.
     */
   def prefHeight: DoubleProperty = delegate.prefHeightProperty
-  def prefHeight_=(v: Double) {
-    prefHeight() = v
-  }
+  def prefHeight_=(v: Double) { prefHeight() = v }
 
   /**
     * Preferred width property.
     */
   def prefWidth: DoubleProperty = delegate.prefWidthProperty
-  def prefWidth_=(v: Double) {
-    prefWidth() = v
-  }
+  def prefWidth_=(v: Double) { prefWidth() = v }
 
   /**
     * Width of this WebView.
@@ -209,9 +195,7 @@ class WebView(override val delegate: jfxsw.WebView = new jfxsw.WebView)
     * @since 2.2
     */
   def contextMenuEnabled: BooleanProperty = delegate.contextMenuEnabledProperty
-  def contextMenuEnabled_=(v: Boolean) {
-    contextMenuEnabled() = v
-  }
+  def contextMenuEnabled_=(v: Boolean) { contextMenuEnabled() = v }
 
   /**
     * Specifies a requested font smoothing type : gray or LCD.
@@ -231,8 +215,6 @@ class WebView(override val delegate: jfxsw.WebView = new jfxsw.WebView)
     * @since 8.0
     */
   def zoom: DoubleProperty = delegate.zoomProperty
-  def zoom_=(v: Double) {
-    zoom() = v
-  }
+  def zoom_=(v: Double) { zoom() = v }
 
 }

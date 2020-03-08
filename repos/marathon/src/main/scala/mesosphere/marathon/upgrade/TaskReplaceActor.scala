@@ -57,9 +57,7 @@ class TaskReplaceActor(
       s"For minimumHealthCapacity ${app.upgradeStrategy.minimumHealthCapacity} of ${app.id.toString} leave " +
         s"$minHealthy tasks running, maximum capacity $maxCapacity, killing $nrToKillImmediately tasks immediately")
 
-    for (_ <- 0 until nrToKillImmediately) {
-      killNextOldTask()
-    }
+    for (_ <- 0 until nrToKillImmediately) { killNextOldTask() }
 
     reconcileNewTasks()
 

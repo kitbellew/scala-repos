@@ -127,9 +127,7 @@ private[spark] object Accumulators extends Logging {
   /**
     * Unregister the [[Accumulable]] with the given ID, if any.
     */
-  def remove(accId: Long): Unit = synchronized {
-    originals.remove(accId)
-  }
+  def remove(accId: Long): Unit = synchronized { originals.remove(accId) }
 
   /**
     * Return the [[Accumulable]] registered with the given ID, if any.
@@ -147,9 +145,7 @@ private[spark] object Accumulators extends Logging {
   /**
     * Clear all registered [[Accumulable]]s. For testing only.
     */
-  def clear(): Unit = synchronized {
-    originals.clear()
-  }
+  def clear(): Unit = synchronized { originals.clear() }
 
 }
 
@@ -161,9 +157,7 @@ private[spark] object Accumulators extends Logging {
   * @tparam T type of value to accumulate
   */
 trait AccumulatorParam[T] extends AccumulableParam[T, T] {
-  def addAccumulator(t1: T, t2: T): T = {
-    addInPlace(t1, t2)
-  }
+  def addAccumulator(t1: T, t2: T): T = { addInPlace(t1, t2) }
 }
 
 object AccumulatorParam {

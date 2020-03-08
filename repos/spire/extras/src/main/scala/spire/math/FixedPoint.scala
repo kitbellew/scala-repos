@@ -110,9 +110,8 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
     val r = lhs.long % d
     val qq = rhs * q
     val rr =
-      try {
-        (rhs * r) / d
-      } catch {
+      try { (rhs * r) / d }
+      catch {
         case _: FixedPointOverflow =>
           val n = (SafeLong(rhs.long) * r) / d
           if (n.isValidLong)
@@ -132,9 +131,8 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
   }
 
   def /(rhs: FixedPoint)(implicit scale: FixedScale): FixedPoint =
-    try {
-      (lhs * scale.denom) / rhs.long
-    } catch {
+    try { (lhs * scale.denom) / rhs.long }
+    catch {
       case _: FixedPointOverflow =>
         // TODO: it might be nice to use something a little more
         // lightweight, but this is the least error-prone thing to
@@ -188,9 +186,8 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
 
   def round(implicit scale: FixedScale): FixedPoint = {
     val d = scale.denom
-    if (long % d == 0L) {
-      this
-    } else if (long > 0) {
+    if (long % d == 0L) { this }
+    else if (long > 0) {
       val m = (long % d)
       if (m >= (d - m)) FixedPoint(long / d + 1L) else FixedPoint(long / d)
     } else {
@@ -255,9 +252,7 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
     val d = (scale.denom / g)
     if (n.isValidInt && d.isValidInt) {
       FixedPoint(Real(r ** n.toInt).nroot(d.toInt).toRational)
-    } else {
-      throw new ArithmeticException(s"exponent $r is too complex")
-    }
+    } else { throw new ArithmeticException(s"exponent $r is too complex") }
   }
 
   override def toString: String = long.toString + "/?"

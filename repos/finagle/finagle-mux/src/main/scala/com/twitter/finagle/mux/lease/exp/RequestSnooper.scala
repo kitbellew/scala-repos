@@ -66,19 +66,13 @@ private[lease] class RequestSnooper(
   * [[com.twitter.util.Time]]
   */
 private[lease] class ClockFromTimer(timer: Timer) extends Clock {
-  def nowMillis(): Long = {
-    Time.now.inMilliseconds
-  }
+  def nowMillis(): Long = { Time.now.inMilliseconds }
 
-  def nowNanos(): Long = {
-    Time.now.inNanoseconds
-  }
+  def nowNanos(): Long = { Time.now.inNanoseconds }
 
   def waitFor(millis: Long) {
     val p = Promise[Unit]
-    timer.schedule(millis.milliseconds) {
-      p.setValue(())
-    }
+    timer.schedule(millis.milliseconds) { p.setValue(()) }
     Await.result(p)
   }
 }

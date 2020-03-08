@@ -56,9 +56,8 @@ abstract class Pickler extends SubComponent {
         }
       }
 
-      try {
-        pickle(unit.body)
-      } catch {
+      try { pickle(unit.body) }
+      catch {
         case e: FatalError =>
           for (t <- unit.body) {
             // If there are any erroneous types in the tree, then we will crash

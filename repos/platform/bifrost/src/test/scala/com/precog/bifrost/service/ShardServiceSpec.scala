@@ -314,9 +314,7 @@ class ShardServiceSpec extends TestShardService {
       .getOrElse(asyncService)
       .query("q", query)
       .query("prefixPath", path)
-      .post[QueryResult]("") {
-        Right(StreamT.empty[Future, CharBuffer])
-      }
+      .post[QueryResult]("") { Right(StreamT.empty[Future, CharBuffer]) }
   }
 
   def asyncQueryResults(jobId: JobId, apiKey: Option[String] = Some(testAPIKey))
@@ -375,9 +373,7 @@ class ShardServiceSpec extends TestShardService {
         job <- jobManager.findJob(jobId)
       } yield job
 
-      res.copoint must beLike {
-        case Some(Job(_, _, _, _, _, _)) => ok
-      }
+      res.copoint must beLike { case Some(Job(_, _, _, _, _, _)) => ok }
     }
     "results of an async job must eventually be made available" in {
       val res = for {
@@ -437,9 +433,7 @@ class ShardServiceSpec extends TestShardService {
           _) <- query("bad query")
       } yield result
 
-      result.copoint must beLike {
-        case JArray(JString("ERROR!") :: Nil) => ok
-      }
+      result.copoint must beLike { case JArray(JString("ERROR!") :: Nil) => ok }
     }
     "return warnings/errors if format is 'detailed'" in {
       val result = for {

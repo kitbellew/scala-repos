@@ -69,16 +69,10 @@ object SqlToSlick extends App {
             while (rs.next()) {
               people += ((rs.getInt(1), rs.getString(2), rs.getInt(3)))
             }
-          } finally {
-            rs.close()
-          }
+          } finally { rs.close() }
 
-        } finally {
-          stmt.close()
-        }
-      } finally {
-        conn.close()
-      }
+        } finally { stmt.close() }
+      } finally { conn.close() }
       //#jdbc
       people
     }

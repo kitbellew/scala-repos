@@ -30,9 +30,7 @@ class FlowDetacherSpec extends AkkaSpec {
         .map(x ⇒ if (x == 50) throw ex else x)
         .detach
         .runWith(Sink.seq)
-      intercept[Exception] {
-        Await.result(result, 2.seconds)
-      } should ===(ex)
+      intercept[Exception] { Await.result(result, 2.seconds) } should ===(ex)
 
     }
 

@@ -5,7 +5,5 @@ trait T {
   // error: scrutinee is incompatible with pattern type;
   // found   : T.this.A
   // required: T#A
-  def foo(a: T#A) = a match {
-    case _: A => true; case _ => false
-  }
+  def foo(a: T#A) = a match { case _: A => true; case _ => false }
 }

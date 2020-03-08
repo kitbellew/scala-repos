@@ -55,9 +55,7 @@ trait PlayRunners extends HttpVerbs {
       try {
         Play.start(app)
         block
-      } finally {
-        Play.stop(app)
-      }
+      } finally { Play.stop(app) }
     }
   }
 
@@ -75,9 +73,7 @@ trait PlayRunners extends HttpVerbs {
       try {
         testServer.start()
         block
-      } finally {
-        testServer.stop()
-      }
+      } finally { testServer.stop() }
     }
   }
 
@@ -102,9 +98,7 @@ trait PlayRunners extends HttpVerbs {
         browser = TestBrowser(webDriver, None)
         block(browser)
       } finally {
-        if (browser != null) {
-          browser.quit()
-        }
+        if (browser != null) { browser.quit() }
         testServer.stop()
       }
     }

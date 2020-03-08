@@ -58,9 +58,7 @@ private class CodeFormatter {
     val thisLineIndent =
       if (line.startsWith("}") || line.startsWith(")") || line.endsWith(":")) {
         " " * (indentSize * (indentLevel - 1))
-      } else {
-        indentString
-      }
+      } else { indentString }
     code.append(f"/* ${currentLine}%03d */ ")
     code.append(thisLineIndent)
     code.append(line)

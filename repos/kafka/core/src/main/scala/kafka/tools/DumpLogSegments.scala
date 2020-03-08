@@ -209,9 +209,8 @@ object DumpLogSegments {
       valueDecoder: Decoder[V])
       extends MessageParser[K, V] {
     override def parse(message: Message): (Option[K], Option[V]) = {
-      if (message.isNull) {
-        (None, None)
-      } else {
+      if (message.isNull) { (None, None) }
+      else {
         val key =
           if (message.hasKey)
             Some(keyDecoder.fromBytes(Utils.readBytes(message.key)))
@@ -268,9 +267,7 @@ object DumpLogSegments {
               s"${member.memberId}=${partitionAssignment.partitions()}"
             else
               s"${member.memberId}=${partitionAssignment.partitions()}:${userData}"
-          } else {
-            s"${member.memberId}=${hex(member.assignment)}"
-          }
+          } else { s"${member.memberId}=${hex(member.assignment)}" }
         }
         .mkString("{", ",", "}")
 

@@ -187,9 +187,7 @@ class Scene(
   /**
     * Sets the root Node of the scene graph
     */
-  def root_=(v: Parent) {
-    root() = v
-  }
+  def root_=(v: Parent) { root() = v }
 
   /**
     * Returns Nodes children from this Scene's `root`.
@@ -219,34 +217,26 @@ class Scene(
     *
     * @param c list of Nodes children from this Scene's `root` to replace prior content.
     */
-  def content_=(c: Iterable[Node]) {
-    fillSFXCollection(this.content, c)
-  }
+  def content_=(c: Iterable[Node]) { fillSFXCollection(this.content, c) }
 
   /**
     * Sets a Node child, replacing the prior content. If you want append to current content, use `add` or similar.
     *
     * @param n Node child to replace prior content.
     */
-  def content_=(n: Node) {
-    fillSFXCollectionWithOne(this.content, n)
-  }
+  def content_=(n: Node) { fillSFXCollectionWithOne(this.content, n) }
 
   /**
     * Specifies the type of camera use for rendering this `Scene`.
     */
   def camera: ObjectProperty[jfxs.Camera] = delegate.cameraProperty
-  def camera_=(v: Camera) {
-    camera() = v
-  }
+  def camera_=(v: Camera) { camera() = v }
 
   /**
     * Defines the mouse cursor for this `Scene`.
     */
   def cursor: ObjectProperty[jfxs.Cursor] = delegate.cursorProperty
-  def cursor_=(v: Cursor) {
-    cursor() = v
-  }
+  def cursor_=(v: Cursor) { cursor() = v }
 
   /** The effective node orientation of a scene resolves the inheritance of node orientation, returning either left-to-right or right-to-left.  */
   def effectiveNodeOrientation: ReadOnlyObjectProperty[jfxg.NodeOrientation] =
@@ -257,17 +247,13 @@ class Scene(
     */
   def eventDispatcher: ObjectProperty[jfxe.EventDispatcher] =
     delegate.eventDispatcherProperty
-  def eventDispatcher_=(v: jfxe.EventDispatcher) {
-    eventDispatcher() = v
-  }
+  def eventDispatcher_=(v: jfxe.EventDispatcher) { eventDispatcher() = v }
 
   /**
     * Defines the background fill of this Scene.
     */
   def fill: ObjectProperty[jfxsp.Paint] = delegate.fillProperty
-  def fill_=(v: Paint) {
-    fill() = v
-  }
+  def fill_=(v: Paint) { fill() = v }
 
   /**
     * The height of this Scene
@@ -534,9 +520,7 @@ class Scene(
     *
     * @param c list of stylesheets URLs to replace prior content.
     */
-  def stylesheets_=(c: Iterable[String]) {
-    fillCollection(stylesheets, c)
-  }
+  def stylesheets_=(c: Iterable[String]) { fillCollection(stylesheets, c) }
 
   /**
     * Looks for any node within the scene graph based on the specified CSS selector.
@@ -552,18 +536,14 @@ class Scene(
     *
     * @param m The Mnemonic
     */
-  def addMnemonic(m: Mnemonic) {
-    delegate.addMnemonic(m)
-  }
+  def addMnemonic(m: Mnemonic) { delegate.addMnemonic(m) }
 
   /**
     * Unregisters the specified mnemonic.
     *
     * @param m The Mnemonic to be removed.
     */
-  def removeMnemonic(m: Mnemonic) {
-    delegate.removeMnemonic(m)
-  }
+  def removeMnemonic(m: Mnemonic) { delegate.removeMnemonic(m) }
 
   /**
     * Gets the list of mnemonics for this `Scene`.
@@ -590,9 +570,7 @@ class Scene(
   /**
     * Starts a full press-drag-release gesture with this scene as gesture source.
     */
-  def startFullDrag() {
-    delegate.startFullDrag()
-  }
+  def startFullDrag() { delegate.startFullDrag() }
 
   /**
     * The scene's current focus owner node. This node's "focused" variable might be false if this scene has no window,
@@ -699,9 +677,7 @@ class Scene(
     * @since 2.2
     */
   def onZoom = delegate.onZoomProperty()
-  def onZoom_=(v: jfxe.EventHandler[_ >: jfxsi.ZoomEvent]) {
-    onZoom() = v
-  }
+  def onZoom_=(v: jfxe.EventHandler[_ >: jfxsi.ZoomEvent]) { onZoom() = v }
 
   /**
     * Defines a function to be called when a Zoom gesture ends.

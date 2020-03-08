@@ -13,9 +13,7 @@ object Description {
         start: String,
         separator: String,
         end: String,
-        values: java.lang.Iterable[SelfDescribing]): Description = {
-      this
-    }
+        values: java.lang.Iterable[SelfDescribing]): Description = { this }
 
     override def appendText(text: String): Description = this
 
@@ -25,17 +23,13 @@ object Description {
         start: String,
         separator: String,
         end: String,
-        values: T*): Description = {
-      this
-    }
+        values: T*): Description = { this }
 
     override def appendValueList[T](
         start: String,
         separator: String,
         end: String,
-        values: java.lang.Iterable[T]): Description = {
-      this
-    }
+        values: java.lang.Iterable[T]): Description = { this }
 
     override def toString(): String = ""
   }

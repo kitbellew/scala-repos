@@ -116,45 +116,35 @@ object TreeShakerSpecs
         val tree = TicVar(LineStream(), "'a")
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case TicVar(LineStream(), "'a") => ok
-        }
+        shakeTree(tree) must beLike { case TicVar(LineStream(), "'a") => ok }
       }
 
       "string literal" >> {
         val tree = StrLit(LineStream(), "foo")
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case StrLit(LineStream(), "foo") => ok
-        }
+        shakeTree(tree) must beLike { case StrLit(LineStream(), "foo") => ok }
       }
 
       "num literal" >> {
         val tree = NumLit(LineStream(), "42")
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case NumLit(LineStream(), "42") => ok
-        }
+        shakeTree(tree) must beLike { case NumLit(LineStream(), "42") => ok }
       }
 
       "bool literal" >> {
         val tree = BoolLit(LineStream(), true)
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case BoolLit(LineStream(), true) => ok
-        }
+        shakeTree(tree) must beLike { case BoolLit(LineStream(), true) => ok }
       }
 
       "null literal" >> {
         val tree = NullLit(LineStream())
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case NullLit(LineStream()) => ok
-        }
+        shakeTree(tree) must beLike { case NullLit(LineStream()) => ok }
       }
 
       "object with numeric fields" >> {
@@ -554,9 +544,7 @@ object TreeShakerSpecs
       val tree = Paren(LineStream(), NumLit(LineStream(), "1"))
       bindRoot(tree, tree)
 
-      shakeTree(tree) must beLike {
-        case NumLit(LineStream(), "1") => ok
-      }
+      shakeTree(tree) must beLike { case NumLit(LineStream(), "1") => ok }
     }
 
     "eliminate let when not found in scope" in {
@@ -569,9 +557,7 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case NumLit(LineStream(), "24") => ok
-      }
+      result must beLike { case NumLit(LineStream(), "24") => ok }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }

@@ -99,15 +99,10 @@ class NewHadoopRDD[K, V](
         logDebug("Cloning Hadoop Configuration")
         // The Configuration passed in is actually a JobConf and possibly contains credentials.
         // To keep those credentials properly we have to create a new JobConf not a Configuration.
-        if (conf.isInstanceOf[JobConf]) {
-          new JobConf(conf)
-        } else {
-          new Configuration(conf)
-        }
+        if (conf.isInstanceOf[JobConf]) { new JobConf(conf) }
+        else { new Configuration(conf) }
       }
-    } else {
-      conf
-    }
+    } else { conf }
   }
 
   override def getPartitions: Array[Partition] = {
@@ -201,9 +196,7 @@ class NewHadoopRDD[K, V](
           throw new java.util.NoSuchElementException("End of stream")
         }
         havePair = false
-        if (!finished) {
-          inputMetrics.incRecordsReadInternal(1)
-        }
+        if (!finished) { inputMetrics.incRecordsReadInternal(1) }
         if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
           updateBytesRead()
         }
@@ -216,22 +209,18 @@ class NewHadoopRDD[K, V](
           // reader more than once, since that exposes us to MAPREDUCE-5918 when running against
           // Hadoop 1.x and older Hadoop 2.x releases. That bug can lead to non-deterministic
           // corruption issues when reading compressed input.
-          try {
-            reader.close()
-          } catch {
+          try { reader.close() }
+          catch {
             case e: Exception =>
               if (!ShutdownHookManager.inShutdown()) {
                 logWarning("Exception in RecordReader.close()", e)
               }
-          } finally {
-            reader = null
-          }
-          if (getBytesReadCallback.isDefined) {
-            updateBytesRead()
-          } else if (split.serializableHadoopSplit.value
-                       .isInstanceOf[FileSplit] ||
-                     split.serializableHadoopSplit.value
-                       .isInstanceOf[CombineFileSplit]) {
+          } finally { reader = null }
+          if (getBytesReadCallback.isDefined) { updateBytesRead() }
+          else if (split.serializableHadoopSplit.value
+                     .isInstanceOf[FileSplit] ||
+                   split.serializableHadoopSplit.value
+                     .isInstanceOf[CombineFileSplit]) {
             // If we can't get the bytes read from the FS stats, fall back to the split size,
             // which may be inaccurate.
             try {

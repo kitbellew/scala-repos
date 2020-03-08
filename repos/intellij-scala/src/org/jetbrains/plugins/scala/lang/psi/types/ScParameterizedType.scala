@@ -99,9 +99,7 @@ case class JavaArrayType(arg: ScType) extends ValueType {
     }
   }
 
-  def visitType(visitor: ScalaTypeVisitor) {
-    visitor.visitJavaArrayType(this)
-  }
+  def visitType(visitor: ScalaTypeVisitor) { visitor.visitJavaArrayType(this) }
 
   override def typeDepth: Int = arg.typeDepth
 }
@@ -140,9 +138,7 @@ class ScParameterizedType private (
   private var hash: Int = -1
 
   override def hashCode: Int = {
-    if (hash == -1) {
-      hash = designator.hashCode() + typeArgs.hashCode() * 31
-    }
+    if (hash == -1) { hash = designator.hashCode() + typeArgs.hashCode() * 31 }
     hash
   }
 
@@ -532,9 +528,7 @@ private[types] object CyclicHelper {
     doComputationsForTwoElements(
       pn1,
       pn2,
-      (p: Object, searches: Seq[Object]) => {
-        !searches.contains(p)
-      },
+      (p: Object, searches: Seq[Object]) => { !searches.contains(p) },
       pn2,
       pn1,
       fun(),
@@ -543,9 +537,7 @@ private[types] object CyclicHelper {
 }
 
 case class ScTypeVariable(name: String) extends ValueType {
-  def visitType(visitor: ScalaTypeVisitor) {
-    visitor.visitTypeVariable(this)
-  }
+  def visitType(visitor: ScalaTypeVisitor) { visitor.visitTypeVariable(this) }
 
   override def equivInner(
       r: ScType,

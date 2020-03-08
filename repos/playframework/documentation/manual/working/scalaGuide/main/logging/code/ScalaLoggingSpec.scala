@@ -11,9 +11,7 @@ import org.specs2.runner.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ScalaLoggingSpec extends Specification with Mockito {
 
-  private def riskyCalculation: Int = {
-    10 / scala.util.Random.nextInt(2)
-  }
+  private def riskyCalculation: Int = { 10 / scala.util.Random.nextInt(2) }
 
   "The default Logger" should {
     "properly log" in {

@@ -14,9 +14,7 @@ import org.jetbrains.plugins.scala.debugger.evaluation.EvaluationException
   */
 class ScalaThisEvaluator(iterations: Int = 0) extends Evaluator {
   private def getOuterObject(objRef: ObjectReference): ObjectReference = {
-    if (objRef == null) {
-      return null
-    }
+    if (objRef == null) { return null }
     val list = objRef.referenceType.fields
     import scala.collection.JavaConversions._
     for (field <- list) {
@@ -24,9 +22,7 @@ class ScalaThisEvaluator(iterations: Int = 0) extends Evaluator {
       if (name != null && name.startsWith("$outer")) {
         val rv: ObjectReference =
           objRef.getValue(field).asInstanceOf[ObjectReference]
-        if (rv != null) {
-          return rv
-        }
+        if (rv != null) { return rv }
       }
     }
     null
@@ -42,9 +38,7 @@ class ScalaThisEvaluator(iterations: Int = 0) extends Evaluator {
           val variable: LocalVariableProxyImpl =
             frameProxy.visibleVariableByName("$this")
           if (variable == null) null
-          else {
-            frameProxy.getValue(variable)
-          }
+          else { frameProxy.getValue(variable) }
         } catch {
           case e: AbsentInformationException =>
             val args = frameProxy.getArgumentValues

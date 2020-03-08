@@ -261,12 +261,7 @@ trait VectorFunctions {
   final def mapAccumLeft[A, B, C](
       as: Vector[A])(c: C, f: (C, A) => (C, B)): (C, Vector[B]) =
     as.foldLeft((c, empty[B])) { (acc, a) =>
-      acc match {
-        case (c, v) =>
-          f(c, a) match {
-            case (c, b) => (c, v :+ b)
-          }
-      }
+      acc match { case (c, v) => f(c, a) match { case (c, b) => (c, v :+ b) } }
     }
 
   /** All of the `B`s, in order `as`-wise, and the final `C` acquired
@@ -274,12 +269,7 @@ trait VectorFunctions {
   final def mapAccumRight[A, B, C](
       as: Vector[A])(c: C, f: (C, A) => (C, B)): (C, Vector[B]) =
     as.foldRight((c, empty[B])) { (a, acc) =>
-      acc match {
-        case (c, v) =>
-          f(c, a) match {
-            case (c, b) => (c, b +: v)
-          }
-      }
+      acc match { case (c, v) => f(c, a) match { case (c, b) => (c, b +: v) } }
     }
 
   /** `[as, as.tail, as.tail.tail, ..., `empty Vector`]` */

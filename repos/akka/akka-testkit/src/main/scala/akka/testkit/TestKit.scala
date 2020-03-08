@@ -776,13 +776,9 @@ trait TestKitBase {
     */
   def receiveOne(max: Duration): AnyRef = {
     val message =
-      if (max == 0.seconds) {
-        queue.pollFirst
-      } else if (max.isFinite) {
-        queue.pollFirst(max.length, max.unit)
-      } else {
-        queue.takeFirst
-      }
+      if (max == 0.seconds) { queue.pollFirst }
+      else if (max.isFinite) { queue.pollFirst(max.length, max.unit) }
+      else { queue.takeFirst }
     lastWasNoMsg = false
     message match {
       case null ⇒
@@ -854,8 +850,9 @@ trait TestKitBase {
   *
   * @since 1.1
   */
-class TestKit(_system: ActorSystem) extends { implicit val system = _system }
-with TestKitBase
+class TestKit(_system: ActorSystem) extends {
+  implicit val system = _system
+} with TestKitBase
 
 object TestKit {
   private[testkit] val testActorId = new AtomicInteger(0)

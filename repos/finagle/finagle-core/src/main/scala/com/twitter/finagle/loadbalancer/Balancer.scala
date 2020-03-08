@@ -73,9 +73,7 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
 
   @volatile protected var dist: Distributor = initDistributor()
 
-  protected def rebuild(): Unit = {
-    updater(Rebuild(dist))
-  }
+  protected def rebuild(): Unit = { updater(Rebuild(dist)) }
 
   // A counter that should be named "max_effort_exhausted".
   // Due to a scalac compile/runtime problem we were unable
@@ -92,9 +90,7 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
     statsReceiver.addGauge("closed") {
       dist.vector.count(n => n.status == Status.Closed)
     },
-    statsReceiver.addGauge("load") {
-      dist.vector.map(_.pending).sum
-    },
+    statsReceiver.addGauge("load") { dist.vector.map(_.pending).sum },
     statsReceiver.addGauge("size") { dist.vector.size }
   )
 
@@ -168,9 +164,7 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
     * Invoke `fn` on the current distributor. This is done through the updater
     * and is serialized with distributor updates and other invocations.
     */
-  protected def invoke(fn: Distributor => Unit): Unit = {
-    updater(Invoke(fn))
-  }
+  protected def invoke(fn: Distributor => Unit): Unit = { updater(Invoke(fn)) }
 
   @tailrec
   private[this] def pick(nodes: Distributor, count: Int): Node = {

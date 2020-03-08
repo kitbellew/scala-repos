@@ -79,7 +79,9 @@ private[spark] class CoalescedRDD[T: ClassTag](
     @transient var prev: RDD[T],
     maxPartitions: Int,
     balanceSlack: Double = 0.10)
-    extends RDD[T](prev.context, Nil) { // Nil since we implement getDependencies
+    extends RDD[T](
+      prev.context,
+      Nil) { // Nil since we implement getDependencies
 
   require(
     maxPartitions > 0 || maxPartitions == prev.partitions.length,
@@ -212,9 +214,8 @@ private class PartitionCoalescer(
 
     // return the next preferredLocation of some partition of the RDD
     override def next(): (String, Partition) = {
-      if (it.hasNext) {
-        it.next()
-      } else {
+      if (it.hasNext) { it.next() }
+      else {
         it =
           resetIterator() // ran out of preferred locations, reset and rotate to the beginning
         it.next()
@@ -331,9 +332,7 @@ private class PartitionCoalescer(
   def throwBalls() {
     if (noLocality) { // no preferredLocations in parent RDD, no randomization needed
       if (maxPartitions > groupArr.size) { // just return prev.partitions
-        for ((p, i) <- prev.partitions.zipWithIndex) {
-          groupArr(i).arr += p
-        }
+        for ((p, i) <- prev.partitions.zipWithIndex) { groupArr(i).arr += p }
       } else { // no locality available, then simply split partitions based on positions in array
         for (i <- 0 until maxPartitions) {
           val rangeStart =

@@ -256,9 +256,7 @@ object TreeTableView {
       *
       * @param pos The table position where focus should be set.
       */
-    def focus(pos: TreeTablePosition[S, _]): Unit = {
-      delegate.focus(pos)
-    }
+    def focus(pos: TreeTablePosition[S, _]): Unit = { delegate.focus(pos) }
 
     /**
       * Causes the item at the given index to receive the focus. This does not cause the current selection to change.
@@ -268,9 +266,7 @@ object TreeTableView {
       *
       * @param index The index of the item to get focus.
       */
-    override def focus(index: Int): Unit = {
-      delegate.focus(index)
-    }
+    override def focus(index: Int): Unit = { delegate.focus(index) }
 
     /**
       * Tests whether the row / cell at the given location currently has the focus within the TableView.
@@ -377,9 +373,7 @@ object TreeTableView {
       *
       * @param row The index that should be the only selected index in this selection model.
       */
-    def clearAndSelect(row: Int): Unit = {
-      delegate.clearAndSelect(row)
-    }
+    def clearAndSelect(row: Int): Unit = { delegate.clearAndSelect(row) }
 
     /**
       * This will select the given index in the selection model, assuming the index is within the valid range (i.e.
@@ -394,9 +388,7 @@ object TreeTableView {
       *
       * @param row The position of the item to select in the selection model.
       */
-    def select(row: Int): Unit = {
-      delegate.select(row)
-    }
+    def select(row: Int): Unit = { delegate.select(row) }
 
     /**
       * This method will attempt to select the index that contains the given object. It will iterate through the
@@ -405,9 +397,7 @@ object TreeTableView {
       *
       * @param obj The object to attempt to select in the underlying data model.
       */
-    def select(obj: TreeItem[S]): Unit = {
-      delegate.select(obj)
-    }
+    def select(obj: TreeItem[S]): Unit = { delegate.select(obj) }
 
     /**
       * This method allows for one or more selections to be set at the same time. It will ignore any value that is not
@@ -426,9 +416,7 @@ object TreeTableView {
     /**
       * Convenience method to select all available indices.
       */
-    def selectAll(): Unit = {
-      delegate.selectAll()
-    }
+    def selectAll(): Unit = { delegate.selectAll() }
 
     /**
       * This method will attempt to select the first index in the control. If clearSelection is not called first, this
@@ -438,9 +426,7 @@ object TreeTableView {
       * If the first index is already selected, calling this method will have no result, and no selection event will
       * take place.
       */
-    def selectFirst(): Unit = {
-      delegate.selectFirst()
-    }
+    def selectFirst(): Unit = { delegate.selectFirst() }
 
     /**
       * This method will attempt to select the last index in the control. If clearSelection is not called first, this
@@ -450,16 +436,12 @@ object TreeTableView {
       * If the last index is already selected, calling this method will have no result, and no selection event will
       * take place.
       */
-    def selectLast(): Unit = {
-      delegate.selectLast()
-    }
+    def selectLast(): Unit = { delegate.selectLast() }
 
     /**
       * Clears the selection model of all selected indices.
       */
-    def clearSelection(): Unit = {
-      delegate.clearSelection()
-    }
+    def clearSelection(): Unit = { delegate.clearSelection() }
 
     /**
       * This method will clear the selection of the item in the given index. If the given index is not selected,
@@ -467,9 +449,7 @@ object TreeTableView {
       *
       * @param index The selected item to deselect.
       */
-    def clearSelection(index: Int): Unit = {
-      delegate.clearSelection(index)
-    }
+    def clearSelection(index: Int): Unit = { delegate.clearSelection(index) }
 
     /**
       * Convenience method to inform if the given index is currently selected in this SelectionModel. Is functionally
@@ -500,9 +480,7 @@ object TreeTableView {
       *
       * If any of these conditions is false, no selection event will take place.
       */
-    def selectPrevious(): Unit = {
-      delegate.selectPrevious()
-    }
+    def selectPrevious(): Unit = { delegate.selectPrevious() }
 
     /**
       * This method will attempt to select the index directly after the current focused index. If clearSelection is not
@@ -516,9 +494,7 @@ object TreeTableView {
       *
       * If any of these conditions is false, no selection event will take place.
       */
-    def selectNext(): Unit = {
-      delegate.selectNext()
-    }
+    def selectNext(): Unit = { delegate.selectNext() }
   }
 
   /**
@@ -643,17 +619,13 @@ class TreeTableView[S](
     * Property representing the root node of the TreeView.
     */
   def root: ObjectProperty[jfxsc.TreeItem[S]] = delegate.rootProperty
-  def root_=(v: TreeItem[S]) {
-    root() = v
-  }
+  def root_=(v: TreeItem[S]) { root() = v }
 
   /**
     * Property that represents whether or not the TreeView root node is visible.
     */
   def showRoot: BooleanProperty = delegate.showRootProperty
-  def showRoot_=(v: Boolean): Unit = {
-    showRoot() = v
-  }
+  def showRoot_=(v: Boolean): Unit = { showRoot() = v }
 
   /**
     * Property that represents which column should have the disclosure node shown in it (that is, the column with the
@@ -662,9 +634,7 @@ class TreeTableView[S](
     */
   def treeColumn: ObjectProperty[jfxsc.TreeTableColumn[S, _]] =
     delegate.treeColumnProperty
-  def treeColumn_=(v: TreeTableColumn[S, _]): Unit = {
-    treeColumn() = v
-  }
+  def treeColumn_=(v: TreeTableColumn[S, _]): Unit = { treeColumn() = v }
 
   /**
     * The SelectionModel provides the API through which it is possible to select single or multiple items within a
@@ -705,9 +675,7 @@ class TreeTableView[S](
     * editable will a TreeCell be able to go into their editing state.
     */
   def editable: BooleanProperty = delegate.editableProperty
-  def editable_=(v: Boolean): Unit = {
-    editable() = v
-  }
+  def editable_=(v: Boolean): Unit = { editable() = v }
 
   /**
     * Represents the current cell being edited, or null if there is no cell being edited.
@@ -774,9 +742,7 @@ class TreeTableView[S](
   def rowFactory_=(v: (TreeTableView[S] => TreeTableRow[S])): Unit = {
     rowFactory() =
       new jfxu.Callback[jfxsc.TreeTableView[S], jfxsc.TreeTableRow[S]] {
-        def call(tv: jfxsc.TreeTableView[S]): jfxsc.TreeTableRow[S] = {
-          v(tv)
-        }
+        def call(tv: jfxsc.TreeTableView[S]): jfxsc.TreeTableRow[S] = { v(tv) }
       }
   }
 
@@ -786,9 +752,7 @@ class TreeTableView[S](
     * to show the user, or that there are no currently visible columns.
     */
   def placeholder: ObjectProperty[jfxs.Node] = delegate.placeholderProperty
-  def placeholder_=(v: Node): Unit = {
-    placeholder() = v
-  }
+  def placeholder_=(v: Node): Unit = { placeholder() = v }
 
   /**
     * Specifies whether this control has cells that are a fixed height (of the specified value). If this value is less
@@ -805,18 +769,14 @@ class TreeTableView[S](
     * -fx-fixed-cell-size takes precedence.
     */
   def fixedCellSize: DoubleProperty = delegate.fixedCellSizeProperty
-  def fixedCellSize_=(v: Double): Unit = {
-    fixedCellSize() = v
-  }
+  def fixedCellSize_=(v: Double): Unit = { fixedCellSize() = v }
 
   /**
     * Specifies the sort mode to use when sorting the contents of this TreeTableView, should any columns be specified
     * in the sort order list.
     */
   def sortMode: ObjectProperty[jfxsc.TreeSortMode] = delegate.sortModeProperty
-  def sortMode_=(v: TreeSortMode): Unit = {
-    sortMode() = v
-  }
+  def sortMode_=(v: TreeSortMode): Unit = { sortMode() = v }
 
   /**
     * The comparator property is a read-only property that is representative of the current state of the sort order list.

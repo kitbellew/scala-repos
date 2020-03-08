@@ -30,9 +30,7 @@ trait Timer {
     */
   final def schedule(when: Time)(f: => Unit): TimerTask = {
     val locals = Local.save()
-    scheduleOnce(when) {
-      Local.let(locals)(Monitor.get(f))
-    }
+    scheduleOnce(when) { Local.let(locals)(Monitor.get(f)) }
   }
 
   protected def scheduleOnce(when: Time)(f: => Unit): TimerTask
@@ -43,9 +41,7 @@ trait Timer {
     */
   final def schedule(when: Time, period: Duration)(f: => Unit): TimerTask = {
     val locals = Local.save()
-    schedulePeriodically(when, period) {
-      Local.let(locals)(Monitor.get(f))
-    }
+    schedulePeriodically(when, period) { Local.let(locals)(Monitor.get(f)) }
   }
 
   protected def schedulePeriodically(when: Time, period: Duration)(
@@ -77,9 +73,7 @@ trait Timer {
       if (pending) {
         pending = false
         true
-      } else {
-        false
-      }
+      } else { false }
     }
 
     val task = schedule(time) {
@@ -148,7 +142,9 @@ class ThreadStoppingTimer(underlying: Timer, executor: ExecutorService)
     underlying.schedule(when, period)(f)
 
   def stop(): Unit = {
-    executor.submit(new Runnable { def run() = underlying.stop() })
+    executor.submit(new Runnable {
+      def run() = underlying.stop()
+    })
   }
 }
 
@@ -248,9 +244,7 @@ class JavaTimer(isDaemon: Boolean, name: Option[String]) extends Timer {
   // Make sure Time is on or after the epoch.  j.u.Timer throws an
   // IllegalArgumentException if the value is negative.  To allow `when` to be
   // before the epoch (e.g. Time.Bottom), move any pre-epoch times to the epoch.
-  private[this] def safeTime(time: Time): Time = {
-    time.max(Time.epoch)
-  }
+  private[this] def safeTime(time: Time): Time = { time.max(Time.epoch) }
 
   private[this] def toJavaTimerTask(f: => Unit) = new java.util.TimerTask {
     def run(): Unit = f
@@ -384,9 +378,7 @@ class MockTimer extends Timer {
     var isCancelled = false
 
     val task = new TimerTask {
-      def cancel(): Unit = MockTimer.this.synchronized {
-        isCancelled = true
-      }
+      def cancel(): Unit = MockTimer.this.synchronized { isCancelled = true }
     }
 
     def runAndReschedule(): Unit = MockTimer.this.synchronized {
@@ -400,7 +392,5 @@ class MockTimer extends Timer {
     task
   }
 
-  def stop(): Unit = synchronized {
-    isStopped = true
-  }
+  def stop(): Unit = synchronized { isStopped = true }
 }

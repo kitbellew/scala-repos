@@ -14,9 +14,7 @@ import breeze.linalg._
 trait CounterOps {
   implicit def canCopy[K1, V: Zero: Semiring]: CanCopy[Counter[K1, V]] =
     new CanCopy[Counter[K1, V]] {
-      def apply(t: Counter[K1, V]): Counter[K1, V] = {
-        Counter(t.iterator)
-      }
+      def apply(t: Counter[K1, V]): Counter[K1, V] = { Counter(t.iterator) }
     }
 
   def binaryOpFromBinaryUpdateOp[K, V, Other, Op <: OpType](implicit
@@ -37,9 +35,7 @@ trait CounterOps {
     new OpAdd.InPlaceImpl2[Counter[K1, V], Counter[K1, V]] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], b: Counter[K1, V]) {
-        for ((k, v) <- b.activeIterator) {
-          a(k) = field.+(a(k), v)
-        }
+        for ((k, v) <- b.activeIterator) { a(k) = field.+(a(k), v) }
       }
     }
 
@@ -48,9 +44,7 @@ trait CounterOps {
     new scaleAdd.InPlaceImpl3[Counter[K1, V], V, Counter[K1, V]] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], s: V, b: Counter[K1, V]) {
-        for ((k, v) <- b.activeIterator) {
-          a(k) = field.+(a(k), field.*(s, v))
-        }
+        for ((k, v) <- b.activeIterator) { a(k) = field.+(a(k), field.*(s, v)) }
       }
     }
 
@@ -64,9 +58,7 @@ trait CounterOps {
     new OpAdd.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
-          a(k) = field.+(v, b)
-        }
+        for ((k, v) <- a.activeIterator) { a(k) = field.+(v, b) }
       }
     }
 
@@ -80,9 +72,7 @@ trait CounterOps {
     new OpSub.InPlaceImpl2[Counter[K1, V], Counter[K1, V]] {
       val field = implicitly[Ring[V]]
       def apply(a: Counter[K1, V], b: Counter[K1, V]) {
-        for ((k, v) <- b.activeIterator) {
-          a(k) = field.-(a(k), v)
-        }
+        for ((k, v) <- b.activeIterator) { a(k) = field.-(a(k), v) }
       }
     }
   }
@@ -96,9 +86,7 @@ trait CounterOps {
     new OpSub.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Ring[V]]
       def apply(a: Counter[K1, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
-          a(k) = field.-(v, b)
-        }
+        for ((k, v) <- a.activeIterator) { a(k) = field.-(v, b) }
       }
     }
 
@@ -112,9 +100,7 @@ trait CounterOps {
     new OpMulScalar.InPlaceImpl2[Counter[K1, V], Counter[K2, V]] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], b: Counter[K2, V]) {
-        for ((k, v) <- a.activeIterator) {
-          a(k) = field.*(v, b(k))
-        }
+        for ((k, v) <- a.activeIterator) { a(k) = field.*(v, b(k)) }
       }
     }
 
@@ -138,9 +124,7 @@ trait CounterOps {
     new OpMulScalar.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
-          a(k) = field.*(v, b)
-        }
+        for ((k, v) <- a.activeIterator) { a(k) = field.*(v, b) }
       }
     }
 
@@ -149,9 +133,7 @@ trait CounterOps {
     new OpMulMatrix.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
-          a(k) = field.*(v, b)
-        }
+        for ((k, v) <- a.activeIterator) { a(k) = field.*(v, b) }
       }
     }
 
@@ -188,9 +170,7 @@ trait CounterOps {
     new OpDiv.InPlaceImpl2[Counter[K1, V], Counter[K1, V]] {
       val field = implicitly[Field[V]]
       def apply(a: Counter[K1, V], b: Counter[K1, V]) {
-        for ((k, v) <- a.activeIterator) {
-          a(k) = field./(v, b(k))
-        }
+        for ((k, v) <- a.activeIterator) { a(k) = field./(v, b(k)) }
       }
     }
   }
@@ -231,9 +211,7 @@ trait CounterOps {
     new OpDiv.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Field[V]]
       def apply(a: Counter[K1, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
-          a(k) = field./(v, b)
-        }
+        for ((k, v) <- a.activeIterator) { a(k) = field./(v, b) }
       }
     }
 
@@ -242,18 +220,14 @@ trait CounterOps {
     new OpSet.InPlaceImpl2[Counter[K1, V], Counter[K2, V]] {
       def apply(a: Counter[K1, V], b: Counter[K2, V]) {
         a.data.clear()
-        for ((k, v) <- b.activeIterator) {
-          a(k) = v
-        }
+        for ((k, v) <- b.activeIterator) { a(k) = v }
       }
     }
 
   implicit def canSetIntoVS[K1, V]: OpSet.InPlaceImpl2[Counter[K1, V], V] = {
     new OpSet.InPlaceImpl2[Counter[K1, V], V] {
       def apply(a: Counter[K1, V], b: V) {
-        for (k <- a.keysIterator) {
-          a(k) = b
-        }
+        for (k <- a.keysIterator) { a(k) = b }
       }
     }
   }
@@ -354,9 +328,7 @@ trait CounterOps {
     override def mapActive(
         from: Counter[K, V],
         from2: Counter[K, V],
-        fn: (K, V, V) => RV): Counter[K, RV] = {
-      map(from, from2, fn)
-    }
+        fn: (K, V, V) => RV): Counter[K, RV] = { map(from, from2, fn) }
   }
 
   implicit def zipMapKeyValues[K, V, R: Zero: Semiring] =
@@ -366,9 +338,7 @@ trait CounterOps {
       : CanTransformValues[Counter[L, V], V] = {
     new CanTransformValues[Counter[L, V], V] {
       def transform(from: Counter[L, V], fn: (V) => V) {
-        for ((k, v) <- from.activeIterator) {
-          from(k) = fn(v)
-        }
+        for ((k, v) <- from.activeIterator) { from(k) = fn(v) }
       }
 
       def transformActive(from: Counter[L, V], fn: (V) => V) {

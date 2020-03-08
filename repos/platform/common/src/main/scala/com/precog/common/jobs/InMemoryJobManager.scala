@@ -137,9 +137,7 @@ trait BaseInMemoryJobManager[M[+_]]
             jobs(jobId) = jobs(jobId).copy(status = Some(s))
             Right(s)
           }
-      } getOrElse {
-        M.point(Left("No job with ID " + jobId))
-      }
+      } getOrElse { M.point(Left("No job with ID " + jobId)) }
     }
   }
 

@@ -230,17 +230,14 @@ private[reflect] object ScalaSigReader {
           var clazz: Class[_] = null
           val iter = many.iterator
           while (clazz == null && iter.hasNext) {
-            try {
-              clazz = Class.forName(c, true, iter.next())
-            } catch {
+            try { clazz = Class.forName(c, true, iter.next()) }
+            catch {
               case e: ClassNotFoundException => // keep going, maybe it's in the next one
             }
           }
 
           if (clazz != null) Some(clazz.asInstanceOf[Class[X]]) else None
-        } catch {
-          case _: Throwable => None
-        }
+        } catch { case _: Throwable => None }
       }
     }
 }

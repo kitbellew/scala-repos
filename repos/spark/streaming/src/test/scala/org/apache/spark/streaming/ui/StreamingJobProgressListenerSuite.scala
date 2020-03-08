@@ -35,9 +35,7 @@ class StreamingJobProgressListenerSuite extends TestSuiteBase with Matchers {
 
   override def afterFunction() {
     super.afterFunction()
-    if (ssc != null) {
-      ssc.stop()
-    }
+    if (ssc != null) { ssc.stop() }
   }
 
   private def createJobStart(

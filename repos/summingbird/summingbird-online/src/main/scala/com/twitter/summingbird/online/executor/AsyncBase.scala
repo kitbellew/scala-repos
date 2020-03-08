@@ -80,11 +80,8 @@ abstract class AsyncBase[I, O, S, D, RC](
             res.onSuccess { t => responses.put(((tups, Success(t)))) }
             res.onFailure { t => responses.put(((tups, Failure(t)))) }
             // Make sure there are not too many outstanding:
-            if (addOutstandingFuture(res.unit)) {
-              iterSize + 1
-            } else {
-              iterSize
-            }
+            if (addOutstandingFuture(res.unit)) { iterSize + 1 }
+            else { iterSize }
         }
         if (outstandingFutures.size > maxWaitingFutures.get) {
           /*
@@ -103,17 +100,14 @@ abstract class AsyncBase[I, O, S, D, RC](
     if (!fut.isDefined) {
       outstandingFutures.put(fut)
       true
-    } else {
-      false
-    }
+    } else { false }
 
   private def forceExtraFutures() {
     outstandingFutures.dequeueAll(_.isDefined)
     val toForce = outstandingFutures.trimTo(maxWaitingFutures.get).toIndexedSeq
     if (toForce.nonEmpty) {
-      try {
-        Await.ready(Future.collect(toForce), maxWaitingTime.get)
-      } catch {
+      try { Await.ready(Future.collect(toForce), maxWaitingTime.get) }
+      catch {
         case te: TimeoutException =>
           logger.error(
             "forceExtra failed on %d Futures".format(toForce.size),

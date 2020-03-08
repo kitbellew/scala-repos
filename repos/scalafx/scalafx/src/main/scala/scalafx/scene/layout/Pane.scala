@@ -57,16 +57,12 @@ class Pane(override val delegate: jfxsl.Pane = new jfxsl.Pane)
     *
     * @param c list of children to replace prior content.
     */
-  def children_=(c: Iterable[Node]) {
-    fillSFXCollection(this.children, c)
-  }
+  def children_=(c: Iterable[Node]) { fillSFXCollection(this.children, c) }
 
   /**
     * Sets a child, replacing the prior content. If you want append to current content, use `add`, `+=` or similar.
     *
     * @param n Node to replace prior content.
     */
-  def children_=(n: Node) {
-    fillSFXCollectionWithOne(this.children, n)
-  }
+  def children_=(n: Node) { fillSFXCollectionWithOne(this.children, n) }
 }

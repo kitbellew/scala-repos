@@ -58,9 +58,7 @@ class BufCodecBenchmark extends StdBenchAnnotations {
   }
 
   @Benchmark
-  def decodeBuf(): Seq[Buf] = {
-    TwitterBuf.decode(encodedBuf)
-  }
+  def decodeBuf(): Seq[Buf] = { TwitterBuf.decode(encodedBuf) }
 
   @Benchmark
   def roundTripCB(): Seq[ChannelBuffer] = {
@@ -68,9 +66,7 @@ class BufCodecBenchmark extends StdBenchAnnotations {
   }
 
   @Benchmark
-  def roundTripBuf(): Seq[Buf] = {
-    TwitterBuf.decode(TwitterBuf.encode(bufs))
-  }
+  def roundTripBuf(): Seq[Buf] = { TwitterBuf.decode(TwitterBuf.encode(bufs)) }
 }
 
 object BufCodecBenchmark {
@@ -78,9 +74,7 @@ object BufCodecBenchmark {
     def encode(values: Seq[ChannelBuffer]): ChannelBuffer = {
       var iter = values.iterator
       var size = 0
-      while (iter.hasNext) {
-        size += iter.next().readableBytes + 4
-      }
+      while (iter.hasNext) { size += iter.next().readableBytes + 4 }
       val cb = ChannelBuffers.buffer(size)
       iter = values.iterator
       while (iter.hasNext) {
@@ -105,9 +99,7 @@ object BufCodecBenchmark {
     def encode(values: Seq[Buf]): Buf = {
       var size = 0
       var iter = values.iterator
-      while (iter.hasNext) {
-        size += iter.next().length + 4
-      }
+      while (iter.hasNext) { size += iter.next().length + 4 }
       val bw = BufWriter.fixed(size)
       iter = values.iterator
       while (iter.hasNext) {

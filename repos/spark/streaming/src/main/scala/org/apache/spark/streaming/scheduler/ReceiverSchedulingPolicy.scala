@@ -77,9 +77,7 @@ private[streaming] class ReceiverSchedulingPolicy {
       receivers: Seq[Receiver[_]],
       executors: Seq[ExecutorCacheTaskLocation])
       : Map[Int, Seq[TaskLocation]] = {
-    if (receivers.isEmpty) {
-      return Map.empty
-    }
+    if (receivers.isEmpty) { return Map.empty }
 
     if (executors.isEmpty) {
       return receivers.map(_.streamId -> Seq.empty).toMap
@@ -177,9 +175,7 @@ private[streaming] class ReceiverSchedulingPolicy {
       preferredLocation: Option[String],
       receiverTrackingInfoMap: Map[Int, ReceiverTrackingInfo],
       executors: Seq[ExecutorCacheTaskLocation]): Seq[TaskLocation] = {
-    if (executors.isEmpty) {
-      return Seq.empty
-    }
+    if (executors.isEmpty) { return Seq.empty }
 
     // Always try to schedule to the preferred locations
     val scheduledLocations = mutable.Set[TaskLocation]()
@@ -195,9 +191,8 @@ private[streaming] class ReceiverSchedulingPolicy {
     }
 
     val idleExecutors = executors.toSet -- executorWeights.keys
-    if (idleExecutors.nonEmpty) {
-      scheduledLocations ++= idleExecutors
-    } else {
+    if (idleExecutors.nonEmpty) { scheduledLocations ++= idleExecutors }
+    else {
       // There is no idle executor. So select all executors that have the minimum weight.
       val sortedExecutors = executorWeights.toSeq.sortBy(_._2)
       if (sortedExecutors.nonEmpty) {

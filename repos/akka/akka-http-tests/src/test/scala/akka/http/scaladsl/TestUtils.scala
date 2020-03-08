@@ -11,9 +11,8 @@ import java.nio.channels.ServerSocketChannel
 object TestUtils {
   def writeAllText(text: String, file: File): Unit = {
     val fos = new FileOutputStream(file)
-    try {
-      fos.write(text.getBytes("UTF-8"))
-    } finally fos.close()
+    try { fos.write(text.getBytes("UTF-8")) }
+    finally fos.close()
   }
 
   // TODO duplicated code from akka-http-core-tests

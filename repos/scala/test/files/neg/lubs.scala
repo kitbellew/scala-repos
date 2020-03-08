@@ -13,9 +13,15 @@ object test1 {
 
 object test2 {
 
-  abstract class A { type T }
-  class C extends A { type T = C }
-  class D extends A { type T = D }
+  abstract class A {
+    type T
+  }
+  class C extends A {
+    type T = C
+  }
+  class D extends A {
+    type T = D
+  }
 
   def f = if (1 == 2) new C else new D
 

@@ -22,7 +22,5 @@ import org.apache.spark.sql.test.SharedSQLContext
 
 class DebuggingSuite extends SparkFunSuite with SharedSQLContext {
 
-  test("DataFrame.debug()") {
-    testData.debug()
-  }
+  test("DataFrame.debug()") { testData.debug() }
 }

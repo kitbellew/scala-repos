@@ -9,9 +9,7 @@ import views._
 
 object WorldMap extends LilaController {
 
-  def index = Action {
-    Ok(views.html.site.worldMap())
-  }
+  def index = Action { Ok(views.html.site.worldMap()) }
 
   def stream = Action.async {
     Env.worldMap.getStream map { stream =>

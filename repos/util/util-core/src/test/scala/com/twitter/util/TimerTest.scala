@@ -28,9 +28,7 @@ class TimerTest
         timerLocal.set(local().getOrElse(-1))
       }
     }
-    eventually {
-      assert(expectedVal == timerLocal.get())
-    }
+    eventually { assert(expectedVal == timerLocal.get()) }
     timer.stop()
   }
 
@@ -97,9 +95,7 @@ class TimerTest
   test("ScheduledThreadPoolTimer should increment a counter") {
     val timer = new ScheduledThreadPoolTimer
     val counter = new AtomicInteger(0)
-    timer.schedule(100.millis, 200.millis) {
-      counter.incrementAndGet()
-    }
+    timer.schedule(100.millis, 200.millis) { counter.incrementAndGet() }
     eventually { assert(counter.get() >= 2) }
     timer.stop()
   }
@@ -107,9 +103,7 @@ class TimerTest
   test("ScheduledThreadPoolTimer should schedule(when)") {
     val timer = new ScheduledThreadPoolTimer
     val counter = new AtomicInteger(0)
-    timer.schedule(Time.now + 200.millis) {
-      counter.incrementAndGet()
-    }
+    timer.schedule(Time.now + 200.millis) { counter.incrementAndGet() }
     eventually { assert(counter.get() == 1) }
     timer.stop()
   }
@@ -141,9 +135,7 @@ class TimerTest
       }
     }
 
-    timer.schedule(Time.now) {
-      throw new scala.MatchError("huh")
-    }
+    timer.schedule(Time.now) { throw new scala.MatchError("huh") }
 
     latch.await(30.seconds)
 
@@ -165,9 +157,7 @@ class TimerTest
   test("JavaTimer should schedule(when)") {
     val timer = new JavaTimer
     val counter = new AtomicInteger(0)
-    timer.schedule(Time.now + 20.millis) {
-      counter.incrementAndGet()
-    }
+    timer.schedule(Time.now + 20.millis) { counter.incrementAndGet() }
     Thread.sleep(40.milliseconds.inMillis)
     eventually { assert(counter.get() == 1) }
     timer.stop()
@@ -176,9 +166,7 @@ class TimerTest
   test("JavaTimer should schedule(pre-epoch)") {
     val timer = new JavaTimer
     val counter = new AtomicInteger(0)
-    timer.schedule(Time.Bottom) {
-      counter.incrementAndGet()
-    }
+    timer.schedule(Time.Bottom) { counter.incrementAndGet() }
     eventually { assert(counter.get() == 1) }
     timer.stop()
   }
@@ -346,9 +334,7 @@ class TimerTest
       timer.schedule(Time.now + 10.millis) { throw new SomeEx }
     }
 
-    eventually {
-      assert(1 == seen.get)
-    }
+    eventually { assert(1 == seen.get) }
     timer.stop()
   }
 

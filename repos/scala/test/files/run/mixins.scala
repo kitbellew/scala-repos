@@ -66,9 +66,7 @@ object Test3 {
     println("C");
   }
 
-  def test() = {
-    val c = new C();
-  }
+  def test() = { val c = new C(); }
 }
 
 // Main testing function

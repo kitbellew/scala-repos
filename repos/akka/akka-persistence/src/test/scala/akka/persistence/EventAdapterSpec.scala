@@ -46,11 +46,7 @@ object EventAdapterSpec {
       case e ⇒ NotTagged(e)
     }
     override def fromJournal(event: Any, manifest: String): EventSeq =
-      EventSeq.single {
-        event match {
-          case m: JournalModel ⇒ m.payload
-        }
-      }
+      EventSeq.single { event match { case m: JournalModel ⇒ m.payload } }
 
     override def manifest(event: Any): String = ""
   }

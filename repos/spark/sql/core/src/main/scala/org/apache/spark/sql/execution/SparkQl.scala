@@ -75,9 +75,7 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
           SetCommand(Some(key -> Option(value)))
         } else if (node.remainder.nonEmpty) {
           SetCommand(Some(node.remainder -> None))
-        } else {
-          SetCommand(None)
-        }
+        } else { SetCommand(None) }
 
       // Just fake explain for any of the native commands.
       case Token("TOK_EXPLAIN", explainArgs)
@@ -255,13 +253,9 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
               "a CREATE TABLE AS SELECT statement does not allow column definitions.")
           }
 
-          val mode = if (ifNotExists.isDefined) {
-            SaveMode.Ignore
-          } else if (temp.isDefined) {
-            SaveMode.Overwrite
-          } else {
-            SaveMode.ErrorIfExists
-          }
+          val mode = if (ifNotExists.isDefined) { SaveMode.Ignore }
+          else if (temp.isDefined) { SaveMode.Overwrite }
+          else { SaveMode.ErrorIfExists }
 
           CreateTableUsingAsSelect(
             tableIdent,

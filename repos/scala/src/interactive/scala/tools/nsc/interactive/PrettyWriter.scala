@@ -33,9 +33,7 @@ class PrettyWriter(wr: Writer) extends Writer {
         case _ =>
           wr.write(str, off, len)
       }
-    } else {
-      wr.write(str, off, len)
-    }
+    } else { wr.write(str, off, len) }
   }
   override def toString = wr.toString
 }

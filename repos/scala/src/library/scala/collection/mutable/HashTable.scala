@@ -150,9 +150,7 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
   @deprecatedOverriding(
     "No sensible way to override addEntry as private addEntry0 is used in multiple places internally.",
     "2.11.0")
-  protected def addEntry(e: Entry) {
-    addEntry0(e, index(elemHashCode(e.key)))
-  }
+  protected def addEntry(e: Entry) { addEntry0(e, index(elemHashCode(e.key))) }
 
   private[this] def addEntry0(e: Entry, h: Int) {
     e.next = table(h).asInstanceOf[Entry]
@@ -299,16 +297,14 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",
     "2.11.0")
-  protected def nnSizeMapAdd(h: Int) = if (sizemap ne null) {
-    sizemap(h >> sizeMapBucketBitSize) += 1
-  }
+  protected def nnSizeMapAdd(h: Int) =
+    if (sizemap ne null) { sizemap(h >> sizeMapBucketBitSize) += 1 }
 
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",
     "2.11.0")
-  protected def nnSizeMapRemove(h: Int) = if (sizemap ne null) {
-    sizemap(h >> sizeMapBucketBitSize) -= 1
-  }
+  protected def nnSizeMapRemove(h: Int) =
+    if (sizemap ne null) { sizemap(h >> sizeMapBucketBitSize) -= 1 }
 
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",
@@ -365,9 +361,7 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
     }
   }
 
-  private[collection] def printSizeMap() {
-    println(sizemap.toList)
-  }
+  private[collection] def printSizeMap() { println(sizemap.toList) }
 
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",

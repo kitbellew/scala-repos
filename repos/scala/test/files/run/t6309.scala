@@ -11,7 +11,5 @@ object Test {
       def a = b
     }
 
-  def main(args: Array[String]) {
-    println(f(7).a)
-  }
+  def main(args: Array[String]) { println(f(7).a) }
 }

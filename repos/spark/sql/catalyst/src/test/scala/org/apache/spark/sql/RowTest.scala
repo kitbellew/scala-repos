@@ -45,9 +45,7 @@ class RowTest extends FunSpec with Matchers {
       intercept[UnsupportedOperationException] {
         noSchemaRow.fieldIndex("col1")
       }
-      intercept[UnsupportedOperationException] {
-        noSchemaRow.getAs("col1")
-      }
+      intercept[UnsupportedOperationException] { noSchemaRow.getAs("col1") }
     }
   }
 

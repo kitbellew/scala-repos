@@ -137,9 +137,8 @@ object JacksonParser extends Logging {
             lowerCaseValue.equals("infinity") ||
             lowerCaseValue.equals("-infinity") ||
             lowerCaseValue.equals("inf") ||
-            lowerCaseValue.equals("-inf")) {
-          value.toFloat
-        } else {
+            lowerCaseValue.equals("-inf")) { value.toFloat }
+        else {
           throw new SparkSQLJsonProcessingException(
             s"Cannot parse $value as FloatType.")
         }
@@ -155,9 +154,8 @@ object JacksonParser extends Logging {
             lowerCaseValue.equals("infinity") ||
             lowerCaseValue.equals("-infinity") ||
             lowerCaseValue.equals("inf") ||
-            lowerCaseValue.equals("-inf")) {
-          value.toDouble
-        } else {
+            lowerCaseValue.equals("-inf")) { value.toDouble }
+        else {
           throw new SparkSQLJsonProcessingException(
             s"Cannot parse $value as DoubleType.")
         }
@@ -285,9 +283,8 @@ object JacksonParser extends Logging {
     configOptions.setJacksonOptions(factory)
 
     input.flatMap { record =>
-      if (record.trim.isEmpty) {
-        Nil
-      } else {
+      if (record.trim.isEmpty) { Nil }
+      else {
         try {
           Utils.tryWithResource(factory.createParser(record)) { parser =>
             parser.nextToken()
@@ -296,11 +293,8 @@ object JacksonParser extends Logging {
               case null             => failedRecord(record)
               case row: InternalRow => row :: Nil
               case array: ArrayData =>
-                if (array.numElements() == 0) {
-                  Nil
-                } else {
-                  array.toArray[InternalRow](schema)
-                }
+                if (array.numElements() == 0) { Nil }
+                else { array.toArray[InternalRow](schema) }
               case _ =>
                 failedRecord(record)
             }

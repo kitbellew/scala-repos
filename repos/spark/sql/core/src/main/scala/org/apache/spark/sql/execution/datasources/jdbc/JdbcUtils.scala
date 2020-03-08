@@ -79,11 +79,8 @@ object JdbcUtils extends Logging {
     // the database name. Query used to find table exists can be overridden by the dialects.
     Try {
       val statement = conn.prepareStatement(dialect.getTableExistsQuery(table))
-      try {
-        statement.executeQuery()
-      } finally {
-        statement.close()
-      }
+      try { statement.executeQuery() }
+      finally { statement.close() }
     }.isSuccess
   }
 
@@ -92,11 +89,8 @@ object JdbcUtils extends Logging {
     */
   def dropTable(conn: Connection, table: String): Unit = {
     val statement = conn.createStatement
-    try {
-      statement.executeUpdate(s"DROP TABLE $table")
-    } finally {
-      statement.close()
-    }
+    try { statement.executeUpdate(s"DROP TABLE $table") }
+    finally { statement.close() }
   }
 
   /**
@@ -197,9 +191,8 @@ object JdbcUtils extends Logging {
           val numFields = rddSchema.fields.length
           var i = 0
           while (i < numFields) {
-            if (row.isNullAt(i)) {
-              stmt.setNull(i + 1, nullTypes(i))
-            } else {
+            if (row.isNullAt(i)) { stmt.setNull(i + 1, nullTypes(i)) }
+            else {
               rddSchema.fields(i).dataType match {
                 case IntegerType => stmt.setInt(i + 1, row.getInt(i))
                 case LongType    => stmt.setLong(i + 1, row.getLong(i))
@@ -239,30 +232,21 @@ object JdbcUtils extends Logging {
             rowCount = 0
           }
         }
-        if (rowCount > 0) {
-          stmt.executeBatch()
-        }
-      } finally {
-        stmt.close()
-      }
-      if (supportsTransactions) {
-        conn.commit()
-      }
+        if (rowCount > 0) { stmt.executeBatch() }
+      } finally { stmt.close() }
+      if (supportsTransactions) { conn.commit() }
       committed = true
     } finally {
       if (!committed) {
         // The stage must fail.  We got here through an exception path, so
         // let the exception through unless rollback() or close() want to
         // tell the user about another problem.
-        if (supportsTransactions) {
-          conn.rollback()
-        }
+        if (supportsTransactions) { conn.rollback() }
         conn.close()
       } else {
         // The stage must succeed.  We cannot propagate any exception close() might throw.
-        try {
-          conn.close()
-        } catch {
+        try { conn.close() }
+        catch {
           case e: Exception =>
             logWarning("Transaction succeeded, but closing failed", e)
         }

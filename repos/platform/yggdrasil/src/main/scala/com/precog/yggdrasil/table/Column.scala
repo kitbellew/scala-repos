@@ -86,9 +86,7 @@ trait HomogeneousArrayColumn[@spec(Boolean, Long, Double) A]
     true
   }
 
-  def rowCompare(row1: Int, row2: Int): Int = {
-    sys.error("...")
-  }
+  def rowCompare(row1: Int, row2: Int): Int = { sys.error("...") }
 
   val tpe: CArrayType[A]
 
@@ -332,9 +330,7 @@ trait NullColumn extends Column {
   override def toString = "NullColumn"
 }
 object NullColumn {
-  def apply(definedAt: BitSet) = {
-    new BitsetColumn(definedAt) with NullColumn
-  }
+  def apply(definedAt: BitSet) = { new BitsetColumn(definedAt) with NullColumn }
 }
 
 object UndefinedColumn {
@@ -386,9 +382,8 @@ object Column {
   def rowOrder(col: Column): Order[Int] = new Order[Int] {
     def compare(i: Int, j: Int): Int = {
       if (col.isDefinedAt(i)) {
-        if (col.isDefinedAt(j)) {
-          col.rowCompare(i, j)
-        } else 1
+        if (col.isDefinedAt(j)) { col.rowCompare(i, j) }
+        else 1
       } else if (col.isDefinedAt(j)) -1
       else 0
     }
@@ -420,9 +415,8 @@ object Column {
       def apply(row: Int) = {
         val maxRowComputed = memo.length
 
-        if (row < maxRowComputed) {
-          memo(row)
-        } else {
+        if (row < maxRowComputed) { memo(row) }
+        else {
           var i = maxRowComputed
           var res = 0d
 
@@ -536,20 +530,15 @@ object Column {
 
   def isDefinedAt(cols: Array[Column], row: Int): Boolean = {
     var i = 0
-    while (i < cols.length && !cols(i).isDefinedAt(row)) {
-      i += 1
-    }
+    while (i < cols.length && !cols(i).isDefinedAt(row)) { i += 1 }
     i < cols.length
   }
 
   def isDefinedAtAll(cols: Array[Column], row: Int): Boolean = {
-    if (cols.isEmpty) {
-      false
-    } else {
+    if (cols.isEmpty) { false }
+    else {
       var i = 0
-      while (i < cols.length && cols(i).isDefinedAt(row)) {
-        i += 1
-      }
+      while (i < cols.length && cols(i).isDefinedAt(row)) { i += 1 }
       i == cols.length
     }
   }

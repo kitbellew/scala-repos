@@ -109,9 +109,7 @@ trait BddDsl extends FieldConversions with PipeOperationsConversions {
       sources foreach { _.addSourceDataToJobTest(jobTest) }
 
       // Add Sink
-      jobTest.sink[OutputType](Tsv("output")) {
-        assertion(_)
-      }
+      jobTest.sink[OutputType](Tsv("output")) { assertion(_) }
 
       // Execute
       jobTest.run.finish

@@ -89,7 +89,5 @@ class CustomMenuItem(
     * If true, this menu item, and all visible menus, will be hidden when this menu item is clicked on.
     */
   def hideOnClick: BooleanProperty = delegate.hideOnClickProperty()
-  def hideOnClick_=(value: Boolean): Unit = {
-    hideOnClick() = value
-  }
+  def hideOnClick_=(value: Boolean): Unit = { hideOnClick() = value }
 }

@@ -78,9 +78,7 @@ object ScalaCompletionUtil {
     if (braceArgs) text.append("case ")
     val paramNamesWithTypes = new ArrayBuffer[(String, ScType)]
     def contains(name: String): Boolean = {
-      paramNamesWithTypes.exists {
-        case (s, _) => s == name
-      }
+      paramNamesWithTypes.exists { case (s, _) => s == name }
     }
     for (param <- params) {
       val names = NameSuggester.suggestNamesByType(param)
@@ -98,9 +96,8 @@ object ScalaCompletionUtil {
     }
     val iter = paramNamesWithTypes.map {
       case (s, tp) =>
-        s + ": " + (if (canonical) {
-                      ScType.canonicalText(tp)
-                    } else ScType.presentableText(tp))
+        s + ": " + (if (canonical) { ScType.canonicalText(tp) }
+                    else ScType.presentableText(tp))
     }
     val paramsString =
       if (paramNamesWithTypes.size != 1 || !braceArgs)
@@ -112,9 +109,7 @@ object ScalaCompletionUtil {
   }
 
   def getLeafByOffset(offset: Int, element: PsiElement): PsiElement = {
-    if (offset < 0) {
-      return null
-    }
+    if (offset < 0) { return null }
     var candidate: PsiElement = element.getContainingFile
     if (candidate == null || candidate.getNode == null) return null
     while (candidate.getNode.getChildren(null).nonEmpty) {
@@ -270,9 +265,7 @@ object ScalaCompletionUtil {
     !checkErrors(dummyFile)
   }
 
-  def removeDummy(text: String): String = {
-    replaceDummy(text, "")
-  }
+  def removeDummy(text: String): String = { replaceDummy(text, "") }
 
   def replaceDummy(text: String, to: String): String = {
     if (text.indexOf(DUMMY_IDENTIFIER) != -1) {
@@ -344,9 +337,7 @@ object ScalaCompletionUtil {
     } getOrElse (null, false)
 
   def getDummyIdentifier(offset: Int, file: PsiFile): String = {
-    def isOpChar(c: Char): Boolean = {
-      ScalaNamesUtil.isIdentifier("+" + c)
-    }
+    def isOpChar(c: Char): Boolean = { ScalaNamesUtil.isIdentifier("+" + c) }
 
     val element = file.findElementAt(offset)
     val ref = file.findReferenceAt(offset)
@@ -366,11 +357,8 @@ object ScalaCompletionUtil {
             val from = offset - ref.getElement.getTextRange.getStartOffset + 1
             if (from < text.length && from >= 0) text.substring(from) else ""
         }
-        if (ScalaNamesUtil.isKeyword(rest)) {
-          CompletionUtil.DUMMY_IDENTIFIER
-        } else {
-          CompletionUtil.DUMMY_IDENTIFIER_TRIMMED
-        }
+        if (ScalaNamesUtil.isKeyword(rest)) { CompletionUtil.DUMMY_IDENTIFIER }
+        else { CompletionUtil.DUMMY_IDENTIFIER_TRIMMED }
       }
 
       if (ref.getElement != null &&
@@ -384,11 +372,8 @@ object ScalaCompletionUtil {
       } else {
         val actualElement = file.findElementAt(offset + 1)
         if (actualElement != null && ScalaNamesUtil.isKeyword(
-              actualElement.getText)) {
-          CompletionUtil.DUMMY_IDENTIFIER
-        } else {
-          CompletionUtil.DUMMY_IDENTIFIER_TRIMMED
-        }
+              actualElement.getText)) { CompletionUtil.DUMMY_IDENTIFIER }
+        else { CompletionUtil.DUMMY_IDENTIFIER_TRIMMED }
       }
     }
   }

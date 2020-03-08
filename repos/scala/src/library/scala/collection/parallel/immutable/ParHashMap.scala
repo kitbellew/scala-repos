@@ -119,9 +119,7 @@ class ParHashMap[K, +V] private[immutable] (
       val r = triter.next()
       r
     }
-    def hasNext: Boolean = {
-      i < sz
-    }
+    def hasNext: Boolean = { i < sz }
     def remaining = sz - i
     override def toString = "HashTrieIterator(" + sz + ")"
   }

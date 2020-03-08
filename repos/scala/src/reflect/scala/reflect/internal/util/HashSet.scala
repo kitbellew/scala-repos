@@ -67,9 +67,7 @@ class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int)
     used += 1
     if (used > (table.length >> 2)) growTable()
   }
-  def addEntries(xs: TraversableOnce[T]) {
-    xs foreach addEntry
-  }
+  def addEntries(xs: TraversableOnce[T]) { xs foreach addEntry }
 
   def iterator = new Iterator[T] {
     private var i = 0

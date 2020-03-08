@@ -119,9 +119,7 @@ object HLists {
     */
   implicit final class HListMethods[ListSoFar <: HList](hlist: ListSoFar)
       extends AnyRef {
-    def :+:[T](v: T): :+:[T, ListSoFar] = {
-      HLists.:+:(v, hlist)
-    }
+    def :+:[T](v: T): :+:[T, ListSoFar] = { HLists.:+:(v, hlist) }
 
     /**
       * The length of this HList; note that this is O(n) in the list of elements.
@@ -163,7 +161,5 @@ object ExcludeThisType {
       B >: A]: A ExcludeThisType B = unexpected
 
   // Type alias for context bound
-  type exclude[T] = {
-    type other[U] = U ExcludeThisType T
-  }
+  type exclude[T] = { type other[U] = U ExcludeThisType T }
 }

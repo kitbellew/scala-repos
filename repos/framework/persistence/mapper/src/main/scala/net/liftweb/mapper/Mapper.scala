@@ -92,19 +92,11 @@ trait Mapper[A <: Mapper[A]]
     this
   }
 
-  def save(): Boolean = {
-    runSafe {
-      getSingleton.save(this)
-    }
-  }
+  def save(): Boolean = { runSafe { getSingleton.save(this) } }
 
-  def htmlLine: NodeSeq = {
-    getSingleton.doHtmlLine(this)
-  }
+  def htmlLine: NodeSeq = { getSingleton.doHtmlLine(this) }
 
-  def asHtml: NodeSeq = {
-    getSingleton.asHtml(this)
-  }
+  def asHtml: NodeSeq = { getSingleton.asHtml(this) }
 
   /**
     * If the instance calculates any additional
@@ -113,11 +105,7 @@ trait Mapper[A <: Mapper[A]]
     */
   def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = Nil
 
-  def validate: List[FieldError] = {
-    runSafe {
-      getSingleton.validate(this)
-    }
-  }
+  def validate: List[FieldError] = { runSafe { getSingleton.validate(this) } }
 
   /**
     * Returns the instance in a Full Box if the instance is valid, otherwise
@@ -287,9 +275,7 @@ trait Mapper[A <: Mapper[A]]
     ret.toString
   }
 
-  def toXml: Elem = {
-    getSingleton.toXml(this)
-  }
+  def toXml: Elem = { getSingleton.toXml(this) }
 
   def checkNames {
     runSafe {
@@ -353,7 +339,9 @@ trait Mapper[A <: Mapper[A]]
 
 trait LongKeyedMapper[OwnerType <: LongKeyedMapper[OwnerType]]
     extends KeyedMapper[Long, OwnerType]
-    with BaseLongKeyedMapper { self: OwnerType => }
+    with BaseLongKeyedMapper {
+  self: OwnerType =>
+}
 
 trait BaseKeyedMapper extends BaseMapper {
   type TheKeyType

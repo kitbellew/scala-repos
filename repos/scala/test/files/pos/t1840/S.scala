@@ -1,2 +1,4 @@
 package p
-class S { new J }
+class S {
+  new J
+}

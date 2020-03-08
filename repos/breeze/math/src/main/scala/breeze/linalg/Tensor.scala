@@ -224,9 +224,7 @@ object Tensor {
       canTranspose: CanTranspose[R, RT])
       : UFunc.UImpl2[Op, Transpose[T], V, RT] = {
     new UFunc.UImpl2[Op, Transpose[T], V, RT] {
-      def apply(a: Transpose[T], b: V) = {
-        canTranspose(op(a.inner, b))
-      }
+      def apply(a: Transpose[T], b: V) = { canTranspose(op(a.inner, b)) }
     }
 
   }
@@ -236,9 +234,7 @@ object Tensor {
       op: UFunc.InPlaceImpl2[Op, T, V])
       : UFunc.InPlaceImpl2[Op, Transpose[T], V] = {
     new UFunc.InPlaceImpl2[Op, Transpose[T], V] {
-      def apply(a: Transpose[T], b: V) {
-        op(a.inner, b)
-      }
+      def apply(a: Transpose[T], b: V) { op(a.inner, b) }
     }
 
   }

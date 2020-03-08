@@ -120,9 +120,7 @@ trait CodegenSupport extends SparkPlan {
       ctx: CodegenContext,
       input: Seq[ExprCode],
       row: String = null): String = {
-    if (input != null) {
-      assert(input.length == output.length)
-    }
+    if (input != null) { assert(input.length == output.length) }
     parent.consumeChild(ctx, this, input, row)
   }
 
@@ -186,17 +184,13 @@ trait CodegenSupport extends SparkPlan {
           case (attr, i) =>
             BoundReference(i, attr.dataType, attr.nullable).gen(ctx)
         }
-      } else {
-        input
-      }
+      } else { input }
 
     val evaluated =
       if (row != null && preferUnsafeRow) {
         // Current plan can consume UnsafeRows directly.
         ""
-      } else {
-        evaluateRequiredVariables(child.output, inputVars, usedInputs)
-      }
+      } else { evaluateRequiredVariables(child.output, inputVars, usedInputs) }
 
     s"""
        |
@@ -220,9 +214,7 @@ trait CodegenSupport extends SparkPlan {
   protected def doConsume(
       ctx: CodegenContext,
       input: Seq[ExprCode],
-      row: String): String = {
-    throw new UnsupportedOperationException
-  }
+      row: String): String = { throw new UnsupportedOperationException }
 }
 
 /**
@@ -239,17 +231,13 @@ case class InputAdapter(child: SparkPlan)
   override def outputPartitioning: Partitioning = child.outputPartitioning
   override def outputOrdering: Seq[SortOrder] = child.outputOrdering
 
-  override def doExecute(): RDD[InternalRow] = {
-    child.execute()
-  }
+  override def doExecute(): RDD[InternalRow] = { child.execute() }
 
   override def doExecuteBroadcast[T](): broadcast.Broadcast[T] = {
     child.doExecuteBroadcast()
   }
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
-    child.execute() :: Nil
-  }
+  override def upstreams(): Seq[RDD[InternalRow]] = { child.execute() :: Nil }
 
   override def doProduce(ctx: CodegenContext): String = {
     val input = ctx.freshName("input")
@@ -397,11 +385,8 @@ case class WholeStageCodegen(child: SparkPlan)
       input: Seq[ExprCode],
       row: String = null): String = {
 
-    val doCopy = if (ctx.copyResult) {
-      ".copy()"
-    } else {
-      ""
-    }
+    val doCopy = if (ctx.copyResult) { ".copy()" }
+    else { "" }
     if (row != null) {
       // There is an UnsafeRow already
       s"""
@@ -432,18 +417,14 @@ case class WholeStageCodegen(child: SparkPlan)
     }
   }
 
-  override def innerChildren: Seq[SparkPlan] = {
-    child :: Nil
-  }
+  override def innerChildren: Seq[SparkPlan] = { child :: Nil }
 
   private def collectInputs(plan: SparkPlan): Seq[SparkPlan] = plan match {
     case InputAdapter(c) => c :: Nil
     case other           => other.children.flatMap(collectInputs)
   }
 
-  override def treeChildren: Seq[SparkPlan] = {
-    collectInputs(child)
-  }
+  override def treeChildren: Seq[SparkPlan] = { collectInputs(child) }
 
   override def simpleString: String = "WholeStageCodegen"
 }
@@ -498,10 +479,7 @@ case class CollapseCodegenStages(conf: SQLConf) extends Rule[SparkPlan] {
   }
 
   def apply(plan: SparkPlan): SparkPlan = {
-    if (conf.wholeStageEnabled) {
-      insertWholeStageCodegen(plan)
-    } else {
-      plan
-    }
+    if (conf.wholeStageEnabled) { insertWholeStageCodegen(plan) }
+    else { plan }
   }
 }

@@ -36,7 +36,9 @@ trait Liftables { self: Universe =>
       *  @see [[http://docs.scala-lang.org/overviews/quasiquotes/lifting.html]]
       */
     def apply[T](f: T => Tree): Liftable[T] =
-      new Liftable[T] { def apply(value: T): Tree = f(value) }
+      new Liftable[T] {
+        def apply(value: T): Tree = f(value)
+      }
   }
 
   /** A type class that defines a way to extract instance of `T` from a `Tree`.

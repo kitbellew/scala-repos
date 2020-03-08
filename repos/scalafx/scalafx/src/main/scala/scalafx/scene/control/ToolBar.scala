@@ -59,18 +59,14 @@ class ToolBar(override val delegate: jfxsc.ToolBar = new jfxsc.ToolBar)
     *
     * @param c list of items to replace prior items.
     */
-  def items_=(c: Iterable[Node]) {
-    fillSFXCollection(this.items, c)
-  }
+  def items_=(c: Iterable[Node]) { fillSFXCollection(this.items, c) }
 
   /**
     * Sets a node, replacing the prior content. If you want append to current content, use `add` or similar.
     *
     * @param n Node to replace prior content.
     */
-  def items_=(n: Node) {
-    fillSFXCollectionWithOne(this.items, n)
-  }
+  def items_=(n: Node) { fillSFXCollectionWithOne(this.items, n) }
 
   /**
     * The items contained in the ToolBar.
@@ -82,25 +78,19 @@ class ToolBar(override val delegate: jfxsc.ToolBar = new jfxsc.ToolBar)
     *
     * @param c list of items to replace prior items.
     */
-  def content_=(c: Iterable[Node]) {
-    items = c
-  }
+  def content_=(c: Iterable[Node]) { items = c }
 
   /**
     * Sets a node, replacing the prior content. If you want append to current content, use `add` or similar.
     *
     * @param n Node to replace prior content.
     */
-  def content_=(n: Node) {
-    items = n
-  }
+  def content_=(n: Node) { items = n }
 
   /**
     * The orientation of the ToolBar - this can either be horizontal or vertical.
     */
   def orientation: ObjectProperty[jfxg.Orientation] =
     delegate.orientationProperty
-  def orientation_=(v: Orientation) {
-    orientation() = v
-  }
+  def orientation_=(v: Orientation) { orientation() = v }
 }

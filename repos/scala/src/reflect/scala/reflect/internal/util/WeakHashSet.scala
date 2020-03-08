@@ -52,9 +52,7 @@ final class WeakHashSet[A <: AnyRef](
       throw new IllegalArgumentException(
         "initial capacity cannot be less than 0")
     var candidate = 1
-    while (candidate < initialCapacity) {
-      candidate *= 2
-    }
+    while (candidate < initialCapacity) { candidate *= 2 }
     candidate
   }
 
@@ -320,9 +318,7 @@ final class WeakHashSet[A <: AnyRef](
             // element null means the weakref has been cleared since we last did a removeStaleEntries(), move to the next entry
             entry = entry.tail
             hasNext
-          } else {
-            true
-          }
+          } else { true }
         }
       }
 

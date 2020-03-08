@@ -29,12 +29,8 @@ trait ExpFamTest[D <: Density[T] with Rand[T], T]
         if (!paramsClose(mle, p)) {
           println("Got " + mle + " expected " + p)
           false
-        } else {
-          true
-        }
-      } catch {
-        case ex: Exception => ex.printStackTrace(); throw ex
-      }
+        } else { true }
+      } catch { case ex: Exception => ex.printStackTrace(); throw ex }
     })
   }
 
@@ -47,9 +43,7 @@ trait ExpFamTest[D <: Density[T] with Rand[T], T]
       if (!paramsClose(mle, mle2)) {
         println("Got " + mle2 + " expected " + mle)
         false
-      } else {
-        true
-      }
+      } else { true }
     })
 
   }

@@ -24,9 +24,7 @@ class HostDirectivesExamplesSpec extends RoutingSpec {
 
   "list-of-hosts" in {
     val route =
-      host("api.company.com", "rest.company.com") {
-        complete("Ok")
-      }
+      host("api.company.com", "rest.company.com") { complete("Ok") }
 
     // tests:
     Get() ~> Host("rest.company.com") ~> route ~> check {
@@ -43,9 +41,7 @@ class HostDirectivesExamplesSpec extends RoutingSpec {
     val shortOnly: String => Boolean = (hostname) => hostname.length < 10
 
     val route =
-      host(shortOnly) {
-        complete("Ok")
-      }
+      host(shortOnly) { complete("Ok") }
 
     // tests:
     Get() ~> Host("short.com") ~> route ~> check {

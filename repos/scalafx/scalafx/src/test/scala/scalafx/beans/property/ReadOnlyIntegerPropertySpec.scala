@@ -249,12 +249,8 @@ class ReadOnlyIntegerPropertySpec extends FlatSpec with BeforeAndAfterEach {
     var invalidateCount = 0
     var changeCount = 0
     val binding = readOnlyIntegerProperty * integerProperty2
-    binding onInvalidate {
-      invalidateCount += 1
-    }
-    binding onChange {
-      changeCount += 1
-    }
+    binding onInvalidate { invalidateCount += 1 }
+    binding onChange { changeCount += 1 }
     integerProperty2() = 1
     invalidateCount should equal(1)
     changeCount should equal(1)

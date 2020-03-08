@@ -192,9 +192,7 @@ class AccountServiceHandlers(
           val keyToFind = if (auth.accountId == rootAccountId) {
             // Root can send an apiKey query param for the lookup
             request.parameters.get('apiKey).getOrElse(auth.apiKey)
-          } else {
-            auth.apiKey
-          }
+          } else { auth.apiKey }
 
           logger.debug(
             "Looking up account ids with account: " + auth.accountId + " for API key: " + keyToFind)
@@ -394,9 +392,7 @@ class AccountServiceHandlers(
                   content =
                     Some(JString("Unable to find account " + accountId))))
           }
-        } getOrElse {
-          Future(badRequest("Missing account Id"))
-        }
+        } getOrElse { Future(badRequest("Missing account Id")) }
       }
 
     val metadata = DescriptionMetadata(

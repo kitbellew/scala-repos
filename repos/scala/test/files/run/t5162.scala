@@ -13,7 +13,5 @@ object O2 {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    new O2.Derived().foo
-  }
+  def main(args: Array[String]) { new O2.Derived().foo }
 }

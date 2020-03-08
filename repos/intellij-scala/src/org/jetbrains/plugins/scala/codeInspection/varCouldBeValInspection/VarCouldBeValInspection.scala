@@ -15,9 +15,7 @@ class VarCouldBeValInspection
 
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
-    new PsiElementVisitor {}
-  }
+      isOnTheFly: Boolean): PsiElementVisitor = { new PsiElementVisitor {} }
 }
 
 object VarCouldBeValInspection {

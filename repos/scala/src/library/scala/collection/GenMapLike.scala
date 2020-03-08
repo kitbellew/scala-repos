@@ -127,9 +127,7 @@ trait GenMapLike[A, +B, +Repr]
                   case _ => false
                 }
             }
-          } catch {
-            case ex: ClassCastException => false
-          }
+          } catch { case ex: ClassCastException => false }
         }
     case _ =>
       false

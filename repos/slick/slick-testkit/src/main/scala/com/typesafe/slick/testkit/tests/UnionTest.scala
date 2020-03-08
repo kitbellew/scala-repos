@@ -200,13 +200,9 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       def * = (id, dname, sentAt) <> (Delivery.tupled, Delivery.unapply)
     }
 
-    def leftSide = {
-      TableQuery[Deliveries].filter(_.sentAt >= 1400000000L)
-    }
+    def leftSide = { TableQuery[Deliveries].filter(_.sentAt >= 1400000000L) }
 
-    def rightSide = {
-      TableQuery[Deliveries].filter(_.sentAt < 1400000000L)
-    }
+    def rightSide = { TableQuery[Deliveries].filter(_.sentAt < 1400000000L) }
 
     val query =
       leftSide.union(rightSide).sortBy(_.id.desc).length

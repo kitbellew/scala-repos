@@ -151,11 +151,8 @@ private[impl] class ReviveOffersActor(
 
     case ReviveOffersActor.TimedCheck =>
       log.info(s"Received TimedCheck")
-      if (revivesNeeded > 0) {
-        reviveOffers()
-      } else {
-        log.info("=> no revives needed right now")
-      }
+      if (revivesNeeded > 0) { reviveOffers() }
+      else { log.info("=> no revives needed right now") }
   }
 
   protected def schedulerCheck(duration: FiniteDuration): Cancellable = {

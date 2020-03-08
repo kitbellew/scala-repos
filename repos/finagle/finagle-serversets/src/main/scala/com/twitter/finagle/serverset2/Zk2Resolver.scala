@@ -122,9 +122,7 @@ class Zk2Resolver(
     val key = hosts.split(",").sorted mkString ","
     val value = discoverers(key)
 
-    if (chatty()) {
-      eprintf("ServiceDiscoverer(%s->%s)\n", hosts, value)
-    }
+    if (chatty()) { eprintf("ServiceDiscoverer(%s->%s)\n", hosts, value) }
 
     value
   }
@@ -240,9 +238,7 @@ class Zk2Resolver(
             })
 
           Closable.make { deadline =>
-            reg.close(deadline) ensure {
-              nsets.decrementAndGet()
-            }
+            reg.close(deadline) ensure { nsets.decrementAndGet() }
           }
         }
 

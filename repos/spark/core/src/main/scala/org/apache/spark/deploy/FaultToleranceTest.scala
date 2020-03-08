@@ -327,9 +327,8 @@ private object FaultToleranceTest extends App with Logging {
       }
     }
 
-    try {
-      assertTrue(Await.result(f, 120 seconds))
-    } catch {
+    try { assertTrue(Await.result(f, 120 seconds)) }
+    catch {
       case e: TimeoutException =>
         logError("Master states: " + masters.map(_.state))
         logError("Num apps: " + numLiveApps)

@@ -167,9 +167,8 @@ class SocketServer(
 
   def boundPort(
       protocol: SecurityProtocol = SecurityProtocol.PLAINTEXT): Int = {
-    try {
-      acceptors(endpoints(protocol)).serverChannel.socket().getLocalPort
-    } catch {
+    try { acceptors(endpoints(protocol)).serverChannel.socket().getLocalPort }
+    catch {
       case e: Exception =>
         throw new KafkaException(
           "Tried to check server's port before server was started or checked for port of non-existing protocol",
@@ -214,9 +213,7 @@ private[kafka] abstract class AbstractServerThread(
   /**
     * Record that the thread startup is complete
     */
-  protected def startupComplete() = {
-    startupLatch.countDown()
-  }
+  protected def startupComplete() = { startupLatch.countDown() }
 
   /**
     * Record that the thread shutdown is complete
@@ -485,9 +482,8 @@ private[kafka] class Processor(
         // register any new responses for writing
         processNewResponses()
 
-        try {
-          selector.poll(300)
-        } catch {
+        try { selector.poll(300) }
+        catch {
           case e @ (_: IllegalStateException | _: IOException) =>
             error(
               "Closing processor %s due to illegal state or IO exception"
@@ -583,9 +579,7 @@ private[kafka] class Processor(
               "Closing socket connection actively according to the response code.")
             close(selector, curr.request.connectionId)
         }
-      } finally {
-        curr = requestChannel.receiveResponse(id)
-      }
+      } finally { curr = requestChannel.receiveResponse(id) }
     }
   }
 

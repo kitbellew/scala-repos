@@ -52,9 +52,7 @@ object ClusterSingletonManagerChaosSpec extends MultiNodeConfig {
   class Echo(testActor: ActorRef) extends Actor {
     testActor ! EchoStarted
 
-    def receive = {
-      case _ ⇒ sender() ! self
-    }
+    def receive = { case _ ⇒ sender() ! self }
   }
 }
 
@@ -134,9 +132,7 @@ class ClusterSingletonManagerChaosSpec
 
       join(first, first)
       awaitMemberUp(memberProbe, first)
-      runOn(first) {
-        expectMsg(EchoStarted)
-      }
+      runOn(first) { expectMsg(EchoStarted) }
       enterBarrier("first-started")
 
       join(second, first)
@@ -172,9 +168,7 @@ class ClusterSingletonManagerChaosSpec
 
       crash(first, second, third)
       enterBarrier("after-crash")
-      runOn(fourth) {
-        expectMsg(EchoStarted)
-      }
+      runOn(fourth) { expectMsg(EchoStarted) }
       enterBarrier("fourth-active")
 
       runOn(controller) {

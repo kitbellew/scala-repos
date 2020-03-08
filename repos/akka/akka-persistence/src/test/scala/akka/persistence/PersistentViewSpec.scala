@@ -134,9 +134,7 @@ object PersistentViewSpec {
       case "other" ⇒ stash()
       case "unstash" ⇒
         unstashAll()
-        context.become {
-          case msg ⇒ probe ! s"$msg-${lastSequenceNr}"
-        }
+        context.become { case msg ⇒ probe ! s"$msg-${lastSequenceNr}" }
       case msg ⇒ stash()
     }
   }

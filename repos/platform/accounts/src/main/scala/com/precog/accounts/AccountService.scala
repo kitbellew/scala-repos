@@ -97,9 +97,7 @@ trait AuthenticationCombinators extends HttpRequestHandlerCombinators {
                     "Credentials provided were formatted correctly, but did not match a known account.")))
               }
           }
-        } getOrElse {
-          Future(err(NotProvided))
-        }
+        } getOrElse { Future(err(NotProvided)) }
       }
     }
 
@@ -163,13 +161,9 @@ trait AccountService
                       post(PostAccountHandler) ~
                         path("'accountId/password/reset") {
                           post(GenerateResetTokenHandler) ~
-                            path("/'resetToken") {
-                              post(PasswordResetHandler)
-                            }
+                            path("/'resetToken") { post(PasswordResetHandler) }
                         } ~
-                        path("search") {
-                          get(SearchAccountsHandler)
-                        } ~
+                        path("search") { get(SearchAccountsHandler) } ~
                         path("'accountId/grants/") {
                           post(CreateAccountGrantHandler)
                         } ~

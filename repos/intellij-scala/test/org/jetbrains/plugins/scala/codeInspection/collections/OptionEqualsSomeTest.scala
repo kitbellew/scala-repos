@@ -79,9 +79,7 @@ class OptionEqualsSome_2_10_Test extends OperationsOnCollectionInspectionTest {
 
   override def hint: String = OptionEqualsSomeToContains.hint
 
-  def testNoErrors(): Unit = {
-    checkTextHasNoErrors("Option(1) == Some(2)")
-  }
+  def testNoErrors(): Unit = { checkTextHasNoErrors("Option(1) == Some(2)") }
 }
 
 class OptionNotEqualsSome_2_10_Test
@@ -93,7 +91,5 @@ class OptionNotEqualsSome_2_10_Test
 
   override protected def libVersion: ScalaSdkVersion = ScalaSdkVersion._2_10
 
-  def testNoErrors(): Unit = {
-    checkTextHasNoErrors("Option(1) == Some(2)")
-  }
+  def testNoErrors(): Unit = { checkTextHasNoErrors("Option(1) == Some(2)") }
 }

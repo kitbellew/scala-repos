@@ -26,7 +26,9 @@ object BooleanInduction extends App {
   type True = wTrue.T
   type False = wFalse.T
 
-  trait If[C <: Boolean, A, B] { type T; def apply(a: A, b: B): T }
+  trait If[C <: Boolean, A, B] {
+    type T; def apply(a: A, b: B): T
+  }
   object If {
     implicit def ifTrue[A, B] = new If[True, A, B] {
       type T = A; def apply(a: A, b: B) = a
@@ -51,9 +53,15 @@ object BooleanInduction extends App {
   // In use ...
 
   object si {
-    trait Case[B <: Boolean] { type T }
-    implicit val sit = new Case[True] { type T = String }
-    implicit val sif = new Case[False] { type T = Int }
+    trait Case[B <: Boolean] {
+      type T
+    }
+    implicit val sit = new Case[True] {
+      type T = String
+    }
+    implicit val sif = new Case[False] {
+      type T = Int
+    }
   }
 
   val bt: String = boolInduction(si)("foo")(23)(true)

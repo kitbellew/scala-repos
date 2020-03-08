@@ -109,9 +109,8 @@ object HBEventsUtil {
 
     // get RowKey from string representation
     def apply(s: String): RowKey = {
-      try {
-        apply(Base64.decodeBase64(s))
-      } catch {
+      try { apply(Base64.decodeBase64(s)) }
+      catch {
         case e: Exception =>
           throw new RowKeyException(
             s"Failed to convert String ${s} to RowKey because ${e}",
@@ -239,11 +238,8 @@ object HBEventsUtil {
 
     def getOptStringCol(col: String): Option[String] = {
       val r = result.getValue(eBytes, colNames(col))
-      if (r == null) {
-        None
-      } else {
-        Some(Bytes.toString(r))
-      }
+      if (r == null) { None }
+      else { Some(Bytes.toString(r)) }
     }
 
     def getTimestamp(col: String): Long = {
@@ -326,9 +322,7 @@ object HBEventsUtil {
         val minTime: Long = startTime.map(_.getMillis).getOrElse(0)
         val maxTime: Long = untilTime.map(_.getMillis).getOrElse(Long.MaxValue)
         scan.setTimeRange(minTime, maxTime)
-        if (reversed.getOrElse(false)) {
-          scan.setReversed(true)
-        }
+        if (reversed.getOrElse(false)) { scan.setReversed(true) }
       }
     }
 
@@ -417,9 +411,7 @@ object HBEventsUtil {
       }
     }
 
-    if (!filters.getFilters().isEmpty) {
-      scan.setFilter(filters)
-    }
+    if (!filters.getFilters().isEmpty) { scan.setFilter(filters) }
 
     scan
   }

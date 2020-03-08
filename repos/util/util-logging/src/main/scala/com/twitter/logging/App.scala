@@ -102,7 +102,5 @@ trait Logging { self: App =>
     ) :: Nil
   }
 
-  premain {
-    Logger.configure(loggerFactories)
-  }
+  premain { Logger.configure(loggerFactories) }
 }

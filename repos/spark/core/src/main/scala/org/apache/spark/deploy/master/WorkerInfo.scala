@@ -100,9 +100,7 @@ private[spark] class WorkerInfo(
     coresUsed -= driver.desc.cores
   }
 
-  def setState(state: WorkerState.Value): Unit = {
-    this.state = state
-  }
+  def setState(state: WorkerState.Value): Unit = { this.state = state }
 
   def isAlive(): Boolean = this.state == WorkerState.ALIVE
 }

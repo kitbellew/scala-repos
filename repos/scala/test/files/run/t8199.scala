@@ -35,9 +35,7 @@ class reallylongnamereallylongnamereallylongnamereallylongnamereallylongnamereal
 }
 
 object Test extends App {
-  def check(c: Class[_]) {
-    checkClassName(c.getName)
-  }
+  def check(c: Class[_]) { checkClassName(c.getName) }
   def checkClassName(name: String) {
     val defaultMaxClassFileLength = 255
     assert((name + ".class").length <= defaultMaxClassFileLength, name)

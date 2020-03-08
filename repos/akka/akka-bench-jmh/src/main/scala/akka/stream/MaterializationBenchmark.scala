@@ -15,9 +15,7 @@ object MaterializationBenchmark {
 
   val flowWithMapBuilder = (numOfCombinators: Int) => {
     var source = Source.single(())
-    for (_ <- 1 to numOfCombinators) {
-      source = source.map(identity)
-    }
+    for (_ <- 1 to numOfCombinators) { source = source.map(identity) }
     source.to(Sink.ignore)
   }
 
@@ -94,9 +92,7 @@ class MaterializationBenchmark {
   }
 
   @TearDown
-  def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
-  }
+  def shutdown(): Unit = { Await.result(system.terminate(), 5.seconds) }
 
   @Benchmark
   def flow_with_map(): Unit = flowWithMap.run()

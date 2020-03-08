@@ -65,9 +65,7 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         if a1.id === a4.id
       } yield a1.id).to[Set]
       _ <- mark("q4", q4.result).map(_ shouldBe Set(1, 2, 3, 4))
-      q5 = (for {
-        c <- categories
-      } yield (c, Rep.None[Int])).sortBy(_._1.id)
+      q5 = (for { c <- categories } yield (c, Rep.None[Int])).sortBy(_._1.id)
       _ <- mark("q5", q5.result.map(_.map(_._1._1)))
         .map(_ shouldBe List(1, 2, 3, 4))
     } yield ()
@@ -282,9 +280,9 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
           3),
         ("A ScalaQuery Update", 2)
       )
-      q1 = for {
-        (c, i) <- categories.sortBy(_.id).zipWithIndex
-      } yield (c.id, i)
+      q1 = for { (c, i) <- categories.sortBy(_.id).zipWithIndex } yield (
+        c.id,
+        i)
       _ <- mark("q1", q1.result)
         .map(_ shouldBe List((1, 0), (2, 1), (3, 2), (4, 3)))
       q2 = for {
@@ -306,14 +304,12 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       } yield res
       _ <- mark("q4", q4.result)
         .map(_ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))
-      q5 = for {
-        (c, i) <- categories.sortBy(_.id).zipWithIndex
-      } yield (c.id, i)
+      q5 = for { (c, i) <- categories.sortBy(_.id).zipWithIndex } yield (
+        c.id,
+        i)
       _ <- mark("q5", q5.result)
         .map(_ shouldBe List((1, 0), (2, 1), (3, 2), (4, 3)))
-      q5b = for {
-        (c, i) <- categories.zipWithIndex
-      } yield (c.id, i)
+      q5b = for { (c, i) <- categories.zipWithIndex } yield (c.id, i)
       _ <- mark("q5b", q5b.result)
         .map(_.map(_._2).toSet shouldBe Set(0L, 1L, 2L, 3L))
       q6 = for {
@@ -360,9 +356,7 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
     lazy val cs = TableQuery[C]
 
     def q1 =
-      for {
-        (a, b) <- as joinLeft bs on (_.id === _.foreignId)
-      } yield (a, b)
+      for { (a, b) <- as joinLeft bs on (_.id === _.foreignId) } yield (a, b)
 
     def q2 =
       for {

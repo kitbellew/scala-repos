@@ -32,7 +32,9 @@ case class Edge[+N, +E](from: N, to: N, data: E) {
   def reverse: Edge[N, E] = Edge(to, from, data)
 }
 
-abstract sealed trait Degree { val degree: Int }
+abstract sealed trait Degree {
+  val degree: Int
+}
 case class InDegree(override val degree: Int) extends Degree
 case class OutDegree(override val degree: Int) extends Degree
 case class Weight(weight: Double)
@@ -82,11 +84,8 @@ case class SetSimilarity(intersection: Int, sizeLeft: Int, sizeRight: Int) {
       Some(0.0)
     else {
       val denom = scala.math.sqrt(sizeLeft.toDouble * sizeRight.toDouble)
-      if (denom == 0.0) {
-        None
-      } else {
-        Some(intersection.toDouble / denom)
-      }
+      if (denom == 0.0) { None }
+      else { Some(intersection.toDouble / denom) }
     }
 }
 

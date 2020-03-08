@@ -30,9 +30,7 @@ private[ui] class PoolTable(pools: Seq[Schedulable], parent: StagesTab) {
   private val listener = parent.progressListener
 
   def toNodeSeq: Seq[Node] = {
-    listener.synchronized {
-      poolTable(poolRow, pools)
-    }
+    listener.synchronized { poolTable(poolRow, pools) }
   }
 
   private def poolTable(

@@ -433,7 +433,9 @@ package record {
     *
     * @author Miles Sabin
     */
-  trait Keys[L <: HList] extends DepFn0 with Serializable { type Out <: HList }
+  trait Keys[L <: HList] extends DepFn0 with Serializable {
+    type Out <: HList
+  }
 
   object Keys {
     def apply[L <: HList](implicit keys: Keys[L]): Aux[L, keys.Out] = keys

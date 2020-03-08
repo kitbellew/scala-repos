@@ -117,9 +117,8 @@ object Plugin {
     */
   def load(classname: String, loader: ClassLoader): Try[AnyClass] = {
     import scala.util.control.NonFatal
-    try {
-      Success[AnyClass](loader loadClass classname)
-    } catch {
+    try { Success[AnyClass](loader loadClass classname) }
+    catch {
       case NonFatal(e) =>
         Failure(
           new PluginLoadException(

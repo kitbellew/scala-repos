@@ -82,31 +82,23 @@ object JsonPerformanceTest extends App {
   lazy val largeObjectJson = Json.stringify(largeObjectJsValue)
 
   def testSerialization(times: Int = 10000000, threads: Int = 100): Long = {
-    runTest(times, threads) {
-      Json.stringify(jsvalue)
-    }
+    runTest(times, threads) { Json.stringify(jsvalue) }
   }
 
   def testDeserialization(times: Int = 1000000, threads: Int = 100): Long = {
-    runTest(times, threads) {
-      Json.parse(json)
-    }
+    runTest(times, threads) { Json.parse(json) }
   }
 
   def testLargeArrayDeserialization(
       times: Int = 100,
       threads: Int = 10): Long = {
-    runTest(times, threads) {
-      Json.parse(largeArrayJson)
-    }
+    runTest(times, threads) { Json.parse(largeArrayJson) }
   }
 
   def testLargeObjectDeserialization(
       times: Int = 100,
       threads: Int = 100): Long = {
-    runTest(times, threads) {
-      Json.parse(largeObjectJson)
-    }
+    runTest(times, threads) { Json.parse(largeObjectJson) }
   }
 
   def runTest(times: Int, threads: Int)(test: => Unit): Long = {
@@ -121,17 +113,11 @@ object JsonPerformanceTest extends App {
       import ExecutionContext.Implicits.global
       Await.ready(
         Future.sequence(List.range(0, threads).map { t =>
-          Future {
-            for (i <- 0 to timesPerThread) {
-              test
-            }
-          }(context)
+          Future { for (i <- 0 to timesPerThread) { test } }(context)
         }),
         Duration.Inf)
       System.currentTimeMillis() - start
-    } finally {
-      executor.shutdownNow()
-    }
+    } finally { executor.shutdownNow() }
   }
 
 }

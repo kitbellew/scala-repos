@@ -154,9 +154,7 @@ private[akka] abstract class BatchingInputBuffer(val size: Int, val pump: Pump)
         "onSubscribe called after onError or onComplete")
   }
 
-  protected def inputOnError(e: Throwable): Unit = {
-    clear()
-  }
+  protected def inputOnError(e: Throwable): Unit = { clear() }
 
 }
 

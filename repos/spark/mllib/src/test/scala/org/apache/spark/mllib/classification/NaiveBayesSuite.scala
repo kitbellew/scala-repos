@@ -287,27 +287,21 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
       LabeledPoint(0.0, Vectors.dense(-1.0)),
       LabeledPoint(1.0, Vectors.dense(1.0)),
       LabeledPoint(1.0, Vectors.dense(0.0)))
-    intercept[SparkException] {
-      NaiveBayes.train(sc.makeRDD(dense, 2))
-    }
+    intercept[SparkException] { NaiveBayes.train(sc.makeRDD(dense, 2)) }
     val sparse = Seq(
       LabeledPoint(1.0, Vectors.sparse(1, Array(0), Array(1.0))),
       LabeledPoint(0.0, Vectors.sparse(1, Array(0), Array(-1.0))),
       LabeledPoint(1.0, Vectors.sparse(1, Array(0), Array(1.0))),
       LabeledPoint(1.0, Vectors.sparse(1, Array.empty, Array.empty))
     )
-    intercept[SparkException] {
-      NaiveBayes.train(sc.makeRDD(sparse, 2))
-    }
+    intercept[SparkException] { NaiveBayes.train(sc.makeRDD(sparse, 2)) }
     val nan = Seq(
       LabeledPoint(1.0, Vectors.sparse(1, Array(0), Array(1.0))),
       LabeledPoint(0.0, Vectors.sparse(1, Array(0), Array(Double.NaN))),
       LabeledPoint(1.0, Vectors.sparse(1, Array(0), Array(1.0))),
       LabeledPoint(1.0, Vectors.sparse(1, Array.empty, Array.empty))
     )
-    intercept[SparkException] {
-      NaiveBayes.train(sc.makeRDD(nan, 2))
-    }
+    intercept[SparkException] { NaiveBayes.train(sc.makeRDD(nan, 2)) }
   }
 
   test("detect non zero or one values in Bernoulli") {
@@ -358,9 +352,7 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
         assert(model.pi === sameModel.pi)
         assert(model.theta === sameModel.theta)
         assert(model.modelType === sameModel.modelType)
-      } finally {
-        Utils.deleteRecursively(tempDir)
-      }
+      } finally { Utils.deleteRecursively(tempDir) }
     }
   }
 
@@ -380,9 +372,7 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(model.pi === sameModel.pi)
       assert(model.theta === sameModel.theta)
       assert(model.modelType === Multinomial)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally { Utils.deleteRecursively(tempDir) }
   }
 }
 

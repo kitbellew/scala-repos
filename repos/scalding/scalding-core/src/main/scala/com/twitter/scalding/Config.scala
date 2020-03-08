@@ -486,7 +486,9 @@ object Config {
       case _             => empty
     })
 
-  def apply(m: Map[String, String]): Config = new Config { def toMap = m }
+  def apply(m: Map[String, String]): Config = new Config {
+    def toMap = m
+  }
   /*
    * Implicits cannot collide in name, so making apply impliict is a bad idea
    */
@@ -511,17 +513,15 @@ object Config {
             (
               nonStrings - AppProps.APP_JAR_CLASS,
               initConf.setCascadingAppJar(cls)))
-        } catch {
-          case err: Throwable => Failure(err)
-        }
+        } catch { case err: Throwable => Failure(err) }
       case None => Success((nonStrings, initConf))
     }).flatMap {
-        case (unhandled, withJar) =>
-          if (unhandled.isEmpty) Success(withJar)
-          else
-            Failure(
-              new Exception("unhandled configurations: " + unhandled.toString))
-      }
+      case (unhandled, withJar) =>
+        if (unhandled.isEmpty) Success(withJar)
+        else
+          Failure(
+            new Exception("unhandled configurations: " + unhandled.toString))
+    }
   }
 
   /**

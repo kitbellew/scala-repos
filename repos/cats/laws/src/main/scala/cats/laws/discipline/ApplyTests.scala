@@ -31,5 +31,7 @@ trait ApplyTests[F[_]] extends FunctorTests[F] with CartesianTests[F] {
 
 object ApplyTests {
   def apply[F[_]: Apply]: ApplyTests[F] =
-    new ApplyTests[F] { def laws: ApplyLaws[F] = ApplyLaws[F] }
+    new ApplyTests[F] {
+      def laws: ApplyLaws[F] = ApplyLaws[F]
+    }
 }

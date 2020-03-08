@@ -58,8 +58,6 @@ class ThriftChannelBufferDecoderTest extends FunSuite with MockitoSugar {
     val c = new ThriftChannelBufferDecoderContext
     import c._
 
-    intercept[IllegalArgumentException] {
-      decoder.decode(ctx, ch, new {})
-    }
+    intercept[IllegalArgumentException] { decoder.decode(ctx, ch, new {}) }
   }
 }

@@ -69,9 +69,7 @@ class ZkNodeChangeNotificationListener(
     processAllNotifications()
   }
 
-  def close() = {
-    isClosed.set(true)
-  }
+  def close() = { isClosed.set(true) }
 
   /**
     * Process all changes
@@ -155,9 +153,7 @@ class ZkNodeChangeNotificationListener(
 
   object ZkStateChangeListener extends IZkStateListener {
 
-    override def handleNewSession() {
-      processAllNotifications
-    }
+    override def handleNewSession() { processAllNotifications }
 
     override def handleSessionEstablishmentError(error: Throwable) {
       fatal("Could not establish session with zookeeper", error)

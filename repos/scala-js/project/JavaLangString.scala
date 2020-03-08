@@ -107,9 +107,8 @@ object JavaLangString {
           static = false,
           Ident("toString__T", Some("toString__T")),
           Nil,
-          ClassType(StringClass), {
-            This()(ThisType)
-          })(OptimizerHints.empty.withInline(true), None),
+          ClassType(StringClass),
+          { This()(ThisType) })(OptimizerHints.empty.withInline(true), None),
         /* def charAt(i: Int): Char = RuntimeString.charAt(this, i) */
         MethodDef(
           static = false,

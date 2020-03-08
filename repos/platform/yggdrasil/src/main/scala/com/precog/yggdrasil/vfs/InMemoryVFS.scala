@@ -118,9 +118,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       })
 
     def asByteStream(mimeType: MimeType)(implicit M: Monad[M]) = OptionT {
-      M.point {
-        Some(data :: StreamT.empty[M, Array[Byte]])
-      }
+      M.point { Some(data :: StreamT.empty[M, Array[Byte]]) }
     }
   }
 
@@ -385,9 +383,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
 
     def findDirectChildren(
         path: Path): EitherT[M, ResourceError, Set[PathMetadata]] = {
-      EitherT.right {
-        M point { childMetadata(path) }
-      }
+      EitherT.right { M point { childMetadata(path) } }
     }
 
     def findPathMetadata(

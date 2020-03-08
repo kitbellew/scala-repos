@@ -16,21 +16,13 @@ import org.apache.tools.ant.util.{GlobPatternMapper, SourceFileScanner}
 
 class Use extends ScalaMatchingTask {
 
-  def setId(input: String) {
-    id = Some(input)
-  }
+  def setId(input: String) { id = Some(input) }
 
-  def setSrcdir(input: File) {
-    sourceDir = Some(input)
-  }
+  def setSrcdir(input: File) { sourceDir = Some(input) }
 
-  def setDestdir(input: File) {
-    destinationDir = Some(input)
-  }
+  def setDestdir(input: File) { destinationDir = Some(input) }
 
-  def setFailOnError(input: Boolean) {
-    failOnError = input
-  }
+  def setFailOnError(input: Boolean) { failOnError = input }
 
   private var id: Option[String] = None
   private var sourceDir: Option[File] = None

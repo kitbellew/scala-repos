@@ -106,23 +106,17 @@ class BorderPane(
     * The node placed on the left edge of this border pane.
     */
   def left: ObjectProperty[jfxs.Node] = delegate.leftProperty()
-  def left_=(v: Node) {
-    ObjectProperty.fillProperty[jfxs.Node](this.left, v)
-  }
+  def left_=(v: Node) { ObjectProperty.fillProperty[jfxs.Node](this.left, v) }
 
   /**
     * The node placed on the right edge of this border pane.
     */
   def right: ObjectProperty[jfxs.Node] = delegate.rightProperty()
-  def right_=(v: Node) {
-    ObjectProperty.fillProperty[jfxs.Node](this.right, v)
-  }
+  def right_=(v: Node) { ObjectProperty.fillProperty[jfxs.Node](this.right, v) }
 
   /**
     * The node placed on the top edge of this border pane.
     */
   def top: ObjectProperty[jfxs.Node] = delegate.topProperty()
-  def top_=(v: Node) {
-    ObjectProperty.fillProperty[jfxs.Node](this.top, v)
-  }
+  def top_=(v: Node) { ObjectProperty.fillProperty[jfxs.Node](this.top, v) }
 }

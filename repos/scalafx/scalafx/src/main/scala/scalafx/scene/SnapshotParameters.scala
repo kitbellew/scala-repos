@@ -55,40 +55,30 @@ class SnapshotParameters(
     * The current camera.
     */
   def camera: Camera = delegate.getCamera
-  def camera_=(c: Camera) {
-    delegate.setCamera(c)
-  }
+  def camera_=(c: Camera) { delegate.setCamera(c) }
 
   /**
     * The current depthBuffer flag.
     */
   def depthBuffer = delegate.isDepthBuffer
-  def depthBuffer_=(db: Boolean) {
-    delegate.setDepthBuffer(db)
-  }
+  def depthBuffer_=(db: Boolean) { delegate.setDepthBuffer(db) }
 
   /**
     * The current fill.
     */
   def fill: Paint = delegate.getFill
-  def fill_=(p: Paint) {
-    delegate.setFill(p)
-  }
+  def fill_=(p: Paint) { delegate.setFill(p) }
 
   /**
     * The current transform.
     */
   def transform: Transform = delegate.getTransform
-  def transform_=(t: Transform) {
-    delegate.setTransform(t)
-  }
+  def transform_=(t: Transform) { delegate.setTransform(t) }
 
   /**
     * The current viewport.
     */
   def viewport: Rectangle2D = delegate.getViewport
-  def viewport_=(v: Rectangle2D) {
-    delegate.setViewport(v)
-  }
+  def viewport_=(v: Rectangle2D) { delegate.setViewport(v) }
 
 }

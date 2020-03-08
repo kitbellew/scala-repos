@@ -144,9 +144,7 @@ class WeightedLeastSquaresSuite
       regParam = 0.1,
       standardizeFeatures = true,
       standardizeLabel = true)
-    intercept[IllegalArgumentException] {
-      wls.fit(instancesConstLabel)
-    }
+    intercept[IllegalArgumentException] { wls.fit(instancesConstLabel) }
   }
 
   test("WLS against glmnet") {

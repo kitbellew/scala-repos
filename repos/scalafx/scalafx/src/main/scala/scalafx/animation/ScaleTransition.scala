@@ -95,88 +95,66 @@ class ScaleTransition(
     * $DUR. $DV 400ms
     */
   def duration: ObjectProperty[jfxu.Duration] = delegate.durationProperty
-  def duration_=(d: Duration) {
-    duration() = d
-  }
+  def duration_=(d: Duration) { duration() = d }
 
   /**
     * The target node of this $ST.
     */
   def node: ObjectProperty[jfxs.Node] = delegate.nodeProperty
-  def node_=(n: Node) {
-    node() = n
-  }
+  def node_=(n: Node) { node() = n }
 
   /**
     * Specifies the incremented stop X scale value, from the start, of this $ST.
     */
   def byX: DoubleProperty = delegate.byXProperty
-  def byX_=(x: Double) {
-    byX() = x
-  }
+  def byX_=(x: Double) { byX() = x }
 
   /**
     * Specifies the incremented stop Y scale value, from the start, of this $ST.
     */
   def byY: DoubleProperty = delegate.byYProperty
-  def byY_=(y: Double) {
-    byY() = y
-  }
+  def byY_=(y: Double) { byY() = y }
 
   /**
     * Specifies the incremented stop Z scale value, from the start, of this $ST.
     */
   def byZ: DoubleProperty = delegate.byZProperty
-  def byZ_=(z: Double) {
-    byZ() = z
-  }
+  def byZ_=(z: Double) { byZ() = z }
 
   /**
     * Specifies the start X scale value of this $ST. $DV `Double.NaN`
     */
   def fromX: DoubleProperty = delegate.fromXProperty
-  def fromX_=(x: Double) {
-    fromX() = x
-  }
+  def fromX_=(x: Double) { fromX() = x }
 
   /**
     * Specifies the start Y scale value of this $ST. $DV `Double.NaN`
     */
   def fromY: DoubleProperty = delegate.fromYProperty
-  def fromY_=(y: Double) {
-    fromY() = y
-  }
+  def fromY_=(y: Double) { fromY() = y }
 
   /**
     * Specifies the start Z scale value of this $ST. $DV `Double.NaN`
     */
   def fromZ: DoubleProperty = delegate.fromZProperty
-  def fromZ_=(z: Double) {
-    fromZ() = z
-  }
+  def fromZ_=(z: Double) { fromZ() = z }
 
   /**
     * Specifies the stop X scale value of this $ST. $DV `Double.NaN`
     */
   def toX: DoubleProperty = delegate.toXProperty
-  def toX_=(x: Double) {
-    toX() = x
-  }
+  def toX_=(x: Double) { toX() = x }
 
   /**
     * The stop Y scale value of this $ST. $DV `Double.NaN`
     */
   def toY: DoubleProperty = delegate.toYProperty
-  def toY_=(y: Double) {
-    toY() = y
-  }
+  def toY_=(y: Double) { toY() = y }
 
   /**
     * The stop Z scale value of this $ST. $DV `Double.NaN`
     */
   def toZ: DoubleProperty = delegate.toZProperty
-  def toZ_=(z: Double) {
-    toZ() = z
-  }
+  def toZ_=(z: Double) { toZ() = z }
 
 }

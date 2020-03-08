@@ -3,9 +3,7 @@ trait A[@specialized(Int) T] {
 }
 
 trait B extends A[Int] {
-  def foo(t: Int) {
-    println("B.foo")
-  }
+  def foo(t: Int) { println("B.foo") }
 }
 
 trait M extends B {

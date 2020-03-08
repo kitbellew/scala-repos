@@ -81,9 +81,9 @@ class DatabaseService(dir: File) extends SLF4JLogging {
     val modified = f.getContent.getLastModifiedTime
 
     db.run(
-      for {
-        check <- timestampsQuery(uri).result.headOption
-      } yield check.map(_.changed).getOrElse(true)
+      for { check <- timestampsQuery(uri).result.headOption } yield check
+        .map(_.changed)
+        .getOrElse(true)
     )
   }
 

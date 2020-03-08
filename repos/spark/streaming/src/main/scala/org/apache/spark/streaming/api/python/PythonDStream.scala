@@ -225,11 +225,8 @@ private[python] class PythonTransformedDStream(
 
   override def compute(validTime: Time): Option[RDD[Array[Byte]]] = {
     val rdd = parent.getOrCompute(validTime)
-    if (rdd.isDefined) {
-      func(rdd, validTime)
-    } else {
-      None
-    }
+    if (rdd.isDefined) { func(rdd, validTime) }
+    else { None }
   }
 }
 
@@ -282,11 +279,8 @@ private[python] class PythonStateDStream(
   override def compute(validTime: Time): Option[RDD[Array[Byte]]] = {
     val lastState = getOrCompute(validTime - slideDuration)
     val rdd = parent.getOrCompute(validTime)
-    if (rdd.isDefined) {
-      func(lastState.orElse(initialRDD), rdd, validTime)
-    } else {
-      lastState
-    }
+    if (rdd.isDefined) { func(lastState.orElse(initialRDD), rdd, validTime) }
+    else { lastState }
   }
 }
 
@@ -341,27 +335,21 @@ private[python] class PythonReducedWindowedDStream(
         current.beginTime)
       val subtracted = if (oldRDDs.size > 0) {
         invReduceFunc(previousRDD, Some(ssc.sc.union(oldRDDs)), validTime)
-      } else {
-        previousRDD
-      }
+      } else { previousRDD }
 
       // add the RDDs of the reduced values in "new time steps"
       val newRDDs =
         parent.slice(previous.endTime + parent.slideDuration, current.endTime)
       if (newRDDs.size > 0) {
         func(subtracted, Some(ssc.sc.union(newRDDs)), validTime)
-      } else {
-        subtracted
-      }
+      } else { subtracted }
     } else {
       // Get the RDDs of the reduced values in current window
       val currentRDDs =
         parent.slice(current.beginTime + parent.slideDuration, current.endTime)
       if (currentRDDs.size > 0) {
         func(None, Some(ssc.sc.union(currentRDDs)), validTime)
-      } else {
-        None
-      }
+      } else { None }
     }
   }
 }

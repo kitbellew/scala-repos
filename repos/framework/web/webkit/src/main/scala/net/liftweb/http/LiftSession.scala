@@ -179,9 +179,8 @@ object LiftSession {
    * so that we can instantiate it via reflection.
    */
   def findSnippetClass(name: String): Box[Class[AnyRef]] = {
-    if (name == null) {
-      Empty
-    } else {
+    if (name == null) { Empty }
+    else {
       // putIfAbsent isn't lazy, so we pay the price of checking for the
       // absence twice when the snippet hasn't been initialized to avoid
       // the cost of computing the snippet class every time.
@@ -229,9 +228,7 @@ private[http] object RenderVersion {
     val ret: Box[T] =
       for {
         sess <- S.session
-        func <- sess.findFunc(v).collect {
-          case f: S.PageStateHolder => f
-        }
+        func <- sess.findFunc(v).collect { case f: S.PageStateHolder => f }
       } yield {
         val tret = ver.doWith(v) {
           val ret = func.runInContext(f)
@@ -488,9 +485,7 @@ class LiftSession(
   private var cometList: Vector[(LiftActor, Req)] = Vector.empty
 
   private[http] def breakOutComet(): Unit = {
-    val cl = asyncSync.synchronized {
-      cometList
-    }
+    val cl = asyncSync.synchronized { cometList }
     cl.foreach(_._1 ! BreakOut())
   }
 
@@ -507,9 +502,7 @@ class LiftSession(
   def cometForHost(hostAndPath: String)
       : (Vector[(LiftActor, Req)], Vector[(LiftActor, Req)]) =
     asyncSync
-      .synchronized {
-        cometList
-      }
+      .synchronized { cometList }
       .foldLeft((Vector[(LiftActor, Req)](), Vector[(LiftActor, Req)]())) {
         (soFar, current) =>
           (soFar, current) match {
@@ -547,11 +540,7 @@ class LiftSession(
     override private[liftweb] def magicSessionVar_? = true
   }
 
-  def terminateHint {
-    if (_running_?) {
-      markedForTermination = true;
-    }
-  }
+  def terminateHint { if (_running_?) { markedForTermination = true; } }
 
   /**
     * Find a function in the function lookup table.  You probably never need to do this, but
@@ -643,9 +632,7 @@ class LiftSession(
     * Removes the function with the given `name`. Note that this will
     * '''not''' trigger `[[onFunctionOwnersRemoved]]` listeners.
     */
-  def removeFunction(name: String) = {
-    nmessageCallback.remove(name)
-  }
+  def removeFunction(name: String) = { nmessageCallback.remove(name) }
 
   /**
     * Given a test that takes an [[S.AFuncHolder]] and produces a
@@ -742,9 +729,7 @@ class LiftSession(
       // only deal with comet on stateful sessions
       // stateless temporary sessions bar comet use
       if (stateful_?) {
-        val cl = asyncSync.synchronized {
-          cometList
-        }
+        val cl = asyncSync.synchronized { cometList }
         if (cl.length > 0) {
           this.breakOutComet()
           Thread.sleep(100)
@@ -758,9 +743,7 @@ class LiftSession(
     * Puts the correct thread locking around access to postPageFunctions
     */
   private def accessPostPageFuncs[T](f: => T): T = {
-    postPageLock.synchronized {
-      f
-    }
+    postPageLock.synchronized { f }
   }
 
   def cleanupUnseenFuncs(): Unit = {
@@ -768,18 +751,14 @@ class LiftSession(
       val now = millis
 
       accessPostPageFuncs {
-        for {
-          (key, pageInfo) <- postPageFunctions
-        } if (!pageInfo.longLife &&
-              (now - pageInfo.lastSeen) > LiftRules.unusedFunctionsLifeTime) {
+        for { (key, pageInfo) <- postPageFunctions } if (!pageInfo.longLife &&
+                                                         (now - pageInfo.lastSeen) > LiftRules.unusedFunctionsLifeTime) {
           postPageFunctions -= key
         }
       }
 
       withAjaxRequests { currentAjaxRequests =>
-        for {
-          (version, requestInfos) <- currentAjaxRequests
-        } {
+        for { (version, requestInfos) <- currentAjaxRequests } {
           val remaining =
             requestInfos.filter { info =>
               (now - info.lastSeen) <= LiftRules.unusedFunctionsLifeTime
@@ -871,9 +850,7 @@ class LiftSession(
 
         // if the function table is updated, make sure to get
         // the additional functions
-        if (diff > 0) {
-          run(latest.functionCount, latest.functions.take(diff))
-        }
+        if (diff > 0) { run(latest.functionCount, latest.functions.take(diff)) }
       }
     }
 
@@ -1091,9 +1068,7 @@ class LiftSession(
                 case Full(r) => Full(checkRedirect(r))
                 case _       => LiftRules.notFoundOrIgnore(request, Full(this))
               }
-            } finally {
-              notices = S.getAllNotices
-            }
+            } finally { notices = S.getAllNotices }
 
           case _ =>
             RenderVersion.get // touch this early
@@ -1211,19 +1186,13 @@ class LiftSession(
     *
     * @param name the variable to unset
     */
-  private[liftweb] def unset(name: String): Unit = {
-    nmyVariables.remove(name)
-  }
+  private[liftweb] def unset(name: String): Unit = { nmyVariables.remove(name) }
 
   private[http] def attachRedirectFunc(uri: String, f: Box[() => Unit]) = {
     f map { fnc =>
       val func: String = {
         val funcName = Helpers.nextFuncName
-        nmessageCallback.put(
-          funcName,
-          S.NFuncHolder(() => {
-            fnc()
-          }))
+        nmessageCallback.put(funcName, S.NFuncHolder(() => { fnc() }))
         funcName
       }
       Helpers.appendFuncToURL(uri, func + "=_")
@@ -1426,9 +1395,7 @@ class LiftSession(
           ParamPair(v, v.asInstanceOf[Object].getClass))),
         c)
 
-    } catch {
-      case e: IllegalAccessException => Empty
-    }
+    } catch { case e: IllegalAccessException => Empty }
   }
 
   private def findAttributeSnippet(
@@ -1470,9 +1437,8 @@ class LiftSession(
       var x = 0
       while (x < len) {
         val c = in.charAt(x)
-        if (c == '/') {
-          ret.append('.')
-        } else ret.append(c)
+        if (c == '/') { ret.append('.') }
+        else ret.append(c)
         x += 1
       }
       ret.toString
@@ -1589,9 +1555,7 @@ class LiftSession(
       nodeSeq
     }) openOr {
 
-      for {
-        f <- LiftRules.snippetFailedFunc.toList
-      } {
+      for { f <- LiftRules.snippetFailedFunc.toList } {
         f(LiftRules.SnippetFailure(page, snippetName, why))
       }
 
@@ -1643,17 +1607,13 @@ class LiftSession(
       override def apply(in: List[String]): Any =
         requestVarFunc(() =>
           S.CurrentLocation.doWith(curLoc) {
-            snippetMap.doWith(snippetMap.is ++ currentMap) {
-              super.apply(in)
-            }
+            snippetMap.doWith(snippetMap.is ++ currentMap) { super.apply(in) }
           })
 
       override def apply(in: FileParamHolder): Any =
         requestVarFunc(() =>
           S.CurrentLocation.doWith(curLoc) {
-            snippetMap.doWith(snippetMap.is ++ currentMap) {
-              super.apply(in)
-            }
+            snippetMap.doWith(snippetMap.is ++ currentMap) { super.apply(in) }
           })
     }
   }
@@ -1702,9 +1662,8 @@ class LiftSession(
   def executeInScope[T](req: Box[Req], renderVersion: String)(f: => T): T = {
     def doExec(): T = {
       RenderVersion.doWith(renderVersion) {
-        try {
-          f
-        } finally {
+        try { f }
+        finally {
           if (S.functionMap.size > 0) {
             this.updateFunctionMap(S.functionMap, renderVersion, millis)
             S.clearFunctionMap
@@ -2117,9 +2076,7 @@ class LiftSession(
   private def asNodeSeq(in: Seq[Node]): NodeSeq = in
 
   private class DeferredProcessor extends SpecializedLiftActor[ProcessSnippet] {
-    protected def messageHandler = {
-      case ProcessSnippet(f) => f()
-    }
+    protected def messageHandler = { case ProcessSnippet(f) => f() }
   }
 
   private case class ProcessSnippet(f: () => Unit)
@@ -2147,9 +2104,7 @@ class LiftSession(
       val hash = deferredSnippets.is
 
       // insert an empty node
-      hash.synchronized {
-        hash(nodeId) = Empty
-      }
+      hash.synchronized { hash(nodeId) = Empty }
 
       // create a function that will restore our RequestVars
       val reqVarCallback = deferredSnippets.generateSnapshotRestorer[NodeSeq]()
@@ -2164,9 +2119,7 @@ class LiftSession(
       actor ! ProcessSnippet(() => {
         executeInScope(req, renderVersion) {
           // process the message
-          val bns = tryo {
-            reqVarCallback(() => f)
-          }
+          val bns = tryo { reqVarCallback(() => f) }
 
           // set the node
           hash.synchronized {
@@ -2505,9 +2458,7 @@ class LiftSession(
 
         case v => v
       }
-    } finally {
-      _lastFoundSnippet.set(null)
-    }
+    } finally { _lastFoundSnippet.set(null) }
   }
 
   /**
@@ -2597,9 +2548,7 @@ class LiftSession(
     * Adds a new Comet actor to this session
     */
   private[http] def addCometActor(act: LiftCometActor): Unit = {
-    testStatefulFeature {
-      nasyncById.put(act.uniqueId, act)
-    }
+    testStatefulFeature { nasyncById.put(act.uniqueId, act) }
   }
 
   /**
@@ -2615,9 +2564,7 @@ class LiftSession(
       removeFunctionsIf(_.owner == toCmp)
 
       LiftSession.this.synchronized {
-        accessPostPageFuncs {
-          postPageFunctions -= act.uniqueId
-        }
+        accessPostPageFuncs { postPageFunctions -= act.uniqueId }
       }
 
       import scala.collection.JavaConversions._
@@ -2837,9 +2784,7 @@ class LiftSession(
         atWhat.toList match {
           case Nil => s
           case xs =>
-            xs.map {
-                case (id, replacement) => (("#" + id) #> replacement)
-              }
+            xs.map { case (id, replacement) => (("#" + id) #> replacement) }
               .reduceLeft(_ & _)(s)
         }
       case _ => atWhat.valuesIterator.toSeq.flatMap(_.toSeq).toList
@@ -3020,9 +2965,7 @@ class LiftSession(
                         * @param value
                         */
                       def send(value: JsCmd): Unit = {
-                        if (!done_?) {
-                          ca ! value
-                        }
+                        if (!done_?) { ca ! value }
 
                       }
 
@@ -3031,16 +2974,12 @@ class LiftSession(
                         * @param value
                         */
                       def send(value: JsExp): Unit = {
-                        if (!done_?) {
-                          ca ! value
-                        }
+                        if (!done_?) { ca ! value }
 
                       }
 
                       def send(value: JValue) {
-                        if (!done_?) {
-                          ca ! ItemMsg(guid, value)
-                        }
+                        if (!done_?) { ca ! ItemMsg(guid, value) }
                       }
                     }
                   )
@@ -3118,9 +3057,7 @@ private object SnippetNode {
       for {
         cls <- in.attribute("class")
         snip <- cls.text.charSplit(' ').find(isLiftClass)
-      } yield {
-        snip
-      }
+      } yield { snip }
     } orElse in.attribute("lift").map(_.text)
 
     snippetInvocation.map { snip =>
@@ -3220,9 +3157,7 @@ private object SnippetNode {
         }
       }
 
-      case _ => {
-        None
-      }
+      case _ => { None }
     }
 }
 

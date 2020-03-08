@@ -134,9 +134,7 @@ private[hive] case class ScriptTransformation(
         var scriptOutputWritable: Writable = null
         val reusedWritableObject: Writable = if (null != outputSerde) {
           outputSerde.getSerializedClass().newInstance
-        } else {
-          null
-        }
+        } else { null }
         val mutableRow = new SpecificMutableRow(output.map(_.dataType))
 
         override def hasNext: Boolean = {
@@ -148,12 +146,8 @@ private[hive] case class ScriptTransformation(
                   throw writerThread.exception.get
                 }
                 false
-              } else {
-                true
-              }
-            } else {
-              true
-            }
+              } else { true }
+            } else { true }
           } else if (scriptOutputWritable == null) {
             scriptOutputWritable = reusedWritableObject
 
@@ -161,9 +155,7 @@ private[hive] case class ScriptTransformation(
               if (scriptOutputReader.next(scriptOutputWritable) <= 0) {
                 writerThread.exception.foreach(throw _)
                 false
-              } else {
-                true
-              }
+              } else { true }
             } else {
               try {
                 scriptOutputWritable.readFields(scriptOutputStream)
@@ -176,15 +168,11 @@ private[hive] case class ScriptTransformation(
                   false
               }
             }
-          } else {
-            true
-          }
+          } else { true }
         }
 
         override def next(): InternalRow = {
-          if (!hasNext) {
-            throw new NoSuchElementException
-          }
+          if (!hasNext) { throw new NoSuchElementException }
           if (outputSerde == null) {
             val prevLine = curLine
             curLine = reader.readLine()
@@ -208,9 +196,8 @@ private[hive] case class ScriptTransformation(
             val fieldList = outputSoi.getAllStructFieldRefs()
             var i = 0
             while (i < dataList.size()) {
-              if (dataList.get(i) == null) {
-                mutableRow.setNullAt(i)
-              } else {
+              if (dataList.get(i) == null) { mutableRow.setNullAt(i) }
+              else {
                 mutableRow(i) = unwrap(
                   dataList.get(i),
                   fieldList.get(i).getFieldObjectInspector)
@@ -294,9 +281,8 @@ private class ScriptTransformationWriterThread(
           val writable = inputSerde
             .serialize(row.asInstanceOf[GenericInternalRow].values, inputSoi)
 
-          if (scriptInputWriter != null) {
-            scriptInputWriter.write(writable)
-          } else {
+          if (scriptInputWriter != null) { scriptInputWriter.write(writable) }
+          else {
             prepareWritable(writable, ioschema.outputSerdeProps)
               .write(dataOutputStream)
           }
@@ -318,9 +304,8 @@ private class ScriptTransformationWriterThread(
         }
       } catch {
         case NonFatal(exceptionFromFinallyBlock) =>
-          if (!threwException) {
-            throw exceptionFromFinallyBlock
-          } else {
+          if (!threwException) { throw exceptionFromFinallyBlock }
+          else {
             log.error("Exception in finally block", exceptionFromFinallyBlock)
           }
       }
@@ -473,13 +458,9 @@ private[hive] case class HiveScriptIOSchema(
         val props =
           serdeProps.map { p => s"'${p._1}' = '${p._2}'" }.mkString(", ")
         if (props.nonEmpty) " WITH SERDEPROPERTIES(" + props + ")" else ""
-      } else {
-        ""
-      }
+      } else { "" }
     if (rowFormat.nonEmpty) {
       Some("ROW FORMAT DELIMITED " + rowFormatDelimited.mkString(" "))
-    } else {
-      Some("ROW FORMAT SERDE " + serdeClassSQL + serdePropsSQL)
-    }
+    } else { Some("ROW FORMAT SERDE " + serdeClassSQL + serdePropsSQL) }
   }
 }

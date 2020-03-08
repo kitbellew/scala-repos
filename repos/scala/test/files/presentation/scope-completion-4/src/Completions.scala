@@ -8,9 +8,7 @@ class Completion1 {
 
     def ff {
 
-      def fff {
-        /*_*/
-      }
+      def fff { /*_*/ }
 
       /*_*/
 
@@ -25,9 +23,7 @@ class Completion1 {
 
     class fc {
 
-      def fcf {
-        /*_*/
-      }
+      def fcf { /*_*/ }
 
       /*_*/
 
@@ -53,9 +49,7 @@ class Completion1 {
 
       /*_*/
 
-      def ccf {
-        /*_*/
-      }
+      def ccf { /*_*/ }
 
       /*_*/
     }
@@ -70,9 +64,7 @@ class Completion1 {
 
       /*_*/
 
-      def cff {
-        /*_*/
-      }
+      def cff { /*_*/ }
 
       /*_*/
     }

@@ -227,11 +227,8 @@ object CValue {
 
   implicit object CValueOrder extends Order[CValue] {
     def order(a: CValue, b: CValue): Ordering =
-      if (a.cType == b.cType) {
-        Ordering.fromInt(compareValues(a, b))
-      } else {
-        CType.CTypeOrder.order(a.cType, b.cType)
-      }
+      if (a.cType == b.cType) { Ordering.fromInt(compareValues(a, b)) }
+      else { CType.CTypeOrder.order(a.cType, b.cType) }
   }
 }
 
@@ -398,14 +395,11 @@ object CType {
         try {
           d.toLongExact
           true
-        } catch {
-          case _: ArithmeticException => false
-        }
+        } catch { case _: ArithmeticException => false }
 
       lazy val isDouble =
-        try {
-          BigDecimal(d.toDouble.toString, MathContext.UNLIMITED) == d
-        } catch {
+        try { BigDecimal(d.toDouble.toString, MathContext.UNLIMITED) == d }
+        catch {
           case _: NumberFormatException | _: ArithmeticException => false
         }
 

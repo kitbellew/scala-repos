@@ -245,9 +245,8 @@ object FastTypeTag {
       mkRawArrayTypeAndKey(elemClass, mirror)
     } else {
       val elemClassSymbol =
-        try {
-          mirror.classSymbol(elemClass)
-        } catch {
+        try { mirror.classSymbol(elemClass) }
+        catch {
           case t: Throwable =>
             sys.error(
               s"error: could not find class '${elemClass.getName}' in runtime mirror")

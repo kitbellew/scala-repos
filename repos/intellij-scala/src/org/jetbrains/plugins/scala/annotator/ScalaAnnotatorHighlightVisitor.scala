@@ -33,9 +33,7 @@ class ScalaAnnotatorHighlightVisitor(project: Project)
     case otherFile    => ScalaLanguageDerivative hasDerivativeOnFile otherFile
   }
 
-  def visit(element: PsiElement) {
-    runAnnotator(element)
-  }
+  def visit(element: PsiElement) { runAnnotator(element) }
 
   def analyze(
       file: PsiFile,
@@ -87,9 +85,7 @@ class ScalaAnnotatorHighlightVisitor(project: Project)
   }
 
   private def runAnnotator(element: PsiElement) {
-    if (DumbService.getInstance(project).isDumb) {
-      return
-    }
+    if (DumbService.getInstance(project).isDumb) { return }
     (new ScalaAnnotator).annotate(element, myAnnotationHolder)
     if (myAnnotationHolder.hasAnnotations) {
       import scala.collection.JavaConversions._

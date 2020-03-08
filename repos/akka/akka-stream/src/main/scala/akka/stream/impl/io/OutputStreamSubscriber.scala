@@ -73,9 +73,8 @@ private[akka] class OutputStreamSubscriber(
   }
 
   override def postStop(): Unit = {
-    try {
-      if (os ne null) os.close()
-    } catch {
+    try { if (os ne null) os.close() }
+    catch {
       case ex: Exception ⇒
         completionPromise.success(IOResult(bytesWritten, Failure(ex)))
     }

@@ -24,9 +24,7 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
         val firstChildElementType = s.getFirstChild.getNode.getElementType
         val lastChildElementType = s.getLastChild.getNode.getElementType
 
-        if (firstChildElementType == null) {
-          return
-        }
+        if (firstChildElementType == null) { return }
 
         if (firstChildElementType == VALID_DOC_HEADER && (lastChildElementType == VALID_DOC_HEADER ||
             lastChildElementType == DOC_HEADER)) {
@@ -80,9 +78,7 @@ class ScalaDocHeaderBalanceQuickFix(opening: PsiElement, closing: PsiElement)
     if (!op.isValid || !cl.isValid) return
     if (op.getNode.getElementType != ScalaDocTokenType.VALID_DOC_HEADER ||
         cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER &&
-        cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER) {
-      return
-    }
+        cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER) { return }
 
     cl.replace(
       ScalaPsiElementFactory

@@ -53,16 +53,12 @@ trait PixelWriter extends SFXDelegate[jfxsi.PixelWriter] {
   /**
     * Stores pixel data for a color into the specified coordinates of the surface.
     */
-  def setArgb(x: Int, y: Int, argb: Int) {
-    delegate.setArgb(x, y, argb)
-  }
+  def setArgb(x: Int, y: Int, argb: Int) { delegate.setArgb(x, y, argb) }
 
   /**
     * Stores pixel data for a Color into the specified coordinates of the surface.
     */
-  def setColor(x: Int, y: Int, c: Color) {
-    delegate.setColor(x, y, c)
-  }
+  def setColor(x: Int, y: Int, c: Color) { delegate.setColor(x, y, c) }
 
   /**
     * Stores pixel data from a byte array into a rectangular region of the surface.
@@ -118,8 +114,6 @@ trait PixelWriter extends SFXDelegate[jfxsi.PixelWriter] {
       h: Int,
       reader: PixelReader,
       srcx: Int,
-      srcy: Int) {
-    delegate.setPixels(dstx, dsty, w, h, reader, srcx, srcy)
-  }
+      srcy: Int) { delegate.setPixels(dstx, dsty, w, h, reader, srcx, srcy) }
 
 }

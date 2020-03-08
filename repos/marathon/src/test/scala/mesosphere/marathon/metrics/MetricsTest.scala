@@ -38,9 +38,7 @@ class MetricsTest extends MarathonSpec with MockitoSugar {
     }
   }
 
-  before {
-    metrics = new Metrics(new MetricRegistry())
-  }
+  before { metrics = new Metrics(new MetricRegistry()) }
 
   test(
     "Metrics#className should strip 'EnhancerByGuice' from the metric names") {

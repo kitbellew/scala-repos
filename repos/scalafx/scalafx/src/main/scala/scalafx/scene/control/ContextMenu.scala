@@ -58,9 +58,7 @@ class ContextMenu(
     * Callback function to be informed when an item contained within this ContextMenu has been activated.
     */
   def onAction = delegate.onActionProperty
-  def onAction_=(v: jfxe.EventHandler[jfxe.ActionEvent]) {
-    onAction() = v
-  }
+  def onAction_=(v: jfxe.EventHandler[jfxe.ActionEvent]) { onAction() = v }
 
   /**
     * The menu items on the context menu.

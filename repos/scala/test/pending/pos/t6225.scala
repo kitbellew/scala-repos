@@ -4,8 +4,12 @@ package library.x {
     implicit val foo = new Foo
   }
 }
-package library { package object x extends X }
+package library {
+  package object x extends X
+}
 package app {
   import library.x._
-  object App { implicitly[Foo] }
+  object App {
+    implicitly[Foo]
+  }
 }

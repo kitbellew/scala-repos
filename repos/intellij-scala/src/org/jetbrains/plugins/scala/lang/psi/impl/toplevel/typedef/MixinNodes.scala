@@ -65,9 +65,7 @@ abstract class MixinNodes {
     @volatile
     private var supersList: List[Map] = List.empty
     def setSupersMap(list: List[Map]) {
-      for (m <- list) {
-        implicitNames ++= m.implicitNames
-      }
+      for (m <- list) { implicitNames ++= m.implicitNames }
       supersList = list
     }
 
@@ -113,9 +111,7 @@ abstract class MixinNodes {
       val res = new ArrayBuffer[(T, Node)]()
       for (name <- implicitNames) {
         val map = forName(name)._1
-        for (elem <- map) {
-          if (isImplicit(elem._1)) res += elem
-        }
+        for (elem <- map) { if (isImplicit(elem._1)) res += elem }
       }
       forImplicitsCache = res.toList
       forImplicitsCache
@@ -136,18 +132,12 @@ abstract class MixinNodes {
         mutable.HashMap[String, AllNodes],
         mutable.HashMap[String, AllNodes]) = {
       for (name <- allNames()) forName(name)
-      synchronized {
-        (calculated, calculatedSupers)
-      }
+      synchronized { (calculated, calculatedSupers) }
     }
 
-    def allFirstSeq(): Seq[AllNodes] = {
-      forAll()._1.toSeq.map(_._2)
-    }
+    def allFirstSeq(): Seq[AllNodes] = { forAll()._1.toSeq.map(_._2) }
 
-    def allSecondSeq(): Seq[AllNodes] = {
-      forAll()._1.toSeq.map(_._2)
-    }
+    def allSecondSeq(): Seq[AllNodes] = { forAll()._1.toSeq.map(_._2) }
 
     private def toNodesSeq(seq: List[(T, Node)]): NodesSeq = {
       val map = new mutable.HashMap[Int, List[(T, Node)]]
@@ -173,7 +163,9 @@ abstract class MixinNodes {
       override def makeSet = new mutable.LinkedHashSet[Node]
     }
 
-    private object MultiMap { def empty = new MultiMap }
+    private object MultiMap {
+      def empty = new MultiMap
+    }
 
     private def mergeSupers(maps: List[NodesMap]): MultiMap = {
       val res = MultiMap.empty

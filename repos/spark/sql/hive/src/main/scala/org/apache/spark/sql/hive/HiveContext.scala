@@ -219,9 +219,8 @@ class HiveContext private[hive] (
     */
   @transient
   protected[hive] lazy val executionHive: HiveClientImpl =
-    if (execHive != null) {
-      execHive
-    } else {
+    if (execHive != null) { execHive }
+    else {
       logInfo(s"Initializing execution hive, version $hiveExecutionVersion")
       val loader = new IsolatedClientLoader(
         version = IsolatedClientLoader.hiveVersion(hiveExecutionVersion),
@@ -414,14 +413,10 @@ class HiveContext private[hive] (
               .map { status =>
                 if (!status.getPath().getName().startsWith(stagingDir)) {
                   calculateTableSize(fs, status.getPath)
-                } else {
-                  0L
-                }
+                } else { 0L }
               }
               .sum
-          } else {
-            fileStatus.getLen
-          }
+          } else { fileStatus.getLen }
 
           size
         }
@@ -478,9 +473,7 @@ class HiveContext private[hive] (
 
   override private[sql] def setConf[T](
       entry: SQLConfEntry[T],
-      value: T): Unit = {
-    setConf(entry.key, entry.stringConverter(value))
-  }
+      value: T): Unit = { setConf(entry.key, entry.stringConverter(value)) }
 
   /** Overridden by child classes that need to set configuration before the client init. */
   protected def configure(): Map[String, String] = {
@@ -566,9 +559,7 @@ class HiveContext private[hive] (
     } else if (command.startsWith("set")) {
       metadataHive.runSqlHive(sql)
       executionHive.runSqlHive(sql)
-    } else {
-      metadataHive.runSqlHive(sql)
-    }
+    } else { metadataHive.runSqlHive(sql) }
   }
 
   /**

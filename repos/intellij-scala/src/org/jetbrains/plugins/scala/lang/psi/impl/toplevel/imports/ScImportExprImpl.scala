@@ -47,9 +47,8 @@ class ScImportExprImpl private (
     if (stub != null) {
       return stub.asInstanceOf[ScImportExprStub].isSingleWildcard
     }
-    if (findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null) {
-      true
-    } else {
+    if (findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null) { true }
+    else {
       selectorSet match {
         case Some(set) => set.hasWildcard
         case None      => false
@@ -110,9 +109,8 @@ class ScImportExprImpl private (
           } else {
             val prev = getPrevSibling
             if (prev != null) {
-              if (prev.getText == ",") {
-                remove(prev.getNode)
-              } else {
+              if (prev.getText == ",") { remove(prev.getNode) }
+              else {
                 if (prev.getPrevSibling != null && prev.getPrevSibling.getText == ",") {
                   remove(prev.getPrevSibling.getNode)
                 }
@@ -123,9 +121,8 @@ class ScImportExprImpl private (
       } else {
         val prev = getPrevSibling
         if (prev != null) {
-          if (prev.getText == ",") {
-            remove(prev.getNode)
-          } else {
+          if (prev.getText == ",") { remove(prev.getNode) }
+          else {
             if (prev.getPrevSibling != null && prev.getPrevSibling.getText == ",") {
               val prevSibling = prev.getPrevSibling
               remove(prev.getNode)

@@ -22,9 +22,7 @@ class NotEmptyTest extends FunSuite with Matchers {
     NotEmpty.unapply("foo") should equal(Some("foo"))
   }
 
-  test("extracts None from None") {
-    NotEmpty.unapply(None) should equal(None)
-  }
+  test("extracts None from None") { NotEmpty.unapply(None) should equal(None) }
 
   test("extracts None from Some(null)") {
     NotEmpty.unapply(Some(null)) should equal(None)

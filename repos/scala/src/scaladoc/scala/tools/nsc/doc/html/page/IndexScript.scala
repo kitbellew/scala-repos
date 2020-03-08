@@ -20,9 +20,7 @@ class IndexScript(universe: doc.Universe) extends Page {
   def path = List("index.js")
 
   override def writeFor(site: HtmlFactory) {
-    writeFile(site) {
-      _.write("Index.PACKAGES = " + packages.toString() + ";")
-    }
+    writeFile(site) { _.write("Index.PACKAGES = " + packages.toString() + ";") }
   }
 
   val packages = {

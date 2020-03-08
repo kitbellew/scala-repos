@@ -59,16 +59,12 @@ class UpgradedImageIExtractor(
     trace("Starting to Look for the Most Relavent Image")
     checkForKnownElements() match {
       case Some(image) => return image
-      case None => {
-        trace("No known images found")
-      }
+      case None        => { trace("No known images found") }
     }
 
     checkForLargeImages(topNode, 0, 0) match {
       case Some(image) => return image
-      case None => {
-        trace("No big images found")
-      }
+      case None        => { trace("No big images found") }
     }
 
     checkForMetaTag match {
@@ -271,9 +267,7 @@ class UpgradedImageIExtractor(
     imageResults
   }
 
-  def getAllImages: ArrayList[Element] = {
-    null
-  }
+  def getAllImages: ArrayList[Element] = { null }
 
   /**
     * returns true if we think this is kind of a bannery dimension
@@ -283,20 +277,14 @@ class UpgradedImageIExtractor(
     * @param height
     */
   private def isBannerDimensions(width: Int, height: Int): Boolean = {
-    if (width == height) {
-      return false
-    }
+    if (width == height) { return false }
     if (width > height) {
       val diff: Float = (width.asInstanceOf[Float] / height.asInstanceOf[Float])
-      if (diff > 5) {
-        return true
-      }
+      if (diff > 5) { return true }
     }
     if (height > width) {
       val diff: Float = height.asInstanceOf[Float] / width.asInstanceOf[Float]
-      if (diff > 5) {
-        return true
-      }
+      if (diff > 5) { return true }
     }
     false
   }
@@ -304,11 +292,8 @@ class UpgradedImageIExtractor(
   def getImagesFromNode(node: Element): Option[Elements] = {
     val images: Elements = node.select("img")
 
-    if (images == null || images.isEmpty) {
-      None
-    } else {
-      Some(images)
-    }
+    if (images == null || images.isEmpty) { None }
+    else { Some(images) }
   }
 
   /**
@@ -320,11 +305,8 @@ class UpgradedImageIExtractor(
   private def filterBadNames(images: Elements): Option[ArrayList[Element]] = {
     val goodImages: ArrayList[Element] = new ArrayList[Element]
     for (image <- images) {
-      if (this.isOkImageFileName(image)) {
-        goodImages.add(image)
-      } else {
-        image.remove()
-      }
+      if (this.isOkImageFileName(image)) { goodImages.add(image) }
+      else { image.remove() }
     }
     if (goodImages == null || goodImages.isEmpty) None else Some(goodImages)
   }
@@ -336,9 +318,7 @@ class UpgradedImageIExtractor(
     */
   private def isOkImageFileName(imageNode: Element): Boolean = {
     val imgSrc: String = imageNode.attr("src")
-    if (string.isNullOrEmpty(imgSrc)) {
-      return false
-    }
+    if (string.isNullOrEmpty(imgSrc)) { return false }
     matchBadImageNames.reset(imgSrc)
     if (matchBadImageNames.find) {
       if (logger.isDebugEnabled) {
@@ -356,9 +336,7 @@ class UpgradedImageIExtractor(
       images <- getImagesFromNode(node)
       filteredImages <- filterBadNames(images)
       goodImages <- findImagesThatPassByteSizeTest(filteredImages)
-    } {
-      return Some(filteredImages)
-    }
+    } { return Some(filteredImages) }
     None
 
   }
@@ -399,9 +377,7 @@ class UpgradedImageIExtractor(
           case None => trace(imageSrc + " unable to fetch")
         }
 
-      } catch {
-        case e: Exception => warn(e, e.toString)
-      }
+      } catch { case e: Exception => warn(e, e.toString) }
       cnt += 1
     })
 
@@ -426,9 +402,7 @@ class UpgradedImageIExtractor(
       val meta: Elements = article.rawDoc.select("link[rel~=image_src]")
       for (item <- meta) {
         val href = item.attr("href")
-        if (href.isEmpty) {
-          return None
-        }
+        if (href.isEmpty) { return None }
         val mainImage = new Image
         mainImage.imageSrc = buildImagePath(href)
         mainImage.imageExtractionType = "linktag"
@@ -468,9 +442,7 @@ class UpgradedImageIExtractor(
       val meta: Elements = article.rawDoc.select("meta[property~=og:image]")
 
       for (item <- meta) {
-        if (item.attr("content").length < 1) {
-          return None
-        }
+        if (item.attr("content").length < 1) { return None }
         val imagePath: String = this.buildImagePath(item.attr("content"))
         val mainImage = new Image
         mainImage.imageSrc = imagePath

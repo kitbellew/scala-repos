@@ -22,9 +22,7 @@ object Test extends Properties("Mutable TreeSet") {
     (s: List[Int]) =>
       {
         val t = mutable.TreeSet[Int](s: _*)
-        for (a <- s) {
-          t -= a
-        }
+        for (a <- s) { t -= a }
         t.size == 0
       }
   }
@@ -33,9 +31,7 @@ object Test extends Properties("Mutable TreeSet") {
     (s: List[Int]) =>
       {
         val t = mutable.TreeSet[Int](s: _*)
-        for (a <- s) {
-          t -= a
-        }
+        for (a <- s) { t -= a }
         t == Set()
       }
   }

@@ -150,9 +150,7 @@ class LoadServiceTest extends FunSuite with MockitoSugar {
       val loader = mock[ClassLoader]
       val buf = mutable.Buffer.empty[ClassPath.Info]
       ClassPath.browseUri(jarFile.toURI, loader, buf)
-    } finally {
-      jarFile.delete
-    }
+    } finally { jarFile.delete }
   }
 
   test("LoadService shouldn't fail on circular referencing jar") {
@@ -216,9 +214,7 @@ class MetaInfCodedClassloader(parent: ClassLoader) extends ClassLoader(parent) {
         case e: Exception =>
           throw new ClassNotFoundException("Couldn't load class " + name, e)
       }
-    } else {
-      parent.loadClass(name)
-    }
+    } else { parent.loadClass(name) }
   }
 
   override def getResources(p1: String): util.Enumeration[URL] = {
@@ -227,11 +223,8 @@ class MetaInfCodedClassloader(parent: ClassLoader) extends ClassLoader(parent) {
     // com.twitter.finagle.util.ClassPath code
     val resources: util.Enumeration[URL] =
       super.getResources(p1.replace("META-INF", "HIDDEN-INF"))
-    if (resources == null) {
-      super.getResources(p1)
-    } else {
-      resources
-    }
+    if (resources == null) { super.getResources(p1) }
+    else { resources }
   }
 }
 

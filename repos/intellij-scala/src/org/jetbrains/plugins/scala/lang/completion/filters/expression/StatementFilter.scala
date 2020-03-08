@@ -42,12 +42,8 @@ class StatementFilter extends ElementFilter {
     false
   }
 
-  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = {
-    true
-  }
+  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = { true }
 
   @NonNls
-  override def toString: String = {
-    "statements keyword filter"
-  }
+  override def toString: String = { "statements keyword filter" }
 }

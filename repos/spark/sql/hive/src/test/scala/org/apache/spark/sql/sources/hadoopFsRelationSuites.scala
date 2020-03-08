@@ -358,9 +358,7 @@ abstract class HadoopFsRelationTest
       .option("dataSchema", dataSchema.json)
       .saveAsTable("t")
 
-    withTable("t") {
-      checkAnswer(sqlContext.table("t"), testDF.collect())
-    }
+    withTable("t") { checkAnswer(sqlContext.table("t"), testDF.collect()) }
   }
 
   test("saveAsTable()/load() - non-partitioned table - Append") {
@@ -406,9 +404,7 @@ abstract class HadoopFsRelationTest
       .option("dataSchema", dataSchema.json)
       .saveAsTable("t")
 
-    withTable("t") {
-      checkQueries(sqlContext.table("t"))
-    }
+    withTable("t") { checkQueries(sqlContext.table("t")) }
   }
 
   test("saveAsTable()/load() - partitioned table - boolean type") {

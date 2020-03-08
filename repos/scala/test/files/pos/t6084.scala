@@ -1,4 +1,6 @@
-package object foo { type X[T, U] = (T => U) }
+package object foo {
+  type X[T, U] = (T => U)
+}
 
 package foo {
   abstract class Foo[T, U](val d: T => U) extends (T => U) {

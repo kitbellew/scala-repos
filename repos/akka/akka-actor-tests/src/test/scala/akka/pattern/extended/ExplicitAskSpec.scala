@@ -22,9 +22,7 @@ class ExplicitAskSpec extends AkkaSpec {
       implicit val timeout = Timeout(5.seconds)
 
       val target = system.actorOf(Props(new Actor {
-        def receive = {
-          case Request(respondTo) ⇒ respondTo ! Response(self)
-        }
+        def receive = { case Request(respondTo) ⇒ respondTo ! Response(self) }
       }))
 
       val f = target ? (respondTo ⇒ Request(respondTo))
@@ -36,9 +34,7 @@ class ExplicitAskSpec extends AkkaSpec {
 
       val target = system.actorOf(
         Props(new Actor {
-          def receive = {
-            case Request(respondTo) ⇒ respondTo ! Response(self)
-          }
+          def receive = { case Request(respondTo) ⇒ respondTo ! Response(self) }
         }),
         "select-echo")
 

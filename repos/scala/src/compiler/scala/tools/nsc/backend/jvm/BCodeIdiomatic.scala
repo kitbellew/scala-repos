@@ -117,9 +117,7 @@ abstract class BCodeIdiomatic extends SubComponent {
       } else if (bType == LONG) {
         jmethod.visitLdcInsn(new java.lang.Long(-1))
         jmethod.visitInsn(Opcodes.LXOR)
-      } else {
-        abort(s"Impossible to negate a $bType")
-      }
+      } else { abort(s"Impossible to negate a $bType") }
     }
 
     /*
@@ -299,24 +297,19 @@ abstract class BCodeIdiomatic extends SubComponent {
 
     // can-multi-thread
     final def iconst(cst: Int) {
-      if (cst >= -1 && cst <= 5) {
-        emit(Opcodes.ICONST_0 + cst)
-      } else if (cst >= java.lang.Byte.MIN_VALUE && cst <= java.lang.Byte.MAX_VALUE) {
+      if (cst >= -1 && cst <= 5) { emit(Opcodes.ICONST_0 + cst) }
+      else if (cst >= java.lang.Byte.MIN_VALUE && cst <= java.lang.Byte.MAX_VALUE) {
         jmethod.visitIntInsn(Opcodes.BIPUSH, cst)
       } else if (cst >= java.lang.Short.MIN_VALUE && cst <= java.lang.Short.MAX_VALUE) {
         jmethod.visitIntInsn(Opcodes.SIPUSH, cst)
-      } else {
-        jmethod.visitLdcInsn(new Integer(cst))
-      }
+      } else { jmethod.visitLdcInsn(new Integer(cst)) }
     }
 
     // can-multi-thread
     final def lconst(cst: Long) {
       if (cst == 0L || cst == 1L) {
         emit(Opcodes.LCONST_0 + cst.asInstanceOf[Int])
-      } else {
-        jmethod.visitLdcInsn(new java.lang.Long(cst))
-      }
+      } else { jmethod.visitLdcInsn(new java.lang.Long(cst)) }
     }
 
     // can-multi-thread
@@ -324,9 +317,7 @@ abstract class BCodeIdiomatic extends SubComponent {
       val bits: Int = java.lang.Float.floatToIntBits(cst)
       if (bits == 0L || bits == 0x3f800000 || bits == 0x40000000) { // 0..2
         emit(Opcodes.FCONST_0 + cst.asInstanceOf[Int])
-      } else {
-        jmethod.visitLdcInsn(new java.lang.Float(cst))
-      }
+      } else { jmethod.visitLdcInsn(new java.lang.Float(cst)) }
     }
 
     // can-multi-thread
@@ -334,9 +325,7 @@ abstract class BCodeIdiomatic extends SubComponent {
       val bits: Long = java.lang.Double.doubleToLongBits(cst)
       if (bits == 0L || bits == 0x3FF0000000000000L) { // +0.0d and 1.0d
         emit(Opcodes.DCONST_0 + cst.asInstanceOf[Int])
-      } else {
-        jmethod.visitLdcInsn(new java.lang.Double(cst))
-      }
+      } else { jmethod.visitLdcInsn(new java.lang.Double(cst)) }
     }
 
     // can-multi-thread
@@ -549,9 +538,7 @@ abstract class BCodeIdiomatic extends SubComponent {
           if (keys(oldPos) == key) {
             newBranches(i) = branches(oldPos)
             oldPos += 1
-          } else {
-            newBranches(i) = defaultBranch
-          }
+          } else { newBranches(i) = defaultBranch }
           i += 1
         }
         assert(oldPos == keys.length, "emitSWITCH")
@@ -560,9 +547,7 @@ abstract class BCodeIdiomatic extends SubComponent {
           keyMax,
           defaultBranch,
           newBranches: _*)
-      } else {
-        jmethod.visitLookupSwitchInsn(defaultBranch, keys, branches)
-      }
+      } else { jmethod.visitLookupSwitchInsn(defaultBranch, keys, branches) }
     }
 
     // internal helpers -- not part of the public API of `jcode`
@@ -758,9 +743,8 @@ abstract class BCodeIdiomatic extends SubComponent {
         case lblDf: LabelDef => acc ::= lblDf
         case _               => ()
       }
-      if (acc.isEmpty) {
-        acc = saved
-      } else {
+      if (acc.isEmpty) { acc = saved }
+      else {
         result += (tree -> acc)
         acc = acc ::: saved
       }
@@ -777,9 +761,7 @@ abstract class BCodeIdiomatic extends SubComponent {
 
     @inline final def foreachInsn(f: (asm.tree.AbstractInsnNode) => Unit) {
       val insnIter = lst.iterator()
-      while (insnIter.hasNext) {
-        f(insnIter.next())
-      }
+      while (insnIter.hasNext) { f(insnIter.next()) }
     }
   }
 }

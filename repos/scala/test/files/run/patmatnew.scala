@@ -127,10 +127,7 @@ object Test {
     val foo1 = new Foo(1)
     val foo2 = new Foo(2)
     def run() {
-      val res = (foo1.Bar(2): Any) match {
-
-        case foo1.Bar(2) => true
-      }
+      val res = (foo1.Bar(2): Any) match { case foo1.Bar(2) => true }
       assert(res)
     }
   }
@@ -185,9 +182,7 @@ object Test {
 
   // all ignoring patterns on List
   object TestSequence01 {
-    def doMatch(xs: List[String]): String = xs match {
-      case List(_*) => "ok"
-    }
+    def doMatch(xs: List[String]): String = xs match { case List(_*) => "ok" }
     def doMatch2(xs: List[String]): List[String] = xs match {
       case List(_, rest @ _*) => rest.toList
     }
@@ -203,9 +198,7 @@ object Test {
 
   // all ignoring patterns on Seq
   object TestSequence02 {
-    def doMatch(l: Seq[String]): String = l match {
-      case Seq(_*) => "ok"
-    }
+    def doMatch(l: Seq[String]): String = l match { case Seq(_*) => "ok" }
     def run() {
       val list1 = List()
       assertEquals(doMatch(list1), "ok")
@@ -460,9 +453,7 @@ object Test {
   }
 
   val FooBar = 42
-  def lala() = 42 match {
-    case FooBar => true
-  }
+  def lala() = 42 match { case FooBar => true }
 
   object Bug1270 { // unapply13
     class Sync {
@@ -476,9 +467,7 @@ object Test {
         case Get(y) if y > 4 => // y gets a wildcard type for some reason?! hack
       }
     }
-    def run() {
-      assert(!(new Buffer).ps.isDefinedAt(42))
-    }
+    def run() { assert(!(new Buffer).ps.isDefinedAt(42)) }
   }
 
   object Bug1281 {
@@ -584,9 +573,13 @@ object Test {
 
     trait Impl
 
-    trait SizeImpl extends Impl { def size = 42 }
+    trait SizeImpl extends Impl {
+      def size = 42
+    }
 
-    trait ColorImpl extends Impl { def color = "red" }
+    trait ColorImpl extends Impl {
+      def color = "red"
+    }
 
     type Both = SizeImpl with ColorImpl
 
@@ -641,9 +634,7 @@ object Test {
     def foo(ps: String*) = "Foo"
     case class X(p: String, ps: String*)
     def bar =
-      X("a", "b") match {
-        case X(p, ps @ _*) => foo(ps: _*)
-      }
+      X("a", "b") match { case X(p, ps @ _*) => foo(ps: _*) }
     def run() { assertEquals("Foo", bar) }
   }
 
@@ -688,15 +679,12 @@ object Test {
     def run() {
       Array[Throwable](new Exception("abc"), new MyException1, new MyException2)
         .foreach { e =>
-          try {
-            throw e
-          } catch {
+          try { throw e }
+          catch {
             case e: SpecialException => {
               assume(e.isInstanceOf[SpecialException])
             }
-            case e => {
-              assume(e.isInstanceOf[Throwable])
-            }
+            case e => { assume(e.isInstanceOf[Throwable]) }
           }
         }
     }

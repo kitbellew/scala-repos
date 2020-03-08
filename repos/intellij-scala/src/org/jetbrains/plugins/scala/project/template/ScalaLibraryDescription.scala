@@ -52,13 +52,9 @@ object ScalaLibraryDescription extends ScalaLibraryDescription {
   private def systemAppRoots: Seq[String] =
     if (SystemInfo.isWindows) {
       env("ProgramFiles").toSeq ++ env("ProgramFiles(x86)").toSeq
-    } else if (SystemInfo.isMac) {
-      Seq("/opt/")
-    } else if (SystemInfo.isLinux) {
-      Seq("/usr/share/java/")
-    } else {
-      Seq.empty
-    }
+    } else if (SystemInfo.isMac) { Seq("/opt/") }
+    else if (SystemInfo.isLinux) { Seq("/usr/share/java/") }
+    else { Seq.empty }
 
   private def env(name: String): Option[String] = Option(System.getenv(name))
 
@@ -132,9 +128,7 @@ trait ScalaLibraryDescription extends CustomLibraryDescription {
       .groupBy(_.version)
       .mapValues(sdkDescriptor.from)
       .toSeq
-      .collect {
-        case (Some(version), Right(sdk)) => sdk
-      }
+      .collect { case (Some(version), Right(sdk)) => sdk }
   }
 }
 

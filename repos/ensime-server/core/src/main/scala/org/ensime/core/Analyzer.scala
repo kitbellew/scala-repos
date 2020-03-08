@@ -118,16 +118,12 @@ class Analyzer(
     val files = scalaCompiler.loadedFiles
     scalaCompiler.askShutdown()
     scalaCompiler = makeScalaCompiler()
-    if (keepLoaded) {
-      scalaCompiler.askReloadFiles(files)
-    }
+    if (keepLoaded) { scalaCompiler.askReloadFiles(files) }
     scalaCompiler.askNotifyWhenReady()
     broadcaster ! CompilerRestartedEvent
   }
 
-  override def postStop(): Unit = {
-    Try(scalaCompiler.askShutdown())
-  }
+  override def postStop(): Unit = { Try(scalaCompiler.askShutdown()) }
 
   def charset: Charset = scalaCompiler.charset
 

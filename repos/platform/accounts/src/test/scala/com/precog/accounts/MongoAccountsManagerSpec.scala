@@ -92,9 +92,7 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
         deleted <- accountManager.deleteAccount(before.get.accountId)
         after <- accountManager.findAccountById(account.accountId)
         // deleteCol <- accountManager.findDeletedAccount(account.accountId)
-      } yield {
-        (before, deleted, after)
-      }).copoint must beLike {
+      } yield { (before, deleted, after) }).copoint must beLike {
         case (Some(t1), Some(t2), None) =>
           t1 must_== t2
         //t1 must_== t3
@@ -114,9 +112,7 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
         deleted2 <- accountManager.deleteAccount(before.get.accountId)
         after <- accountManager.findAccountById(account.accountId)
         //  deleteCol <- accountManager.findDeletedAccount(account.accountId)
-      } yield {
-        (before, deleted1, deleted2, after)
-      }).copoint must beLike {
+      } yield { (before, deleted1, deleted2, after) }).copoint must beLike {
         case (Some(t1), Some(t2), None, None) =>
           t1 must_== t2
         //t1 must_== t4
@@ -143,9 +139,7 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
         resolvedAccount <- accountManager.findAccountByResetToken(
           account.accountId,
           tokenId)
-      } yield resolvedAccount).copoint must beLike {
-        case -\/(_) => ok
-      }
+      } yield resolvedAccount).copoint must beLike { case -\/(_) => ok }
     }
 
     "update an Account password with a reset token" in new AccountManager {
@@ -228,8 +222,6 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
         AccountPlan.Free) { _ => M.point("testapikey") })
       .copoint
 
-    def after = {
-      defaultActorSystem.shutdown
-    }
+    def after = { defaultActorSystem.shutdown }
   }
 }

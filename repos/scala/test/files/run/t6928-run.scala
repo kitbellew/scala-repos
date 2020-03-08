@@ -4,7 +4,5 @@ abstract class A(val someAs: A*) {
 object B extends A(null, null, null)
 
 object Test {
-  def main(args: Array[String]): Unit = {
-    println(B)
-  }
+  def main(args: Array[String]): Unit = { println(B) }
 }

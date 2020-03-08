@@ -37,17 +37,13 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
       "inspection.unresolved.property.key.reference.name")
   }
 
-  @NotNull override def getShortName: String = {
-    "ScalaUnresolvedPropertyKey"
-  }
+  @NotNull override def getShortName: String = { "ScalaUnresolvedPropertyKey" }
 
   @NotNull override def getDefaultLevel: HighlightDisplayLevel = {
     HighlightDisplayLevel.ERROR
   }
 
-  override def isEnabledByDefault: Boolean = {
-    true
-  }
+  override def isEnabledByDefault: Boolean = { true }
 
   @Nullable override def checkFile(
       @NotNull file: PsiFile,
@@ -92,9 +88,7 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
       import scala.collection.JavaConversions._
       for (file <- propertiesFiles) {
         if (!fileIndex.isInLibraryClasses(file.getVirtualFile) && !fileIndex
-              .isInLibrarySource(file.getVirtualFile)) {
-          result.add(file)
-        }
+              .isInLibrarySource(file.getVirtualFile)) { result.add(file) }
       }
       result
     }

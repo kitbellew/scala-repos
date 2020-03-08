@@ -564,9 +564,7 @@ trait Reifiers { self: Quasiquotes =>
           case _                  => false
         }
         val (mods, flags) = modsPlaceholders
-          .map {
-            case ModsPlaceholder(hole: ApplyHole) => hole
-          }
+          .map { case ModsPlaceholder(hole: ApplyHole) => hole }
           .partition { hole =>
             if (hole.tpe <:< modsType) true
             else if (hole.tpe <:< flagsType) false

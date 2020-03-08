@@ -242,9 +242,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Sets the `srcdir` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `origin`. */
-  def setSrcdir(input: Path) {
-    origin = setOrAppend(origin, input)
-  }
+  def setSrcdir(input: Path) { origin = setOrAppend(origin, input) }
 
   /** Sets the `origin` as a nested src Ant parameter.
     *  @return An origin path to be configured. */
@@ -261,9 +259,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Sets the `classpath` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `classpath`. */
-  def setClasspath(input: Path) {
-    classpath = setOrAppend(classpath, input)
-  }
+  def setClasspath(input: Path) { classpath = setOrAppend(classpath, input) }
 
   /** Sets the `compilerPath` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `compilerPath`. */
@@ -286,15 +282,11 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Sets the `classpath` as an external reference Ant parameter.
     *  @param input A reference to a class path. */
-  def setClasspathref(input: Reference) {
-    createClasspath().setRefid(input)
-  }
+  def setClasspathref(input: Reference) { createClasspath().setRefid(input) }
 
   /** Sets the `sourcepath` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `sourcepath`. */
-  def setSourcepath(input: Path) {
-    sourcepath = setOrAppend(sourcepath, input)
-  }
+  def setSourcepath(input: Path) { sourcepath = setOrAppend(sourcepath, input) }
 
   /** Sets the `sourcepath` as a nested sourcepath Ant parameter.
     *  @return A source path to be configured. */
@@ -303,9 +295,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Sets the `sourcepath` as an external reference Ant parameter.
     *  @param input A reference to a source path. */
-  def setSourcepathref(input: Reference) {
-    createSourcepath().setRefid(input)
-  }
+  def setSourcepathref(input: Reference) { createSourcepath().setRefid(input) }
 
   /** Sets the boot classpath attribute. Used by [[http://ant.apache.org Ant]].
     *
@@ -327,9 +317,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Sets the external extensions path attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `extdirs`. */
-  def setExtdirs(input: Path) {
-    extdirs = setOrAppend(extdirs, input)
-  }
+  def setExtdirs(input: Path) { extdirs = setOrAppend(extdirs, input) }
 
   /** Sets the `extdirs` as a nested extdirs Ant parameter.
     *  @return An extensions path to be configured. */
@@ -342,21 +330,15 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Sets the `argfile` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `argfile`. */
-  def setArgfile(input: File) {
-    argfile = Some(input)
-  }
+  def setArgfile(input: File) { argfile = Some(input) }
 
   /** Sets the `dependencyfile` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `dependencyfile`. */
-  def setDependencyfile(input: File) {
-    dependencyfile = Some(input)
-  }
+  def setDependencyfile(input: File) { dependencyfile = Some(input) }
 
   /** Sets the `encoding` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `encoding`. */
-  def setEncoding(input: String) {
-    encoding = Some(input)
-  }
+  def setEncoding(input: String) { encoding = Some(input) }
 
   /** Sets the `target` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value for `target`. */
@@ -376,9 +358,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
     * Sets the `jvmargs` attribute.  Used by [[http://ant.apache.org Ant]].
     * @param input The value for `jvmargs`
     */
-  def setJvmargs(input: String) {
-    jvmArgs = Some(input)
-  }
+  def setJvmargs(input: String) { jvmArgs = Some(input) }
 
   /** Sets the logging level attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value for `logging`. */
@@ -394,9 +374,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       val st = s.trim()
       if (CompilerPhase.isPermissible(st))
         (if (input != "") List(st) else Nil)
-      else {
-        buildError("Phase " + st + " in log does not exist.")
-      }
+      else { buildError("Phase " + st + " in log does not exist.") }
     }
   }
 

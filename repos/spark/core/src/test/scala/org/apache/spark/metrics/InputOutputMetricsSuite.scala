@@ -90,9 +90,7 @@ class InputOutputMetricsSuite
     tmpFilePath = "file://" + tmpFile.getAbsolutePath
   }
 
-  after {
-    Utils.deleteRecursively(tmpDir)
-  }
+  after { Utils.deleteRecursively(tmpDir) }
 
   test("input metrics for old hadoop with coalesce") {
     val bytesRead = runAndReturnBytesRead {
@@ -111,12 +109,8 @@ class InputOutputMetricsSuite
     val rdd = sc.textFile(tmpFilePath, 4).cache()
     rdd.collect()
 
-    val bytesRead = runAndReturnBytesRead {
-      rdd.count()
-    }
-    val bytesRead2 = runAndReturnBytesRead {
-      rdd.coalesce(4).count()
-    }
+    val bytesRead = runAndReturnBytesRead { rdd.count() }
+    val bytesRead2 = runAndReturnBytesRead { rdd.coalesce(4).count() }
 
     // for count and coalesce, the same bytes should be read.
     assert(bytesRead != 0)
@@ -140,16 +134,10 @@ class InputOutputMetricsSuite
 
     val rdd2 = sc.textFile(tmpFilePath, numPartitions)
 
-    val bytesRead = runAndReturnBytesRead {
-      rdd.count()
-    }
-    val bytesRead2 = runAndReturnBytesRead {
-      rdd2.count()
-    }
+    val bytesRead = runAndReturnBytesRead { rdd.count() }
+    val bytesRead2 = runAndReturnBytesRead { rdd2.count() }
 
-    val cartRead = runAndReturnBytesRead {
-      rdd.cartesian(rdd2).count()
-    }
+    val cartRead = runAndReturnBytesRead { rdd.cartesian(rdd2).count() }
 
     assert(cartRead != 0)
     assert(bytesRead != 0)
@@ -221,9 +209,7 @@ class InputOutputMetricsSuite
     val rdd = sc.textFile(tmpFilePath, 4).cache()
     rdd.collect()
 
-    val records = runAndReturnRecordsRead {
-      rdd.count()
-    }
+    val records = runAndReturnRecordsRead { rdd.count() }
 
     assert(records == numRecords)
   }
@@ -278,12 +264,8 @@ class InputOutputMetricsSuite
 
     val tmpRdd = sc.textFile(tmpFilePath, numPartitions)
 
-    val firstSize = runAndReturnBytesRead {
-      aRdd.count()
-    }
-    val secondSize = runAndReturnBytesRead {
-      tmpRdd.count()
-    }
+    val firstSize = runAndReturnBytesRead { aRdd.count() }
+    val secondSize = runAndReturnBytesRead { tmpRdd.count() }
 
     val cartesianBytes = runAndReturnBytesRead {
       aRdd.cartesian(tmpRdd).count()
@@ -389,9 +371,7 @@ class InputOutputMetricsSuite
           case (bytes, fileStatus) =>
             assert(bytes >= fileStatus.getLen)
         }
-      } finally {
-        fs.delete(outPath, true)
-      }
+      } finally { fs.delete(outPath, true) }
     }
   }
 

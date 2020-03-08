@@ -187,9 +187,7 @@ class EhCacheModule extends Module {
       configuration.underlying.getStringList("play.cache.bindCaches").toSeq
 
     // Creates a named cache qualifier
-    def named(name: String): NamedCache = {
-      new NamedCacheImpl(name)
-    }
+    def named(name: String): NamedCache = { new NamedCacheImpl(name) }
 
     // bind a cache with the given name
     def bindCache(name: String) = {
@@ -259,9 +257,7 @@ private[play] object NamedEhCacheProvider {
 private[play] class NamedCacheApiProvider(key: BindingKey[Ehcache])
     extends Provider[CacheApi] {
   @Inject private var injector: Injector = _
-  lazy val get: CacheApi = {
-    new EhCacheApi(injector.instanceOf(key))
-  }
+  lazy val get: CacheApi = { new EhCacheApi(injector.instanceOf(key)) }
 }
 
 private[play] class NamedJavaCacheApiProvider(key: BindingKey[CacheApi])
@@ -275,9 +271,7 @@ private[play] class NamedJavaCacheApiProvider(key: BindingKey[CacheApi])
 private[play] class NamedCachedProvider(key: BindingKey[CacheApi])
     extends Provider[Cached] {
   @Inject private var injector: Injector = _
-  lazy val get: Cached = {
-    new Cached(injector.instanceOf(key))
-  }
+  lazy val get: Cached = { new Cached(injector.instanceOf(key)) }
 }
 
 private[play] case class EhCacheExistsException(msg: String, cause: Throwable)
@@ -292,13 +286,9 @@ class EhCacheApi @Inject() (cache: Ehcache) extends CacheApi {
       case infinite: Duration.Infinite => element.setEternal(true)
       case finite: FiniteDuration =>
         val seconds = finite.toSeconds
-        if (seconds <= 0) {
-          element.setTimeToLive(1)
-        } else if (seconds > Int.MaxValue) {
-          element.setTimeToLive(Int.MaxValue)
-        } else {
-          element.setTimeToLive(seconds.toInt)
-        }
+        if (seconds <= 0) { element.setTimeToLive(1) }
+        else if (seconds > Int.MaxValue) { element.setTimeToLive(Int.MaxValue) }
+        else { element.setTimeToLive(seconds.toInt) }
     }
     cache.put(element)
   }
@@ -322,7 +312,5 @@ class EhCacheApi @Inject() (cache: Ehcache) extends CacheApi {
     }
   }
 
-  def remove(key: String) = {
-    cache.remove(key)
-  }
+  def remove(key: String) = { cache.remove(key) }
 }

@@ -105,9 +105,7 @@ class ScalaCollectionRendererTest
         .getLocalVariableDescriptor(null, frameProxy visibleVariableByName name)
       local setContext evaluationContext
       local
-    } catch {
-      case e: EvaluateException => null
-    }
+    } catch { case e: EvaluateException => null }
   }
 
   protected def testScalaCollectionRenderer(

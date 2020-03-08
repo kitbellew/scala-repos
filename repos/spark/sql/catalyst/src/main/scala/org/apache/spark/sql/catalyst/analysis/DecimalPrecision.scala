@@ -75,9 +75,7 @@ object DecimalPrecision extends Rule[LogicalPlan] {
 
   private def promotePrecision(
       e: Expression,
-      dataType: DataType): Expression = {
-    PromotePrecision(Cast(e, dataType))
-  }
+      dataType: DataType): Expression = { PromotePrecision(Cast(e, dataType)) }
 
   def apply(plan: LogicalPlan): LogicalPlan = plan resolveOperators {
     // fix decimal precision for expressions
@@ -199,76 +197,44 @@ object DecimalPrecision extends Rule[LogicalPlan] {
       : PartialFunction[Expression, Expression] = {
 
     case GreaterThan(i @ IntegralType(), DecimalLiteral(value)) =>
-      if (DecimalLiteral.smallerThanSmallestLong(value)) {
-        TrueLiteral
-      } else if (DecimalLiteral.largerThanLargestLong(value)) {
-        FalseLiteral
-      } else {
-        GreaterThan(i, Literal(value.floor.toLong))
-      }
+      if (DecimalLiteral.smallerThanSmallestLong(value)) { TrueLiteral }
+      else if (DecimalLiteral.largerThanLargestLong(value)) { FalseLiteral }
+      else { GreaterThan(i, Literal(value.floor.toLong)) }
 
     case GreaterThanOrEqual(i @ IntegralType(), DecimalLiteral(value)) =>
-      if (DecimalLiteral.smallerThanSmallestLong(value)) {
-        TrueLiteral
-      } else if (DecimalLiteral.largerThanLargestLong(value)) {
-        FalseLiteral
-      } else {
-        GreaterThanOrEqual(i, Literal(value.ceil.toLong))
-      }
+      if (DecimalLiteral.smallerThanSmallestLong(value)) { TrueLiteral }
+      else if (DecimalLiteral.largerThanLargestLong(value)) { FalseLiteral }
+      else { GreaterThanOrEqual(i, Literal(value.ceil.toLong)) }
 
     case LessThan(i @ IntegralType(), DecimalLiteral(value)) =>
-      if (DecimalLiteral.smallerThanSmallestLong(value)) {
-        FalseLiteral
-      } else if (DecimalLiteral.largerThanLargestLong(value)) {
-        TrueLiteral
-      } else {
-        LessThan(i, Literal(value.ceil.toLong))
-      }
+      if (DecimalLiteral.smallerThanSmallestLong(value)) { FalseLiteral }
+      else if (DecimalLiteral.largerThanLargestLong(value)) { TrueLiteral }
+      else { LessThan(i, Literal(value.ceil.toLong)) }
 
     case LessThanOrEqual(i @ IntegralType(), DecimalLiteral(value)) =>
-      if (DecimalLiteral.smallerThanSmallestLong(value)) {
-        FalseLiteral
-      } else if (DecimalLiteral.largerThanLargestLong(value)) {
-        TrueLiteral
-      } else {
-        LessThanOrEqual(i, Literal(value.floor.toLong))
-      }
+      if (DecimalLiteral.smallerThanSmallestLong(value)) { FalseLiteral }
+      else if (DecimalLiteral.largerThanLargestLong(value)) { TrueLiteral }
+      else { LessThanOrEqual(i, Literal(value.floor.toLong)) }
 
     case GreaterThan(DecimalLiteral(value), i @ IntegralType()) =>
-      if (DecimalLiteral.smallerThanSmallestLong(value)) {
-        FalseLiteral
-      } else if (DecimalLiteral.largerThanLargestLong(value)) {
-        TrueLiteral
-      } else {
-        GreaterThan(Literal(value.ceil.toLong), i)
-      }
+      if (DecimalLiteral.smallerThanSmallestLong(value)) { FalseLiteral }
+      else if (DecimalLiteral.largerThanLargestLong(value)) { TrueLiteral }
+      else { GreaterThan(Literal(value.ceil.toLong), i) }
 
     case GreaterThanOrEqual(DecimalLiteral(value), i @ IntegralType()) =>
-      if (DecimalLiteral.smallerThanSmallestLong(value)) {
-        FalseLiteral
-      } else if (DecimalLiteral.largerThanLargestLong(value)) {
-        TrueLiteral
-      } else {
-        GreaterThanOrEqual(Literal(value.floor.toLong), i)
-      }
+      if (DecimalLiteral.smallerThanSmallestLong(value)) { FalseLiteral }
+      else if (DecimalLiteral.largerThanLargestLong(value)) { TrueLiteral }
+      else { GreaterThanOrEqual(Literal(value.floor.toLong), i) }
 
     case LessThan(DecimalLiteral(value), i @ IntegralType()) =>
-      if (DecimalLiteral.smallerThanSmallestLong(value)) {
-        TrueLiteral
-      } else if (DecimalLiteral.largerThanLargestLong(value)) {
-        FalseLiteral
-      } else {
-        LessThan(Literal(value.floor.toLong), i)
-      }
+      if (DecimalLiteral.smallerThanSmallestLong(value)) { TrueLiteral }
+      else if (DecimalLiteral.largerThanLargestLong(value)) { FalseLiteral }
+      else { LessThan(Literal(value.floor.toLong), i) }
 
     case LessThanOrEqual(DecimalLiteral(value), i @ IntegralType()) =>
-      if (DecimalLiteral.smallerThanSmallestLong(value)) {
-        TrueLiteral
-      } else if (DecimalLiteral.largerThanLargestLong(value)) {
-        FalseLiteral
-      } else {
-        LessThanOrEqual(Literal(value.ceil.toLong), i)
-      }
+      if (DecimalLiteral.smallerThanSmallestLong(value)) { TrueLiteral }
+      else if (DecimalLiteral.largerThanLargestLong(value)) { FalseLiteral }
+      else { LessThanOrEqual(Literal(value.ceil.toLong), i) }
   }
 
   /**

@@ -16,9 +16,7 @@ class MetricsBucketedHistogramTest extends FunSuite {
       val ps = Array[Double](0.5, 0.9)
       val h = new MetricsBucketedHistogram(name = "h", percentiles = ps)
 
-      def roll(): Unit = {
-        tc.advance(60.seconds)
-      }
+      def roll(): Unit = { tc.advance(60.seconds) }
 
       // add some data (A) to the 1st window
       1L.to(100L).foreach(h.add)

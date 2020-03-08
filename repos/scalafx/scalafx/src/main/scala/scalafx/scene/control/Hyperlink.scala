@@ -58,8 +58,6 @@ class Hyperlink(override val delegate: jfxsc.Hyperlink = new jfxsc.Hyperlink)
     * Indicates whether this link has already been "visited".
     */
   def visited: BooleanProperty = delegate.visitedProperty
-  def visited_=(v: Boolean) {
-    visited() = v
-  }
+  def visited_=(v: Boolean) { visited() = v }
 
 }

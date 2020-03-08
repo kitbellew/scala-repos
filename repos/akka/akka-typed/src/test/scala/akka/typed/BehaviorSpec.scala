@@ -51,7 +51,9 @@ class BehaviorSpec extends TypedSpec {
   case object Pong extends Event
   case object Swapped extends Event
 
-  trait State { def next: State }
+  trait State {
+    def next: State
+  }
   val StateA: State = new State {
     override def toString = "StateA"; override def next = StateB
   }
@@ -116,29 +118,21 @@ class BehaviorSpec extends TypedSpec {
   }
 
   trait Lifecycle extends Common {
-    def `must react to PreStart`(): Unit = {
-      mkCtx(requirePreStart = true)
-    }
+    def `must react to PreStart`(): Unit = { mkCtx(requirePreStart = true) }
 
-    def `must react to PostStop`(): Unit = {
-      mkCtx().check(PostStop)
-    }
+    def `must react to PostStop`(): Unit = { mkCtx().check(PostStop) }
 
     def `must react to PostStop after a message`(): Unit = {
       mkCtx().check(GetSelf).check(PostStop)
     }
 
-    def `must react to PreRestart`(): Unit = {
-      mkCtx().check(PreRestart(ex))
-    }
+    def `must react to PreRestart`(): Unit = { mkCtx().check(PreRestart(ex)) }
 
     def `must react to PreRestart after a message`(): Unit = {
       mkCtx().check(GetSelf).check(PreRestart(ex))
     }
 
-    def `must react to PostRestart`(): Unit = {
-      mkCtx().check(PostRestart(ex))
-    }
+    def `must react to PostRestart`(): Unit = { mkCtx().check(PostRestart(ex)) }
 
     def `must react to a message after PostRestart`(): Unit = {
       mkCtx().check(PostRestart(ex)).check(GetSelf)
@@ -225,9 +219,7 @@ class BehaviorSpec extends TypedSpec {
   trait Become extends Common with Unhandled {
     private implicit val inbox = Inbox.sync[State]("state")
 
-    def `must be in state A`(): Unit = {
-      mkCtx().check(GetState(), StateA)
-    }
+    def `must be in state A`(): Unit = { mkCtx().check(GetState(), StateA) }
 
     def `must switch to state B`(): Unit = {
       mkCtx().check(Swap).check(GetState(), StateB)

@@ -122,9 +122,7 @@ abstract class RemoteReDeploymentMultiJvmSpec
         expectMsg(15.seconds, "HelloParent")
       }
 
-      runOn(first) {
-        expectMsg(15.seconds, "PreStart")
-      }
+      runOn(first) { expectMsg(15.seconds, "PreStart") }
 
       enterBarrier("first-deployed")
 

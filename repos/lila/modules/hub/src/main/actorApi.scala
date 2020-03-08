@@ -171,9 +171,7 @@ package game {
   case object Count
 }
 
-package tv {
-  case class Select(msg: JsObject)
-}
+package tv { case class Select(msg: JsObject) }
 
 package message {
   case class LichessThread(
@@ -191,13 +189,9 @@ package router {
   case class Puzzle(id: Int)
 }
 
-package forum {
-  case class MakeTeam(id: String, name: String)
-}
+package forum { case class MakeTeam(id: String, name: String) }
 
-package fishnet {
-  case class AutoAnalyse(gameId: String)
-}
+package fishnet { case class AutoAnalyse(gameId: String) }
 
 package round {
   case class MoveEvent(

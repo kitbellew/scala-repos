@@ -14,7 +14,5 @@ class D extends C {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    new D().foo
-  }
+  def main(args: Array[String]) { new D().foo }
 }

@@ -118,9 +118,7 @@ sealed class Supervisor(
 
   def uuid = supervisor.uuid
 
-  def start: Supervisor = {
-    this
-  }
+  def start: Supervisor = { this }
 
   def shutdown(): Unit = supervisor.stop()
 

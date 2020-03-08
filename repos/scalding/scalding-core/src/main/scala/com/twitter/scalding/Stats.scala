@@ -42,9 +42,7 @@ case class StatKey(counter: String, group: String) extends java.io.Serializable
 object StatKey {
   // This is implicit to allow Stat("c", "g") to work.
   implicit def fromCounterGroup(counterGroup: (String, String)): StatKey =
-    counterGroup match {
-      case (c, g) => StatKey(c, g)
-    }
+    counterGroup match { case (c, g) => StatKey(c, g) }
   // Create a Stat in the ScaldingGroup
   implicit def fromCounterDefaultGroup(counter: String): StatKey =
     StatKey(counter, Stats.ScaldingGroup)
@@ -159,9 +157,7 @@ object RuntimeStats extends java.io.Serializable {
     (for {
       weakFlowProcess <- flowMappingStore.get(uniqueId.get)
       flowProcess <- weakFlowProcess.get
-    } yield {
-      flowProcess
-    }).getOrElse {
+    } yield { flowProcess }).getOrElse {
       sys.error(
         "Error in job deployment, the FlowProcess for unique id %s isn't available"
           .format(uniqueId))

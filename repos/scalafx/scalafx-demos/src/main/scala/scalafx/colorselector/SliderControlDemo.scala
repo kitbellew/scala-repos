@@ -52,9 +52,7 @@ object SliderControlDemo extends JFXApp {
     alignmentInParent = Pos.BaselineLeft
     promptText = "Enter the value"
     hgrow = Priority.Never
-    onAction = handle {
-      sliderControl.value = text.get.toDouble
-    }
+    onAction = handle { sliderControl.value = text.get.toDouble }
   }
 
   val lblOutputValue = new Label {

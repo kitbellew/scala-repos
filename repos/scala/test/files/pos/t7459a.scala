@@ -2,9 +2,8 @@ trait SpecialException extends Throwable
 
 object Test {
   def run() {
-    try {
-      ???
-    } catch {
+    try { ??? }
+    catch {
       case e: SpecialException => e.isInstanceOf[SpecialException]
       case e                   =>
     }

@@ -23,9 +23,7 @@ import breeze.benchmark._
 object SparseVectorBenchmark extends MyRunner(classOf[SparseVectorBenchmark])
 
 class SparseVectorBenchmark extends BreezeBenchmark with BuildsRandomVectors {
-  def timeAllocate(reps: Int) = run(reps) {
-    SparseVector.zeros[Double](1024)
-  }
+  def timeAllocate(reps: Int) = run(reps) { SparseVector.zeros[Double](1024) }
 
   def dotProductBench(reps: Int, size: Int, sparsity: Double): Double = {
     dotProductBench(reps, size, sparsity, sparsity)

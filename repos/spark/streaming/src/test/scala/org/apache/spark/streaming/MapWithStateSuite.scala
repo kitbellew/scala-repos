@@ -52,9 +52,7 @@ class MapWithStateSuite
 
   after {
     StreamingContext.getActive().foreach { _.stop(stopSparkContext = false) }
-    if (checkpointDir != null) {
-      Utils.deleteRecursively(checkpointDir)
-    }
+    if (checkpointDir != null) { Utils.deleteRecursively(checkpointDir) }
   }
 
   override def beforeAll(): Unit = {
@@ -66,13 +64,8 @@ class MapWithStateSuite
   }
 
   override def afterAll(): Unit = {
-    try {
-      if (sc != null) {
-        sc.stop()
-      }
-    } finally {
-      super.afterAll()
-    }
+    try { if (sc != null) { sc.stop() } }
+    finally { super.afterAll() }
   }
 
   test("state - get, exists, update, remove, ") {
@@ -91,33 +84,23 @@ class MapWithStateSuite
         assert(state.getOption.getOrElse(-1) === expectedData.get)
       } else {
         assert(!state.exists)
-        intercept[NoSuchElementException] {
-          state.get()
-        }
+        intercept[NoSuchElementException] { state.get() }
         assert(state.getOption() === None)
         assert(state.getOption.getOrElse(-1) === -1)
       }
 
       assert(state.isTimingOut() === shouldBeTimingOut)
       if (shouldBeTimingOut) {
-        intercept[IllegalArgumentException] {
-          state.remove()
-        }
-        intercept[IllegalArgumentException] {
-          state.update(-1)
-        }
+        intercept[IllegalArgumentException] { state.remove() }
+        intercept[IllegalArgumentException] { state.update(-1) }
       }
 
       assert(state.isUpdated() === shouldBeUpdated)
 
       assert(state.isRemoved() === shouldBeRemoved)
       if (shouldBeRemoved) {
-        intercept[IllegalArgumentException] {
-          state.remove()
-        }
-        intercept[IllegalArgumentException] {
-          state.update(-1)
-        }
+        intercept[IllegalArgumentException] { state.remove() }
+        intercept[IllegalArgumentException] { state.update(-1) }
       }
     }
 
@@ -245,9 +228,7 @@ class MapWithStateSuite
 
     // Simple track state function with value as Int, state as Double and mapped type as Double
     val simpleFunc =
-      (key: String, value: Option[Int], state: State[Double]) => {
-        0L
-      }
+      (key: String, value: Option[Int], state: State[Double]) => { 0L }
 
     // Advanced track state function with key as String, value as Int, state as Double and
     // mapped type as Double
@@ -457,14 +438,9 @@ class MapWithStateSuite
 
     val mappingFunc =
       (time: Time, key: String, value: Option[Int], state: State[Int]) => {
-        if (value.isDefined) {
-          state.update(1)
-        }
-        if (state.isTimingOut) {
-          Some(key)
-        } else {
-          None
-        }
+        if (value.isDefined) { state.update(1) }
+        if (state.isTimingOut) { Some(key) }
+        else { None }
       }
 
     val (collectedOutputs, collectedStateSnapshots) = getOperationOutput(
@@ -513,9 +489,7 @@ class MapWithStateSuite
         assert(mapWithStateStream.checkpointDuration === null)
         assert(
           internalmapWithStateStream.checkpointDuration === expectedCheckpointDuration)
-      } finally {
-        ssc.stop(stopSparkContext = false)
-      }
+      } finally { ssc.stop(stopSparkContext = false) }
     }
 
     testCheckpointDuration(Milliseconds(100), Seconds(1))

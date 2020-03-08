@@ -37,9 +37,7 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
 
   // Ignoring gauges for now, but we may consider sampling them.
   protected[this] def registerGauge(name: Seq[String], f: => Float) =
-    synchronized {
-      _gauges += (name -> (() => f))
-    }
+    synchronized { _gauges += (name -> (() => f)) }
 
   protected[this] def deregisterGauge(name: Seq[String]) = synchronized {
     _gauges -= name

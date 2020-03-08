@@ -72,9 +72,7 @@ trait AttributesMap
     */
   def getAsOrElse[T](key: String, default: => T)(implicit
       mf: Manifest[T],
-      converter: TypeConverter[Any, T]): T = {
-    getAs[T](key) getOrElse default
-  }
+      converter: TypeConverter[Any, T]): T = { getAs[T](key) getOrElse default }
 
   /**
     * Creates a new iterator over all attributes in the underlying servlet object.

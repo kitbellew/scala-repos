@@ -89,9 +89,7 @@ private[stats] object StatsFormatter {
       val gname: String = "p" + (p * 10000).toInt
       if (3 < gname.length && ("00" == gname.substring(3))) {
         gname.substring(0, 3)
-      } else {
-        gname
-      }
+      } else { gname }
     }
 
     protected def labelMin: String = "min"

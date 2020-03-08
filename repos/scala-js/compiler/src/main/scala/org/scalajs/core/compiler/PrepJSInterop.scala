@@ -30,9 +30,7 @@ abstract class PrepJSInterop
     with PluginComponent210Compat {
   import PrepJSInterop._
 
-  val jsAddons: JSGlobalAddons {
-    val global: PrepJSInterop.this.global.type
-  }
+  val jsAddons: JSGlobalAddons { val global: PrepJSInterop.this.global.type }
 
   val scalaJSOpts: ScalaJSOptions
 
@@ -102,9 +100,8 @@ abstract class PrepJSInterop
       val oldAllEnclosingOwners = allEnclosingOwners
       enclosingOwner = kind
       allEnclosingOwners |= kind
-      try {
-        body
-      } finally {
+      try { body }
+      finally {
         enclosingOwner = oldEnclosingOwner
         allEnclosingOwners = oldAllEnclosingOwners
       }
@@ -382,9 +379,8 @@ abstract class PrepJSInterop
 
     private def genConstructorOf(tree: Tree, tpeArg: Tree): Tree = {
       val classValue =
-        try {
-          typer.typedClassOf(tree, tpeArg)
-        } catch {
+        try { typer.typedClassOf(tree, tpeArg) }
+        catch {
           case typeError: TypeError =>
             reporter.error(typeError.pos, typeError.msg)
             EmptyTree
@@ -410,9 +406,7 @@ abstract class PrepJSInterop
             s"non-trait class type required but $tpe found")
           EmptyTree
         }
-      } else {
-        EmptyTree
-      }
+      } else { EmptyTree }
     }
 
     private def postTransform(tree: Tree) = tree match {
@@ -622,9 +616,7 @@ abstract class PrepJSInterop
           for {
             exp <- exportsOf(sym)
             if !exp.ignoreInvalid
-          } {
-            reporter.error(exp.pos, "You may not export a trait")
-          }
+          } { reporter.error(exp.pos, "You may not export a trait") }
         } else if (isJSNative) {
           // Check that a JS native type is not exported
           for {
@@ -1057,9 +1049,7 @@ abstract class PrepJSInterop
       Literal(Constant(defaultName)))
     val params = intParam.toList :+ nameTree
 
-    typer.typed {
-      Apply(Select(This(thisSym), jsnme.Value), params)
-    }
+    typer.typed { Apply(Select(This(thisSym), jsnme.Value), params) }
   }
 
   private lazy val ScalaEnumClass = getRequiredClass("scala.Enumeration")
@@ -1101,9 +1091,7 @@ abstract class PrepJSInterop
         ddef.vparamss,
         ddef.tpt,
         ddef.rhs)
-    } else {
-      ddef
-    }
+    } else { ddef }
   }
 }
 

@@ -285,9 +285,7 @@ private[stream] object TcpConnectionStage {
     }
 
     val readHandler = new OutHandler {
-      override def onPull(): Unit = {
-        connection ! ResumeReading
-      }
+      override def onPull(): Unit = { connection ! ResumeReading }
 
       override def onDownstreamFinish(): Unit = {
         if (!isClosed(bytesIn)) connection ! ResumeReading

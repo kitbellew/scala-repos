@@ -2,7 +2,9 @@ trait Box[K[A[x]]]
 
 object Box {
   // type constructor composition
-  sealed trait ∙[A[_], B[_]] { type l[T] = A[B[T]] }
+  sealed trait ∙[A[_], B[_]] {
+    type l[T] = A[B[T]]
+  }
 
   // composes type constructors inside K
   type SplitBox[K[A[x]], B[x]] = Box[({ type l[A[x]] = K[(A ∙ B)#l] })#l]

@@ -81,13 +81,9 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
     |    return 42
     """.stripMargin
 
-  test("run Spark in yarn-client mode") {
-    testBasicYarnApp(true)
-  }
+  test("run Spark in yarn-client mode") { testBasicYarnApp(true) }
 
-  test("run Spark in yarn-cluster mode") {
-    testBasicYarnApp(false)
-  }
+  test("run Spark in yarn-cluster mode") { testBasicYarnApp(false) }
 
   test("run Spark in yarn-cluster mode unsuccessfully") {
     // Don't provide arguments so the driver will fail.
@@ -95,21 +91,13 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
     finalState should be(SparkAppHandle.State.FAILED)
   }
 
-  test("run Python application in yarn-client mode") {
-    testPySpark(true)
-  }
+  test("run Python application in yarn-client mode") { testPySpark(true) }
 
-  test("run Python application in yarn-cluster mode") {
-    testPySpark(false)
-  }
+  test("run Python application in yarn-cluster mode") { testPySpark(false) }
 
-  test("user class path first in client mode") {
-    testUseClassPathFirst(true)
-  }
+  test("user class path first in client mode") { testUseClassPathFirst(true) }
 
-  test("user class path first in cluster mode") {
-    testUseClassPathFirst(false)
-  }
+  test("user class path first in cluster mode") { testUseClassPathFirst(false) }
 
   test("monitor app using launcher library") {
     val env = new JHashMap[String, String]()
@@ -138,9 +126,7 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
       eventually(timeout(30 seconds), interval(100 millis)) {
         handle.getState() should be(SparkAppHandle.State.KILLED)
       }
-    } finally {
-      handle.kill()
-    }
+    } finally { handle.kill() }
   }
 
   private def testBasicYarnApp(clientMode: Boolean): Unit = {
@@ -306,9 +292,7 @@ private object YarnClasspathTest extends Logging {
     logError(m, ex)
     // scalastyle:off println
     System.out.println(m)
-    if (ex != null) {
-      ex.printStackTrace(System.out)
-    }
+    if (ex != null) { ex.printStackTrace(System.out) }
     // scalastyle:on println
   }
 
@@ -324,11 +308,8 @@ private object YarnClasspathTest extends Logging {
 
     readResource(args(0))
     val sc = new SparkContext(new SparkConf())
-    try {
-      sc.parallelize(Seq(1)).foreach { x => readResource(args(1)) }
-    } finally {
-      sc.stop()
-    }
+    try { sc.parallelize(Seq(1)).foreach { x => readResource(args(1)) } }
+    finally { sc.stop() }
     System.exit(exitCode)
   }
 
@@ -357,11 +338,7 @@ private object YarnLauncherTestApp {
     // Do not stop the application; the test will stop it using the launcher lib. Just run a task
     // that will prevent the process from exiting.
     val sc = new SparkContext(new SparkConf())
-    sc.parallelize(Seq(1)).foreach { i =>
-      this.synchronized {
-        wait()
-      }
-    }
+    sc.parallelize(Seq(1)).foreach { i => this.synchronized { wait() } }
   }
 
 }

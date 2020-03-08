@@ -269,9 +269,7 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
               case (a, b) ⇒ Some((b, a + b) → a)
             }
             .runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
-            .failed) {
-          _ should be theSameInstanceAs (t)
-        }
+            .failed) { _ should be theSameInstanceAs (t) }
     }
 
     "generate a finite fibonacci sequence asynchronously" in {

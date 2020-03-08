@@ -123,9 +123,7 @@ object Modules {
               configuration,
               DefaultModuleName,
               () => defaultModuleClass))
-        } catch {
-          case e: ClassNotFoundException => None
-        }
+        } catch { case e: ClassNotFoundException => None }
 
     moduleClassNames.map { className =>
       constructModule(
@@ -157,15 +155,11 @@ object Modules {
         ctor.map(_.newInstance(args: _*))
       }
 
-      {
-        tryConstruct(environment, configuration)
-      } orElse {
+      { tryConstruct(environment, configuration) } orElse {
         tryConstruct(
           new JavaEnvironment(environment),
           new JavaConfiguration(configuration))
-      } orElse {
-        tryConstruct()
-      } getOrElse {
+      } orElse { tryConstruct() } getOrElse {
         throw new PlayException(
           "No valid constructors",
           "Module [" + className + "] cannot be instantiated.")

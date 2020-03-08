@@ -602,9 +602,7 @@ trait Implicits {
                 DivergingImplicitExpansionError(tree, pt, info.sym)(context)
             }
             result
-          } finally {
-            context.openImplicits = context.openImplicits.tail
-          }
+          } finally { context.openImplicits = context.openImplicits.tail }
       }
     }
 
@@ -1345,9 +1343,7 @@ trait Implicits {
               getParts(
                 tp.normalize
               ) // SI-7180 Normalize needed to expand HK type refs
-            } else if (sym.isAbstractType) {
-              getParts(tp.bounds.hi)
-            }
+            } else if (sym.isAbstractType) { getParts(tp.bounds.hi) }
           case ThisType(_) =>
             getParts(tp.widen)
           case _: SingletonType =>

@@ -198,9 +198,7 @@ trait IntegrationTest {
           .find(_.isDefined)
           .flatten
           .map(tail => root :: tail)
-    } else {
-      None
-    }
+    } else { None }
   }
 
   protected def checkResultTreeHasExactNamedPath(
@@ -261,12 +259,8 @@ trait IntegrationTest {
         try {
           assert(testTreeRoot.isDefined && testTreeCheck(testTreeRoot.get))
 
-          if (checkOutputs) {
-            assert(res == expectedText)
-          }
-        } finally {
-          semaphore.up()
-        }
+          if (checkOutputs) { assert(res == expectedText) }
+        } finally { semaphore.up() }
       }
     })
 

@@ -46,9 +46,7 @@ class ActivityTest extends FunSuite {
   test("Activity#collect") {
     val v = Var(Activity.Pending: Activity.State[Int])
     val ref = new AtomicReference(Seq.empty: Seq[Try[String]])
-    val act = Activity(v) collect {
-      case i if i % 2 == 0 => "EVEN%d".format(i)
-    }
+    val act = Activity(v) collect { case i if i % 2 == 0 => "EVEN%d".format(i) }
     act.values.build.register(Witness(ref))
 
     assert(ref.get.isEmpty)

@@ -34,7 +34,9 @@ trait Cobind[F[_]] extends Functor[F] { self =>
   def cobindLaw = new CobindLaws {}
 
   ////
-  val cobindSyntax = new scalaz.syntax.CobindSyntax[F] { def F = Cobind.this }
+  val cobindSyntax = new scalaz.syntax.CobindSyntax[F] {
+    def F = Cobind.this
+  }
 }
 
 object Cobind {

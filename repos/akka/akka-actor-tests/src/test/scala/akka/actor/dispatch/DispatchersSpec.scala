@@ -64,9 +64,7 @@ object DispatchersSpec {
     """
 
   class ThreadNameEcho extends Actor {
-    def receive = {
-      case _ ⇒ sender() ! Thread.currentThread.getName
-    }
+    def receive = { case _ ⇒ sender() ! Thread.currentThread.getName }
   }
 
   class OneShotMailboxType(settings: ActorSystem.Settings, config: Config)
@@ -74,9 +72,8 @@ object DispatchersSpec {
       with ProducesMessageQueue[DoublingMailbox] {
     val created = new AtomicBoolean(false)
     override def create(owner: Option[ActorRef], system: Option[ActorSystem]) =
-      if (created.compareAndSet(false, true)) {
-        new DoublingMailbox(owner)
-      } else
+      if (created.compareAndSet(false, true)) { new DoublingMailbox(owner) }
+      else
         throw new IllegalStateException("I've already created the mailbox.")
   }
 
@@ -154,9 +151,7 @@ class DispatchersSpec
     }
 
     "complain about missing config" in {
-      intercept[ConfigurationException] {
-        lookup("myapp.other-dispatcher")
-      }
+      intercept[ConfigurationException] { lookup("myapp.other-dispatcher") }
     }
 
     "have only one default dispatcher" in {

@@ -44,18 +44,14 @@ class MetricsStatsReceiverTest
     "Ensure that we throw an exception with a counter and a gauge when rollup collides") {
     val sr = new RollupStatsReceiver(rootReceiver)
     sr.counter("a", "b", "c").incr()
-    intercept[MetricCollisionException] {
-      sr.addGauge("a", "b", "d") { 3 }
-    }
+    intercept[MetricCollisionException] { sr.addGauge("a", "b", "d") { 3 } }
   }
 
   test("Ensure that we throw an exception when rollup collides via scoping") {
     val sr = new RollupStatsReceiver(rootReceiver)
     val newSr = sr.scope("a").scope("b")
     newSr.counter("c").incr()
-    intercept[MetricCollisionException] {
-      newSr.addGauge("d") { 3 }
-    }
+    intercept[MetricCollisionException] { newSr.addGauge("d") { 3 } }
   }
 
   test("toString") {

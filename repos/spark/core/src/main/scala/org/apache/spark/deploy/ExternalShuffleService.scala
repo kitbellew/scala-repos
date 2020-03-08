@@ -66,11 +66,7 @@ private[deploy] class ExternalShuffleService(
   }
 
   /** Starts the external shuffle service if the user has configured us to. */
-  def startIfEnabled() {
-    if (enabled) {
-      start()
-    }
-  }
+  def startIfEnabled() { if (enabled) { start() } }
 
   /** Start the external shuffle service */
   def start() {
@@ -79,9 +75,7 @@ private[deploy] class ExternalShuffleService(
     val bootstraps: Seq[TransportServerBootstrap] =
       if (useSasl) {
         Seq(new SaslServerBootstrap(transportConf, securityManager))
-      } else {
-        Nil
-      }
+      } else { Nil }
     server = transportContext.createServer(port, bootstraps.asJava)
   }
 

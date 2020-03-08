@@ -78,9 +78,7 @@ abstract class UnCurry
 
     private lazy val forceSpecializationInfoTransformOfFunctionN: Unit = {
       if (currentRun.specializePhase != NoPhase) { // be robust in case of -Ystop-after:uncurry
-        exitingSpecialize {
-          FunctionClass.seq.foreach(cls => cls.info)
-        }
+        exitingSpecialize { FunctionClass.seq.foreach(cls => cls.info) }
       }
     }
 

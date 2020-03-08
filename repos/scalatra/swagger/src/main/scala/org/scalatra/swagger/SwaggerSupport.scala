@@ -434,9 +434,7 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
           throw new RuntimeException(
             "The swagger support only works for servlets or filters at this time.")
       }
-    } catch {
-      case e: Throwable => e.printStackTrace()
-    }
+    } catch { case e: Throwable => e.printStackTrace() }
 
   }
 

@@ -80,9 +80,7 @@ class ScAccessModifierImpl private (
 
   def isThis: Boolean = {
     val stub = getStub
-    if (stub != null) {
-      return stub.asInstanceOf[ScAccessModifierStub].isThis
-    }
+    if (stub != null) { return stub.asInstanceOf[ScAccessModifierStub].isThis }
     getNode.findChildByType(ScalaTokenTypes.kTHIS) != null
   }
 

@@ -351,7 +351,9 @@ object Ordering extends LowPriorityOrderingImplicits {
     }
   }
   implicit def Option[T](implicit ord: Ordering[T]): Ordering[Option[T]] =
-    new OptionOrdering[T] { val optionOrdering = ord }
+    new OptionOrdering[T] {
+      val optionOrdering = ord
+    }
 
   implicit def Iterable[T](implicit ord: Ordering[T]): Ordering[Iterable[T]] =
     new Ordering[Iterable[T]] {

@@ -33,9 +33,8 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
     offerLast(e)
 
   def offerFirst(e: E): Boolean = {
-    if (e == null) {
-      throw new NullPointerException()
-    } else {
+    if (e == null) { throw new NullPointerException() }
+    else {
       inner = e +: inner
       status += 1
       true
@@ -43,9 +42,8 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
   }
 
   def offerLast(e: E): Boolean = {
-    if (e == null) {
-      throw new NullPointerException()
-    } else {
+    if (e == null) { throw new NullPointerException() }
+    else {
       inner += e
       status += 1
       true
@@ -171,9 +169,7 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
         checkStatus()
         if (index < 0 || index >= inner.size) {
           throw new IllegalStateException()
-        } else {
-          inner.remove(index)
-        }
+        } else { inner.remove(index) }
       }
     }
   }

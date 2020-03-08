@@ -89,9 +89,8 @@ object CascadingBinaryComparator {
             case gb: GroupBy => check(gb).isFailure
             case cg: CoGroup => check(cg).isFailure
             case _           => false // only do sorting in groupBy/cogroupBy
-          }) {
-        Some(getDesc(bfs).mkString(", "))
-      } else None
+          }) { Some(getDesc(bfs).mkString(", ")) }
+      else None
 
     // Get all the steps that have missing OrderedSerializations
     val missing = flow.getFlowSteps.asScala

@@ -44,7 +44,5 @@ package foo {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
-    foo.bar.Main.main(null)
-  }
+  def main(args: Array[String]): Unit = { foo.bar.Main.main(null) }
 }

@@ -83,11 +83,8 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
     val outputName = "part-" + numfmt.format(splitID)
     val path = FileOutputFormat.getOutputPath(conf.value)
     val fs: FileSystem = {
-      if (path != null) {
-        path.getFileSystem(conf.value)
-      } else {
-        FileSystem.get(conf.value)
-      }
+      if (path != null) { path.getFileSystem(conf.value) }
+      else { FileSystem.get(conf.value) }
     }
 
     getOutputCommitter().setupTask(getTaskContext())
@@ -99,16 +96,11 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
   }
 
   def write(key: AnyRef, value: AnyRef) {
-    if (writer != null) {
-      writer.write(key, value)
-    } else {
-      throw new IOException("Writer is null, open() has not been called")
-    }
+    if (writer != null) { writer.write(key, value) }
+    else { throw new IOException("Writer is null, open() has not been called") }
   }
 
-  def close() {
-    writer.close(Reporter.NULL)
-  }
+  def close() { writer.close(Reporter.NULL) }
 
   def commit() {
     SparkHadoopMapRedUtil.commitTask(
@@ -135,9 +127,7 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
   }
 
   private def getOutputCommitter(): OutputCommitter = {
-    if (committer == null) {
-      committer = conf.value.getOutputCommitter
-    }
+    if (committer == null) { committer = conf.value.getOutputCommitter }
     committer
   }
 

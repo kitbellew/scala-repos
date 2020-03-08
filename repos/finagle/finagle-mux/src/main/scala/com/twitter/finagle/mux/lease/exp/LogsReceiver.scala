@@ -24,9 +24,7 @@ class DedupingLogsReceiver(log: Logger) extends LogsReceiver {
   // uses a sorted map so the ordering is deterministic
   private[this] val map: TreeMap[String, String] = new TreeMap()
 
-  def record(name: String, value: String) {
-    map.put(name, value)
-  }
+  def record(name: String, value: String) { map.put(name, value) }
 
   def flush() {
     val strings = map.asScala map {

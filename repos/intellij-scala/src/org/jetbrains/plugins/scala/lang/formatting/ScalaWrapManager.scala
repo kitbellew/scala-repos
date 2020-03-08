@@ -94,9 +94,7 @@ object ScalaWrapManager {
               WrapType.byLegacyRepresentation(settings.CALL_PARAMETERS_WRAP),
               false)
           else Wrap.createWrap(settings.CALL_PARAMETERS_WRAP, false)
-        if (settings.PREFER_PARAMETERS_WRAP) {
-          wrap.ignoreParentWraps()
-        }
+        if (settings.PREFER_PARAMETERS_WRAP) { wrap.ignoreParentWraps() }
         return wrap
       case psi: ScReferenceExpression =>
         return Wrap.createWrap(settings.METHOD_CALL_CHAIN_WRAP, true)

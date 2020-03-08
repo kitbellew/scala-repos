@@ -250,9 +250,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       buffer += i
     def mergeCombiners(
         buf1: ArrayBuffer[Int],
-        buf2: ArrayBuffer[Int]): ArrayBuffer[Int] = {
-      buf1 ++= buf2
-    }
+        buf2: ArrayBuffer[Int]): ArrayBuffer[Int] = { buf1 ++= buf2 }
 
     val agg = new Aggregator[Int, Int, ArrayBuffer[Int]](
       createCombiner,
@@ -326,9 +324,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       loadDefaults: Boolean,
       kryo: Boolean): SparkConf = {
     val conf = new SparkConf(loadDefaults)
-    if (kryo) {
-      conf.set("spark.serializer", classOf[KryoSerializer].getName)
-    } else {
+    if (kryo) { conf.set("spark.serializer", classOf[KryoSerializer].getName) }
+    else {
       // Make the Java serializer write a reset instruction (TC_RESET) after each object to test
       // for a bug we had with bytes written past the last object in a batch (SPARK-2792)
       conf.set("spark.serializer.objectStreamReset", "1")
@@ -608,9 +605,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
           (i, i)
         })
       }
-    } else {
-      sorter.insertAll((0 until size).iterator.map(i => (i, i)))
-    }
+    } else { sorter.insertAll((0 until size).iterator.map(i => (i, i))) }
     assert(
       sorter.iterator.toSet === (0 until expectedSize).map(i => (i, i)).toSet)
     assert(sorter.numSpills > 0, "sorter did not spill")
@@ -639,9 +634,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
 
     assertSpilled(sc, "test shuffle cleanup") {
       if (withFailures) {
-        intercept[SparkException] {
-          data.reduceByKey(_ + _).count()
-        }
+        intercept[SparkException] { data.reduceByKey(_ + _).count() }
         // After the shuffle, there should be only 2 files on disk: the output of task 1 and
         // its index. All other files (map 2's output and intermediate merge files) should
         // have been deleted.
@@ -675,9 +668,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
             i => i,
             (i, j) => i + j,
             (i, j) => i + j))
-      } else {
-        None
-      }
+      } else { None }
     val ord = if (withOrdering) Some(implicitly[Ordering[Int]]) else None
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
     val sorter =
@@ -687,11 +678,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         Some(new HashPartitioner(3)),
         ord)
     sorter.insertAll((0 until size).iterator.map { i => (i / 4, i) })
-    if (withSpilling) {
-      assert(sorter.numSpills > 0, "sorter did not spill")
-    } else {
-      assert(sorter.numSpills === 0, "sorter spilled")
-    }
+    if (withSpilling) { assert(sorter.numSpills > 0, "sorter did not spill") }
+    else { assert(sorter.numSpills === 0, "sorter spilled") }
     val results = sorter.partitionedIterator.map {
       case (p, vs) => (p, vs.toSet)
     }.toSet

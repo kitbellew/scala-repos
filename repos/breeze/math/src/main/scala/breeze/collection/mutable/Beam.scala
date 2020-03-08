@@ -43,11 +43,7 @@ class Beam[T](val maxSize: Int, xs: T*)(implicit o: Ordering[T])
   def +(x: T) = { this += x; this }
   def +=(x: T) = { cat(queue, x); this }
 
-  private def trim() {
-    while (queue.size > maxSize) {
-      queue.dequeue()
-    }
-  }
+  private def trim() { while (queue.size > maxSize) { queue.dequeue() } }
 
   private def cat(h: PriorityQueue[T], x: T) {
     if (h.size < maxSize) h += x

@@ -112,13 +112,9 @@ abstract class PropertiesNodes[T](target: T, title: String) extends TitledPane {
     try {
       val txt = field.text.get
       property.value = txt.toDouble
-    } catch {
-      case t: NumberFormatException => onError
-    }
+    } catch { case t: NumberFormatException => onError }
 
-    if (cleanAfterAction) {
-      field.text = ""
-    }
+    if (cleanAfterAction) { field.text = "" }
 
   }
 
@@ -130,13 +126,9 @@ abstract class PropertiesNodes[T](target: T, title: String) extends TitledPane {
     try {
       val txt = field.text.get
       property.value = txt.toInt
-    } catch {
-      case t: NumberFormatException => onError
-    }
+    } catch { case t: NumberFormatException => onError }
 
-    if (cleanAfterAction) {
-      field.text = ""
-    }
+    if (cleanAfterAction) { field.text = "" }
 
   }
 

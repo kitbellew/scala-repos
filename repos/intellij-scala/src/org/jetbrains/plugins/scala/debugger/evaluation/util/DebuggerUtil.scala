@@ -73,17 +73,11 @@ import scala.util.Try
   */
 object DebuggerUtil {
   class JVMNameBuffer {
-    def append(evaluator: JVMName) {
-      buffer += evaluator
-    }
+    def append(evaluator: JVMName) { buffer += evaluator }
 
-    def append(name: Char) {
-      append(Character.toString(name))
-    }
+    def append(name: Char) { append(Character.toString(name)) }
 
-    def append(text: String) {
-      buffer += JVMNameUtil.getJVMRawText(text)
-    }
+    def append(text: String) { buffer += JVMNameUtil.getJVMRawText(text) }
 
     def toName: JVMName = {
       new JVMName {
@@ -412,11 +406,8 @@ object DebuggerUtil {
       sourcePosition: SourcePosition,
       debugProcess: DebugProcess): Option[ReferenceType] = {
     val allClasses =
-      try {
-        debugProcess.getPositionManager.getAllClasses(sourcePosition)
-      } catch {
-        case e: NoDataException => return None
-      }
+      try { debugProcess.getPositionManager.getAllClasses(sourcePosition) }
+      catch { case e: NoDataException => return None }
 
     if (!allClasses.isEmpty) Some(allClasses.get(0))
     else None
@@ -469,13 +460,9 @@ object DebuggerUtil {
       if (node != null) node.getChildren(null) else Array.empty[ASTNode]
     if (children.isEmpty) {
       val position = SourcePosition.createFromElement(elem)
-      if (!lines.exists(_.getLine == position.getLine)) {
-        lines += position
-      }
+      if (!lines.exists(_.getLine == position.getLine)) { lines += position }
     }
-    for (child <- children) {
-      getSourcePositions(child.getPsi, lines)
-    }
+    for (child <- children) { getSourcePositions(child.getPsi, lines) }
     lines.toSet
   }
 

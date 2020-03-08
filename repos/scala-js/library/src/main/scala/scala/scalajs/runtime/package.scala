@@ -89,9 +89,8 @@ package object runtime {
     */
   def propertiesOf(obj: js.Any): js.Array[String] = {
     // See http://stackoverflow.com/questions/26445248/
-    if (obj == null || js.isUndefined(obj)) {
-      js.Array()
-    } else {
+    if (obj == null || js.isUndefined(obj)) { js.Array() }
+    else {
       val result = new js.Array[String]
       val alreadySeen = js.Dictionary.empty[Boolean]
 
@@ -161,9 +160,8 @@ package object runtime {
     import Math._
 
     // Special cases
-    if (v.isNaN || v == 0.0 || v.isInfinite) {
-      v
-    } else {
+    if (v.isNaN || v == 0.0 || v.isInfinite) { v }
+    else {
       val LN2 = 0.6931471805599453
       val ebits = 8
       val fbits = 23

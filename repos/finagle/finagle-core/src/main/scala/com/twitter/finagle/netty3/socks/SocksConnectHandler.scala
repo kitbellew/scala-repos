@@ -195,9 +195,7 @@ class SocksConnectHandler(
       }
       discardBytes(2)
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   private[this] def discardBytes(numBytes: Int) {
@@ -320,8 +318,6 @@ class SocksConnectHandler(
               new ConnectionFailedException(InvalidResponse, addr))
           }
       }
-    } catch {
-      case ReplayError => buf.resetReaderIndex()
-    }
+    } catch { case ReplayError => buf.resetReaderIndex() }
   }
 }

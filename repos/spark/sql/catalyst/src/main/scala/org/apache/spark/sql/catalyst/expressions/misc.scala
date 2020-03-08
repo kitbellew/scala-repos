@@ -261,9 +261,7 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
     if (children.isEmpty) {
       TypeCheckResult.TypeCheckFailure(
         "function hash requires at least one argument")
-    } else {
-      TypeCheckResult.TypeCheckSuccess
-    }
+    } else { TypeCheckResult.TypeCheckSuccess }
   }
 
   override def prettyName: String = "hash"
@@ -294,9 +292,8 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
       case d: Double  => hashLong(java.lang.Double.doubleToLongBits(d))
       case d: Decimal =>
         val precision = dataType.asInstanceOf[DecimalType].precision
-        if (precision <= Decimal.MAX_LONG_DIGITS) {
-          hashLong(d.toUnscaledLong)
-        } else {
+        if (precision <= Decimal.MAX_LONG_DIGITS) { hashLong(d.toUnscaledLong) }
+        else {
           val bytes = d.toJavaBigDecimal.unscaledValue().toByteArray
           Murmur3_x86_32.hashUnsafeBytes(
             bytes,

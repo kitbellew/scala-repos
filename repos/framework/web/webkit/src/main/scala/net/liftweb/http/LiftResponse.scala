@@ -127,9 +127,7 @@ object BadResponse {
   @deprecated(
     "Use BadRequestResponse instead, as that is the correct name for this response.",
     "3.0.0")
-  def apply() = {
-    BadRequestResponse()
-  }
+  def apply() = { BadRequestResponse() }
 }
 
 /**
@@ -833,9 +831,7 @@ case class XhtmlResponse(
   val docType: Box[String] = htmlProperties.docType
 
   protected override def writeDocType(writer: Writer): Unit = {
-    htmlProperties.htmlOutputHeader.foreach {
-      writer.append
-    }
+    htmlProperties.htmlOutputHeader.foreach { writer.append }
   }
 
   override protected lazy val _encoding: String =

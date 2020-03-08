@@ -6,25 +6,17 @@ import com.intellij.psi.PsiElement
   * Pavel.Fatin, 11.05.2010
   */
 abstract class TreeIteratorTestBase extends IteratorTestCase {
-  def testEmpty() = {
-    assertIterates("0", "0")
-  }
+  def testEmpty() = { assertIterates("0", "0") }
 
-  def testSingleChild() = {
-    assertIterates("0, 1.1", "0 (1.1)")
-  }
+  def testSingleChild() = { assertIterates("0, 1.1", "0 (1.1)") }
 
-  def testTwoChildren() = {
-    assertIterates("0, 1.1, 1.2", "0 (1.1, 1.2)")
-  }
+  def testTwoChildren() = { assertIterates("0, 1.1, 1.2", "0 (1.1, 1.2)") }
 
   def testThreeChildren() = {
     assertIterates("0, 1.1, 1.2, 1.3", "0 (1.1, 1.2, 1.3)")
   }
 
-  def testTwoLevels() = {
-    assertIterates("0, 1.1, 2.1", "0 (1.1 (2.1))")
-  }
+  def testTwoLevels() = { assertIterates("0, 1.1, 2.1", "0 (1.1 (2.1))") }
 
   def testThreeLevels() = {
     assertIterates("0, 1.1, 2.1, 3.1", "0 (1.1 (2.1 (3.1)))")

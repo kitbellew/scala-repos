@@ -74,9 +74,7 @@ trait ClusteringLibSpecs[M[+_]]
     val targetCost = kMediansCost(points, centers)
 
     clusterMap must haveSize(k)
-    clusterMap.keys must haveAllElementsLike {
-      case ClusterIdPattern(_) => ok
-    }
+    clusterMap.keys must haveAllElementsLike { case ClusterIdPattern(_) => ok }
 
     def getPoint(sval: SValue): List[Double] = sval match {
       case SArray(arr) =>
@@ -471,9 +469,7 @@ trait ClusteringLibSpecs[M[+_]]
                       assignmentsB,
                       point.toRValue)
                 }
-              } else {
-                ok
-              }
+              } else { ok }
           }
         }
       }

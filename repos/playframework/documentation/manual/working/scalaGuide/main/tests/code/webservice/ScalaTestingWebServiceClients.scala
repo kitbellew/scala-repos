@@ -107,9 +107,7 @@ object ScalaTestingWebServiceClients
 
       Server.withRouter() {
         case GET(p"/repositories") =>
-          Action {
-            Results.Ok.sendResource("github/repositories.json")
-          }
+          Action { Results.Ok.sendResource("github/repositories.json") }
       } { implicit port =>
         implicit val materializer = Play.current.materializer
         //#send-resource
@@ -132,9 +130,7 @@ object ScalaTestingWebServiceClients
       def withGitHubClient[T](block: GitHubClient => T): T = {
         Server.withRouter() {
           case GET(p"/repositories") =>
-            Action {
-              Results.Ok.sendResource("github/repositories.json")
-            }
+            Action { Results.Ok.sendResource("github/repositories.json") }
         } { implicit port =>
           implicit val materializer = Play.current.materializer
           WsTestClient.withClient { client =>

@@ -315,15 +315,11 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext {
     val data2 = sparseData.map(model2.transform)
 
     withClue("Standardization with mean can not be applied on sparse input.") {
-      intercept[IllegalArgumentException] {
-        sparseData.map(model1.transform)
-      }
+      intercept[IllegalArgumentException] { sparseData.map(model1.transform) }
     }
 
     withClue("Standardization with mean can not be applied on sparse input.") {
-      intercept[IllegalArgumentException] {
-        sparseData.map(model3.transform)
-      }
+      intercept[IllegalArgumentException] { sparseData.map(model3.transform) }
     }
 
     val data2RDD = model2.transform(dataRDD)

@@ -13,5 +13,7 @@ trait SemigroupKLaws[F[_]] {
 
 object SemigroupKLaws {
   def apply[F[_]](implicit ev: SemigroupK[F]): SemigroupKLaws[F] =
-    new SemigroupKLaws[F] { def F: SemigroupK[F] = ev }
+    new SemigroupKLaws[F] {
+      def F: SemigroupK[F] = ev
+    }
 }

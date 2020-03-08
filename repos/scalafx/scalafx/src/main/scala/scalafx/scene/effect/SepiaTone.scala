@@ -52,8 +52,6 @@ class SepiaTone(override val delegate: jfxse.SepiaTone = new jfxse.SepiaTone)
     * The level value, which controls the intensity of the sepia effect.
     */
   def level: DoubleProperty = delegate.levelProperty
-  def level_=(v: Double) {
-    level() = v
-  }
+  def level_=(v: Double) { level() = v }
 
 }

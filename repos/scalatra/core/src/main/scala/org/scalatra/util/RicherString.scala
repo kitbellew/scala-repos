@@ -7,9 +7,7 @@ import rl.UrlCodingUtils
 
 class RicherString(orig: String) {
 
-  def isBlank: Boolean = {
-    orig == null || orig.trim.isEmpty
-  }
+  def isBlank: Boolean = { orig == null || orig.trim.isEmpty }
 
   @deprecated("Use nonBlank instead", "2.0")
   def isNonBlank: Boolean = !isBlank

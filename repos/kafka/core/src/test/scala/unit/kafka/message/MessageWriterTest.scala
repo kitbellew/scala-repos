@@ -50,9 +50,7 @@ class MessageWriterTest extends JUnitSuite {
         val p = rnd.nextInt(bytes.length)
         out.write(bytes, 0, p)
         out.write(bytes, p, bytes.length - p)
-      } finally {
-        out.close()
-      }
+      } finally { out.close() }
     }
     val bb = ByteBuffer.allocate(writer.size)
     writer.writeTo(bb)

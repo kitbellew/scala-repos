@@ -52,9 +52,7 @@ object Platform {
       srcPos: Int,
       dest: AnyRef,
       destPos: Int,
-      length: Int) {
-    System.arraycopy(src, srcPos, dest, destPos, length)
-  }
+      length: Int) { System.arraycopy(src, srcPos, dest, destPos, length) }
 
   /** Creates a new array of the specified type and given length.
     *

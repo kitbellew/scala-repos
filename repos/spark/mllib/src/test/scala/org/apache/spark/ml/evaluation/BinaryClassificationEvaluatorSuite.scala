@@ -28,9 +28,7 @@ class BinaryClassificationEvaluatorSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  test("params") {
-    ParamsSuite.checkParams(new BinaryClassificationEvaluator)
-  }
+  test("params") { ParamsSuite.checkParams(new BinaryClassificationEvaluator) }
 
   test("read/write") {
     val evaluator = new BinaryClassificationEvaluator()

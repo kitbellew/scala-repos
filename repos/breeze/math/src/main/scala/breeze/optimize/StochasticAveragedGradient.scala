@@ -79,12 +79,8 @@ class StochasticAveragedGradient[T](
         if ((f.valueAt(newX, IndexedSeq(nextPos)) + l2Regularization / 2 * norm(
               newX) - oldState.adjustedValue) > (oldState.adjustedGradient dot xdiff) + (xdiff dot xdiff) / (2 * stepSize)) {
           stepSize / 2
-        } else {
-          stepSize * 1.5
-        }
-      } else {
-        stepSize
-      }
+        } else { stepSize * 1.5 }
+      } else { stepSize }
     d += newGrad
     History(
       newStepSize,

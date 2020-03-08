@@ -45,9 +45,7 @@ class ErrorPositionSuite
     try {
       sqlContext.dropTempTable("src")
       sqlContext.dropTempTable("dupAttributes")
-    } finally {
-      super.afterEach()
-    }
+    } finally { super.afterEach() }
   }
 
   positionTest(
@@ -163,9 +161,7 @@ class ErrorPositionSuite
       val (line, expectedLineNum) = query
         .split("\n")
         .zipWithIndex
-        .collect {
-          case (l, i) if l.contains(token) => (l, i + 1)
-        }
+        .collect { case (l, i) if l.contains(token) => (l, i + 1) }
         .headOption
         .getOrElse(sys.error(s"Invalid test. Token $token not in $query"))
       val actualLine = error.line.getOrElse {

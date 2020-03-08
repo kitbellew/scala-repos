@@ -130,13 +130,10 @@ trait LabelsControllerBase extends ControllerBase {
         name: String,
         value: String,
         messages: Messages): Option[String] =
-      if (value.contains(',')) {
-        Some(s"${name} contains invalid character.")
-      } else if (value.startsWith("_") || value.startsWith("-")) {
+      if (value.contains(',')) { Some(s"${name} contains invalid character.") }
+      else if (value.startsWith("_") || value.startsWith("-")) {
         Some(s"${name} starts with invalid character.")
-      } else {
-        None
-      }
+      } else { None }
   }
 
   private def uniqueLabelName: Constraint = new Constraint() {

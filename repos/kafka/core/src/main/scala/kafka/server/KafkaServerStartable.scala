@@ -32,9 +32,8 @@ class KafkaServerStartable(val serverConfig: KafkaConfig) extends Logging {
   private val server = new KafkaServer(serverConfig)
 
   def startup() {
-    try {
-      server.startup()
-    } catch {
+    try { server.startup() }
+    catch {
       case e: Throwable =>
         fatal(
           "Fatal error during KafkaServerStartable startup. Prepare to shutdown",
@@ -45,9 +44,8 @@ class KafkaServerStartable(val serverConfig: KafkaConfig) extends Logging {
   }
 
   def shutdown() {
-    try {
-      server.shutdown()
-    } catch {
+    try { server.shutdown() }
+    catch {
       case e: Throwable =>
         fatal(
           "Fatal error during KafkaServerStable shutdown. Prepare to halt",
@@ -61,9 +59,7 @@ class KafkaServerStartable(val serverConfig: KafkaConfig) extends Logging {
     * Allow setting broker state from the startable.
     * This is needed when a custom kafka server startable want to emit new states that it introduces.
     */
-  def setServerState(newState: Byte) {
-    server.brokerState.newState(newState)
-  }
+  def setServerState(newState: Byte) { server.brokerState.newState(newState) }
 
   def awaitShutdown() =
     server.awaitShutdown

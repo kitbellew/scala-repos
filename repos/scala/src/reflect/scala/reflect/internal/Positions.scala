@@ -241,9 +241,8 @@ trait Positions extends api.Positions { self: SymbolTable =>
       for (tree <- trees) {
         if (!tree.isEmpty && tree.canHaveAttrs && tree.pos == NoPosition) {
           val children = tree.children
-          if (children.isEmpty) {
-            tree setPos pos.focus
-          } else {
+          if (children.isEmpty) { tree setPos pos.focus }
+          else {
             setChildrenPos(pos, children)
             tree setPos wrappingPos(pos, children)
           }

@@ -147,9 +147,8 @@ object Future {
     *       some care must be taken with blocking code.
     */
   def apply[A](a: => A): Future[A] =
-    try {
-      const(Try(a))
-    } catch {
+    try { const(Try(a)) }
+    catch {
       case nlrc: NonLocalReturnControl[_] =>
         Future.exception(new FutureNonLocalReturnControl(nlrc))
     }
@@ -197,9 +196,8 @@ object Future {
 
     def handle(exc: Throwable): Boolean = {
       val prev = getAndSetNull()
-      if (prev == null) {
-        false
-      } else {
+      if (prev == null) { false }
+      else {
         prev.raise(exc)
         prev.setException(exc)
         true
@@ -1054,9 +1052,8 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     *     `Futures`, only when they are complete.
     */
   def collect[A](fs: Seq[Future[A]]): Future[Seq[A]] = {
-    if (fs.isEmpty) {
-      Future(Seq[A]())
-    } else {
+    if (fs.isEmpty) { Future(Seq[A]()) }
+    else {
       val fsSize = fs.size
       val results = new AtomicReferenceArray[A](fsSize)
       val count = new AtomicInteger(fsSize)
@@ -1487,9 +1484,8 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   @deprecated("Use Await.result(future.liftToTry)", "6.2.x")
   final def get(timeout: Duration): Try[A] =
-    try {
-      Return(Await.result(this, timeout))
-    } catch {
+    try { Return(Await.result(this, timeout)) }
+    catch {
       // For legacy reasons, we catch even
       // fatal exceptions.
       case e: Throwable => Throw(e)
@@ -1584,9 +1580,7 @@ abstract class Future[+A] extends Awaitable[A] {
       return this
 
     val p = Promise.interrupts[A](this)
-    val task = timer.schedule(timeout.fromNow) {
-      p.updateIfEmpty(Throw(exc))
-    }
+    val task = timer.schedule(timeout.fromNow) { p.updateIfEmpty(Throw(exc)) }
     respond { r =>
       task.cancel()
       p.updateIfEmpty(r)
@@ -2931,9 +2925,7 @@ class NoFuture extends Future[Nothing] {
 }
 
 class FutureTask[A](fn: => A) extends Promise[A] with Runnable {
-  def run() {
-    update(Try(fn))
-  }
+  def run() { update(Try(fn)) }
 }
 
 object FutureTask {

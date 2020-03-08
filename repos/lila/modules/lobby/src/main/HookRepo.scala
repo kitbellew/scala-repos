@@ -30,13 +30,9 @@ object HookRepo {
   def notInUids(uids: Set[String]): Vector[Hook] =
     hooks.filterNot(h => uids(h.uid))
 
-  def save(hook: Hook) {
-    hooks = hooks.filterNot(_.id == hook.id) :+ hook
-  }
+  def save(hook: Hook) { hooks = hooks.filterNot(_.id == hook.id) :+ hook }
 
-  def remove(hook: Hook) {
-    hooks = hooks filterNot (_.id == hook.id)
-  }
+  def remove(hook: Hook) { hooks = hooks filterNot (_.id == hook.id) }
 
   // returns removed hooks
   def cleanupOld = {

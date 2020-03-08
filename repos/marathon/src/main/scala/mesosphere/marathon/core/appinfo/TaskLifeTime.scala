@@ -21,9 +21,8 @@ object TaskLifeTime {
   def forSomeTasks(tasks: Iterable[TaskForStatistics]): Option[TaskLifeTime] = {
     val lifeTimes = tasks.iterator.flatMap(_.maybeLifeTime).toVector.sorted
 
-    if (lifeTimes.isEmpty) {
-      None
-    } else {
+    if (lifeTimes.isEmpty) { None }
+    else {
       Some(
         TaskLifeTime(
           averageSeconds = lifeTimes.sum / lifeTimes.size,

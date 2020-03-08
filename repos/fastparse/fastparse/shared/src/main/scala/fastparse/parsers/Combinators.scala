@@ -450,9 +450,7 @@ object Combinators {
           index,
           Set.empty[Parser[_]],
           false)
-      } else {
-        rec(index, Pass, null, ev.initial, false, 0)
-      }
+      } else { rec(index, Pass, null, ev.initial, false, 0) }
     }
     override def toString = {
       val things = Seq(
@@ -501,9 +499,7 @@ object Combinators {
       rec(0, Set.empty)
     }
     override def opPred = if (ps.length == 1) ps(0).opPred else Precedence.|
-    override def toString = {
-      ps.map(opWrap).mkString(" | ")
-    }
+    override def toString = { ps.map(opWrap).mkString(" | ") }
   }
 
 }

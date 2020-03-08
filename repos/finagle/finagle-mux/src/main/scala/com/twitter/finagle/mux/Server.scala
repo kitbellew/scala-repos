@@ -305,9 +305,7 @@ private[twitter] class ServerDispatcher(
         trans.peerCertificate match {
           case None => loop()
           case Some(cert) =>
-            Contexts.local.let(Transport.peerCertCtx, cert) {
-              loop()
-            }
+            Contexts.local.let(Transport.peerCertCtx, cert) { loop() }
         }
       }
     }
@@ -338,9 +336,7 @@ private[twitter] class ServerDispatcher(
     case State.Closed => Future.Done
     case s @ (State.Draining | State.Open) =>
       if (!state.compareAndSet(s, State.Closed)) hangup(deadline)
-      else {
-        trans.close(deadline)
-      }
+      else { trans.close(deadline) }
   }
 
   def close(deadline: Time): Future[Unit] = {

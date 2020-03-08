@@ -31,13 +31,9 @@ private[spark] class JmxSink(
 
   val reporter: JmxReporter = JmxReporter.forRegistry(registry).build()
 
-  override def start() {
-    reporter.start()
-  }
+  override def start() { reporter.start() }
 
-  override def stop() {
-    reporter.stop()
-  }
+  override def stop() { reporter.stop() }
 
   override def report() {}
 

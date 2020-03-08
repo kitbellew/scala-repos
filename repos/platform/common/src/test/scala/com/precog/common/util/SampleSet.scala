@@ -341,9 +341,7 @@ object AdSamples {
     for {
       userId <- chooseNum(12345, 12545)
       income <- chooseNum(10, 250).map(_ * 1000)
-    } yield {
-      JObject(Map("userId" -> JNum(userId), "income" -> JNum(income)))
-    }
+    } yield { JObject(Map("userId" -> JNum(userId), "income" -> JNum(income))) }
 
   def emptyObjectSample = JObject(List())
 
@@ -414,9 +412,7 @@ object DistributedSampleSet {
       if (counter < sampleSize) {
         val (event, nextSet) = sampleSet.next
         pull(nextSet, sampleData :+ event, counter + 1)
-      } else {
-        (sampleSet, sampleData)
-      }
+      } else { (sampleSet, sampleData) }
     }
 
     val (sampleSet, data) =

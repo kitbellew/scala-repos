@@ -68,9 +68,7 @@ trait SortedSets { self: BaseClient =>
     * or 0 if key does not exist
     */
   def zCard(key: ChannelBuffer): Future[JLong] =
-    doRequest(ZCard(key)) {
-      case IntegerReply(n) => Future.value(n)
-    }
+    doRequest(ZCard(key)) { case IntegerReply(n) => Future.value(n) }
 
   /**
     * Gets number of elements in sorted set with score between min and max
@@ -83,9 +81,7 @@ trait SortedSets { self: BaseClient =>
       key: ChannelBuffer,
       min: ZInterval,
       max: ZInterval): Future[JLong] =
-    doRequest(ZCount(key, min, max)) {
-      case IntegerReply(n) => Future.value(n)
-    }
+    doRequest(ZCount(key, min, max)) { case IntegerReply(n) => Future.value(n) }
 
   /**
     * Gets member, score pairs from sorted set between min and max
@@ -111,9 +107,7 @@ trait SortedSets { self: BaseClient =>
     * @return Number of members removed from sorted set
     */
   def zRem(key: ChannelBuffer, members: Seq[ChannelBuffer]): Future[JLong] =
-    doRequest(ZRem(key, members)) {
-      case IntegerReply(n) => Future.value(n)
-    }
+    doRequest(ZRem(key, members)) { case IntegerReply(n) => Future.value(n) }
 
   /**
     * Returns specified range of elements in sorted set at key

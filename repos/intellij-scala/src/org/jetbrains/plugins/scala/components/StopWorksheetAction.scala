@@ -15,9 +15,7 @@ import org.jetbrains.plugins.scala.worksheet.actions.TopComponentAction
 class StopWorksheetAction(exec: CompilationProcess)
     extends AnAction
     with TopComponentAction {
-  override def actionPerformed(e: AnActionEvent) {
-    exec.stop()
-  }
+  override def actionPerformed(e: AnActionEvent) { exec.stop() }
 
   override def update(e: AnActionEvent): Unit = super.update(e)
 

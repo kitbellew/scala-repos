@@ -246,9 +246,7 @@ object Buf {
     private[this] def equalsBytes(other: Array[Byte], offset: Int): Boolean = {
       var i = 0
       while (i < length) {
-        if (bytes(begin + i) != other(offset + i)) {
-          return false
-        }
+        if (bytes(begin + i) != other(offset + i)) { return false }
         i += 1
       }
       true

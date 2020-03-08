@@ -3,7 +3,5 @@ object Test {
     val s @ (_s: String) = x
     x
   }
-  def main(args: Array[String]) {
-    assert(baz("1") == "1")
-  }
+  def main(args: Array[String]) { assert(baz("1") == "1") }
 }

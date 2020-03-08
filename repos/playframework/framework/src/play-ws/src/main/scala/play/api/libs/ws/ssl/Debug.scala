@@ -12,9 +12,7 @@ class JavaSecurityDebugBuilder(c: SSLDebugConfig) {
 
   def build(): String = {
     val b = new StringBuilder()
-    if (c.certpath) {
-      b.append(" certpath")
-    }
+    if (c.certpath) { b.append(" certpath") }
 
     if (c.ocsp) {
       // http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7u40-b43/sun/security/provider/certpath/OCSPResponse.java#132
@@ -47,59 +45,33 @@ class JavaxNetDebugBuilder(c: SSLDebugConfig) {
 
     record.map { r =>
       b.append(" record")
-      if (r.packet) {
-        b.append(" packet")
-      }
-      if (r.plaintext) {
-        b.append(" plaintext")
-      }
+      if (r.packet) { b.append(" packet") }
+      if (r.plaintext) { b.append(" plaintext") }
     }
 
     handshake.map { h =>
       b.append(" handshake")
-      if (h.data) {
-        b.append(" data")
-      }
-      if (h.verbose) {
-        b.append(" verbose")
-      }
+      if (h.data) { b.append(" data") }
+      if (h.verbose) { b.append(" verbose") }
     }
 
-    if (keygen) {
-      b.append(" keygen")
-    }
+    if (keygen) { b.append(" keygen") }
 
-    if (session) {
-      b.append(" session")
-    }
+    if (session) { b.append(" session") }
 
-    if (defaultctx) {
-      b.append(" defaultctx")
-    }
+    if (defaultctx) { b.append(" defaultctx") }
 
-    if (sslctx) {
-      b.append(" sslctx")
-    }
+    if (sslctx) { b.append(" sslctx") }
 
-    if (sessioncache) {
-      b.append(" sessioncache")
-    }
+    if (sessioncache) { b.append(" sessioncache") }
 
-    if (keymanager) {
-      b.append(" keymanager")
-    }
+    if (keymanager) { b.append(" keymanager") }
 
-    if (trustmanager) {
-      b.append(" trustmanager")
-    }
+    if (trustmanager) { b.append(" trustmanager") }
 
-    if (pluggability) {
-      b.append(" pluggability")
-    }
+    if (pluggability) { b.append(" pluggability") }
 
-    if ((!b.isEmpty) || ssl) {
-      b.append(" ssl")
-    }
+    if ((!b.isEmpty) || ssl) { b.append(" ssl") }
 
     b.toString()
   }

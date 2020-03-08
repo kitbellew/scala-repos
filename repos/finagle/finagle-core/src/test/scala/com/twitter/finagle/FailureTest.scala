@@ -131,8 +131,6 @@ class FailureTest
       Set(),
       Set()
     )
-    for ((f, c) <- failures.zip(categories)) {
-      assert(Failure.flagsOf(f) == c)
-    }
+    for ((f, c) <- failures.zip(categories)) { assert(Failure.flagsOf(f) == c) }
   }
 }

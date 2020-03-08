@@ -32,9 +32,7 @@ class MemoryCounter {
     * Increment the counter
     * @param by - the amount to increment the counter by
     */
-  def incr(by: Long): Unit = {
-    val c = count.addAndGet(by)
-  }
+  def incr(by: Long): Unit = { val c = count.addAndGet(by) }
 
   /**
     * Get the counter value

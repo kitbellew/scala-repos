@@ -298,9 +298,7 @@ object ScalaExtractMethodUtils {
     val returnStmtType = settings.returnType
     val outputs = settings.outputs
     val lastExprType = settings.lastExprType
-    if (settings.lastReturn) {
-      return prepareResult(returnStmtType.get)
-    }
+    if (settings.lastReturn) { return prepareResult(returnStmtType.get) }
     if (outputs.length == 0 && returnStmtType.isEmpty && lastExprType.isDefined) {
       return prepareResult(lastExprType.get)
     }
@@ -592,9 +590,7 @@ object ScalaExtractMethodUtils {
             expr,
             manager)
           addElement(stmt)
-        } else {
-          addExtractorsFromClass()
-        }
+        } else { addExtractorsFromClass() }
       }
 
       def addExtractorsFromClass() {

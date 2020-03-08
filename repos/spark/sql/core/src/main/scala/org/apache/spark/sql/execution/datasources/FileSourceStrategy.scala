@@ -197,9 +197,7 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
             if (currentSize + file.length > maxSplitBytes) {
               closePartition()
               addFile(file)
-            } else {
-              addFile(file)
-            }
+            } else { addFile(file) }
           }
           closePartition()
           partitions
@@ -216,11 +214,8 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
       val withFilter =
         afterScanFilter.map(execution.Filter(_, scan)).getOrElse(scan)
       val withProjections =
-        if (projects.forall(_.isInstanceOf[AttributeReference])) {
-          withFilter
-        } else {
-          execution.Project(projects, withFilter)
-        }
+        if (projects.forall(_.isInstanceOf[AttributeReference])) { withFilter }
+        else { execution.Project(projects, withFilter) }
 
       withProjections :: Nil
 

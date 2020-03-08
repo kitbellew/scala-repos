@@ -58,9 +58,7 @@ class ClasspathDependenciesSuite extends SparkFunSuite {
       fail(s"Class $classname found at $resourceURL")
     }
 
-    intercept[ClassNotFoundException] {
-      classloader.loadClass(classname)
-    }
+    intercept[ClassNotFoundException] { classloader.loadClass(classname) }
   }
 
   private def assertClassNotFound(classes: String*): Unit = {
@@ -76,9 +74,7 @@ class ClasspathDependenciesSuite extends SparkFunSuite {
     assertLoads(SPARK_SHADED + "com.google.protobuf.ServiceException")
   }
 
-  test("hive-common") {
-    assertLoads("org.apache.hadoop.hive.conf.HiveConf")
-  }
+  test("hive-common") { assertLoads("org.apache.hadoop.hive.conf.HiveConf") }
 
   test("hive-exec") {
     assertLoads("org.apache.hadoop.hive.ql.CommandNeedRetryException")
@@ -87,9 +83,7 @@ class ClasspathDependenciesSuite extends SparkFunSuite {
   private val STD_INSTANTIATOR =
     "org.objenesis.strategy.StdInstantiatorStrategy"
 
-  test("unshaded kryo") {
-    assertLoads(KRYO, STD_INSTANTIATOR)
-  }
+  test("unshaded kryo") { assertLoads(KRYO, STD_INSTANTIATOR) }
 
   test("Forbidden Dependencies") {
     assertClassNotFound(

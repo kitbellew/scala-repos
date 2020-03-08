@@ -619,9 +619,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
               }
             case x => echo(s"Error exit from $ed ($x), ignoring")
           }
-        } finally {
-          tmp.delete()
-        }
+        } finally { tmp.delete() }
       case None =>
         if (history.historicize(text)) echo("Placing text in recent history.")
         else
@@ -756,9 +754,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       try {
         val reader = new ClassReader(input)
         reader.getClassName.replace('/', '.')
-      } finally {
-        input.close()
-      }
+      } finally { input.close() }
     }
     def alreadyDefined(clsName: String) =
       intp.classLoader.tryToLoadClass(clsName).isDefined
@@ -903,9 +899,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       val errless = intp compileSources new BatchSourceFile("<pastie>", code)
       if (!errless) echo("There were compilation errors!")
     }
-    if (code.nonEmpty) {
-      if (raw) compileCode() else interpretCode()
-    }
+    if (code.nonEmpty) { if (raw) compileCode() else interpretCode() }
     result
   }
 
@@ -1116,9 +1110,8 @@ object ILoop {
           override def readLine(): String = {
             mark(1) // default buffer is 8k
             val c = read()
-            if (c == -1 || c == 4) {
-              null
-            } else {
+            if (c == -1 || c == 4) { null }
+            else {
               reset()
               val s = super.readLine()
               // helping out by printing the line being interpreted.

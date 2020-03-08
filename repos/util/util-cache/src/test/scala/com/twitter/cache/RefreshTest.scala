@@ -62,9 +62,7 @@ class RefreshTest extends FunSuite with MockitoSugar {
     when(provider())
       .thenReturn(Future.exception(new RuntimeException))
       .thenReturn(Future.value(2))
-    intercept[RuntimeException] {
-      Await.result(memoizedFuture())
-    }
+    intercept[RuntimeException] { Await.result(memoizedFuture()) }
     assert(Await.result(memoizedFuture()) == 2)
     verify(provider, times(2))()
   }

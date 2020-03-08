@@ -63,9 +63,7 @@ abstract class ScalaRenameTestBase
     PsiDocumentManager.getInstance(projectAdapter).commitAllDocuments()
     myEditors = createEditors(filesBefore)
 
-    for {
-      CaretPosition(vFile, offset) <- caretPositions
-    } {
+    for { CaretPosition(vFile, offset) <- caretPositions } {
       val file = getPsiManagerAdapter.findFile(vFile)
       val editor = myEditors(vFile)
       editor.getCaretModel.moveToOffset(offset)

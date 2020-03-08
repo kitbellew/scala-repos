@@ -71,9 +71,7 @@ class DataFrameReaderWriterSuite
     with BeforeAndAfter {
   import testImplicits._
 
-  after {
-    sqlContext.streams.active.foreach(_.stop())
-  }
+  after { sqlContext.streams.active.foreach(_.stop()) }
 
   test("resolve default source") {
     sqlContext.read
@@ -240,9 +238,7 @@ class DataFrameReaderWriterSuite
     val q1 = startQueryWithName("name")
 
     // Should not be able to start another query with the same name
-    intercept[IllegalArgumentException] {
-      startQueryWithName("name")
-    }
+    intercept[IllegalArgumentException] { startQueryWithName("name") }
     assert(activeStreamNames === Set("name"))
 
     // Should be able to start queries with other names
@@ -254,9 +250,7 @@ class DataFrameReaderWriterSuite
     assert(activeStreamNames.contains(q4.name))
 
     // Should not be able to start a query with same auto-generated name
-    intercept[IllegalArgumentException] {
-      startQueryWithName(q4.name)
-    }
+    intercept[IllegalArgumentException] { startQueryWithName(q4.name) }
 
     // Should be able to start query with that name after stopping the previous query
     q1.stop()

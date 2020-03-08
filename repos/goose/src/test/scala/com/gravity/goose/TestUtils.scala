@@ -157,7 +157,5 @@ object TestUtils {
     }
   }
 
-  def printReport() {
-    println(articleReport)
-  }
+  def printReport() { println(articleReport) }
 }

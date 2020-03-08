@@ -30,9 +30,7 @@ class TurkishISpec extends WordSpec with Matchers {
           charsetCons.newInstance().asInstanceOf[HttpCharsets.type]
         newCharsets.getForKey("iso-8859-1") shouldEqual Some(
           newCharsets.`ISO-8859-1`)
-      } finally {
-        Locale.setDefault(previousLocale)
-      }
+      } finally { Locale.setDefault(previousLocale) }
     }
   }
 }

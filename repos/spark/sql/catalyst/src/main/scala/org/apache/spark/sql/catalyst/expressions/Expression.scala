@@ -111,9 +111,7 @@ abstract class Expression extends TreeNode[Expression] {
           // Add `this` in the comment.
           ve.copy(
             s"/* ${toCommentSafeString(this.toString)} */\n" + ve.code.trim)
-        } else {
-          ve
-        }
+        } else { ve }
       }
   }
 
@@ -236,9 +234,7 @@ trait Unevaluable extends Expression {
   */
 trait NonSQLExpression extends Expression {
   override def sql: String = {
-    transform {
-      case a: Attribute => new PrettyAttribute(a)
-    }.toString
+    transform { case a: Attribute => new PrettyAttribute(a) }.toString
   }
 }
 
@@ -295,11 +291,8 @@ abstract class UnaryExpression extends Expression {
     */
   override def eval(input: InternalRow): Any = {
     val value = child.eval(input)
-    if (value == null) {
-      null
-    } else {
-      nullSafeEval(value)
-    }
+    if (value == null) { null }
+    else { nullSafeEval(value) }
   }
 
   /**
@@ -325,12 +318,7 @@ abstract class UnaryExpression extends Expression {
       ctx: CodegenContext,
       ev: ExprCode,
       f: String => String): String = {
-    nullSafeCodeGen(
-      ctx,
-      ev,
-      eval => {
-        s"${ev.value} = ${f(eval)};"
-      })
+    nullSafeCodeGen(ctx, ev, eval => { s"${ev.value} = ${f(eval)};" })
   }
 
   /**
@@ -388,15 +376,11 @@ abstract class BinaryExpression extends Expression {
     */
   override def eval(input: InternalRow): Any = {
     val value1 = left.eval(input)
-    if (value1 == null) {
-      null
-    } else {
+    if (value1 == null) { null }
+    else {
       val value2 = right.eval(input)
-      if (value2 == null) {
-        null
-      } else {
-        nullSafeEval(value1, value2)
-      }
+      if (value2 == null) { null }
+      else { nullSafeEval(value1, value2) }
     }
   }
 
@@ -422,9 +406,7 @@ abstract class BinaryExpression extends Expression {
     nullSafeCodeGen(
       ctx,
       ev,
-      (eval1, eval2) => {
-        s"${ev.value} = ${f(eval1, eval2)};"
-      })
+      (eval1, eval2) => { s"${ev.value} = ${f(eval1, eval2)};" })
   }
 
   /**
@@ -503,9 +485,7 @@ abstract class BinaryOperator extends BinaryExpression with ExpectsInputTypes {
       TypeCheckResult.TypeCheckFailure(
         s"'$sql' requires ${inputType.simpleString} type," +
           s" not ${left.dataType.simpleString}")
-    } else {
-      TypeCheckResult.TypeCheckSuccess
-    }
+    } else { TypeCheckResult.TypeCheckSuccess }
   }
 
   override def sql: String = s"(${left.sql} $sqlOperator ${right.sql})"
@@ -537,9 +517,7 @@ abstract class TernaryExpression extends Expression {
       val value2 = exprs(1).eval(input)
       if (value2 != null) {
         val value3 = exprs(2).eval(input)
-        if (value3 != null) {
-          return nullSafeEval(value1, value2, value3)
-        }
+        if (value3 != null) { return nullSafeEval(value1, value2, value3) }
       }
     }
     null
@@ -567,9 +545,7 @@ abstract class TernaryExpression extends Expression {
     nullSafeCodeGen(
       ctx,
       ev,
-      (eval1, eval2, eval3) => {
-        s"${ev.value} = ${f(eval1, eval2, eval3)};"
-      })
+      (eval1, eval2, eval3) => { s"${ev.value} = ${f(eval1, eval2, eval3)};" })
   }
 
   /**

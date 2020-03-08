@@ -75,12 +75,8 @@ class DirectKafkaStreamSuite
       ssc.stop()
       sc = null
     }
-    if (sc != null) {
-      sc.stop()
-    }
-    if (testDir != null) {
-      Utils.deleteRecursively(testDir)
-    }
+    if (sc != null) { sc.stop() }
+    if (testDir != null) { Utils.deleteRecursively(testDir) }
   }
 
   test(
@@ -313,9 +309,7 @@ class DirectKafkaStreamSuite
     ssc.start()
 
     // Send some data and wait for them to be received
-    for (i <- (1 to 10).grouped(4)) {
-      sendDataAndWaitForReceive(i)
-    }
+    for (i <- (1 to 10).grouped(4)) { sendDataAndWaitForReceive(i) }
 
     // Verify that offset ranges were generated
     val offsetRangesBeforeStop = getOffsetRanges(kafkaStream)
@@ -597,9 +591,7 @@ object DirectKafkaStreamSuite {
 private[streaming] class ConstantEstimator(@volatile private var rate: Long)
     extends RateEstimator {
 
-  def updateRate(newRate: Long): Unit = {
-    rate = newRate
-  }
+  def updateRate(newRate: Long): Unit = { rate = newRate }
 
   def compute(
       time: Long,

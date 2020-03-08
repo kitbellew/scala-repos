@@ -483,9 +483,7 @@ class SecurityServiceSpec
         user1.apiKey,
         user2.apiKey,
         user1Grant.grantId) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(Created, _), _, None, _) => ok
-        }
+        beLike { case HttpResponse(HttpStatus(Created, _), _, None, _) => ok }
       }
     }
 
@@ -565,9 +563,7 @@ class SecurityServiceSpec
         user3.apiKey,
         user3.apiKey,
         user3Grant.grantId) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(NoContent, _), _, None, _) => ok
-        }
+        beLike { case HttpResponse(HttpStatus(NoContent, _), _, None, _) => ok }
       }
     }
 
@@ -663,9 +659,7 @@ class SecurityServiceSpec
       } yield jperms.deserialize[Set[Permission]]
 
       permsM must awaited(to) {
-        haveOneElementLike {
-          case ReadPermission(_, _) => ok
-        }
+        haveOneElementLike { case ReadPermission(_, _) => ok }
       }
     }
   }

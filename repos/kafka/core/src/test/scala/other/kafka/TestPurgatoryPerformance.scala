@@ -210,9 +210,7 @@ object TestPurgatoryPerformance {
               .getMethod("getProcessCpuTimeByNS")
               .invoke(osMXBean)
               .asInstanceOf[Long])
-        } catch {
-          case _: Throwable => None
-        }
+        } catch { case _: Throwable => None }
     }
   }
 
@@ -231,9 +229,7 @@ object TestPurgatoryPerformance {
   //  lambda : the rate parameter of the exponential distribution
   private class ExponentialDistribution(lambda: Double) {
     val rand = new Random
-    def next(): Double = {
-      math.log(1d - rand.nextDouble()) / (-lambda)
-    }
+    def next(): Double = { math.log(1d - rand.nextDouble()) / (-lambda) }
   }
 
   // Samples of Latencies to completion
@@ -301,9 +297,7 @@ object TestPurgatoryPerformance {
 
     def onExpiration(): Unit = {}
 
-    def onComplete(): Unit = {
-      latch.countDown()
-    }
+    def onComplete(): Unit = { latch.countDown() }
 
     def tryComplete(): Boolean = {
       if (System.currentTimeMillis >= completesAt)
@@ -320,9 +314,7 @@ object TestPurgatoryPerformance {
       isInterruptible = false) {
       override def doWork(): Unit = {
         val scheduled = delayQueue.poll(100, TimeUnit.MILLISECONDS)
-        if (scheduled != null) {
-          scheduled.operation.forceComplete()
-        }
+        if (scheduled != null) { scheduled.operation.forceComplete() }
       }
     }
     thread.start()
@@ -331,9 +323,7 @@ object TestPurgatoryPerformance {
       delayQueue.offer(new Scheduled(operation))
     }
 
-    def shutdown() = {
-      thread.shutdown()
-    }
+    def shutdown() = { thread.shutdown() }
 
     private class Scheduled(val operation: FakeOperation) extends Delayed {
       def getDelay(unit: TimeUnit): Long = {

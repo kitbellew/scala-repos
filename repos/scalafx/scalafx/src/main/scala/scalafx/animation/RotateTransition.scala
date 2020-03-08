@@ -96,48 +96,36 @@ class RotateTransition(
     * $DUR. $DV 400ms
     */
   def duration: ObjectProperty[jfxu.Duration] = delegate.durationProperty
-  def duration_=(d: Duration) {
-    duration() = d
-  }
+  def duration_=(d: Duration) { duration() = d }
 
   /**
     * Specifies the incremented stop angle value, from the start, of this $RT.
     */
   def byAngle: DoubleProperty = delegate.byAngleProperty
-  def byAngle_=(by: Double) {
-    byAngle() = by
-  }
+  def byAngle_=(by: Double) { byAngle() = by }
 
   /**
     * Specifies the stop angle value for this $RT. $DV Double.NaN
     */
   def toAngle: DoubleProperty = delegate.toAngleProperty
-  def toAngle_=(to: Double) {
-    toAngle() = to
-  }
+  def toAngle_=(to: Double) { toAngle() = to }
 
   /**
     * The target node of this $RT.
     */
   def node: ObjectProperty[jfxs.Node] = delegate.nodeProperty
-  def node_=(n: Node) {
-    node() = n
-  }
+  def node_=(n: Node) { node() = n }
 
   /**
     * Specifies the axis of rotation for this $RT. $DV `null`
     */
   def axis: ObjectProperty[jfxg.Point3D] = delegate.axisProperty
-  def axis_=(p: Point3D) {
-    axis() = p
-  }
+  def axis_=(p: Point3D) { axis() = p }
 
   /**
     * Specifies the start angle value for this $RT. $DV Double.NaN
     */
   def fromAngle: DoubleProperty = delegate.fromAngleProperty
-  def fromAngle_=(from: Double) {
-    fromAngle() = from
-  }
+  def fromAngle_=(from: Double) { fromAngle() = from }
 
 }

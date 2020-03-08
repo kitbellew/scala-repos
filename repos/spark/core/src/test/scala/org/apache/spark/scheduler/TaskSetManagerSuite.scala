@@ -39,9 +39,7 @@ class FakeDAGScheduler(sc: SparkContext, taskScheduler: FakeTaskScheduler)
       reason: TaskEndReason,
       result: Any,
       accumUpdates: Seq[AccumulableInfo],
-      taskInfo: TaskInfo) {
-    taskScheduler.endedTasks(taskInfo.index) = reason
-  }
+      taskInfo: TaskInfo) { taskScheduler.endedTasks(taskInfo.index) = reason }
 
   override def executorAdded(execId: String, host: String) {}
 
@@ -59,17 +57,11 @@ class FakeDAGScheduler(sc: SparkContext, taskScheduler: FakeTaskScheduler)
 object FakeRackUtil {
   private val hostToRack = new mutable.HashMap[String, String]()
 
-  def cleanUp() {
-    hostToRack.clear()
-  }
+  def cleanUp() { hostToRack.clear() }
 
-  def assignHostToRack(host: String, rack: String) {
-    hostToRack(host) = rack
-  }
+  def assignHostToRack(host: String, rack: String) { hostToRack(host) = rack }
 
-  def getRackForHost(host: String): Option[String] = {
-    hostToRack.get(host)
-  }
+  def getRackForHost(host: String): Option[String] = { hostToRack.get(host) }
 }
 
 /**
@@ -88,9 +80,7 @@ class FakeTaskScheduler(
   val taskSetsFailed = new ArrayBuffer[String]
 
   val executors = new mutable.HashMap[String, String]
-  for ((execId, host) <- liveExecutors) {
-    addExecutor(execId, host)
-  }
+  for ((execId, host) <- liveExecutors) { addExecutor(execId, host) }
 
   for ((execId, host) <- liveExecutors; rack <- getRackForHost(host)) {
     hostsByRack.getOrElseUpdate(rack, new mutable.HashSet[String]()) += host
@@ -107,9 +97,7 @@ class FakeTaskScheduler(
     executorsOnHost -= execId
     for (rack <- getRackForHost(hostId); hosts <- hostsByRack.get(rack)) {
       hosts -= hostId
-      if (hosts.isEmpty) {
-        hostsByRack -= rack
-      }
+      if (hosts.isEmpty) { hostsByRack -= rack }
     }
   }
 
@@ -417,9 +405,7 @@ class TaskSetManagerSuite
         TaskResultLost)
       if (index < MAX_TASK_FAILURES) {
         assert(!sched.taskSetsFailed.contains(taskSet.id))
-      } else {
-        assert(sched.taskSetsFailed.contains(taskSet.id))
-      }
+      } else { assert(sched.taskSetsFailed.contains(taskSet.id)) }
     }
   }
 

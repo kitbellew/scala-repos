@@ -12,12 +12,8 @@ class BoundedStackTest extends WordSpec {
       assert(buf.length == 0)
       assert(buf.size == 0)
       assert(buf.isEmpty == true)
-      intercept[IndexOutOfBoundsException] {
-        buf(0)
-      }
-      intercept[NoSuchElementException] {
-        buf.pop
-      }
+      intercept[IndexOutOfBoundsException] { buf(0) }
+      intercept[NoSuchElementException] { buf.pop }
       assert(buf.iterator.hasNext == false)
     }
 
@@ -93,13 +89,9 @@ class BoundedStackTest extends WordSpec {
 
     "insert > count throws exception" in {
       val buf = new BoundedStack[String](3)
-      intercept[IndexOutOfBoundsException] {
-        buf.insert(1, "a")
-      }
+      intercept[IndexOutOfBoundsException] { buf.insert(1, "a") }
       buf.insert(0, "a")
-      intercept[IndexOutOfBoundsException] {
-        buf.insert(2, "b")
-      }
+      intercept[IndexOutOfBoundsException] { buf.insert(2, "b") }
     }
   }
 }

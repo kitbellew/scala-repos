@@ -97,9 +97,8 @@ private[spark] class Client(
 
   private val launcherBackend = new LauncherBackend() {
     override def onStopRequest(): Unit = {
-      if (isClusterMode && appId != null) {
-        yarnClient.killApplication(appId)
-      } else {
+      if (isClusterMode && appId != null) { yarnClient.killApplication(appId) }
+      else {
         setState(SparkAppHandle.State.KILLED)
         stop()
       }
@@ -163,9 +162,7 @@ private[spark] class Client(
       appId
     } catch {
       case e: Throwable =>
-        if (appId != null) {
-          cleanupStagingDir(appId)
-        }
+        if (appId != null) { cleanupStagingDir(appId) }
         throw e
     }
   }
@@ -457,12 +454,8 @@ private[spark] class Client(
             statCache,
             appMasterOnly = appMasterOnly)
           (false, linkname)
-        } else {
-          (false, null)
-        }
-      } else {
-        (true, trimmedPath)
-      }
+        } else { (false, null) }
+      } else { (true, trimmedPath) }
     }
 
     // If we passed in a keytab, make sure we copy the keytab to the staging directory on
@@ -516,9 +509,7 @@ private[spark] class Client(
                   entry.getPath().toUri().toString(),
                   targetDir = Some(LOCALIZED_LIB_DIR))
               }
-            } else {
-              localJars += jar
-            }
+            } else { localJars += jar }
           }
 
           // Propagate the local URIs to the containers using the configuration.
@@ -585,9 +576,7 @@ private[spark] class Client(
           flist.split(',').foreach { file =>
             val (_, localizedPath) = distribute(file, resType = resType)
             require(localizedPath != null)
-            if (addToClasspath) {
-              cachedSecondaryJarLinks += localizedPath
-            }
+            if (addToClasspath) { cachedSecondaryJarLinks += localizedPath }
           }
         }
     }
@@ -696,9 +685,7 @@ private[spark] class Client(
       props.store(writer, "Spark configuration.")
       writer.flush()
       confStream.closeEntry()
-    } finally {
-      confStream.close()
-    }
+    } finally { confStream.close() }
     confArchive
   }
 
@@ -793,9 +780,7 @@ private[spark] class Client(
         pythonPath += buildPath(
           YarnSparkHadoopUtil.expandEnvironment(Environment.PWD),
           new Path(uri).getName())
-      } else {
-        pythonPath += uri.getPath()
-      }
+      } else { pythonPath += uri.getPath() }
     }
 
     // Finally, update the Spark config to propagate PYTHONPATH to the AM and executors.
@@ -860,11 +845,8 @@ private[spark] class Client(
     val appId = newAppResponse.getApplicationId
     val appStagingDir = getAppStagingDir(appId)
     val pySparkArchives =
-      if (sparkConf.get(IS_PYTHON_APP)) {
-        findPySparkArchives()
-      } else {
-        Nil
-      }
+      if (sparkConf.get(IS_PYTHON_APP)) { findPySparkArchives() }
+      else { Nil }
     val launchEnv = setupLaunchEnv(appStagingDir, pySparkArchives)
     val localResources = prepareLocalResources(appStagingDir, pySparkArchives)
 
@@ -964,27 +946,18 @@ private[spark] class Client(
     val userClass =
       if (isClusterMode) {
         Seq("--class", YarnSparkHadoopUtil.escapeForShell(args.userClass))
-      } else {
-        Nil
-      }
+      } else { Nil }
     val userJar =
-      if (args.userJar != null) {
-        Seq("--jar", args.userJar)
-      } else {
-        Nil
-      }
+      if (args.userJar != null) { Seq("--jar", args.userJar) }
+      else { Nil }
     val primaryPyFile =
       if (isClusterMode && args.primaryPyFile != null) {
         Seq("--primary-py-file", new Path(args.primaryPyFile).getName())
-      } else {
-        Nil
-      }
+      } else { Nil }
     val primaryRFile =
       if (args.primaryRFile != null) {
         Seq("--primary-r-file", args.primaryRFile)
-      } else {
-        Nil
-      }
+      } else { Nil }
     val amClass =
       if (isClusterMode) {
         Utils
@@ -1100,9 +1073,8 @@ private[spark] class Client(
     while (true) {
       Thread.sleep(interval)
       val report: ApplicationReport =
-        try {
-          getApplicationReport(appId)
-        } catch {
+        try { getApplicationReport(appId) }
+        catch {
           case e: ApplicationNotFoundException =>
             logError(s"Application $appId not found.")
             return (YarnApplicationState.KILLED, FinalApplicationStatus.KILLED)
@@ -1117,11 +1089,8 @@ private[spark] class Client(
 
         // If DEBUG is enabled, log report details every iteration
         // Otherwise, log them every time the application changes state
-        if (log.isDebugEnabled) {
-          logDebug(formatReportDetails(report))
-        } else if (lastState != state) {
-          logInfo(formatReportDetails(report))
-        }
+        if (log.isDebugEnabled) { logDebug(formatReportDetails(report)) }
+        else if (lastState != state) { logInfo(formatReportDetails(report)) }
       }
 
       if (lastState != state) {
@@ -1336,9 +1305,7 @@ object Client extends Logging {
         "DEFAULT_YARN_APPLICATION_CLASSPATH")
       val value = field.get(null).asInstanceOf[Array[String]]
       value.toSeq
-    } recoverWith {
-      case e: NoSuchFieldException => Success(Seq.empty[String])
-    }
+    } recoverWith { case e: NoSuchFieldException => Success(Seq.empty[String]) }
 
     triedDefault match {
       case f: Failure[_] =>
@@ -1358,9 +1325,7 @@ object Client extends Logging {
       val field =
         classOf[MRJobConfig].getField("DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH")
       StringUtils.getStrings(field.get(null).asInstanceOf[String]).toSeq
-    } recoverWith {
-      case e: NoSuchFieldException => Success(Seq.empty[String])
-    }
+    } recoverWith { case e: NoSuchFieldException => Success(Seq.empty[String]) }
 
     triedDefault match {
       case f: Failure[_] =>
@@ -1412,19 +1377,14 @@ object Client extends Logging {
       // we have to do the mainJar separate in order to send the right thing
       // into addFileToClasspath
       val mainJar =
-        if (args != null) {
-          getMainJarUri(Option(args.userJar))
-        } else {
-          getMainJarUri(sparkConf.get(APP_JAR))
-        }
+        if (args != null) { getMainJarUri(Option(args.userJar)) }
+        else { getMainJarUri(sparkConf.get(APP_JAR)) }
       mainJar.foreach(addFileToClasspath(sparkConf, conf, _, APP_JAR_NAME, env))
 
       val secondaryJars =
         if (args != null) {
           getSecondaryJarUris(Option(args.addJars).map(_.split(",").toSeq))
-        } else {
-          getSecondaryJarUris(sparkConf.get(SECONDARY_JARS))
-        }
+        } else { getSecondaryJarUris(sparkConf.get(SECONDARY_JARS)) }
       secondaryJars.foreach { x =>
         addFileToClasspath(sparkConf, conf, x, null, env)
       }
@@ -1545,9 +1505,7 @@ object Client extends Logging {
     val clusterPath = conf.get(REPLACEMENT_ROOT_PATH)
     if (localPath != null && clusterPath != null) {
       path.replace(localPath, clusterPath)
-    } else {
-      path
-    }
+    } else { path }
   }
 
   /**
@@ -1557,9 +1515,7 @@ object Client extends Logging {
     val srcUri = srcFs.getUri()
     val dstUri = destFs.getUri()
     if (srcUri.getScheme() == null || srcUri.getScheme() != dstUri
-          .getScheme()) {
-      return false
-    }
+          .getScheme()) { return false }
 
     var srcHost = srcUri.getHost()
     var dstHost = dstUri.getHost()
@@ -1596,9 +1552,7 @@ object Client extends Logging {
             .getLocal(hadoopConf)
             .makeQualified(new Path(localURI))
             .toString)
-      } else {
-        localURI
-      }
+      } else { localURI }
     new Path(qualifiedURI)
   }
 
@@ -1607,11 +1561,8 @@ object Client extends Logging {
     * loading user classes.
     */
   def isUserClassPathFirst(conf: SparkConf, isDriver: Boolean): Boolean = {
-    if (isDriver) {
-      conf.get(DRIVER_USER_CLASS_PATH_FIRST)
-    } else {
-      conf.get(EXECUTOR_USER_CLASS_PATH_FIRST)
-    }
+    if (isDriver) { conf.get(DRIVER_USER_CLASS_PATH_FIRST) }
+    else { conf.get(EXECUTOR_USER_CLASS_PATH_FIRST) }
   }
 
   /**
@@ -1622,8 +1573,6 @@ object Client extends Logging {
   }
 
   /** Returns whether the URI is a "local:" URI. */
-  def isLocalUri(uri: String): Boolean = {
-    uri.startsWith(s"$LOCAL_SCHEME:")
-  }
+  def isLocalUri(uri: String): Boolean = { uri.startsWith(s"$LOCAL_SCHEME:") }
 
 }

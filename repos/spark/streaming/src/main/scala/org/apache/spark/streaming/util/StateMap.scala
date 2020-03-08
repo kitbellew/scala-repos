@@ -126,14 +126,9 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   override def get(key: K): Option[S] = {
     val stateInfo = deltaMap(key)
     if (stateInfo != null) {
-      if (!stateInfo.deleted) {
-        Some(stateInfo.data)
-      } else {
-        None
-      }
-    } else {
-      parentStateMap.get(key)
-    }
+      if (!stateInfo.deleted) { Some(stateInfo.data) }
+      else { None }
+    } else { parentStateMap.get(key) }
   }
 
   /** Get all the keys and states whose updated time is older than the give threshold time */
@@ -173,19 +168,15 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   /** Add or update state */
   override def put(key: K, state: S, updateTime: Long): Unit = {
     val stateInfo = deltaMap(key)
-    if (stateInfo != null) {
-      stateInfo.update(state, updateTime)
-    } else {
-      deltaMap.update(key, new StateInfo(state, updateTime))
-    }
+    if (stateInfo != null) { stateInfo.update(state, updateTime) }
+    else { deltaMap.update(key, new StateInfo(state, updateTime)) }
   }
 
   /** Remove a state */
   override def remove(key: K): Unit = {
     val stateInfo = deltaMap(key)
-    if (stateInfo != null) {
-      stateInfo.markDeleted()
-    } else {
+    if (stateInfo != null) { stateInfo.markDeleted() }
+    else {
       val newInfo = new StateInfo[S](deleted = true)
       deltaMap.update(key, newInfo)
     }
@@ -202,9 +193,7 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   }
 
   /** Whether the delta chain length is long enough that it should be compacted */
-  def shouldCompact: Boolean = {
-    deltaChainLength >= deltaChainThreshold
-  }
+  def shouldCompact: Boolean = { deltaChainLength >= deltaChainThreshold }
 
   /** Length of the delta chains of this map */
   def deltaChainLength: Int = parentStateMap match {
@@ -290,9 +279,7 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
     // Write the final limit marking object with the correct count of records written.
     val limiterObj = new LimitMarker(parentSessionCount)
     outputStream.writeObject(limiterObj)
-    if (doCompaction) {
-      parentStateMap = newParentSessionStore
-    }
+    if (doCompaction) { parentStateMap = newParentSessionStore }
   }
 
   /** Deserialize the map data. */
@@ -301,9 +288,7 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
     val deltaMapSize = inputStream.readInt()
     deltaMap = if (deltaMapSize != 0) {
       new OpenHashMap[K, StateInfo[S]](deltaMapSize)
-    } else {
-      new OpenHashMap[K, StateInfo[S]](initialCapacity)
-    }
+    } else { new OpenHashMap[K, StateInfo[S]](initialCapacity) }
     var deltaMapCount = 0
     while (deltaMapCount < deltaMapSize) {
       val key = inputStream.readObject().asInstanceOf[K]
@@ -382,9 +367,7 @@ private[streaming] object OpenHashMapBasedStateMap {
       var updateTime: Long = -1,
       var deleted: Boolean = false) {
 
-    def markDeleted(): Unit = {
-      deleted = true
-    }
+    def markDeleted(): Unit = { deleted = true }
 
     def update(newData: S, newUpdateTime: Long): Unit = {
       data = newData

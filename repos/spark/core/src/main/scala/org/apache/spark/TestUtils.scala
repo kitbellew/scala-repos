@@ -148,9 +148,7 @@ private[spark] object TestUtils {
       Seq(
         "-classpath",
         classpathUrls.map { _.getFile }.mkString(File.pathSeparator))
-    } else {
-      Seq()
-    }
+    } else { Seq() }
     compiler
       .getTask(
         null,
@@ -242,8 +240,6 @@ private class SpillListener extends SparkListener {
     val stageId = stageComplete.stageInfo.stageId
     val metrics = stageIdToTaskMetrics.remove(stageId).toSeq.flatten
     val spilled = metrics.map(_.memoryBytesSpilled).sum > 0
-    if (spilled) {
-      spilledStageIds += stageId
-    }
+    if (spilled) { spilledStageIds += stageId }
   }
 }

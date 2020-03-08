@@ -41,8 +41,6 @@ private trait Updating[Req, Rep] extends Balancer[Req, Rep] with OnReady {
     observation
       .close(deadline)
       .transform { _ => super.close(deadline) }
-      .ensure {
-        ready.setDone()
-      }
+      .ensure { ready.setDone() }
   }
 }

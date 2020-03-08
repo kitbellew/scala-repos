@@ -32,9 +32,7 @@ class KetamaDistributor[A](
 
       for (i <- 0 until pointsOnRing) {
         val key = node.identifier + "-" + i
-        for (k <- 0 until 4) {
-          continuum.put(computeHash(key, k), node)
-        }
+        for (k <- 0 until 4) { continuum.put(computeHash(key, k), node) }
       }
     }
 
@@ -66,9 +64,7 @@ class KetamaDistributor[A](
     (entry.getKey, entry.getValue.handle)
   }
 
-  def nodeForHash(hash: Long): A = {
-    mapEntryForHash(hash).getValue.handle
-  }
+  def nodeForHash(hash: Long): A = { mapEntryForHash(hash).getValue.handle }
 
   protected def computeHash(key: String, alignment: Int): Long = {
     val hasher = MessageDigest.getInstance("MD5")

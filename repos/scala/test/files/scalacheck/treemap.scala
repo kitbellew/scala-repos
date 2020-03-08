@@ -79,15 +79,11 @@ object Test extends Properties("TreeMap") {
   }
 
   property("head/tail identity") = forAll { (subject: TreeMap[Int, String]) =>
-    subject.nonEmpty ==> {
-      subject == (subject.tail + subject.head)
-    }
+    subject.nonEmpty ==> { subject == (subject.tail + subject.head) }
   }
 
   property("init/last identity") = forAll { (subject: TreeMap[Int, String]) =>
-    subject.nonEmpty ==> {
-      subject == (subject.init + subject.last)
-    }
+    subject.nonEmpty ==> { subject == (subject.init + subject.last) }
   }
 
   property("take") = forAll { (subject: TreeMap[Int, String]) =>

@@ -1,4 +1,6 @@
-trait X { def foo: PartialFunction[Int, Int] }
+trait X {
+  def foo: PartialFunction[Int, Int]
+}
 
 trait Y extends X {
   // Inferred type was AbstractPartialFunction[Int, Int] with Serializable

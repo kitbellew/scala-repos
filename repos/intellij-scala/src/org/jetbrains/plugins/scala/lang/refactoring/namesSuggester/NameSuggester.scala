@@ -78,9 +78,8 @@ object NameSuggester {
         case s       => s
       }
       .filter(name => name != "" && ScalaNamesUtil.isIdentifier(name))
-    if (result.length == 0) {
-      Array("value")
-    } else result.reverse.toArray
+    if (result.length == 0) { Array("value") }
+    else result.reverse.toArray
   }
 
   private def add(s: String)(implicit
@@ -135,9 +134,7 @@ object NameSuggester {
       for {
         leftName <- namesByType(tp1, shortVersion = false)
         rightName <- namesByType(tp2, shortVersion = false)
-      } {
-        add(s"${leftName}$separator${rightName.capitalize}")
-      }
+      } { add(s"${leftName}$separator${rightName.capitalize}") }
     }
 
     def addForFunctionType(ret: ScType, params: Seq[ScType]) = params match {
@@ -196,9 +193,7 @@ object NameSuggester {
             for {
               s <- namesByType(args(0), shortVersion = false)
               prefix = needPrefix(c.qualifiedName)
-            } {
-              add(prefix + s.capitalize)
-            }
+            } { add(prefix + s.capitalize) }
           case c if c.qualifiedName == eitherClassName && args.size == 2 =>
             addFromTwoTypes(args(0), args(1), "Or")
           case c
@@ -221,11 +216,8 @@ object NameSuggester {
     def addForNamedElementString(name: String) = {
       if (name != null && name.toUpperCase == name) {
         add(deleteNonLetterFromString(name).toLowerCase)
-      } else if (name == "String") {
-        add(if (shortVersion) "s" else "string")
-      } else {
-        generateCamelNames(name)
-      }
+      } else if (name == "String") { add(if (shortVersion) "s" else "string") }
+      else { generateCamelNames(name) }
     }
 
     def addForNamedElement(named: PsiNamedElement) = {
@@ -271,11 +263,8 @@ object NameSuggester {
       case _: ScSuperReference => add("superInstance")
       case x: ScReferenceElement if x.refName != null =>
         val name = x.refName
-        if (name != null && name.toUpperCase == name) {
-          add(name.toLowerCase)
-        } else {
-          generateCamelNames(name)
-        }
+        if (name != null && name.toUpperCase == name) { add(name.toLowerCase) }
+        else { generateCamelNames(name) }
       case x: ScMethodCall =>
         generateNamesByExpr(x.getEffectiveInvokedExpr)
       case l: ScLiteral if l.isString =>

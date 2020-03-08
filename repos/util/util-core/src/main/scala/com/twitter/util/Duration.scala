@@ -360,9 +360,7 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
     // when both instances are `Duration`s and not a sentinel subclass.
     if (other != null && (other.getClass eq getClass)) {
       other.asInstanceOf[Duration].nanos == nanos
-    } else {
-      false
-    }
+    } else { false }
   }
 
   override def hashCode: Int =

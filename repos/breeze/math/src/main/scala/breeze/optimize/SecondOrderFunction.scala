@@ -57,9 +57,7 @@ object SecondOrderFunction {
         val subset = Rand.subsetsOfSize(f.fullRange, batchSize).draw()
         val (v, grad) = f.calculate(x)
         val newf = new DiffFunction[T] {
-          def calculate(x: T): (Double, T) = {
-            f.calculate(x, subset)
-          }
+          def calculate(x: T): (Double, T) = { f.calculate(x, subset) }
         }
         val h = new EmpiricalHessian(newf, x, newf.gradientAt(x), eps)
         (v, grad, h)
@@ -88,18 +86,14 @@ class EmpiricalHessian[T](
 
   import vs._
 
-  def *(t: T): T = {
-    (df.gradientAt(x + t * eps) - grad) / eps
-  }
+  def *(t: T): T = { (df.gradientAt(x + t * eps) - grad) / eps }
 
 }
 
 object EmpiricalHessian {
   implicit def product[T, I]: OpMulMatrix.Impl2[EmpiricalHessian[T], T, T] = {
     new OpMulMatrix.Impl2[EmpiricalHessian[T], T, T] {
-      def apply(a: EmpiricalHessian[T], b: T): T = {
-        a * b
-      }
+      def apply(a: EmpiricalHessian[T], b: T): T = { a * b }
     }
   }
 
@@ -198,9 +192,7 @@ class FisherMatrix[T](grads: IndexedSeq[T])(
 object FisherMatrix {
   implicit def product[T, I]: OpMulMatrix.Impl2[FisherMatrix[T], T, T] = {
     new OpMulMatrix.Impl2[FisherMatrix[T], T, T] {
-      def apply(a: FisherMatrix[T], b: T): T = {
-        a * b
-      }
+      def apply(a: FisherMatrix[T], b: T): T = { a * b }
     }
   }
 

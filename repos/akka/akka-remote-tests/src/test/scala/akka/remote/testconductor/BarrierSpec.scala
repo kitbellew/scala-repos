@@ -284,9 +284,7 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
       val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
       val nodeB = NodeInfo(A, AddressFromURIString("akka://sys"), b.ref)
       barrier ! nodeA
-      EventFilter[DuplicateNode](occurrences = 1) intercept {
-        barrier ! nodeB
-      }
+      EventFilter[DuplicateNode](occurrences = 1) intercept { barrier ! nodeB }
       val msg = expectMsgType[Failed]
       msg match {
         case Failed(barrier, thr: DuplicateNode)
@@ -319,9 +317,7 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
         b ! Remove(A)
         EventFilter.warning(
           start = "cannot remove",
-          occurrences = 1) intercept {
-          b ! Remove(A)
-        }
+          occurrences = 1) intercept { b ! Remove(A) }
         Thread.sleep(5000)
       }
     }
@@ -611,9 +607,7 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
       override def supervisorStrategy = OneForOneStrategy() {
         case x ⇒ testActor ! Failed(controller, x); SupervisorStrategy.Restart
       }
-      def receive = {
-        case x: InetSocketAddress ⇒ testActor ! controller
-      }
+      def receive = { case x: InetSocketAddress ⇒ testActor ! controller }
     }).withDeploy(Deploy.local))
     val actor = expectMsgType[ActorRef]
     f(actor)
@@ -630,9 +624,7 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
       override def supervisorStrategy = OneForOneStrategy() {
         case x ⇒ testActor ! Failed(barrier, x); SupervisorStrategy.Restart
       }
-      def receive = {
-        case _ ⇒ sender() ! barrier
-      }
+      def receive = { case _ ⇒ sender() ! barrier }
     }).withDeploy(Deploy.local)) ! ""
     expectMsgType[ActorRef]
   }

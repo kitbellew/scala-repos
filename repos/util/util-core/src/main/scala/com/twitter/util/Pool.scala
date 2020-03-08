@@ -21,9 +21,7 @@ class SimplePool[A](items: mutable.Queue[Future[A]]) extends Pool[A] {
       val future = new Promise[A]
       requests += future
       future
-    } else {
-      items.dequeue()
-    }
+    } else { items.dequeue() }
   }
 
   def release(item: A) {
@@ -47,9 +45,7 @@ abstract class FactoryPool[A](numItems: Int) extends Pool[A] {
 
   def reserve() = simplePool.reserve()
   def release(a: A) = simplePool.release(a)
-  def dispose(a: A) {
-    healthyQueue += makeItem()
-  }
+  def dispose(a: A) { healthyQueue += makeItem() }
 
   protected def makeItem(): Future[A]
   protected def isHealthy(a: A): Boolean
@@ -72,9 +68,8 @@ private class HealthyQueue[A](
     if (isEmpty) throw new NoSuchElementException("queue empty")
 
     self.dequeue() flatMap { item =>
-      if (isHealthy(item)) {
-        Future(item)
-      } else {
+      if (isHealthy(item)) { Future(item) }
+      else {
         val item = makeItem()
         synchronized {
           this += item

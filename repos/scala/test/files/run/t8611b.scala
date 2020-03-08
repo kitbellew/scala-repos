@@ -13,9 +13,7 @@ abstract class WorkingEnum extends Enumeration {
 
   type ExtendedValue = Value
 
-  def Enum(inDescription: String): ExtendedValue = {
-    new Val(nextId) {}
-  }
+  def Enum(inDescription: String): ExtendedValue = { new Val(nextId) {} }
 }
 
 object NotWorkingTab extends NotWorkingEnum {

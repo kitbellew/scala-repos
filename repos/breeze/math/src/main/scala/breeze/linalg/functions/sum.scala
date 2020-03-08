@@ -22,9 +22,7 @@ object sum extends UFunc with sumLowPrio with VectorizedReduceUFunc {
     def apply(v: T): S = {
       class SumVisitor extends ValuesVisitor[S] {
         var sum: S = 0
-        def visit(a: S): Unit = {
-          sum += a
-        }
+        def visit(a: S): Unit = { sum += a }
 
         def zeros(numZero: Int, zeroValue: S): Unit = {
           sum += numZero * zeroValue
@@ -42,9 +40,7 @@ object sum extends UFunc with sumLowPrio with VectorizedReduceUFunc {
     def apply(v: T): S = {
       class SumVisitor extends ValuesVisitor[S] {
         var sum: S = semiring.zero
-        def visit(a: S): Unit = {
-          sum = semiring.+(sum, a)
-        }
+        def visit(a: S): Unit = { sum = semiring.+(sum, a) }
 
         def zeros(numZero: Int, zeroValue: S): Unit = {}
 

@@ -21,9 +21,7 @@ import scala.tools.nsc.util.{ClassPath, ClassRepresentation}
   *  @version 1.0
   */
 abstract class SymbolLoaders {
-  val symbolTable: symtab.SymbolTable {
-    def settings: Settings
-  }
+  val symbolTable: symtab.SymbolTable { def settings: Settings }
   val platform: backend.Platform {
     val symbolTable: SymbolLoaders.this.symbolTable.type
   }

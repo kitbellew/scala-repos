@@ -42,9 +42,7 @@ class ConvertImplicitBoundsToImplicitParameter
   def isAvailable(
       project: Project,
       editor: Editor,
-      element: PsiElement): Boolean = {
-    canBeConverted(element)
-  }
+      element: PsiElement): Boolean = { canBeConverted(element) }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val addedParams = doConversion(element)

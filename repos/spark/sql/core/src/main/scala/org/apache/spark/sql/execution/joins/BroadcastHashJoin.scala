@@ -204,9 +204,8 @@ case class BroadcastHashJoin(
     buildPlan.output.zipWithIndex.map {
       case (a, i) =>
         val ev = BoundReference(i, a.dataType, a.nullable).gen(ctx)
-        if (joinType == Inner) {
-          ev
-        } else {
+        if (joinType == Inner) { ev }
+        else {
           // the variables are needed even there is no matched rows
           val isNull = ctx.freshName("isNull")
           val value = ctx.freshName("value")
@@ -251,9 +250,7 @@ case class BroadcastHashJoin(
          |${ev.code}
          |if (${ev.isNull} || !${ev.value}) continue;
        """.stripMargin
-    } else {
-      ""
-    }
+    } else { "" }
 
     val resultVars = buildSide match {
       case BuildLeft  => buildVars ++ input
@@ -325,9 +322,7 @@ case class BroadcastHashJoin(
          |  $conditionPassed = !${ev.isNull} && ${ev.value};
          |}
        """.stripMargin
-    } else {
-      s"final boolean $conditionPassed = true;"
-    }
+    } else { s"final boolean $conditionPassed = true;" }
 
     val resultVars = buildSide match {
       case BuildLeft  => buildVars ++ input
@@ -404,9 +399,7 @@ case class BroadcastHashJoin(
          |${ev.code}
          |if (${ev.isNull} || !${ev.value}) continue;
        """.stripMargin
-    } else {
-      ""
-    }
+    } else { "" }
 
     if (broadcastRelation.value.isInstanceOf[UniqueHashedRelation]) {
       s"""

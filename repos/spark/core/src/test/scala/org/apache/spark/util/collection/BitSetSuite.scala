@@ -25,18 +25,13 @@ class BitSetSuite extends SparkFunSuite {
     val setBits = Seq(0, 9, 1, 10, 90, 96)
     val bitset = new BitSet(100)
 
-    for (i <- 0 until 100) {
-      assert(!bitset.get(i))
-    }
+    for (i <- 0 until 100) { assert(!bitset.get(i)) }
 
     setBits.foreach(i => bitset.set(i))
 
     for (i <- 0 until 100) {
-      if (setBits.contains(i)) {
-        assert(bitset.get(i))
-      } else {
-        assert(!bitset.get(i))
-      }
+      if (setBits.contains(i)) { assert(bitset.get(i)) }
+      else { assert(!bitset.get(i)) }
     }
     assert(bitset.cardinality() === setBits.size)
   }
@@ -47,9 +42,7 @@ class BitSetSuite extends SparkFunSuite {
       assert(!bitset.get(i))
       bitset.set(i)
     }
-    for (i <- 0 until 10000) {
-      assert(bitset.get(i))
-    }
+    for (i <- 0 until 10000) { assert(bitset.get(i)) }
     assert(bitset.cardinality() === 10000)
   }
 

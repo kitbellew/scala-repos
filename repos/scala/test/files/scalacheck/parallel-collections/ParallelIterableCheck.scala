@@ -69,9 +69,8 @@ abstract class ParallelIterableCheck[T](collName: String)
       }
 
   def areEqual(t1: GenTraversable[T], t2: GenTraversable[T]) =
-    if (hasStrictOrder) {
-      t1 == t2 && t2 == t1
-    } else
+    if (hasStrictOrder) { t1 == t2 && t2 == t1 }
+    else
       (t1, t2) match { // it is slightly delicate what `equal` means if the order is not strict
         case (m1: GenMap[_, _], m2: GenMap[_, _]) => m1 == m2 && m2 == m1
         case (i1: GenIterable[_], i2: GenIterable[_]) =>

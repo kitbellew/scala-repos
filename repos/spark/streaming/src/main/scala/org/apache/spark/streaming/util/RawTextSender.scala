@@ -79,9 +79,7 @@ private[streaming] object RawTextSender extends Logging {
       } catch {
         case e: IOException =>
           logError("Client disconnected")
-      } finally {
-        socket.close()
-      }
+      } finally { socket.close() }
     }
   }
 }

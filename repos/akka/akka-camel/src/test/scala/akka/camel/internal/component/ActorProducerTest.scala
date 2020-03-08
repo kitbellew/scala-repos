@@ -89,9 +89,7 @@ class ActorProducerTest
           "not block forever" in {
             producer = given(outCapable = false, autoAck = false)
             import system.dispatcher
-            val future = Future {
-              producer.processExchangeAdapter(exchange)
-            }
+            val future = Future { producer.processExchangeAdapter(exchange) }
             within(1 second) {
               probe.expectMsgType[CamelMessage]
               info("message sent to consumer")
@@ -120,9 +118,7 @@ class ActorProducerTest
         "response is not sent by actor" must {
           val latch = TestLatch(1)
           val callback = new AsyncCallback {
-            def done(doneSync: Boolean) {
-              latch.countDown()
-            }
+            def done(doneSync: Boolean) { latch.countDown() }
           }
           def process() = {
             producer = given(outCapable = true, replyTimeout = 100 millis)
@@ -405,9 +401,7 @@ private[camel] trait ActorProducerFixture
     message = CamelMessage(null, null)
   }
 
-  override protected def afterAll() {
-    shutdown()
-  }
+  override protected def afterAll() { shutdown() }
 
   def msg(s: String) = CamelMessage(s, Map.empty)
 

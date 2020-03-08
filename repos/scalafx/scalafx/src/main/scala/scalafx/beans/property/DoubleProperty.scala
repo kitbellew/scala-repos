@@ -58,10 +58,6 @@ class DoubleProperty(
   def this(bean: Object, name: String, initialValue: Double) =
     this(new jfxbp.SimpleDoubleProperty(bean, name, initialValue))
 
-  def value_=(v: Double) {
-    delegate.set(v)
-  }
-  def value_=(v: Number) {
-    delegate.set(v.doubleValue)
-  }
+  def value_=(v: Double) { delegate.set(v) }
+  def value_=(v: Number) { delegate.set(v.doubleValue) }
 }

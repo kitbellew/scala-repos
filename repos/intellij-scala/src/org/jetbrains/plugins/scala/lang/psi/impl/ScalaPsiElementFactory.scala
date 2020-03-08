@@ -223,9 +223,7 @@ class ScalaPsiElementFactoryImpl(manager: PsiManager)
         text,
         context,
         context)
-    } catch {
-      case e: Throwable => throw new IncorrectOperationException
-    }
+    } catch { case e: Throwable => throw new IncorrectOperationException }
   }
 }
 
@@ -234,9 +232,8 @@ object ScalaPsiElementFactory {
   def createExpressionFromText(
       text: String,
       context: PsiElement): PsiElement = {
-    try {
-      createExpressionWithContextFromText(text, context, context)
-    } catch {
+    try { createExpressionWithContextFromText(text, context, context) }
+    catch {
       case e: Throwable =>
         throw new IncorrectOperationException(
           s"Cannot create expression from text $text with context ${context.getText}",
@@ -1474,9 +1471,7 @@ object ScalaPsiElementFactory {
           text.trim))
     val marker = builder.mark()
     parse(builder)
-    while (!builder.eof()) {
-      builder.advanceLexer()
-    }
+    while (!builder.eof()) { builder.advanceLexer() }
     marker.done(ScalaElementTypes.FILE)
     val fileNode = builder.getTreeBuilt
     val node = fileNode.getFirstChildNode
@@ -1503,9 +1498,7 @@ object ScalaPsiElementFactory {
           text.trim))
     val marker = builder.mark()
     parse(builder)
-    while (!builder.eof()) {
-      builder.advanceLexer()
-    }
+    while (!builder.eof()) { builder.advanceLexer() }
     marker.done(ScalaElementTypes.FILE)
     val fileNode = builder.getTreeBuilt
     val node = fileNode.getFirstChildNode

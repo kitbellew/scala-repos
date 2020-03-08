@@ -171,18 +171,12 @@ object Maybe extends MaybeInstances {
 
   def fromTryCatchThrowable[T, E <: Throwable](
       a: => T)(implicit nn: NotNothing[E], ex: ClassTag[E]): Maybe[T] =
-    try {
-      just(a)
-    } catch {
-      case e if ex.runtimeClass.isInstance(e) => empty
-    }
+    try { just(a) }
+    catch { case e if ex.runtimeClass.isInstance(e) => empty }
 
   def fromTryCatchNonFatal[T](a: => T): Maybe[T] =
-    try {
-      just(a)
-    } catch {
-      case NonFatal(t) => empty
-    }
+    try { just(a) }
+    catch { case NonFatal(t) => empty }
 }
 
 sealed abstract class MaybeInstances {

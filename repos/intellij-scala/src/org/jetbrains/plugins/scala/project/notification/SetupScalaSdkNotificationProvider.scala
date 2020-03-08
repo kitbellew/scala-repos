@@ -72,9 +72,7 @@ object SetupScalaSdkNotificationProvider {
     panel.createActionLabel(
       "Setup Scala SDK",
       new Runnable {
-        override def run() {
-          setupSdk(panel, project, file)
-        }
+        override def run() { setupSdk(panel, project, file) }
       })
     panel
   }

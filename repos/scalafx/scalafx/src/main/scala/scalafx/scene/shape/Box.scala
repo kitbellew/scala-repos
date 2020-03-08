@@ -50,19 +50,13 @@ class Box(override val delegate: jfxss.Box = new jfxss.Box())
 
   /** Defines the depth or the Z dimension of the Box. */
   def depth: DoubleProperty = delegate.depthProperty
-  def depth_=(v: Double) {
-    depth() = v
-  }
+  def depth_=(v: Double) { depth() = v }
 
   /** Defines the height or the Y dimension of the Box. */
   def height: DoubleProperty = delegate.heightProperty
-  def height_=(v: Double) {
-    height() = v
-  }
+  def height_=(v: Double) { height() = v }
 
   /** Defines the width or the Z dimension of the Box. */
   def width: DoubleProperty = delegate.widthProperty
-  def width_=(v: Double) {
-    width() = v
-  }
+  def width_=(v: Double) { width() = v }
 }

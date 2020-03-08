@@ -69,9 +69,7 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
 
         bx.openOrThrowException("legacy code") must ==/(<int>45</int>)
           .when(jetty.running)
-      } finally {
-        LiftRules.sessionCreator = tmp
-      }
+      } finally { LiftRules.sessionCreator = tmp }
     }
 
     "be settable as Int" in {
@@ -88,9 +86,7 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
 
         bx.openOrThrowException("legacy code") must ==/(<int>33</int>)
           .when(jetty.running)
-      } finally {
-        LiftRules.sessionCreator = tmp
-      }
+      } finally { LiftRules.sessionCreator = tmp }
     }
 
     "be session aware" in {
@@ -111,9 +107,7 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
           .when(jetty.running)
         bx.openOrThrowException("legacy code")._2 must ==/(<int>45</int>)
           .when(jetty.running)
-      } finally {
-        LiftRules.sessionCreator = tmp
-      }
+      } finally { LiftRules.sessionCreator = tmp }
     }
 
     "support multiple vars" in {
@@ -136,9 +130,7 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
         bx.openOrThrowException("legacy code")._2 must ==/(<str>meow</str>)
           .when(jetty.running)
 
-      } finally {
-        LiftRules.sessionCreator = tmp
-      }
+      } finally { LiftRules.sessionCreator = tmp }
     }
   }
 
@@ -178,10 +170,6 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
     }
   }
 
-  step {
-    tryo {
-      jetty.stop()
-    }
-  }
+  step { tryo { jetty.stop() } }
 
 }

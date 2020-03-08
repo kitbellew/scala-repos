@@ -88,9 +88,7 @@ case class UserDefinedGenerator(
   }
 
   override def eval(input: InternalRow): TraversableOnce[InternalRow] = {
-    if (inputRow == null) {
-      initializeConverters()
-    }
+    if (inputRow == null) { initializeConverters() }
     // Convert the objects into Scala Type before calling function, we need schema to support UDT
     function(convertToScala(inputRow(input)))
   }
@@ -111,9 +109,8 @@ case class Explode(child: Expression)
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (child.dataType.isInstanceOf[ArrayType] || child.dataType
-          .isInstanceOf[MapType]) {
-      TypeCheckResult.TypeCheckSuccess
-    } else {
+          .isInstanceOf[MapType]) { TypeCheckResult.TypeCheckSuccess }
+    else {
       TypeCheckResult.TypeCheckFailure(
         s"input to function explode should be array or map type, not ${child.dataType}")
     }
@@ -131,22 +128,16 @@ case class Explode(child: Expression)
     child.dataType match {
       case ArrayType(et, _) =>
         val inputArray = child.eval(input).asInstanceOf[ArrayData]
-        if (inputArray == null) {
-          Nil
-        } else {
+        if (inputArray == null) { Nil }
+        else {
           val rows = new Array[InternalRow](inputArray.numElements())
-          inputArray.foreach(
-            et,
-            (i, e) => {
-              rows(i) = InternalRow(e)
-            })
+          inputArray.foreach(et, (i, e) => { rows(i) = InternalRow(e) })
           rows
         }
       case MapType(kt, vt, _) =>
         val inputMap = child.eval(input).asInstanceOf[MapData]
-        if (inputMap == null) {
-          Nil
-        } else {
+        if (inputMap == null) { Nil }
+        else {
           val rows = new Array[InternalRow](inputMap.numElements())
           var i = 0
           inputMap.foreach(

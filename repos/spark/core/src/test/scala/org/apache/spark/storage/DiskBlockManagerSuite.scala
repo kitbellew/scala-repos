@@ -48,9 +48,7 @@ class DiskBlockManagerSuite
     try {
       Utils.deleteRecursively(rootDir0)
       Utils.deleteRecursively(rootDir1)
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   override def beforeEach() {
@@ -61,11 +59,8 @@ class DiskBlockManagerSuite
   }
 
   override def afterEach() {
-    try {
-      diskBlockManager.stop()
-    } finally {
-      super.afterEach()
-    }
+    try { diskBlockManager.stop() }
+    finally { super.afterEach() }
   }
 
   test("basic block creation") {

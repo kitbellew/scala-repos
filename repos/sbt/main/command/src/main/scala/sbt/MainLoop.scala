@@ -25,9 +25,7 @@ object MainLoop {
     try {
       Runtime.getRuntime.addShutdownHook(shutdownHook)
       runLoggedLoop(state, state.globalLogging.backing)
-    } finally {
-      Runtime.getRuntime.removeShutdownHook(shutdownHook)
-    }
+    } finally { Runtime.getRuntime.removeShutdownHook(shutdownHook) }
   }
 
   /** Run loop that evaluates remaining commands and manages changes to global logging configuration.*/

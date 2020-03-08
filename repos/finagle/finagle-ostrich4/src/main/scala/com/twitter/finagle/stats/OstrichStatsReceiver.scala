@@ -30,9 +30,7 @@ class OstrichStatsReceiver(
   override def stat(name: String*) = new Stat {
     private[this] val metric = repr.getMetric(variableName(name))
 
-    override def add(value: Float) {
-      metric.add(value.toInt)
-    }
+    override def add(value: Float) { metric.add(value.toInt) }
   }
 
   private[this] def variableName(name: Seq[String]) = name mkString delimiter

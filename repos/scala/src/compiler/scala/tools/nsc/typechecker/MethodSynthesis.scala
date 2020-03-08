@@ -631,9 +631,7 @@ trait MethodSynthesis {
             if (hasBP) new BeanGetter(tree) with NoSymbolBeanGetter
             else new BooleanBeanGetter(tree) with NoSymbolBeanGetter
           )
-        getter :: {
-          if (mods.isMutable) List(BeanSetter(tree)) else Nil
-        }
+        getter :: { if (mods.isMutable) List(BeanSetter(tree)) else Nil }
       } else Nil
     }
 

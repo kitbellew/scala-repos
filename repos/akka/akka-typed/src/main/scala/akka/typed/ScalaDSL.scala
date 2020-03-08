@@ -201,9 +201,7 @@ object ScalaDSL {
     */
   final case class Total[T](behavior: T ⇒ Behavior[T]) extends Behavior[T] {
     override def management(ctx: ActorContext[T], msg: Signal): Behavior[T] =
-      msg match {
-        case _ ⇒ Unhandled
-      }
+      msg match { case _ ⇒ Unhandled }
     override def message(ctx: ActorContext[T], msg: T): Behavior[T] =
       behavior(msg)
     override def toString = s"Total(${LineNumbers(behavior)})"
@@ -222,9 +220,7 @@ object ScalaDSL {
   final case class Partial[T](behavior: PartialFunction[T, Behavior[T]])
       extends Behavior[T] {
     override def management(ctx: ActorContext[T], msg: Signal): Behavior[T] =
-      msg match {
-        case _ ⇒ Unhandled
-      }
+      msg match { case _ ⇒ Unhandled }
     override def message(ctx: ActorContext[T], msg: T): Behavior[T] =
       behavior.applyOrElse(msg, unhandledFunction)
     override def toString = s"Partial(${LineNumbers(behavior)})"

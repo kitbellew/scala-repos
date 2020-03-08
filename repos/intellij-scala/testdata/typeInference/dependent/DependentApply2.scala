@@ -10,8 +10,9 @@ trait Typers {
 }
 
 class Global {
-  lazy val analyzer = new { val global: Global.this.type = Global.this }
-  with Analyzer
+  lazy val analyzer = new {
+    val global: Global.this.type = Global.this
+  } with Analyzer
 }
 
 abstract class D {
@@ -21,8 +22,6 @@ abstract class D {
   import analyzer._
   val a: B[Int] = new B[Int]
   val b: A[Int] = /*start*/ A(1) /*end*/
-  a match {
-    case A(r) => r
-  }
+  a match { case A(r) => r }
 }
 //D.this.global.analyzer.A[Int]

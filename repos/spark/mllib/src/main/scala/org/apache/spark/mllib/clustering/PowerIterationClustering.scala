@@ -275,9 +275,7 @@ object PowerIterationClustering extends Logging {
           throw new SparkException(
             "Similarity must be nonnegative but found s($i, $j) = $s.")
         }
-        if (s > 0.0) {
-          ctx.sendToSrc(s)
-        }
+        if (s > 0.0) { ctx.sendToSrc(s) }
       },
       mergeMsg = _ + _,
       TripletFields.EdgeOnly
@@ -302,17 +300,12 @@ object PowerIterationClustering extends Logging {
           throw new SparkException(
             "Similarity must be nonnegative but found s($i, $j) = $s.")
         }
-        if (i != j) {
-          Seq(Edge(i, j, s), Edge(j, i, s))
-        } else {
-          None
-        }
+        if (i != j) { Seq(Edge(i, j, s), Edge(j, i, s)) }
+        else { None }
     }
     val gA = Graph.fromEdges(edges, 0.0)
     val vD = gA.aggregateMessages[Double](
-      sendMsg = ctx => {
-        ctx.sendToSrc(ctx.attr)
-      },
+      sendMsg = ctx => { ctx.sendToSrc(ctx.attr) },
       mergeMsg = _ + _,
       TripletFields.EdgeOnly)
     Graph(vD, gA.edges)

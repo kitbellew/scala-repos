@@ -22,9 +22,7 @@ trait Playable {
     _startTime = System.currentTimeMillis()
   }
 
-  def stop() {
-    _running = false
-  }
+  def stop() { _running = false }
 }
 
 /**
@@ -84,23 +82,17 @@ abstract class PlayableConnector(activity: SActivity) {
     timer = new Timer()
     timer.schedule(
       new TimerTask {
-        def run() {
-          runOnUiThread(updateUI(ON_HEARTBEAT))
-        }
+        def run() { runOnUiThread(updateUI(ON_HEARTBEAT)) }
       },
       timerInterval,
       timerInterval)
   }
 
-  activity.onPause {
-    timer.cancel()
-  }
+  activity.onPause { timer.cancel() }
 
   def onServiceConnected() {
     runOnUiThread(updateUI(ON_CONNECTED))
-    if (playable.fold(false)(_.running)) {
-      startTimer()
-    }
+    if (playable.fold(false)(_.running)) { startTimer() }
   }
 
   def updateUI(event: UpdateEvent)

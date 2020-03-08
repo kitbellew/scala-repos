@@ -36,11 +36,7 @@ class Application extends Controller {
 
 class Users extends Controller {
 
-  def list = Action {
-    Ok("List users")
-  }
+  def list = Action { Ok("List users") }
 
-  def get(id: Long) = Action {
-    Ok(s"Get user with id $id")
-  }
+  def get(id: Long) = Action { Ok(s"Get user with id $id") }
 }

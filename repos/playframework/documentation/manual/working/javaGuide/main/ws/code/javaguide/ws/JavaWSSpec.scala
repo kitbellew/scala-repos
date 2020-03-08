@@ -39,9 +39,7 @@ object JavaWSSpec extends Specification with Results with Status {
             Ok(obj)
           }
         case (_, _) =>
-          Action {
-            BadRequest("no binding found")
-          }
+          Action { BadRequest("no binding found") }
       }
       .build()
 

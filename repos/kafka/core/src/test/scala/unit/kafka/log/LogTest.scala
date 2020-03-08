@@ -50,9 +50,7 @@ class LogTest extends JUnitSuite {
   }
 
   @After
-  def tearDown() {
-    CoreUtils.rm(tmpDir)
-  }
+  def tearDown() { CoreUtils.rm(tmpDir) }
 
   def createEmptyLogs(dir: File, offsets: Int*) {
     for (offset <- offsets) {
@@ -180,9 +178,7 @@ class LogTest extends JUnitSuite {
     assertEquals("There should be exactly 1 segment.", 1, log.numberOfSegments)
 
     // segments expire in size
-    for (i <- 1 to (msgPerSeg + 1)) {
-      log.append(set)
-    }
+    for (i <- 1 to (msgPerSeg + 1)) { log.append(set) }
     assertEquals("There should be exactly 2 segments.", 2, log.numberOfSegments)
   }
 
@@ -330,9 +326,7 @@ class LogTest extends JUnitSuite {
     try {
       log.read(0, 1024)
       fail("Expected exception on invalid read.")
-    } catch {
-      case e: OffsetOutOfRangeException => "This is good."
-    }
+    } catch { case e: OffsetOutOfRangeException => "This is good." }
     try {
       log.read(1025, 1000)
       fail("Expected exception on invalid read.")

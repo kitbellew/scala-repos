@@ -131,11 +131,9 @@ trait LinearRegressionLibModule[M[+_]]
           }
 
           val matrixSum = {
-            if (isEmpty(t1.product)) {
-              t2.product
-            } else if (isEmpty(t2.product)) {
-              t1.product
-            } else {
+            if (isEmpty(t1.product)) { t2.product }
+            else if (isEmpty(t2.product)) { t1.product }
+            else {
               assert(
                 t1.product.getColumnDimension == t2.product.getColumnDimension &&
                   t1.product.getRowDimension == t2.product.getRowDimension)
@@ -171,9 +169,8 @@ trait LinearRegressionLibModule[M[+_]]
           (i >= 0) && (i < vlength + indices0.length)
         }
 
-        if (indices.isEmpty) {
-          values
-        } else {
+        if (indices.isEmpty) { values }
+        else {
           val zero = 0d
           val length = vlength + indices.length
           val bitset = BitSetUtil.create(indices)
@@ -200,9 +197,8 @@ trait LinearRegressionLibModule[M[+_]]
         val vlength = values.length
         val indices = indices0 filter { i => (i >= 0) && (i < vlength) }
 
-        if (indices.isEmpty) {
-          values
-        } else {
+        if (indices.isEmpty) { values }
+        else {
           val length = vlength - indices.length
           val bitset = BitSetUtil.create(indices)
           val acc = new Array[Double](length)
@@ -274,9 +270,7 @@ trait LinearRegressionLibModule[M[+_]]
             if (mx.getRowDimension < mx.getColumnDimension) {
               throw new IllegalArgumentException(
                 "Matrix is rank deficient. Not enough rows to determine model.")
-            } else {
-              mx
-            }
+            } else { mx }
           }
 
           def removeColumn(matrix: Matrix, colDim: Int, idx: Int): Matrix = {
@@ -299,9 +293,8 @@ trait LinearRegressionLibModule[M[+_]]
                 colDim: Int,
                 removed: Set[Int]): (Matrix, Set[Int]) = {
               if (idx <= colDim) {
-                if (matrixRank0 == colDim) {
-                  (matrix, removed)
-                } else if (matrixRank0 < colDim) {
+                if (matrixRank0 == colDim) { (matrix, removed) }
+                else if (matrixRank0 < colDim) {
                   val retained = removeColumn(matrix, colDim, idx)
                   val rank = retained.rank
 
@@ -337,9 +330,7 @@ trait LinearRegressionLibModule[M[+_]]
           val matrixX = for {
             (x, _) <- cleaned
             y <- matrixY
-          } yield {
-            x.solve(y.transpose)
-          }
+          } yield { x.solve(y.transpose) }
 
           val res =
             matrixX map { _.getArray flatten } getOrElse Array.empty[Double]
@@ -528,9 +519,7 @@ trait LinearRegressionLibModule[M[+_]]
           val tablesWithType: M[Seq[(Table, JType)]] = for {
             tbls <- tables
             jtypes <- schemas
-          } yield {
-            tbls zip jtypes
-          }
+          } yield { tbls zip jtypes }
 
           // important note: regression will explode if there are more than `sliceSize` columns due to rank-deficient matrix
           // this could be remedied in the future by smarter choice of `sliceSize`
@@ -550,9 +539,7 @@ trait LinearRegressionLibModule[M[+_]]
               for {
                 coeffs <- coeffs0
                 errors <- errors0
-              } yield {
-                extract(coeffs, errors, jtype)
-              }
+              } yield { extract(coeffs, errors, jtype) }
             }
           }
 

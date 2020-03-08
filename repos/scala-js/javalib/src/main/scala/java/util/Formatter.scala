@@ -62,11 +62,9 @@ final class Formatter(private val dest: Appendable)
           def hasFlag(flag: String) = flags.indexOf(flag) >= 0
 
           val indexStr = matchResult(1).getOrElse("")
-          val index = if (!indexStr.isEmpty) {
-            Integer.parseInt(indexStr)
-          } else if (hasFlag("<")) {
-            lastIndex
-          } else {
+          val index = if (!indexStr.isEmpty) { Integer.parseInt(indexStr) }
+          else if (hasFlag("<")) { lastIndex }
+          else {
             lastImplicitIndex += 1
             lastImplicitIndex
           }
@@ -146,9 +144,8 @@ final class Formatter(private val dest: Appendable)
             val prePadLen = argStr.length + prefix.length
 
             val padStr = {
-              if (width <= prePadLen) {
-                prefix + argStr
-              } else {
+              if (width <= prePadLen) { prefix + argStr }
+              else {
                 val padRight = hasFlag("-")
                 val padZero = hasFlag("0") && !preventZero
                 val padLength = width - prePadLen

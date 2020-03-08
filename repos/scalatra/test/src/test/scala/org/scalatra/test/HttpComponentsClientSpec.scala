@@ -90,14 +90,10 @@ class HttpComponentsClientSpec
   }
 
   private def doVerbGetActual(method: String) = {
-    submit(method, "/") {
-      header("Request-Method")
-    }
+    submit(method, "/") { header("Request-Method") }
   }
 
   private def doReqWithBody(method: String, reqBody: String) = {
-    submit(method, "/", body = reqBody) {
-      body
-    }
+    submit(method, "/", body = reqBody) { body }
   }
 }

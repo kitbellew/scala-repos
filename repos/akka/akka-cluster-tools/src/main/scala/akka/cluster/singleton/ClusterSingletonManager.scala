@@ -747,9 +747,8 @@ class ClusterSingletonManager(
       singleton: ActorRef,
       singletonTerminated: Boolean,
       handOverTo: Option[ActorRef]): State = {
-    if (singletonTerminated) {
-      handOverDone(handOverTo)
-    } else {
+    if (singletonTerminated) { handOverDone(handOverTo) }
+    else {
       handOverTo foreach { _ ! HandOverInProgress }
       singleton ! terminationMessage
       goto(HandingOver) using HandingOverData(singleton, handOverTo)
@@ -841,9 +840,7 @@ class ClusterSingletonManager(
     case WasOldest -> _ ⇒ cancelTimer(TakeOverRetryTimer)
   }
 
-  onTransition {
-    case _ -> (Younger | Oldest) ⇒ getNextOldestChanged()
-  }
+  onTransition { case _ -> (Younger | Oldest) ⇒ getNextOldestChanged() }
 
   onTransition {
     case _ -> (Younger | End) if removed.contains(cluster.selfAddress) ⇒

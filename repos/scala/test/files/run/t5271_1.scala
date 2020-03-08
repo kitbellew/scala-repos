@@ -5,9 +5,7 @@ import scala.tools.reflect.ToolBox
 import scala.tools.reflect.Eval
 
 object Test extends App {
-  val code = reify {
-    case class C(foo: Int, bar: Int)
-  };
+  val code = reify { case class C(foo: Int, bar: Int) };
 
   val toolbox = cm.mkToolBox()
   println(code.tree)

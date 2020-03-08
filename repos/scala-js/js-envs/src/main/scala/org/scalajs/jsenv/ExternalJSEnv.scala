@@ -182,9 +182,7 @@ abstract class ExternalJSEnv(
         val vmComplete = Try(waitForVM(vmInst))
 
         // Store IO exception
-        pipeResult recover {
-          case e => ioThreadEx = e
-        }
+        pipeResult recover { case e => ioThreadEx = e }
 
         // Chain Try's the other way: We want VM failure first, then IO failure
         promise.complete(pipeResult orElse vmComplete)

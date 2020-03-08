@@ -35,9 +35,7 @@ class WorksheetFoldingBuilder extends FoldingBuilder {
     "/../"
   }
 
-  def isCollapsedByDefault(node: ASTNode): Boolean = {
-    true
-  }
+  def isCollapsedByDefault(node: ASTNode): Boolean = { true }
 
   override def buildFoldRegions(
       astNode: ASTNode,

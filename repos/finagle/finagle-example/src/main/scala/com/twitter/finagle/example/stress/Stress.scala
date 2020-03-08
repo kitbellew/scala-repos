@@ -54,9 +54,7 @@ object Stress {
         } handle {
           case e =>
             errors.incrementAndGet()
-        } ensure {
-          completedRequests.incrementAndGet()
-        }
+        } ensure { completedRequests.incrementAndGet() }
       }
     }
 

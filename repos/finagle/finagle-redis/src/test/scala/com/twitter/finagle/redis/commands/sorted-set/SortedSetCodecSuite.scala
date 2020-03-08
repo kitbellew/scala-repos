@@ -23,9 +23,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       "ZADD foo BAD_SCORE bar",
       "ZADD foo 123 bar BAD_SCORE bar"
     ).foreach { e =>
-      intercept[ClientError] {
-        codec(wrap("%s\r\n".format(e)))
-      }
+      intercept[ClientError] { codec(wrap("%s\r\n".format(e))) }
     }
   }
 
@@ -62,9 +60,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError for ZCARD with no arguments", CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("ZCARD\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("ZCARD\r\n")) }
   }
 
   test("Correctly encode ZCARD") {
@@ -86,9 +82,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       "ZCOUNT foo )1 3",
       "ZCOUNT foo (1 n"
     ).foreach { e =>
-      intercept[ClientError] {
-        codec(wrap("%s\r\n".format(e)))
-      }
+      intercept[ClientError] { codec(wrap("%s\r\n".format(e))) }
     }
   }
 
@@ -118,9 +112,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       "ZINCRBY key 1",
       "ZINCRBY key bad member"
     ).foreach { b =>
-      intercept[ClientError] {
-        codec(wrap("%s\r\n".format(b)))
-      }
+      intercept[ClientError] { codec(wrap("%s\r\n".format(b))) }
     }
   }
 
@@ -163,9 +155,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
 
     List("ZINTERSTORE", "ZUNIONSTORE").foreach { cmd =>
       bad.foreach { b =>
-        intercept[ClientError] {
-          codec(wrap("%s\r\n".format(b.format(cmd))))
-        }
+        intercept[ClientError] { codec(wrap("%s\r\n".format(b.format(cmd)))) }
       }
     }
   }
@@ -267,9 +257,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
 
     List("ZRANGE", "ZREVRANGE").foreach { cmd =>
       bad.foreach { b =>
-        intercept[ClientError] {
-          codec(wrap("%s\r\n".format(b.format(cmd))))
-        }
+        intercept[ClientError] { codec(wrap("%s\r\n".format(b.format(cmd)))) }
       }
     }
   }
@@ -282,12 +270,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       scored: Option[CommandArgument]
   ): PartialFunction[Command, Unit] = {
     cmd match {
-      case "ZRANGE" => {
-        case ZRange(k, start, stop, scored) => ()
-      }
-      case "ZREVRANGE" => {
-        case ZRevRange(k, start, stop, scored) => ()
-      }
+      case "ZRANGE"    => { case ZRange(k, start, stop, scored)    => () }
+      case "ZREVRANGE" => { case ZRevRange(k, start, stop, scored) => () }
     }
   }
 
@@ -351,9 +335,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
 
     List("ZRANGEBYSCORE", "ZREVRANGEBYSCORE").foreach { cmd =>
       bad.foreach { b =>
-        intercept[ClientError] {
-          codec(wrap("%s\r\n".format(b.format(cmd))))
-        }
+        intercept[ClientError] { codec(wrap("%s\r\n".format(b.format(cmd)))) }
       }
     }
   }
@@ -365,9 +347,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       max: ZInterval)(
       f: (Option[CommandArgument], Option[Limit]) => Unit
   ): PartialFunction[Command, Unit] = cmd match {
-    case "ZRANGEBYSCORE" => {
-      case ZRangeByScore(k, min, max, s, l) => f(s, l)
-    }
+    case "ZRANGEBYSCORE" => { case ZRangeByScore(k, min, max, s, l) => f(s, l) }
     case "ZREVRANGEBYSCORE" => {
       case ZRevRangeByScore(k, min, max, s, l) => f(s, l)
     }
@@ -462,9 +442,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
 
     List("ZRANK", "ZREVRANK").foreach { cmd =>
       bad.foreach { b =>
-        intercept[ClientError] {
-          codec(wrap("%s\r\n".format(b.format(cmd))))
-        }
+        intercept[ClientError] { codec(wrap("%s\r\n".format(b.format(cmd)))) }
       }
     }
   }
@@ -472,12 +450,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
   def verifyRank(cmd: String, k: String)(
       f: ChannelBuffer => Unit): PartialFunction[Command, Unit] =
     cmd match {
-      case "ZRANK" => {
-        case ZRank(k, m) => f(m)
-      }
-      case "ZREVRANK" => {
-        case ZRevRank(k, m) => f(m)
-      }
+      case "ZRANK"    => { case ZRank(k, m)    => f(m) }
+      case "ZREVRANK" => { case ZRevRank(k, m) => f(m) }
     }
 
   test("Correctly encode ZRANK and ZREVRANK") {
@@ -498,9 +472,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
 
   test("Throw a ClientError for ZREM with invalid arguments", CodecTest) {
     List("ZREM", "ZREM key").foreach { b =>
-      intercept[ClientError] {
-        codec(wrap("%s\r\n".format(b)))
-      }
+      intercept[ClientError] { codec(wrap("%s\r\n".format(b))) }
     }
   }
 
@@ -572,9 +544,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
 
   test("Throw a ClientError for ZSCORE with invalid arguments", CodecTest) {
     List("ZSCORE", "ZSCORE key").foreach { b =>
-      intercept[ClientError] {
-        codec(wrap("%s\r\n".format(b)))
-      }
+      intercept[ClientError] { codec(wrap("%s\r\n".format(b))) }
     }
   }
 

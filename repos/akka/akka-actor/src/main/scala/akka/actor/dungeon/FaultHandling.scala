@@ -80,9 +80,7 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
           val ex = new PreRestartException(self, e, cause, optionalMessage)
           publish(
             Error(ex, self.path.toString, clazz(failedActor), e.getMessage))
-        } finally {
-          clearActorFields(failedActor, recreate = true)
-        }
+        } finally { clearActorFields(failedActor, recreate = true) }
       }
       assert(
         mailbox.isSuspended,

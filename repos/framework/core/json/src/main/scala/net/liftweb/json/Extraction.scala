@@ -237,9 +237,7 @@ object Extraction {
         Col(TypeInfo(clazz, None), mkMapping(typeArgs.head, typeArgs.tail))
       } else if (clazz == classOf[Map[_, _]]) {
         Dict(mkMapping(typeArgs.tail.head, typeArgs.tail.tail))
-      } else {
-        mappingOf(clazz, typeArgs)
-      }
+      } else { mappingOf(clazz, typeArgs) }
     }
 
     extract0(json, mkMapping(clazz, typeArgs))
@@ -456,19 +454,15 @@ object Extraction {
         mapping: Mapping,
         path: String,
         optional: Boolean) = {
-      if (optional && root == JNothing) {
-        None
-      } else {
+      if (optional && root == JNothing) { None }
+      else {
         try {
           val x = build(root, mapping)
           if (optional) Option(x) else x
         } catch {
           case e @ MappingException(msg, _) =>
-            if (optional && (root == JNothing || root == JNull)) {
-              None
-            } else {
-              fail("No usable value for " + path + "\n" + msg, e)
-            }
+            if (optional && (root == JNothing || root == JNull)) { None }
+            else { fail("No usable value for " + path + "\n" + msg, e) }
         }
       }
     }
@@ -533,9 +527,8 @@ object Extraction {
       val custom = formats.customDeserializer(formats)
       val typeInfo = TypeInfo(targetType, None)
 
-      if (custom.isDefinedAt(typeInfo, json)) {
-        custom(typeInfo, json)
-      } else {
+      if (custom.isDefinedAt(typeInfo, json)) { custom(typeInfo, json) }
+      else {
         fail("Do not know how to convert " + json + " into " + targetType)
       }
   }

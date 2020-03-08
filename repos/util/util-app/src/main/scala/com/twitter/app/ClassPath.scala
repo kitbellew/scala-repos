@@ -74,9 +74,7 @@ private object ClassPath {
 
     loader match {
       case urlLoader: URLClassLoader =>
-        for (url <- urlLoader.getURLs()) {
-          ents += (url.toURI() -> loader)
-        }
+        for (url <- urlLoader.getURLs()) { ents += (url.toURI() -> loader) }
       case _ =>
     }
 
@@ -174,7 +172,5 @@ private object ClassPath {
           new File(
             jarFile.getParentFile,
             path.replace('/', File.separatorChar)).toURI)
-    } catch {
-      case _: URISyntaxException => None
-    }
+    } catch { case _: URISyntaxException => None }
 }

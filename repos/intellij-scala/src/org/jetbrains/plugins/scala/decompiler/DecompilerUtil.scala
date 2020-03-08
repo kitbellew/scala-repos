@@ -48,9 +48,7 @@ object DecompilerUtil {
         .orNull
       if (testProject != null) Array(testProject)
       else Array.empty
-    } else {
-      manager.getOpenProjects.filter(!_.isDisposed)
-    }
+    } else { manager.getOpenProjects.filter(!_.isDisposed) }
   }
 
   def obtainProject: Project = {
@@ -65,9 +63,7 @@ object DecompilerUtil {
 
   def isScalaFile(file: VirtualFile): Boolean =
     try isScalaFile(file, file.contentsToByteArray)
-    catch {
-      case e: IOException => false
-    }
+    catch { case e: IOException => false }
   def isScalaFile(file: VirtualFile, bytes: => Array[Byte]): Boolean =
     decompile(file, bytes).isScala
   def decompile(
@@ -111,9 +107,7 @@ object DecompilerUtil {
                   decompileInner(file, bytes).sourceText
                 }
               }
-        } catch {
-          case e: IOException => updateAttributeAndData()
-        }
+        } catch { case e: IOException => updateAttributeAndData() }
       } else updateAttributeAndData()
       data = new SoftReference[DecompilationResult](res)
       file.putUserData(SCALA_DECOMPILER_KEY, data)

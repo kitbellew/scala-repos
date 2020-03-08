@@ -90,9 +90,7 @@ object Files {
     /**
       * Clean this temporary file now.
       */
-    def clean(): Boolean = {
-      JFiles.deleteIfExists(file.toPath)
-    }
+    def clean(): Boolean = { JFiles.deleteIfExists(file.toPath) }
 
     /**
       * Move the file.
@@ -106,9 +104,7 @@ object Files {
             StandardCopyOption.REPLACE_EXISTING)
         else
           JFiles.move(file.toPath, to.toPath)
-      } catch {
-        case ex: FileAlreadyExistsException => to
-      }
+      } catch { case ex: FileAlreadyExistsException => to }
 
       to
     }
@@ -116,9 +112,7 @@ object Files {
     /**
       * Delete this file on garbage collection.
       */
-    override def finalize() {
-      clean()
-    }
+    override def finalize() { clean() }
 
   }
 

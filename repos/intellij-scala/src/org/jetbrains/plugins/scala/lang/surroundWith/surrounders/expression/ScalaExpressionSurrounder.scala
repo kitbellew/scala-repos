@@ -28,9 +28,7 @@ abstract class ScalaExpressionSurrounder extends Surrounder {
   def isApplicable(element: PsiElement): Boolean = {
     element match {
       case _: ScExpression | _: PsiWhiteSpace | _: ScValue | _: ScVariable |
-          _: ScFunction | _: ScTypeAlias => {
-        true
-      }
+          _: ScFunction | _: ScTypeAlias => { true }
       case e => {
         if (ScalaPsiUtil.isLineTerminator(e)) true
         else if (e.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) true
@@ -88,9 +86,7 @@ abstract class ScalaExpressionSurrounder extends Surrounder {
 
   def getTemplateAsString(elements: Array[PsiElement]): String = {
     var s: String = ""
-    for (element <- elements) {
-      s = s + element.getNode.getText
-    }
+    for (element <- elements) { s = s + element.getNode.getText }
     s
   }
 

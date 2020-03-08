@@ -184,9 +184,8 @@ abstract class PredictionModel[
     */
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
-    if ($(predictionCol).nonEmpty) {
-      transformImpl(dataset)
-    } else {
+    if ($(predictionCol).nonEmpty) { transformImpl(dataset) }
+    else {
       this.logWarning(
         s"$uid: Predictor.transform() was called as NOOP" +
           " since no output columns were set.")

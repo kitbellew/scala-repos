@@ -44,8 +44,6 @@ trait JodaHelpers {
         case s: String                             => tryo(DateTime.parse(s, dateTimeFormatter))
         case o                                     => toDateTime(o.toString)
       }
-    } catch {
-      case e: Exception => Failure("Bad date: " + in, Full(e), Empty)
-    }
+    } catch { case e: Exception => Failure("Bad date: " + in, Full(e), Empty) }
   }
 }

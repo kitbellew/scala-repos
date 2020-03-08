@@ -17,9 +17,7 @@ object ViewExample extends App {
         persist(payload + count) { evt => count += 1 }
     }
 
-    def receiveRecover: Receive = {
-      case _: String => count += 1
-    }
+    def receiveRecover: Receive = { case _: String => count += 1 }
   }
 
   class ExampleView extends PersistentView {

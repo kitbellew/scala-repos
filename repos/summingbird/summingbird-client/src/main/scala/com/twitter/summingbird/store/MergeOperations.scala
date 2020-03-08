@@ -42,9 +42,7 @@ object MergeOperations {
 
   def collect[T, U](seq: Seq[(T, Future[U])])(
       implicit collect: FutureCollector[(T, U)]): Future[Seq[(T, U)]] =
-    collect {
-      seq.map { case (t, futureU) => futureU.map(t -> _) }
-    }
+    collect { seq.map { case (t, futureU) => futureU.map(t -> _) } }
 
   def mergeResults[K, V: Semigroup](
       m1: Map[K, Future[Seq[Option[(BatchID, V)]]]],

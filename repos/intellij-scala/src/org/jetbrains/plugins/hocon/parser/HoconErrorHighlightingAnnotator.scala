@@ -28,9 +28,7 @@ class HoconErrorHighlightingAnnotator extends Annotator {
             lexer.advance()
             result
           }
-          .takeWhile {
-            case (tokenType, _) => tokenType != null
-          } foreach {
+          .takeWhile { case (tokenType, _) => tokenType != null } foreach {
           case (
               StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN,
               range) =>

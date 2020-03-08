@@ -43,9 +43,7 @@ private[setup] object AnonConfigRepo {
           BSONDocument("_id" -> sid),
           BSONDocument("filter" -> true)
         )
-        .one[BSONDocument] map {
-        _ flatMap (_.getAs[FilterConfig]("filter"))
-      }
+        .one[BSONDocument] map { _ flatMap (_.getAs[FilterConfig]("filter")) }
     } map (_ | FilterConfig.default)
 
   private def sessionId(req: RequestHeader): Option[String] =

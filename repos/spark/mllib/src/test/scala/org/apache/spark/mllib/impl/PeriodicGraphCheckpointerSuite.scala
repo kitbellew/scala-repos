@@ -174,9 +174,7 @@ private object PeriodicGraphCheckpointerSuite {
           assert(
             graph.getCheckpointFiles.length == 2,
             "Graph should have 2 checkpoint files")
-        } else {
-          confirmCheckpointRemoved(graph)
-        }
+        } else { confirmCheckpointRemoved(graph) }
       } else {
         // Graph should never be checkpointed
         assert(

@@ -54,11 +54,8 @@ private[spark] class SerializerManager(
   }
 
   def getSerializer(ct: ClassTag[_]): Serializer = {
-    if (canUseKryo(ct)) {
-      kryoSerializer
-    } else {
-      defaultSerializer
-    }
+    if (canUseKryo(ct)) { kryoSerializer }
+    else { defaultSerializer }
   }
 
   /**
@@ -67,10 +64,7 @@ private[spark] class SerializerManager(
   def getSerializer(
       keyClassTag: ClassTag[_],
       valueClassTag: ClassTag[_]): Serializer = {
-    if (canUseKryo(keyClassTag) && canUseKryo(valueClassTag)) {
-      kryoSerializer
-    } else {
-      defaultSerializer
-    }
+    if (canUseKryo(keyClassTag) && canUseKryo(valueClassTag)) { kryoSerializer }
+    else { defaultSerializer }
   }
 }

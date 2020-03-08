@@ -203,9 +203,8 @@ class TopicDeletionManager(
   }
 
   def isTopicIneligibleForDeletion(topic: String): Boolean = {
-    if (isDeleteTopicEnabled) {
-      topicsIneligibleForDeletion.contains(topic)
-    } else
+    if (isDeleteTopicEnabled) { topicsIneligibleForDeletion.contains(topic) }
+    else
       true
   }
 
@@ -225,9 +224,8 @@ class TopicDeletionManager(
   }
 
   def isTopicQueuedUpForDeletion(topic: String): Boolean = {
-    if (isDeleteTopicEnabled) {
-      topicsToBeDeleted.contains(topic)
-    } else
+    if (isDeleteTopicEnabled) { topicsToBeDeleted.contains(topic) }
+    else
       false
   }
 
@@ -250,9 +248,7 @@ class TopicDeletionManager(
     */
   private def resumeTopicDeletionThread() {
     deleteTopicStateChanged.set(true)
-    inLock(deleteLock) {
-      deleteTopicsCond.signal()
-    }
+    inLock(deleteLock) { deleteTopicsCond.signal() }
   }
 
   /**

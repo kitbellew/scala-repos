@@ -848,9 +848,7 @@ trait ControlIncludes extends CellIncludes {
     if (t != null) new Toggle {
       override val delegate = t
       def userData: AnyRef = delegate.getUserData
-      def userData_=(v: AnyRef) {
-        delegate.setUserData(v)
-      }
+      def userData_=(v: AnyRef) { delegate.setUserData(v) }
     }
     else null
 

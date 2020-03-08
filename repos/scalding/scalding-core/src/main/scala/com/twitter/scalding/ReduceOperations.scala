@@ -269,9 +269,7 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     //CTuple's have unknown arity so we have to put them into a Tuple1 in the middle phase:
     val select = if (max) {
       { (a: CTuple, b: CTuple) => (a.compareTo(b) >= 0) }
-    } else {
-      { (a: CTuple, b: CTuple) => (a.compareTo(b) <= 0) }
-    }
+    } else { { (a: CTuple, b: CTuple) => (a.compareTo(b) <= 0) } }
 
     mapReduceMap(fieldDef) { ctuple: CTuple => Tuple1(ctuple) } {
       (oldVal, newVal) => if (select(oldVal._1, newVal._1)) oldVal else newVal
@@ -394,9 +392,7 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   def times[T](fs: Symbol*)(implicit
       ring: Ring[T],
       tconv: TupleConverter[T],
-      tset: TupleSetter[T]): Self = {
-    times[T](fs -> fs)(ring, tconv, tset)
-  }
+      tset: TupleSetter[T]): Self = { times[T](fs -> fs)(ring, tconv, tset) }
 
   /**
     * Convert a subset of fields into a list of Tuples. Need to provide the types of the tuple fields.
@@ -457,9 +453,7 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     */
   def sortedReverseTake[T](f: (Fields, Fields), k: Int)(implicit
       conv: TupleConverter[T],
-      ord: Ordering[T]): Self = {
-    sortedTake[T](f, k)(conv, ord.reverse)
-  }
+      ord: Ordering[T]): Self = { sortedTake[T](f, k)(conv, ord.reverse) }
 
   /**
     * Same as above but useful when the implicit ordering makes sense.

@@ -110,9 +110,8 @@ object HandlerInvokerFactory {
     }
 
   private def loadJavaControllerClass(handlerDef: HandlerDef): Class[_] = {
-    try {
-      handlerDef.classLoader.loadClass(handlerDef.controller)
-    } catch {
+    try { handlerDef.classLoader.loadClass(handlerDef.controller) }
+    catch {
       case e: ClassNotFoundException =>
         // Try looking up relative to the routers package name.
         // This was primarily implemented for the documentation project so that routers could be namespaced and so
@@ -121,9 +120,7 @@ object HandlerInvokerFactory {
           try {
             handlerDef.classLoader.loadClass(
               handlerDef.routerPackage + "." + handlerDef.controller)
-          } catch {
-            case NonFatal(_) => throw e
-          }
+          } catch { case NonFatal(_) => throw e }
         } else throw e
     }
   }
@@ -171,11 +168,8 @@ object HandlerInvokerFactory {
         parser.apply(new play.core.j.RequestHeaderImpl(request)).asScala()
       import play.api.libs.iteratee.Execution.Implicits.trampoline
       accumulator.map { javaEither =>
-        if (javaEither.left.isPresent) {
-          Left(javaEither.left.get().asScala())
-        } else {
-          Right(new RequestBody(javaEither.right.get()))
-        }
+        if (javaEither.left.isPresent) { Left(javaEither.left.get().asScala()) }
+        else { Right(new RequestBody(javaEither.right.get())) }
       }
   }
 

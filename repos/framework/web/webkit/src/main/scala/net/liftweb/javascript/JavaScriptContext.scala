@@ -57,9 +57,7 @@ object JavaScriptContext {
                 ret
 
               case func: Function0[_] =>
-                () => {
-                  session.runSourceContext(func(), rule, elem)
-                }
+                () => { session.runSourceContext(func(), rule, elem) }
 
               case x => session.runSourceContext(x, rule, elem)
             }
@@ -99,9 +97,7 @@ object JavaScriptContext {
       scope = context.initStandardObjects()
     }
 
-    def bye() {
-      if (initted) Context.exit()
-    }
+    def bye() { if (initted) Context.exit() }
 
     def exec(str: String): AnyRef = synchronized {
       if (!initted) init()

@@ -37,9 +37,7 @@ object Ticket15109Spec extends MultiNodeConfig {
   testTransport(on = true)
 
   class Subject extends Actor {
-    def receive = {
-      case "ping" ⇒ sender() ! "pong"
-    }
+    def receive = { case "ping" ⇒ sender() ! "pong" }
   }
 
 }
@@ -75,9 +73,7 @@ abstract class Ticket15109Spec
     "not be introduced during normal errors (regression #15109)" taggedAs LongRunningTest in {
       var subject: ActorRef = system.deadLetters
 
-      runOn(second) {
-        system.actorOf(Props[Subject], "subject")
-      }
+      runOn(second) { system.actorOf(Props[Subject], "subject") }
 
       enterBarrier("actors-started")
 
@@ -101,9 +97,7 @@ abstract class Ticket15109Spec
 
       enterBarrier("disassociated")
 
-      runOn(first) {
-        ping(subject)
-      }
+      runOn(first) { ping(subject) }
 
       enterBarrier("done")
 

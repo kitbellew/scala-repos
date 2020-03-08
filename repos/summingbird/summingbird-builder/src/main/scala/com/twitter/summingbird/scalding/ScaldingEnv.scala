@@ -154,9 +154,8 @@ case class ScaldingEnv(override val jobName: String, inargs: Array[String])
     // Add the generic options
     new GenericOptionsParser(conf, inargs)
 
-    try {
-      scald.run(stateFn(conf), Hdfs(true, conf), toRun)
-    } catch {
+    try { scald.run(stateFn(conf), Hdfs(true, conf), toRun) }
+    catch {
       case f @ FlowPlanException(errs) =>
         /* This is generally due to data not being ready, don't give a failed error code */
         if (!args.boolean("scalding.nothrowplan")) {

@@ -25,9 +25,7 @@ trait TwemcacheClient extends Client {
     getvResult(keys) flatMap { result =>
       if (result.failures.nonEmpty) {
         Future.exception(result.failures.values.head)
-      } else {
-        Future.value(result.valuesWithTokens)
-      }
+      } else { Future.value(result.valuesWithTokens) }
     }
   }
 
@@ -119,12 +117,10 @@ trait TwemcachePartitionedClient extends TwemcacheClient {
 
   def getvResult(keys: Iterable[String]) = {
     if (keys.nonEmpty) {
-      withKeysGroupedByClient(keys) {
-        _.getvResult(_)
-      }.map { GetResult.merged(_) }
-    } else {
-      Future.value(GetsResult(GetResult()))
-    }
+      withKeysGroupedByClient(keys) { _.getvResult(_) }.map {
+        GetResult.merged(_)
+      }
+    } else { Future.value(GetsResult(GetResult())) }
   }
 
   def upsert(key: String, flags: Int, expiry: Time, value: Buf, version: Buf) =

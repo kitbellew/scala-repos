@@ -46,9 +46,7 @@ class IngestStress(settings: Settings) extends Task(settings) {
       try {
         ingestString(account.apiKey, account, str, "application/json")(
           _ / account.bareRootPath / "foo")
-      } catch {
-        case t => println(t)
-      }
+      } catch { case t => println(t) }
 
       if (n > 0)
         loop(n - 1, accumulated + sd.data.length)
@@ -107,8 +105,6 @@ object IngestStress {
       val path = args.headOption.getOrElse("bifrost.out")
       val settings = Settings.fromFile(new java.io.File(path))
       new IngestStress(settings)
-    } finally {
-      Http.shutdown()
-    }
+    } finally { Http.shutdown() }
   }
 }

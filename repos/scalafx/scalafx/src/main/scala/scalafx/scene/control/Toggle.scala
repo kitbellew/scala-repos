@@ -48,18 +48,14 @@ trait Toggle extends SFXDelegate[jfxsc.Toggle] {
     * The selected state for this Toggle. Indicates whether this Control is selected.
     */
   def selected: BooleanProperty = delegate.selectedProperty
-  def selected_=(v: Boolean) {
-    selected() = v
-  }
+  def selected_=(v: Boolean) { selected() = v }
 
   /**
     * The [[scalafx.scene.control.ToggleGroup]] to which this Toggle belongs.
     */
   def toggleGroup: ObjectProperty[jfxsc.ToggleGroup] =
     delegate.toggleGroupProperty
-  def toggleGroup_=(v: ToggleGroup) {
-    toggleGroup() = v
-  }
+  def toggleGroup_=(v: ToggleGroup) { toggleGroup() = v }
 
   def userData: AnyRef
   def userData_=(v: AnyRef)

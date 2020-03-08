@@ -40,9 +40,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         case (symbol: TypeSymbol, symbolName: String) => name != symbolName
       }
     }
-    if (checkName(t.name)) {
-      currentTypeParameters += ((t, t.name))
-    } else {
+    if (checkName(t.name)) { currentTypeParameters += ((t, t.name)) }
+    else {
       @tailrec
       def writeWithIndex(index: Int) {
         val nameWithIndex: String = s"${t.name}_$$_$index"
@@ -102,9 +101,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           if (o.name == "package" || o.name == "`package`") {
             // print package object
             printPackageObject(level, o)
-          } else {
-            printObject(level, o)
-          }
+          } else { printObject(level, o) }
         case c: ClassSymbol if !refinementClass(c) && !c.isModule =>
           indent()
           printClass(level, c)
@@ -246,9 +243,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         print("\n")
         printChildren(level, c, !c.isTrait)
         printWithIndent(level, "}\n")
-      } finally {
-        for (param <- typeParams) removeTypeParameter(param)
-      }
+      } finally { for (param <- typeParams) removeTypeParameter(param) }
     }
   }
 
@@ -391,11 +386,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       case pt @ PolyType(mt, typeParams) =>
         for (param <- typeParams) addTypeParameter(param)
         print(typeParamString(typeParams))
-        try {
-          printMethodType(mt, printResult)({})
-        } finally {
-          for (param <- typeParams) removeTypeParameter(param)
-        }
+        try { printMethodType(mt, printResult)({}) }
+        finally { for (param <- typeParams) removeTypeParameter(param) }
       //todo consider another method types
       case x => print(" : "); printType(x)
     }
@@ -421,9 +413,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         x.isInstanceOf[MethodSymbol] &&
           x.asInstanceOf[MethodSymbol].name == n + "_$eq")
       print(if (indexOfSetter > 0) "var " else "val ")
-    } else {
-      print("def ")
-    }
+    } else { print("def ") }
     n match {
       case CONSTRUCTOR_NAME =>
         print("this")
@@ -496,9 +486,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   def valueToString(value: Any): String = value match {
     case t: Type => "classOf[%s]" format toString(t)
     case s: String =>
-      if (s.contains("\n") || s.contains("\r")) {
-        "\"\"\"" + s + "\"\"\""
-      } else "\"" + StringEscapeUtils.escapeJava(s) + "\""
+      if (s.contains("\n") || s.contains("\r")) { "\"\"\"" + s + "\"\"\"" }
+      else "\"" + StringEscapeUtils.escapeJava(s) + "\""
     case arr: Array[_] =>
       arr.map(valueToString).mkString("Array(", ", ", ")")
     case _ => value.toString
@@ -857,9 +846,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           if (index < 0) return true
           if (id(index - 1) != '_') return false
           id.drop(index).forall(isOperatorPart)
-        } else if (isOperatorPart(id(0))) {
-          id.forall(isOperatorPart)
-        } else false
+        } else if (isOperatorPart(id(0))) { id.forall(isOperatorPart) }
+        else false
       }
       val result = NameTransformer.decode(name)
       if (!isIdentifier(result) || keywordList.contains(

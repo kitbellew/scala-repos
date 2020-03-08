@@ -37,17 +37,11 @@ class CubicInterpolatorTest extends FunSuite {
         DenseMatrix((1.0, 5.0), (3.0, 7.0))))
   }
 
-  test("extrapolation") {
-    intercept[IndexOutOfBoundsException] {
-      f(0.0)
-    }
-  }
+  test("extrapolation") { intercept[IndexOutOfBoundsException] { f(0.0) } }
   test("interpolation for two points") {
     val x = DenseVector(1.0, 2.0)
     val y = DenseVector(1.0, 5.0)
-    intercept[Exception] {
-      val f = CubicInterpolator(x, y)
-    }
+    intercept[Exception] { val f = CubicInterpolator(x, y) }
   }
 
   test("interpolation for three points") {

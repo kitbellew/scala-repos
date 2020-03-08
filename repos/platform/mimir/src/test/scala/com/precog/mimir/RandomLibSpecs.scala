@@ -131,9 +131,7 @@ trait RandomLibSpecs[M[+_]]
         ids must haveSize(1)
 
         obj.keys mustEqual (Set("rand", "data"))
-        obj("rand") must beLike {
-          case SDecimal(d) => expected must contain(d)
-        }
+        obj("rand") must beLike { case SDecimal(d) => expected must contain(d) }
     }
   }
 }

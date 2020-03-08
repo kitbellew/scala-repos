@@ -38,9 +38,7 @@ object TestStore {
   private def buildStore[K, V: Semigroup](initialData: Map[K, V]): String = {
     val storeID = UUID.randomUUID.toString
     val newInitStore = TestStore[K, V](storeID, initialData)
-    testStores.synchronized {
-      testStores.put(storeID, newInitStore)
-    }
+    testStores.synchronized { testStores.put(storeID, newInitStore) }
     storeID
   }
 

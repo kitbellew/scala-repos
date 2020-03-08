@@ -50,19 +50,12 @@ object SyslogHandler {
     * Convert the java/scala log level into its closest syslog-ng severity.
     */
   private[logging] def severityForLogLevel(level: Int): Int = {
-    if (level >= Level.FATAL.value) {
-      SEVERITY_ALERT
-    } else if (level >= Level.CRITICAL.value) {
-      SEVERITY_CRITICAL
-    } else if (level >= Level.ERROR.value) {
-      SEVERITY_ERROR
-    } else if (level >= Level.WARNING.value) {
-      SEVERITY_WARNING
-    } else if (level >= Level.INFO.value) {
-      SEVERITY_INFO
-    } else {
-      SEVERITY_DEBUG
-    }
+    if (level >= Level.FATAL.value) { SEVERITY_ALERT }
+    else if (level >= Level.CRITICAL.value) { SEVERITY_CRITICAL }
+    else if (level >= Level.ERROR.value) { SEVERITY_ERROR }
+    else if (level >= Level.WARNING.value) { SEVERITY_WARNING }
+    else if (level >= Level.INFO.value) { SEVERITY_INFO }
+    else { SEVERITY_DEBUG }
   }
 
   val ISO_DATE_FORMAT = TwitterDateFormat("yyyy-MM-dd'T'HH:mm:ss")
@@ -102,9 +95,8 @@ class SyslogHandler(
     val data = formatter.format(record).getBytes
     val packet = new DatagramPacket(data, data.length, dest)
     SyslogFuture {
-      try {
-        socket.send(packet)
-      } catch {
+      try { socket.send(packet) }
+      catch {
         case e: Throwable =>
           System.err.println(Formatter.formatStackTrace(e, 30).mkString("\n"))
       }
@@ -151,11 +143,8 @@ class SyslogFormatter(
       prefix = "") {
 
   override def dateFormat =
-    if (useIsoDateFormat) {
-      SyslogHandler.ISO_DATE_FORMAT
-    } else {
-      SyslogHandler.OLD_SYSLOG_DATE_FORMAT
-    }
+    if (useIsoDateFormat) { SyslogHandler.ISO_DATE_FORMAT }
+    else { SyslogHandler.OLD_SYSLOG_DATE_FORMAT }
 
   override def lineTerminator = ""
 
@@ -184,7 +173,9 @@ class SyslogFormatter(
 object SyslogFuture {
   private val executor = Executors.newSingleThreadExecutor(
     new NamedPoolThreadFactory("TWITTER-UTIL-SYSLOG", true /*daemon*/ ))
-  private val noop = new Runnable { def run() {} }
+  private val noop = new Runnable {
+    def run() {}
+  }
 
   def apply(action: => Unit) =
     executor.submit(new Runnable {

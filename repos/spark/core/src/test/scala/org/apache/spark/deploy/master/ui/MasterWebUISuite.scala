@@ -47,13 +47,9 @@ class MasterWebUISuite extends SparkFunSuite with BeforeAndAfter {
   val masterWebUI =
     new MasterWebUI(master, 0, customMasterPage = Some(masterPage))
 
-  before {
-    masterWebUI.bind()
-  }
+  before { masterWebUI.bind() }
 
-  after {
-    masterWebUI.stop()
-  }
+  after { masterWebUI.stop() }
 
   test("list applications") {
     val worker = createWorkerInfo()

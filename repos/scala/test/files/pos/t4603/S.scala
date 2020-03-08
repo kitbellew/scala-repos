@@ -2,7 +2,5 @@
 class S extends J[AnyRef]
 
 object Test {
-  def main(args: Array[String]) {
-    J.f(classOf[S])
-  }
+  def main(args: Array[String]) { J.f(classOf[S]) }
 }

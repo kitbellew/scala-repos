@@ -37,8 +37,6 @@ class ClientBuilderTest extends FlatSpec {
   }
 
   "multi" should "raise RuntimeException" in {
-    intercept[RuntimeException] {
-      ClientBuilder().multi()
-    }
+    intercept[RuntimeException] { ClientBuilder().multi() }
   }
 }

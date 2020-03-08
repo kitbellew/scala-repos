@@ -1,1 +1,3 @@
-object A { def x = 3 }
+object A {
+  def x = 3
+}

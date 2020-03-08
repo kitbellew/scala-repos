@@ -113,9 +113,7 @@ object SynthBenchmark {
         .leftJoin(graph.degrees)((id, _, optDeg) => optDeg.getOrElse(0))
         .map(p => p._2)
         .countByValue()
-      hist.foreach {
-        case (deg, count) => pos.println(s"$deg \t $count")
-      }
+      hist.foreach { case (deg, count) => pos.println(s"$deg \t $count") }
     }
 
     // Run PageRank

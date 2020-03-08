@@ -25,22 +25,15 @@ object DevModeBuild {
         file("run.properties"),
         s"project.version=${play.core.PlayVersion.current}")
     },
-    DevModeKeys.waitForServer := {
-      DevModeBuild.waitForServer()
-    },
-    DevModeKeys.resetReloads := {
-      (target.value / "reload.log").delete()
-    },
+    DevModeKeys.waitForServer := { DevModeBuild.waitForServer() },
+    DevModeKeys.resetReloads := { (target.value / "reload.log").delete() },
     DevModeKeys.verifyReloads := {
       val expected = Def.spaceDelimited().parsed.head.toInt
       val actual =
         try IO.readLines(target.value / "reload.log").count(_.nonEmpty)
-        catch {
-          case _: java.io.IOException => 0
-        }
-      if (expected == actual) {
-        println(s"Expected and got $expected reloads")
-      } else {
+        catch { case _: java.io.IOException => 0 }
+      if (expected == actual) { println(s"Expected and got $expected reloads") }
+      else {
         throw new RuntimeException(
           s"Expected $expected reloads but got $actual")
       }
@@ -114,11 +107,8 @@ object DevModeBuild {
           s"Resource at $path returned ${conn.getResponseCode} instead of $status")
       }
 
-      val is = if (conn.getResponseCode >= 400) {
-        conn.getErrorStream
-      } else {
-        conn.getInputStream
-      }
+      val is = if (conn.getResponseCode >= 400) { conn.getErrorStream }
+      else { conn.getInputStream }
 
       // The input stream may be null if there's no body
       val contents = if (is != null) {

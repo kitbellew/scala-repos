@@ -139,9 +139,7 @@ class WorkerSuite extends SparkFunSuite with Matchers {
       val expectedValue = {
         if (worker.finishedExecutors.size < 30) {
           worker.finishedExecutors.size + 1
-        } else {
-          28
-        }
+        } else { 28 }
       }
       worker.handleExecutorStateChanged(
         ExecutorStateChanged("app1", i, ExecutorState.EXITED, None, None))
@@ -221,9 +219,7 @@ class WorkerSuite extends SparkFunSuite with Matchers {
       val expectedValue = {
         if (worker.finishedDrivers.size < 30) {
           worker.finishedDrivers.size + 1
-        } else {
-          28
-        }
+        } else { 28 }
       }
       val driverId = s"driverId-$i"
       worker.handleDriverStateChanged(

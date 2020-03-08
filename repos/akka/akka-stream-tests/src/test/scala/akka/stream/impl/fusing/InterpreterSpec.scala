@@ -529,9 +529,7 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
       EventFilter[IllegalArgumentException](
         pattern = ".*Cannot pull closed port.*",
-        occurrences = 1).intercept {
-        upstream.onComplete()
-      }
+        occurrences = 1).intercept { upstream.onComplete() }
       val ev = lastEvents()
       ev.nonEmpty should be(true)
       ev.forall {
@@ -613,9 +611,8 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     override def onPull(ctx: Context[T]): SyncDirective = {
-      if (ctx.isFinishing) {
-        ctx.push(lastElem)
-      } else ctx.pull()
+      if (ctx.isFinishing) { ctx.push(lastElem) }
+      else ctx.pull()
     }
 
     override def onUpstreamFinish(ctx: Context[T]): TerminationDirective =

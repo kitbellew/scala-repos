@@ -129,9 +129,7 @@ abstract class TransitionSpec
 
     "perform correct transitions when second joining first" taggedAs LongRunningTest in {
 
-      runOn(second) {
-        cluster.join(first)
-      }
+      runOn(second) { cluster.join(first) }
       runOn(first, second) {
         // gossip chat from the join will synchronize the views
         awaitMembers(first, second)
@@ -161,9 +159,7 @@ abstract class TransitionSpec
 
     "perform correct transitions when third joins second" taggedAs LongRunningTest in {
 
-      runOn(third) {
-        cluster.join(second)
-      }
+      runOn(third) { cluster.join(second) }
       runOn(second, third) {
         // gossip chat from the join will synchronize the views
         awaitAssert(seenLatestGossip should ===(Set(second, third)))
@@ -252,9 +248,7 @@ abstract class TransitionSpec
             address(second)))
       }
 
-      runOn(first) {
-        cluster.down(second)
-      }
+      runOn(first) { cluster.down(second) }
 
       enterBarrier("after-second-down")
 

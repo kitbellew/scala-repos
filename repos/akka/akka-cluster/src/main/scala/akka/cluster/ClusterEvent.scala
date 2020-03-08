@@ -519,7 +519,5 @@ private[cluster] final class ClusterDomainEventPublisher
 
   def publish(event: AnyRef): Unit = eventStream publish event
 
-  def clearState(): Unit = {
-    latestGossip = Gossip.empty
-  }
+  def clearState(): Unit = { latestGossip = Gossip.empty }
 }

@@ -85,9 +85,7 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
 
   def getConf(isDriverSide: Boolean): Configuration = {
     val job = getJob()
-    if (isDriverSide) {
-      initDriverSideJobFuncOpt.map(f => f(job))
-    }
+    if (isDriverSide) { initDriverSideJobFuncOpt.map(f => f(job)) }
     job.getConfiguration
   }
 
@@ -185,9 +183,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
           new VectorizedParquetRecordReader()
         if (!parquetReader.tryInitialize(
               split.serializableHadoopSplit.value,
-              hadoopAttemptContext)) {
-          parquetReader.close()
-        } else {
+              hadoopAttemptContext)) { parquetReader.close() }
+        else {
           reader = parquetReader.asInstanceOf[RecordReader[Void, V]]
           parquetReader.resultBatch()
           // Whole stage codegen (PhysicalRDD) is able to deal with batches directly
@@ -211,9 +208,7 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
       private[this] var finished = false
 
       override def hasNext: Boolean = {
-        if (context.isInterrupted()) {
-          throw new TaskKilledException
-        }
+        if (context.isInterrupted()) { throw new TaskKilledException }
         if (!finished && !havePair) {
           finished = !reader.nextKeyValue
           if (finished) {
@@ -232,9 +227,7 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
           throw new java.util.NoSuchElementException("End of stream")
         }
         havePair = false
-        if (!finished) {
-          inputMetrics.incRecordsReadInternal(1)
-        }
+        if (!finished) { inputMetrics.incRecordsReadInternal(1) }
         if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
           updateBytesRead()
         }
@@ -248,22 +241,18 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
           // reader more than once, since that exposes us to MAPREDUCE-5918 when running against
           // Hadoop 1.x and older Hadoop 2.x releases. That bug can lead to non-deterministic
           // corruption issues when reading compressed input.
-          try {
-            reader.close()
-          } catch {
+          try { reader.close() }
+          catch {
             case e: Exception =>
               if (!ShutdownHookManager.inShutdown()) {
                 logWarning("Exception in RecordReader.close()", e)
               }
-          } finally {
-            reader = null
-          }
-          if (getBytesReadCallback.isDefined) {
-            updateBytesRead()
-          } else if (split.serializableHadoopSplit.value
-                       .isInstanceOf[FileSplit] ||
-                     split.serializableHadoopSplit.value
-                       .isInstanceOf[CombineFileSplit]) {
+          } finally { reader = null }
+          if (getBytesReadCallback.isDefined) { updateBytesRead() }
+          else if (split.serializableHadoopSplit.value
+                     .isInstanceOf[FileSplit] ||
+                   split.serializableHadoopSplit.value
+                     .isInstanceOf[CombineFileSplit]) {
             // If we can't get the bytes read from the FS stats, fall back to the split size,
             // which may be inaccurate.
             try {

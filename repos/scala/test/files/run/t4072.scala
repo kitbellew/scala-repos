@@ -9,7 +9,5 @@ object Test {
     }
   }
 
-  def main(args: Array[String]) {
-    new DryRun().compiler.test1
-  }
+  def main(args: Array[String]) { new DryRun().compiler.test1 }
 }

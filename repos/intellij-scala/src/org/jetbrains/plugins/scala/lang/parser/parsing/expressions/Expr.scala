@@ -55,9 +55,7 @@ object Expr {
             }
             case _ => exprMarker.rollbackTo()
           }
-        } else {
-          exprMarker.drop()
-        }
+        } else { exprMarker.drop() }
       case _ => exprMarker.drop()
     }
     Expr1.parse(builder)

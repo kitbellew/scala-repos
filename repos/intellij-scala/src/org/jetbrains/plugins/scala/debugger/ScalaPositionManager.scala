@@ -182,9 +182,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     try {
       val line: Int = position.getLine
       locationsOfLine(refType, line).asJava
-    } catch {
-      case e: AbsentInformationException => Collections.emptyList()
-    }
+    } catch { case e: AbsentInformationException => Collections.emptyList() }
   }
 
   def createPrepareRequest(
@@ -235,9 +233,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
               qName.set(typeDef.getQualifiedNameForDebugger + "*"))
         }
         // Enclosing type definition is not found
-        if (qName.get == null) {
-          qName.set(SCRIPT_HOLDER_CLASS_NAME + "*")
-        }
+        if (qName.get == null) { qName.set(SCRIPT_HOLDER_CLASS_NAME + "*") }
         waitRequestor.set(
           new ScalaPositionManager.MyClassPrepareRequestor(position, requestor))
       }
@@ -285,9 +281,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     for {
       refType <- debugProcess.getVirtualMachineProxy.allClasses.asScala
       if isAppropriate(refType)
-    } yield {
-      refType
-    }
+    } yield { refType }
   }
 
   @Nullable
@@ -322,9 +316,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         val document =
           PsiDocumentManager.getInstance(file.getProject).getDocument(file)
         nonWhitespaceInner(firstElement, document)
-      } catch {
-        case t: Throwable => firstElement
-      }
+      } catch { case t: Throwable => firstElement }
     }
   }
 
@@ -357,9 +349,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
               param.isDefaultParam && param.isAncestorOf(e)
             } else false
         }
-      } catch {
-        case e: Exception => None
-      }
+      } catch { case e: Exception => None }
     }
 
     def calcElement(): Option[PsiElement] = {
@@ -377,11 +367,9 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         methodsToLambdas.get(currentMethod)
       }
 
-      if (possiblePositions.size <= 1) {
-        possiblePositions.headOption
-      } else if (isIndyLambda(currentMethod)) {
-        findPsiElementForIndyLambda()
-      } else if (isDefaultArg) {
+      if (possiblePositions.size <= 1) { possiblePositions.headOption }
+      else if (isIndyLambda(currentMethod)) { findPsiElementForIndyLambda() }
+      else if (isDefaultArg) {
         findDefaultArg(possiblePositions, defaultArgIndex)
       } else if (!isAnonfun(currentMethod)) {
         possiblePositions.find {
@@ -414,9 +402,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
           case _ => None
         }
       } else None
-    } catch {
-      case e: AbsentInformationException => None
-    }
+    } catch { case e: AbsentInformationException => None }
   }
 
   @Nullable
@@ -1092,9 +1078,8 @@ object ScalaPositionManager {
 
       for (part <- classJVMNameParts) {
         val index = nameTail.indexOf(part)
-        if (index >= 0) {
-          nameTail = nameTail.substring(index + part.length)
-        } else return false
+        if (index >= 0) { nameTail = nameTail.substring(index + part.length) }
+        else return false
       }
       nameTail.indexOf("$anon") == -1
     }

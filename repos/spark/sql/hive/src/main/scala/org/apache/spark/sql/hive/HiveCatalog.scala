@@ -64,9 +64,8 @@ private[spark] class HiveCatalog(client: HiveClient)
     * exceptions thrown in the process in [[AnalysisException]].
     */
   private def withClient[T](body: => T): T = synchronized {
-    try {
-      body
-    } catch {
+    try { body }
+    catch {
       case e: NoSuchItemException =>
         throw new AnalysisException(e.getMessage)
       case NonFatal(e) if isClientException(e) =>
@@ -232,12 +231,8 @@ private[spark] class HiveCatalog(client: HiveClient)
             case _: AnalysisException => false
           }
         }
-      } else {
-        parts
-      }
-    if (partsToDrop.nonEmpty) {
-      client.dropPartitions(db, table, partsToDrop)
-    }
+      } else { parts }
+    if (partsToDrop.nonEmpty) { client.dropPartitions(db, table, partsToDrop) }
   }
 
   override def renamePartitions(
@@ -296,13 +291,9 @@ private[spark] class HiveCatalog(client: HiveClient)
   }
 
   override def getFunction(db: String, funcName: String): CatalogFunction =
-    withClient {
-      client.getFunction(db, funcName)
-    }
+    withClient { client.getFunction(db, funcName) }
 
   override def listFunctions(db: String, pattern: String): Seq[String] =
-    withClient {
-      client.listFunctions(db, pattern)
-    }
+    withClient { client.listFunctions(db, pattern) }
 
 }

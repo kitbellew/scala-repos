@@ -586,9 +586,7 @@ private[parquet] object CatalystSchemaConverter {
   }
 
   def checkConversionRequirement(f: => Boolean, message: String): Unit = {
-    if (!f) {
-      throw new AnalysisException(message)
-    }
+    if (!f) { throw new AnalysisException(message) }
   }
 
   private def computeMinBytesForPrecision(precision: Int): Int = {

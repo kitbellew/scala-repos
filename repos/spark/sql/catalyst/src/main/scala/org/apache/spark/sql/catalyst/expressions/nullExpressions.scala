@@ -107,9 +107,8 @@ case class IsNaN(child: Expression)
 
   override def eval(input: InternalRow): Any = {
     val value = child.eval(input)
-    if (value == null) {
-      false
-    } else {
+    if (value == null) { false }
+    else {
       child.dataType match {
         case DoubleType => value.asInstanceOf[Double].isNaN
         case FloatType  => value.asInstanceOf[Float].isNaN
@@ -148,9 +147,8 @@ case class NaNvl(left: Expression, right: Expression)
 
   override def eval(input: InternalRow): Any = {
     val value = left.eval(input)
-    if (value == null) {
-      null
-    } else {
+    if (value == null) { null }
+    else {
       left.dataType match {
         case DoubleType =>
           if (!value.asInstanceOf[Double].isNaN) value else right.eval(input)
@@ -194,9 +192,7 @@ case class NaNvl(left: Expression, right: Expression)
 case class IsNull(child: Expression) extends UnaryExpression with Predicate {
   override def nullable: Boolean = false
 
-  override def eval(input: InternalRow): Any = {
-    child.eval(input) == null
-  }
+  override def eval(input: InternalRow): Any = { child.eval(input) == null }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val eval = child.gen(ctx)
@@ -214,9 +210,7 @@ case class IsNull(child: Expression) extends UnaryExpression with Predicate {
 case class IsNotNull(child: Expression) extends UnaryExpression with Predicate {
   override def nullable: Boolean = false
 
-  override def eval(input: InternalRow): Any = {
-    child.eval(input) != null
-  }
+  override def eval(input: InternalRow): Any = { child.eval(input) != null }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val eval = child.gen(ctx)

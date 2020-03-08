@@ -34,14 +34,10 @@ class IntroduceTypeAliasData {
     currentScope != null || initialTypeElement != null || possibleScopes != null || typeAliasInfo != null
   }
 
-  def addScopeElement(item: ScopeItem): Unit = {
-    currentScope = item
-  }
+  def addScopeElement(item: ScopeItem): Unit = { currentScope = item }
 
   def setInintialInfo(textRange: TextRange): Unit = {
-    if (initialTypeElement == null) {
-      initialTypeElement = textRange
-    }
+    if (initialTypeElement == null) { initialTypeElement = textRange }
   }
 
   def setPossibleScopes(inPossibleScopes: Array[ScopeItem]): Unit = {

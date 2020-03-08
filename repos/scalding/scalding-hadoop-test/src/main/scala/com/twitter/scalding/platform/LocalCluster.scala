@@ -86,9 +86,7 @@ class LocalCluster(mutex: Boolean = true) {
     * @param inConf  override default configuration
     */
   def initialize(inConf: Config = Config.empty): this.type = {
-    if (mutex) {
-      acquireMutex()
-    }
+    if (mutex) { acquireMutex() }
 
     if (Option(System.getProperty("hadoop.log.dir")).isEmpty) {
       System.setProperty("hadoop.log.dir", "build/test/logs")
@@ -209,8 +207,6 @@ class LocalCluster(mutex: Boolean = true) {
         mr.shutdown()
     }
     hadoop = None
-    if (mutex) {
-      releaseMutex()
-    }
+    if (mutex) { releaseMutex() }
   }
 }

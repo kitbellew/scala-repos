@@ -49,9 +49,7 @@ class ReplicatorMessageSerializerSpec
 
   val keyA = GSetKey[String]("A")
 
-  override def afterAll {
-    shutdown()
-  }
+  override def afterAll { shutdown() }
 
   def checkSerialization(obj: AnyRef): Unit = {
     val blob = serializer.toBinary(obj)

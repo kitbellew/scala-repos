@@ -37,9 +37,7 @@ object SquerylRecord extends Loggable {
     * Records with Squeryl.  When using this method, configure your Session separately
     * (see [[http://squeryl.org/sessions-and-tx.html]] for details) or you can use initWithSquerylSession to do both at once.
     */
-  def init() {
-    FieldMetaData.factory = new RecordMetaDataFactory
-  }
+  def init() { FieldMetaData.factory = new RecordMetaDataFactory }
 
   /**
     * Initialize the Squeryl/Record integration and configure a default Session at the same time.
@@ -50,9 +48,7 @@ object SquerylRecord extends Loggable {
   }
 
   def buildLoanWrapper() = new LoanWrapper {
-    override def apply[T](f: => T): T = inTransaction {
-      f
-    }
+    override def apply[T](f: => T): T = inTransaction { f }
   }
 
   /**

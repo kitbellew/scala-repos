@@ -104,9 +104,7 @@ object Main {
     }
     // Print classes
     val printer = new ScalaSigPrinter(stream, printPrivates)
-    for (c <- syms) {
-      printer.printSymbol(c)
-    }
+    for (c <- syms) { printer.printSymbol(c) }
     baos.toString
   }
 
@@ -137,8 +135,7 @@ object Main {
           .get
         val bytes = ((bytesElem.elementValue match {
           case ConstValueIndex(index) => constantWrapped(index)
-        }).asInstanceOf[StringBytesPair]
-          .bytes)
+        }).asInstanceOf[StringBytesPair].bytes)
         val length = ByteCodecs.decode(bytes)
         val scalaSig =
           ScalaSigAttributeParsers.parse(ByteCode(bytes.take(length)))

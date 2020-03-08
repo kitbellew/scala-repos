@@ -9,7 +9,5 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunctionDefinition
   */
 class RemoveEqualsSign(f: ScFunctionDefinition)
     extends AbstractFixOnPsiElement("Remove redundant equals sign", f) {
-  def doApplyFix(project: Project) {
-    getElement.removeAssignment()
-  }
+  def doApplyFix(project: Project) { getElement.removeAssignment() }
 }

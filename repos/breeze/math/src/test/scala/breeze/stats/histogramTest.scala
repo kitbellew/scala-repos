@@ -35,9 +35,7 @@ class histogramTest extends FunSuite {
   }
 
   test("fails for empty array") {
-    intercept[IllegalArgumentException] {
-      hist(DenseVector[Int]())
-    }
+    intercept[IllegalArgumentException] { hist(DenseVector[Int]()) }
   }
 
   test("negative values") {

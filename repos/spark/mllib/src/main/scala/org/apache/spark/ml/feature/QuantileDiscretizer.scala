@@ -154,9 +154,8 @@ object QuantileDiscretizer
     val valueCounts =
       valueCountMap.toSeq.sortBy(_._1).toArray ++ Array((Double.MaxValue, 1))
     val possibleSplits = valueCounts.length - 1
-    if (possibleSplits <= numSplits) {
-      valueCounts.dropRight(1).map(_._1)
-    } else {
+    if (possibleSplits <= numSplits) { valueCounts.dropRight(1).map(_._1) }
+    else {
       val stride: Double = math.ceil(samples.length.toDouble / (numSplits + 1))
       val splitsBuilder = mutable.ArrayBuilder.make[Double]
       var index = 1
@@ -196,12 +195,8 @@ object QuantileDiscretizer
         candidates.drop(1)
       } else if (candidates.last == Double.PositiveInfinity) {
         candidates.dropRight(1)
-      } else {
-        candidates
-      }
-    } else {
-      candidates
-    }
+      } else { candidates }
+    } else { candidates }
 
     if (effectiveValues.isEmpty) {
       Array(Double.NegativeInfinity, 0, Double.PositiveInfinity)

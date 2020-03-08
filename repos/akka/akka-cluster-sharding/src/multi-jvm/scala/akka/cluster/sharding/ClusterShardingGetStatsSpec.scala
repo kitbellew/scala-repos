@@ -104,9 +104,7 @@ abstract class ClusterShardingGetStatsSpec
   }
 
   def join(from: RoleName): Unit = {
-    runOn(from) {
-      Cluster(system).join(node(controller).address)
-    }
+    runOn(from) { Cluster(system).join(node(controller).address) }
     enterBarrier(from.name + "-joined")
   }
 
@@ -128,12 +126,8 @@ abstract class ClusterShardingGetStatsSpec
         }
       }
 
-      runOn(controller) {
-        startProxy()
-      }
-      runOn(first, second, third) {
-        startShard()
-      }
+      runOn(controller) { startProxy() }
+      runOn(first, second, third) { startShard() }
 
       enterBarrier("sharding started")
     }
@@ -164,9 +158,7 @@ abstract class ClusterShardingGetStatsSpec
             // trigger starting of 2 entities on first and second node
             // but leave third node without entities
             List(1, 2, 4, 6).foreach(n ⇒ region.tell(Ping(n), pingProbe.ref))
-            pingProbe.receiveWhile(messages = 4) {
-              case Pong ⇒ ()
-            }
+            pingProbe.receiveWhile(messages = 4) { case Pong ⇒ () }
           }
         }
       }
@@ -193,15 +185,11 @@ abstract class ClusterShardingGetStatsSpec
     }
 
     "return stats after a node leaves" in {
-      runOn(controller) {
-        Cluster(system).leave(node(third).address)
-      }
+      runOn(controller) { Cluster(system).leave(node(third).address) }
 
       runOn(controller, first, second) {
         within(30.seconds) {
-          awaitAssert {
-            Cluster(system).state.members.size should ===(3)
-          }
+          awaitAssert { Cluster(system).state.members.size should ===(3) }
         }
       }
 
@@ -214,9 +202,7 @@ abstract class ClusterShardingGetStatsSpec
             val pingProbe = TestProbe()
             // make sure we have the 4 entities still alive across the fewer nodes
             List(1, 2, 4, 6).foreach(n ⇒ region.tell(Ping(n), pingProbe.ref))
-            pingProbe.receiveWhile(messages = 4) {
-              case Pong ⇒ ()
-            }
+            pingProbe.receiveWhile(messages = 4) { case Pong ⇒ () }
           }
         }
       }

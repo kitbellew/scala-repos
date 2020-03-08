@@ -55,13 +55,19 @@ trait SHtml extends Loggable {
     */
   object PairStringPromoter {
     implicit val strPromot: PairStringPromoter[String] =
-      new PairStringPromoter[String] { def apply(in: String): String = in }
+      new PairStringPromoter[String] {
+        def apply(in: String): String = in
+      }
 
     implicit val intPromot: PairStringPromoter[Int] =
-      new PairStringPromoter[Int] { def apply(in: Int): String = in.toString }
+      new PairStringPromoter[Int] {
+        def apply(in: Int): String = in.toString
+      }
 
     implicit def funcPromote[T](f: T => String): PairStringPromoter[T] =
-      new PairStringPromoter[T] { def apply(in: T): String = f(in) }
+      new PairStringPromoter[T] {
+        def apply(in: T): String = f(in)
+      }
 
     type EnumerationTypeWorkaround = Enumeration#Value
 
@@ -94,7 +100,9 @@ trait SHtml extends Loggable {
       new BasicElemAttr(in._1, in._2)
 
     implicit def funcToElemAttr(f: Elem => Elem): ElemAttr =
-      new ElemAttr { def apply(in: Elem): Elem = f(in) }
+      new ElemAttr {
+        def apply(in: Elem): Elem = f(in)
+      }
 
     implicit def strSeqToElemAttr(in: Seq[(String, String)]): Seq[ElemAttr] =
       in.map(a => a: ElemAttr)
@@ -2145,9 +2153,7 @@ trait SHtml extends Loggable {
   object SelectableOption {
     implicit def tupleSeqToSelectableOptionSeq[T](
         seq: Seq[(T, String)]): Seq[SelectableOption[T]] =
-      seq.collect {
-        case (value, label) => SelectableOption(value, label)
-      }
+      seq.collect { case (value, label) => SelectableOption(value, label) }
     implicit def tupleToSelectableOption[T](
         tuple: (T, String)): SelectableOption[T] =
       SelectableOption(tuple._1, tuple._2)
@@ -2585,9 +2591,7 @@ trait SHtml extends Loggable {
 
             val elem = if (idx == 0) {
               radio ++ <input type="hidden" value={hiddenId} name={name}/>
-            } else {
-              radio
-            }
+            } else { radio }
 
             ChoiceItem(value, elem)
           }

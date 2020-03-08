@@ -37,11 +37,8 @@ trait LocalSparkContext extends BeforeAndAfterEach with BeforeAndAfterAll {
   }
 
   override def afterEach() {
-    try {
-      resetSparkContext()
-    } finally {
-      super.afterEach()
-    }
+    try { resetSparkContext() }
+    finally { super.afterEach() }
   }
 
   def resetSparkContext(): Unit = {
@@ -53,20 +50,15 @@ trait LocalSparkContext extends BeforeAndAfterEach with BeforeAndAfterAll {
 
 object LocalSparkContext {
   def stop(sc: SparkContext) {
-    if (sc != null) {
-      sc.stop()
-    }
+    if (sc != null) { sc.stop() }
     // To avoid RPC rebinding to the same port, since it doesn't unbind immediately on shutdown
     System.clearProperty("spark.driver.port")
   }
 
   /** Runs `f` by passing in `sc` and ensures that `sc` is stopped. */
   def withSpark[T](sc: SparkContext)(f: SparkContext => T): T = {
-    try {
-      f(sc)
-    } finally {
-      stop(sc)
-    }
+    try { f(sc) }
+    finally { stop(sc) }
   }
 
 }

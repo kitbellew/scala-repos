@@ -115,9 +115,7 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
     *
     * @param i index
     */
-  def at(i: Int)(implicit st: ScalarTag[A]): Scalar[A] = {
-    Scalar(raw(i))
-  }
+  def at(i: Int)(implicit st: ScalarTag[A]): Scalar[A] = { Scalar(raw(i)) }
 
   /**
     * Return scalar value of Mat at at row/column

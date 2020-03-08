@@ -119,9 +119,7 @@ private[finagle] object ChannelBufferUtils {
 
   implicit def stringToChannelBuffer(string: String): ChannelBuffer =
     if (Strings.isNullOrEmpty(string)) null
-    else {
-      ChannelBuffers.copiedBuffer(string, Charsets.Utf8)
-    }
+    else { ChannelBuffers.copiedBuffer(string, Charsets.Utf8) }
 
   implicit def seqOfStringToSeqOfChannelBuffer(
       strings: Seq[String]): Seq[ChannelBuffer] =
@@ -129,9 +127,7 @@ private[finagle] object ChannelBufferUtils {
     else {
       strings.map { string =>
         if (Strings.isNullOrEmpty(string)) null
-        else {
-          ChannelBuffers.copiedBuffer(string, Charsets.Utf8)
-        }
+        else { ChannelBuffers.copiedBuffer(string, Charsets.Utf8) }
       }
     }
 

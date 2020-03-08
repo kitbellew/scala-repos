@@ -9,7 +9,5 @@ package pkg {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
-    new pkg.other.Crash
-  }
+  def main(args: Array[String]): Unit = { new pkg.other.Crash }
 }

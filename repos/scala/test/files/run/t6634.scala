@@ -5,9 +5,8 @@ object Test extends App {
 
   val lb0 = newLB
   println("Trying lb0 ...")
-  try {
-    lb0.remove(5, 0)
-  } catch {
+  try { lb0.remove(5, 0) }
+  catch {
     // Should not be thrown--nothing is deleted so nothing to do
     case ex: IndexOutOfBoundsException => println(ex)
   }
@@ -15,9 +14,8 @@ object Test extends App {
 
   val lb1 = newLB
   println("Trying lb1 ...")
-  try {
-    lb1.remove(6, 6)
-  } catch {
+  try { lb1.remove(6, 6) }
+  catch {
     // Not thrown in 2.11, is thrown in 2.12
     case ex: IndexOutOfBoundsException => println(ex)
   }
@@ -25,9 +23,8 @@ object Test extends App {
 
   val lb2 = newLB
   println("Trying lb2 ...")
-  try {
-    lb2.remove(99, 6)
-  } catch {
+  try { lb2.remove(99, 6) }
+  catch {
     // Not thrown in 2.11, is thrown in 2.12
     case ex: IndexOutOfBoundsException => println(ex)
   }
@@ -35,9 +32,8 @@ object Test extends App {
 
   val lb3 = newLB
   println("Trying lb3 ...")
-  try {
-    lb3.remove(1, 9)
-  } catch {
+  try { lb3.remove(1, 9) }
+  catch {
     // Not thrown in 2.11, is thrown in 2.12
     case ex: IndexOutOfBoundsException => println(ex)
   }
@@ -45,9 +41,8 @@ object Test extends App {
 
   val lb4 = newLB
   println("Trying lb4 ...")
-  try {
-    lb4.remove(-1, 1)
-  } catch {
+  try { lb4.remove(-1, 1) }
+  catch {
     // Not thrown in 2.11, is thrown in 2.12
     case ex: IndexOutOfBoundsException => println(ex)
   }
@@ -55,9 +50,8 @@ object Test extends App {
 
   val lb5 = newLB
   println("Trying lb5 ...")
-  try {
-    lb5.remove(1, -1)
-  } catch {
+  try { lb5.remove(1, -1) }
+  catch {
     // Was thrown prior to 2.12 also
     case ex: IllegalArgumentException => println(ex)
   }

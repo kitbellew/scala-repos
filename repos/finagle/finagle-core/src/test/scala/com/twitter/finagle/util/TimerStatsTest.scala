@@ -31,9 +31,7 @@ class TimerStatsTest
     TimerStats.deviation(hwt, tickDuration, sr)
 
     // assert that we capture at least 3 samples
-    eventually {
-      assert(deviation().size >= 3)
-    }
+    eventually { assert(deviation().size >= 3) }
     hwt.stop()
   }
 

@@ -47,9 +47,8 @@ trait LinearSeqLike[+A, +Repr <: LinearSeqLike[A, Repr]]
     var these = self
     def hasNext: Boolean = !these.isEmpty
     def next(): A =
-      if (hasNext) {
-        val result = these.head; these = these.tail; result
-      } else Iterator.empty.next()
+      if (hasNext) { val result = these.head; these = these.tail; result }
+      else Iterator.empty.next()
 
     override def toList: List[A] = {
       /* Have to clear `these` so the iterator is exhausted like

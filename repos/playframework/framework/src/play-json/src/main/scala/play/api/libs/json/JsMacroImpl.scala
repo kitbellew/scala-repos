@@ -226,9 +226,7 @@ object JsMacroImpl {
             // If we're an option, invoke the nullable version
             if (t.typeConstructor <:< typeOf[Option[_]].typeConstructor) {
               q"$jspathTree.$callNullable($impl)"
-            } else {
-              q"$jspathTree.$call($impl)"
-            }
+            } else { q"$jspathTree.$call($impl)" }
           } else {
             // Otherwise we have to invoke the lazy version
             hasRec = true
@@ -268,9 +266,7 @@ object JsMacroImpl {
           l :+ q"val ${TermName(e.name.encodedName.toString)}: ${TypeTree()}")
 
         q"(..$vals) => $companionObject.apply(..${applyParams.init}, ${applyParams.last}: _*)"
-      } else {
-        q"$companionObject.apply _"
-      }
+      } else { q"$companionObject.apply _" }
     }
 
     val unapplyFunction = q"$unlift($companionObject.$effectiveUnapply)"
@@ -284,9 +280,8 @@ object JsMacroImpl {
       $canBuild.$applyOrMap(..${conditionalList(applyFunction, unapplyFunction)})
     """
 
-    val lazyFinalTree = if (!hasRec) {
-      finalTree
-    } else {
+    val lazyFinalTree = if (!hasRec) { finalTree }
+    else {
       // If we're recursive, we need to wrap the whole thing in a class that breaks the recursion using a
       // lazy val
       q"""

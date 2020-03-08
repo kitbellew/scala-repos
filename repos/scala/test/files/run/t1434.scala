@@ -1,5 +1,7 @@
 object Test {
-  class A[T] { val op = null }
+  class A[T] {
+    val op = null
+  }
   class B extends A[Any]
   class C extends B
 
@@ -9,7 +11,5 @@ object Test {
     case b: B                      => "B"
   }
 
-  def main(args: Array[String]) = {
-    assert("C" == f(new C))
-  }
+  def main(args: Array[String]) = { assert("C" == f(new C)) }
 }

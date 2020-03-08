@@ -116,9 +116,8 @@ private[spark] class TaskSchedulerImpl(
   // default scheduler is FIFO
   private val schedulingModeConf = conf.get("spark.scheduler.mode", "FIFO")
   val schedulingMode: SchedulingMode =
-    try {
-      SchedulingMode.withName(schedulingModeConf.toUpperCase)
-    } catch {
+    try { SchedulingMode.withName(schedulingModeConf.toUpperCase) }
+    catch {
       case e: java.util.NoSuchElementException =>
         throw new SparkException(
           s"Unrecognized spark.scheduler.mode: $schedulingModeConf")
@@ -166,9 +165,7 @@ private[spark] class TaskSchedulerImpl(
     }
   }
 
-  override def postStartHook() {
-    waitBackendReady()
-  }
+  override def postStartHook() { waitBackendReady() }
 
   override def submitTasks(taskSet: TaskSet) {
     val tasks = taskSet.tasks
@@ -201,9 +198,7 @@ private[spark] class TaskSchedulerImpl(
                 logWarning("Initial job has not accepted any resources; " +
                   "check your cluster UI to ensure that workers are registered " +
                   "and have sufficient resources")
-              } else {
-                this.cancel()
-              }
+              } else { this.cancel() }
             }
           },
           STARVATION_TIMEOUT_MS,
@@ -333,9 +328,7 @@ private[spark] class TaskSchedulerImpl(
         logDebug(
           "parentName: %s, name: %s, runningTasks: %s"
             .format(taskSet.parent.name, taskSet.name, taskSet.runningTasks))
-        if (newExecAvail) {
-          taskSet.executorAdded()
-        }
+        if (newExecAvail) { taskSet.executorAdded() }
       }
 
       // Take each TaskSet in our scheduling order, and then offer it each node in increasing order
@@ -353,9 +346,7 @@ private[spark] class TaskSchedulerImpl(
         } while (launchedTask)
       }
 
-      if (tasks.size > 0) {
-        hasLaunchedTask = true
-      }
+      if (tasks.size > 0) { hasLaunchedTask = true }
       return tasks
     }
 
@@ -406,9 +397,7 @@ private[spark] class TaskSchedulerImpl(
                 "likely the result of receiving duplicate task finished status updates)")
                 .format(state, tid))
         }
-      } catch {
-        case e: Exception => logError("Exception in statusUpdate", e)
-      }
+      } catch { case e: Exception => logError("Exception in statusUpdate", e) }
     }
     // Update the DAGScheduler without holding a lock on this, since that can deadlock
     if (failedExecutor.isDefined) {
@@ -447,9 +436,7 @@ private[spark] class TaskSchedulerImpl(
   }
 
   def handleTaskGettingResult(taskSetManager: TaskSetManager, tid: Long): Unit =
-    synchronized {
-      taskSetManager.handleTaskGettingResult(tid)
-    }
+    synchronized { taskSetManager.handleTaskGettingResult(tid) }
 
   def handleSuccessfulTask(
       taskSetManager: TaskSetManager,
@@ -479,9 +466,8 @@ private[spark] class TaskSchedulerImpl(
           attempts <- taskSetsByStageIdAndAttempt.values
           manager <- attempts.values
         } {
-          try {
-            manager.abort(message)
-          } catch {
+          try { manager.abort(message) }
+          catch {
             case e: Exception => logError("Exception in error callback", e)
           }
         }
@@ -497,12 +483,8 @@ private[spark] class TaskSchedulerImpl(
 
   override def stop() {
     speculationScheduler.shutdown()
-    if (backend != null) {
-      backend.stop()
-    }
-    if (taskResultGetter != null) {
-      taskResultGetter.stop()
-    }
+    if (backend != null) { backend.stop() }
+    if (taskResultGetter != null) { taskResultGetter.stop() }
     starvationTimer.cancel()
   }
 
@@ -511,12 +493,8 @@ private[spark] class TaskSchedulerImpl(
   // Check for speculatable tasks in all our active jobs.
   def checkSpeculatableTasks() {
     var shouldRevive = false
-    synchronized {
-      shouldRevive = rootPool.checkSpeculatableTasks()
-    }
-    if (shouldRevive) {
-      backend.reviveOffers()
-    }
+    synchronized { shouldRevive = rootPool.checkSpeculatableTasks() }
+    if (shouldRevive) { backend.reviveOffers() }
   }
 
   override def executorLost(
@@ -583,9 +561,7 @@ private[spark] class TaskSchedulerImpl(
       executorsByHost -= host
       for (rack <- getRackForHost(host); hosts <- hostsByRack.get(rack)) {
         hosts -= host
-        if (hosts.isEmpty) {
-          hostsByRack -= rack
-        }
+        if (hosts.isEmpty) { hostsByRack -= rack }
       }
     }
 
@@ -600,9 +576,7 @@ private[spark] class TaskSchedulerImpl(
   }
 
   def getExecutorsAliveOnHost(host: String): Option[Set[String]] =
-    synchronized {
-      executorsByHost.get(host).map(_.toSet)
-    }
+    synchronized { executorsByHost.get(host).map(_.toSet) }
 
   def hasExecutorsAliveOnHost(host: String): Boolean = synchronized {
     executorsByHost.contains(host)
@@ -624,14 +598,8 @@ private[spark] class TaskSchedulerImpl(
   def getRackForHost(value: String): Option[String] = None
 
   private def waitBackendReady(): Unit = {
-    if (backend.isReady) {
-      return
-    }
-    while (!backend.isReady) {
-      synchronized {
-        this.wait(100)
-      }
-    }
+    if (backend.isReady) { return }
+    while (!backend.isReady) { synchronized { this.wait(100) } }
   }
 
   override def applicationId(): String = backend.applicationId()
@@ -645,9 +613,7 @@ private[spark] class TaskSchedulerImpl(
     for {
       attempts <- taskSetsByStageIdAndAttempt.get(stageId)
       manager <- attempts.get(stageAttemptId)
-    } yield {
-      manager
-    }
+    } yield { manager }
   }
 
 }

@@ -26,9 +26,7 @@ class SourceMap(config: EnsimeConfig) {
         }
         set.headOption.map(f => LineSourcePosition(f, loc.lineNumber))
       }).getOrElse(None)
-    } catch {
-      case e: AbsentInformationException => None
-    }
+    } catch { case e: AbsentInformationException => None }
   }
 
   def rebuildSourceMap(): Unit = {

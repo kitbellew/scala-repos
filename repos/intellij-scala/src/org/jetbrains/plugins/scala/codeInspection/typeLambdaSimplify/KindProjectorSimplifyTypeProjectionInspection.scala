@@ -148,9 +148,7 @@ class KindProjectorSimplifyTypeProjectionInspection
                                               projection.getProject)
                                           if (styleSettings.REPLACE_LAMBDA_WITH_GREEK_LETTER) {
                                             builder.append("λ")
-                                          } else {
-                                            builder.append("Lambda")
-                                          }
+                                          } else { builder.append("Lambda") }
                                           builder.append("[")
                                           val parameters = aliasParam.map {
                                             param: ScTypeParam =>

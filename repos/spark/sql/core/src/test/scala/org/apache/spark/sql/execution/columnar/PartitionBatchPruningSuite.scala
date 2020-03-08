@@ -51,9 +51,7 @@ class PartitionBatchPruningSuite
       sqlContext.setConf(
         SQLConf.IN_MEMORY_PARTITION_PRUNING,
         originalInMemoryPartitionPruning)
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   override protected def beforeEach(): Unit = {
@@ -73,11 +71,8 @@ class PartitionBatchPruningSuite
   }
 
   override protected def afterEach(): Unit = {
-    try {
-      sqlContext.uncacheTable("pruningData")
-    } finally {
-      super.afterEach()
-    }
+    try { sqlContext.uncacheTable("pruningData") }
+    finally { super.afterEach() }
   }
 
   // Comparisons
@@ -107,9 +102,7 @@ class PartitionBatchPruningSuite
   checkBatchPruning(
     "SELECT key FROM pruningData WHERE value IS NOT NULL",
     5,
-    5) {
-    (11 to 20) ++ (31 to 40) ++ (51 to 60) ++ (71 to 80) ++ (91 to 100)
-  }
+    5) { (11 to 20) ++ (31 to 40) ++ (51 to 60) ++ (71 to 80) ++ (91 to 100) }
 
   // Conjunction and disjunction
   checkBatchPruning(
@@ -127,9 +120,7 @@ class PartitionBatchPruningSuite
   checkBatchPruning(
     "SELECT key FROM pruningData WHERE key < 2 OR (key > 78 AND key < 92)",
     3,
-    4) {
-    Seq(1) ++ (79 to 91)
-  }
+    4) { Seq(1) ++ (79 to 91) }
   checkBatchPruning("SELECT key FROM pruningData WHERE NOT (key < 88)", 1, 2) {
     // Although the `NOT` operator isn't supported directly, the optimizer can transform
     // `NOT (a < b)` to `b >= a`
@@ -146,9 +137,7 @@ class PartitionBatchPruningSuite
     checkBatchPruning(
       s"SELECT key FROM pruningData WHERE NOT (key IN ($seq)) AND key > 88",
       1,
-      2) {
-      89 to 100
-    }
+      2) { 89 to 100 }
   }
 
   def checkBatchPruning(

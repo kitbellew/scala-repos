@@ -80,9 +80,7 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
     // Iterate over the active bits in the old mask and evaluate the predicate
     var i = self.mask.nextSetBit(0)
     while (i >= 0) {
-      if (pred(self.index.getValue(i), self.values(i))) {
-        newMask.set(i)
-      }
+      if (pred(self.index.getValue(i), self.values(i))) { newMask.set(i) }
       i = self.mask.nextSetBit(i + 1)
     }
     this.withMask(newMask)
@@ -94,9 +92,7 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
       logWarning(
         "Minus operations on two VertexPartitions with different indexes is slow.")
       minus(createUsingIndex(other.iterator))
-    } else {
-      self.withMask(self.mask.andNot(other.mask))
-    }
+    } else { self.withMask(self.mask.andNot(other.mask)) }
   }
 
   /** Hides the VertexId's that are the same between `this` and `other`. */
@@ -116,9 +112,7 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
       val newMask = self.mask & other.mask
       var i = newMask.nextSetBit(0)
       while (i >= 0) {
-        if (self.values(i) == other.values(i)) {
-          newMask.unset(i)
-        }
+        if (self.values(i) == other.values(i)) { newMask.unset(i) }
         i = newMask.nextSetBit(i + 1)
       }
       this.withValues(other.values).withMask(newMask)
@@ -241,9 +235,7 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
   def reindex(): Self[VD] = {
     val hashMap = new GraphXPrimitiveKeyOpenHashMap[VertexId, VD]
     val arbitraryMerge = (a: VD, b: VD) => a
-    for ((k, v) <- self.iterator) {
-      hashMap.setMerge(k, v, arbitraryMerge)
-    }
+    for ((k, v) <- self.iterator) { hashMap.setMerge(k, v, arbitraryMerge) }
     this
       .withIndex(hashMap.keySet)
       .withValues(hashMap._values)

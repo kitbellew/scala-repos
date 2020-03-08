@@ -31,9 +31,7 @@ class PipeliningDispatcher[Req, Rep](
   private[this] val q = new AsyncQueue[Promise[Rep]]
 
   private[this] val queueSize =
-    statsReceiver.scope("pipelining").addGauge("pending") {
-      q.size
-    }
+    statsReceiver.scope("pipelining").addGauge("pending") { q.size }
 
   private[this] val transRead: Promise[Rep] => Unit =
     p =>

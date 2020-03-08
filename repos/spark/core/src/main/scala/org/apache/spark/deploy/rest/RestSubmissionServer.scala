@@ -100,9 +100,7 @@ private[spark] abstract class RestSubmissionServer(
     (server, boundPort)
   }
 
-  def stop(): Unit = {
-    _server.foreach(_.stop())
-  }
+  def stop(): Unit = { _server.foreach(_.stop()) }
 }
 
 private[rest] object RestSubmissionServer {
@@ -167,11 +165,8 @@ private[rest] abstract class RestServlet extends HttpServlet with Logging {
     * The returned submission ID cannot be empty. If the path is unexpected, return None.
     */
   protected def parseSubmissionId(path: String): Option[String] = {
-    if (path == null || path.isEmpty) {
-      None
-    } else {
-      path.stripPrefix("/").split("/").headOption.filter(_.nonEmpty)
-    }
+    if (path == null || path.isEmpty) { None }
+    else { path.stripPrefix("/").split("/").headOption.filter(_.nonEmpty) }
   }
 
   /**
@@ -320,9 +315,7 @@ private class ErrorServlet extends RestServlet {
     if (versionMismatch) {
       error.highestProtocolVersion = serverVersion
       response.setStatus(RestSubmissionServer.SC_UNKNOWN_PROTOCOL_VERSION)
-    } else {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
-    }
+    } else { response.setStatus(HttpServletResponse.SC_BAD_REQUEST) }
     sendResponse(error, response)
   }
 }

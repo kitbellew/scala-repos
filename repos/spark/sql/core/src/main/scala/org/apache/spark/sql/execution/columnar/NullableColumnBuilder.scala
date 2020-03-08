@@ -57,9 +57,7 @@ private[columnar] trait NullableColumnBuilder extends ColumnBuilder {
       nulls = ColumnBuilder.ensureFreeSpace(nulls, 4)
       nulls.putInt(pos)
       nullCount += 1
-    } else {
-      super.appendFrom(row, ordinal)
-    }
+    } else { super.appendFrom(row, ordinal) }
     pos += 1
   }
 

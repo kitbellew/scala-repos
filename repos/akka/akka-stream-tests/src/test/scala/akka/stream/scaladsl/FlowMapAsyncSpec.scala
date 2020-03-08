@@ -263,9 +263,7 @@ class FlowMapAsyncSpec extends AkkaSpec {
               promise.success(count)
               count += 1
               true
-            } catch {
-              case _: InterruptedException ⇒ false
-            }
+            } catch { case _: InterruptedException ⇒ false }
           if (cont) run()
         }
       }
@@ -287,9 +285,7 @@ class FlowMapAsyncSpec extends AkkaSpec {
           .mapAsync(parallelism)(i ⇒ deferred())
           .runFold(0)((c, _) ⇒ c + 1)
           .futureValue(PatienceConfig(3.seconds)) should ===(N)
-      } finally {
-        timer.interrupt()
-      }
+      } finally { timer.interrupt() }
     }
 
   }

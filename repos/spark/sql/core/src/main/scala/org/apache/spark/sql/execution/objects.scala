@@ -44,9 +44,7 @@ trait ObjectOperator extends SparkPlan {
     val outputProjection =
       if (serializer.head.dataType.isInstanceOf[ObjectType]) {
         GenerateSafeProjection.generate(serializer)
-      } else {
-        GenerateUnsafeProjection.generate(serializer)
-      }
+      } else { GenerateUnsafeProjection.generate(serializer) }
     val inputType = serializer.head.collect {
       case b: BoundReference => b.dataType
     }.head

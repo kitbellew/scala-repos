@@ -74,9 +74,7 @@ class RetryFilter[Req, Rep](
   private[this] def schedule(d: Duration)(f: => Future[Rep]) = {
     if (d > 0.seconds) {
       val promise = new Promise[Rep]
-      timer.schedule(Time.now + d) {
-        promise.become(f)
-      }
+      timer.schedule(Time.now + d) { promise.become(f) }
       promise
     } else f
   }

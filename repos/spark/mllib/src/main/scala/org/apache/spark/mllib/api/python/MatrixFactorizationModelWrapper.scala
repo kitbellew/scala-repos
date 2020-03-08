@@ -38,18 +38,14 @@ private[python] class MatrixFactorizationModelWrapper(
   def getUserFeatures: RDD[Array[Any]] = {
     SerDe.fromTuple2RDD(
       userFeatures
-        .map {
-          case (user, feature) => (user, Vectors.dense(feature))
-        }
+        .map { case (user, feature) => (user, Vectors.dense(feature)) }
         .asInstanceOf[RDD[(Any, Any)]])
   }
 
   def getProductFeatures: RDD[Array[Any]] = {
     SerDe.fromTuple2RDD(
       productFeatures
-        .map {
-          case (product, feature) => (product, Vectors.dense(feature))
-        }
+        .map { case (product, feature) => (product, Vectors.dense(feature)) }
         .asInstanceOf[RDD[(Any, Any)]])
   }
 

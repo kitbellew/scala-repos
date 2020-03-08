@@ -64,16 +64,12 @@ class Shadow(override val delegate: jfxse.Shadow = new jfxse.Shadow)
     * The algorithm used to blur the shadow.
     */
   def blurType: ObjectProperty[jfxse.BlurType] = delegate.blurTypeProperty
-  def blurType_=(v: BlurType) {
-    blurType() = v
-  }
+  def blurType_=(v: BlurType) { blurType() = v }
 
   /**
     * The radius of the shadow blur kernel.
     */
   def radius: DoubleProperty = delegate.radiusProperty
-  def radius_=(v: Double) {
-    radius() = v
-  }
+  def radius_=(v: Double) { radius() = v }
 
 }

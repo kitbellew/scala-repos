@@ -386,9 +386,8 @@ class LocalLDAModel private[spark] (
 
     documents.map {
       case (id: Long, termCounts: Vector) =>
-        if (termCounts.numNonzeros == 0) {
-          (id, Vectors.zeros(k))
-        } else {
+        if (termCounts.numNonzeros == 0) { (id, Vectors.zeros(k)) }
+        else {
           val (gamma, _) = OnlineLDAOptimizer.variationalTopicInference(
             termCounts,
             expElogbetaBc.value,
@@ -411,9 +410,8 @@ class LocalLDAModel private[spark] (
     val k = this.k
 
     (termCounts: Vector) =>
-      if (termCounts.numNonzeros == 0) {
-        Vectors.zeros(k)
-      } else {
+      if (termCounts.numNonzeros == 0) { Vectors.zeros(k) }
+      else {
         val (gamma, _) = OnlineLDAOptimizer.variationalTopicInference(
           termCounts,
           expElogbetaBc.value,
@@ -438,9 +436,8 @@ class LocalLDAModel private[spark] (
   def topicDistribution(document: Vector): Vector = {
     val expElogbeta = exp(
       LDAUtils.dirichletExpectation(topicsMatrix.toBreeze.toDenseMatrix.t).t)
-    if (document.numNonzeros == 0) {
-      Vectors.zeros(this.k)
-    } else {
+    if (document.numNonzeros == 0) { Vectors.zeros(this.k) }
+    else {
       val (gamma, _) = OnlineLDAOptimizer.variationalTopicInference(
         document,
         expElogbeta,
@@ -886,9 +883,7 @@ class DistributedLDAModel private[clustering] (
         val sumCounts = sum(topicCounts)
         val weights = if (sumCounts != 0) {
           topicCounts(topIndices) / sumCounts
-        } else {
-          topicCounts(topIndices)
-        }
+        } else { topicCounts(topIndices) }
         (docID.toLong, topIndices.toArray, weights.toArray)
     }
   }

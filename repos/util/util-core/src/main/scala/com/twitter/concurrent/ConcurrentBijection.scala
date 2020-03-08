@@ -26,9 +26,7 @@ class ConcurrentBijection[A, B] extends MMap[A, B] {
   }
 
   def +=(elem: (A, B)) = {
-    elem match {
-      case (key, value) => update(key, value)
-    }
+    elem match { case (key, value) => update(key, value) }
     this
   }
 

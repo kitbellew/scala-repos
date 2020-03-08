@@ -157,9 +157,8 @@ class BoundedBlockingQueue[E <: AnyRef](
 
   def remainingCapacity(): Int = {
     lock.lock()
-    try {
-      maxCapacity - backing.size()
-    } finally lock.unlock()
+    try { maxCapacity - backing.size() }
+    finally lock.unlock()
   }
 
   def size(): Int = {

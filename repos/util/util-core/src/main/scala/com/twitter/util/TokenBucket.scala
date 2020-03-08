@@ -51,18 +51,14 @@ object TokenBucket {
       */
     def put(n: Int): Unit = {
       require(n >= 0)
-      synchronized {
-        counter = math.min((counter + n), limit)
-      }
+      synchronized { counter = math.min((counter + n), limit) }
     }
 
     def tryGet(n: Int): Boolean = {
       require(n >= 0)
       synchronized {
         val ok = counter >= n
-        if (ok) {
-          counter -= n
-        }
+        if (ok) { counter -= n }
         ok
       }
     }

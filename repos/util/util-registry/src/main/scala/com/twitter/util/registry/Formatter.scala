@@ -53,9 +53,8 @@ object Formatter {
     var map: Map[String, Object] = Map.empty[String, Object]
     registry.foreach {
       case Entry(keys, value) =>
-        try {
-          map = add(map, keys, value)
-        } catch {
+        try { map = add(map, keys, value) }
+        catch {
           case Collision =>
             log.severe(s"collided on (${keys.mkString(",")}) -> $value")
           case InvalidType =>

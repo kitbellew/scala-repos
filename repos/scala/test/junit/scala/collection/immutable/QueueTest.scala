@@ -12,9 +12,7 @@ class QueueTest {
   val threeAdded = emptyQueue.enqueue(1 to 3)
 
   @Test
-  def dequeueOptionOnEmpty() {
-    assert(emptyQueue.dequeueOption == None)
-  }
+  def dequeueOptionOnEmpty() { assert(emptyQueue.dequeueOption == None) }
 
   @Test
   def dequeueOptionOneAdded() {

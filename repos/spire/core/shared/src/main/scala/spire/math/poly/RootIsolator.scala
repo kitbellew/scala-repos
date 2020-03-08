@@ -75,9 +75,7 @@ object RootIsolator {
           l = l.mapTerms { case Term(coeff, exp) => Term(coeff, exp - 1) }
         val lRoots = TransformedPoly(l, b, a + b, d, c + d)
         lRoots :: rRoots :: Nil
-      } else {
-        rRoots :: Nil
-      }
+      } else { rRoots :: Nil }
     }
 
     // Isolate all positive roots in polynomial p.

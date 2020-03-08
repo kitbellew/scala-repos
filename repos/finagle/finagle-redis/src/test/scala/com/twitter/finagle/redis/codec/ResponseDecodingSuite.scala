@@ -32,9 +32,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
   }
 
   test("Throw ServerError when decoding BLANK OK reply") {
-    intercept[ServerError] {
-      codec(wrap("+\r\n"))
-    }
+    intercept[ServerError] { codec(wrap("+\r\n")) }
   }
 
   test("Correctly decode BAD error reply") {
@@ -48,9 +46,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
   }
 
   test("Throw ServerError when decoding BLANK error reply") {
-    intercept[ServerError] {
-      codec(wrap("-\r\n"))
-    }
+    intercept[ServerError] { codec(wrap("-\r\n")) }
   }
 
   test("Correctly decode negative integer reply") {
@@ -80,9 +76,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
   }
 
   test("Throw ServerError when decoding Long.MaxValue + 1") {
-    intercept[ServerError] {
-      codec(wrap(":9223372036854775808\r\n"))
-    }
+    intercept[ServerError] { codec(wrap(":9223372036854775808\r\n")) }
   }
 
   test("Correctly decode Long.MinValue") {
@@ -92,9 +86,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
   }
 
   test("Throw ServerError when decoding Long.MinValue -1") {
-    intercept[ServerError] {
-      codec(wrap(":-9223372036854775809\r\n"))
-    }
+    intercept[ServerError] { codec(wrap(":-9223372036854775809\r\n")) }
   }
 
   test("Correctly decode multiple integers in one reply") {
@@ -103,9 +95,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
   }
 
   test("Throw ServerError when decoding BLANK integer reply") {
-    intercept[ServerError] {
-      codec(wrap(":\r\n"))
-    }
+    intercept[ServerError] { codec(wrap(":\r\n")) }
   }
 
   test("Correctly decode single word bulk reply") {

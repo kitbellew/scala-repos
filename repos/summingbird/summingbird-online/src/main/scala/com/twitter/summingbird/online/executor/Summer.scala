@@ -139,9 +139,7 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
       }
 
       sSummer.addAll(cacheEntries).map(handleResult(_))
-    } catch {
-      case NonFatal(e) => Future.exception(e)
-    }
+    } catch { case NonFatal(e) => Future.exception(e) }
   }
 
   override def cleanup = Await.result(store.close)

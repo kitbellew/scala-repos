@@ -127,9 +127,8 @@ abstract class BaseYarnClusterSuite
   }
 
   override def afterAll() {
-    try {
-      yarnCluster.stop()
-    } finally {
+    try { yarnCluster.stop() }
+    finally {
       System.setProperties(oldSystemProperties)
       super.afterAll()
     }
@@ -151,9 +150,8 @@ abstract class BaseYarnClusterSuite
       Map("YARN_CONF_DIR" -> hadoopConfDir.getAbsolutePath()) ++ extraEnv
 
     val launcher = new SparkLauncher(env.asJava)
-    if (klass.endsWith(".py")) {
-      launcher.setAppResource(klass)
-    } else {
+    if (klass.endsWith(".py")) { launcher.setAppResource(klass) }
+    else {
       launcher.setMainClass(klass)
       launcher.setAppResource(fakeSparkJar.getAbsolutePath())
     }
@@ -167,11 +165,8 @@ abstract class BaseYarnClusterSuite
 
     sparkArgs.foreach {
       case (name, value) =>
-        if (value != null) {
-          launcher.addSparkArg(name, value)
-        } else {
-          launcher.addSparkArg(name)
-        }
+        if (value != null) { launcher.addSparkArg(name, value) }
+        else { launcher.addSparkArg(name) }
     }
     extraJars.foreach(launcher.addJar)
 
@@ -180,9 +175,7 @@ abstract class BaseYarnClusterSuite
       eventually(timeout(2 minutes), interval(1 second)) {
         assert(handle.getState().isFinal())
       }
-    } finally {
-      handle.kill()
-    }
+    } finally { handle.kill() }
 
     handle.getState()
   }
@@ -195,9 +188,7 @@ abstract class BaseYarnClusterSuite
     */
   protected def checkResult(
       finalState: SparkAppHandle.State,
-      result: File): Unit = {
-    checkResult(finalState, result, "success")
-  }
+      result: File): Unit = { checkResult(finalState, result, "success") }
 
   protected def checkResult(
       finalState: SparkAppHandle.State,
@@ -242,9 +233,7 @@ abstract class BaseYarnClusterSuite
     }
     sys.props.foreach {
       case (k, v) =>
-        if (k.startsWith("spark.")) {
-          props.setProperty(k, v)
-        }
+        if (k.startsWith("spark.")) { props.setProperty(k, v) }
     }
     extraConf.foreach { case (k, v) => props.setProperty(k, v) }
 

@@ -81,9 +81,7 @@ trait RawJsonStorageModule[M[+_]] { self =>
       var read = 0
       do {
         read = reader.read(buffer)
-        if (read >= 0) {
-          builder.append(buffer, 0, read)
-        }
+        if (read >= 0) { builder.append(buffer, 0, read) }
       } while (read >= 0)
 
       val json = JParser.parse(builder.toString) --> classOf[JArray]

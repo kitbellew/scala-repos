@@ -88,9 +88,7 @@ class WorksheetEditorPrinter(
 
   def getOriginalEditor = originalEditor
 
-  def scheduleWorksheetUpdate() {
-    timer.start()
-  }
+  def scheduleWorksheetUpdate() { timer.start() }
 
   def processLine(line: String): Boolean = {
     if (line.stripSuffix("\n") == WorksheetSourceProcessor.END_OUTPUT_MARKER) {
@@ -118,9 +116,8 @@ class WorksheetEditorPrinter(
 
           val differ = end - start + 1 - linesCount
 
-          if (differ > 0) {
-            outputBuffer append getNewLines(differ)
-          } else if (0 > differ) {
+          if (differ > 0) { outputBuffer append getNewLines(differ) }
+          else if (0 > differ) {
             insertedToOriginal -= differ
 
             foldingOffsets += (
@@ -169,9 +166,7 @@ class WorksheetEditorPrinter(
 
     extensions.invokeLater {
       viewerFolding runBatchFoldingOperation new Runnable {
-        override def run() {
-          viewerFolding.clearFoldRegions()
-        }
+        override def run() { viewerFolding.clearFoldRegions() }
       }
       getViewerEditor.getCaretModel.moveToVisualPosition(
         new VisualPosition(0, 0))
@@ -505,11 +500,8 @@ object WorksheetEditorPrinter {
     val ratio =
       FileAttributeUtilCache.readAttribute(LAST_WORKSHEET_RUN_RATIO, file) map {
         case rr =>
-          try {
-            java.lang.Float.parseFloat(rr)
-          } catch {
-            case _: NumberFormatException => 0.5f
-          }
+          try { java.lang.Float.parseFloat(rr) }
+          catch { case _: NumberFormatException => 0.5f }
       } getOrElse 0.5f
 
     FileAttributeUtilCache

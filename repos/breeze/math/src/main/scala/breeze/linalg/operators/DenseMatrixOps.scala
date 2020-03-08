@@ -211,9 +211,8 @@ trait DenseMatrixMultiplyStuff
         V: DenseMatrix[Double]): DenseMatrix[Double] = {
       require(A.rows == V.rows, "Non-conformant matrix sizes")
 
-      if (A.size == 0) {
-        DenseMatrix.zeros[Double](0, 0)
-      } else if (A.rows == A.cols) {
+      if (A.size == 0) { DenseMatrix.zeros[Double](0, 0) }
+      else if (A.rows == A.cols) {
         // square: LUSolve
         val X = DenseMatrix.zeros[Double](V.rows, V.cols)
         X := V
@@ -511,9 +510,8 @@ trait DenseMatrixFloatMultiplyStuff
     override def apply(A: DenseMatrix[Float], V: DenseMatrix[Float]) = {
       require(A.rows == V.rows, "Non-conformant matrix sizes")
 
-      if (A.size == 0) {
-        DenseMatrix.zeros[Float](0, 0)
-      } else if (A.rows == A.cols) {
+      if (A.size == 0) { DenseMatrix.zeros[Float](0, 0) }
+      else if (A.rows == A.cols) {
         // square: LUSolve
         val X = DenseMatrix.zeros[Float](V.rows, V.cols)
         X := V
@@ -709,16 +707,13 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
           vecOp(
             new DenseVector(a.data, a.offset, 1, a.size),
             new DenseVector(b.data, b.offset, 1, b.size))
-        } else {
-          slowPath(a, b)
-        }
+        } else { slowPath(a, b) }
 
       }
 
       private def slowPath(a: DenseMatrix[T], b: DenseMatrix[T]): Unit = {
-        if (a.isTranspose) {
-          apply(a.t, b.t)
-        } else {
+        if (a.isTranspose) { apply(a.t, b.t) }
+        else {
           val ad = a.data
           val bd = b.data
           var c = 0
@@ -810,11 +805,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
     new Op.InPlaceImpl2[DenseMatrix[T], T] {
       def apply(a: DenseMatrix[T], b: T): Unit = {
 
-        if (a.isContiguous) {
-          fastPath(a, b)
-        } else {
-          slowPath(a, b)
-        }
+        if (a.isContiguous) { fastPath(a, b) }
+        else { slowPath(a, b) }
 
       }
 
@@ -1461,9 +1453,7 @@ trait LowPriorityDenseMatrix1 {
           f: (DenseVector[V]) => R): DenseVector[R] = {
         val result = DenseVector.zeros[R](from.rows)
         val t = from.t
-        for (r <- 0 until from.rows) {
-          result(r) = f(t(::, r))
-        }
+        for (r <- 0 until from.rows) { result(r) = f(t(::, r)) }
         result
       }
     }
@@ -1543,9 +1533,8 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
       : Op.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[Boolean]] =
     new Op.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[Boolean]] {
       def apply(a: DenseMatrix[T], b: DenseMatrix[T]): DenseMatrix[Boolean] = {
-        if (a.isTranspose) {
-          apply(a.t, b.t).t
-        } else {
+        if (a.isTranspose) { apply(a.t, b.t).t }
+        else {
           if (a.rows != b.rows)
             throw new ArrayIndexOutOfBoundsException(
               s"Rows don't match for operator $Op ${a.rows} ${b.rows}")
@@ -1608,9 +1597,8 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
       : Op.Impl2[DenseMatrix[T], T, DenseMatrix[Boolean]] =
     new Op.Impl2[DenseMatrix[T], T, DenseMatrix[Boolean]] {
       def apply(a: DenseMatrix[T], b: T): DenseMatrix[Boolean] = {
-        if (a.isTranspose) {
-          apply(a.t, b).t
-        } else {
+        if (a.isTranspose) { apply(a.t, b).t }
+        else {
           val result = DenseMatrix.zeros[Boolean](a.rows, a.cols)
 
           cforRange2(0 until a.cols, 0 until a.rows) { (j, i) =>

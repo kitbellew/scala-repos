@@ -52,32 +52,20 @@ class QuadCurve(override val delegate: jfxss.QuadCurve = new jfxss.QuadCurve())
     extends Shape(delegate)
     with SFXDelegate[jfxss.QuadCurve] {
   def controlX: DoubleProperty = delegate.controlXProperty
-  def controlX_=(v: Double) {
-    controlX() = v
-  }
+  def controlX_=(v: Double) { controlX() = v }
 
   def controlY: DoubleProperty = delegate.controlYProperty
-  def controlY_=(v: Double) {
-    controlY() = v
-  }
+  def controlY_=(v: Double) { controlY() = v }
 
   def endX: DoubleProperty = delegate.endXProperty
-  def endX_=(v: Double) {
-    endX() = v
-  }
+  def endX_=(v: Double) { endX() = v }
 
   def endY: DoubleProperty = delegate.endYProperty
-  def endY_=(v: Double) {
-    endY() = v
-  }
+  def endY_=(v: Double) { endY() = v }
 
   def startX: DoubleProperty = delegate.startXProperty
-  def startX_=(v: Double) {
-    startX() = v
-  }
+  def startX_=(v: Double) { startX() = v }
 
   def startY: DoubleProperty = delegate.startYProperty
-  def startY_=(v: Double) {
-    startY() = v
-  }
+  def startY_=(v: Double) { startY() = v }
 }

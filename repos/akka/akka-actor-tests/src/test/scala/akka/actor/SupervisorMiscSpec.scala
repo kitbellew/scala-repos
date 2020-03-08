@@ -118,9 +118,7 @@ class SupervisorMiscSpec
                   "The kids do not share the same path"
                 else "green"
               testActor ! result
-            } catch {
-              case NonFatal(e) ⇒ testActor ! e
-            }
+            } catch { case NonFatal(e) ⇒ testActor ! e }
           case "engage" ⇒ context.stop(kid)
         }
       }))
@@ -137,9 +135,7 @@ class SupervisorMiscSpec
               context.stop(kid)
               context.actorOf(Props.empty, "foo")
               testActor ! "red"
-            } catch {
-              case e: InvalidActorNameException ⇒ testActor ! "green"
-            }
+            } catch { case e: InvalidActorNameException ⇒ testActor ! "green" }
         }
       }))
       parent ! "engage"
@@ -170,9 +166,7 @@ class SupervisorMiscSpec
       expectMsg("green")
       EventFilter[IllegalStateException](
         "handleChildTerminated failed",
-        occurrences = 1) intercept {
-        system.stop(parent)
-      }
+        occurrences = 1) intercept { system.stop(parent) }
     }
 
     "have access to the failing child’s reference in supervisorStrategy" in {

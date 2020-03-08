@@ -42,9 +42,7 @@ class DataFrameCallbackSuite extends QueryTest with SharedSQLContext {
       override def onSuccess(
           funcName: String,
           qe: QueryExecution,
-          duration: Long): Unit = {
-        metrics += ((funcName, qe, duration))
-      }
+          duration: Long): Unit = { metrics += ((funcName, qe, duration)) }
     }
     sqlContext.listenerManager.register(listener)
 

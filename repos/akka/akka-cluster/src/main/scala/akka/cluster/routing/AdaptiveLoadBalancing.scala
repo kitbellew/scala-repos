@@ -433,9 +433,7 @@ abstract class MixMetricsSelectorBase(
           val (sum, count) = acc(address)
           acc + (address -> ((sum + capacity, count + 1)))
       }
-      .map {
-        case (addr, (sum, count)) ⇒ (addr -> sum / count)
-      }
+      .map { case (addr, (sum, count)) ⇒ (addr -> sum / count) }
   }
 
 }

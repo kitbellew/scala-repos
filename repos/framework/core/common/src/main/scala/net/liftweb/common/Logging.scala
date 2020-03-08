@@ -101,9 +101,8 @@ object Logger {
   def logWith[F](mdcValues: (String, Any)*)(f: => F): F = {
     val old = SLF4JMDC.getCopyOfContextMap
     MDC.put(mdcValues: _*)
-    try {
-      f
-    } finally {
+    try { f }
+    finally {
       if (old eq null)
         MDC.clear
       else
@@ -130,9 +129,7 @@ object MDC {
   /**
     * Clear key from the Mapped Diagnostic Context
     */
-  def remove(keys: String*) = {
-    keys foreach { k => SLF4JMDC.remove(k) }
-  }
+  def remove(keys: String*) = { keys foreach { k => SLF4JMDC.remove(k) } }
 
   /**
     * Clear all entries from the Mapped Diagnostic Context

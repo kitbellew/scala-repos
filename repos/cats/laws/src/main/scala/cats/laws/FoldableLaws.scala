@@ -29,9 +29,7 @@ trait FoldableLaws[F[_]] {
   def existsConsistentWithFind[A](
       fa: F[A],
       p: A => Boolean
-  ): Boolean = {
-    F.exists(fa)(p) == F.find(fa)(p).isDefined
-  }
+  ): Boolean = { F.exists(fa)(p) == F.find(fa)(p).isDefined }
 
   def existsLazy[A](fa: F[A]): Boolean = {
     var i = 0
@@ -73,12 +71,12 @@ trait FoldableLaws[F[_]] {
   def forallEmpty[A](
       fa: F[A],
       p: A => Boolean
-  ): Boolean = {
-    !F.isEmpty(fa) || F.forall(fa)(p)
-  }
+  ): Boolean = { !F.isEmpty(fa) || F.forall(fa)(p) }
 }
 
 object FoldableLaws {
   def apply[F[_]](implicit ev: Foldable[F]): FoldableLaws[F] =
-    new FoldableLaws[F] { def F: Foldable[F] = ev }
+    new FoldableLaws[F] {
+      def F: Foldable[F] = ev
+    }
 }

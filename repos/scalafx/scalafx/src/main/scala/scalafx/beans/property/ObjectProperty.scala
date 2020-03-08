@@ -124,11 +124,8 @@ object ObjectProperty {
   def fillProperty[J <: AnyRef](
       property: ObjectProperty[J],
       value: SFXDelegate[J]) {
-    if (value == null) {
-      property.delegate.setValue(null.asInstanceOf[J])
-    } else {
-      property() = value.delegate
-    }
+    if (value == null) { property.delegate.setValue(null.asInstanceOf[J]) }
+    else { property() = value.delegate }
   }
 
   /**
@@ -143,11 +140,8 @@ object ObjectProperty {
     * @param value Value to be injected in $OP.
     */
   def fillProperty[J <: AnyRef](property: ObjectProperty[J], value: J) {
-    if (value == null) {
-      property.delegate.setValue(null.asInstanceOf[J])
-    } else {
-      property() = value
-    }
+    if (value == null) { property.delegate.setValue(null.asInstanceOf[J]) }
+    else { property() = value }
   }
 }
 
@@ -177,7 +171,5 @@ class ObjectProperty[T <: Any](
   def this(bean: Object, name: String, initialValue: T) =
     this(new jfxbp.SimpleObjectProperty[T](bean, name, initialValue))
 
-  def value_=(v: T) {
-    delegate.set(v)
-  }
+  def value_=(v: T) { delegate.set(v) }
 }

@@ -216,9 +216,7 @@ object ProcessKeeper {
     }
     val process = processBuilder.run(logger)
     val processExitCode: Future[ProcessExited.type] = Future {
-      val exitCode = scala.concurrent.blocking {
-        process.exitValue()
-      }
+      val exitCode = scala.concurrent.blocking { process.exitValue() }
       log.info(s"Process $name finished with exit code $exitCode")
 
       // Sometimes this finishes before the other future finishes parsing the output
@@ -250,9 +248,7 @@ object ProcessKeeper {
 
   def onStopServices(block: => Unit): Unit = {
     services ::= new AbstractIdleService {
-      override def shutDown(): Unit = {
-        block
-      }
+      override def shutDown(): Unit = { block }
 
       override def startUp(): Unit = {}
     }
@@ -268,9 +264,7 @@ object ProcessKeeper {
       val killCommand = s"kill -9 ${pids.mkString(" ")}"
       log.warn(s"Left over processes, executing: $killCommand")
       val ret = killCommand.!
-      if (ret != 0) {
-        log.error(s"kill returned $ret")
-      }
+      if (ret != 0) { log.error(s"kill returned $ret") }
     }
   }
 
@@ -327,7 +321,5 @@ object ProcessKeeper {
     log.info(s"Cleaning up Processes $processes and Services $services: Done")
   }
 
-  val shutDownHook: ShutdownHookThread = sys.addShutdownHook {
-    shutdown()
-  }
+  val shutDownHook: ShutdownHookThread = sys.addShutdownHook { shutdown() }
 }

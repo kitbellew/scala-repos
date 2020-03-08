@@ -114,7 +114,9 @@ class StringConcatTest extends ClearAfterClass {
 
   @Test
   def concatPrimitiveCorrectness(): Unit = {
-    val obj: Object = new { override def toString = "TTT" }
+    val obj: Object = new {
+      override def toString = "TTT"
+    }
     def t(
         v: Unit,
         z: Boolean,

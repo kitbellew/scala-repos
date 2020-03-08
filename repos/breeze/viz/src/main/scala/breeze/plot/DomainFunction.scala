@@ -34,9 +34,7 @@ object DomainFunction {
     new DomainFunction[T, Int, V] {
       def domain(t: T): IndexedSeq[Int] = (0 until t.length)
 
-      def apply(t: T, k: Int): V = {
-        t(k)
-      }
+      def apply(t: T, k: Int): V = { t(k) }
     }
 
   }
@@ -46,9 +44,7 @@ object DomainFunction {
     new DomainFunction[T, K, V] {
       def domain(t: T): IndexedSeq[K] = t.keySet.toIndexedSeq
 
-      def apply(t: T, k: K): V = {
-        t(k)
-      }
+      def apply(t: T, k: K): V = { t(k) }
     }
 
   }

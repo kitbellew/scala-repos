@@ -148,9 +148,7 @@ private[http] object WebSocket {
         .splitWhen(
           _.isMessageEnd
         ) // FIXME using splitAfter from #16885 would simplify protocol a lot
-        .collect {
-          case m: MessageDataPart ⇒ m
-        }
+        .collect { case m: MessageDataPart ⇒ m }
         .via(collectMessage)
         .concatSubstreams
         .named("ws-prepare-messages")
@@ -221,9 +219,7 @@ private[http] object WebSocket {
         setHandler(bypass, eagerTerminateOutput)
         setHandler(user, ignoreTerminateOutput)
 
-        override def preStart(): Unit = {
-          pullIn()
-        }
+        override def preStart(): Unit = { pullIn() }
       }
   }
 

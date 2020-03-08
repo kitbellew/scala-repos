@@ -31,13 +31,9 @@ object EnumWithDescriptionSpec extends Specification {
       t must beTrue
     }
 
-    "have a name" in {
-      Title1.mr.toString must_== "MR"
-    }
+    "have a name" in { Title1.mr.toString must_== "MR" }
 
-    "have a type 1" in {
-      Title1.mr mustEqual Title1.mr
-    }
+    "have a type 1" in { Title1.mr mustEqual Title1.mr }
 
     "have a type 2" in {
       Title1.mr mustEqual Title1.valueOf("MR").getOrElse(null)
@@ -47,9 +43,7 @@ object EnumWithDescriptionSpec extends Specification {
       Title1.dr mustEqual Title1.valueOf("DR").getOrElse(null)
     }
 
-    "have a mr description" in {
-      Title1.mr.description must_== "Mr"
-    }
+    "have a mr description" in { Title1.mr.description must_== "Mr" }
 
     "be able to be created from a string name" in {
       Title1.valueOf("MRS").getOrElse(null) mustEqual Title1.mrs

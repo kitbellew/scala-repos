@@ -81,9 +81,7 @@ private[prediction] object ExampleFormConnector extends FormConnector {
           ("prop1" -> data.get("context[prop1]").map(_.toDouble)) ~
           ("prop2" -> data.get("context[prop2]"))
       )
-    } else {
-      None
-    }
+    } else { None }
 
     val json =
       ("event" -> data("event")) ~

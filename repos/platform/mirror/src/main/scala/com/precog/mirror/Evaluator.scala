@@ -287,9 +287,7 @@ trait EvaluatorModule
                 actuals(1).provenance)(op2.pf)
 
             case ReductionBinding(red) => {
-              val values = actualSets.head map {
-                case (_, v) => v
-              }
+              val values = actualSets.head map { case (_, v) => v }
 
               val result =
                 values collect red.prepare reduceOption red orElse red.zero
@@ -327,9 +325,7 @@ trait EvaluatorModule
             loopForJoin(env, restrict)(left),
             left.provenance,
             loopForJoin(env, restrict)(right),
-            right.provenance) {
-            case (value, JTrue) => value
-          }
+            right.provenance) { case (value, JTrue) => value }
         }
 
         case With(_, left, right) => {
@@ -477,9 +473,7 @@ trait EvaluatorModule
             loopForJoin(env, restrict)(left),
             left.provenance,
             loopForJoin(env, restrict)(right),
-            right.provenance) {
-            case (leftV, rightV) => JBool(leftV == rightV)
-          }
+            right.provenance) { case (leftV, rightV) => JBool(leftV == rightV) }
         }
 
         case NotEq(_, left, right) => {
@@ -487,9 +481,7 @@ trait EvaluatorModule
             loopForJoin(env, restrict)(left),
             left.provenance,
             loopForJoin(env, restrict)(right),
-            right.provenance) {
-            case (leftV, rightV) => JBool(leftV != rightV)
-          }
+            right.provenance) { case (leftV, rightV) => JBool(leftV != rightV) }
         }
 
         case And(_, left, right) => {
@@ -533,9 +525,7 @@ trait EvaluatorModule
       val back = loop(env, restrict)(expr)
 
       restrict get expr.provenance map { idx =>
-        back filter {
-          case (ids, _) => idx(ids)
-        }
+        back filter { case (ids, _) => idx(ids) }
       } getOrElse back
     }
 
@@ -604,9 +594,9 @@ trait EvaluatorModule
         case ((idsLeft, _), (idsRight, _)) => {
           val zipped = (indicesLeft map idsLeft) zip (indicesRight map idsRight)
 
-          zipped map {
-            case (x, y) => Ordering.fromInt(x - y)
-          } reduce { _ |+| _ }
+          zipped map { case (x, y) => Ordering.fromInt(x - y) } reduce {
+            _ |+| _
+          }
         }
       }
 
@@ -633,12 +623,8 @@ trait EvaluatorModule
     }
 
     if (expr.errors.isEmpty) {
-      loop(Map(), Map())(expr) map {
-        case (_, value) => value
-      }
-    } else {
-      Seq.empty
-    }
+      loop(Map(), Map())(expr) map { case (_, value) => value }
+    } else { Seq.empty }
   }
 
   private def linearProvPossibilities(prov: Provenance): List[Provenance] = {
@@ -684,9 +670,8 @@ trait EvaluatorModule
     */
   private def zipAlign[A, B](left: Seq[A], right: Seq[B])(
       f: (A, B) => Ordering): Seq[(A, B)] = {
-    if (left.isEmpty || right.isEmpty) {
-      Nil
-    } else {
+    if (left.isEmpty || right.isEmpty) { Nil }
+    else {
       f(left.head, right.head) match {
         case Ordering.EQ =>
           (left.head, right.head) +: zipAlign(left.tail, right.tail)(f)
@@ -701,11 +686,9 @@ trait EvaluatorModule
     */
   private def mergeAlign[A](left: Seq[A], right: Seq[A])(
       f: (A, A) => Ordering): Seq[A] = {
-    if (left.isEmpty) {
-      right
-    } else if (right.isEmpty) {
-      left
-    } else {
+    if (left.isEmpty) { right }
+    else if (right.isEmpty) { left }
+    else {
       f(left.head, right.head) match {
         case Ordering.EQ => left.head +: mergeAlign(left.tail, right.tail)(f)
         case Ordering.LT => left.head +: mergeAlign(left.tail, right)(f)
@@ -719,11 +702,9 @@ trait EvaluatorModule
     */
   private def biasLeftAlign[A](left: Seq[A], right: Seq[A])(
       f: (A, A) => Ordering): Seq[A] = {
-    if (left.isEmpty) {
-      left
-    } else if (right.isEmpty) {
-      left
-    } else {
+    if (left.isEmpty) { left }
+    else if (right.isEmpty) { left }
+    else {
       f(left.head, right.head) match {
         case Ordering.EQ => biasLeftAlign(left.tail, right.tail)(f)
         case Ordering.LT => left.head +: biasLeftAlign(left.tail, right)(f)

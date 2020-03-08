@@ -70,9 +70,7 @@ class ExpandSums extends Phase {
               Library.Not.typed[Boolean](pred)
             case _ =>
               val ifDefined = map.replace(
-                {
-                  case r @ Ref(s) if s == gen => silentCast(r.nodeType, from)
-                },
+                { case r @ Ref(s) if s == gen => silentCast(r.nodeType, from) },
                 keepType = true)
               val ifEmpty2 = silentCast(ifDefined.nodeType.structural, ifEmpty)
               IfThenElse(ConstArray(pred, ifEmpty2, ifDefined))
@@ -224,9 +222,7 @@ class ExpandSums extends Phase {
         Select(Ref(sym) :@ extendedElementType, ElementSymbol(2)).infer()
       val on2 = on
         .replace(
-          {
-            case Ref(s) if s == sym => sideInCondition
-          },
+          { case Ref(s) if s == sym => sideInCondition },
           bottomUp = true)
         .infer()
       (extend, on2, createDisc)

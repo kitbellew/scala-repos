@@ -5,9 +5,7 @@ object TermDeconstructionProps
     extends QuasiquoteProperties("term deconstruction") {
   property("f(..x) = f") = test {
     // see SI-8008
-    assertThrows[MatchError] {
-      val q"f(..$args)" = q"f"
-    }
+    assertThrows[MatchError] { val q"f(..$args)" = q"f" }
   }
 
   property("f(x)") = forAll { (x: Tree) =>
@@ -207,15 +205,11 @@ object TermDeconstructionProps
   }
 
   property("term select doesn't match type select") = test {
-    assertThrows[MatchError] {
-      val q"$qual.$name" = tq"foo.bar"
-    }
+    assertThrows[MatchError] { val q"$qual.$name" = tq"foo.bar" }
   }
 
   property("type application doesn't match applied type") = test {
-    assertThrows[MatchError] {
-      val q"$f[..$targs]" = tq"foo[bar]"
-    }
+    assertThrows[MatchError] { val q"$f[..$targs]" = tq"foo[bar]" }
   }
 
   property("match doesn't match partial function") = test {

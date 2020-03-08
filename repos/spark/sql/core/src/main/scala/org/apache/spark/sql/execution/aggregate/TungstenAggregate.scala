@@ -121,9 +121,7 @@ case class TungstenAggregate(
             numOutputRows += 1
             Iterator.single[UnsafeRow](
               aggregationIterator.outputForEmptyGroupingKeyWithoutInput())
-          } else {
-            aggregationIterator
-          }
+          } else { aggregationIterator }
         }
       }
     }
@@ -144,22 +142,16 @@ case class TungstenAggregate(
   }
 
   protected override def doProduce(ctx: CodegenContext): String = {
-    if (groupingExpressions.isEmpty) {
-      doProduceWithoutKeys(ctx)
-    } else {
-      doProduceWithKeys(ctx)
-    }
+    if (groupingExpressions.isEmpty) { doProduceWithoutKeys(ctx) }
+    else { doProduceWithKeys(ctx) }
   }
 
   override def doConsume(
       ctx: CodegenContext,
       input: Seq[ExprCode],
       row: String): String = {
-    if (groupingExpressions.isEmpty) {
-      doConsumeWithoutKeys(ctx, input)
-    } else {
-      doConsumeWithKeys(ctx, input)
-    }
+    if (groupingExpressions.isEmpty) { doConsumeWithoutKeys(ctx, input) }
+    else { doConsumeWithKeys(ctx, input) }
   }
 
   // The variables used as aggregation buffer
@@ -364,11 +356,8 @@ case class TungstenAggregate(
 
       var currentKey: UnsafeRow = null
       var currentRow: UnsafeRow = null
-      var nextKey: UnsafeRow = if (sortedIter.next()) {
-        sortedIter.getKey
-      } else {
-        null
-      }
+      var nextKey: UnsafeRow = if (sortedIter.next()) { sortedIter.getKey }
+      else { null }
 
       override def next(): Boolean = {
         if (nextKey != null) {
@@ -392,16 +381,12 @@ case class TungstenAggregate(
           }
 
           true
-        } else {
-          false
-        }
+        } else { false }
       }
 
       override def getKey: UnsafeRow = currentKey
       override def getValue: UnsafeRow = currentRow
-      override def close(): Unit = {
-        sortedIter.close()
-      }
+      override def close(): Unit = { sortedIter.close() }
     }
   }
 
@@ -591,9 +576,7 @@ case class TungstenAggregate(
           s"$countTerm < ${testFallbackStartsAt.get}",
           s"$countTerm = 0;",
           s"$countTerm += 1;")
-      } else {
-        ("true", "", "")
-      }
+      } else { ("true", "", "") }
 
     // We try to do hash map based in-memory aggregation first. If there is not enough memory (the
     // hash map will return null for new key), we spill the hash map to disk to free memory, then

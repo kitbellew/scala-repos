@@ -94,11 +94,8 @@ object AkkaStreams {
         override def onUpstreamFailure(cause: Throwable, ctx: Context[T]) =
           ctx.absorbTermination()
         override def onPull(ctx: Context[T]) = {
-          if (!ctx.isFinishing) {
-            ctx.pull()
-          } else {
-            null
-          }
+          if (!ctx.isFinishing) { ctx.pull() }
+          else { null }
         }
       })
 

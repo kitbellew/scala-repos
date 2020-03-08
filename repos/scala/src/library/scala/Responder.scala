@@ -66,15 +66,11 @@ abstract class Responder[+A] extends Serializable {
   def foreach(k: A => Unit) { respond(k) }
 
   def map[B](f: A => B) = new Responder[B] {
-    def respond(k: B => Unit) {
-      Responder.this.respond(x => k(f(x)))
-    }
+    def respond(k: B => Unit) { Responder.this.respond(x => k(f(x))) }
   }
 
   def flatMap[B](f: A => Responder[B]) = new Responder[B] {
-    def respond(k: B => Unit) {
-      Responder.this.respond(x => f(x).respond(k))
-    }
+    def respond(k: B => Unit) { Responder.this.respond(x => f(x).respond(k)) }
   }
 
   def filter(p: A => Boolean) = new Responder[A] {

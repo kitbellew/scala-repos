@@ -167,9 +167,7 @@ class ScObjectImpl protected (
       } catch {
         case ignore: DoNotProcessPackageObjectException =>
           true //do nothing, just let's move on
-      } finally {
-        stopPackageObjectProcessing()
-      }
+      } finally { stopPackageObjectProcessing() }
     } else {
       super[ScTemplateDefinition].processDeclarations(
         processor,
@@ -247,9 +245,7 @@ class ScObjectImpl protected (
     }
   }
 
-  override def getFields: Array[PsiField] = {
-    getModuleField.toArray
-  }
+  override def getFields: Array[PsiField] = { getModuleField.toArray }
 
   override def findFieldByName(name: String, checkBases: Boolean): PsiField = {
     name match {

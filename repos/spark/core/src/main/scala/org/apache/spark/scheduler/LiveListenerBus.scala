@@ -66,9 +66,7 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
       LiveListenerBus.withinListenerThread.withValue(true) {
         while (true) {
           eventLock.acquire()
-          self.synchronized {
-            processingEvent = true
-          }
+          self.synchronized { processingEvent = true }
           try {
             val event = eventQueue.poll
             if (event == null) {
@@ -81,11 +79,7 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
               return
             }
             postToAll(event)
-          } finally {
-            self.synchronized {
-              processingEvent = false
-            }
-          }
+          } finally { self.synchronized { processingEvent = false } }
         }
       }
     }
@@ -104,9 +98,7 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
     if (started.compareAndSet(false, true)) {
       sparkContext = sc
       listenerThread.start()
-    } else {
-      throw new IllegalStateException(s"$name already started!")
-    }
+    } else { throw new IllegalStateException(s"$name already started!") }
   }
 
   def post(event: SparkListenerEvent): Unit = {
@@ -116,11 +108,8 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
       return
     }
     val eventAdded = eventQueue.offer(event)
-    if (eventAdded) {
-      eventLock.release()
-    } else {
-      onDropEvent(event)
-    }
+    if (eventAdded) { eventLock.release() }
+    else { onDropEvent(event) }
   }
 
   /**

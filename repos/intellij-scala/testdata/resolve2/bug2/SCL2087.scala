@@ -1,7 +1,5 @@
 object Test {
-  def foo(bar: () => String) {
-    println(bar())
-  }
+  def foo(bar: () => String) { println(bar()) }
 
   def foo(x: Int, y: Int) = 1
 
@@ -10,7 +8,5 @@ object Test {
     foo(bar) // <- error here
   }
 
-  def bar() = {
-    "string"
-  }
+  def bar() = { "string" }
 }

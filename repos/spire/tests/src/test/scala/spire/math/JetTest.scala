@@ -11,9 +11,7 @@ class JetTest extends FunSuite with Matchers {
   implicit val dim = JetDim(3)
   val maxError = 1.0e-12
 
-  test("JetDim") {
-    dim.dimension should equal(3)
-  }
+  test("JetDim") { dim.dimension should equal(3) }
 
   test("Jet(scalar, array) constructor") {
     val a = Array[Double](2.3, 3.4, 4.5)

@@ -61,7 +61,9 @@ object FutureSpec {
   final case class Req[T](req: T)
   final case class Res[T](res: T)
 
-  sealed trait IntAction { def apply(that: Int): Int }
+  sealed trait IntAction {
+    def apply(that: Int): Int
+  }
   final case class IntAdd(n: Int) extends IntAction {
     def apply(that: Int) = that + n
   }
@@ -176,9 +178,8 @@ class FutureSpec
       }
 
       p.completeWith(Future { "Hi " }(B))
-      try {
-        Await.result(result, timeout.duration) should ===("Hi A")
-      } finally {
+      try { Await.result(result, timeout.duration) should ===("Hi A") }
+      finally {
         A.shutdown()
         B.shutdown()
       }

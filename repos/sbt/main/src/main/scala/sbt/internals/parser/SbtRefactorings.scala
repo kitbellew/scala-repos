@@ -71,15 +71,10 @@ private[sbt] object SbtRefactorings {
       case (acc, (st, tree)) =>
         val treeName = extractSettingName(tree)
         if (name == treeName) {
-          val replacement = if (acc.isEmpty) {
-            command.mkString(END_OF_LINE)
-          } else {
-            EMPTY_STRING
-          }
+          val replacement = if (acc.isEmpty) { command.mkString(END_OF_LINE) }
+          else { EMPTY_STRING }
           (tree.pos.start, st, replacement) +: acc
-        } else {
-          acc
-        }
+        } else { acc }
     }
 
   private def toTreeStringMap(command: Seq[String]) = {

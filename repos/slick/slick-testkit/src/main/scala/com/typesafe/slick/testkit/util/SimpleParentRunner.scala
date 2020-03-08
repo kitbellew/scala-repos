@@ -37,9 +37,8 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
     val desc = describeChild(child)
     notifier.fireTestStarted(desc)
     try runChildInner(child, notifier)
-    catch {
-      case t: Throwable => addFailure(t, notifier, desc)
-    } finally notifier.fireTestFinished(desc)
+    catch { case t: Throwable => addFailure(t, notifier, desc) }
+    finally notifier.fireTestFinished(desc)
   }
 
   protected def runChildren(notifier: RunNotifier) =

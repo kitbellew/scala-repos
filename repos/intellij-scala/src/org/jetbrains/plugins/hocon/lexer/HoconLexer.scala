@@ -179,9 +179,7 @@ class HoconLexer extends LexerBase {
   object UnquotedCharsMatcher extends TokenMatcher {
     def matchToken(seq: CharSequence, state: State) = {
       var c = 0
-      while (continuesUnquotedChars(seq, c)) {
-        c += 1
-      }
+      while (continuesUnquotedChars(seq, c)) { c += 1 }
       if (c > 0) Some(TokenMatch(UnquotedChars, c, onContents(state))) else None
     }
   }
@@ -246,9 +244,7 @@ class HoconLexer extends LexerBase {
   def getTokenStart = tokenStart
 
   def getTokenType = {
-    if (token == null) {
-      advance()
-    }
+    if (token == null) { advance() }
     token
   }
 

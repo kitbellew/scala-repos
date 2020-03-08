@@ -83,9 +83,7 @@ private[sql] case class InMemoryRelation(
     if (_batchStats == null) {
       child.sqlContext.sparkContext
         .accumulableCollection(ArrayBuffer.empty[InternalRow])
-    } else {
-      _batchStats
-    }
+    } else { _batchStats }
 
   @transient val partitionStatistics = new PartitionStatistics(output)
 
@@ -107,9 +105,7 @@ private[sql] case class InMemoryRelation(
     if (_statistics == null) {
       val updatedStats = statistics
       if (_statistics == null) null else updatedStats
-    } else {
-      _statistics
-    }
+    } else { _statistics }
 
   override def statistics: Statistics = {
     if (_statistics == null) {
@@ -132,9 +128,7 @@ private[sql] case class InMemoryRelation(
 
   // If the cached column buffers were not passed in, we calculate them in the constructor.
   // As in Spark, the actual work of caching is lazy.
-  if (_cachedColumnBuffers == null) {
-    buildBuffers()
-  }
+  if (_cachedColumnBuffers == null) { buildBuffers() }
 
   def recache(): Unit = {
     _cachedColumnBuffers.unpersist()
@@ -377,15 +371,11 @@ private[sql] case class InMemoryColumnarTableScan(
               logInfo(s"Skipping partition based on stats $statsString")
               false
             } else {
-              if (enableAccumulators) {
-                readBatches += 1
-              }
+              if (enableAccumulators) { readBatches += 1 }
               true
             }
           }
-        } else {
-          cachedBatchIterator
-        }
+        } else { cachedBatchIterator }
 
       // update SQL metrics
       val withMetrics = cachedBatchesToScan.map { batch =>

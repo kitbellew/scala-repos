@@ -5,9 +5,7 @@
 //   ensure that TrapExit actually processes the exit.
 
 object Spawn {
-  def main(args: Array[String]) {
-    (new ThreadA).start
-  }
+  def main(args: Array[String]) { (new ThreadA).start }
   class ThreadA extends Thread {
     override def run() {
       Thread.sleep(1000)

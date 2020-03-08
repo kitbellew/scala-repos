@@ -61,9 +61,7 @@ private[spark] class StaticMemoryManager(
           s"Will not store $blockId as the required space ($numBytes bytes) exceeds our " +
             s"memory limit ($maxStorageMemory bytes)")
         false
-      } else {
-        storageMemoryPool.acquireMemory(blockId, numBytes)
-      }
+      } else { storageMemoryPool.acquireMemory(blockId, numBytes) }
     }
 
   override def acquireUnrollMemory(blockId: BlockId, numBytes: Long): Boolean =

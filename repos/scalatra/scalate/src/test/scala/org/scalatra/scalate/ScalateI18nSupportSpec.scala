@@ -14,9 +14,7 @@ class ScalateI18nSupportSpec extends MutableScalatraSpec {
 
       get("/") {
         new AsyncResult {
-          val is = Future {
-            mustache("hello.mustache")
-          }
+          val is = Future { mustache("hello.mustache") }
         }
       }
 
@@ -25,9 +23,7 @@ class ScalateI18nSupportSpec extends MutableScalatraSpec {
   )
 
   "I18nSupport should work with Futures" in {
-    get("/") {
-      status should beEqualTo(200)
-    }
+    get("/") { status should beEqualTo(200) }
   }
 
 }

@@ -66,9 +66,7 @@ object Base64Long {
       builder.append(alphabet(0))
     } else {
       var bitPosition = StartingBitPosition
-      while ((l >>> bitPosition) == 0) {
-        bitPosition -= DigitWidth
-      }
+      while ((l >>> bitPosition) == 0) { bitPosition -= DigitWidth }
       // Copy in the 6-bit segments, one at a time.
       while (bitPosition >= 0) {
         val shifted = l >>> bitPosition

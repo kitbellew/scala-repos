@@ -46,9 +46,7 @@ object MonadCatchIOTest extends SpecLite {
         try {
           a.run(1).unsafePerformIO
           fail("should have thrown")
-        } catch {
-          case t: Throwable => t eq err2
-        }
+        } catch { case t: Throwable => t eq err2 }
       }
     }
   }
@@ -79,9 +77,7 @@ object MonadCatchIOTest extends SpecLite {
         try {
           a.run(1).unsafePerformIO
           fail("should have thrown")
-        } catch {
-          case t: Throwable => t eq err2
-        }
+        } catch { case t: Throwable => t eq err2 }
       }
     }
   }

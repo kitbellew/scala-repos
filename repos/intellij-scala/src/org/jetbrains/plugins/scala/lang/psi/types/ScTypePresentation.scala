@@ -456,9 +456,7 @@ object ScTypePresentation {
         .exists(_.isInstanceOf[ScTypeAliasDeclaration])
   }
 
-  type A = ScTypePresentation {
-    type B
-  }
+  type A = ScTypePresentation { type B }
 
   def withoutAliases(tpe: ScType): String = {
     val withoutAliasesType =

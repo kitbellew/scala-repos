@@ -516,9 +516,7 @@ package com.twitter.scalding {
    */
   class SideEffectFlatMapFunction[S, C, T](
       bf: => C, // begin function returns a context
-      @transient fn: (
-          C,
-          S) => TraversableOnce[
+      @transient fn: (C, S) => TraversableOnce[
         T
       ], // function that takes a context and a tuple, returns TraversableOnce of T
       ef: C => Unit, // end function to clean up context object
@@ -634,9 +632,7 @@ package com.twitter.scalding {
         // Make sure to drop the reference to the lastValue as soon as possible (it may be big)
         call.setContext(null)
         call.getOutputCollector.add(set(mrfn.get(lastValue)))
-      } else {
-        throw new Exception("MRMAggregator completed without any args")
-      }
+      } else { throw new Exception("MRMAggregator completed without any args") }
     }
   }
 

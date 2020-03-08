@@ -109,9 +109,8 @@ trait LogisticRegressionLibModule[M[+_]]
       }
 
       def cost(seq: Seq[ColumnValues], theta: Theta): Double = {
-        if (seq.isEmpty) {
-          sys.error("empty sequence should never occur")
-        } else {
+        if (seq.isEmpty) { sys.error("empty sequence should never occur") }
+        else {
           val result = seq.foldLeft(0d) {
             case (sum, colVal) => {
               val xs = java.util.Arrays.copyOf(colVal, colVal.length - 1)
@@ -127,9 +126,7 @@ trait LogisticRegressionLibModule[M[+_]]
                 val result = log(1 - sigmoid(dotProduct(theta, xs)))
 
                 sum + checkValue(result)
-              } else {
-                sys.error("unreachable case")
-              }
+              } else { sys.error("unreachable case") }
             }
           }
 
@@ -141,9 +138,8 @@ trait LogisticRegressionLibModule[M[+_]]
           seq: Seq[ColumnValues],
           theta: Theta,
           alpha: Double): Theta = {
-        if (seq.isEmpty) {
-          sys.error("empty sequence should never occur")
-        } else {
+        if (seq.isEmpty) { sys.error("empty sequence should never occur") }
+        else {
           seq.foldLeft(theta) {
             case (theta, colVal) => {
               val xs = colVal.take(colVal.length - 1)
@@ -200,16 +196,13 @@ trait LogisticRegressionLibModule[M[+_]]
         val diffs = theta0.zip(theta) map { case (t0, t) => math.abs(t0 - t) }
         val sum = diffs.sum
 
-        if (sum / theta.length < 0.01) {
-          theta
-        } else if (cost(seq, theta) > cost(seq, theta0)) {
+        if (sum / theta.length < 0.01) { theta }
+        else if (cost(seq, theta) > cost(seq, theta0)) {
           if (alpha > Double.MinValue * 2.0)
             gradloop(seq, theta0, alpha / 2.0)
           else
             theta0
-        } else {
-          gradloop(seq, theta, alpha)
-        }
+        } else { gradloop(seq, theta, alpha) }
       }
 
       def extract(res: Result, jtype: JType): Table = {
@@ -301,9 +294,7 @@ trait LogisticRegressionLibModule[M[+_]]
           val tablesWithType: M[Seq[(Table, JType)]] = for {
             samples <- sampleTables
             jtypes <- schemas
-          } yield {
-            samples zip jtypes
-          }
+          } yield { samples zip jtypes }
 
           val tableReducer: (Table, JType) => M[Table] =
             (table, jtype) =>

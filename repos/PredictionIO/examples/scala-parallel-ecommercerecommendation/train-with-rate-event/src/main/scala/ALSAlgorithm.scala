@@ -191,18 +191,15 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       }
 
       seenEvents.map { event =>
-        try {
-          event.targetEntityId.get
-        } catch {
+        try { event.targetEntityId.get }
+        catch {
           case e => {
             logger.error(s"Can't get targetEntityId of event ${event}.")
             throw e
           }
         }
       }.toSet
-    } else {
-      Set[String]()
-    }
+    } else { Set[String]() }
 
     // get the latest constraint unavailableItems $set event
     val unavailableItems: Set[String] = lEventsDb.findSingleEntity(
@@ -215,11 +212,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       timeout = Duration(200, "millis")
     ) match {
       case Right(x) => {
-        if (x.hasNext) {
-          x.next.properties.get[Set[String]]("items")
-        } else {
-          Set[String]()
-        }
+        if (x.hasNext) { x.next.properties.get[Set[String]]("items") }
+        else { Set[String]() }
       }
       case Left(e) => {
         logger.error(s"Error when read set unavailableItems event: ${e}")
@@ -327,9 +321,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     }
 
     val recentItems: Set[String] = recentEvents.map { event =>
-      try {
-        event.targetEntityId.get
-      } catch {
+      try { event.targetEntityId.get }
+      catch {
         case e => {
           logger.error("Can't get targetEntityId of event ${event}.")
           throw e

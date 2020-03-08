@@ -480,7 +480,13 @@ object Future {
   /** Create a `Future` that will evaluate `a` using the given `ExecutorService`. */
   def apply[A](a: => A)(implicit
       pool: ExecutorService = Strategy.DefaultExecutorService): Future[A] =
-    Async { cb => pool.submit { new Callable[Unit] { def call = cb(a).run } } }
+    Async { cb =>
+      pool.submit {
+        new Callable[Unit] {
+          def call = cb(a).run
+        }
+      }
+    }
 
   /** Create a `Future` that will evaluate `a` after at least the given delay. */
   def schedule[A](a: => A, delay: Duration)(implicit

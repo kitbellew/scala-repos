@@ -54,9 +54,7 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
         new ReceiverRateController(
           id,
           RateEstimator.create(ssc.conf, ssc.graph.batchDuration)))
-    } else {
-      None
-    }
+    } else { None }
   }
 
   /**
@@ -156,9 +154,7 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
           Array.empty,
           Array.empty,
           Array.empty)
-      } else {
-        new BlockRDD[T](ssc.sc, Array.empty)
-      }
+      } else { new BlockRDD[T](ssc.sc, Array.empty) }
     }
   }
 

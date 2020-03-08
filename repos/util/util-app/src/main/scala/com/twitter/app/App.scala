@@ -77,16 +77,12 @@ trait App extends Closable with CloseAwaitably {
   /**
     * Invoke `f` before anything else (including flag parsing).
     */
-  protected final def init(f: => Unit): Unit = {
-    inits += (() => f)
-  }
+  protected final def init(f: => Unit): Unit = { inits += (() => f) }
 
   /**
     * Invoke `f` right before the user's main is invoked.
     */
-  protected final def premain(f: => Unit): Unit = {
-    premains += (() => f)
-  }
+  protected final def premain(f: => Unit): Unit = { premains += (() => f) }
 
   /** Minimum duration to allow for exits to be processed. */
   final val MinGrace: Duration = 1.second
@@ -128,9 +124,7 @@ trait App extends Closable with CloseAwaitably {
   /**
     * Invoke `f` after the user's main has exited.
     */
-  protected final def postmain(f: => Unit): Unit = {
-    postmains.add(() => f)
-  }
+  protected final def postmain(f: => Unit): Unit = { postmains.add(() => f) }
 
   /**
     * Notify the application that it may stop running.
@@ -142,9 +136,8 @@ trait App extends Closable with CloseAwaitably {
   }
 
   final def main(args: Array[String]): Unit = {
-    try {
-      nonExitingMain(args)
-    } catch {
+    try { nonExitingMain(args) }
+    catch {
       case FlagUsageError(reason) =>
         exitOnError(reason)
       case FlagParseException(reason, _) =>

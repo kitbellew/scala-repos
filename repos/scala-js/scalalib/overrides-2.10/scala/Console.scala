@@ -194,9 +194,7 @@ object Console {
     *
     *  @param reader specifies the new input stream.
     */
-  def setIn(reader: Reader) {
-    inVar.value = new BufferedReader(reader)
-  }
+  def setIn(reader: Reader) { inVar.value = new BufferedReader(reader) }
 
   /** Sets the default input stream for the duration
     *  of execution of one thunk.
@@ -222,9 +220,7 @@ object Console {
     *
     *  @param in the new input stream.
     */
-  def setIn(in: InputStream) {
-    setIn(new InputStreamReader(in))
-  }
+  def setIn(in: InputStream) { setIn(new InputStreamReader(in)) }
 
   /** Sets the default input stream for the duration
     *  of execution of one thunk.
@@ -242,9 +238,7 @@ object Console {
     *
     *  @param obj the object to print; may be null.
     */
-  def print(obj: Any) {
-    out.print(if (null == obj) "null" else obj.toString())
-  }
+  def print(obj: Any) { out.print(if (null == obj) "null" else obj.toString()) }
 
   /** Flushes the output stream. This function is required when partial
     *  output (i.e. output not terminated by a newline character) has

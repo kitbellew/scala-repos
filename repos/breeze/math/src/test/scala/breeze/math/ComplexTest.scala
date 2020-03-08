@@ -28,26 +28,18 @@ import breeze.linalg.DenseVector
 @RunWith(classOf[JUnitRunner])
 class ComplexTest extends FunSuite with Checkers {
 
-  test("Add") {
-    assert((1 + 2 * i) + (2 + 3 * i) === (3 + 5 * i))
-  }
+  test("Add") { assert((1 + 2 * i) + (2 + 3 * i) === (3 + 5 * i)) }
 
-  test("Sub") {
-    assert((1 + 2 * i) - (2 + 3 * i) === (-1 - i))
-  }
+  test("Sub") { assert((1 + 2 * i) - (2 + 3 * i) === (-1 - i)) }
 
-  test("Div") {
-    assert((5 + 10 * i) / (3 - 4 * i) === (-1 + 2 * i))
-  }
+  test("Div") { assert((5 + 10 * i) / (3 - 4 * i) === (-1 + 2 * i)) }
 
   test("Mul") {
     assert((1 + 2 * i) * (-3 + 6 * i) === -15)
     assert((1 + 5 * i) * (-3 + 2 * i) === (-13 - 13 * i))
   }
 
-  test("Neg") {
-    assert(-(1 + 2 * i) === (-1 - 2 * i))
-  }
+  test("Neg") { assert(-(1 + 2 * i) === (-1 - 2 * i)) }
 
   test("Abs/Conj") {
     assert((3 + 4 * i).abs === 5)
@@ -92,18 +84,10 @@ class ComplexTest extends FunSuite with Checkers {
     assert(toFloat(a) === 5)
     assert(toInt(a) === 5)
     assert(toLong(a) === 5)
-    intercept[IllegalArgumentException] {
-      toDouble(b)
-    }
-    intercept[IllegalArgumentException] {
-      toFloat(b)
-    }
-    intercept[IllegalArgumentException] {
-      toInt(b)
-    }
-    intercept[IllegalArgumentException] {
-      toLong(b)
-    }
+    intercept[IllegalArgumentException] { toDouble(b) }
+    intercept[IllegalArgumentException] { toFloat(b) }
+    intercept[IllegalArgumentException] { toInt(b) }
+    intercept[IllegalArgumentException] { toLong(b) }
   }
 
 }

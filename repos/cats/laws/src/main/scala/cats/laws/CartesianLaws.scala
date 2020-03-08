@@ -16,6 +16,8 @@ trait CartesianLaws[F[_]] {
 object CartesianLaws {
 
   def apply[F[_]](implicit ev: Cartesian[F]): CartesianLaws[F] =
-    new CartesianLaws[F] { val F = ev }
+    new CartesianLaws[F] {
+      val F = ev
+    }
 
 }

@@ -48,9 +48,7 @@ trait TestLogging extends BeforeAndAfter { self: WordSpec =>
     *
     * This is meant to be used in a `before` block.
     */
-  def traceLogger(level: Level) {
-    traceLogger("", level)
-  }
+  def traceLogger(level: Level) { traceLogger("", level) }
 
   /**
     * Set up logging to record messages sent to the given logger at the given level, and not send

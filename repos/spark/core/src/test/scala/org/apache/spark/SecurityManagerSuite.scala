@@ -223,9 +223,7 @@ class SecurityManagerSuite extends SparkFunSuite with ResetSystemProperties {
 
   test("missing secret authentication key") {
     val conf = new SparkConf().set("spark.authenticate", "true")
-    intercept[IllegalArgumentException] {
-      new SecurityManager(conf)
-    }
+    intercept[IllegalArgumentException] { new SecurityManager(conf) }
   }
 
   test("secret authentication key") {

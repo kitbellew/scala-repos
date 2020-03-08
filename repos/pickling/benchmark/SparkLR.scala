@@ -53,9 +53,7 @@ object SparkLRJavaBench extends SparkLRBenchmark {
 object SparkLRKryoBench extends SparkLRBenchmark {
   var ser: KryoSerializer = _
 
-  override def tearDown() {
-    ser = null
-  }
+  override def tearDown() { ser = null }
 
   override def run() {
     val rnd: Int = Random.nextInt(10)

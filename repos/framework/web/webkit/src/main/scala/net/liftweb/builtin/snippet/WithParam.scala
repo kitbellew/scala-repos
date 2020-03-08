@@ -32,9 +32,7 @@ object WithParamVar extends RequestVar[Map[String, NodeSeq]](Map.empty)
   */
 object WithParam extends DispatchSnippet {
 
-  def dispatch: DispatchIt = {
-    case _ => render _
-  }
+  def dispatch: DispatchIt = { case _ => render _ }
 
   /**
     *  Evaluates the body and stores it in the WithParam RequestVar map.

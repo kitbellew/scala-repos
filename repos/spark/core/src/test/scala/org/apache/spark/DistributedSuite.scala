@@ -47,9 +47,7 @@ class DistributedSuite
     val data = sc
       .parallelize(1 to 100, numPartitions)
       .map(x => throw new NotSerializableExn(new NotSerializableClass))
-    intercept[SparkException] {
-      data.count()
-    }
+    intercept[SparkException] { data.count() }
     resetSparkContext()
   }
 
@@ -341,11 +339,8 @@ class DistributedSuite
     assert(sc.persistentRdds.isEmpty === true)
 
     failAfter(Span(3000, Millis)) {
-      try {
-        while (!sc.getRDDStorageInfo.isEmpty) {
-          Thread.sleep(200)
-        }
-      } catch {
+      try { while (!sc.getRDDStorageInfo.isEmpty) { Thread.sleep(200) } }
+      catch {
         case _: Throwable => { Thread.sleep(10) }
         // Do nothing. We might see exceptions because block manager
         // is racing this thread to remove entries from the driver.
@@ -375,9 +370,7 @@ object DistributedSuite {
   // Act like an identity function, but if mark was set to true previously, fail,
   // crashing the entire JVM.
   def failOnMarkedIdentity(item: Boolean): Boolean = {
-    if (mark) {
-      System.exit(42)
-    }
+    if (mark) { System.exit(42) }
     item
   }
 }

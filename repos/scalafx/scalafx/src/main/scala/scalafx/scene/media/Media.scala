@@ -74,14 +74,10 @@ class Media(override val delegate: jfxsm.Media)
     * Event handler called when an error occurs.
     */
   def onError = delegate.onErrorProperty
-  def onError_=(v: Runnable) {
-    onError() = v
-  }
+  def onError_=(v: Runnable) { onError() = v }
   def onError_=(op: => Unit) {
     onError() = new Runnable {
-      def run() {
-        op
-      }
+      def run() { op }
     }
   }
 

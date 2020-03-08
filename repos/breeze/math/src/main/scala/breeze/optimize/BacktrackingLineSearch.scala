@@ -36,26 +36,18 @@ class BacktrackingLineSearch(
     Iterator
       .iterate((State(init, initfval, initfderiv), false, 0)) {
         case (state @ State(alpha, fval, fderiv), _, iter) =>
-          val multiplier = if (fval > f0 + alpha * df0 * cArmijo) {
-            shrinkStep
-          } else if (enforceWolfeConditions && (fderiv < cWolfe * df0)) {
+          val multiplier = if (fval > f0 + alpha * df0 * cArmijo) { shrinkStep }
+          else if (enforceWolfeConditions && (fderiv < cWolfe * df0)) {
             growStep
           } else if (enforceStrongWolfeConditions && (fderiv > -cWolfe * df0)) {
             shrinkStep
-          } else {
-            1.0
-          }
-          if (multiplier == 1.0) {
-            (state, true, iter)
-          } else {
+          } else { 1.0 }
+          if (multiplier == 1.0) { (state, true, iter) }
+          else {
             val newAlpha = alpha * multiplier
-            if (iter >= maxIterations) {
-              throw new LineSearchFailed(0.0, 0.0)
-            } else if (newAlpha < minAlpha) {
-              throw new StepSizeUnderflow()
-            } else if (newAlpha > maxAlpha) {
-              throw new StepSizeOverflow()
-            }
+            if (iter >= maxIterations) { throw new LineSearchFailed(0.0, 0.0) }
+            else if (newAlpha < minAlpha) { throw new StepSizeUnderflow() }
+            else if (newAlpha > maxAlpha) { throw new StepSizeOverflow() }
             val (fvalnew, fderivnew) = f.calculate(newAlpha)
             (State(newAlpha, fvalnew, fderivnew), false, iter + 1)
           }

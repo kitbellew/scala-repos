@@ -47,9 +47,7 @@ class DocResolver(
           if (!entry.isDirectory) {
             val f = new File(entry.getName)
             val dir = f.getParent
-            if (dir != null) {
-              htmlToJar += entry.getName -> jarFile
-            }
+            if (dir != null) { htmlToJar += entry.getName -> jarFile }
             // Check for javadocs
             if (entry.getName == "index.html") {
               val bytes = ByteStreams.toByteArray(jar.getInputStream(entry))
@@ -75,9 +73,7 @@ class DocResolver(
   private def javaFqnToPath(fqn: DocFqn): String = {
     if (fqn.typeName == "package") {
       fqn.pack.replace(".", "/") + "/package-summary.html"
-    } else {
-      fqn.pack.replace(".", "/") + "/" + fqn.typeName + ".html"
-    }
+    } else { fqn.pack.replace(".", "/") + "/" + fqn.typeName + ".html" }
   }
 
   def scalaFqnToPath(fqn: DocFqn): String = {

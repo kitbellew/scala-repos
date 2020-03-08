@@ -104,9 +104,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           meq(null)
         )
       ) thenAnswer answer[AsyncCallback.StatCallback](2) { cbValue =>
-        stat onSuccess {
-          cbValue.processResult(0, path, null, _)
-        } onFailure {
+        stat onSuccess { cbValue.processResult(0, path, null, _) } onFailure {
           case ke: KeeperException =>
             cbValue.processResult(ke.code.intValue, path, null, null)
         }
@@ -126,9 +124,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         1,
         2) {
         case (watcher: Watcher, cbValue: AsyncCallback.StatCallback) =>
-          stat onSuccess {
-            cbValue.processResult(0, path, null, _)
-          } onFailure {
+          stat onSuccess { cbValue.processResult(0, path, null, _) } onFailure {
             case ke: KeeperException =>
               cbValue.processResult(ke.code.intValue, path, null, null)
           }
@@ -272,11 +268,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
     "apply" in {
       val path = "/root/path/to/a/node"
       val znode = zkClient(path)
-      try {
-        znode.asInstanceOf[ZNode]
-      } catch {
-        case _: ClassCastException => fail("not ZNode")
-      }
+      try { znode.asInstanceOf[ZNode] }
+      catch { case _: ClassCastException => fail("not ZNode") }
       assert(znode.path == path)
     }
 
@@ -354,32 +347,23 @@ class ZkClientTest extends WordSpec with MockitoSugar {
 
       "withAcl" in {
         val transformed = zkClient.withAcl(acl)
-        try {
-          transformed.asInstanceOf[ZkClient]
-        } catch {
-          case _: ClassCastException => fail("not ZNode")
-        }
+        try { transformed.asInstanceOf[ZkClient] }
+        catch { case _: ClassCastException => fail("not ZNode") }
 
         assert(transformed.acl == acl)
       }
 
       "withMode" in {
         val transformed = zkClient.withMode(mode)
-        try {
-          transformed.asInstanceOf[ZkClient]
-        } catch {
-          case _: ClassCastException => fail("not ZNode")
-        }
+        try { transformed.asInstanceOf[ZkClient] }
+        catch { case _: ClassCastException => fail("not ZNode") }
         assert(transformed.mode == mode)
       }
 
       "withRetries" in {
         val transformed = zkClient.withRetries(retries)
-        try {
-          transformed.asInstanceOf[ZkClient]
-        } catch {
-          case _: ClassCastException => fail("not ZNode")
-        }
+        try { transformed.asInstanceOf[ZkClient] }
+        catch { case _: ClassCastException => fail("not ZNode") }
         assert(transformed.retryPolicy match {
           case RetryPolicy.Basic(r) => r == retries
           case _                    => false
@@ -388,22 +372,16 @@ class ZkClientTest extends WordSpec with MockitoSugar {
 
       "withRetryPolicy" in {
         val transformed = zkClient.withRetryPolicy(retryPolicy)
-        try {
-          transformed.asInstanceOf[ZkClient]
-        } catch {
-          case _: ClassCastException => fail("not ZNode")
-        }
+        try { transformed.asInstanceOf[ZkClient] }
+        catch { case _: ClassCastException => fail("not ZNode") }
         assert(transformed.retryPolicy == retryPolicy)
       }
 
       "chained" in {
         val transformed =
           zkClient.withAcl(acl).withMode(mode).withRetryPolicy(retryPolicy)
-        try {
-          transformed.asInstanceOf[ZkClient]
-        } catch {
-          case _: ClassCastException => fail("not ZNode")
-        }
+        try { transformed.asInstanceOf[ZkClient] }
+        catch { case _: ClassCastException => fail("not ZNode") }
         assert(transformed.acl == acl)
         assert(transformed.mode == mode)
         assert(transformed.retryPolicy == retryPolicy)
@@ -638,9 +616,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
 
             watch(znode.path) {
               Future.exception(new KeeperException.SessionExpiredException)
-            } {
-              Future(StateEvent.Expired())
-            }
+            } { Future(StateEvent.Expired()) }
             offer.sync()
             assert(offer.sync().isDefined == false)
           }
@@ -755,9 +731,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         val h = new GetDataHelper
         import h._
 
-        watchData(znode.path) {
-          Future(result)
-        } {
+        watchData(znode.path) { Future(result) } {
           Future(NodeEvent.DataChanged(znode.path))
         }
         try {
@@ -801,9 +775,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         }
         watchData(znode.path) {
           Future.exception(new KeeperException.SessionExpiredException)
-        } {
-          new Promise[WatchedEvent]
-        }
+        } { new Promise[WatchedEvent] }
       }
     }
 
@@ -884,9 +856,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           assert(ztu.added.map { _.path } == e.added.map { _.path }.toSet)
           assert(ztu.removed == Set())
         }
-        intercept[TimeoutException] {
-          Await.result(offer.sync(), 1.second)
-        }
+        intercept[TimeoutException] { Await.result(offer.sync(), 1.second) }
       }
 
       "ok" in okUpdates { NodeEvent.ChildrenChanged(_) }

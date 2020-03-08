@@ -21,9 +21,7 @@ private[io] class BufReader(buf: Buf) extends Reader {
     }
   }
 
-  def discard() = synchronized {
-    state = Throw(new Reader.ReaderDiscarded)
-  }
+  def discard() = synchronized { state = Throw(new Reader.ReaderDiscarded) }
 }
 
 object BufReader {

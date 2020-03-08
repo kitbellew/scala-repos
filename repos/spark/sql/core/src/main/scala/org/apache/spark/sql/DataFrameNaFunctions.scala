@@ -162,11 +162,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val projections = df.schema.fields.map { f =>
       // Only fill if the column is part of the cols list.
       if (f.dataType.isInstanceOf[NumericType] && cols.exists(col =>
-            columnEquals(f.name, col))) {
-        fillCol[Double](f, value)
-      } else {
-        df.col(f.name)
-      }
+            columnEquals(f.name, col))) { fillCol[Double](f, value) }
+      else { df.col(f.name) }
     }
     df.select(projections: _*)
   }
@@ -191,11 +188,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val projections = df.schema.fields.map { f =>
       // Only fill if the column is part of the cols list.
       if (f.dataType.isInstanceOf[StringType] && cols.exists(col =>
-            columnEquals(f.name, col))) {
-        fillCol[String](f, value)
-      } else {
-        df.col(f.name)
-      }
+            columnEquals(f.name, col))) { fillCol[String](f, value) }
+      else { df.col(f.name) }
     }
     df.select(projections: _*)
   }
@@ -316,11 +310,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     * @since 1.3.1
     */
   def replace[T](col: String, replacement: Map[T, T]): DataFrame = {
-    if (col == "*") {
-      replace0(df.columns, replacement)
-    } else {
-      replace0(Seq(col), replacement)
-    }
+    if (col == "*") { replace0(df.columns, replacement) }
+    else { replace0(Seq(col), replacement) }
   }
 
   /**
@@ -347,9 +338,7 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
   private def replace0[T](
       cols: Seq[String],
       replacement: Map[T, T]): DataFrame = {
-    if (replacement.isEmpty || cols.isEmpty) {
-      return df
-    }
+    if (replacement.isEmpty || cols.isEmpty) { return df }
 
     // replacementMap is either Map[String, String] or Map[Double, Double] or Map[Boolean,Boolean]
     val replacementMap: Map[_, _] = replacement.head._2 match {
@@ -376,9 +365,7 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
         replaceCol(f, replacementMap)
       } else if (f.dataType == targetColumnType && shouldReplace) {
         replaceCol(f, replacementMap)
-      } else {
-        df.col(f.name)
-      }
+      } else { df.col(f.name) }
     }
     df.select(projections: _*)
   }

@@ -95,27 +95,21 @@ class FormFieldDirectivesSpec extends RoutingSpec {
         formFields('firstName, "age", 'sex.?, "VIPBoolean" ? false) {
           (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
         }
-      } ~> check {
-        responseAs[String] shouldEqual "Mike<int>42</int>Nonetrue"
-      }
+      } ~> check { responseAs[String] shouldEqual "Mike<int>42</int>Nonetrue" }
     }
     "work even if only a FromStringUnmarshaller is available for a multipart field with custom Content-Type" in {
       Post("/", multipartFormWithTextHtml) ~> {
         formFields(('firstName, "age", 'super ? false)) {
           (firstName, age, vip) ⇒ complete(firstName + age + vip)
         }
-      } ~> check {
-        responseAs[String] shouldEqual "Mike<int>42</int>false"
-      }
+      } ~> check { responseAs[String] shouldEqual "Mike<int>42</int>false" }
     }
     "work even if only a FromEntityUnmarshaller is available for a www-urlencoded field" in {
       Post("/", urlEncodedFormWithVip) ~> {
         formFields('firstName, "age", 'sex.?, "super" ? nodeSeq) {
           (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
         }
-      } ~> check {
-        responseAs[String] shouldEqual "Mike42None<b>no</b>"
-      }
+      } ~> check { responseAs[String] shouldEqual "Mike42None<b>no</b>" }
     }
   }
   "The 'formField' requirement directive" should {
@@ -205,9 +199,9 @@ class FormFieldDirectivesSpec extends RoutingSpec {
       }
     }
     "produce empty Seq when FormData is empty" in {
-      Post("/", FormData.Empty) ~> {
-        formFieldSeq { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "Vector()" }
+      Post("/", FormData.Empty) ~> { formFieldSeq { echoComplete } } ~> check {
+        responseAs[String] shouldEqual "Vector()"
+      }
     }
   }
 

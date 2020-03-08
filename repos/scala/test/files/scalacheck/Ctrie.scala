@@ -29,9 +29,7 @@ object Test extends Properties("concurrent.TrieMap") {
     val threads = for (idx <- 0 until totalThreads) yield new Thread {
       setName("ParThread-" + idx)
       private var res: T = _
-      override def run() {
-        res = body(idx)
-      }
+      override def run() { res = body(idx) }
       def result = {
         this.join()
         res
@@ -46,9 +44,7 @@ object Test extends Properties("concurrent.TrieMap") {
     val t = new Thread {
       setName("SpawnThread")
       private var res: T = _
-      override def run() {
-        res = body
-      }
+      override def run() { res = body }
       def result = res
     }
     t.start()
@@ -75,9 +71,7 @@ object Test extends Properties("concurrent.TrieMap") {
 
   def hasGrown[K, V](last: Map[K, V], current: Map[K, V]) = {
     (last.size <= current.size) && {
-      last forall {
-        case (k, v) => current.get(k) == Some(v)
-      }
+      last forall { case (k, v) => current.get(k) == Some(v) }
     }
   }
 
@@ -129,9 +123,7 @@ object Test extends Properties("concurrent.TrieMap") {
   property("update") = forAll(sizes) { (n: Int) =>
     val ct = new TrieMap[Int, Int]
     for (i <- 0 until n) ct(i) = i
-    (0 until n) forall {
-      case i => ct(i) == i
-    }
+    (0 until n) forall { case i => ct(i) == i }
   }
 
   property("concurrent update") = forAll(threadCountsAndSizes) {
@@ -142,9 +134,7 @@ object Test extends Properties("concurrent.TrieMap") {
         for (i <- elementRange(idx, p, sz)) ct(Wrap(i)) = i
       }
 
-      (0 until sz) forall {
-        case i => ct(Wrap(i)) == i
-      }
+      (0 until sz) forall { case i => ct(Wrap(i)) == i }
   }
 
   property("concurrent remove") = forAll(threadCounts, sizes) { (p, sz) =>
@@ -155,9 +145,7 @@ object Test extends Properties("concurrent.TrieMap") {
       for (i <- elementRange(idx, p, sz)) ct.remove(Wrap(i))
     }
 
-    (0 until sz) forall {
-      case i => ct.get(Wrap(i)) == None
-    }
+    (0 until sz) forall { case i => ct.get(Wrap(i)) == None }
   }
 
   property("concurrent putIfAbsent") = forAll(threadCounts, sizes) { (p, sz) =>

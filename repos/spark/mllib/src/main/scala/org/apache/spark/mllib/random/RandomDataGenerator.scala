@@ -56,9 +56,7 @@ class UniformGenerator extends RandomDataGenerator[Double] {
   private val random = new XORShiftRandom()
 
   @Since("1.1.0")
-  override def nextValue(): Double = {
-    random.nextDouble()
-  }
+  override def nextValue(): Double = { random.nextDouble() }
 
   @Since("1.1.0")
   override def setSeed(seed: Long): Unit = random.setSeed(seed)
@@ -79,9 +77,7 @@ class StandardNormalGenerator extends RandomDataGenerator[Double] {
   private val random = new XORShiftRandom()
 
   @Since("1.1.0")
-  override def nextValue(): Double = {
-    random.nextGaussian()
-  }
+  override def nextValue(): Double = { random.nextGaussian() }
 
   @Since("1.1.0")
   override def setSeed(seed: Long): Unit = random.setSeed(seed)
@@ -107,9 +103,7 @@ class PoissonGenerator @Since("1.1.0") (@Since("1.1.0") val mean: Double)
   override def nextValue(): Double = rng.sample()
 
   @Since("1.1.0")
-  override def setSeed(seed: Long) {
-    rng.reseedRandomGenerator(seed)
-  }
+  override def setSeed(seed: Long) { rng.reseedRandomGenerator(seed) }
 
   @Since("1.1.0")
   override def copy(): PoissonGenerator = new PoissonGenerator(mean)
@@ -132,9 +126,7 @@ class ExponentialGenerator @Since("1.3.0") (@Since("1.3.0") val mean: Double)
   override def nextValue(): Double = rng.sample()
 
   @Since("1.3.0")
-  override def setSeed(seed: Long) {
-    rng.reseedRandomGenerator(seed)
-  }
+  override def setSeed(seed: Long) { rng.reseedRandomGenerator(seed) }
 
   @Since("1.3.0")
   override def copy(): ExponentialGenerator = new ExponentialGenerator(mean)
@@ -160,9 +152,7 @@ class GammaGenerator @Since("1.3.0") (
   override def nextValue(): Double = rng.sample()
 
   @Since("1.3.0")
-  override def setSeed(seed: Long) {
-    rng.reseedRandomGenerator(seed)
-  }
+  override def setSeed(seed: Long) { rng.reseedRandomGenerator(seed) }
 
   @Since("1.3.0")
   override def copy(): GammaGenerator = new GammaGenerator(shape, scale)
@@ -189,9 +179,7 @@ class LogNormalGenerator @Since("1.3.0") (
   override def nextValue(): Double = rng.sample()
 
   @Since("1.3.0")
-  override def setSeed(seed: Long) {
-    rng.reseedRandomGenerator(seed)
-  }
+  override def setSeed(seed: Long) { rng.reseedRandomGenerator(seed) }
 
   @Since("1.3.0")
   override def copy(): LogNormalGenerator = new LogNormalGenerator(mean, std)
@@ -213,9 +201,7 @@ class WeibullGenerator(val alpha: Double, val beta: Double)
 
   override def nextValue(): Double = rng.sample()
 
-  override def setSeed(seed: Long): Unit = {
-    rng.reseedRandomGenerator(seed)
-  }
+  override def setSeed(seed: Long): Unit = { rng.reseedRandomGenerator(seed) }
 
   override def copy(): WeibullGenerator = new WeibullGenerator(alpha, beta)
 }

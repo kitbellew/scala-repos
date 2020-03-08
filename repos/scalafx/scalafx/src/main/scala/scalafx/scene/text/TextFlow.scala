@@ -67,18 +67,14 @@ class TextFlow(override val delegate: jfxst.TextFlow = new jfxst.TextFlow)
     * Defines the vertical space in pixel between lines.
     */
   def lineSpacing: DoubleProperty = delegate.lineSpacingProperty
-  def lineSpacing_=(v: Double) {
-    lineSpacing() = v
-  }
+  def lineSpacing_=(v: Double) { lineSpacing() = v }
 
   /**
     * Defines horizontal text alignment.
     */
   def textAlignment: ObjectProperty[jfxst.TextAlignment] =
     delegate.textAlignmentProperty
-  def textAlignment_=(v: TextAlignment) {
-    textAlignment() = v
-  }
+  def textAlignment_=(v: TextAlignment) { textAlignment() = v }
 
   /**
     * Calculates the baseline offset based on the first managed child.
@@ -88,8 +84,6 @@ class TextFlow(override val delegate: jfxst.TextFlow = new jfxst.TextFlow)
   /**
     * Requests a layout pass to be performed before the next scene is rendered.
     */
-  def requestLayout() {
-    delegate.requestLayout()
-  }
+  def requestLayout() { delegate.requestLayout() }
 
 }

@@ -171,7 +171,10 @@ object ClassTag {
       case ObjectTYPE               => ClassTag.Object.asInstanceOf[ClassTag[T]]
       case NothingTYPE              => ClassTag.Nothing.asInstanceOf[ClassTag[T]]
       case NullTYPE                 => ClassTag.Null.asInstanceOf[ClassTag[T]]
-      case _                        => new ClassTag[T] { def runtimeClass = runtimeClass1 }
+      case _ =>
+        new ClassTag[T] {
+          def runtimeClass = runtimeClass1
+        }
     }
 
   def unapply[T](ctag: ClassTag[T]): Option[Class[_]] = Some(ctag.runtimeClass)

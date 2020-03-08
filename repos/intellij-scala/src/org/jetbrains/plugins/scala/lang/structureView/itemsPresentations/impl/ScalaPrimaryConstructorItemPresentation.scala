@@ -21,7 +21,5 @@ class ScalaPrimaryConstructorItemPresentation(
       myElement.asInstanceOf[ScPrimaryConstructor])
   }
 
-  override def getIcon(open: Boolean): Icon = {
-    Icons.FUNCTION
-  }
+  override def getIcon(open: Boolean): Icon = { Icons.FUNCTION }
 }

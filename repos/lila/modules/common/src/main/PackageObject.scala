@@ -54,18 +54,12 @@ trait PackageObject extends Steroids with WithFuture {
   }
 
   def parseIntOption(str: String): Option[Int] =
-    try {
-      Some(java.lang.Integer.parseInt(str))
-    } catch {
-      case e: NumberFormatException => None
-    }
+    try { Some(java.lang.Integer.parseInt(str)) }
+    catch { case e: NumberFormatException => None }
 
   def parseFloatOption(str: String): Option[Float] =
-    try {
-      Some(java.lang.Float.parseFloat(str))
-    } catch {
-      case e: NumberFormatException => None
-    }
+    try { Some(java.lang.Float.parseFloat(str)) }
+    catch { case e: NumberFormatException => None }
 
   def intBox(in: Range.Inclusive)(v: Int): Int =
     math.max(in.start, math.min(v, in.end))
@@ -107,10 +101,7 @@ trait WithPlay { self: PackageObject =>
 
   implicit def LilaFuMonoid[A: Monoid]: Monoid[Fu[A]] =
     Monoid.instance(
-      (x, y) =>
-        x zip y map {
-          case (a, b) => a ⊹ b
-        },
+      (x, y) => x zip y map { case (a, b) => a ⊹ b },
       fuccess(∅[A]))
 
   implicit def LilaFuZero[A: Zero]: Zero[Fu[A]] =
@@ -132,9 +123,7 @@ trait WithPlay { self: PackageObject =>
 
   implicit final class LilaPimpedFuture[A](fua: Fu[A]) {
 
-    def >>-(sideEffect: => Unit): Fu[A] = fua andThen {
-      case _ => sideEffect
-    }
+    def >>-(sideEffect: => Unit): Fu[A] = fua andThen { case _ => sideEffect }
 
     def >>[B](fub: => Fu[B]): Fu[B] = fua flatMap (_ => fub)
 
@@ -176,9 +165,7 @@ trait WithPlay { self: PackageObject =>
     def addEffect(effect: A => Unit) = fua ~ (_ foreach effect)
 
     def addFailureEffect(effect: Exception => Unit) =
-      fua ~ (_ onFailure {
-        case e: Exception => effect(e)
-      })
+      fua ~ (_ onFailure { case e: Exception => effect(e) })
 
     def addEffects(fail: Exception => Unit, succ: A => Unit): Fu[A] =
       fua andThen {

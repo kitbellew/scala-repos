@@ -142,9 +142,7 @@ trait ContentHelpers {
   def broadcastReceiver(filterString: String)(
       onReceiveBody: => Any)(implicit ctx: Context, reg: Registerable) {
     val receiver = new BroadcastReceiver {
-      def onReceive(context: Context, intent: Intent) {
-        onReceiveBody
-      }
+      def onReceive(context: Context, intent: Intent) { onReceiveBody }
     }
     val filter = new IntentFilter()
     filter.addAction(filterString)
@@ -166,9 +164,7 @@ trait MediaHelpers {
     */
   def play(uri: Uri = notificationSound)(implicit context: Context) {
     val r = RingtoneManager.getRingtone(context, uri)
-    if (r != null) {
-      r.play()
-    }
+    if (r != null) { r.play() }
   }
 
   @inline def alarmSound: Uri =
@@ -294,9 +290,7 @@ object PreferenceHelpers extends PreferenceHelpers {
 
     val enclosingName = getShortName(c.internal.enclosingOwner.fullName)
     val name = c.Expr[String](Literal(Constant(enclosingName)))
-    reify {
-      preferenceVar(name.splice, defaultVal.splice)
-    }
+    reify { preferenceVar(name.splice, defaultVal.splice) }
   }
 }
 

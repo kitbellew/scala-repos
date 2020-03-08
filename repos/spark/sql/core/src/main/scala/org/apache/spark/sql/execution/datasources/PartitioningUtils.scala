@@ -225,9 +225,8 @@ private[sql] object PartitioningUtils {
       }
     }
 
-    if (columns.isEmpty) {
-      (None, Some(path))
-    } else {
+    if (columns.isEmpty) { (None, Some(path)) }
+    else {
       val (columnNames, values) = columns.reverse.unzip
       (Some(PartitionValues(columnNames, values)), Some(currentPath))
     }
@@ -238,9 +237,8 @@ private[sql] object PartitioningUtils {
       defaultPartitionName: String,
       typeInference: Boolean): Option[(String, Literal)] = {
     val equalSignIndex = columnSpec.indexOf('=')
-    if (equalSignIndex == -1) {
-      None
-    } else {
+    if (equalSignIndex == -1) { None }
+    else {
       val columnName = columnSpec.take(equalSignIndex)
       assert(
         columnName.nonEmpty,
@@ -271,9 +269,8 @@ private[sql] object PartitioningUtils {
   private[sql] def resolvePartitions(
       pathsWithPartitionValues: Seq[(Path, PartitionValues)])
       : Seq[PartitionValues] = {
-    if (pathsWithPartitionValues.isEmpty) {
-      Seq.empty
-    } else {
+    if (pathsWithPartitionValues.isEmpty) { Seq.empty }
+    else {
       // TODO: Selective case sensitivity.
       val distinctPartColNames =
         pathsWithPartitionValues
@@ -349,18 +346,12 @@ private[sql] object PartitioningUtils {
         .orElse(Try(Literal(new JBigDecimal(raw))))
         // Then falls back to string
         .getOrElse {
-          if (raw == defaultPartitionName) {
-            Literal.create(null, NullType)
-          } else {
-            Literal.create(unescapePathName(raw), StringType)
-          }
+          if (raw == defaultPartitionName) { Literal.create(null, NullType) }
+          else { Literal.create(unescapePathName(raw), StringType) }
         }
     } else {
-      if (raw == defaultPartitionName) {
-        Literal.create(null, NullType)
-      } else {
-        Literal.create(unescapePathName(raw), StringType)
-      }
+      if (raw == defaultPartitionName) { Literal.create(null, NullType) }
+      else { Literal.create(unescapePathName(raw), StringType) }
     }
   }
 
@@ -400,9 +391,7 @@ private[sql] object PartitioningUtils {
       caseSensitive: Boolean): (String, String) => Boolean = {
     if (caseSensitive) {
       org.apache.spark.sql.catalyst.analysis.caseSensitiveResolution
-    } else {
-      org.apache.spark.sql.catalyst.analysis.caseInsensitiveResolution
-    }
+    } else { org.apache.spark.sql.catalyst.analysis.caseInsensitiveResolution }
   }
 
   /**
@@ -442,9 +431,7 @@ private[sql] object PartitioningUtils {
 
     clist.foreach(bitSet.set(_))
 
-    if (Shell.WINDOWS) {
-      Array(' ', '<', '>', '|').foreach(bitSet.set(_))
-    }
+    if (Shell.WINDOWS) { Array(' ', '<', '>', '|').foreach(bitSet.set(_)) }
 
     bitSet
   }
@@ -459,9 +446,7 @@ private[sql] object PartitioningUtils {
       if (needsEscaping(c)) {
         builder.append('%')
         builder.append(f"${c.asInstanceOf[Int]}%02x")
-      } else {
-        builder.append(c)
-      }
+      } else { builder.append(c) }
     }
 
     builder.toString()
@@ -475,9 +460,8 @@ private[sql] object PartitioningUtils {
       val c = path.charAt(i)
       if (c == '%' && i + 2 < path.length) {
         val code: Int =
-          try {
-            Integer.valueOf(path.substring(i + 1, i + 3), 16)
-          } catch {
+          try { Integer.valueOf(path.substring(i + 1, i + 3), 16) }
+          catch {
             case e: Exception =>
               -1: Integer
           }

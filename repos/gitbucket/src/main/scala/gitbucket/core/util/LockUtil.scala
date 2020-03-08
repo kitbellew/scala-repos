@@ -15,9 +15,7 @@ object LockUtil {
     * Returns the lock object for the specified repository.
     */
   private def getLockObject(key: String): Lock = synchronized {
-    if (!locks.containsKey(key)) {
-      locks.put(key, new ReentrantLock())
-    }
+    if (!locks.containsKey(key)) { locks.put(key, new ReentrantLock()) }
     locks.get(key)
   }
 
@@ -28,9 +26,7 @@ object LockUtil {
     try {
       lock.lock()
       f
-    } finally {
-      lock.unlock()
-    }
+    } finally { lock.unlock() }
   }
 
 }

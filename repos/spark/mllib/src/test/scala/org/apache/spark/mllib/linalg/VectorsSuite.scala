@@ -212,9 +212,7 @@ class VectorsSuite extends SparkFunSuite with Logging {
     }
   }
 
-  test("zeros") {
-    assert(Vectors.zeros(3) === Vectors.dense(0.0, 0.0, 0.0))
-  }
+  test("zeros") { assert(Vectors.zeros(3) === Vectors.dense(0.0, 0.0, 0.0)) }
 
   test("Vector.copy") {
     val sv = Vectors.sparse(4, Array(0, 2), Array(1.0, 2.0))

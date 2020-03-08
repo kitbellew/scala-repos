@@ -168,9 +168,8 @@ class ScImportStmtImpl private (
             case Some(ScalaResolveResult(p: PsiPackage, _)) =>
               poOpt() match {
                 case Some(po) =>
-                  if (checkPo) {
-                    po.getType(TypingContext.empty)
-                  } else Failure("no failure", Some(this))
+                  if (checkPo) { po.getType(TypingContext.empty) }
+                  else Failure("no failure", Some(this))
                 case _ => Failure("no failure", Some(this))
               }
             case _ => exprQualRefType()

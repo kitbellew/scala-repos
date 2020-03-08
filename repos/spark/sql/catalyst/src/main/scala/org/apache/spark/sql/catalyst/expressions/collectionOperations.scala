@@ -87,15 +87,10 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
 
     new Comparator[Any]() {
       override def compare(o1: Any, o2: Any): Int = {
-        if (o1 == null && o2 == null) {
-          0
-        } else if (o1 == null) {
-          -1
-        } else if (o2 == null) {
-          1
-        } else {
-          ordering.compare(o1, o2)
-        }
+        if (o1 == null && o2 == null) { 0 }
+        else if (o1 == null) { -1 }
+        else if (o2 == null) { 1 }
+        else { ordering.compare(o1, o2) }
       }
     }
   }
@@ -113,15 +108,10 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
 
     new Comparator[Any]() {
       override def compare(o1: Any, o2: Any): Int = {
-        if (o1 == null && o2 == null) {
-          0
-        } else if (o1 == null) {
-          1
-        } else if (o2 == null) {
-          -1
-        } else {
-          -ordering.compare(o1, o2)
-        }
+        if (o1 == null && o2 == null) { 0 }
+        else if (o1 == null) { 1 }
+        else if (o2 == null) { -1 }
+        else { -ordering.compare(o1, o2) }
       }
     }
   }
@@ -167,9 +157,7 @@ case class ArrayContains(left: Expression, right: Expression)
                  .elementType != right.dataType) {
       TypeCheckResult.TypeCheckFailure(
         "Arguments must be an array followed by a value of same type as the array members")
-    } else {
-      TypeCheckResult.TypeCheckSuccess
-    }
+    } else { TypeCheckResult.TypeCheckSuccess }
   }
 
   override def nullable: Boolean = {
@@ -185,16 +173,10 @@ case class ArrayContains(left: Expression, right: Expression)
       .foreach(
         right.dataType,
         (i, v) =>
-          if (v == null) {
-            hasNull = true
-          } else if (v == value) {
-            return true
-          })
-    if (hasNull) {
-      null
-    } else {
-      false
-    }
+          if (v == null) { hasNull = true }
+          else if (v == value) { return true })
+    if (hasNull) { null }
+    else { false }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {

@@ -85,11 +85,8 @@ object Schemifier extends Loggable {
   private def using[RetType <: Any, VarType <: ResultSet](f: => VarType)(
       f2: VarType => RetType): RetType = {
     val theVar = f
-    try {
-      f2(theVar)
-    } finally {
-      theVar.close()
-    }
+    try { f2(theVar) }
+    finally { theVar.close() }
   }
 
   /**
@@ -535,13 +532,9 @@ object Schemifier extends Loggable {
                 "ALTER TABLE " + table._dbTableNameLC + " ADD FOREIGN KEY ( " + field._dbColumnNameLC + " ) REFERENCES " + other._dbTableNameLC + " ( " + field.dbKeyToColumn._dbColumnNameLC + " ) "
               }
               field.dbAddedForeignKey.toList
-            } else {
-              Nil
-            }
+            } else { Nil }
           }
-      } else {
-        Nil
-      }
+      } else { Nil }
 
     Collector(ret, cmds.toList)
   }

@@ -272,9 +272,7 @@ object TableView {
       *
       * @param pos The table position where focus should be set.
       */
-    def focus(pos: TablePosition[_, _]) {
-      delegate.focus(pos.delegate)
-    }
+    def focus(pos: TablePosition[_, _]) { delegate.focus(pos.delegate) }
 
   }
 
@@ -347,9 +345,7 @@ class TableView[S](
     * TableCells within it are both editable will a TableCell be able to go into their editing state.
     */
   def editable: BooleanProperty = delegate.editableProperty
-  def editable_=(v: Boolean) {
-    editable() = v
-  }
+  def editable_=(v: Boolean) { editable() = v }
 
   /**
     * Represents the current cell being edited, or null if there is no cell being edited.
@@ -359,34 +355,26 @@ class TableView[S](
 
   /** Specifies whether this control has cells that are a fixed height (of the specified value). */
   def fixedCellSize: DoubleProperty = delegate.fixedCellSizeProperty
-  def fixedCellSize_=(v: Double) {
-    fixedCellSize() = v
-  }
+  def fixedCellSize_=(v: Double) { fixedCellSize() = v }
 
   /**
     * Represents the currently-installed TableView.TableViewFocusModel for this TableView.
     */
   def focusModel: ObjectProperty[jfxsc.TableView.TableViewFocusModel[S]] =
     delegate.focusModelProperty
-  def focusModel_=(v: TableView.TableViewFocusModel[S]) {
-    focusModel() = v
-  }
+  def focusModel_=(v: TableView.TableViewFocusModel[S]) { focusModel() = v }
 
   /**
     * The underlying data model for the TableView.
     */
   def items = delegate.itemsProperty
-  def items_=(v: ObservableBuffer[S]) {
-    items() = v
-  }
+  def items_=(v: ObservableBuffer[S]) { items() = v }
 
   /**
     * This Node is shown to the user when the table has no content to show.
     */
   def placeholder: ObjectProperty[jfxs.Node] = delegate.placeholderProperty
-  def placeholder_=(v: Node) {
-    placeholder() = v
-  }
+  def placeholder_=(v: Node) { placeholder() = v }
 
   /**
     * A function which produces a TableRow.
@@ -397,9 +385,7 @@ class TableView[S](
   def rowFactory_=(factory: TableView[S] => TableRow[S]) {
     delegate.rowFactoryProperty.setValue(
       new jfxu.Callback[jfxsc.TableView[S], jfxsc.TableRow[S]] {
-        def call(v: jfxsc.TableView[S]): jfxsc.TableRow[S] = {
-          factory(v)
-        }
+        def call(v: jfxsc.TableView[S]): jfxsc.TableRow[S] = { factory(v) }
       })
   }
 
@@ -426,9 +412,7 @@ class TableView[S](
     */
   def tableMenuButtonVisible: BooleanProperty =
     delegate.tableMenuButtonVisibleProperty
-  def tableMenuButtonVisible_=(v: Boolean) {
-    tableMenuButtonVisible() = v
-  }
+  def tableMenuButtonVisible_=(v: Boolean) { tableMenuButtonVisible() = v }
 
   /**
     * Causes the cell at the given row/column view indexes to switch into its editing state, if it is not already in

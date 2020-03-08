@@ -144,26 +144,18 @@ class ZookeeperSystemCoordinationSpec extends Specification {
         val sc1 = newSystemCoordination(client1)
 
         val result1 = sc1.registerRelayAgent("test_agent", 10000)
-        result1 must beLike {
-          case Success(_) => ok
-        }
+        result1 must beLike { case Success(_) => ok }
 
         val client2 = factory()
         val sc2 = newSystemCoordination(client2)
 
         val result2 = sc2.registerRelayAgent("test_agent", 10000)
-        result2 must beLike {
-          case Failure(_) => ok
-        }
+        result2 must beLike { case Failure(_) => ok }
     }
 
-    "distinguish between normal and abnormal relay agent shutdown" in {
-      todo
-    }
+    "distinguish between normal and abnormal relay agent shutdown" in { todo }
 
-    "handle sequenceid overflow by assigning new producer id" in {
-      todo
-    }
+    "handle sequenceid overflow by assigning new producer id" in { todo }
 
     "not load a missing checkpoint (checkpoints for new shards should be inserted manually via YggUtils)" in TestZookeeperClient() {
       factory: ClientFactory =>
@@ -235,9 +227,7 @@ class ZookeeperSystemCoordinationSpec extends Specification {
         var result = client != null
         client.close
         result
-      } catch {
-        case ex => false
-      }
+      } catch { case ex => false }
     }
 
     private def validatedFactory(): Option[ClientFactory] = {
@@ -256,11 +246,8 @@ class ZookeeperSystemCoordinationSpec extends Specification {
     def around[T <% Result](t: => T): Result = {
       validatedFactory()
         .map { _ =>
-          try {
-            t: Result
-          } finally {
-            cleanup
-          }
+          try { t: Result }
+          finally { cleanup }
         }
         .getOrElse(offline)
     }

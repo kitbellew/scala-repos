@@ -147,9 +147,7 @@ private[hive] class HiveClientImpl(
             case (k, v) =>
               if (k.toLowerCase.contains("password")) {
                 logDebug(s"Hive Config: $k=xxx")
-              } else {
-                logDebug(s"Hive Config: $k=$v")
-              }
+              } else { logDebug(s"Hive Config: $k=$v") }
               initialConf.set(k, v)
           }
           val state = new SessionState(initialConf)
@@ -161,9 +159,7 @@ private[hive] class HiveClientImpl(
           state.err = new PrintStream(outputBuffer, true, "UTF-8")
           state
         }
-      } finally {
-        Thread.currentThread().setContextClassLoader(original)
-      }
+      } finally { Thread.currentThread().setContextClassLoader(original) }
     ret
   }
 
@@ -191,9 +187,8 @@ private[hive] class HiveClientImpl(
     var caughtException: Exception = null
     do {
       numTries += 1
-      try {
-        return f
-      } catch {
+      try { return f }
+      catch {
         case e: Exception if causedByThrift(e) =>
           caughtException = e
           logWarning(
@@ -204,9 +199,7 @@ private[hive] class HiveClientImpl(
           Thread.sleep(retryDelayMillis)
       }
     } while (numTries <= retryLimit && System.nanoTime < deadline)
-    if (System.nanoTime > deadline) {
-      logWarning("Deadline exceeded")
-    }
+    if (System.nanoTime > deadline) { logWarning("Deadline exceeded") }
     throw caughtException
   }
 
@@ -249,23 +242,15 @@ private[hive] class HiveClientImpl(
     shim.setCurrentSessionState(state)
     val ret =
       try f
-      finally {
-        Thread.currentThread().setContextClassLoader(original)
-      }
+      finally { Thread.currentThread().setContextClassLoader(original) }
     ret
   }
 
-  def setOut(stream: PrintStream): Unit = withHiveState {
-    state.out = stream
-  }
+  def setOut(stream: PrintStream): Unit = withHiveState { state.out = stream }
 
-  def setInfo(stream: PrintStream): Unit = withHiveState {
-    state.info = stream
-  }
+  def setInfo(stream: PrintStream): Unit = withHiveState { state.info = stream }
 
-  def setError(stream: PrintStream): Unit = withHiveState {
-    state.err = stream
-  }
+  def setError(stream: PrintStream): Unit = withHiveState { state.err = stream }
 
   override def currentDatabase: String = withHiveState {
     state.getCurrentDatabase
@@ -274,9 +259,7 @@ private[hive] class HiveClientImpl(
   override def setCurrentDatabase(databaseName: String): Unit = withHiveState {
     if (getDatabaseOption(databaseName).isDefined) {
       state.setCurrentDatabase(databaseName)
-    } else {
-      throw new NoSuchDatabaseException(databaseName)
-    }
+    } else { throw new NoSuchDatabaseException(databaseName) }
   }
 
   override def createDatabase(
@@ -366,9 +349,7 @@ private[hive] class HiveClientImpl(
   }
 
   override def createTable(table: CatalogTable, ignoreIfExists: Boolean): Unit =
-    withHiveState {
-      client.createTable(toHiveTable(table), ignoreIfExists)
-    }
+    withHiveState { client.createTable(toHiveTable(table), ignoreIfExists) }
 
   override def dropTable(
       dbName: String,
@@ -465,9 +446,7 @@ private[hive] class HiveClientImpl(
   }
 
   override def listTables(dbName: String, pattern: String): Seq[String] =
-    withHiveState {
-      client.getTablesByPattern(dbName, pattern).asScala
-    }
+    withHiveState { client.getTablesByPattern(dbName, pattern).asScala }
 
   /**
     * Runs the specified SQL query using Hive.
@@ -580,9 +559,7 @@ private[hive] class HiveClientImpl(
   }
 
   override def createFunction(db: String, func: CatalogFunction): Unit =
-    withHiveState {
-      client.createFunction(toHiveFunction(func, db))
-    }
+    withHiveState { client.createFunction(toHiveFunction(func, db)) }
 
   override def dropFunction(db: String, name: String): Unit = withHiveState {
     client.dropFunction(db, name)
@@ -610,9 +587,7 @@ private[hive] class HiveClientImpl(
   }
 
   override def listFunctions(db: String, pattern: String): Seq[String] =
-    withHiveState {
-      client.getFunctions(db, pattern).asScala
-    }
+    withHiveState { client.getFunctions(db, pattern).asScala }
 
   def addJar(path: String): Unit = {
     val uri = new Path(path).toUri
@@ -638,9 +613,7 @@ private[hive] class HiveClientImpl(
       client.getIndexes("default", t, 255).asScala.foreach { index =>
         shim.dropIndex(client, "default", t, index.getIndexName)
       }
-      if (!table.isIndexTable) {
-        client.dropTable("default", t)
-      }
+      if (!table.isIndexTable) { client.dropTable("default", t) }
     }
     client.getAllDatabases.asScala.filterNot(_ == "default").foreach { db =>
       logDebug(s"Dropping Database: $db")

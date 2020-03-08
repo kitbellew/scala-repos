@@ -8,9 +8,7 @@ final class TimeBomb(delayDuration: Duration) {
 
   private var delayedAt: Double = nowMillis
 
-  def delay {
-    delayedAt = nowMillis
-  }
+  def delay { delayedAt = nowMillis }
 
   def boom = ((delayedAt + delayMs) < nowMillis)
 }

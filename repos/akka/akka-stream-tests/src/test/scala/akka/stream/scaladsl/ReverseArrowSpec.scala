@@ -69,9 +69,7 @@ class ReverseArrowSpec extends AkkaSpec {
       })
     }
 
-    "not work from Source" in {
-      "source <~ source" shouldNot compile
-    }
+    "not work from Source" in { "source <~ source" shouldNot compile }
 
     "work from FlowShape" in {
       Await.result(

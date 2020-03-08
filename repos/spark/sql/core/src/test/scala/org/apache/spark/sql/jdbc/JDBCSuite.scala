@@ -233,13 +233,9 @@ class JDBCSuite
     // Untested: IDENTITY, OTHER, UUID, ARRAY, and GEOMETRY types.
   }
 
-  after {
-    conn.close()
-  }
+  after { conn.close() }
 
-  test("SELECT *") {
-    assert(sql("SELECT * FROM foobar").collect().size === 3)
-  }
+  test("SELECT *") { assert(sql("SELECT * FROM foobar").collect().size === 3) }
 
   test("SELECT * WHERE (simple predicates)") {
     def checkPushdown(df: DataFrame): DataFrame = {
@@ -744,11 +740,8 @@ class JDBCSuite
               typeName: String,
               size: Int,
               md: MetadataBuilder): Option[DataType] =
-            if (sqlType % 2 == 0) {
-              Some(LongType)
-            } else {
-              None
-            }
+            if (sqlType % 2 == 0) { Some(LongType) }
+            else { None }
         },
         testH2Dialect
       ))

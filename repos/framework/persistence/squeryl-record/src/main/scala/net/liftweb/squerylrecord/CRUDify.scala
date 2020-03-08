@@ -47,9 +47,7 @@ trait CRUDify[K, T <: Record[T] with KeyedEntity[K]] extends Crudify {
     instance.fieldByName(pointer.name)
 
   override def findForParam(in: String): Box[TheCrudType] =
-    inTransaction {
-      table.lookup(idFromString(in))
-    }
+    inTransaction { table.lookup(idFromString(in)) }
 
   override def findForList(start: Long, count: Int) =
     inTransaction {
@@ -62,20 +60,11 @@ trait CRUDify[K, T <: Record[T] with KeyedEntity[K]] extends Crudify {
 
   protected class SquerylBridge(in: TheCrudType) extends CrudBridge {
 
-    def delete_! = inTransaction {
-      table.delete(in.id)
-    }
+    def delete_! = inTransaction { table.delete(in.id) }
 
     def save = {
-      if (in.isPersisted) {
-        inTransaction {
-          table.update(in)
-        }
-      } else {
-        inTransaction {
-          table.insert(in)
-        }
-      }
+      if (in.isPersisted) { inTransaction { table.update(in) } }
+      else { inTransaction { table.insert(in) } }
       true
     }
 

@@ -79,9 +79,7 @@ class WorksheetInProcessRunnerFactory {
         if (b == '\n') flush()
       }
 
-      override def close() {
-        flush()
-      }
+      override def close() { flush() }
 
       override def flush() {
         if (buffer.position() == 0) return
@@ -119,9 +117,7 @@ class WorksheetInProcessRunnerFactory {
           try {
             val cl = Class.forName(className, true, classLoader)
 
-            cl.getDeclaredMethods.find {
-              case m => m.getName == "main"
-            } map {
+            cl.getDeclaredMethods.find { case m => m.getName == "main" } map {
               case method =>
                 System.out match {
                   case threadLocal: ThreadLocalPrintStream =>
@@ -142,9 +138,7 @@ class WorksheetInProcessRunnerFactory {
               ).printStackTrace(new PrintStream(myOut, false))
             case e: Exception =>
               client trace e
-          } finally {
-            myOut.flush()
-          }
+          } finally { myOut.flush() }
       }
     }
 

@@ -82,9 +82,8 @@ object DevServerStart {
         }
 
         // First delete the default log file for a fresh start (only in Dev Mode)
-        try {
-          new File(path, "logs/application.log").delete()
-        } catch {
+        try { new File(path, "logs/application.log").delete() }
+        catch {
           case NonFatal(_) =>
         }
 
@@ -277,9 +276,7 @@ object DevServerStart {
           classLoader,
           serverConfig.configuration)
         serverProvider.createServer(serverContext)
-      } catch {
-        case e: ExceptionInInitializerError => throw e.getCause
-      }
+      } catch { case e: ExceptionInInitializerError => throw e.getCause }
 
     }
   }

@@ -24,11 +24,7 @@ class NondeterministicSuite extends SparkFunSuite with ExpressionEvalHelper {
     checkEvaluation(MonotonicallyIncreasingID(), 0L)
   }
 
-  test("SparkPartitionID") {
-    checkEvaluation(SparkPartitionID(), 0)
-  }
+  test("SparkPartitionID") { checkEvaluation(SparkPartitionID(), 0) }
 
-  test("InputFileName") {
-    checkEvaluation(InputFileName(), "")
-  }
+  test("InputFileName") { checkEvaluation(InputFileName(), "") }
 }

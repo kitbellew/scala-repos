@@ -32,9 +32,7 @@ class HashMap[K, V] protected (inner: mutable.Map[Box[K], V])
   override def clear(): Unit =
     inner.clear()
 
-  override def clone(): AnyRef = {
-    new HashMap(inner.clone())
-  }
+  override def clone(): AnyRef = { new HashMap(inner.clone()) }
 
   override def containsKey(key: Any): Boolean =
     inner.contains(Box(key.asInstanceOf[K]))

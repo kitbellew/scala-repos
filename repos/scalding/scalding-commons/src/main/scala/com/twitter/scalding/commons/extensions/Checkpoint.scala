@@ -140,11 +140,8 @@ object Checkpoint {
     val overrideValue: Option[String] =
       args.optional("checkpoint." + argName + "." + checkpointName)
     def value: Option[String] =
-      if (overrideValue.isDefined) {
-        overrideValue
-      } else {
-        baseValue
-      }
+      if (overrideValue.isDefined) { overrideValue }
+      else { baseValue }
     def isTrue: Boolean = value.exists { _.toLowerCase != "false" }
   }
 

@@ -329,9 +329,7 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
         "sortBy must be used together with bucketBy")
     }
 
-    for {
-      n <- numBuckets
-    } yield {
+    for { n <- numBuckets } yield {
       require(
         n > 0 && n < 100000,
         "Bucket number must be greater than 0 and less than 100000.")
@@ -455,9 +453,7 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
     try {
       var tableExists = JdbcUtils.tableExists(conn, url, table)
 
-      if (mode == SaveMode.Ignore && tableExists) {
-        return
-      }
+      if (mode == SaveMode.Ignore && tableExists) { return }
 
       if (mode == SaveMode.ErrorIfExists && tableExists) {
         sys.error(s"Table $table already exists.")
@@ -473,15 +469,10 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
         val schema = JdbcUtils.schemaString(df, url)
         val sql = s"CREATE TABLE $table ($schema)"
         val statement = conn.createStatement
-        try {
-          statement.executeUpdate(sql)
-        } finally {
-          statement.close()
-        }
+        try { statement.executeUpdate(sql) }
+        finally { statement.close() }
       }
-    } finally {
-      conn.close()
-    }
+    } finally { conn.close() }
 
     JdbcUtils.saveTable(df, url, table, props)
   }

@@ -672,9 +672,7 @@ class AppDeployIntegrationTest
     waitForEvent("deployment_success")
     WaitTestSupport.waitUntil(
       "Deployments get removed from the queue",
-      30.seconds) {
-      marathon.listDeploymentsForBaseGroup().value.isEmpty
-    }
+      30.seconds) { marathon.listDeploymentsForBaseGroup().value.isEmpty }
 
     Then("the app should also be gone")
     marathon.app(appId).code should be(404)

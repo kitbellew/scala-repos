@@ -52,9 +52,7 @@ class CodecSpec extends Specification with ScalaCheck {
           //(codec, BitSet(bits: _*))
           (codec, BitSetUtil.create(bits))
         }
-      } else {
-        Gen.value((codec, new BitSet()))
-      }
+      } else { Gen.value((codec, new BitSet())) }
     })
   }
 
@@ -68,9 +66,7 @@ class CodecSpec extends Specification with ScalaCheck {
           bits foreach { RawBitSet.set(bs, _) }
           (codec, bs)
         }
-      } else {
-        Gen.value((codec, RawBitSet.create(0)))
-      }
+      } else { Gen.value((codec, RawBitSet.create(0))) }
     })
   }
 
@@ -79,9 +75,7 @@ class CodecSpec extends Specification with ScalaCheck {
     Arbitrary(Gen.listOf(a.arbitrary) map (Vector(_: _*)))
 
   implicit def arbArray[A: Manifest: Gen]: Arbitrary[Array[A]] =
-    Arbitrary(for {
-      values <- Gen.listOf(implicitly[Gen[A]])
-    } yield {
+    Arbitrary(for { values <- Gen.listOf(implicitly[Gen[A]]) } yield {
       val array: Array[A] = values.toArray
       array
     })

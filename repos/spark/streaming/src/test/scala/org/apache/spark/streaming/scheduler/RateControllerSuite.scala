@@ -37,9 +37,7 @@ class RateControllerSuite extends TestSuiteBase {
       dstream.register()
       ssc.start()
 
-      eventually(timeout(10.seconds)) {
-        assert(dstream.publishedRates > 0)
-      }
+      eventually(timeout(10.seconds)) { assert(dstream.publishedRates > 0) }
     }
   }
 
@@ -55,9 +53,7 @@ class RateControllerSuite extends TestSuiteBase {
       ssc.start()
 
       // Wait for receiver to start
-      eventually(timeout(5.seconds)) {
-        RateTestReceiver.getActive().nonEmpty
-      }
+      eventually(timeout(5.seconds)) { RateTestReceiver.getActive().nonEmpty }
 
       // Update rate in the estimator and verify whether the rate was published to the receiver
       def updateRateAndVerify(rate: Long): Unit = {
@@ -80,9 +76,7 @@ class RateControllerSuite extends TestSuiteBase {
 private[streaming] class ConstantEstimator(@volatile private var rate: Long)
     extends RateEstimator {
 
-  def updateRate(newRate: Long): Unit = {
-    rate = newRate
-  }
+  def updateRate(newRate: Long): Unit = { rate = newRate }
 
   def compute(
       time: Long,

@@ -48,9 +48,8 @@ private[spark] object SparkCuratorUtil extends Logging {
 
   def mkdir(zk: CuratorFramework, path: String) {
     if (zk.checkExists().forPath(path) == null) {
-      try {
-        zk.create().creatingParentsIfNeeded().forPath(path)
-      } catch {
+      try { zk.create().creatingParentsIfNeeded().forPath(path) }
+      catch {
         case nodeExist: KeeperException.NodeExistsException =>
         // do nothing, ignore node existing exception.
         case e: Exception => throw e

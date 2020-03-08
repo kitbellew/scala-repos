@@ -115,9 +115,7 @@ object DateTimeUtils {
 
     if (timestampString.length > 19 && timestampString.substring(19) != ".0") {
       formatted + timestampString.substring(19)
-    } else {
-      formatted
-    }
+    } else { formatted }
   }
 
   @tailrec
@@ -131,22 +129,15 @@ object DateTimeUtils {
       stringToTime(s0 + s1)
     } else if (!s.contains('T')) {
       // JDBC escape string
-      if (s.contains(' ')) {
-        Timestamp.valueOf(s)
-      } else {
-        Date.valueOf(s)
-      }
-    } else {
-      DatatypeConverter.parseDateTime(s).getTime()
-    }
+      if (s.contains(' ')) { Timestamp.valueOf(s) }
+      else { Date.valueOf(s) }
+    } else { DatatypeConverter.parseDateTime(s).getTime() }
   }
 
   /**
     * Returns the number of days since epoch from from java.sql.Date.
     */
-  def fromJavaDate(date: Date): SQLDate = {
-    millisToDays(date.getTime)
-  }
+  def fromJavaDate(date: Date): SQLDate = { millisToDays(date.getTime) }
 
   /**
     * Returns a java.sql.Date from number of days since epoch.
@@ -179,9 +170,7 @@ object DateTimeUtils {
   def fromJavaTimestamp(t: Timestamp): SQLTimestamp = {
     if (t != null) {
       t.getTime() * 1000L + (t.getNanos().toLong / 1000) % 1000L
-    } else {
-      0L
-    }
+    } else { 0L }
   }
 
   /**
@@ -233,9 +222,7 @@ object DateTimeUtils {
     * `T[h]h:[m]m:[s]s.[ms][ms][ms][us][us][us]+[h]h:[m]m`
     */
   def stringToTimestamp(s: UTF8String): Option[SQLTimestamp] = {
-    if (s == null) {
-      return None
-    }
+    if (s == null) { return None }
     var timeZone: Option[Byte] = None
     val segments: Array[Int] = Array[Int](1, 1, 1, 0, 0, 0, 0, 0, 0)
     var i = 0
@@ -265,25 +252,19 @@ object DateTimeUtils {
             segments(3) = currentSegmentValue
             currentSegmentValue = 0
             i = 4
-          } else {
-            return None
-          }
+          } else { return None }
         } else if (i == 2) {
           if (b == ' ' || b == 'T') {
             segments(i) = currentSegmentValue
             currentSegmentValue = 0
             i += 1
-          } else {
-            return None
-          }
+          } else { return None }
         } else if (i == 3 || i == 4) {
           if (b == ':') {
             segments(i) = currentSegmentValue
             currentSegmentValue = 0
             i += 1
-          } else {
-            return None
-          }
+          } else { return None }
         } else if (i == 5 || i == 6) {
           if (b == 'Z') {
             segments(i) = currentSegmentValue
@@ -299,25 +280,17 @@ object DateTimeUtils {
             segments(i) = currentSegmentValue
             currentSegmentValue = 0
             i += 1
-          } else {
-            return None
-          }
-          if (i == 6 && b != '.') {
-            i += 1
-          }
+          } else { return None }
+          if (i == 6 && b != '.') { i += 1 }
         } else {
           if (b == ':' || b == ' ') {
             segments(i) = currentSegmentValue
             currentSegmentValue = 0
             i += 1
-          } else {
-            return None
-          }
+          } else { return None }
         }
       } else {
-        if (i == 6) {
-          digitsMilli += 1
-        }
+        if (i == 6) { digitsMilli += 1 }
         currentSegmentValue = currentSegmentValue * 10 + parsedValue
       }
       j += 1
@@ -350,13 +323,10 @@ object DateTimeUtils {
         segments(5) < 0 || segments(5) > 59 || segments(6) < 0 || segments(
           6) > 999999 ||
         segments(7) < 0 || segments(7) > 23 || segments(8) < 0 || segments(
-          8) > 59) {
-      return None
-    }
+          8) > 59) { return None }
 
-    val c = if (timeZone.isEmpty) {
-      Calendar.getInstance()
-    } else {
+    val c = if (timeZone.isEmpty) { Calendar.getInstance() }
+    else {
       Calendar.getInstance(
         TimeZone.getTimeZone(
           f"GMT${timeZone.get.toChar}${segments(7)}%02d:${segments(8)}%02d"))
@@ -393,9 +363,7 @@ object DateTimeUtils {
     * `yyyy-[m]m-[d]dT*`
     */
   def stringToDate(s: UTF8String): Option[SQLDate] = {
-    if (s == null) {
-      return None
-    }
+    if (s == null) { return None }
     val segments: Array[Int] = Array[Int](1, 1, 1)
     var i = 0
     var currentSegmentValue = 0
@@ -414,11 +382,8 @@ object DateTimeUtils {
         i += 1
       } else {
         val parsedValue = b - '0'.toByte
-        if (parsedValue < 0 || parsedValue > 9) {
-          return None
-        } else {
-          currentSegmentValue = currentSegmentValue * 10 + parsedValue
-        }
+        if (parsedValue < 0 || parsedValue > 9) { return None }
+        else { currentSegmentValue = currentSegmentValue * 10 + parsedValue }
       }
       j += 1
     }
@@ -429,9 +394,7 @@ object DateTimeUtils {
     segments(i) = currentSegmentValue
     if (segments(0) < 0 || segments(0) > 9999 || segments(1) < 1 || segments(
           1) > 12 ||
-        segments(2) < 1 || segments(2) > 31) {
-      return None
-    }
+        segments(2) < 1 || segments(2) > 31) { return None }
     val c = threadLocalGmtCalendar.get()
     c.clear()
     c.set(segments(0), segments(1) - 1, segments(2), 0, 0, 0)
@@ -520,17 +483,13 @@ object DateTimeUtils {
     * Returns the 'day in year' value for the given date. The date is expressed in days
     * since 1.1.1970.
     */
-  def getDayInYear(date: SQLDate): Int = {
-    getYearAndDayInYear(date)._2
-  }
+  def getDayInYear(date: SQLDate): Int = { getYearAndDayInYear(date)._2 }
 
   /**
     * Returns the year value for the given date. The date is expressed in days
     * since 1.1.1970.
     */
-  def getYear(date: SQLDate): Int = {
-    getYearAndDayInYear(date)._1
-  }
+  def getYear(date: SQLDate): Int = { getYearAndDayInYear(date)._1 }
 
   /**
     * Returns the quarter for the given date. The date is expressed in days
@@ -538,18 +497,11 @@ object DateTimeUtils {
     */
   def getQuarter(date: SQLDate): Int = {
     var (year, dayInYear) = getYearAndDayInYear(date)
-    if (isLeapYear(year)) {
-      dayInYear = dayInYear - 1
-    }
-    if (dayInYear <= 90) {
-      1
-    } else if (dayInYear <= 181) {
-      2
-    } else if (dayInYear <= 273) {
-      3
-    } else {
-      4
-    }
+    if (isLeapYear(year)) { dayInYear = dayInYear - 1 }
+    if (dayInYear <= 90) { 1 }
+    else if (dayInYear <= 181) { 2 }
+    else if (dayInYear <= 273) { 3 }
+    else { 4 }
   }
 
   /**
@@ -559,15 +511,13 @@ object DateTimeUtils {
   def splitDate(date: SQLDate): (Int, Int, Int, Int) = {
     var (year, dayInYear) = getYearAndDayInYear(date)
     val isLeap = isLeapYear(year)
-    if (isLeap && dayInYear == 60) {
-      (year, 2, 29, 0)
-    } else {
+    if (isLeap && dayInYear == 60) { (year, 2, 29, 0) }
+    else {
       if (isLeap && dayInYear > 60) dayInYear -= 1
 
       if (dayInYear <= 181) {
-        if (dayInYear <= 31) {
-          (year, 1, dayInYear, 31 - dayInYear)
-        } else if (dayInYear <= 59) {
+        if (dayInYear <= 31) { (year, 1, dayInYear, 31 - dayInYear) }
+        else if (dayInYear <= 59) {
           (
             year,
             2,
@@ -579,13 +529,10 @@ object DateTimeUtils {
           (year, 4, dayInYear - 90, 120 - dayInYear)
         } else if (dayInYear <= 151) {
           (year, 5, dayInYear - 120, 151 - dayInYear)
-        } else {
-          (year, 6, dayInYear - 151, 181 - dayInYear)
-        }
+        } else { (year, 6, dayInYear - 151, 181 - dayInYear) }
       } else {
-        if (dayInYear <= 212) {
-          (year, 7, dayInYear - 181, 212 - dayInYear)
-        } else if (dayInYear <= 243) {
+        if (dayInYear <= 212) { (year, 7, dayInYear - 181, 212 - dayInYear) }
+        else if (dayInYear <= 243) {
           (year, 8, dayInYear - 212, 243 - dayInYear)
         } else if (dayInYear <= 273) {
           (year, 9, dayInYear - 243, 273 - dayInYear)
@@ -593,9 +540,7 @@ object DateTimeUtils {
           (year, 10, dayInYear - 273, 304 - dayInYear)
         } else if (dayInYear <= 334) {
           (year, 11, dayInYear - 304, 334 - dayInYear)
-        } else {
-          (year, 12, dayInYear - 334, 365 - dayInYear)
-        }
+        } else { (year, 12, dayInYear - 334, 365 - dayInYear) }
       }
     }
   }
@@ -607,38 +552,22 @@ object DateTimeUtils {
   def getMonth(date: SQLDate): Int = {
     var (year, dayInYear) = getYearAndDayInYear(date)
     if (isLeapYear(year)) {
-      if (dayInYear == 60) {
-        return 2
-      } else if (dayInYear > 60) {
-        dayInYear = dayInYear - 1
-      }
+      if (dayInYear == 60) { return 2 }
+      else if (dayInYear > 60) { dayInYear = dayInYear - 1 }
     }
 
-    if (dayInYear <= 31) {
-      1
-    } else if (dayInYear <= 59) {
-      2
-    } else if (dayInYear <= 90) {
-      3
-    } else if (dayInYear <= 120) {
-      4
-    } else if (dayInYear <= 151) {
-      5
-    } else if (dayInYear <= 181) {
-      6
-    } else if (dayInYear <= 212) {
-      7
-    } else if (dayInYear <= 243) {
-      8
-    } else if (dayInYear <= 273) {
-      9
-    } else if (dayInYear <= 304) {
-      10
-    } else if (dayInYear <= 334) {
-      11
-    } else {
-      12
-    }
+    if (dayInYear <= 31) { 1 }
+    else if (dayInYear <= 59) { 2 }
+    else if (dayInYear <= 90) { 3 }
+    else if (dayInYear <= 120) { 4 }
+    else if (dayInYear <= 151) { 5 }
+    else if (dayInYear <= 181) { 6 }
+    else if (dayInYear <= 212) { 7 }
+    else if (dayInYear <= 243) { 8 }
+    else if (dayInYear <= 273) { 9 }
+    else if (dayInYear <= 304) { 10 }
+    else if (dayInYear <= 334) { 11 }
+    else { 12 }
   }
 
   /**
@@ -648,38 +577,22 @@ object DateTimeUtils {
   def getDayOfMonth(date: SQLDate): Int = {
     var (year, dayInYear) = getYearAndDayInYear(date)
     if (isLeapYear(year)) {
-      if (dayInYear == 60) {
-        return 29
-      } else if (dayInYear > 60) {
-        dayInYear = dayInYear - 1
-      }
+      if (dayInYear == 60) { return 29 }
+      else if (dayInYear > 60) { dayInYear = dayInYear - 1 }
     }
 
-    if (dayInYear <= 31) {
-      dayInYear
-    } else if (dayInYear <= 59) {
-      dayInYear - 31
-    } else if (dayInYear <= 90) {
-      dayInYear - 59
-    } else if (dayInYear <= 120) {
-      dayInYear - 90
-    } else if (dayInYear <= 151) {
-      dayInYear - 120
-    } else if (dayInYear <= 181) {
-      dayInYear - 151
-    } else if (dayInYear <= 212) {
-      dayInYear - 181
-    } else if (dayInYear <= 243) {
-      dayInYear - 212
-    } else if (dayInYear <= 273) {
-      dayInYear - 243
-    } else if (dayInYear <= 304) {
-      dayInYear - 273
-    } else if (dayInYear <= 334) {
-      dayInYear - 304
-    } else {
-      dayInYear - 334
-    }
+    if (dayInYear <= 31) { dayInYear }
+    else if (dayInYear <= 59) { dayInYear - 31 }
+    else if (dayInYear <= 90) { dayInYear - 59 }
+    else if (dayInYear <= 120) { dayInYear - 90 }
+    else if (dayInYear <= 151) { dayInYear - 120 }
+    else if (dayInYear <= 181) { dayInYear - 151 }
+    else if (dayInYear <= 212) { dayInYear - 181 }
+    else if (dayInYear <= 243) { dayInYear - 212 }
+    else if (dayInYear <= 273) { dayInYear - 243 }
+    else if (dayInYear <= 304) { dayInYear - 273 }
+    else if (dayInYear <= 334) { dayInYear - 304 }
+    else { dayInYear - 334 }
   }
 
   /**
@@ -695,9 +608,7 @@ object DateTimeUtils {
     val absoluteYear = absoluteMonth / 12
     var monthInYear = absoluteMonth - absoluteYear * 12
     var date = getDateFromYear(absoluteYear)
-    if (monthInYear >= 2 && isLeapYear(absoluteYear + YearZero)) {
-      date += 1
-    }
+    if (monthInYear >= 2 && isLeapYear(absoluteYear + YearZero)) { date += 1 }
     while (monthInYear > 0) {
       date += monthDays(monthInYear - 1)
       monthInYear -= 1
@@ -736,9 +647,7 @@ object DateTimeUtils {
       if (daysToMonthEnd == 0 || dayOfMonth >= lastDayOfMonth) {
         // last day of the month
         lastDayOfMonth
-      } else {
-        dayOfMonth
-      }
+      } else { dayOfMonth }
     firstDayOfMonth(nonNegativeMonth) + currentDayInMonth - 1
   }
 
@@ -834,11 +743,9 @@ object DateTimeUtils {
     * Trunc level should be generated using `parseTruncLevel()`, should only be 1 or 2.
     */
   def truncDate(d: SQLDate, level: Int): SQLDate = {
-    if (level == TRUNC_TO_YEAR) {
-      d - DateTimeUtils.getDayInYear(d) + 1
-    } else if (level == TRUNC_TO_MONTH) {
-      d - DateTimeUtils.getDayOfMonth(d) + 1
-    } else {
+    if (level == TRUNC_TO_YEAR) { d - DateTimeUtils.getDayInYear(d) + 1 }
+    else if (level == TRUNC_TO_MONTH) { d - DateTimeUtils.getDayOfMonth(d) + 1 }
+    else {
       // caller make sure that this should never be reached
       sys.error(s"Invalid trunc level: $level")
     }
@@ -849,9 +756,8 @@ object DateTimeUtils {
     * TRUNC_INVALID means unsupported truncate level.
     */
   def parseTruncLevel(format: UTF8String): Int = {
-    if (format == null) {
-      TRUNC_INVALID
-    } else {
+    if (format == null) { TRUNC_INVALID }
+    else {
       format.toString.toUpperCase match {
         case "YEAR" | "YYYY" | "YY" => TRUNC_TO_YEAR
         case "MON" | "MONTH" | "MM" => TRUNC_TO_MONTH

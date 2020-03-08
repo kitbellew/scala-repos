@@ -483,9 +483,8 @@ private[internal] trait GlbLubs {
       val start =
         if (Statistics.canEnable) Statistics.pushTimer(typeOpsStack, lubNanos)
         else null
-      try {
-        glbNorm(ts0, lubDepth(ts0))
-      } finally {
+      try { glbNorm(ts0, lubDepth(ts0)) }
+      finally {
         lubResults.clear()
         glbResults.clear()
         if (Statistics.canEnable) Statistics.popTimer(typeOpsStack, start)
@@ -597,9 +596,7 @@ private[internal] trait GlbLubs {
                     } catch {
                       case ex: NoCommonType =>
                     }
-              } finally {
-                globalGlbDepth = globalGlbDepth.decr
-              }
+              } finally { globalGlbDepth = globalGlbDepth.decr }
             if (glbRefined.decls.isEmpty) glbBase else glbRefined
           }
         existentialAbstraction(tparams, glbType)

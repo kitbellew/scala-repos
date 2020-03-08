@@ -198,9 +198,7 @@ class JavapClass(
           // next blank line terminates section
           // in non-verbose mode, next line is next method, more or less
           line.trim.nonEmpty && (!isAnyMethod || isOurMethod)
-        } else {
-          isAnyMethod && isOurMethod
-        }
+        } else { isAnyMethod && isOurMethod }
         filtering
       }
       // do we output this line?
@@ -359,9 +357,7 @@ class JavapClass(
         filter: Boolean,
         klass: String,
         inputs: Seq[Input]): Try[JpResult] =
-      Try {
-        task(options, Seq(klass), inputs).call()
-      } map {
+      Try { task(options, Seq(klass), inputs).call() } map {
         case true => JpResult(showable(klass, filter))
         case _    => JpResult(reporter.reportable())
       } recoverWith {
@@ -371,9 +367,7 @@ class JavapClass(
               Success(JpResult(t.getMessage)) // bad option
             case x => Failure(x)
           }
-      } lastly {
-        reporter.clear()
-      }
+      } lastly { reporter.clear() }
 
     /** Run the tool. */
     def apply(options: Seq[String], filter: Boolean)(

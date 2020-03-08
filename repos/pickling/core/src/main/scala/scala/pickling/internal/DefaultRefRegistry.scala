@@ -31,9 +31,8 @@ class DefaultRefPicklingRegistry extends RefPicklingRegistry {
     val anyRefPicklee = picklee.asInstanceOf[AnyRef]
     // check if `anyRefPicklee` is already in the map.
     // if so, obtain its index, else insert at index `nextPicklee`.
-    if (refs.containsKey(anyRefPicklee)) {
-      refs.get(anyRefPicklee).intValue
-    } else {
+    if (refs.containsKey(anyRefPicklee)) { refs.get(anyRefPicklee).intValue }
+    else {
       refs.put(anyRefPicklee, new Integer(nextPicklee))
       nextPicklee = nextPicklee + 1
       -1

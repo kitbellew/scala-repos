@@ -89,12 +89,7 @@ case class DateAdd(startDate: Expression, days: Expression)
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
-    nullSafeCodeGen(
-      ctx,
-      ev,
-      (sd, d) => {
-        s"""${ev.value} = $sd + $d;"""
-      })
+    nullSafeCodeGen(ctx, ev, (sd, d) => { s"""${ev.value} = $sd + $d;""" })
   }
 
   override def prettyName: String = "date_add"
@@ -118,12 +113,7 @@ case class DateSub(startDate: Expression, days: Expression)
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
-    nullSafeCodeGen(
-      ctx,
-      ev,
-      (sd, d) => {
-        s"""${ev.value} = $sd - $d;"""
-      })
+    nullSafeCodeGen(ctx, ev, (sd, d) => { s"""${ev.value} = $sd - $d;""" })
   }
 
   override def prettyName: String = "date_sub"
@@ -356,9 +346,7 @@ case class ToUnixTimestamp(timeExp: Expression, format: Expression)
   override def left: Expression = timeExp
   override def right: Expression = format
 
-  def this(time: Expression) = {
-    this(time, Literal("yyyy-MM-dd HH:mm:ss"))
-  }
+  def this(time: Expression) = { this(time, Literal("yyyy-MM-dd HH:mm:ss")) }
 
   override def prettyName: String = "to_unix_timestamp"
 }
@@ -378,13 +366,9 @@ case class UnixTimestamp(timeExp: Expression, format: Expression)
   override def left: Expression = timeExp
   override def right: Expression = format
 
-  def this(time: Expression) = {
-    this(time, Literal("yyyy-MM-dd HH:mm:ss"))
-  }
+  def this(time: Expression) = { this(time, Literal("yyyy-MM-dd HH:mm:ss")) }
 
-  def this() = {
-    this(CurrentTimestamp())
-  }
+  def this() = { this(CurrentTimestamp()) }
 
   override def prettyName: String = "unix_timestamp"
 }
@@ -402,9 +386,8 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
 
   override def eval(input: InternalRow): Any = {
     val t = left.eval(input)
-    if (t == null) {
-      null
-    } else {
+    if (t == null) { null }
+    else {
       left.dataType match {
         case DateType =>
           DateTimeUtils.daysToMillis(t.asInstanceOf[Int]) / 1000L
@@ -416,14 +399,11 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
               new SimpleDateFormat(constFormat.toString)
                 .parse(t.asInstanceOf[UTF8String].toString)
                 .getTime / 1000L).getOrElse(null)
-          } else {
-            null
-          }
+          } else { null }
         case StringType =>
           val f = right.eval(input)
-          if (f == null) {
-            null
-          } else {
+          if (f == null) { null }
+          else {
             val formatString = f.asInstanceOf[UTF8String].toString
             Try(
               new SimpleDateFormat(formatString)
@@ -522,9 +502,7 @@ case class FromUnixTime(sec: Expression, format: Expression)
 
   override def prettyName: String = "from_unixtime"
 
-  def this(unix: Expression) = {
-    this(unix, Literal("yyyy-MM-dd HH:mm:ss"))
-  }
+  def this(unix: Expression) = { this(unix, Literal("yyyy-MM-dd HH:mm:ss")) }
 
   override def dataType: DataType = StringType
   override def nullable: Boolean = true
@@ -536,13 +514,11 @@ case class FromUnixTime(sec: Expression, format: Expression)
 
   override def eval(input: InternalRow): Any = {
     val time = left.eval(input)
-    if (time == null) {
-      null
-    } else {
+    if (time == null) { null }
+    else {
       if (format.foldable) {
-        if (constFormat == null) {
-          null
-        } else {
+        if (constFormat == null) { null }
+        else {
           Try(
             UTF8String.fromString(new SimpleDateFormat(constFormat.toString)
               .format(new java.util.Date(time.asInstanceOf[Long] * 1000L))))
@@ -550,9 +526,8 @@ case class FromUnixTime(sec: Expression, format: Expression)
         }
       } else {
         val f = format.eval(input)
-        if (f == null) {
-          null
-        } else {
+        if (f == null) { null }
+        else {
           Try(
             UTF8String.fromString(
               new SimpleDateFormat(f.asInstanceOf[UTF8String].toString)
@@ -651,9 +626,8 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
   override def nullSafeEval(start: Any, dayOfW: Any): Any = {
     val dow =
       DateTimeUtils.getDayOfWeekFromString(dayOfW.asInstanceOf[UTF8String])
-    if (dow == -1) {
-      null
-    } else {
+    if (dow == -1) { null }
+    else {
       val sd = start.asInstanceOf[Int]
       DateTimeUtils.getNextDateForDayOfWeek(sd, dow)
     }
@@ -844,12 +818,7 @@ case class AddMonths(startDate: Expression, numMonths: Expression)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
-    defineCodeGen(
-      ctx,
-      ev,
-      (sd, m) => {
-        s"""$dtu.dateAddMonths($sd, $m)"""
-      })
+    defineCodeGen(ctx, ev, (sd, m) => { s"""$dtu.dateAddMonths($sd, $m)""" })
   }
 
   override def prettyName: String = "add_months"
@@ -876,12 +845,7 @@ case class MonthsBetween(date1: Expression, date2: Expression)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
-    defineCodeGen(
-      ctx,
-      ev,
-      (l, r) => {
-        s"""$dtu.monthsBetween($l, $r)"""
-      })
+    defineCodeGen(ctx, ev, (l, r) => { s"""$dtu.monthsBetween($l, $r)""" })
   }
 
   override def prettyName: String = "months_between"
@@ -983,9 +947,8 @@ case class TruncDate(date: Expression, format: Expression)
     DateTimeUtils.parseTruncLevel(format.eval().asInstanceOf[UTF8String])
 
   override def eval(input: InternalRow): Any = {
-    val level = if (format.foldable) {
-      truncLevel
-    } else {
+    val level = if (format.foldable) { truncLevel }
+    else {
       DateTimeUtils.parseTruncLevel(format.eval().asInstanceOf[UTF8String])
     }
     if (level == -1) {
@@ -993,11 +956,8 @@ case class TruncDate(date: Expression, format: Expression)
       null
     } else {
       val d = date.eval(input)
-      if (d == null) {
-        null
-      } else {
-        DateTimeUtils.truncDate(d.asInstanceOf[Int], level)
-      }
+      if (d == null) { null }
+      else { DateTimeUtils.truncDate(d.asInstanceOf[Int], level) }
     }
   }
 

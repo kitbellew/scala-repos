@@ -12,32 +12,24 @@ class TaskStatusUpdateTestHelper(val wrapped: TaskStatusUpdate) {
   }
 
   def withTaskId(taskId: TaskID): TaskStatusUpdateTestHelper =
-    TaskStatusUpdateTestHelper {
-      wrapped.copy(taskId = Task.Id(taskId))
-    }
+    TaskStatusUpdateTestHelper { wrapped.copy(taskId = Task.Id(taskId)) }
 
   def withTaskId(taskId: Task.Id): TaskStatusUpdateTestHelper =
-    TaskStatusUpdateTestHelper {
-      wrapped.copy(taskId = taskId)
-    }
+    TaskStatusUpdateTestHelper { wrapped.copy(taskId = taskId) }
 
   def withAppId(appId: String): TaskStatusUpdateTestHelper = {
     withTaskId(TaskStatusUpdateTestHelper.newTaskID(appId))
   }
 
   def withStatus(status: MarathonTaskStatus): TaskStatusUpdateTestHelper =
-    TaskStatusUpdateTestHelper {
-      wrapped.copy(status = status)
-    }
+    TaskStatusUpdateTestHelper { wrapped.copy(status = status) }
 }
 
 object TaskStatusUpdateTestHelper {
   def apply(update: TaskStatusUpdate): TaskStatusUpdateTestHelper =
     new TaskStatusUpdateTestHelper(update)
 
-  private def newTaskID(appId: String) = {
-    Task.Id.forApp(PathId(appId))
-  }
+  private def newTaskID(appId: String) = { Task.Id.forApp(PathId(appId)) }
 
   val taskId = newTaskID("/app")
 

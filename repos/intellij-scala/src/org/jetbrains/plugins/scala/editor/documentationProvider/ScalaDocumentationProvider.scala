@@ -292,9 +292,7 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
     contextElement match {
       case comment: ScDocComment =>
         val commentOwner = comment.getOwner
-        if (commentOwner != null) {
-          return commentOwner.getDocComment
-        }
+        if (commentOwner != null) { return commentOwner.getDocComment }
       case _ =>
     }
 
@@ -536,9 +534,7 @@ object ScalaDocumentationProvider {
           for (paramTag <- javaComment findTagsByName "param") {
             if (paramTag.getValueElement.getText startsWith "<") {
               registerInheritedParam(inheritedTParams, paramTag)
-            } else {
-              registerInheritedParam(inheritedParams, paramTag)
-            }
+            } else { registerInheritedParam(inheritedParams, paramTag) }
           }
         case _ =>
       }
@@ -823,9 +819,7 @@ object ScalaDocumentationProvider {
 
       res.toString()
     }
-    for (ann <- elem.annotations) {
-      buffer.append(parseAnnotation(ann) + sep)
-    }
+    for (ann <- elem.annotations) { buffer.append(parseAnnotation(ann) + sep) }
     buffer.toString()
   }
   @tailrec
@@ -843,9 +837,7 @@ object ScalaDocumentationProvider {
         fun.typeParameters
           .map(param => escapeHtml(param.name))
           .mkString("<", " , ", ">")
-      } else {
-        ""
-      }
+      } else { "" }
     }
 
     Option(elem.getDocComment) match {
@@ -1024,9 +1016,7 @@ object ScalaDocumentationProvider {
                 if (element.getText.length() <= 6) element.getText.length()
                 else 6
               result.append("</h" + headerSize + ">")
-            } else {
-              result.append(element.getText)
-            }
+            } else { result.append(element.getText) }
           case ScalaDocTokenType.DOC_HTTP_LINK_TAG =>
             result.append("<a href=\"")
           case ScalaDocTokenType.DOC_LINK_TAG => result.append("{@link ")
@@ -1041,12 +1031,8 @@ object ScalaDocumentationProvider {
                   .append("\">")
                   .append(trimmedText.substring(spaceIndex + 1))
                   .append("</a>")
-              } else {
-                result.append("\">" + linkText + "</a>")
-              }
-            } else {
-              result.append("}")
-            }
+              } else { result.append("\">" + linkText + "</a>") }
+            } else { result.append("}") }
           case ScalaDocTokenType.DOC_COMMENT_DATA
               if element.getParent.isInstanceOf[ScDocTag] &&
                 element.getParent

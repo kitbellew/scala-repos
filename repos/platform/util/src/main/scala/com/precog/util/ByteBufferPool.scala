@@ -78,9 +78,7 @@ final class ByteBufferPool(
       buffer =
         if (direct) ByteBuffer.allocateDirect(capacity)
         else ByteBuffer.allocate(capacity)
-    } else {
-      _hits.incrementAndGet()
-    }
+    } else { _hits.incrementAndGet() }
 
     buffer.clear()
     buffer
@@ -114,10 +112,7 @@ object ByteBufferPool {
 
     def bind[A, B](fa: ByteBufferPoolS[A])(
         f: A => ByteBufferPoolS[B]): ByteBufferPoolS[B] =
-      State(s =>
-        fa(s) match {
-          case (s, a) => f(a)(s)
-        })
+      State(s => fa(s) match { case (s, a) => f(a)(s) })
 
     def getBuffer(min: Int): ByteBufferPoolS[ByteBuffer] =
       ByteBufferPool.acquire(min)

@@ -76,9 +76,7 @@ class JobGeneratorSuite extends TestSuiteBase {
 
       inputStream.foreachRDD((rdd: RDD[Int], time: Time) => {
         if (time.milliseconds == longBatchTime) {
-          while (waitLatch.getCount() > 0) {
-            waitLatch.await()
-          }
+          while (waitLatch.getCount() > 0) { waitLatch.await() }
         }
       })
 
@@ -99,16 +97,12 @@ class JobGeneratorSuite extends TestSuiteBase {
 
       // Wait for new blocks to be received
       def waitForNewReceivedBlocks() {
-        eventually(testTimeout) {
-          assert(receiverTracker.hasUnallocatedBlocks)
-        }
+        eventually(testTimeout) { assert(receiverTracker.hasUnallocatedBlocks) }
       }
 
       // Wait for received blocks to be allocated to a batch
       def waitForBlocksToBeAllocatedToBatch(batchTime: Long) {
-        eventually(testTimeout) {
-          assert(getBlocksOfBatch(batchTime).nonEmpty)
-        }
+        eventually(testTimeout) { assert(getBlocksOfBatch(batchTime).nonEmpty) }
       }
 
       // Generate a large number of batches with blocks in them

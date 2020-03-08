@@ -6,7 +6,9 @@ object Test {
 }
 
 package foo {
-  trait Foo { def foo() {} }
+  trait Foo {
+    def foo() {}
+  }
   class Bar extends Baz with Foo
 
   abstract class Baz

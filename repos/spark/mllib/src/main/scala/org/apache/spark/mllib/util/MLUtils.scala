@@ -41,9 +41,7 @@ object MLUtils {
 
   private[mllib] lazy val EPSILON = {
     var eps = 1.0
-    while ((1.0 + (eps / 2.0)) != 1.0) {
-      eps /= 2.0
-    }
+    while ((1.0 + (eps / 2.0)) != 1.0) { eps /= 2.0 }
     eps
   }
 
@@ -108,9 +106,8 @@ object MLUtils {
       }
 
     // Determine number of features.
-    val d = if (numFeatures > 0) {
-      numFeatures
-    } else {
+    val d = if (numFeatures > 0) { numFeatures }
+    else {
       parsed.persist(StorageLevel.MEMORY_ONLY)
       parsed
         .map {
@@ -404,12 +401,8 @@ object MLUtils {
       val precisionBound2 =
         EPSILON * (sumSquaredNorm + 2.0 * math.abs(dotValue)) /
           (sqDist + EPSILON)
-      if (precisionBound2 > precision) {
-        sqDist = Vectors.sqdist(v1, v2)
-      }
-    } else {
-      sqDist = Vectors.sqdist(v1, v2)
-    }
+      if (precisionBound2 > precision) { sqDist = Vectors.sqdist(v1, v2) }
+    } else { sqDist = Vectors.sqdist(v1, v2) }
     sqDist
   }
 
@@ -422,10 +415,7 @@ object MLUtils {
     * @return the result of `math.log(1 + math.exp(x))`.
     */
   private[spark] def log1pExp(x: Double): Double = {
-    if (x > 0) {
-      x + math.log1p(math.exp(-x))
-    } else {
-      math.log1p(math.exp(x))
-    }
+    if (x > 0) { x + math.log1p(math.exp(-x)) }
+    else { math.log1p(math.exp(x)) }
   }
 }

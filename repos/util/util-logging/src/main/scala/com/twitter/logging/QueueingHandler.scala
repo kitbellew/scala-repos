@@ -127,9 +127,7 @@ class QueueingHandler(
   }
 
   // begin polling for log records
-  DefaultFuturePool {
-    loop()
-  }
+  DefaultFuturePool { loop() }
 
   override def close(): Unit = {
     if (closed.compareAndSet(false, true)) {

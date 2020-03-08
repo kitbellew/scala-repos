@@ -36,9 +36,8 @@ private[history] class HistoryServerArguments(
 
   @tailrec
   private def parse(args: List[String]): Unit = {
-    if (args.length == 1) {
-      setLogDirectory(args.head)
-    } else {
+    if (args.length == 1) { setLogDirectory(args.head) }
+    else {
       args match {
         case ("--dir" | "-d") :: value :: tail =>
           setLogDirectory(value)

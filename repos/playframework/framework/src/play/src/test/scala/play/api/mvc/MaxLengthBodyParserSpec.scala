@@ -28,9 +28,7 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
   import system.dispatcher
   implicit val mat = ActorMaterializer()
 
-  override def afterAll: Unit = {
-    system.terminate()
-  }
+  override def afterAll: Unit = { system.terminate() }
 
   def bodyParser
       : (Accumulator[ByteString, Either[Result, ByteString]], Future[Unit]) = {

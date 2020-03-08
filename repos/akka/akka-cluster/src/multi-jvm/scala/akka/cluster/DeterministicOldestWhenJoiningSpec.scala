@@ -58,9 +58,7 @@ abstract class DeterministicOldestWhenJoiningSpec
       cluster.subscribe(testActor, classOf[MemberUp])
       expectMsgType[CurrentClusterState]
 
-      runOn(roleByAddress(seedNodes.head)) {
-        cluster.joinSeedNodes(seedNodes)
-      }
+      runOn(roleByAddress(seedNodes.head)) { cluster.joinSeedNodes(seedNodes) }
       enterBarrier("first-seed-joined")
 
       runOn(

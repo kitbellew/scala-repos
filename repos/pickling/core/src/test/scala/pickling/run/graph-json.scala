@@ -9,9 +9,7 @@ class Vertex(val label: String) {
 
   var graph: Graph = null
 
-  def connectTo(v: Vertex) {
-    neighbors = v +: neighbors
-  }
+  def connectTo(v: Vertex) { neighbors = v +: neighbors }
 
   override def toString = "Vertex(" + label + ")"
 }

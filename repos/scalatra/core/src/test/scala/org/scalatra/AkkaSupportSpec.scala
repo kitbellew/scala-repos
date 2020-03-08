@@ -21,9 +21,7 @@ class AkkaSupportServlet extends ScalatraServlet with FutureSupport {
 
   get("/redirect") {
     new AsyncResult {
-      val is: Future[_] = Future {
-        redirect("redirected")
-      }
+      val is: Future[_] = Future { redirect("redirected") }
     }
   }
 
@@ -47,46 +45,30 @@ class AkkaSupportServlet extends ScalatraServlet with FutureSupport {
     }
   }
 
-  get("/redirected") {
-    "redirected"
-  }
+  get("/redirected") { "redirected" }
 
-  asyncGet("/working") {
-    "the-working-reply"
-  }
+  asyncGet("/working") { "the-working-reply" }
 
-  asyncGet("/timeout") {
-    Thread.sleep((asyncTimeout plus 1.second).toMillis)
-  }
+  asyncGet("/timeout") { Thread.sleep((asyncTimeout plus 1.second).toMillis) }
 
   class FailException extends RuntimeException
 
-  asyncGet("/fail") {
-    throw new FailException
-  }
+  asyncGet("/fail") { throw new FailException }
 
   class FailHarderException extends RuntimeException
 
-  asyncGet("/fail-harder") {
-    throw new FailHarderException
-  }
+  asyncGet("/fail-harder") { throw new FailHarderException }
 
-  asyncGet("/halt") {
-    halt(419)
-  }
+  asyncGet("/halt") { halt(419) }
 
-  asyncGet("/*.jpg") {
-    "jpeg"
-  }
+  asyncGet("/*.jpg") { "jpeg" }
 
   override protected def contentTypeInferrer =
     ({
       case "jpeg" => "image/jpeg"
     }: ContentTypeInferrer) orElse super.contentTypeInferrer
 
-  error {
-    case e: FailException => "caught"
-  }
+  error { case e: FailException => "caught" }
 
   override def destroy() {
     super.destroy()
@@ -115,9 +97,7 @@ class AkkaSupportSpec extends MutableScalatraSpec {
 
   "The AkkaSupport" should {
     "render the reply of an actor" in {
-      get("/working") {
-        body must_== "the-working-reply"
-      }
+      get("/working") { body must_== "the-working-reply" }
     }
 
     "respond with timeout if no timely reply from the actor" in {
@@ -128,27 +108,17 @@ class AkkaSupportSpec extends MutableScalatraSpec {
     }
 
     "handle an async exception" in {
-      get("/fail") {
-        body must contain("caught")
-      }
+      get("/fail") { body must contain("caught") }
     }
 
     "return 500 for an unhandled async exception" in {
-      get("/fail-harder") {
-        status must_== 500
-      }
+      get("/fail-harder") { status must_== 500 }
     }
 
-    "render a halt" in {
-      get("/halt") {
-        status must_== 419
-      }
-    }
+    "render a halt" in { get("/halt") { status must_== 419 } }
 
     "infers the content type of the future result" in {
-      get("/foo.jpg") {
-        header("Content-Type") must startWith("image/jpeg")
-      }
+      get("/foo.jpg") { header("Content-Type") must startWith("image/jpeg") }
     }
 
     "redirect with the redirect method" in {
@@ -176,18 +146,14 @@ class AkkaSupportSpec extends MutableScalatraSpec {
         }
         Future {
           blocking {
-            id.toString -> client.get(s"/async-attributes/$id") {
-              client.body
-            }
+            id.toString -> client.get(s"/async-attributes/$id") { client.body }
           }
         }(multiClentEc)
       }
       val fIdsToresponses = Future.sequence(idsToResponseFs)
       val idsToResponses = Await.result(fIdsToresponses, 60.seconds)
       foreachWhen(idsToResponses) {
-        case (expected, actual) => {
-          expected must_== actual
-        }
+        case (expected, actual) => { expected must_== actual }
       }
     }
   }

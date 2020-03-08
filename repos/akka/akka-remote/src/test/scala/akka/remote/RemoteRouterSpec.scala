@@ -11,9 +11,7 @@ import com.typesafe.config._
 
 object RemoteRouterSpec {
   class Echo extends Actor {
-    def receive = {
-      case _ ⇒ sender() ! self
-    }
+    def receive = { case _ ⇒ sender() ! self }
   }
 }
 
@@ -73,9 +71,7 @@ class RemoteRouterSpec
     }""").withFallback(system.settings.config)
   val masterSystem = ActorSystem("Master" + sysName, conf)
 
-  override def afterTermination() {
-    shutdown(masterSystem)
-  }
+  override def afterTermination() { shutdown(masterSystem) }
 
   "A Remote Router" must {
 

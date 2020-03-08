@@ -101,9 +101,7 @@ object LogQuery {
       .map(line => (extractKey(line), extractStats(line)))
       .reduceByKey((a, b) => a.merge(b))
       .collect()
-      .foreach {
-        case (user, query) => println("%s\t%s".format(user, query))
-      }
+      .foreach { case (user, query) => println("%s\t%s".format(user, query)) }
 
     sc.stop()
   }

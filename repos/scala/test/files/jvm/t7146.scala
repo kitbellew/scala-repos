@@ -29,6 +29,8 @@ object Test {
     print("should just print out on uncaught: ")
     u.uncaughtException(
       Thread.currentThread,
-      new Throwable { override def printStackTrace() { println("true") } })
+      new Throwable {
+        override def printStackTrace() { println("true") }
+      })
   }
 }

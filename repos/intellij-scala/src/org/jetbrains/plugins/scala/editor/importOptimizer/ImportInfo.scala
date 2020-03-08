@@ -62,9 +62,7 @@ case class ImportInfo(
     }
     result ++= renames.map { rename => template.copy(renames = Map(rename)) }
     result ++= hiddenNames.map { hidden => this.toHiddenNameInfo(hidden) }
-    if (hasWildcard) {
-      result += this.toWildcardInfo
-    }
+    if (hasWildcard) { result += this.toWildcardInfo }
     result
   }
 
@@ -201,9 +199,8 @@ object ImportInfo {
         val refName: String = selector.reference.refName
         if (selector.isAliasedImport) {
           val importedName: String = selector.importedName
-          if (importedName == "_") {
-            hiddenNames += refName
-          } else if (importedName == refName) {
+          if (importedName == "_") { hiddenNames += refName }
+          else if (importedName == refName) {
             singleNames += refName
             addAllNames(selector.reference, refName)
           } else {
@@ -252,9 +249,7 @@ object ImportInfo {
       }
     }
 
-    def withDot(s: String): String = {
-      if (s.isEmpty) "" else "." + s
-    }
+    def withDot(s: String): String = { if (s.isEmpty) "" else "." + s }
 
     @tailrec
     def isRelativeObject(o: ScObject, res: Boolean = false): Boolean = {
@@ -315,9 +310,7 @@ object ImportInfo {
       else {
         val qualifiedDeepRef =
           try qualifiedRef(deepRef)
-          catch {
-            case _: IllegalStateException => return None
-          }
+          catch { case _: IllegalStateException => return None }
         val prefixQual = qualifiedDeepRef + withDot(
           explicitQualifierString(qualifier, withDeepest = false))
         val relative = qualifiedDeepRef != deepRef.getText

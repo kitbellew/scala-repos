@@ -67,9 +67,7 @@ trait JDBMPerformanceSpec extends Specification with PerformanceSpec {
 
   val perfUtil = PerformanceUtil.default
 
-  step {
-    Await.result(bifrost.actorsStart, timeout)
-  }
+  step { Await.result(bifrost.actorsStart, timeout) }
 
   "yggdrasil" should {
 
@@ -176,9 +174,7 @@ histogram
       true must_== true
     }
 
-    def testRead() = {
-      executor.execute("apiKey", "count(load(//test/large))")
-    }
+    def testRead() = { executor.execute("apiKey", "count(load(//test/large))") }
 
     "read large" in {
       insert(bifrost, Path("/test/large"), 1, 100000, 1)
@@ -395,9 +391,7 @@ histogram
       Thread.sleep(10000)
 
       val result = executor.execute("apiKey", "load(//test/null)")
-      result must beLike {
-        case Success(JArray(vals)) => vals.size must_== 2
-      }
+      result must beLike { case Success(JArray(vals)) => vals.size must_== 2 }
     }.pendingUntilFixed
     "handle mixed type scenario" in {
       val mixedReal = """
@@ -485,9 +479,7 @@ histogram
       Thread.sleep(10000)
 
       val result = executor.execute("apiKey", "load(//test/mixed)")
-      result must beLike {
-        case Success(JArray(vals)) => vals.size must_== 2
-      }
+      result must beLike { case Success(JArray(vals)) => vals.size must_== 2 }
     }.pendingUntilFixed
 
   }

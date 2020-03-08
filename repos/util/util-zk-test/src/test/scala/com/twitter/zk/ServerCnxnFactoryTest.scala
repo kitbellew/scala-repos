@@ -21,9 +21,7 @@ class ServerCnxnFactoryTest extends FunSuite with BeforeAndAfter {
       new ZooKeeperServer(tmpDir, tmpDir, ZooKeeperServer.DEFAULT_TICK_TIME)
   }
 
-  after {
-    tmpDir.delete()
-  }
+  after { tmpDir.delete() }
 
   test("ServerCnxnFactory returns valid Factory") {
     val factory = ServerCnxnFactory(addr)

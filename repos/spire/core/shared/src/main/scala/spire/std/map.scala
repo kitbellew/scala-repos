@@ -129,9 +129,7 @@ class MapVectorEq[K, V](implicit V: Eq[V], scalar: AdditiveMonoid[V])
           case _ =>
             false
         }
-      } else {
-        acc forall { case (_, v) => V.eqv(v, scalar.zero) }
-      }
+      } else { acc forall { case (_, v) => V.eqv(v, scalar.zero) } }
     }
 
     loop(x, y.toIterator)

@@ -59,9 +59,8 @@ class BaseGlobifier(
   private def simpleCase(dr: DateRange): List[String] = {
     val sstr = format(dr.start)
     val estr = format(dr.end)
-    if (dr.end < dr.start) {
-      Nil
-    } else {
+    if (dr.end < dr.start) { Nil }
+    else {
       child match {
         case None =>
           //There is only one block:
@@ -77,11 +76,8 @@ class BaseGlobifier(
             format(bottom.leastUpperBound(dr.end))
           val fillsleft = format(greatestLowerBound(dr.start)) ==
             format(bottom.greatestLowerBound(dr.start))
-          if (fillsright && fillsleft) {
-            List(asteriskChildren(dr.start))
-          } else {
-            c.globify(dr)
-          }
+          if (fillsright && fillsleft) { List(asteriskChildren(dr.start)) }
+          else { c.globify(dr) }
       }
     }
   }
@@ -100,9 +96,8 @@ class BaseGlobifier(
     //Imprecise patterns may not need to drill down, let's see if we can stop early:
     val sstr = format(dr.start)
     val estr = format(dr.end)
-    if (sstr == estr) {
-      List(sstr)
-    } else if (dr.end < dr.start) {
+    if (sstr == estr) { List(sstr) }
+    else if (dr.end < dr.start) {
       //This is nonsense:
       Nil
     } else if (mid2 < mid1) {

@@ -31,9 +31,7 @@ import org.apache.spark.util.StatCounter
 class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
 
   /** Add up the elements in this RDD. */
-  def sum(): Double = self.withScope {
-    self.fold(0.0)(_ + _)
-  }
+  def sum(): Double = self.withScope { self.fold(0.0)(_ + _) }
 
   /**
     * Return a [[org.apache.spark.util.StatCounter]] object that captures the mean, variance and
@@ -46,35 +44,25 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
   }
 
   /** Compute the mean of this RDD's elements. */
-  def mean(): Double = self.withScope {
-    stats().mean
-  }
+  def mean(): Double = self.withScope { stats().mean }
 
   /** Compute the variance of this RDD's elements. */
-  def variance(): Double = self.withScope {
-    stats().variance
-  }
+  def variance(): Double = self.withScope { stats().variance }
 
   /** Compute the standard deviation of this RDD's elements. */
-  def stdev(): Double = self.withScope {
-    stats().stdev
-  }
+  def stdev(): Double = self.withScope { stats().stdev }
 
   /**
     * Compute the sample standard deviation of this RDD's elements (which corrects for bias in
     * estimating the standard deviation by dividing by N-1 instead of N).
     */
-  def sampleStdev(): Double = self.withScope {
-    stats().sampleStdev
-  }
+  def sampleStdev(): Double = self.withScope { stats().sampleStdev }
 
   /**
     * Compute the sample variance of this RDD's elements (which corrects for bias in
     * estimating the variance by dividing by N-1 instead of N).
     */
-  def sampleVariance(): Double = self.withScope {
-    stats().sampleVariance
-  }
+  def sampleVariance(): Double = self.withScope { stats().sampleVariance }
 
   /**
     * Approximate operation to return the mean within a timeout.
@@ -139,9 +127,7 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
         // The above code doesn't always work. See Scala bug #SI-8782.
         // https://issues.scala-lang.org/browse/SI-8782
         customRange(min, max, bucketCount)
-      } else {
-        List(min, min)
-      }
+      } else { List(min, min) }
       val buckets = range.toArray
       (buckets, histogram(buckets, true))
     }
@@ -205,9 +191,7 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
         // because Array[Double] fails to override it (for now).
         if (insertionPoint > 0 && insertionPoint < buckets.length) {
           Some(insertionPoint - 1)
-        } else {
-          None
-        }
+        } else { None }
       } else if (location < buckets.length - 1) {
         // Exact match, just insert here
         Some(location)
@@ -220,9 +204,8 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
     def fastBucketFunction(min: Double, max: Double, count: Int)(
         e: Double): Option[Int] = {
       // If our input is not a number unless the increment is also NaN then we fail fast
-      if (e.isNaN || e < min || e > max) {
-        None
-      } else {
+      if (e.isNaN || e < min || e > max) { None }
+      else {
         // Compute ratio of e's distance along range to total range first, for better precision
         val bucketNumber = (((e - min) / (max - min)) * count).toInt
         // should be less than count, but will equal count if e == max, in which case
@@ -235,12 +218,9 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
     // once rather than once per shard
     val bucketFunction = if (evenBuckets) {
       fastBucketFunction(buckets.head, buckets.last, buckets.length - 1) _
-    } else {
-      basicBucketFunction _
-    }
-    if (self.partitions.length == 0) {
-      new Array[Long](buckets.length - 1)
-    } else {
+    } else { basicBucketFunction _ }
+    if (self.partitions.length == 0) { new Array[Long](buckets.length - 1) }
+    else {
       // reduce() requires a non-empty RDD. This works because the mapPartitions will make
       // non-empty partitions out of empty ones. But it doesn't handle the no-partitions case,
       // which is below

@@ -49,9 +49,7 @@ private[parser] trait LinkHeader {
     capture(LOWER_ALPHA ~ zeroOrMore(`reg-rel-type-octet`)) ~ !VCHAR
   }
 
-  def `ext-rel-type` = rule {
-    URI
-  }
+  def `ext-rel-type` = rule { URI }
 
   ////////////////////////////// helpers ///////////////////////////////////
 

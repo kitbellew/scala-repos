@@ -35,9 +35,7 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     val traceId = Trace.id
 
     val e = intercept[HasRemoteInfo] {
-      Trace.letId(traceId, true) {
-        Await.result(client("hi"), 1.second)
-      }
+      Trace.letId(traceId, true) { Await.result(client("hi"), 1.second) }
     }
     assert(
       e.remoteInfo == RemoteInfo.Available(
@@ -107,9 +105,7 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       "B")
 
     val e = intercept[HasRemoteInfo] {
-      Trace.letId(traceId, true) {
-        Await.result(clientA("hi"), 1.second)
-      }
+      Trace.letId(traceId, true) { Await.result(clientA("hi"), 1.second) }
     }
 
     // Make sure we made it all the way to service C
@@ -145,9 +141,7 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       "B")
 
     val e = intercept[HasRemoteInfo] {
-      Trace.letId(traceId, true) {
-        Await.result(clientA("hi"), 1.second)
-      }
+      Trace.letId(traceId, true) { Await.result(clientA("hi"), 1.second) }
     }
     assert(
       e.remoteInfo == RemoteInfo.Available(
@@ -293,9 +287,7 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     val traceId = Trace.id
 
     intercept[IllegalArgumentException] {
-      Trace.letId(traceId, true) {
-        Await.result(client("hi"), 1.second)
-      }
+      Trace.letId(traceId, true) { Await.result(client("hi"), 1.second) }
     }
 
     val serviceCreationFailures =

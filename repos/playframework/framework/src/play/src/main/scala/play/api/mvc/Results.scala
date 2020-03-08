@@ -203,9 +203,7 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @return the new result
     */
   def flashing(flash: Flash): Result = {
-    if (shouldWarnIfNotRedirect(flash)) {
-      logRedirectWarning("flashing")
-    }
+    if (shouldWarnIfNotRedirect(flash)) { logRedirectWarning("flashing") }
     withCookies(Flash.encodeAsCookie(flash))
   }
 
@@ -274,9 +272,7 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
       implicit request: RequestHeader): Result =
     withSession(new Session(session.data -- keys))
 
-  override def toString = {
-    "Result(" + header + ")"
-  }
+  override def toString = { "Result(" + header + ")" }
 
   /**
     * Returns true if the status code is not 3xx and the application is in Dev mode.

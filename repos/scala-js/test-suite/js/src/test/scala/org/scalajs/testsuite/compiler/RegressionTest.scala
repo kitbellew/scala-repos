@@ -32,11 +32,7 @@ class RegressionTest {
   @Test def Abort_with_some_pattern_match_guards_issue_22(): Unit = {
     object PatternMatchGuards {
       def go(f: Int => Int): Int = f(1)
-      def main(): Unit = {
-        go {
-          case x if false => x
-        }
-      }
+      def main(): Unit = { go { case x if false => x } }
     }
     // Nothing to check
   }
@@ -58,9 +54,7 @@ class RegressionTest {
   }
 
   @Test def should_emit_static_calls_when_forwarding_to_another_constructor_issue_66()
-      : Unit = {
-    new Bug66B("", "")
-  }
+      : Unit = { new Bug66B("", "") }
 
   @Test def should_not_swallow_Unit_expressions_when_converting_to_js_Any_issue_83()
       : Unit = {
@@ -182,9 +176,7 @@ class RegressionTest {
     val a = scala.collection.mutable.Buffer.empty[Int]
     a.insert(0, 0)
     a.remove(0)
-    for (i <- 0 to 10) {
-      a.insert(a.length / 2, i)
-    }
+    for (i <- 0 to 10) { a.insert(a.length / 2, i) }
     assertEquals("1, 3, 5, 7, 9, 10, 8, 6, 4, 2, 0", a.mkString(", "))
   }
 

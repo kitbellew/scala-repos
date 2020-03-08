@@ -144,9 +144,7 @@ class FilePollingActivitySource private[exp] (
               reader.close(Time.Undefined)
             }
           }
-        } else {
-          value() = Activity.Failed(NotFound)
-        }
+        } else { value() = Activity.Failed(NotFound) }
       }
 
       Closable.make { _ => Future { timerTask.cancel() } }

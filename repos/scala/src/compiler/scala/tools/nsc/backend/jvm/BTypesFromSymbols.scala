@@ -86,9 +86,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     primitiveCompilationUnits(currentUnit.source.file.name)
   }
 
-  def isCompilingArray = {
-    currentUnit.source.file.name == "Array.scala"
-  }
+  def isCompilingArray = { currentUnit.source.file.name == "Array.scala" }
 
   // end helpers
 
@@ -127,9 +125,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
             res.info = Left(
               NoClassBTypeInfoClassSymbolInfoFailedSI9111(classSym.fullName))
             res
-          } else {
-            setClassInfo(classSym, res)
-          }
+          } else { setClassInfo(classSym, res) }
         }
       )
     }
@@ -464,9 +460,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           val members = exitingPickler(
             memberClassesForInnerClassTable(classSym))
           nested diff members
-        } else {
-          nested
-        }
+        } else { nested }
       }
 
       val companionModuleMembers =
@@ -602,9 +596,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
             case companionClass =>
               classBTypeFromSymbol(companionClass)
           }
-        } else {
-          classBTypeFromSymbol(innerClassSym.rawowner)
-        }
+        } else { classBTypeFromSymbol(innerClassSym.rawowner) }
       }
 
       val outerName: Option[String] = {

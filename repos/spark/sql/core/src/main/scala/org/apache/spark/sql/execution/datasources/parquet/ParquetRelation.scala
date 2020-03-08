@@ -234,11 +234,8 @@ private[sql] class DefaultSource
         //     shouldMergeSchemas means (assumes) all the files have the same schemas.
 
         val needMerged: Seq[FileStatus] =
-          if (mergeRespectSummaries) {
-            Seq()
-          } else {
-            filesByType.data
-          }
+          if (mergeRespectSummaries) { Seq() }
+          else { filesByType.data }
         needMerged ++ filesByType.metadata ++ filesByType.commonMetadata
       } else {
         // Tries any "_common_metadata" first. Parquet files written by old versions or Parquet
@@ -594,9 +591,7 @@ private[sql] object ParquetRelation extends Logging {
             // Falls back to Parquet schema if Spark SQL schema can't be parsed.
             parseParquetSchema(metadata.getSchema)
           })
-      } else {
-        None
-      }
+      } else { None }
     }
 
     finalSchemas.reduceOption { (left, right) =>
@@ -756,17 +751,15 @@ private[sql] object ParquetRelation extends Logging {
               assumeInt96IsTimestamp = assumeInt96IsTimestamp,
               writeLegacyParquetFormat = writeLegacyParquetFormat)
 
-          if (footers.isEmpty) {
-            Iterator.empty
-          } else {
+          if (footers.isEmpty) { Iterator.empty }
+          else {
             var mergedSchema =
               ParquetRelation.readSchemaFromFooter(footers.head, converter)
             footers.tail.foreach { footer =>
               val schema =
                 ParquetRelation.readSchemaFromFooter(footer, converter)
-              try {
-                mergedSchema = mergedSchema.merge(schema)
-              } catch {
+              try { mergedSchema = mergedSchema.merge(schema) }
+              catch {
                 case cause: SparkException =>
                   throw new SparkException(
                     s"Failed merging schema of file ${footer.getFile}:\n${schema.treeString}",
@@ -778,14 +771,12 @@ private[sql] object ParquetRelation extends Logging {
         }
         .collect()
 
-    if (partiallyMergedSchemas.isEmpty) {
-      None
-    } else {
+    if (partiallyMergedSchemas.isEmpty) { None }
+    else {
       var finalSchema = partiallyMergedSchemas.head
       partiallyMergedSchemas.tail.foreach { schema =>
-        try {
-          finalSchema = finalSchema.merge(schema)
-        } catch {
+        try { finalSchema = finalSchema.merge(schema) }
+        catch {
           case cause: SparkException =>
             throw new SparkException(
               s"Failed merging schema:\n${schema.treeString}",

@@ -58,9 +58,7 @@ class HttpServerExampleSpec
     // needed for the future onFailure in the end
     implicit val executionContext = system.dispatcher
 
-    val handler = get {
-      complete("Hello world!")
-    }
+    val handler = get { complete("Hello world!") }
 
     // let's say the OS won't allow us to bind to 80.
     val (host, port) = ("localhost", 80)
@@ -117,9 +115,7 @@ class HttpServerExampleSpec
 
     val reactToTopLevelFailures = Flow[IncomingConnection]
       .watchTermination()((_, termination) =>
-        termination.onFailure {
-          case cause => failureMonitor ! cause
-        })
+        termination.onFailure { case cause => failureMonitor ! cause })
 
     serverSource
       .via(reactToTopLevelFailures)

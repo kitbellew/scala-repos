@@ -44,11 +44,8 @@ private[spark] class GroupedMeanEvaluator[T](
     while (iter.hasNext) {
       val entry = iter.next()
       val old = sums.get(entry.getKey)
-      if (old != null) {
-        old.merge(entry.getValue)
-      } else {
-        sums.put(entry.getKey, entry.getValue)
-      }
+      if (old != null) { old.merge(entry.getValue) }
+      else { sums.put(entry.getKey, entry.getValue) }
     }
   }
 
@@ -62,9 +59,8 @@ private[spark] class GroupedMeanEvaluator[T](
         result.put(entry.getKey, new BoundedDouble(mean, 1.0, mean, mean))
       }
       result.asScala
-    } else if (outputsMerged == 0) {
-      new HashMap[T, BoundedDouble]
-    } else {
+    } else if (outputsMerged == 0) { new HashMap[T, BoundedDouble] }
+    else {
       val studentTCacher = new StudentTCacher(confidence)
       val result = new JHashMap[T, BoundedDouble](sums.size)
       val iter = sums.entrySet.iterator()

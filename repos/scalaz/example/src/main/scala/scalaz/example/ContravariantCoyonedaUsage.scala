@@ -475,7 +475,9 @@ object ContravariantCoyonedaUsage extends App {
   }
 
   object Binfmt {
-    def apply[A](s: String): Binfmt[A] = new Binfmt[A] { val describe = s }
+    def apply[A](s: String): Binfmt[A] = new Binfmt[A] {
+      val describe = s
+    }
 
     implicit val descLong: Binfmt[Long] = Binfmt("<Long>")
     implicit val descInt: Binfmt[Int] = Binfmt("<Int>")

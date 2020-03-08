@@ -99,11 +99,8 @@ class JoinedRow extends InternalRow {
     else row2.getDouble(i - row1.numFields)
 
   override def getDecimal(i: Int, precision: Int, scale: Int): Decimal = {
-    if (i < row1.numFields) {
-      row1.getDecimal(i, precision, scale)
-    } else {
-      row2.getDecimal(i - row1.numFields, precision, scale)
-    }
+    if (i < row1.numFields) { row1.getDecimal(i, precision, scale) }
+    else { row2.getDecimal(i - row1.numFields, precision, scale) }
   }
 
   override def getUTF8String(i: Int): UTF8String =
@@ -126,11 +123,8 @@ class JoinedRow extends InternalRow {
     if (i < row1.numFields) row1.getMap(i) else row2.getMap(i - row1.numFields)
 
   override def getStruct(i: Int, numFields: Int): InternalRow = {
-    if (i < row1.numFields) {
-      row1.getStruct(i, numFields)
-    } else {
-      row2.getStruct(i - row1.numFields, numFields)
-    }
+    if (i < row1.numFields) { row1.getStruct(i, numFields) }
+    else { row2.getStruct(i - row1.numFields, numFields) }
   }
 
   override def anyNull: Boolean = row1.anyNull || row2.anyNull
@@ -143,14 +137,9 @@ class JoinedRow extends InternalRow {
 
   override def toString: String = {
     // Make sure toString never throws NullPointerException.
-    if ((row1 eq null) && (row2 eq null)) {
-      "[ empty row ]"
-    } else if (row1 eq null) {
-      row2.toString
-    } else if (row2 eq null) {
-      row1.toString
-    } else {
-      s"{${row1.toString} + ${row2.toString}}"
-    }
+    if ((row1 eq null) && (row2 eq null)) { "[ empty row ]" }
+    else if (row1 eq null) { row2.toString }
+    else if (row2 eq null) { row1.toString }
+    else { s"{${row1.toString} + ${row2.toString}}" }
   }
 }

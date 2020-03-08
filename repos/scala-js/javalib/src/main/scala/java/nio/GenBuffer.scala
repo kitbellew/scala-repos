@@ -118,9 +118,8 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
   def generic_compareTo(that: BufferType)(
       compare: (ElementType, ElementType) => Int): Int = {
     // scalastyle:off return
-    if (self eq that) {
-      0
-    } else {
+    if (self eq that) { 0 }
+    else {
       val thisStart = self.position
       val thisRemaining = self.limit - thisStart
       val thatStart = that.position

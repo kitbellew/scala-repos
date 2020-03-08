@@ -75,7 +75,5 @@ class PersonRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(
   /**
     * List all the people in the database.
     */
-  def list(): Future[Seq[Person]] = db.run {
-    people.result
-  }
+  def list(): Future[Seq[Person]] = db.run { people.result }
 }

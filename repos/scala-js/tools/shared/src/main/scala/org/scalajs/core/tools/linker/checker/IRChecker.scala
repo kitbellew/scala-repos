@@ -483,9 +483,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
             env.withLocal(LocalDef(errVar.name, AnyType, false)(errVar.pos))
           typecheckStat(handler, handlerEnv)
         }
-        if (finalizer != EmptyTree) {
-          typecheckStat(finalizer, env)
-        }
+        if (finalizer != EmptyTree) { typecheckStat(finalizer, env) }
         env
 
       case Match(selector, cases, default) =>
@@ -603,9 +601,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
             env.withLocal(LocalDef(errVar.name, AnyType, false)(errVar.pos))
           typecheckExpect(handler, handlerEnv, tpe)
         }
-        if (finalizer != EmptyTree) {
-          typecheckStat(finalizer, env)
-        }
+        if (finalizer != EmptyTree) { typecheckStat(finalizer, env) }
 
       case Throw(expr) =>
         typecheckExpr(expr, env)
@@ -860,13 +856,12 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       case VarRef(Ident(name, _)) =>
         env.locals
           .get(name)
-          .fold[Unit] {
-            reportError(s"Cannot find variable $name in scope")
-          } { localDef =>
-            if (tree.tpe != localDef.tpe)
-              reportError(
-                s"Variable $name of type ${localDef.tpe} " +
-                  s"typed as ${tree.tpe}")
+          .fold[Unit] { reportError(s"Cannot find variable $name in scope") } {
+            localDef =>
+              if (tree.tpe != localDef.tpe)
+                reportError(
+                  s"Variable $name of type ${localDef.tpe} " +
+                    s"typed as ${tree.tpe}")
           }
 
       case This() =>
@@ -948,11 +943,9 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         case 'O'                   => AnyType
         case 'T'                   => ClassType(StringClass) // NOT StringType
       }
-    } else if (encodedName == "sr_Nothing$") {
-      NothingType
-    } else if (encodedName == "sr_Null$") {
-      NullType
-    } else {
+    } else if (encodedName == "sr_Nothing$") { NothingType }
+    else if (encodedName == "sr_Null$") { NullType }
+    else {
       val kind = tryLookupClass(encodedName).fold(_.kind, _.kind)
       if (kind == ClassKind.RawJSType || kind.isJSClass) AnyType
       else ClassType(encodedName)

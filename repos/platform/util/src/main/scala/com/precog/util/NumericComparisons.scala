@@ -32,9 +32,8 @@ object NumericComparisons {
 
   def compare(a: Double, bl: Long): Int = {
     val b = bl.toDouble
-    if (b.toLong == bl) {
-      if (a < b) -1 else if (a == b) 0 else 1
-    } else {
+    if (b.toLong == bl) { if (a < b) -1 else if (a == b) 0 else 1 }
+    else {
       val error = math.abs(b * 2.220446049250313e-16)
       if (a < b - error) -1 else if (a > b + error) 1 else bl.signum
     }

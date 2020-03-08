@@ -42,15 +42,11 @@ class appTest extends JUnitSuite with ShouldMatchers {
   def testRunOnUIThread(): Unit = {
     val activity = Robolectric.buildActivity(classOf[SActivityImpl]).create.get
     val mainThread = Looper.getMainLooper.getThread
-    activity.runOnUiThread {
-      Thread.currentThread shouldBe mainThread
-    }
+    activity.runOnUiThread { Thread.currentThread shouldBe mainThread }
 
     Future[Unit] {
       Thread.currentThread() shouldNot be(mainThread)
-      activity.runOnUiThread {
-        Thread.currentThread shouldBe mainThread
-      }
+      activity.runOnUiThread { Thread.currentThread shouldBe mainThread }
     }(ExecutionContext.global)
   }
 

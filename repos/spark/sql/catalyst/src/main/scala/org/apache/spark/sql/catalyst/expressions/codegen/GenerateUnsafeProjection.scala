@@ -95,12 +95,8 @@ object GenerateUnsafeProjection
         // If all fields are not nullable, which means the null bits never changes, then we don't
         // need to clear it out every time.
         ""
-      } else {
-        s"$rowWriter.zeroOutNullBytes();"
-      }
-    } else {
-      s"$rowWriter.reset();"
-    }
+      } else { s"$rowWriter.zeroOutNullBytes();" }
+    } else { s"$rowWriter.reset();" }
 
     val writeFields = inputs.zip(inputTypes).zipWithIndex.map {
       case ((input, dataType), index) =>
@@ -336,16 +332,10 @@ object GenerateUnsafeProjection
       holder,
       s"this.$holder = new $holderClass($result, ${numVarLenFields * 32});")
 
-    val resetBufferHolder = if (numVarLenFields == 0) {
-      ""
-    } else {
-      s"$holder.reset();"
-    }
-    val updateRowSize = if (numVarLenFields == 0) {
-      ""
-    } else {
-      s"$result.setTotalSize($holder.totalSize());"
-    }
+    val resetBufferHolder = if (numVarLenFields == 0) { "" }
+    else { s"$holder.reset();" }
+    val updateRowSize = if (numVarLenFields == 0) { "" }
+    else { s"$result.setTotalSize($holder.totalSize());" }
 
     // Evaluate all the subexpression.
     val evalSubexpr = ctx.subexprFunctions.mkString("\n")

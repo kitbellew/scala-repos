@@ -3,9 +3,7 @@ package p
 class Test {}
 
 object O {
-  def m() {
-    val test: Test = /*start*/ new Test() /*end*/
-  }
+  def m() { val test: Test = /*start*/ new Test() /*end*/ }
 }
 /*
 package p

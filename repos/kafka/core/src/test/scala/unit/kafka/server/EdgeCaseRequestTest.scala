@@ -84,9 +84,7 @@ class EdgeCaseRequestTest extends KafkaServerTestHarness {
     try {
       sendRequest(plainSocket, request, id)
       receiveResponse(plainSocket)
-    } finally {
-      plainSocket.close()
-    }
+    } finally { plainSocket.close() }
   }
 
   // Custom header serialization so that protocol assumptions are not forced
@@ -118,9 +116,7 @@ class EdgeCaseRequestTest extends KafkaServerTestHarness {
         "The server should disconnect",
         -1,
         plainSocket.getInputStream.read())
-    } finally {
-      plainSocket.close()
-    }
+    } finally { plainSocket.close() }
   }
 
   @Test
@@ -179,9 +175,7 @@ class EdgeCaseRequestTest extends KafkaServerTestHarness {
   }
 
   @Test
-  def testInvalidApiKeyRequest() {
-    verifyDisconnect(requestHeaderBytes(-1, 0))
-  }
+  def testInvalidApiKeyRequest() { verifyDisconnect(requestHeaderBytes(-1, 0)) }
 
   @Test
   def testInvalidApiVersionRequest() {

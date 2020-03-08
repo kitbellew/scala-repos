@@ -102,21 +102,15 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
     val valNames =
       StubIndex.getInstance.getAllKeys(ScalaIndexKeys.VALUE_NAME_KEY, project)
     val valIterator = valNames.iterator()
-    while (valIterator.hasNext) {
-      res += valIterator.next()
-    }
+    while (valIterator.hasNext) { res += valIterator.next() }
     val varNames = StubIndex.getInstance
       .getAllKeys(ScalaIndexKeys.VARIABLE_NAME_KEY, project)
     val varIterator = varNames.iterator()
-    while (varIterator.hasNext) {
-      res += varIterator.next()
-    }
+    while (varIterator.hasNext) { res += varIterator.next() }
     val classParamNames = StubIndex.getInstance
       .getAllKeys(ScalaIndexKeys.CLASS_PARAMETER_NAME_KEY, project)
     val classParamIterator = classParamNames.iterator()
-    while (classParamIterator.hasNext) {
-      res += classParamIterator.next()
-    }
+    while (classParamIterator.hasNext) { res += classParamIterator.next() }
     res.toSeq
   }
 
@@ -258,11 +252,8 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
       if (qualifiedName != null) {
         if (psiClass.name == "`package`") {
           val i: Int = qualifiedName.lastIndexOf('.')
-          if (i < 0) {
-            qualifiedName = ""
-          } else {
-            qualifiedName = qualifiedName.substring(0, i)
-          }
+          if (i < 0) { qualifiedName = "" }
+          else { qualifiedName = qualifiedName.substring(0, i) }
         }
         if (fqn == qualifiedName) {
           psiClass match {
@@ -287,9 +278,7 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
       classOf[ScObject])
     val res: ArrayBuffer[ScObject] = new ArrayBuffer[ScObject]
     val classesIterator = classes.iterator()
-    while (classesIterator.hasNext) {
-      res += classesIterator.next()
-    }
+    while (classesIterator.hasNext) { res += classesIterator.next() }
     res.toSeq
   }
 

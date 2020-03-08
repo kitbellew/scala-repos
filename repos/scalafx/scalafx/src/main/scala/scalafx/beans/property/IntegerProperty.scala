@@ -59,10 +59,6 @@ class IntegerProperty(
   def this(bean: Object, name: String, initialValue: Int) =
     this(new jfxbp.SimpleIntegerProperty(bean, name, initialValue))
 
-  def value_=(v: Int) {
-    delegate.set(v)
-  }
-  def value_=(v: Number) {
-    delegate.set(v.intValue)
-  }
+  def value_=(v: Int) { delegate.set(v) }
+  def value_=(v: Number) { delegate.set(v.intValue) }
 }

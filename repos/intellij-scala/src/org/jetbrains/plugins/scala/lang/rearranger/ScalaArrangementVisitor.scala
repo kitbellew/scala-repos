@@ -229,16 +229,13 @@ class ScalaArrangementVisitor(
       tokenType: ArrangementSettingsToken,
       name: String,
       canArrange: Boolean) = {
-    if (!withinBounds(range)) {
-      null
-    } else {
+    if (!withinBounds(range)) { null }
+    else {
 
       val currentEntry = getCurrentEntry
       val newRange = if (canArrange && document != null) {
         ArrangementUtil.expandToLineIfPossible(range, document)
-      } else {
-        range
-      }
+      } else { range }
       //we only arrange elements in ScTypeDefinitions and top-level elements
       val newEntry = new ScalaArrangementEntry(
         currentEntry,
@@ -248,11 +245,8 @@ class ScalaArrangementVisitor(
         canArrange &&
           (parent.isInstanceOf[ScTemplateBody] || parent.isInstanceOf[PsiFile]))
 
-      if (currentEntry == null) {
-        parseInfo.addEntry(newEntry)
-      } else {
-        currentEntry.addChild(newEntry)
-      }
+      if (currentEntry == null) { parseInfo.addEntry(newEntry) }
+      else { currentEntry.addChild(newEntry) }
       //      psiElementsToEntries = psiElementsToEntries + (element -> newEntry)
       newEntry
     }
@@ -279,18 +273,14 @@ class ScalaArrangementVisitor(
       modifiers: ScModifierListOwner,
       nextPsiRoot: ScalaPsiElement) {
     if (entry == null) return
-    if (modifiers != null) {
-      parseModifiers(modifiers.getModifierList, entry)
-    }
+    if (modifiers != null) { parseModifiers(modifiers.getModifierList, entry) }
     if (nextPsiRoot != null) {
       arrangementEntries.push(entry)
       try nextPsiRoot match {
         case body: ScTemplateBody if splitBodyByExpressions =>
           traverseTypedefBody(body, entry)
         case _ => nextPsiRoot.acceptChildren(this)
-      } finally {
-        arrangementEntries.pop()
-      }
+      } finally { arrangementEntries.pop() }
     }
   }
 
@@ -327,9 +317,7 @@ class ScalaArrangementVisitor(
             if (childStart >= nextUnseparable.getStartOffset) {
               arrangementEntries.push(nextUnseparable)
               (true, nextUnseparable)
-            } else {
-              (false, nextUnseparable)
-            }
+            } else { (false, nextUnseparable) }
           case _ => (false, unseparable) //outside arrange block
         }
       } else (false, unseparable)
@@ -355,9 +343,7 @@ class ScalaArrangementVisitor(
         new TextRange(
           node.getTextRange.getStartOffset + first.getTextRange.getLength + 1,
           node.getTextRange.getEndOffset)
-      } else {
-        node.getTextRange
-      }
+      } else { node.getTextRange }
     range = node.nextSibling match {
       case Some(semicolon: PsiElement)
           if semicolon.getNode.getElementType == ScalaTokenTypes.tSEMICOLON =>
@@ -374,14 +360,10 @@ class ScalaArrangementVisitor(
               val next = nonComment.getFirstChild
               if (next != null && next.isInstanceOf[PsiComment]) {
                 range.union(sibling.getTextRange).union(next.getTextRange)
-              } else {
-                range
-              }
+              } else { range }
             case _ => range
           }
-        } else {
-          range
-        }
+        } else { range }
       case comment: PsiComment => range.union(comment.getTextRange)
       case _                   => range
     }
@@ -414,9 +396,7 @@ class ScalaArrangementVisitor(
       entry: ScalaArrangementEntry) {
     if (!(groupingRules.contains(JAVA_GETTERS_AND_SETTERS) || groupingRules
           .contains(SCALA_GETTERS_AND_SETTERS)) ||
-        entry == null) {
-      return
-    }
+        entry == null) { return }
     val methodName = method.getName
     val psiParent = method.getParent
     if (ScalaArrangementVisitor.isJavaGetter(method)) {
@@ -486,9 +466,8 @@ object ScalaArrangementVisitor {
     val name = method.getName
     if (nameStartsWith(name, "get") && !(nameStartsWith(name, "getAnd") && name
           .charAt("getAnd".length)
-          .isUpper)) {
-      method.returnType.getOrAny != Unit
-    } else if (nameStartsWith(name, "is")) {
+          .isUpper)) { method.returnType.getOrAny != Unit }
+    else if (nameStartsWith(name, "is")) {
       method.returnType.getOrAny == Boolean
     } else false
   }

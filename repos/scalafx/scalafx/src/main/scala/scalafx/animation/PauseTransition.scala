@@ -78,8 +78,6 @@ class PauseTransition(
     * The duration of this `Transition`. Default value: 400ms
     */
   def duration: ObjectProperty[jfxu.Duration] = delegate.durationProperty
-  def duration_=(d: Duration) {
-    duration() = d
-  }
+  def duration_=(d: Duration) { duration() = d }
 
 }

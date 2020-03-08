@@ -47,9 +47,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       sqlContext: SQLContext,
       options: Map[String, String],
       files: Seq[FileStatus]): Option[StructType] = {
-    if (files.isEmpty) {
-      None
-    } else {
+    if (files.isEmpty) { None }
+    else {
       val parsedOptions: JSONOptions = new JSONOptions(options)
       val jsonFiles = files.filterNot { status =>
         val name = status.getPath.getName
@@ -122,9 +121,7 @@ class DefaultSource extends FileFormat with DataSourceRegister {
 
     val paths = inputPaths.map(_.getPath)
 
-    if (paths.nonEmpty) {
-      FileInputFormat.setInputPaths(job, paths: _*)
-    }
+    if (paths.nonEmpty) { FileInputFormat.setInputPaths(job, paths: _*) }
 
     sqlContext.sparkContext
       .hadoopRDD(
@@ -140,9 +137,7 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     if (schema.fieldNames.length != schema.fieldNames.distinct.length) {
       val duplicateColumns = schema.fieldNames
         .groupBy(identity)
-        .collect {
-          case (x, ys) if ys.length > 1 => "\"" + x + "\""
-        }
+        .collect { case (x, ys) if ys.length > 1 => "\"" + x + "\"" }
         .mkString(", ")
       throw new AnalysisException(
         s"Duplicate column(s) : $duplicateColumns found, " +

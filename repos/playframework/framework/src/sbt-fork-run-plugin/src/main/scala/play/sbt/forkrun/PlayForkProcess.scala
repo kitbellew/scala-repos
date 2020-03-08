@@ -131,9 +131,7 @@ object PlayForkProcess {
     if (optionsTooLong(options)) {
       val otherOptions = jvmOptions ++ Seq(mainClass) ++ arguments
       (Option(classpathOption), otherOptions)
-    } else {
-      (None, options)
-    }
+    } else { (None, options) }
   }
 
   val isWindows: Boolean = sys
@@ -165,5 +163,7 @@ object PlayForkProcess {
   }
 
   def newThread(f: => Unit): Thread =
-    new Thread(new Runnable { def run(): Unit = f })
+    new Thread(new Runnable {
+      def run(): Unit = f
+    })
 }

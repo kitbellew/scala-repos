@@ -150,9 +150,7 @@ abstract class Parser(
       __advance()
       valueStack.clear()
       try rule ne null
-      catch {
-        case CutError ⇒ false
-      }
+      catch { case CutError ⇒ false }
     }
 
     def phase0_initialRun() = {
@@ -214,9 +212,7 @@ abstract class Parser(
             phase = phase3
             runRule()
             null // we managed to complete the run w/o exception, i.e. we have collected all traces
-          } catch {
-            case e: TracingBubbleException ⇒ e.trace
-          }
+          } catch { case e: TracingBubbleException ⇒ e.trace }
         if (trace eq null) done
         else
           phase4_collectRuleTraces(
@@ -254,9 +250,7 @@ abstract class Parser(
             RuleTrace(Nil, RuleTrace.Fail(e.expected)) :: Nil))
       case NonFatal(e) ⇒
         scheme.failure(e)
-    } finally {
-      phase = null
-    }
+    } finally { phase = null }
   }
 
   /**
@@ -751,7 +745,9 @@ object ParserMacros {
   def namedRuleImpl[I <: HList: ctx.WeakTypeTag, O <: HList: ctx.WeakTypeTag](
       ctx: ParserContext)(name: ctx.Expr[String])(
       r: ctx.Expr[Rule[I, O]]): ctx.Expr[Rule[I, O]] = {
-    val opTreeCtx = new OpTreeContext[ctx.type] { val c: ctx.type = ctx }
+    val opTreeCtx = new OpTreeContext[ctx.type] {
+      val c: ctx.type = ctx
+    }
     val opTree = opTreeCtx.RuleCall(Left(opTreeCtx.OpTree(r.tree)), name.tree)
     import ctx.universe._
     val ruleTree = q"""

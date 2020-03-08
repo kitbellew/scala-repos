@@ -174,9 +174,7 @@ object PairingSystem extends AbstractPairingSystem {
       case ps =>
         findBetter(Nil, Int.MaxValue) match {
           case Found(best) =>
-            best map {
-              case (rp0, rp1) => rp0.player -> rp1.player
-            }
+            best map { case (rp0, rp1) => rp0.player -> rp1.player }
           case _ =>
             pairingLogger.warn(
               "Could not make smart pairings for arena tournament")
@@ -184,9 +182,7 @@ object PairingSystem extends AbstractPairingSystem {
               case List(p1, p2) => (p1, p2)
             } toList
         }
-    }) map {
-      Pairing.prep(tour, _)
-    }
+    }) map { Pairing.prep(tour, _) }
     if (!continue)
       pairingLogger.info(
         s"smartPairings cutoff! [${nowMillis - startAt}ms] ${url(

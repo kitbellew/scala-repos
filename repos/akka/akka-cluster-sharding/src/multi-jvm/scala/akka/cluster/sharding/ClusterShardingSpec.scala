@@ -106,9 +106,7 @@ object ClusterShardingSpec {
       case _: Exception ⇒ SupervisorStrategy.Restart
     }
 
-    def receive = {
-      case msg ⇒ counter forward msg
-    }
+    def receive = { case msg ⇒ counter forward msg }
   }
   //#supervisor
 
@@ -357,9 +355,7 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     "setup shared journal" in {
       // start the Persistence extension
       Persistence(system)
-      runOn(controller) {
-        system.actorOf(Props[SharedLeveldbStore], "store")
-      }
+      runOn(controller) { system.actorOf(Props[SharedLeveldbStore], "store") }
       enterBarrier("peristence-started")
 
       runOn(first, second, third, fourth, fifth, sixth) {
@@ -489,9 +485,7 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         system.eventStream.publish(Mute(DeadLettersFilter[Any]))
       enterBarrier("logs-muted")
 
-      runOn(controller) {
-        testConductor.exit(second, 0).await
-      }
+      runOn(controller) { testConductor.exit(second, 0).await }
       enterBarrier("crash-second")
 
       runOn(first) {
@@ -572,9 +566,7 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     "recover coordinator state after coordinator crash" in within(60 seconds) {
       join(fifth, fourth)
 
-      runOn(controller) {
-        testConductor.exit(first, 0).await
-      }
+      runOn(controller) { testConductor.exit(first, 0).await }
       enterBarrier("crash-first")
 
       runOn(fifth) {
@@ -783,9 +775,7 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     }
 
     "permanently stop entities which passivate" in within(15.seconds) {
-      runOn(third, fourth, fifth) {
-        persistentRegion
-      }
+      runOn(third, fourth, fifth) { persistentRegion }
       enterBarrier("cluster-started-12")
 
       runOn(third) {
@@ -867,9 +857,7 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     }
 
     "restart entities which stop without passivating" in within(50.seconds) {
-      runOn(third, fourth) {
-        persistentRegion
-      }
+      runOn(third, fourth) { persistentRegion }
       enterBarrier("cluster-started-12")
 
       runOn(third) {
@@ -958,9 +946,7 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
       }
       enterBarrier("entities-started")
 
-      runOn(fifth) {
-        rebalancingPersistentRegion
-      }
+      runOn(fifth) { rebalancingPersistentRegion }
       enterBarrier("fifth-joined-shard")
 
       runOn(fifth) {

@@ -26,22 +26,16 @@ class LRUMapTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("LRUMap insertion") {
     forAll(LRUEntriesGenerator[Int]) { entries =>
       val lru = new LruMap[String, Int](entries.size + 10) // headroom
-      for (entry <- entries) {
-        lru += entry
-      }
+      for (entry <- entries) { lru += entry }
 
-      for ((key, value) <- entries) {
-        assert(lru.get(key) == Some(value))
-      }
+      for ((key, value) <- entries) { assert(lru.get(key) == Some(value)) }
     }
   }
 
   test("LRUMap eviction") {
     forAll(LRUEntriesGenerator[Double]) { entries =>
       val slru = new SynchronizedLruMap[String, Double](5)
-      for (entry <- entries) {
-        slru += entry
-      }
+      for (entry <- entries) { slru += entry }
 
       val expectedKeys = entries.slice(entries.size - 5, entries.size).map(_._1)
       assert(slru.keySet == expectedKeys.toSet)

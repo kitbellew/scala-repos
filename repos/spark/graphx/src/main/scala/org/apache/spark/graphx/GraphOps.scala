@@ -282,9 +282,7 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
       epred: (EdgeTriplet[VD2, ED2]) => Boolean = (x: EdgeTriplet[VD2, ED2]) =>
         true,
       vpred: (VertexId, VD2) => Boolean = (v: VertexId, d: VD2) => true)
-      : Graph[VD, ED] = {
-    graph.mask(preprocess(graph).subgraph(epred, vpred))
-  }
+      : Graph[VD, ED] = { graph.mask(preprocess(graph).subgraph(epred, vpred)) }
 
   /**
     * Picks a random vertex from the graph and returns its ID.
@@ -468,9 +466,7 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     *
     * @see [[org.apache.spark.graphx.lib.TriangleCount$#run]]
     */
-  def triangleCount(): Graph[Int, ED] = {
-    TriangleCount.run(graph)
-  }
+  def triangleCount(): Graph[Int, ED] = { TriangleCount.run(graph) }
 
   /**
     * Compute the strongly connected component (SCC) of each vertex and return a graph with the

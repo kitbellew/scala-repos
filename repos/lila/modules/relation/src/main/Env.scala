@@ -48,9 +48,7 @@ final class Env(
     import scala.concurrent.duration._
 
     scheduler.once(15 seconds) {
-      scheduler.message(ActorNotifyFreq) {
-        actor -> actorApi.NotifyMovement
-      }
+      scheduler.message(ActorNotifyFreq) { actor -> actorApi.NotifyMovement }
     }
   }
 

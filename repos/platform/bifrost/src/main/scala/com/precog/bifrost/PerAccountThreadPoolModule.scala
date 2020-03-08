@@ -46,9 +46,8 @@ class PerAccountThreadPooling(accountFinder: AccountFinder[Future]) {
     (new ThreadFactoryBuilder().setNameFormat(accountId + "%04d")).build
 
   private def asyncContextFor(accountId: AccountId): ExecutionContext = {
-    if (executorCache.contains(accountId)) {
-      executorCache.get(accountId)
-    } else {
+    if (executorCache.contains(accountId)) { executorCache.get(accountId) }
+    else {
       val executor = new ThreadPoolExecutor(
         16,
         128,

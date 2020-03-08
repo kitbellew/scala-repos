@@ -48,29 +48,19 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
   "path-example" in {
     val route =
-      path("foo") {
-        complete("/foo")
-      } ~
-        path("foo" / "bar") {
-          complete("/foo/bar")
-        } ~
+      path("foo") { complete("/foo") } ~
+        path("foo" / "bar") { complete("/foo/bar") } ~
         pathPrefix("ball") {
-          pathEnd {
-            complete("/ball")
-          } ~
+          pathEnd { complete("/ball") } ~
             path(IntNumber) { int =>
               complete(if (int % 2 == 0) "even ball" else "odd ball")
             }
         }
 
     // tests:
-    Get("/") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/") ~> route ~> check { handled shouldEqual false }
 
-    Get("/foo") ~> route ~> check {
-      responseAs[String] shouldEqual "/foo"
-    }
+    Get("/foo") ~> route ~> check { responseAs[String] shouldEqual "/foo" }
 
     Get("/foo/bar") ~> route ~> check {
       responseAs[String] shouldEqual "/foo/bar"
@@ -84,22 +74,14 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   "pathEnd-" in {
     val route =
       pathPrefix("foo") {
-        pathEnd {
-          complete("/foo")
-        } ~
-          path("bar") {
-            complete("/foo/bar")
-          }
+        pathEnd { complete("/foo") } ~
+          path("bar") { complete("/foo/bar") }
       }
 
     // tests:
-    Get("/foo") ~> route ~> check {
-      responseAs[String] shouldEqual "/foo"
-    }
+    Get("/foo") ~> route ~> check { responseAs[String] shouldEqual "/foo" }
 
-    Get("/foo/") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/foo/") ~> route ~> check { handled shouldEqual false }
 
     Get("/foo/bar") ~> route ~> check {
       responseAs[String] shouldEqual "/foo/bar"
@@ -109,22 +91,14 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   "pathEndOrSingleSlash-" in {
     val route =
       pathPrefix("foo") {
-        pathEndOrSingleSlash {
-          complete("/foo")
-        } ~
-          path("bar") {
-            complete("/foo/bar")
-          }
+        pathEndOrSingleSlash { complete("/foo") } ~
+          path("bar") { complete("/foo/bar") }
       }
 
     // tests:
-    Get("/foo") ~> route ~> check {
-      responseAs[String] shouldEqual "/foo"
-    }
+    Get("/foo") ~> route ~> check { responseAs[String] shouldEqual "/foo" }
 
-    Get("/foo/") ~> route ~> check {
-      responseAs[String] shouldEqual "/foo"
-    }
+    Get("/foo/") ~> route ~> check { responseAs[String] shouldEqual "/foo" }
 
     Get("/foo/bar") ~> route ~> check {
       responseAs[String] shouldEqual "/foo/bar"
@@ -134,22 +108,16 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   "pathPrefix-" in {
     val route =
       pathPrefix("ball") {
-        pathEnd {
-          complete("/ball")
-        } ~
+        pathEnd { complete("/ball") } ~
           path(IntNumber) { int =>
             complete(if (int % 2 == 0) "even ball" else "odd ball")
           }
       }
 
     // tests:
-    Get("/") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/") ~> route ~> check { handled shouldEqual false }
 
-    Get("/ball") ~> route ~> check {
-      responseAs[String] shouldEqual "/ball"
-    }
+    Get("/ball") ~> route ~> check { responseAs[String] shouldEqual "/ball" }
 
     Get("/ball/1337") ~> route ~> check {
       responseAs[String] shouldEqual "odd ball"
@@ -164,41 +132,27 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/foo/doo") ~> route ~> check {
-      responseAs[String] shouldEqual "/doo"
-    }
+    Get("/foo/doo") ~> route ~> check { responseAs[String] shouldEqual "/doo" }
 
-    Get("/bar/yes") ~> route ~> check {
-      responseAs[String] shouldEqual "/yes"
-    }
+    Get("/bar/yes") ~> route ~> check { responseAs[String] shouldEqual "/yes" }
   }
 
   "pathSingleSlash-" in {
     val route =
-      pathSingleSlash {
-        complete("root")
-      } ~
+      pathSingleSlash { complete("root") } ~
         pathPrefix("ball") {
-          pathSingleSlash {
-            complete("/ball/")
-          } ~
+          pathSingleSlash { complete("/ball/") } ~
             path(IntNumber) { int =>
               complete(if (int % 2 == 0) "even ball" else "odd ball")
             }
         }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "root"
-    }
+    Get("/") ~> route ~> check { responseAs[String] shouldEqual "root" }
 
-    Get("/ball") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/ball") ~> route ~> check { handled shouldEqual false }
 
-    Get("/ball/") ~> route ~> check {
-      responseAs[String] shouldEqual "/ball/"
-    }
+    Get("/ball/") ~> route ~> check { responseAs[String] shouldEqual "/ball/" }
 
     Get("/ball/1337") ~> route ~> check {
       responseAs[String] shouldEqual "odd ball"
@@ -208,12 +162,8 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   "pathSuffix-" in {
     val route =
       pathPrefix("start") {
-        pathSuffix("end") {
-          completeWithUnmatchedPath
-        } ~
-          pathSuffix("foo" / "bar" ~ "baz") {
-            completeWithUnmatchedPath
-          }
+        pathSuffix("end") { completeWithUnmatchedPath } ~
+          pathSuffix("foo" / "bar" ~ "baz") { completeWithUnmatchedPath }
       }
 
     // tests:
@@ -228,18 +178,12 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
   "pathSuffixTest-" in {
     val route =
-      pathSuffixTest(Slash) {
-        complete("slashed")
-      } ~
+      pathSuffixTest(Slash) { complete("slashed") } ~
         complete("unslashed")
 
     // tests:
-    Get("/foo/") ~> route ~> check {
-      responseAs[String] shouldEqual "slashed"
-    }
-    Get("/foo") ~> route ~> check {
-      responseAs[String] shouldEqual "unslashed"
-    }
+    Get("/foo/") ~> route ~> check { responseAs[String] shouldEqual "slashed" }
+    Get("/foo") ~> route ~> check { responseAs[String] shouldEqual "unslashed" }
   }
 
   "rawPathPrefix-" in {
@@ -262,19 +206,13 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   "rawPathPrefixTest-" in {
     val route =
       pathPrefix("foo") {
-        rawPathPrefixTest("bar") {
-          completeWithUnmatchedPath
-        }
+        rawPathPrefixTest("bar") { completeWithUnmatchedPath }
       }
 
     // tests:
-    Get("/foobar") ~> route ~> check {
-      responseAs[String] shouldEqual "bar"
-    }
+    Get("/foobar") ~> route ~> check { responseAs[String] shouldEqual "bar" }
 
-    Get("/foobaz") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/foobaz") ~> route ~> check { handled shouldEqual false }
   }
 
   "redirectToTrailingSlashIfMissing-0" in {
@@ -320,14 +258,10 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // MISTAKE! will never match - reason explained in routes
-    Get("/bad-1/") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/bad-1/") ~> route ~> check { handled shouldEqual false }
 
     // MISTAKE! will never match - reason explained in routes
-    Get("/bad-2/") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/bad-2/") ~> route ~> check { handled shouldEqual false }
   }
 
   "redirectToNoTrailingSlashIfPresent-0" in {
@@ -370,8 +304,6 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // MISTAKE! will never match - reason explained in routes
-    Get("/bad") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/bad") ~> route ~> check { handled shouldEqual false }
   }
 }

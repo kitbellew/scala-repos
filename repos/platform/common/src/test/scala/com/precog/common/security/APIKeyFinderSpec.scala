@@ -212,8 +212,6 @@ class DirectAPIKeyFinderSpec extends Specification {
   include(new APIKeyFinderSpec[Need] {
     val M = Need.need
     def withAPIKeyFinder[A](mgr: APIKeyManager[Need])(
-        f: APIKeyFinder[Need] => A): A = {
-      f(new DirectAPIKeyFinder(mgr))
-    }
+        f: APIKeyFinder[Need] => A): A = { f(new DirectAPIKeyFinder(mgr)) }
   })
 }

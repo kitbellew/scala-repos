@@ -305,9 +305,7 @@ class ButtonBar(override val delegate: jfxsc.ButtonBar = new jfxsc.ButtonBar())
   def this(buttonOrder: String) = this(new jfxsc.ButtonBar(buttonOrder))
 
   def buttons: ObservableBuffer[jfxs.Node] = delegate.getButtons
-  def buttons_=(c: Node) = {
-    fillSFXCollectionWithOne(delegate.getButtons, c)
-  }
+  def buttons_=(c: Node) = { fillSFXCollectionWithOne(delegate.getButtons, c) }
   def buttons_=(c: Iterable[Node]) = {
     fillSFXCollection(delegate.getButtons, c)
   }
@@ -319,15 +317,11 @@ class ButtonBar(override val delegate: jfxsc.ButtonBar = new jfxsc.ButtonBar())
     * [[scalafx.scene.control.ButtonBar.ButtonOrderMacOs]], and [[scalafx.scene.control.ButtonBar.ButtonOrderLinux]].
     */
   def buttonOrder: StringProperty = delegate.buttonOrderProperty
-  def buttonOrder_=(v: String) {
-    buttonOrder() = v
-  }
+  def buttonOrder_=(v: String) { buttonOrder() = v }
 
   /**
     * Specifies the minimum width of all buttons placed in this button bar.
     */
   def buttonMinWidth: DoubleProperty = delegate.buttonMinWidthProperty
-  def buttonMinWidth_=(v: Double) {
-    buttonMinWidth() = v
-  }
+  def buttonMinWidth_=(v: Double) { buttonMinWidth() = v }
 }

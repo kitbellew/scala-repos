@@ -25,9 +25,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -42,9 +40,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -59,9 +55,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -76,9 +70,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -93,9 +85,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -110,9 +100,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -127,9 +115,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -142,9 +128,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -160,9 +144,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -178,9 +160,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -196,9 +176,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -214,9 +192,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -232,9 +208,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(-1, result.signum())
   }
 
@@ -250,9 +224,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -266,9 +238,7 @@ class BigIntegerAddTest {
     val bNumber = new BigInteger(bSign, bBytes)
     val result = aNumber.add(bNumber)
     val resBytes = Array.ofDim[Byte](rBytes.length)
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(0, result.signum())
   }
 
@@ -283,9 +253,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -300,9 +268,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -317,9 +283,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(0, result.signum())
   }
 
@@ -332,9 +296,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -347,9 +309,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -360,9 +320,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(0, result.signum())
   }
 
@@ -373,9 +331,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 
@@ -392,9 +348,7 @@ class BigIntegerAddTest {
     val result = aNumber.add(bNumber)
     var resBytes = Array.ofDim[Byte](rBytes.length)
     resBytes = result.toByteArray()
-    for (i <- 0 until resBytes.length) {
-      assertEquals(rBytes(i), resBytes(i))
-    }
+    for (i <- 0 until resBytes.length) { assertEquals(rBytes(i), resBytes(i)) }
     assertEquals(1, result.signum())
   }
 }

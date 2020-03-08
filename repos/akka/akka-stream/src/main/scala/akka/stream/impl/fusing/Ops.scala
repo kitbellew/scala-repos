@@ -79,9 +79,7 @@ private[akka] final case class DropWhile[T](
     if (taking || !p(elem)) {
       taking = true
       ctx.push(elem)
-    } else {
-      ctx.pull()
-    }
+    } else { ctx.pull() }
 
   override def decide(t: Throwable): Supervision.Directive = decider(t)
 }
@@ -363,11 +361,9 @@ private[akka] final case class Sliding[T](n: Int, step: Int)
       elem: T,
       ctx: Context[immutable.Seq[T]]): SyncDirective = {
     buf :+= elem
-    if (buf.size < n) {
-      ctx.pull()
-    } else if (buf.size == n) {
-      ctx.push(buf)
-    } else if (step > n) {
+    if (buf.size < n) { ctx.pull() }
+    else if (buf.size == n) { ctx.push(buf) }
+    else if (step > n) {
       if (buf.size == step)
         buf = Vector.empty
       ctx.pull()
@@ -516,9 +512,7 @@ private[akka] final case class Batch[In, Out](
                   pending = null.asInstanceOf[In]
               }
           }
-        } else {
-          agg = null.asInstanceOf[Out]
-        }
+        } else { agg = null.asInstanceOf[Out] }
       }
 
       override def preStart() = pull(in)
@@ -544,9 +538,8 @@ private[akka] final case class Batch[In, Out](
                     case Supervision.Resume ⇒
                   }
               }
-            } else if (left < cost) {
-              pending = elem
-            } else {
+            } else if (left < cost) { pending = elem }
+            else {
               try {
                 agg = aggregate(agg, elem)
                 left -= cost
@@ -583,9 +576,8 @@ private[akka] final case class Batch[In, Out](
               push(out, agg)
               if (pending == null) completeStage()
               else {
-                try {
-                  agg = seed(pending)
-                } catch {
+                try { agg = seed(pending) }
+                catch {
                   case NonFatal(ex) ⇒
                     decider(ex) match {
                       case Supervision.Stop ⇒ failStage(ex)

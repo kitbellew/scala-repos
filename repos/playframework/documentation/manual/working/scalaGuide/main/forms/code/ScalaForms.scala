@@ -210,14 +210,10 @@ package scalaguide.forms.scalaforms {
       )
       //#userForm-define
 
-      def home(id: Int = 0) = Action {
-        Ok("Welcome!")
-      }
+      def home(id: Int = 0) = Action { Ok("Welcome!") }
 
       // #form-render
-      def index = Action {
-        Ok(views.html.user(userForm))
-      }
+      def index = Action { Ok(views.html.user(userForm)) }
       // #form-render
 
       def userPostHandlingFailure() = Action { implicit request =>
@@ -512,9 +508,7 @@ package scalaguide.forms.scalaforms {
       }
       // #contact-save
 
-      def showContact(id: Int) = Action {
-        Ok("Contact id: " + id)
-      }
+      def showContact(id: Int) = Action { Ok("Contact id: " + id) }
 
     }
 

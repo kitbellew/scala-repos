@@ -23,24 +23,17 @@ class Metrics @Inject() (val registry: MetricRegistry) {
     val timer = registry.timer(name)
 
     val startTime = System.nanoTime()
-    try {
-      block
-    } finally {
+    try { block }
+    finally {
       timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
     }
   }
 
-  def counter(name: String): Counter = {
-    new Counter(registry.counter(name))
-  }
+  def counter(name: String): Counter = { new Counter(registry.counter(name)) }
 
-  def timer(name: String): Timer = {
-    new Timer(registry.timer(name))
-  }
+  def timer(name: String): Timer = { new Timer(registry.timer(name)) }
 
-  def meter(name: String): Meter = {
-    new Meter(registry.meter(name))
-  }
+  def meter(name: String): Meter = { new Meter(registry.meter(name)) }
 
   def histogram(name: String): Histogram = {
     new Histogram(registry.histogram(name))
@@ -98,9 +91,8 @@ object Metrics {
 
     def apply[T](block: => T): T = {
       val startTime = System.nanoTime()
-      try {
-        block
-      } finally {
+      try { block }
+      finally {
         timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
       }
     }
@@ -111,13 +103,9 @@ object Metrics {
   }
 
   class Histogram(histogram: com.codahale.metrics.Histogram) {
-    def update(value: Long): Unit = {
-      histogram.update(value)
-    }
+    def update(value: Long): Unit = { histogram.update(value) }
 
-    def update(value: Int): Unit = {
-      histogram.update(value)
-    }
+    def update(value: Int): Unit = { histogram.update(value) }
   }
 
   class Meter(meter: com.codahale.metrics.Meter) {

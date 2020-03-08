@@ -19,9 +19,7 @@ object TestEvaluator {
         engineParams: EngineParams,
         instanceId: String = "",
         params: WorkflowParams = WorkflowParams()
-    ): Seq[Any] = {
-      Seq[Any]()
-    }
+    ): Seq[Any] = { Seq[Any]() }
 
     def eval(
         sc: SparkContext,
@@ -31,9 +29,7 @@ object TestEvaluator {
       (0 until en).map { ex =>
         {
           val qpas = (0 until qn).map { qx =>
-            {
-              (Query(id, ex, qx), Prediction(id, ex, qx), Actual(id, ex, qx))
-            }
+            { (Query(id, ex, qx), Prediction(id, ex, qx), Actual(id, ex, qx)) }
           }
 
           (EvalInfo(id = id, ex = ex), sc.parallelize(qpas))

@@ -73,9 +73,7 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
 
   /** Return the graph metadata for the given stage, or None if no such information exists. */
   def getOperationGraphForStage(stageId: Int): Option[RDDOperationGraph] =
-    synchronized {
-      stageIdToGraph.get(stageId)
-    }
+    synchronized { stageIdToGraph.get(stageId) }
 
   /** On job start, construct a RDDOperationGraph for each stage in the job for display later. */
   override def onJobStart(jobStart: SparkListenerJobStart): Unit =

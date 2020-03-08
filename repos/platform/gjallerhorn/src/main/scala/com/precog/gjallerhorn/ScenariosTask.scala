@@ -66,9 +66,7 @@ class ScenariosTask(settings: Settings)
           case Right(s)  => JParser.parseFromString(s)
         }
 
-      res must beLike {
-        case Success(jobj) => ok
-      }
+      res must beLike { case Success(jobj) => ok }
     }
 
     "support ingesting under own account root with other owner" in {
@@ -84,9 +82,7 @@ class ScenariosTask(settings: Settings)
         case Right(s)  => JParser.parseFromString(s)
       }
 
-      res must beLike {
-        case Success(jobj) => ok
-      }
+      res must beLike { case Success(jobj) => ok }
     }
 
     "support browsing of own data under own account root" in {
@@ -115,9 +111,7 @@ class ScenariosTask(settings: Settings)
           case Right(s)  => JParser.parseFromString(s)
         }
 
-      res must beLike {
-        case Failure(StatusCode(403)) => ok
-      }
+      res must beLike { case Failure(StatusCode(403)) => ok }
     }
 
     "support browsing of own data under other account root" in {
@@ -182,9 +176,7 @@ class ScenariosTask(settings: Settings)
           case Right(s)  => JParser.parseFromString(s)
         }
 
-      res must beLike {
-        case Success(jobj) => ok
-      }
+      res must beLike { case Success(jobj) => ok }
 
       EventuallyResults.eventually(10, 1.second) {
         val json =

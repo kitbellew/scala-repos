@@ -13,11 +13,7 @@ object CachedMacroUtil {
   //to analyze caches pass in the following compiler flag: "-Xmacro-settings:analyze-caches"
   val ANALYZE_CACHES: String = "analyze-caches"
 
-  def println(a: Any): Unit = {
-    if (debug) {
-      Console.println(a)
-    }
-  }
+  def println(a: Any): Unit = { if (debug) { Console.println(a) } }
 
   def cachesUtilFQN(implicit c: whitebox.Context): c.universe.Tree = {
     import c.universe.Quasiquote

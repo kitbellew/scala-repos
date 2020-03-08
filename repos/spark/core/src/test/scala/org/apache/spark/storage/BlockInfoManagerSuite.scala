@@ -38,17 +38,12 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     blockInfoManager = new BlockInfoManager()
-    for (t <- 0 to 4) {
-      blockInfoManager.registerTask(t)
-    }
+    for (t <- 0 to 4) { blockInfoManager.registerTask(t) }
   }
 
   override protected def afterEach(): Unit = {
-    try {
-      blockInfoManager = null
-    } finally {
-      super.afterEach()
-    }
+    try { blockInfoManager = null }
+    finally { super.afterEach() }
   }
 
   private implicit def stringToBlockId(str: String): BlockId = {
@@ -64,14 +59,10 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
       TaskContext.setTaskContext(
         new TaskContextImpl(0, 0, taskAttemptId, 0, null, null))
       block
-    } finally {
-      TaskContext.unset()
-    }
+    } finally { TaskContext.unset() }
   }
 
-  test("initial memory usage") {
-    assert(blockInfoManager.size === 0)
-  }
+  test("initial memory usage") { assert(blockInfoManager.size === 0) }
 
   test("get non-existent block") {
     assert(blockInfoManager.get("non-existent-block").isEmpty)
@@ -123,9 +114,7 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
     Thread.sleep(
       300
     ) // Hack to try to ensure that both future tasks are waiting
-    withTaskId(0) {
-      blockInfoManager.downgradeLock("block")
-    }
+    withTaskId(0) { blockInfoManager.downgradeLock("block") }
     // After downgrading to a read lock, both threads should wake up and acquire the shared
     // read lock.
     assert(!Await.result(lock1Future, 1.seconds))
@@ -151,9 +140,7 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
     Thread.sleep(
       300
     ) // Hack to try to ensure that both future tasks are waiting
-    withTaskId(0) {
-      blockInfoManager.removeBlock("block")
-    }
+    withTaskId(0) { blockInfoManager.removeBlock("block") }
     // After removing the block, the write lock is released. Both threads should wake up but only
     // one should acquire the write lock. The second thread should block until the winner of the
     // write race releases its lock.
@@ -168,9 +155,7 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
       if (winningTID == 1) lock2Future else lock1Future
     assert(!losingFuture.isCompleted)
     // Once the writer releases its lock, the blocked future should wake up again and complete.
-    withTaskId(winningTID) {
-      blockInfoManager.unlock("block")
-    }
+    withTaskId(winningTID) { blockInfoManager.unlock("block") }
     assert(!Await.result(losingFuture, 1.seconds))
     assert(blockInfoManager.get("block").get.readerCount === 1)
   }
@@ -249,9 +234,7 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
       assert(blockInfoManager.lockNewBlockForWriting("block", newBlockInfo()))
       blockInfoManager.downgradeLock("block")
     }
-    withTaskId(1) {
-      assert(blockInfoManager.lockForReading("block").isDefined)
-    }
+    withTaskId(1) { assert(blockInfoManager.lockForReading("block").isDefined) }
     assert(blockInfoManager.get("block").get.readerCount === 2)
     assert(blockInfoManager.get("block").get.writerTask === BlockInfo.NO_WRITER)
   }
@@ -261,21 +244,15 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
       assert(blockInfoManager.lockNewBlockForWriting("block", newBlockInfo()))
     }
     val get1Future = Future {
-      withTaskId(1) {
-        blockInfoManager.lockForReading("block")
-      }
+      withTaskId(1) { blockInfoManager.lockForReading("block") }
     }
     val get2Future = Future {
-      withTaskId(2) {
-        blockInfoManager.lockForReading("block")
-      }
+      withTaskId(2) { blockInfoManager.lockForReading("block") }
     }
     Thread.sleep(
       300
     ) // Hack to try to ensure that both future tasks are waiting
-    withTaskId(0) {
-      blockInfoManager.unlock("block")
-    }
+    withTaskId(0) { blockInfoManager.unlock("block") }
     assert(Await.result(get1Future, 1.seconds).isDefined)
     assert(Await.result(get2Future, 1.seconds).isDefined)
     assert(blockInfoManager.get("block").get.readerCount === 2)
@@ -288,21 +265,15 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
       blockInfoManager.lockForReading("block")
     }
     val write1Future = Future {
-      withTaskId(1) {
-        blockInfoManager.lockForWriting("block")
-      }
+      withTaskId(1) { blockInfoManager.lockForWriting("block") }
     }
     val write2Future = Future {
-      withTaskId(2) {
-        blockInfoManager.lockForWriting("block")
-      }
+      withTaskId(2) { blockInfoManager.lockForWriting("block") }
     }
     Thread.sleep(
       300
     ) // Hack to try to ensure that both future tasks are waiting
-    withTaskId(0) {
-      blockInfoManager.unlock("block")
-    }
+    withTaskId(0) { blockInfoManager.unlock("block") }
     assert(
       Await
         .result(
@@ -310,9 +281,7 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
           1.seconds)
         .isDefined)
     val firstWriteWinner = if (write1Future.isCompleted) 1 else 2
-    withTaskId(firstWriteWinner) {
-      blockInfoManager.unlock("block")
-    }
+    withTaskId(firstWriteWinner) { blockInfoManager.unlock("block") }
     assert(Await.result(write1Future, 1.seconds).isDefined)
     assert(Await.result(write2Future, 1.seconds).isDefined)
   }
@@ -330,9 +299,7 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
     withTaskId(0) {
       assert(blockInfoManager.lockNewBlockForWriting("block", newBlockInfo()))
       blockInfoManager.unlock("block")
-      intercept[IllegalStateException] {
-        blockInfoManager.removeBlock("block")
-      }
+      intercept[IllegalStateException] { blockInfoManager.removeBlock("block") }
     }
   }
 
@@ -342,9 +309,7 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
       assert(blockInfoManager.lockNewBlockForWriting("block", newBlockInfo()))
       blockInfoManager.unlock("block")
       assert(blockInfoManager.lockForReading("block").isDefined)
-      intercept[IllegalStateException] {
-        blockInfoManager.removeBlock("block")
-      }
+      intercept[IllegalStateException] { blockInfoManager.removeBlock("block") }
     }
   }
 
@@ -353,21 +318,15 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
       assert(blockInfoManager.lockNewBlockForWriting("block", newBlockInfo()))
     }
     val getFuture = Future {
-      withTaskId(1) {
-        blockInfoManager.lockForReading("block")
-      }
+      withTaskId(1) { blockInfoManager.lockForReading("block") }
     }
     val writeFuture = Future {
-      withTaskId(2) {
-        blockInfoManager.lockForWriting("block")
-      }
+      withTaskId(2) { blockInfoManager.lockForWriting("block") }
     }
     Thread.sleep(
       300
     ) // Hack to try to ensure that both future tasks are waiting
-    withTaskId(0) {
-      blockInfoManager.removeBlock("block")
-    }
+    withTaskId(0) { blockInfoManager.removeBlock("block") }
     assert(Await.result(getFuture, 1.seconds).isEmpty)
     assert(Await.result(writeFuture, 1.seconds).isEmpty)
   }

@@ -163,7 +163,5 @@ object Run {
       evaluatorClassOpt = Some(classOf[MeanSquareError]))
   }
 
-  def main(args: Array[String]) {
-    runEngine()
-  }
+  def main(args: Array[String]) { runEngine() }
 }

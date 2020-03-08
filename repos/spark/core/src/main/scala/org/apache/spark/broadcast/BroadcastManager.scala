@@ -46,9 +46,7 @@ private[spark] class BroadcastManager(
     }
   }
 
-  def stop() {
-    broadcastFactory.stop()
-  }
+  def stop() { broadcastFactory.stop() }
 
   private val nextBroadcastId = new AtomicLong(0)
 

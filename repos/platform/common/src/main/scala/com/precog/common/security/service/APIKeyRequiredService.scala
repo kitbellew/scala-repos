@@ -74,9 +74,7 @@ trait APIKeyServiceCombinators extends HttpRequestHandlerCombinators {
       service: HttpService[A, APIKey => Future[HttpResponse[B]]])(implicit
       inj: JValue => B,
       M: Monad[Future]): HttpService[A, Future[HttpResponse[B]]] = {
-    apiKeyRequired(keyFinder) {
-      apiKeyIsValid(invalidAPIKey[B])(service)
-    }
+    apiKeyRequired(keyFinder) { apiKeyIsValid(invalidAPIKey[B])(service) }
   }
 }
 

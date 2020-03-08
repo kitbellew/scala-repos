@@ -268,9 +268,7 @@ private[streaming] class CountingIterator[T](iterator: Iterator[T])
 
   def hasNext(): Boolean = iterator.hasNext
 
-  def count(): Option[Long] = {
-    if (isFullyConsumed) Some(_count) else None
-  }
+  def count(): Option[Long] = { if (isFullyConsumed) Some(_count) else None }
 
   def next(): T = {
     _count += 1

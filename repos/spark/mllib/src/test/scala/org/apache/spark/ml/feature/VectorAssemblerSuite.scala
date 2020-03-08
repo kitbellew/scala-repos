@@ -40,9 +40,7 @@ class VectorAssemblerSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  test("params") {
-    ParamsSuite.checkParams(new VectorAssembler)
-  }
+  test("params") { ParamsSuite.checkParams(new VectorAssembler) }
 
   test("assemble") {
     import org.apache.spark.ml.feature.VectorAssembler.assemble
@@ -99,9 +97,7 @@ class VectorAssemblerSuite
     val assembler = new VectorAssembler()
       .setInputCols(Array("a", "b", "c"))
       .setOutputCol("features")
-    val thrown = intercept[SparkException] {
-      assembler.transform(df)
-    }
+    val thrown = intercept[SparkException] { assembler.transform(df) }
     assert(
       thrown.getMessage contains "VectorAssembler does not support the StringType type")
   }

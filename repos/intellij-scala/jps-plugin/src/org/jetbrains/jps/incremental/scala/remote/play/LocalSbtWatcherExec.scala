@@ -72,17 +72,11 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
       this
     }
 
-    def stopMain() {
-      stop = true
-    }
+    def stopMain() { stop = true }
 
-    private def readString() {
-      processMessage(streamReader.readLine())
-    }
+    private def readString() { processMessage(streamReader.readLine()) }
 
-    private def processMessage(msg: String) {
-      consumer consume msg
-    }
+    private def processMessage(msg: String) { consumer consume msg }
   }
 
   private class MyProcessDescriptor(
@@ -102,9 +96,7 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
     new MyProcessDescriptor(
       process,
       myExecutor.submit(new Runnable {
-        override def run() {
-          process.waitFor()
-        }
+        override def run() { process.waitFor() }
       }),
       new ProcessListener(consumer, process)
     )

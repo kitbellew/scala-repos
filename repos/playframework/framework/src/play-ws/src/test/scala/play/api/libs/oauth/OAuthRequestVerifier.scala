@@ -21,17 +21,13 @@ import org.specs2.matcher.MatchResult
 object OAuthRequestVerifier {
 
   def percentDecode(input: String): String = {
-    if (input == null) {
-      ""
-    } else {
-      java.net.URLDecoder.decode(input, "UTF-8")
-    }
+    if (input == null) { "" }
+    else { java.net.URLDecoder.decode(input, "UTF-8") }
   }
 
   def percentEncode(input: String): String = {
-    if (input == null) {
-      ""
-    } else {
+    if (input == null) { "" }
+    else {
       java.net.URLEncoder
         .encode(input, "UTF-8")
         .replace("+", "%20")
@@ -124,13 +120,9 @@ object OAuthRequestVerifier {
 
     // Params must be percent encoded before they are sorted
     val parameterString = params
-      .map {
-        case (key, value) => percentEncode(key) -> percentEncode(value)
-      }
+      .map { case (key, value) => percentEncode(key) -> percentEncode(value) }
       .sorted
-      .map {
-        case (key, value) => s"$key=$value"
-      }
+      .map { case (key, value) => s"$key=$value" }
       .mkString("&")
 
     val signatureBaseString =

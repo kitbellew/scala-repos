@@ -173,7 +173,9 @@ object tuple {
     *
     * @author Miles Sabin
     */
-  trait Selector[T, U] extends DepFn1[T] with Serializable { type Out = U }
+  trait Selector[T, U] extends DepFn1[T] with Serializable {
+    type Out = U
+  }
 
   object Selector {
     def apply[T, U](implicit selector: Selector[T, U]): Aux[T, U] = selector
@@ -732,7 +734,8 @@ object tuple {
     *
     * @author Miles Sabin
     */
-  trait MapFolder[T, R, P] extends Serializable { // Nb. Not a dependent function signature
+  trait MapFolder[T, R, P]
+      extends Serializable { // Nb. Not a dependent function signature
     def apply(t: T, in: R, op: (R, R) => R): R
   }
 
@@ -1169,7 +1172,9 @@ object tuple {
     *
     * @author Andreas Koestler
     */
-  trait ToCoproduct[T] extends Serializable { type Out <: Coproduct }
+  trait ToCoproduct[T] extends Serializable {
+    type Out <: Coproduct
+  }
 
   object ToCoproduct {
     def apply[T](implicit tcp: ToCoproduct[T]): Aux[T, tcp.Out] = tcp
@@ -1195,7 +1200,9 @@ object tuple {
     *
     * @author Andreas Koestler
     */
-  trait ToSum[T] extends Serializable { type Out <: Coproduct }
+  trait ToSum[T] extends Serializable {
+    type Out <: Coproduct
+  }
 
   object ToSum {
     def apply[T](implicit tcp: ToSum[T]): Aux[T, tcp.Out] = tcp

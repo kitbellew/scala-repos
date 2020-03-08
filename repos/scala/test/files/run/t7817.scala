@@ -21,7 +21,9 @@ package test {
 }
 
 object Test extends App {
-  object fooable { def foo = "foo" }
+  object fooable {
+    def foo = "foo"
+  }
   def check(result: Any) = assert(result == "foo", result.toString)
 
   val s = new test.C1

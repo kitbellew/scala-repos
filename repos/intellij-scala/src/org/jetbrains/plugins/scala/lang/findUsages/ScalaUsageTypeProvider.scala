@@ -54,9 +54,7 @@ final class ScalaUsageTypeProvider extends UsageTypeProviderEx {
         case _ =>
       }
 
-      for (ie <- parentOfType[ScImportExpr]) {
-        return UsageType.CLASS_IMPORT
-      }
+      for (ie <- parentOfType[ScImportExpr]) { return UsageType.CLASS_IMPORT }
 
       for (ie <- parentOfType[ScNewTemplateDefinition];
            tp <- ie.extendsBlock.templateParents

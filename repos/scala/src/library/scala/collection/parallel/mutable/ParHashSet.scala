@@ -77,13 +77,9 @@ class ParHashSet[T] private[collection] (contents: FlatHashTable.Contents[T])
       new ParHashSetIterator(start, until, total)
   }
 
-  private def writeObject(s: java.io.ObjectOutputStream) {
-    serializeTo(s)
-  }
+  private def writeObject(s: java.io.ObjectOutputStream) { serializeTo(s) }
 
-  private def readObject(in: java.io.ObjectInputStream) {
-    init(in, x => ())
-  }
+  private def readObject(in: java.io.ObjectInputStream) { init(in, x => ()) }
 
   import scala.collection.DebugUtils._
   override def debugInformation = buildString { append =>

@@ -145,9 +145,8 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
 
   def /%(rhs: Factors): (Factors, Factors) = {
     val (sign, nn, dd, cc) = qm(rhs)
-    if (dd.isEmpty) {
-      (Factors(nn, sign), Factors.zero)
-    } else {
+    if (dd.isEmpty) { (Factors(nn, sign), Factors.zero) }
+    else {
       val (q, m) = prod(nn) /% prod(dd)
       (Factors(q) * sign, Factors(m * prod(cc)) * lhs.signum)
     }
@@ -165,11 +164,9 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
     }
 
   def pow(rhs: Int): Factors =
-    if (rhs < 0) {
-      throw new IllegalArgumentException("negative exponent")
-    } else if (rhs == 0) {
-      Factors.one
-    } else {
+    if (rhs < 0) { throw new IllegalArgumentException("negative exponent") }
+    else if (rhs == 0) { Factors.one }
+    else {
       val sign = lhs.sign match {
         case Negative if (rhs & 1) == 0 => Positive
         case sign                       => sign

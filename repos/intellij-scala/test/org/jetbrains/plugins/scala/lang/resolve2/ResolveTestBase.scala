@@ -43,18 +43,14 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
   var options: List[Parameters] = List()
   var references: List[PsiReference] = List()
 
-  override def setUp() {
-    setUp(TestUtils.DEFAULT_SCALA_SDK_VERSION)
-  }
+  override def setUp() { setUp(TestUtils.DEFAULT_SCALA_SDK_VERSION) }
 
   override def setUp(version: ScalaSdkVersion) {
     super.setUp(version)
     configureReferences()
   }
 
-  override def folderPath: String = {
-    super.folderPath() + "resolve2/"
-  }
+  override def folderPath: String = { super.folderPath() + "resolve2/" }
 
   def configureReferences(): PsiReference = {
     options = List()
@@ -101,9 +97,7 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
       }: _*)
   }
 
-  def doTest() {
-    doTest(getTestName(false) + ".scala")
-  }
+  def doTest() { doTest(getTestName(false) + ".scala") }
 
   def doTest(file: String) {
     references

@@ -30,9 +30,8 @@ object PrinterHelper {
       wrap: Boolean = false,
       printRoot: Boolean = false) = {
     def toolboxTree(tree: => Tree) =
-      try {
-        tree
-      } catch {
+      try { tree }
+      catch {
         case e: scala.tools.reflect.ToolBoxError =>
           throw new Exception(e.getMessage + ": " + code, e)
       }

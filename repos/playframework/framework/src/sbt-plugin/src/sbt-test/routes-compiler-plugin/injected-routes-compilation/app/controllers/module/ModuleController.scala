@@ -6,7 +6,5 @@ package controllers.module
 import play.api.mvc._
 
 class ModuleController extends Controller {
-  def index = Action {
-    Ok
-  }
+  def index = Action { Ok }
 }

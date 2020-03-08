@@ -18,9 +18,7 @@ class ChanTest extends FunSuite {
     val p = Proc[Thread] { t => threads += t; l.countDown(); b.await() }
 
     val t0 = new Thread {
-      override def run() {
-        p ! this
-      }
+      override def run() { p ! this }
     }
 
     val t1 = new Thread {

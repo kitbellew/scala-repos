@@ -54,9 +54,7 @@ object LAPinger {
   /**
     * Shut down the underlying <code>SingleThreadScheduledExecutor</code>
     */
-  def shutdown: Unit = synchronized {
-    service.shutdown
-  }
+  def shutdown: Unit = synchronized { service.shutdown }
 
   /**
     * Schedules the sending of a message to occur after the specified delay.
@@ -69,13 +67,10 @@ object LAPinger {
       msg: T,
       delay: Long): ScheduledFuture[Unit] = {
     val r = new Callable[Unit] {
-      def call: Unit = {
-        to ! msg
-      }
+      def call: Unit = { to ! msg }
     }
-    try {
-      service.schedule(r, delay, TimeUnit.MILLISECONDS)
-    } catch {
+    try { service.schedule(r, delay, TimeUnit.MILLISECONDS) }
+    catch {
       case e: RejectedExecutionException =>
         throw PingerException(msg + " could not be scheduled on " + to, e)
     }
@@ -96,9 +91,7 @@ private object TF extends ThreadFactory {
     val d: Thread = threadFactory.newThread(r)
     d setName "ActorPinger"
     d setDaemon true
-    if (ThreadPoolRules.nullContextClassLoader) {
-      d setContextClassLoader null
-    }
+    if (ThreadPoolRules.nullContextClassLoader) { d setContextClassLoader null }
     d
   }
 }

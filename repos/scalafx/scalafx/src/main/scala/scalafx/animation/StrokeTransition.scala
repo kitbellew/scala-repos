@@ -118,32 +118,24 @@ class StrokeTransition(
     * The target shape of this $ST.
     */
   def shape: ObjectProperty[jfxss.Shape] = delegate.shapeProperty
-  def shape_=(s: Shape) {
-    shape() = s
-  }
+  def shape_=(s: Shape) { shape() = s }
 
   /**
     * $DUR. $DV 400ms
     */
   def duration: ObjectProperty[jfxu.Duration] = delegate.durationProperty
-  def duration_=(d: Duration) {
-    duration() = d
-  }
+  def duration_=(d: Duration) { duration() = d }
 
   /**
     * Specifies the start color value for this $ST. $DV `null`
     */
   def fromValue: ObjectProperty[jfxsp.Color] = delegate.fromValueProperty
-  def fromValue_=(from: Color) {
-    fromValue() = from
-  }
+  def fromValue_=(from: Color) { fromValue() = from }
 
   /**
     * Specifies the stop color value for this $ST. $DV `null`
     */
   def toValue: ObjectProperty[jfxsp.Color] = delegate.toValueProperty
-  def toValue_=(to: Color) {
-    toValue() = to
-  }
+  def toValue_=(to: Color) { toValue() = to }
 
 }

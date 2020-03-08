@@ -148,9 +148,8 @@ trait PEvents extends Serializable {
     )(sc)
       .map {
         case (id, dm) =>
-          try {
-            (id, extract(dm))
-          } catch {
+          try { (id, extract(dm)) }
+          catch {
             case e: Exception => {
               logger.error(
                 s"Failed to get extract entity from DataMap $dm of " +

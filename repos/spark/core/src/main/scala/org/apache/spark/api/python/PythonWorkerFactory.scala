@@ -65,14 +65,10 @@ private[spark] class PythonWorkerFactory(
   def create(): Socket = {
     if (useDaemon) {
       synchronized {
-        if (idleWorkers.size > 0) {
-          return idleWorkers.dequeue()
-        }
+        if (idleWorkers.size > 0) { return idleWorkers.dequeue() }
       }
       createThroughDaemon()
-    } else {
-      createSimpleWorker()
-    }
+    } else { createSimpleWorker() }
   }
 
   /**
@@ -97,9 +93,8 @@ private[spark] class PythonWorkerFactory(
       startDaemon()
 
       // Attempt to connect, restart and retry once if it fails
-      try {
-        createSocket()
-      } catch {
+      try { createSocket() }
+      catch {
         case exc: SocketException =>
           logWarning("Failed to open socket to Python daemon:", exc)
           logWarning(
@@ -151,20 +146,14 @@ private[spark] class PythonWorkerFactory(
             "Python worker did not connect back in time",
             e)
       }
-    } finally {
-      if (serverSocket != null) {
-        serverSocket.close()
-      }
-    }
+    } finally { if (serverSocket != null) { serverSocket.close() } }
     null
   }
 
   private def startDaemon() {
     synchronized {
       // Is it already running?
-      if (daemon != null) {
-        return
-      }
+      if (daemon != null) { return }
 
       try {
         // Create and start the daemon
@@ -205,9 +194,7 @@ private[spark] class PythonWorkerFactory(
             val wrappedException = new SparkException(errorMessage.stripMargin)
             wrappedException.setStackTrace(e.getStackTrace)
             throw wrappedException
-          } else {
-            throw e
-          }
+          } else { throw e }
       }
 
       // Important: don't close daemon's stdin (daemon.getOutputStream) so it can correctly
@@ -273,21 +260,15 @@ private[spark] class PythonWorkerFactory(
         cleanupIdleWorkers()
 
         // Request shutdown of existing daemon by sending SIGTERM
-        if (daemon != null) {
-          daemon.destroy()
-        }
+        if (daemon != null) { daemon.destroy() }
 
         daemon = null
         daemonPort = 0
-      } else {
-        simpleWorkers.mapValues(_.destroy())
-      }
+      } else { simpleWorkers.mapValues(_.destroy()) }
     }
   }
 
-  def stop() {
-    stopDaemon()
-  }
+  def stop() { stopDaemon() }
 
   def stopWorker(worker: Socket) {
     synchronized {
@@ -301,9 +282,7 @@ private[spark] class PythonWorkerFactory(
             daemon.getOutputStream.flush()
           }
         }
-      } else {
-        simpleWorkers.get(worker).foreach(_.destroy())
-      }
+      } else { simpleWorkers.get(worker).foreach(_.destroy()) }
     }
     worker.close()
   }
@@ -316,9 +295,8 @@ private[spark] class PythonWorkerFactory(
       }
     } else {
       // Cleanup the worker socket. This will also cause the Python worker to exit.
-      try {
-        worker.close()
-      } catch {
+      try { worker.close() }
+      catch {
         case e: Exception =>
           logWarning("Failed to close worker socket", e)
       }

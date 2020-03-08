@@ -141,9 +141,7 @@ trait FunctionInstances extends FunctionInstances0 {
 
       override def split[A, B, C, D](
           f: A => B,
-          g: C => D): ((A, C)) => (B, D) = {
-        case (a, c) => (f(a), g(c))
-      }
+          g: C => D): ((A, C)) => (B, D) = { case (a, c) => (f(a), g(c)) }
     }
 
   implicit def function1Covariant[T]: Monad[T => ?]

@@ -57,11 +57,7 @@ class FileUploadExamplesSpec extends RoutingSpec {
           }
 
           // when processing have finished create a response for the user
-          onSuccess(allPartsF) { allParts =>
-            complete {
-              "ok!"
-            }
-          }
+          onSuccess(allPartsF) { allParts => complete { "ok!" } }
         }
       }
   }
@@ -90,11 +86,7 @@ class FileUploadExamplesSpec extends RoutingSpec {
             .runWith(Sink.ignore)
 
           // when processing have finished create a response for the user
-          onSuccess(done) { _ =>
-            complete {
-              "ok!"
-            }
-          }
+          onSuccess(done) { _ => complete { "ok!" } }
         }
       }
   }

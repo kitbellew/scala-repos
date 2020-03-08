@@ -684,9 +684,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
       var other: PartitionIterator = _
       val lookahead = new mutable.Queue[A]
       def skip() =
-        while (self.hasNext && !p(self.head)) {
-          other.lookahead += self.next
-        }
+        while (self.hasNext && !p(self.head)) { other.lookahead += self.next }
       def hasNext = !lookahead.isEmpty || { skip(); self.hasNext }
       def next() =
         if (!lookahead.isEmpty) lookahead.dequeue()

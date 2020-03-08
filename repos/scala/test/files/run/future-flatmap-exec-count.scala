@@ -2,9 +2,7 @@ import scala.concurrent._
 import java.util.concurrent.atomic.AtomicInteger
 
 object Test {
-  def main(args: Array[String]) {
-    test()
-  }
+  def main(args: Array[String]) { test() }
 
   def test() = {
     def await(f: Future[Any]) =
@@ -34,9 +32,7 @@ object Test {
       println("recovering")
       val recovered = Future
         .failed(new Throwable())
-        .recoverWith {
-          case _ => Future.successful(2)
-        }(ec)
+        .recoverWith { case _ => Future.successful(2) }(ec)
       await(recovered)
     }
   }

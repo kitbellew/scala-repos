@@ -40,11 +40,8 @@ class RewriteDistinct extends Phase {
     }
 
   def rewrite(s1: TermSymbol, dist1: Distinct, sel1: Node): (Node, Node) = {
-    val refFields = sel1
-      .collect[TermSymbol] {
-        case Select(Ref(s), f) if s == s1 => f
-      }
-      .toSet
+    val refFields =
+      sel1.collect[TermSymbol] { case Select(Ref(s), f) if s == s1 => f }.toSet
     logger.debug("Referenced fields: " + refFields.mkString(", "))
     val onFlat = ProductNode(ConstArray(dist1.on)).flatten
     val onNodes = onFlat.children.toSet

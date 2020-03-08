@@ -78,9 +78,7 @@ private[upgrade] object DeploymentPlanReverter {
       if ((oldGroup.dependencies -- existingGroup.dependencies).nonEmpty) {
         existingGroup.copy(dependencies =
           existingGroup.dependencies ++ oldGroup.dependencies)
-      } else {
-        existingGroup
-      }
+      } else { existingGroup }
     }
 
     def revertDependencyChanges(oldGroup: Group, newGroup: Group)(

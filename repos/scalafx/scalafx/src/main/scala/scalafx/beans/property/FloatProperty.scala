@@ -57,10 +57,6 @@ class FloatProperty(
   def this(bean: Object, name: String, initialValue: Float) =
     this(new jfxbp.SimpleFloatProperty(bean, name, initialValue))
 
-  def value_=(v: Float) {
-    delegate.set(v)
-  }
-  def value_=(v: Number) {
-    delegate.set(v.floatValue)
-  }
+  def value_=(v: Float) { delegate.set(v) }
+  def value_=(v: Number) { delegate.set(v.floatValue) }
 }

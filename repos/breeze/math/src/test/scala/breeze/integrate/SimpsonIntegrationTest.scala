@@ -22,8 +22,6 @@ class SimpsonIntegrationTest extends FunSuite {
   }
 
   test("not enough nodes") {
-    intercept[Exception] {
-      integrate.simpson(f, 0, 1, 1)
-    }
+    intercept[Exception] { integrate.simpson(f, 0, 1, 1) }
   }
 }

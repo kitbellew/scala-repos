@@ -58,7 +58,5 @@ case class MultivariateGaussian(
 
   def variance = covariance
   def mode = mean
-  lazy val entropy = {
-    mean.length * log1p(2 * Pi) + sum(log(diag(root)))
-  }
+  lazy val entropy = { mean.length * log1p(2 * Pi) + sum(log(diag(root))) }
 }

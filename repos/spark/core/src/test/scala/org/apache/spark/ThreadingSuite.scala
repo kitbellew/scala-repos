@@ -134,9 +134,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
                          .currentTimeMillis() < time + 1000) {
                   Thread.sleep(100)
                 }
-                if (running.get() != 4) {
-                  ThreadingSuiteState.failed.set(true)
-                }
+                if (running.get() != 4) { ThreadingSuiteState.failed.set(true) }
                 number
               })
               .collect()
@@ -144,9 +142,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
           } catch {
             case t: Throwable =>
               throwable = Some(t)
-          } finally {
-            sem.release()
-          }
+          } finally { sem.release() }
         }
       }.start()
     }
@@ -173,9 +169,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
           } catch {
             case t: Throwable =>
               throwable = Some(t)
-          } finally {
-            sem.release()
-          }
+          } finally { sem.release() }
         }
       }
     }
@@ -202,9 +196,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
           } catch {
             case t: Throwable =>
               throwable = Some(t)
-          } finally {
-            sem.release()
-          }
+          } finally { sem.release() }
         }
       }
     }
@@ -226,9 +218,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     var throwable: Option[Throwable] = None
     val thread = new Thread {
       override def run(): Unit = {
-        try {
-          threadTestValue = sc.getLocalProperty("test")
-        } catch {
+        try { threadTestValue = sc.getLocalProperty("test") }
+        catch {
           case t: Throwable =>
             throwable = Some(t)
         }

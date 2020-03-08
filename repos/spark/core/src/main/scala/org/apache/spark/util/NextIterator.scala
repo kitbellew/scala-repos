@@ -71,9 +71,7 @@ private[spark] abstract class NextIterator[U] extends Iterator[U] {
     if (!finished) {
       if (!gotNext) {
         nextValue = getNext()
-        if (finished) {
-          closeIfNeeded()
-        }
+        if (finished) { closeIfNeeded() }
         gotNext = true
       }
     }
@@ -81,9 +79,7 @@ private[spark] abstract class NextIterator[U] extends Iterator[U] {
   }
 
   override def next(): U = {
-    if (!hasNext) {
-      throw new NoSuchElementException("End of stream")
-    }
+    if (!hasNext) { throw new NoSuchElementException("End of stream") }
     gotNext = false
     nextValue
   }

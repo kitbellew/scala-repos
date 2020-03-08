@@ -14,9 +14,7 @@ object ParallelTest {
       val f = new File("max-concurrent-tests_" + newMax)
       f.createNewFile
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   @tailrec

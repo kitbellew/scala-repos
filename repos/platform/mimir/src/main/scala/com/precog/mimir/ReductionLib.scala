@@ -60,9 +60,8 @@ class LongAdder {
 
   def add(x: Long): Unit = {
     val y = t + x
-    if ((~(x ^ t) & (x ^ y)) >= 0L) {
-      t = y
-    } else {
+    if ((~(x ^ t) & (x ^ y)) >= 0L) { t = y }
+    else {
       ts.append(BigDecimal(t))
       t = x
     }
@@ -678,9 +677,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       def reducer(ctx: MorphContext): Reducer[Result] = new CReducer[Result] {
         def reduce(schema: CSchema, range: Range) = {
-          if (range.isEmpty) {
-            None
-          } else {
+          if (range.isEmpty) { None }
+          else {
             var back = true
             var defined = false
 
@@ -692,9 +690,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
               back &&= acc
 
-              if (idef) {
-                defined = true
-              }
+              if (idef) { defined = true }
             }
 
             if (defined)
@@ -729,9 +725,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       def reducer(ctx: MorphContext): Reducer[Result] = new CReducer[Result] {
         def reduce(schema: CSchema, range: Range) = {
-          if (range.isEmpty) {
-            None
-          } else {
+          if (range.isEmpty) { None }
+          else {
             var back = false
             var defined = false
 
@@ -743,9 +738,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
               back ||= acc
 
-              if (idef) {
-                defined = true
-              }
+              if (idef) { defined = true }
             }
 
             if (defined)

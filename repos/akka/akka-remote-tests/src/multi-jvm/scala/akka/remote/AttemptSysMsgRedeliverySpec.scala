@@ -25,9 +25,7 @@ object AttemptSysMsgRedeliveryMultiJvmSpec extends MultiNodeConfig {
   testTransport(on = true)
 
   class Echo extends Actor {
-    def receive = {
-      case m ⇒ sender ! m
-    }
+    def receive = { case m ⇒ sender ! m }
   }
 }
 
@@ -60,12 +58,8 @@ class AttemptSysMsgRedeliverySpec
       }
       enterBarrier("blackhole")
 
-      runOn(first, third) {
-        watch(secondRef)
-      }
-      runOn(second) {
-        watch(firstRef)
-      }
+      runOn(first, third) { watch(secondRef) }
+      runOn(second) { watch(firstRef) }
       enterBarrier("watch-established")
 
       runOn(first) {
@@ -75,12 +69,8 @@ class AttemptSysMsgRedeliverySpec
 
       system.actorSelection("/user/echo") ! PoisonPill
 
-      runOn(first, third) {
-        expectTerminated(secondRef, 10.seconds)
-      }
-      runOn(second) {
-        expectTerminated(firstRef, 10.seconds)
-      }
+      runOn(first, third) { expectTerminated(secondRef, 10.seconds) }
+      runOn(second) { expectTerminated(firstRef, 10.seconds) }
 
       enterBarrier("done")
     }

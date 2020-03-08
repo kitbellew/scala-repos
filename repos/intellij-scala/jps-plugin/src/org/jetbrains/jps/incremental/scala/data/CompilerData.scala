@@ -45,9 +45,7 @@ object CompilerData {
               + absentJars.map(_.getPath).mkString(", ")
           )
       }
-    } else {
-      Right(None)
-    }
+    } else { Right(None) }
 
     compilerJars.flatMap { jars =>
       val incrementalityType = SettingsManager

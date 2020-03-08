@@ -13,8 +13,6 @@ class MetricsReporterModule(metricsReporterConf: MetricsReporterConf)
 
   @Provides
   @Singleton
-  def provideMetricsRegistry(): MetricsRegistry = {
-    new MetricsRegistry()
-  }
+  def provideMetricsRegistry(): MetricsRegistry = { new MetricsRegistry() }
 
 }

@@ -97,9 +97,8 @@ class HtmlFactory(val universe: doc.Universe, val reporter: ScalaDocReporter) {
 
     IndexScript(universe) writeFor this
 
-    try {
-      writeTemplates(_ writeFor this)
-    } finally {
+    try { writeTemplates(_ writeFor this) }
+    finally {
       DiagramStats.printStats(universe.settings)
       universe.dotRunner.cleanup()
     }

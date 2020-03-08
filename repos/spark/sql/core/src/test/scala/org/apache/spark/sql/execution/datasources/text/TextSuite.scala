@@ -64,9 +64,7 @@ class TextSuite extends QueryTest with SharedSQLContext {
     tempFile.delete()
 
     val df = sqlContext.range(2)
-    intercept[AnalysisException] {
-      df.write.text(tempFile.getCanonicalPath)
-    }
+    intercept[AnalysisException] { df.write.text(tempFile.getCanonicalPath) }
 
     intercept[AnalysisException] {
       sqlContext

@@ -57,9 +57,7 @@ class BoundedStack[A: ClassTag](val maxSize: Int) extends Seq[A] {
   /**
     * Replaces an element in the stack.
     */
-  def update(index: Int, elem: A) {
-    array((top + index) % maxSize) = elem
-  }
+  def update(index: Int, elem: A) { array((top + index) % maxSize) = elem }
 
   /**
     * Adds multiple elements, possibly overwriting the oldest elements in
@@ -67,9 +65,7 @@ class BoundedStack[A: ClassTag](val maxSize: Int) extends Seq[A] {
     * stack can hold, then only the last maxSize elements will end up in
     * the stack.
     */
-  def ++=(iter: Iterable[A]) {
-    for (elem <- iter) this += elem
-  }
+  def ++=(iter: Iterable[A]) { for (elem <- iter) this += elem }
 
   /**
     * Removes the top element in the stack.

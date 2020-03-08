@@ -65,9 +65,7 @@ object ConsumerConfig extends Config {
     validateChars("client.id", clientId)
   }
 
-  def validateGroupId(groupId: String) {
-    validateChars("group.id", groupId)
-  }
+  def validateGroupId(groupId: String) { validateChars("group.id", groupId) }
 
   def validateAutoOffsetReset(autoOffsetReset: String) {
     autoOffsetReset match {

@@ -99,9 +99,7 @@ abstract class ClusterShardingGetStateSpec
   }
 
   def join(from: RoleName): Unit = {
-    runOn(from) {
-      Cluster(system).join(node(controller).address)
-    }
+    runOn(from) { Cluster(system).join(node(controller).address) }
     enterBarrier(from.name + "-joined")
   }
 
@@ -118,12 +116,8 @@ abstract class ClusterShardingGetStateSpec
         expectMsgType[CurrentClusterState].members.size === 3
       }
 
-      runOn(controller) {
-        startProxy()
-      }
-      runOn(first, second) {
-        startShard()
-      }
+      runOn(controller) { startProxy() }
+      runOn(first, second) { startShard() }
 
       enterBarrier("sharding started")
     }
@@ -149,9 +143,7 @@ abstract class ClusterShardingGetStateSpec
             val pingProbe = TestProbe()
             // trigger starting of 4 entities
             (1 to 4).foreach(n ⇒ region.tell(Ping(n), pingProbe.ref))
-            pingProbe.receiveWhile(messages = 4) {
-              case Pong ⇒ ()
-            }
+            pingProbe.receiveWhile(messages = 4) { case Pong ⇒ () }
           }
         }
       }

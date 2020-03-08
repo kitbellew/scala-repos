@@ -155,10 +155,7 @@ class HDFSStateLaws extends WordSpec {
 
   def withTmpDir(doWithTmpFolder: String => Unit) = {
     val path = "/tmp/" + UUID.randomUUID
-    try {
-      doWithTmpFolder(path)
-    } finally {
-      FileSystem.get(new Configuration()).delete(new Path(path), true)
-    }
+    try { doWithTmpFolder(path) }
+    finally { FileSystem.get(new Configuration()).delete(new Path(path), true) }
   }
 }

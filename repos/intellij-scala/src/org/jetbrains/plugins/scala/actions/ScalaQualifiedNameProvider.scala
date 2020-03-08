@@ -29,11 +29,8 @@ class ScalaQualifiedNameProvider extends QualifiedNameProvider {
           case member: ScMember => member.containingClass
           case _                => null
         }
-        if (clazz != null) {
-          clazz.qualifiedName + "#" + named.name
-        } else {
-          named.name
-        }
+        if (clazz != null) { clazz.qualifiedName + "#" + named.name }
+        else { named.name }
       case _ => null
     }
   }

@@ -5,11 +5,8 @@ import org.scalacheck.Prop.forAll
 
 object MonoidTest extends SpecLite {
   "multiply" ! forAll { (a: Int, b: Int) =>
-    if (b <= 0) {
-      Monoid[Int].multiply(a, b) must_=== 0
-    } else {
-      Monoid[Int].multiply(a, b) must_=== (a * b)
-    }
+    if (b <= 0) { Monoid[Int].multiply(a, b) must_=== 0 }
+    else { Monoid[Int].multiply(a, b) must_=== (a * b) }
   }
 
   "endo multiply" in {

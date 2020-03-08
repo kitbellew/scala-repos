@@ -4,7 +4,5 @@ object Test {
     try return
     finally while (true) ()
 
-  def main(args: Array[String]) {
-    f
-  }
+  def main(args: Array[String]) { f }
 }

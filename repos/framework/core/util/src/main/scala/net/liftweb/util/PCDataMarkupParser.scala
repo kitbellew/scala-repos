@@ -409,9 +409,8 @@ class PCDataXmlParser(val input: Source)
     val col = ScalaPosition.column(pos)
     val report = curInput.descr + ":" + line + ":" + col + ": " + msg
     System.err.println(report)
-    try {
-      System.err.println(curInput.getLines().toIndexedSeq(line))
-    } catch {
+    try { System.err.println(curInput.getLines().toIndexedSeq(line)) }
+    catch {
       case e: Exception => // ignore
     }
     var i = 1
@@ -449,11 +448,7 @@ object PCDataXmlParser {
   def apply(in: String): Box[NodeSeq] = {
     var pos = 0
     val len = in.length
-    def moveToLT() {
-      while (pos < len && in.charAt(pos) != '<') {
-        pos += 1
-      }
-    }
+    def moveToLT() { while (pos < len && in.charAt(pos) != '<') { pos += 1 } }
 
     moveToLT()
 
@@ -750,9 +745,7 @@ object AltXML {
       stripComment: Boolean,
       convertAmp: Boolean): Unit = {
     val it = children.iterator
-    while (it.hasNext) {
-      toXML(it.next, pscope, sb, stripComment, convertAmp)
-    }
+    while (it.hasNext) { toXML(it.next, pscope, sb, stripComment, convertAmp) }
   }
 
 }

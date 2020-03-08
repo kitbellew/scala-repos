@@ -22,9 +22,7 @@ abstract class ScalaCompletionSortingTestCase(
     relativePath: String)
     extends LightFixtureCompletionTestCase {
 
-  def this(relativePath: String) {
-    this(CompletionType.BASIC, relativePath)
-  }
+  def this(relativePath: String) { this(CompletionType.BASIC, relativePath) }
 
   @throws[Exception]
   override protected def setUp(): Unit = {
@@ -34,9 +32,7 @@ abstract class ScalaCompletionSortingTestCase(
       .enableStatistics(getTestRootDisposable)
   }
 
-  def baseRootPath: String = {
-    TestUtils.getTestDataPath + relativePath
-  }
+  def baseRootPath: String = { TestUtils.getTestDataPath + relativePath }
 
   def invokeCompletion(path: String): LookupImpl = {
     configureNoCompletion(baseRootPath + path)

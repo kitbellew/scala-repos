@@ -80,55 +80,41 @@ class RowConstraints(
     * The vertical fill policy for the row.
     */
   def fillHeight: BooleanProperty = delegate.fillHeightProperty
-  def fillHeight_=(v: Boolean) {
-    fillHeight() = v
-  }
+  def fillHeight_=(v: Boolean) { fillHeight() = v }
 
   /**
     * The maximum height for the row.
     */
   def maxHeight: DoubleProperty = delegate.maxHeightProperty
-  def maxHeight_=(v: Double) {
-    maxHeight() = v
-  }
+  def maxHeight_=(v: Double) { maxHeight() = v }
 
   /**
     * The minimum height for the row.
     */
   def minHeight: DoubleProperty = delegate.minHeightProperty
-  def minHeight_=(v: Double) {
-    minHeight() = v
-  }
+  def minHeight_=(v: Double) { minHeight() = v }
 
   /**
     * The height percentage of the row.
     */
   def percentHeight: DoubleProperty = delegate.percentHeightProperty
-  def percentHeight_=(v: Double) {
-    percentHeight() = v
-  }
+  def percentHeight_=(v: Double) { percentHeight() = v }
 
   /**
     * The preferred height for the row.
     */
   def prefHeight: DoubleProperty = delegate.prefHeightProperty
-  def prefHeight_=(v: Double) {
-    prefHeight() = v
-  }
+  def prefHeight_=(v: Double) { prefHeight() = v }
 
   /**
     * The vertical alignment for the row.
     */
   def valignment: ObjectProperty[jfxg.VPos] = delegate.valignmentProperty
-  def valignment_=(v: VPos) {
-    valignment() = v
-  }
+  def valignment_=(v: VPos) { valignment() = v }
 
   /**
     * The vertical grow priority for the row.
     */
   def vgrow: ObjectProperty[jfxsl.Priority] = delegate.vgrowProperty
-  def vgrow_=(v: Priority) {
-    vgrow() = v
-  }
+  def vgrow_=(v: Priority) { vgrow() = v }
 }

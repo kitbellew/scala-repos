@@ -478,9 +478,7 @@ class JoinSuite extends QueryTest with SharedSQLContext {
         (
           "SELECT * FROM testData LEFT SEMI JOIN testData2 ON key = a",
           classOf[BroadcastHashJoin])
-      ).foreach {
-        case (query, joinClass) => assertJoin(query, joinClass)
-      }
+      ).foreach { case (query, joinClass) => assertJoin(query, joinClass) }
     }
 
     withSQLConf(SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key -> "-1") {
@@ -488,9 +486,7 @@ class JoinSuite extends QueryTest with SharedSQLContext {
         (
           "SELECT * FROM testData LEFT SEMI JOIN testData2 ON key = a",
           classOf[ShuffledHashJoin])
-      ).foreach {
-        case (query, joinClass) => assertJoin(query, joinClass)
-      }
+      ).foreach { case (query, joinClass) => assertJoin(query, joinClass) }
     }
 
     sql("UNCACHE TABLE testData")

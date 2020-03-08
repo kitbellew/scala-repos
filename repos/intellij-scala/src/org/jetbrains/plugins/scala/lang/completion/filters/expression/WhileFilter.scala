@@ -42,21 +42,15 @@ class WhileFilter extends ElementFilter {
             .compile(DUMMY_IDENTIFIER, Pattern.LITERAL)
             .matcher(text)
             .replaceAll(Matcher.quoteReplacement(" while (true)"))
-        } else {
-          text = doStmt.getText + " while (true)"
-        }
+        } else { text = doStmt.getText + " while (true)" }
         return checkDoWith(text, parent.getManager)
       }
     }
     false
   }
 
-  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = {
-    true
-  }
+  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = { true }
 
   @NonNls
-  override def toString: String = {
-    "'while' after 'do' keyword filter"
-  }
+  override def toString: String = { "'while' after 'do' keyword filter" }
 }

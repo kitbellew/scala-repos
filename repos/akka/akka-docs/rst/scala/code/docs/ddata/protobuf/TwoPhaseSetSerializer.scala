@@ -31,9 +31,7 @@ class TwoPhaseSetSerializer(val system: ExtendedActorSystem)
 
   override def fromBinary(
       bytes: Array[Byte],
-      clazz: Option[Class[_]]): AnyRef = {
-    twoPhaseSetFromBinary(bytes)
-  }
+      clazz: Option[Class[_]]): AnyRef = { twoPhaseSetFromBinary(bytes) }
 
   def twoPhaseSetToProto(
       twoPhaseSet: TwoPhaseSet): TwoPhaseSetMessages.TwoPhaseSet = {

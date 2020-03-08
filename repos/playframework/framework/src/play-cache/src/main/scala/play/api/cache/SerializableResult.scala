@@ -58,11 +58,8 @@ private[play] final class SerializableResult(constructorResult: Result)
 
     val body = {
       val hasContentType = in.readBoolean()
-      val contentType = if (hasContentType) {
-        Some(in.readUTF())
-      } else {
-        None
-      }
+      val contentType = if (hasContentType) { Some(in.readUTF()) }
+      else { None }
       val sizeOfBody: Int = in.readInt()
       val buffer = new Array[Byte](sizeOfBody)
       @tailrec

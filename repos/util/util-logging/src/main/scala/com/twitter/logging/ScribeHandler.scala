@@ -219,9 +219,7 @@ class ScribeHandler(
                 e)
               stats.incrConnectionFailure()
           }
-        } else {
-          stats.incrConnectionSkipped()
-        }
+        } else { stats.incrConnectionSkipped() }
       }
     }
 
@@ -253,9 +251,7 @@ class ScribeHandler(
             log.debug(
               "Scribe server is archaic; changing to old protocol for future requests.")
             Archaic
-          } catch {
-            case NonFatal(_) => Modern
-          }
+          } catch { case NonFatal(_) => Modern }
         }
       }
     }
@@ -314,9 +310,7 @@ class ScribeHandler(
       val response = new Array[Byte](expectedReply.length)
       while (offset < response.length) {
         val n = inStream.read(response, offset, response.length - offset)
-        if (n < 0) {
-          throw new IOException("End of stream")
-        }
+        if (n < 0) { throw new IOException("End of stream") }
         offset += n
       }
       if (!Arrays.equals(response, expectedReply)) {
@@ -367,9 +361,8 @@ class ScribeHandler(
   private def closeSocket() {
     synchronized {
       socket.foreach { s =>
-        try {
-          s.close()
-        } catch {
+        try { s.close() }
+        catch {
           case _: Throwable =>
         }
       }

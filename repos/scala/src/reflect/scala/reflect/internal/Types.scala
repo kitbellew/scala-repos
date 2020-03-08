@@ -1749,17 +1749,15 @@ trait Types
         }
       }
       val flattened = flatten(parents).distinct
-      if (decls.isEmpty && hasLength(flattened, 1)) {
-        flattened.head
-      } else if (flattened != parents) {
+      if (decls.isEmpty && hasLength(flattened, 1)) { flattened.head }
+      else if (flattened != parents) {
         refinedType(
           flattened,
           if (typeSymbol eq NoSymbol) NoSymbol else typeSymbol.owner,
           decls,
           NoPosition)
-      } else if (isHigherKinded) {
-        etaExpand
-      } else super.normalize
+      } else if (isHigherKinded) { etaExpand }
+      else super.normalize
     }
 
     final override def etaExpand: Type = {
@@ -2593,9 +2591,8 @@ trait Types
     val period = tpe.parentsPeriod
     if (period != currentPeriod) {
       tpe.parentsPeriod = currentPeriod
-      if (!isValidForBaseClasses(period)) {
-        tpe.parentsCache = tpe.parentsImpl
-      } else if (tpe.parentsCache == null) { // seems this can happen if things are corrupted enough, see #2641
+      if (!isValidForBaseClasses(period)) { tpe.parentsCache = tpe.parentsImpl }
+      else if (tpe.parentsCache == null) { // seems this can happen if things are corrupted enough, see #2641
         tpe.parentsCache = List(AnyTpe)
       }
     }
@@ -4931,9 +4928,7 @@ trait Types
                   capturedParams.toList,
                   typeRef(pre, sym, args))
           }
-      } catch {
-        case ex: MalformedType => NoType
-      }
+      } catch { case ex: MalformedType => NoType }
     case SingleType(_, sym) :: rest =>
       val pres = tps map (_.prefix)
       val pre = if (variance.isPositive) lub(pres, depth) else glb(pres, depth)
@@ -5075,9 +5070,7 @@ trait Types
   def invalidateTreeTpeCaches(tree: Tree, updatedSyms: List[Symbol]) =
     if (updatedSyms.nonEmpty)
       for (t <- tree if t.tpe != null)
-        for (tp <- t.tpe) {
-          invalidateCaches(tp, updatedSyms)
-        }
+        for (tp <- t.tpe) { invalidateCaches(tp, updatedSyms) }
 
   def invalidateCaches(t: Type, updatedSyms: List[Symbol]) =
     t match {

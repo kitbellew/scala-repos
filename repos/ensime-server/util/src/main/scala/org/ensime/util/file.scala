@@ -114,9 +114,7 @@ package object file {
       */
     def canon =
       try file.getCanonicalFile
-      catch {
-        case t: Throwable => file.getAbsoluteFile
-      }
+      catch { case t: Throwable => file.getAbsoluteFile }
 
   }
 

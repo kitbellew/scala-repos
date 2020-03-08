@@ -225,9 +225,7 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     server2.foreach(_.stop())
 
     // trigger ejection
-    for (i <- 0 to 20) {
-      Await.ready(client.get(s"foo$i"), TimeOut)
-    }
+    for (i <- 0 to 20) { Await.ready(client.get(s"foo$i"), TimeOut) }
 
     // one memcache host alive
     val clientSet =
@@ -314,9 +312,7 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
       timeControl.advance(5.minutes)
 
       // Shard should be unavailable
-      intercept[ShardNotAvailableException] {
-        Await.result(client.get(s"foo"))
-      }
+      intercept[ShardNotAvailableException] { Await.result(client.get(s"foo")) }
 
       timeControl.advance(5.minutes)
       timer.tick()

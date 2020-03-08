@@ -195,9 +195,7 @@ case class ScMethodType(
     isImplicit: Boolean)(val project: Project, val scope: GlobalSearchScope)
     extends NonValueType {
 
-  def visitType(visitor: ScalaTypeVisitor) {
-    visitor.visitMethodType(this)
-  }
+  def visitType(visitor: ScalaTypeVisitor) { visitor.visitMethodType(this) }
 
   override def typeDepth: Int = returnType.typeDepth
 

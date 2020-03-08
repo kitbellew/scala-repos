@@ -61,9 +61,7 @@ private[netty] class NettyStreamManager(rpcEnv: NettyRpcEnv)
 
     if (file != null && file.isFile()) {
       new FileSegmentManagedBuffer(rpcEnv.transportConf, file, 0, file.length())
-    } else {
-      null
-    }
+    } else { null }
   }
 
   override def addFile(file: File): String = {

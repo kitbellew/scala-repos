@@ -52,9 +52,7 @@ private[runtime] object RuntimeString {
         Character.toCodePoint(high, low)
       else
         high.toInt
-    } else {
-      high.toInt
-    }
+    } else { high.toInt }
   }
 
   def codePointCount(thiz: String, beginIndex: Int, endIndex: Int): Int = {
@@ -206,13 +204,11 @@ private[runtime] object RuntimeString {
       ooffset: Int,
       len: Int): Boolean = {
     checkNull(thiz)
-    if (other == null) {
-      throw new NullPointerException()
-    } else if (toffset < 0 || ooffset < 0 || toffset + len > thiz.length || ooffset + len > other.length) {
+    if (other == null) { throw new NullPointerException() }
+    else if (toffset < 0 || ooffset < 0 || toffset + len > thiz.length || ooffset + len > other.length) {
       false
-    } else if (len <= 0) {
-      true
-    } else {
+    } else if (len <= 0) { true }
+    else {
       val left = thiz.substring(toffset, toffset + len)
       val right = other.substring(ooffset, ooffset + len)
       if (ignoreCase) left.equalsIgnoreCase(right) else left == right
@@ -362,9 +358,8 @@ private[runtime] object RuntimeString {
       val cp = codePoints(i)
       if (cp < 0 || cp > Character.MAX_CODE_POINT)
         throw new IllegalArgumentException
-      if (cp <= Character.MAX_VALUE) {
-        charCodes += cp
-      } else {
+      if (cp <= Character.MAX_VALUE) { charCodes += cp }
+      else {
         val offsetCp = cp - 0x10000
         charCodes += (offsetCp >> 10) | 0xd800
         charCodes += (offsetCp & 0x3ff) | 0xdc00

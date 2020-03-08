@@ -60,9 +60,7 @@ private[parquet] class TestGroupWriteSupport(schema: MessageType)
     new WriteContext(schema, new java.util.HashMap[String, String]())
   }
 
-  override def write(record: Group) {
-    groupWriter.write(record)
-  }
+  override def write(record: Group) { groupWriter.write(record) }
 }
 
 /**
@@ -159,9 +157,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
         val data = makeDecimalRDD(DecimalType(precision, scale))
         data.write.parquet(dir.getCanonicalPath)
         readParquetFile(dir.getCanonicalPath) { df =>
-          {
-            checkAnswer(df, data.collect().toSeq)
-          }
+          { checkAnswer(df, data.collect().toSeq) }
         }
       }
     }
@@ -573,9 +569,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   test("SPARK-6330 regression test") {
     // In 1.3.0, save to fs other than file: without configuring core-site.xml would get:
     // IllegalArgumentException: Wrong FS: hdfs://..., expected: file:///
-    intercept[Throwable] {
-      sqlContext.read.parquet("file:///nonexistent")
-    }
+    intercept[Throwable] { sqlContext.read.parquet("file:///nonexistent") }
     val errorMessage = intercept[Throwable] {
       sqlContext.read.parquet("hdfs://nonexistent")
     }.toString
@@ -767,9 +761,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
             result += v
           }
           assert(data == result)
-        } finally {
-          reader.close()
-        }
+        } finally { reader.close() }
       }
 
       // Project just one column
@@ -783,9 +775,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
             result += row.getString(0)
           }
           assert(data.map(_._2) == result)
-        } finally {
-          reader.close()
-        }
+        } finally { reader.close() }
       }
 
       // Project columns in opposite order
@@ -800,9 +790,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
             result += v
           }
           assert(data.map { x => (x._2, x._1) } == result)
-        } finally {
-          reader.close()
-        }
+        } finally { reader.close() }
       }
 
       // Empty projection
@@ -811,13 +799,9 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
         try {
           reader.initialize(file, List[String]().asJava)
           var result = 0
-          while (reader.nextKeyValue()) {
-            result += 1
-          }
+          while (reader.nextKeyValue()) { result += 1 }
           assert(result == data.length)
-        } finally {
-          reader.close()
-        }
+        } finally { reader.close() }
       }
     }
   }

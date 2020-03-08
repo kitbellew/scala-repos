@@ -111,15 +111,11 @@ trait ModelBuilders { self: RichPresentationCompiler =>
           val info = NamedTypeMemberInfo(tm)
           val decl = info.declAs
           if (decl == DeclaredAs.Method) {
-            if (info.name == "this") {
-              constructors += info
-            } else {
-              methods += info
-            }
-          } else if (decl == DeclaredAs.Field) {
-            fields += info
-          } else if (decl == DeclaredAs.Class || decl == DeclaredAs.Trait ||
-                     decl == DeclaredAs.Interface || decl == DeclaredAs.Object) {
+            if (info.name == "this") { constructors += info }
+            else { methods += info }
+          } else if (decl == DeclaredAs.Field) { fields += info }
+          else if (decl == DeclaredAs.Class || decl == DeclaredAs.Trait ||
+                   decl == DeclaredAs.Interface || decl == DeclaredAs.Object) {
             nestedTypes += info
           }
         }
@@ -155,31 +151,21 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         packageMembers(sym).flatMap(packageMemberInfoFromSym))
       if (sym.isRoot || sym.isRootPackage) {
         new PackageInfo("root", "_root_", members)
-      } else {
-        new PackageInfo(sym.name.toString, sym.fullName, members)
-      }
+      } else { new PackageInfo(sym.name.toString, sym.fullName, members) }
     }
 
     def packageMemberInfoFromSym(sym: Symbol): Option[EntityInfo] = {
       try {
-        if (sym == RootPackage) {
-          Some(root)
-        } else if (sym.hasPackageFlag) {
-          Some(fromSymbol(sym))
-        } else if (!sym.nameString.contains(
-                     "$") && (sym != NoSymbol) && (sym.tpe != NoType)) {
+        if (sym == RootPackage) { Some(root) }
+        else if (sym.hasPackageFlag) { Some(fromSymbol(sym)) }
+        else if (!sym.nameString.contains(
+                   "$") && (sym != NoSymbol) && (sym.tpe != NoType)) {
           if (sym.isClass || sym.isTrait || sym.isModule ||
               sym.isModuleClass || sym.isPackageClass) {
             Some(TypeInfo(sym.tpe, PosNeededAvail))
-          } else {
-            None
-          }
-        } else {
-          None
-        }
-      } catch {
-        case e: Throwable => None
-      }
+          } else { None }
+        } else { None }
+      } catch { case e: Throwable => None }
     }
   }
 
@@ -251,9 +237,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         if (sym.isClass || sym.isTrait || sym.isModule ||
             sym.isModuleClass || sym.isPackageClass) {
           (typeFullName(tpe), nameString)
-        } else {
-          (nameString, nameString)
-        }
+        } else { (nameString, nameString) }
       val ownerTpe = if (sym.owner != NoSymbol && sym.owner.tpe != NoType) {
         Some(sym.owner.tpe)
       } else None
@@ -346,9 +330,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       )
     }
 
-    def nullInfo() = {
-      new ArrowTypeInfo("NA", TypeInfo.nullInfo, List.empty)
-    }
+    def nullInfo() = { new ArrowTypeInfo("NA", TypeInfo.nullInfo, List.empty) }
   }
 }
 

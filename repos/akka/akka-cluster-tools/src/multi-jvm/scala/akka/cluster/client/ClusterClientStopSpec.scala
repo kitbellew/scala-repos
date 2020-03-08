@@ -34,9 +34,7 @@ object ClusterClientStopSpec extends MultiNodeConfig {
   """))
 
   class Service extends Actor {
-    def receive = {
-      case msg ⇒ sender() ! msg
-    }
+    def receive = { case msg ⇒ sender() ! msg }
   }
 }
 
@@ -81,9 +79,7 @@ class ClusterClientStopSpec
         val service = system.actorOf(Props(classOf[Service]), "testService")
         ClusterClientReceptionist(system).registerService(service)
       }
-      runOn(first, second) {
-        awaitCount(1)
-      }
+      runOn(first, second) { awaitCount(1) }
 
       enterBarrier("cluster-started")
     }

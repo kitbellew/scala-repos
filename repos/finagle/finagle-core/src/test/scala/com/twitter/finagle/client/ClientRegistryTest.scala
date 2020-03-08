@@ -46,9 +46,7 @@ class ClientRegistryTest
       .configured(param.ProtocolLibrary("fancy"))
   }
 
-  before {
-    ClientRegistry.clear()
-  }
+  before { ClientRegistry.clear() }
 
   test("ClientRegistry.expAllRegisteredClientsResolved zero clients")(new Ctx {
     val allResolved0 = ClientRegistry.expAllRegisteredClientsResolved()
@@ -64,9 +62,7 @@ class ClientRegistryTest
       assert(allResolved.poll == None)
 
       va() = Addr.Bound(Set.empty[Address])
-      eventually {
-        assert(allResolved.poll == Some(Return(Set("foo"))))
-      }
+      eventually { assert(allResolved.poll == Some(Return(Set("foo")))) }
     })
 
   test("ClientRegistry.expAllRegisteredClientsResolved handles Addr.Failed")(
@@ -78,9 +74,7 @@ class ClientRegistryTest
       assert(allResolved.poll == None)
 
       va() = Addr.Failed(new Exception("foo"))
-      eventually {
-        assert(allResolved.poll == Some(Return(Set("foo"))))
-      }
+      eventually { assert(allResolved.poll == Some(Return(Set("foo")))) }
     })
 
   test("ClientRegistry.expAllRegisteredClientsResolved handles Addr.Neg")(
@@ -92,9 +86,7 @@ class ClientRegistryTest
       assert(allResolved.poll == None)
 
       va() = Addr.Neg
-      eventually {
-        assert(allResolved.poll == Some(Return(Set("foo"))))
-      }
+      eventually { assert(allResolved.poll == Some(Return(Set("foo")))) }
     })
 
   test("ClientRegistry.expAllRegisteredClientsResolved more than one client")(
@@ -106,9 +98,7 @@ class ClientRegistryTest
       val allResolved0 = ClientRegistry.expAllRegisteredClientsResolved()
       assert(allResolved0.poll == None)
       va0() = Addr.Bound(Set.empty[Address])
-      eventually {
-        assert(allResolved0.poll == Some(Return(Set("foo"))))
-      }
+      eventually { assert(allResolved0.poll == Some(Return(Set("foo")))) }
 
       val c1 = stackClient.newClient(Name.Bound(va1, new Object()), "bar")
       val allResolved1 = ClientRegistry.expAllRegisteredClientsResolved()
@@ -127,9 +117,7 @@ class ClientRegistryTest
       val allResolved = ClientRegistry.expAllRegisteredClientsResolved()
       assert(allResolved.poll == None)
       crtnamer.va() = Addr.Bound(Set.empty[Address])
-      eventually {
-        assert(allResolved.poll == Some(Return(Set("foo"))))
-      }
+      eventually { assert(allResolved.poll == Some(Return(Set("foo")))) }
     })
 
   test("ClientRegistry registers clients in registry")(new Ctx {

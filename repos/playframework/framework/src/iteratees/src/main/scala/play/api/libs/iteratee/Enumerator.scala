@@ -285,9 +285,7 @@ object Enumerator {
                     .transformAndGet { _.map(f) }
                     .forall(_.forall(_ == false))) {
                 p.complete(Try(Iteratee.flatten(i.feed(Input.EOF))))
-              } else {
-                p.success(i)
-              }
+              } else { p.success(i) }
               Done((), Input.Empty)
             }
           }
@@ -365,9 +363,7 @@ object Enumerator {
               if (attending.single.transformAndGet { _.map(f) } == Some(
                     (false, false))) {
                 p.complete(Try(Iteratee.flatten(i.feed(Input.EOF))))
-              } else {
-                p.success(i)
-              }
+              } else { p.success(i) }
               Done((), Input.Empty)
             }
           }
@@ -681,13 +677,9 @@ object Enumerator {
       implicit ec: ExecutionContext): Enumerator[Array[Byte]] = {
     Concurrent.unicast[Array[Byte]] { channel =>
       val outputStream = new java.io.OutputStream() {
-        override def close() {
-          channel.end()
-        }
+        override def close() { channel.end() }
         override def flush() {}
-        override def write(value: Int) {
-          channel.push(Array(value.toByte))
-        }
+        override def write(value: Int) { channel.push(Array(value.toByte)) }
         override def write(buffer: Array[Byte]) {
           write(buffer, 0, buffer.length)
         }
@@ -748,9 +740,7 @@ object Enumerator {
           Some((currentIt -> next))
         })(ctx)
       else
-        Future.successful[Option[(scala.collection.Iterator[E], E)]]({
-          None
-        })
+        Future.successful[Option[(scala.collection.Iterator[E], E)]]({ None })
     })(dec)
   }
 

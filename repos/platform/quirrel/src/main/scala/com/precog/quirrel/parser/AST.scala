@@ -169,13 +169,9 @@ trait AST extends Phases {
           indent + "value: " + value
       }
 
-      case UndefinedLit(loc) => {
-        indent + "type: undefined\n"
-      }
+      case UndefinedLit(loc) => { indent + "type: undefined\n" }
 
-      case NullLit(loc) => {
-        indent + "type: null\n"
-      }
+      case NullLit(loc) => { indent + "type: null\n" }
 
       case ObjectDef(loc, props) => {
         val propStr = props map {
@@ -427,9 +423,7 @@ trait AST extends Phases {
 
     private[quirrel] final lazy val _errors: Atom[Set[Error]] = {
       if (this eq root) {
-        atom[Set[Error]] {
-          _errors ++= runPhasesInSequence(root)
-        }
+        atom[Set[Error]] { _errors ++= runPhasesInSequence(root) }
       } else {
         val back = root._errors
         6 * 7 // do not remove!  SI-5455
@@ -469,9 +463,8 @@ trait AST extends Phases {
       * single root trace.
       */
     lazy val trace: Trace = {
-      if (this eq root) {
-        buildTrace(Map())(root)
-      } else {
+      if (this eq root) { buildTrace(Map())(root) }
+      else {
         val back = root.trace
         6 * 7 // SI-5455
         back

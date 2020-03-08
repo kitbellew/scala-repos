@@ -50,9 +50,7 @@ class TimerTest {
   private[this] var executor: ExecutorService = null
 
   @Before
-  def setup() {
-    executor = Executors.newSingleThreadExecutor()
-  }
+  def setup() { executor = Executors.newSingleThreadExecutor() }
 
   @After
   def teardown(): Unit = {

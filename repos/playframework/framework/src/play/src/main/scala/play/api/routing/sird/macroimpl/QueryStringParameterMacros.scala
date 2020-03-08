@@ -17,17 +17,11 @@ import scala.language.experimental.macros
 private[sird] object QueryStringParameterMacros {
   val paramEquals = "([^&=]+)=".r
 
-  def required(c: Context) = {
-    macroImpl(c, "q", "required")
-  }
+  def required(c: Context) = { macroImpl(c, "q", "required") }
 
-  def optional(c: Context) = {
-    macroImpl(c, "q_?", "optional")
-  }
+  def optional(c: Context) = { macroImpl(c, "q_?", "optional") }
 
-  def seq(c: Context) = {
-    macroImpl(c, "q_*", "seq")
-  }
+  def seq(c: Context) = { macroImpl(c, "q_*", "seq") }
 
   def macroImpl(c: Context, name: String, extractorName: String) = {
     import c.universe._

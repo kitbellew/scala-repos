@@ -62,7 +62,5 @@ class InMemoryScheduleStorage(implicit executor: ExecutionContext)
     }
   }
 
-  def listTasks = Promise successful {
-    tasks.values.toSeq
-  }
+  def listTasks = Promise successful { tasks.values.toSeq }
 }

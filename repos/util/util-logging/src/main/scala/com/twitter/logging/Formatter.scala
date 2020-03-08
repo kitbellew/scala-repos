@@ -111,9 +111,7 @@ class Formatter(
     */
   val calendar = if (timezone.isDefined) {
     new GregorianCalendar(TimeZone.getTimeZone(timezone.get))
-  } else {
-    new GregorianCalendar
-  }
+  } else { new GregorianCalendar }
   dateFormat.setCalendar(calendar)
 
   /**
@@ -149,9 +147,8 @@ class Formatter(
     val message = truncateText(formatText(record))
 
     val containsNewLine = message.indexOf('\n') >= 0
-    if (!containsNewLine && record.getThrown == null) {
-      Array(message)
-    } else {
+    if (!containsNewLine && record.getThrown == null) { Array(message) }
+    else {
       val splitOnNewlines = message.split("\n")
       val numThrowLines = if (record.getThrown == null) 0 else 20
 
@@ -215,12 +212,8 @@ class Formatter(
         if (nameSegments.length >= 2) {
           if (useFullPackageNames) {
             nameSegments.slice(0, nameSegments.length - 1).mkString(".")
-          } else {
-            nameSegments(nameSegments.length - 2)
-          }
-        } else {
-          n
-        }
+          } else { nameSegments(nameSegments.length - 2) }
+        } else { n }
       }
     }
   }

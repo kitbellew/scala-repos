@@ -51,9 +51,8 @@ class SafeHttpServerCodec(
     // this only catches Codec exceptions -- when a handler calls sendUpStream(), it
     // rescues exceptions from the upstream handlers and calls notifyHandlerException(),
     // which doesn't throw exceptions.
-    try {
-      super.handleUpstream(ctx, e)
-    } catch {
+    try { super.handleUpstream(ctx, e) }
+    catch {
       case ex: Exception =>
         val channel = ctx.getChannel()
         ctx.sendUpstream(
@@ -363,9 +362,7 @@ private object TraceInfo {
       // this is to allow developers to just set the debug flag to ensure their
       // trace is collected
       Some(Trace.nextId.copy(flags = getFlags(request)))
-    } else {
-      Some(Trace.nextId)
-    }
+    } else { Some(Trace.nextId) }
 
     // remove so the header is not visible to users
     Header.All foreach { request.headers.remove(_) }
@@ -414,9 +411,7 @@ private object TraceInfo {
     try {
       Flags(
         Option(request.headers.get(Header.Flags)).map(_.toLong).getOrElse(0L))
-    } catch {
-      case _: Throwable => Flags()
-    }
+    } catch { case _: Throwable => Flags() }
   }
 }
 
@@ -475,7 +470,5 @@ private[finagle] class HttpServerTracingFilter[Req <: Request, Res](
     serviceName: String)
     extends SimpleFilter[Req, Res] {
   def apply(request: Req, service: Service[Req, Res]) =
-    TraceInfo.letTraceIdFromRequestHeaders(request) {
-      service(request)
-    }
+    TraceInfo.letTraceIdFromRequestHeaders(request) { service(request) }
 }

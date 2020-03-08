@@ -89,17 +89,11 @@ class HistoryServerSuite
     port = server.boundPort
   }
 
-  def stop(): Unit = {
-    server.stop()
-  }
+  def stop(): Unit = { server.stop() }
 
-  before {
-    init()
-  }
+  before { init() }
 
-  after {
-    stop()
-  }
+  after { stop() }
 
   val cases = Seq(
     "application list json" -> "applications",
@@ -171,9 +165,7 @@ class HistoryServerSuite
             }
           }
           subStrings.mkString(",")
-        } else {
-          jsonOrg
-        }
+        } else { jsonOrg }
 
         val exp = IOUtils.toString(
           new FileInputStream(
@@ -218,15 +210,11 @@ class HistoryServerSuite
     val zipStream = new ZipInputStream(inputStream.get)
     var entry = zipStream.getNextEntry
     entry should not be null
-    val totalFiles = {
-      attemptId.map { x => 1 }.getOrElse(2)
-    }
+    val totalFiles = { attemptId.map { x => 1 }.getOrElse(2) }
     var filesCompared = 0
     while (entry != null) {
       if (!entry.isDirectory) {
-        val expectedFile = {
-          new File(logDir, entry.getName)
-        }
+        val expectedFile = { new File(logDir, entry.getName) }
         val expected = Files.toString(expectedFile, StandardCharsets.UTF_8)
         val actual =
           new String(ByteStreams.toByteArray(zipStream), StandardCharsets.UTF_8)
@@ -380,9 +368,7 @@ class HistoryServerSuite
     // sanity check to make sure filter is chaining calls
     rootAppPage should not be empty
 
-    def getAppUI: SparkUI = {
-      provider.getAppUI(appId, None).get.ui
-    }
+    def getAppUI: SparkUI = { provider.getAppUI(appId, None).get.ui }
 
     // selenium isn't that useful on failures...add our own reporting
     def getNumJobs(suffix: String): Int = {
@@ -540,9 +526,7 @@ object HistoryServerSuite {
         case (name, path) =>
           suite.generateExpectation(name, path)
       }
-    } finally {
-      suite.stop()
-    }
+    } finally { suite.stop() }
   }
 
   def getContentAndCode(url: URL): (Int, Option[String], Option[String]) = {
@@ -558,18 +542,13 @@ object HistoryServerSuite {
     connection.connect()
     val code = connection.getResponseCode()
     val inStream =
-      try {
-        Option(connection.getInputStream())
-      } catch {
-        case io: IOException => None
-      }
+      try { Option(connection.getInputStream()) }
+      catch { case io: IOException => None }
     val errString =
       try {
         val err = Option(connection.getErrorStream())
         err.map(IOUtils.toString)
-      } catch {
-        case io: IOException => None
-      }
+      } catch { case io: IOException => None }
     (code, inStream, errString)
   }
 
@@ -580,9 +559,8 @@ object HistoryServerSuite {
 
   def getUrl(path: URL): String = {
     val (code, resultOpt, error) = getContentAndCode(path)
-    if (code == 200) {
-      resultOpt.get
-    } else {
+    if (code == 200) { resultOpt.get }
+    else {
       throw new RuntimeException(
         "got code: " + code + " when getting " + path + " w/ error: " + error)
     }

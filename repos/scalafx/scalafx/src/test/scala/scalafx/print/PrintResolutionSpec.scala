@@ -55,9 +55,7 @@ class PrintResolutionSpec
         || jfxp.Printer.getDefaultPrinter.getPrinterAttributes == null
         || jfxp.Printer.getDefaultPrinter.getPrinterAttributes.getDefaultPrintResolution == null) {
       "Neither Default Printer nor Print Resolution defined."
-    } else {
-      ""
-    }
+    } else { "" }
 
   override val skipJfxToSfxCause = skipingMessage
 

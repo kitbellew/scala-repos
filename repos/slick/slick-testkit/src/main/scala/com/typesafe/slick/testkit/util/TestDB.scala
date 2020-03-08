@@ -169,7 +169,9 @@ trait RelationalTestDB extends TestDB {
   def assertNotTablesExist(tables: String*): DBIO[Unit]
 }
 
-trait SqlTestDB extends RelationalTestDB { type Profile <: SqlProfile }
+trait SqlTestDB extends RelationalTestDB {
+  type Profile <: SqlProfile
+}
 
 abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
   import profile.api.actionBasedSQLInterpolation

@@ -429,9 +429,7 @@ private[spark] class DAGScheduler(
       }
     }
     waitingForVisit.push(rdd)
-    while (waitingForVisit.nonEmpty) {
-      visit(waitingForVisit.pop())
-    }
+    while (waitingForVisit.nonEmpty) { visit(waitingForVisit.pop()) }
     parents.toList
   }
 
@@ -460,9 +458,7 @@ private[spark] class DAGScheduler(
     }
 
     waitingForVisit.push(rdd)
-    while (waitingForVisit.nonEmpty) {
-      visit(waitingForVisit.pop())
-    }
+    while (waitingForVisit.nonEmpty) { visit(waitingForVisit.pop()) }
     parents
   }
 
@@ -481,9 +477,7 @@ private[spark] class DAGScheduler(
             dep match {
               case shufDep: ShuffleDependency[_, _, _] =>
                 val mapStage = getShuffleMapStage(shufDep, stage.firstJobId)
-                if (!mapStage.isAvailable) {
-                  missing += mapStage
-                }
+                if (!mapStage.isAvailable) { missing += mapStage }
               case narrowDep: NarrowDependency[_] =>
                 waitingForVisit.push(narrowDep.rdd)
             }
@@ -492,9 +486,7 @@ private[spark] class DAGScheduler(
       }
     }
     waitingForVisit.push(stage.rdd)
-    while (waitingForVisit.nonEmpty) {
-      visit(waitingForVisit.pop())
-    }
+    while (waitingForVisit.nonEmpty) { visit(waitingForVisit.pop()) }
     missing.toList
   }
 
@@ -784,9 +776,7 @@ private[spark] class DAGScheduler(
   /**
     * Cancel all jobs that are running or waiting in the queue.
     */
-  def cancelAllJobs(): Unit = {
-    eventProcessLoop.post(AllJobsCancelled)
-  }
+  def cancelAllJobs(): Unit = { eventProcessLoop.post(AllJobsCancelled) }
 
   private[scheduler] def doCancelAllJobs() {
     // Cancel all running jobs.
@@ -840,9 +830,7 @@ private[spark] class DAGScheduler(
     logTrace("failed: " + failedStages)
     val waitingStagesCopy = waitingStages.toArray
     waitingStages.clear()
-    for (stage <- waitingStagesCopy.sortBy(_.firstJobId)) {
-      submitStage(stage)
-    }
+    for (stage <- waitingStagesCopy.sortBy(_.firstJobId)) { submitStage(stage) }
   }
 
   /** Finds the earliest-created active job that needs the stage */
@@ -1034,15 +1022,11 @@ private[spark] class DAGScheduler(
             "Submitting " + stage + " (" + stage.rdd + "), which has no missing parents")
           submitMissingTasks(stage, jobId.get)
         } else {
-          for (parent <- missing) {
-            submitStage(parent)
-          }
+          for (parent <- missing) { submitStage(parent) }
           waitingStages += stage
         }
       }
-    } else {
-      abortStage(stage, "No active job for stage " + stage.id, None)
-    }
+    } else { abortStage(stage, "No active job for stage " + stage.id, None) }
   }
 
   /** Called when stage's parents are available and we can now do its task. */
@@ -1285,18 +1269,15 @@ private[spark] class DAGScheduler(
     // Reconstruct task metrics. Note: this may be null if the task has failed.
     val taskMetrics: TaskMetrics =
       if (event.accumUpdates.nonEmpty) {
-        try {
-          TaskMetrics.fromAccumulatorUpdates(event.accumUpdates)
-        } catch {
+        try { TaskMetrics.fromAccumulatorUpdates(event.accumUpdates) }
+        catch {
           case NonFatal(e) =>
             logError(
               s"Error when attempting to reconstruct metrics for task $taskId",
               e)
             null
         }
-      } else {
-        null
-      }
+      } else { null }
 
     // The stage may have already finished when we get this event -- eg. maybe it was a
     // speculative task. It is important that we send the TaskEnd event in any case, so listeners
@@ -1345,9 +1326,8 @@ private[spark] class DAGScheduler(
 
                   // taskSucceeded runs some user code that might throw an exception. Make sure
                   // we are resilient against that.
-                  try {
-                    job.listener.taskSucceeded(rt.outputId, event.result)
-                  } catch {
+                  try { job.listener.taskSucceeded(rt.outputId, event.result) }
+                  catch {
                     case e: Exception =>
                       // TODO: Perhaps we want to mark the resultStage as failed?
                       job.listener.jobFailed(
@@ -1369,9 +1349,7 @@ private[spark] class DAGScheduler(
                   execId)) {
               logInfo(
                 s"Ignoring possibly bogus $smt completion from executor $execId")
-            } else {
-              shuffleStage.addOutputLoc(smt.partitionId, status)
-            }
+            } else { shuffleStage.addOutputLoc(smt.partitionId, status) }
 
             if (runningStages.contains(
                   shuffleStage) && shuffleStage.pendingPartitions.isEmpty) {
@@ -1539,9 +1517,7 @@ private[spark] class DAGScheduler(
             stage.outputLocInMapOutputTrackerFormat(),
             changeEpoch = true)
         }
-        if (shuffleToMapStage.isEmpty) {
-          mapOutputTracker.incrementEpoch()
-        }
+        if (shuffleToMapStage.isEmpty) { mapOutputTracker.incrementEpoch() }
         clearCacheLocs()
       }
     } else {
@@ -1702,9 +1678,7 @@ private[spark] class DAGScheduler(
 
   /** Return true if one of stage's ancestors is target. */
   private def stageDependsOn(stage: Stage, target: Stage): Boolean = {
-    if (stage == target) {
-      return true
-    }
+    if (stage == target) { return true }
     val visitedRdds = new HashSet[RDD[_]]
     // We are manually maintaining a stack here to prevent StackOverflowError
     // caused by recursively visiting
@@ -1726,9 +1700,7 @@ private[spark] class DAGScheduler(
       }
     }
     waitingForVisit.push(stage.rdd)
-    while (waitingForVisit.nonEmpty) {
-      visit(waitingForVisit.pop())
-    }
+    while (waitingForVisit.nonEmpty) { visit(waitingForVisit.pop()) }
     visitedRdds.contains(target.rdd)
   }
 
@@ -1766,14 +1738,10 @@ private[spark] class DAGScheduler(
     }
     // If the partition is cached, return the cache locations
     val cached = getCacheLocs(rdd)(partition)
-    if (cached.nonEmpty) {
-      return cached
-    }
+    if (cached.nonEmpty) { return cached }
     // If the RDD has some placement preferences (as is the case for input RDDs), get those
     val rddPrefs = rdd.preferredLocations(rdd.partitions(partition)).toList
-    if (rddPrefs.nonEmpty) {
-      return rddPrefs.map(TaskLocation(_))
-    }
+    if (rddPrefs.nonEmpty) { return rddPrefs.map(TaskLocation(_)) }
 
     // If the RDD has narrow dependencies, pick the first partition of the first narrow dependency
     // that has any placement preferences. Ideally we would choose based on transfer sizes,
@@ -1782,9 +1750,7 @@ private[spark] class DAGScheduler(
       case n: NarrowDependency[_] =>
         for (inPart <- n.getParents(partition)) {
           val locs = getPreferredLocsInternal(n.rdd, inPart, visited)
-          if (locs != Nil) {
-            return locs
-          }
+          if (locs != Nil) { return locs }
         }
 
       case _ =>
@@ -1828,11 +1794,8 @@ private[scheduler] class DAGSchedulerEventProcessLoop(
     */
   override def onReceive(event: DAGSchedulerEvent): Unit = {
     val timerContext = timer.time()
-    try {
-      doOnReceive(event)
-    } finally {
-      timerContext.stop()
-    }
+    try { doOnReceive(event) }
+    finally { timerContext.stop() }
   }
 
   private def doOnReceive(event: DAGSchedulerEvent): Unit = event match {
@@ -1899,9 +1862,8 @@ private[scheduler] class DAGSchedulerEventProcessLoop(
     logError(
       "DAGSchedulerEventProcessLoop failed; shutting down SparkContext",
       e)
-    try {
-      dagScheduler.doCancelAllJobs()
-    } catch {
+    try { dagScheduler.doCancelAllJobs() }
+    catch {
       case t: Throwable =>
         logError("DAGScheduler failed to cancel all jobs.", t)
     }

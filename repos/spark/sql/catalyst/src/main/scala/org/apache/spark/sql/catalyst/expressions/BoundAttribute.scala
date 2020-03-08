@@ -38,9 +38,8 @@ case class BoundReference(ordinal: Int, dataType: DataType, nullable: Boolean)
 
   // Use special getter for primitive types (for UnsafeRow)
   override def eval(input: InternalRow): Any = {
-    if (input.isNullAt(ordinal)) {
-      null
-    } else {
+    if (input.isNullAt(ordinal)) { null }
+    else {
       dataType match {
         case BooleanType              => input.getBoolean(ordinal)
         case ByteType                 => input.getByte(ordinal)
@@ -98,9 +97,8 @@ object BindReferences extends Logging {
           attachTree(a, "Binding attribute") {
             val ordinal = input.indexWhere(_.exprId == a.exprId)
             if (ordinal == -1) {
-              if (allowFailures) {
-                a
-              } else {
+              if (allowFailures) { a }
+              else {
                 sys.error(
                   s"Couldn't find $a in ${input.mkString("[", ",", "]")}")
               }

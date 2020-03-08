@@ -6,9 +6,7 @@ class Input {
     if (z == "") {
       val g = y + 1
       print(g)
-    } else {
-      print(x)
-    }
+    } else { print(x) }
     /*end*/
     if (x == 1) return
   }

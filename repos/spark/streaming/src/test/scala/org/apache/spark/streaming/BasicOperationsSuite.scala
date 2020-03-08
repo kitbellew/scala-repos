@@ -734,9 +734,7 @@ class BasicOperationsSuite extends TestSuiteBase {
           clock.advance(batchDuration.milliseconds)
           if (!batchCounter.waitUntilBatchesCompleted(
                 numCompletedBatches + 1,
-                5000)) {
-            fail("Batch took more than 5 seconds to complete")
-          }
+                5000)) { fail("Batch took more than 5 seconds to complete") }
           collectRddInfo()
         }
 

@@ -133,9 +133,7 @@ private[jackson] class JsValueDeserializer(
       jp: JsonParser,
       ctxt: DeserializationContext,
       parserContext: List[DeserializerContext]): JsValue = {
-    if (jp.getCurrentToken == null) {
-      jp.nextToken()
-    }
+    if (jp.getCurrentToken == null) { jp.nextToken() }
 
     val (maybeValue, nextContext) = (jp.getCurrentToken.id(): @switch) match {
 
@@ -238,9 +236,7 @@ private[jackson] class PlaySerializers extends Serializers.Base {
     val ser: Object =
       if (classOf[JsValue].isAssignableFrom(beanDesc.getBeanClass)) {
         JsValueSerializer
-      } else {
-        null
-      }
+      } else { null }
     ser.asInstanceOf[JsonSerializer[Object]]
   }
 }
@@ -278,9 +274,7 @@ private[json] object JacksonJson {
     val sw = new java.io.StringWriter
     val gen = stringJsonGenerator(sw)
 
-    if (escapeNonASCII) {
-      gen.enable(JsonGenerator.Feature.ESCAPE_NON_ASCII)
-    }
+    if (escapeNonASCII) { gen.enable(JsonGenerator.Feature.ESCAPE_NON_ASCII) }
 
     mapper.writeValue(gen, jsValue)
     sw.flush()

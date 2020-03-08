@@ -59,9 +59,7 @@ class Slider(override val delegate: jfxsc.Slider = new jfxsc.Slider)
     * The amount by which to adjust the slider if the track of the slider is clicked.
     */
   def blockIncrement: DoubleProperty = delegate.blockIncrementProperty
-  def blockIncrement_=(v: Double) {
-    blockIncrement() = v
-  }
+  def blockIncrement_=(v: Double) { blockIncrement() = v }
 
   /**
     * A function for formatting the label for a major tick.
@@ -79,81 +77,61 @@ class Slider(override val delegate: jfxsc.Slider = new jfxsc.Slider)
     * The unit distance between major tick marks.
     */
   def majorTickUnit: DoubleProperty = delegate.majorTickUnitProperty
-  def majorTickUnit_=(v: Double) {
-    majorTickUnit() = v
-  }
+  def majorTickUnit_=(v: Double) { majorTickUnit() = v }
 
   /**
     * The maximum value represented by this Slider.
     */
   def max: DoubleProperty = delegate.maxProperty
-  def max_=(v: Double) {
-    max() = v
-  }
+  def max_=(v: Double) { max() = v }
 
   /**
     * The number of minor ticks to place between any two major ticks.
     */
   def minorTickCount: IntegerProperty = delegate.minorTickCountProperty
-  def minorTickCount_=(v: Int) {
-    minorTickCount() = v
-  }
+  def minorTickCount_=(v: Int) { minorTickCount() = v }
 
   /**
     * The minimum value represented by this Slider.
     */
   def min: DoubleProperty = delegate.minProperty
-  def min_=(v: Double) {
-    min() = v
-  }
+  def min_=(v: Double) { min() = v }
 
   /**
     * The orientation of the Slider can either be horizontal or vertical.
     */
   def orientation: ObjectProperty[jfxg.Orientation] =
     delegate.orientationProperty
-  def orientation_=(v: Orientation) {
-    orientation() = v
-  }
+  def orientation_=(v: Orientation) { orientation() = v }
 
   /**
     * Indicates that the labels for tick marks should be shown.
     */
   def showTickLabels: BooleanProperty = delegate.showTickLabelsProperty
-  def showTickLabels_=(v: Boolean) {
-    showTickLabels() = v
-  }
+  def showTickLabels_=(v: Boolean) { showTickLabels() = v }
 
   /**
     * Specifies whether the Skin implementation should show tick marks.
     */
   def showTickMarks: BooleanProperty = delegate.showTickMarksProperty
-  def showTickMarks_=(v: Boolean) {
-    showTickMarks() = v
-  }
+  def showTickMarks_=(v: Boolean) { showTickMarks() = v }
 
   /**
     * Indicates whether the value of the Slider should always be aligned with the tick marks.
     */
   def snapToTicks: BooleanProperty = delegate.snapToTicksProperty
-  def snapToTicks_=(v: Boolean) {
-    snapToTicks() = v
-  }
+  def snapToTicks_=(v: Boolean) { snapToTicks() = v }
 
   /**
     * When true, indicates the current value of this Slider is changing.
     */
   def valueChanging: BooleanProperty = delegate.valueChangingProperty
-  def valueChanging_=(v: Boolean) {
-    valueChanging() = v
-  }
+  def valueChanging_=(v: Boolean) { valueChanging() = v }
 
   /**
     * The current value represented by this Slider.
     */
   def value: DoubleProperty = delegate.valueProperty
-  def value_=(v: Double) {
-    value() = v
-  }
+  def value_=(v: Double) { value() = v }
 
 }

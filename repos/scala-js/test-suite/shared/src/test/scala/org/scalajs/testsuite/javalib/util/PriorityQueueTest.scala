@@ -121,9 +121,7 @@ class PriorityQueueTest {
     val pq = new PriorityQueue[Int](l)
 
     assertEquals(5, pq.size())
-    for (i <- 1 to 5) {
-      assertEquals(i, pq.poll())
-    }
+    for (i <- 1 to 5) { assertEquals(i, pq.poll()) }
     assertTrue(pq.isEmpty)
   }
 
@@ -134,9 +132,7 @@ class PriorityQueueTest {
 
     assertEquals(5, pq1.size())
     assertEquals(5, pq2.size())
-    for (i <- 1 to 5) {
-      assertEquals(pq2.poll(), pq1.poll())
-    }
+    for (i <- 1 to 5) { assertEquals(pq2.poll(), pq1.poll()) }
     assertTrue(pq1.isEmpty)
     assertTrue(pq2.isEmpty)
   }
@@ -149,9 +145,7 @@ class PriorityQueueTest {
 
     assertEquals(5, pq1.size())
     assertEquals(5, pq2.size())
-    for (i <- 1 to 5) {
-      assertEquals(pq2.poll(), pq1.poll())
-    }
+    for (i <- 1 to 5) { assertEquals(pq2.poll(), pq1.poll()) }
     assertTrue(pq1.isEmpty)
     assertTrue(pq2.isEmpty)
   }

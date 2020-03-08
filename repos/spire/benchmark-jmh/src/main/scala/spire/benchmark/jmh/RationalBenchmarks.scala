@@ -80,14 +80,10 @@ class RationalMultiplyDivideBenchmark {
   }
 
   @Benchmark
-  def product(x: Blackhole): Unit = {
-    x.consume(a * b)
-  }
+  def product(x: Blackhole): Unit = { x.consume(a * b) }
 
   @Benchmark
-  def quotient(x: Blackhole): Unit = {
-    x.consume(a / b)
-  }
+  def quotient(x: Blackhole): Unit = { x.consume(a / b) }
 }
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -129,14 +125,10 @@ class RationalAddSubtractBenchmark {
   }
 
   @Benchmark
-  def sum(x: Blackhole): Unit = {
-    x.consume(a + b)
-  }
+  def sum(x: Blackhole): Unit = { x.consume(a + b) }
 
   @Benchmark
-  def difference(x: Blackhole): Unit = {
-    x.consume(a - b)
-  }
+  def difference(x: Blackhole): Unit = { x.consume(a - b) }
 }
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -172,7 +164,5 @@ class RationalCompareBenchmark {
   }
 
   @Benchmark
-  def compare(x: Blackhole): Unit = {
-    x.consume(a compare b)
-  }
+  def compare(x: Blackhole): Unit = { x.consume(a compare b) }
 }

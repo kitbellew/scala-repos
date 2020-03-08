@@ -65,48 +65,36 @@ class DisplacementMap(
     * The map data for this Effect.
     */
   def mapData: ObjectProperty[jfxse.FloatMap] = delegate.mapDataProperty
-  def mapData_=(v: FloatMap) {
-    mapData() = v
-  }
+  def mapData_=(v: FloatMap) { mapData() = v }
 
   /**
     * The offset by which all x coordinate offset values in the FloatMap are displaced after they are scaled.
     */
   def offsetX: DoubleProperty = delegate.offsetXProperty
-  def offsetX_=(v: Double) {
-    offsetX() = v
-  }
+  def offsetX_=(v: Double) { offsetX() = v }
 
   /**
     * The offset by which all y coordinate offset values in the FloatMap are displaced after they are scaled.
     */
   def offsetY: DoubleProperty = delegate.offsetYProperty
-  def offsetY_=(v: Double) {
-    offsetX() = v
-  }
+  def offsetY_=(v: Double) { offsetX() = v }
 
   /**
     * The scale factor by which all x coordinate offset values in the FloatMap are multiplied.
     */
   def scaleX: DoubleProperty = delegate.scaleXProperty
-  def scaleX_=(v: Double) {
-    scaleX() = v
-  }
+  def scaleX_=(v: Double) { scaleX() = v }
 
   /**
     * The scale factor by which all y coordinate offset values in the FloatMap are multiplied.
     */
   def scaleY: DoubleProperty = delegate.scaleYProperty
-  def scaleY_=(v: Double) {
-    scaleY() = v
-  }
+  def scaleY_=(v: Double) { scaleY() = v }
 
   /**
     * Defines whether values taken from outside the edges of the map "wrap around" or not.
     */
   def wrap: BooleanProperty = delegate.wrapProperty
-  def wrap_=(v: Boolean) {
-    wrap() = v
-  }
+  def wrap_=(v: Boolean) { wrap() = v }
 
 }

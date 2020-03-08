@@ -45,9 +45,7 @@ final class RingDeque[@specialized(
 
   def isEmpty = front == rotate(back, -1)
 
-  def empty() {
-    back = rotate(front, 1)
-  }
+  def empty() { back = rotate(front, 1) }
 
   def popFront(): A = {
     val result = ring(front)
@@ -60,9 +58,7 @@ final class RingDeque[@specialized(
     ring(front) = a
   }
 
-  def removeFront(length: Int) {
-    moveFront(length)
-  }
+  def removeFront(length: Int) { moveFront(length) }
 
   def popBack(): A = {
     moveBack(-1)
@@ -74,9 +70,7 @@ final class RingDeque[@specialized(
     moveBack(1)
   }
 
-  def removeBack(length: Int) {
-    moveBack(-length)
-  }
+  def removeBack(length: Int) { moveBack(-length) }
 
   def length: Int =
     (if (back > front) back - front else (back + bound) - front) - 1
@@ -98,12 +92,8 @@ final class RingDeque[@specialized(
     (target + delta + bound) % bound
 
   @inline
-  private[this] def moveFront(delta: Int) {
-    front = rotate(front, delta)
-  }
+  private[this] def moveFront(delta: Int) { front = rotate(front, delta) }
 
   @inline
-  private[this] def moveBack(delta: Int) {
-    back = rotate(back, delta)
-  }
+  private[this] def moveBack(delta: Int) { back = rotate(back, delta) }
 }

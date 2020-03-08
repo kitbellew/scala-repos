@@ -32,9 +32,7 @@ object ScalaOpenIdSpec extends PlaySpecification {
   import play.api.mvc.Results._
 
   //#flow
-  def login = Action {
-    Ok(views.html.login())
-  }
+  def login = Action { Ok(views.html.login()) }
 
   def loginPost = Action.async { implicit request =>
     Form(

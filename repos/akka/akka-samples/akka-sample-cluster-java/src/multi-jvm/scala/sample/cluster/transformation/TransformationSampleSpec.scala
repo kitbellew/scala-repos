@@ -105,9 +105,7 @@ abstract class TransformationSampleSpec
       }
       testConductor.enter("backend1-started")
 
-      runOn(frontend1) {
-        assertServiceOk()
-      }
+      runOn(frontend1) { assertServiceOk() }
 
       testConductor.enter("frontend1-backend1-ok")
     }
@@ -125,9 +123,7 @@ abstract class TransformationSampleSpec
 
       testConductor.enter("all-started")
 
-      runOn(frontend1, frontend2) {
-        assertServiceOk()
-      }
+      runOn(frontend1, frontend2) { assertServiceOk() }
 
       testConductor.enter("all-ok")
 

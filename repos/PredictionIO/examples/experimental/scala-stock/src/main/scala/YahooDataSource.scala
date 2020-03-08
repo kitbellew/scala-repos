@@ -204,9 +204,7 @@ class YahooDataSource(val params: YahooDataSource.Params)
         val v = valueFunc(dailyMap(t))
         lastOpt = Some(v)
         v
-      } else {
-        fillNAFunc(lastOpt)
-      }
+      } else { fillNAFunc(lastOpt) }
     }.toArray
   }
 

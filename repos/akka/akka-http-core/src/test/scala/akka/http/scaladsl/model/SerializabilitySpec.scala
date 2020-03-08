@@ -15,9 +15,7 @@ class SerializabilitySpec extends WordSpec with Matchers {
   "HttpRequests" should {
     "be serializable" when {
       pending
-      "empty" in {
-        HttpRequest() should beSerializable
-      }
+      "empty" in { HttpRequest() should beSerializable }
       "with complex URI" in {
         HttpRequest(uri = Uri("/test?blub=28&x=5+3")) should beSerializable
       }

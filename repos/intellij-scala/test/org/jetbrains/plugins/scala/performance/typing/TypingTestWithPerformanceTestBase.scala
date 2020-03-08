@@ -28,9 +28,7 @@ abstract class TypingTestWithPerformanceTestBase extends ScalaFixtureTestCase {
         "TypingTest" + getTestName(false),
         timeoutInMillis,
         new ThrowableRunnable[Nothing] {
-          override def run(): Unit = {
-            stringsToType.foreach(myFixture.`type`)
-          }
+          override def run(): Unit = { stringsToType.foreach(myFixture.`type`) }
         })
       .ioBound()
       .assertTiming()

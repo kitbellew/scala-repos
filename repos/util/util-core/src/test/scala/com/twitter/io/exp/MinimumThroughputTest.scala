@@ -104,9 +104,7 @@ class MinimumThroughputTest extends FunSuite with MockitoSugar {
       tc.advance(10.seconds)
       timer.tick()
 
-      val ex = intercept[BelowThroughputException] {
-        Await.result(f)
-      }
+      val ex = intercept[BelowThroughputException] { Await.result(f) }
       assert(ex.elapsed == 10.seconds)
       assert(ex.expectedBps == 1d)
       assert(ex.currentBps == 0d)
@@ -124,9 +122,7 @@ class MinimumThroughputTest extends FunSuite with MockitoSugar {
       1d, // min bytes per second
       Timer.Nil)
 
-    val thrown = intercept[RuntimeException] {
-      Await.result(reader.read(1))
-    }
+    val thrown = intercept[RuntimeException] { Await.result(reader.read(1)) }
     assert(thrown == ex)
   }
 
@@ -221,9 +217,7 @@ class MinimumThroughputTest extends FunSuite with MockitoSugar {
       tc.advance(10.seconds)
       timer.tick()
 
-      val ex = intercept[BelowThroughputException] {
-        Await.result(f)
-      }
+      val ex = intercept[BelowThroughputException] { Await.result(f) }
       assert(ex.elapsed == 10.seconds)
       assert(ex.expectedBps == 1d)
       assert(ex.currentBps == 0d)
@@ -239,9 +233,7 @@ class MinimumThroughputTest extends FunSuite with MockitoSugar {
 
     val writer = MinimumThroughput.writer(underlying, 1d, Timer.Nil)
 
-    val thrown = intercept[RuntimeException] {
-      Await.result(writer.write(buf))
-    }
+    val thrown = intercept[RuntimeException] { Await.result(writer.write(buf)) }
     assert(thrown == ex)
   }
 

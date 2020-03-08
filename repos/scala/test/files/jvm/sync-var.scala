@@ -30,12 +30,9 @@ object Test {
       new Thread {
         override def run() {
           val x = j.decrementAndGet()
-          if (x >= 0) {
-            sum addAndGet q.take()
-          }
-          if (x > 0) {
-            run()
-          } else {
+          if (x >= 0) { sum addAndGet q.take() }
+          if (x > 0) { run() }
+          else {
             // done
           }
         }

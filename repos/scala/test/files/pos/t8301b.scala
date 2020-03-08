@@ -14,23 +14,17 @@ object Test extends App {
   val ScalaName: TermName = ???
   locally {
 
-    ??? match {
-      case Test.ScalaName => ???
-    }
+    ??? match { case Test.ScalaName => ??? }
     import Test.ScalaName._
 
-    ??? match {
-      case ScalaName => ???
-    }
+    ??? match { case ScalaName => ??? }
     import ScalaName._
 
     // both the pattern and import led to
     // stable identifier required, but SN found. Note that value SN
     // is not stable because its type, Test.u.TermName, is volatile.
     val SN = ScalaName
-    ??? match {
-      case SN => ???
-    }
+    ??? match { case SN => ??? }
     import SN._
   }
 }

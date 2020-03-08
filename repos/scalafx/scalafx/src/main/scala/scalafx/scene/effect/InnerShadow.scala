@@ -79,40 +79,30 @@ class InnerShadow(
     * The algorithm used to blur the shadow.
     */
   def blurType: ObjectProperty[jfxse.BlurType] = delegate.blurTypeProperty
-  def blurType_=(v: BlurType) {
-    blurType() = v
-  }
+  def blurType_=(v: BlurType) { blurType() = v }
 
   /**
     * The choke of the shadow.
     */
   def choke: DoubleProperty = delegate.chokeProperty
-  def choke_=(v: Double) {
-    choke() = v
-  }
+  def choke_=(v: Double) { choke() = v }
 
   /**
     * The shadow offset in the x direction, in pixels.
     */
   def offsetX: DoubleProperty = delegate.offsetXProperty
-  def offsetX_=(v: Double) {
-    offsetX() = v
-  }
+  def offsetX_=(v: Double) { offsetX() = v }
 
   /**
     * The shadow offset in the y direction, in pixels.
     */
   def offsetY: DoubleProperty = delegate.offsetYProperty
-  def offsetY_=(v: Double) {
-    offsetY() = v
-  }
+  def offsetY_=(v: Double) { offsetY() = v }
 
   /**
     * The radius of the shadow blur kernel.
     */
   def radius: DoubleProperty = delegate.radiusProperty
-  def radius_=(v: Double) {
-    radius() = v
-  }
+  def radius_=(v: Double) { radius() = v }
 
 }

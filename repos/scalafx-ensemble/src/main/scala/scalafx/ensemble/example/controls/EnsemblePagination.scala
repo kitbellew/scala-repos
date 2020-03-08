@@ -86,9 +86,7 @@ class EnsemblePagination extends EnsembleExample {
           onAction = (ae: ActionEvent) => {
             if (pagination.styleClass.contains(Pagination.STYLE_CLASS_BULLET)) {
               pagination.styleClass -= Pagination.STYLE_CLASS_BULLET
-            } else {
-              pagination.styleClass += Pagination.STYLE_CLASS_BULLET
-            }
+            } else { pagination.styleClass += Pagination.STYLE_CLASS_BULLET }
           }
         }
       )

@@ -219,9 +219,7 @@ final class UciToPgnTest extends Specification with ValidationMatchers {
         "d4 d5 f3 e6 f4 g6 g3 Bg7 Nf3 Nf6 e3 O-O Bh3 Nc6 g4 h6 g5 hxg5 Nxg5 Ne4 Bxe6 fxe6 Nxe6 Bxe6 Rg1 Qh4+ Ke2 Qxh2+ Kd3 Nb4#"
       val rep =
         Replay(pgn.split(' ').toList, None, chess.variant.Standard).toOption.get
-      UciToPgn(rep, uciAnalysis) match {
-        case (a, errs) => errs must beEmpty
-      }
+      UciToPgn(rep, uciAnalysis) match { case (a, errs) => errs must beEmpty }
     }
     "even in KotH" in {
       val pgn = List(
@@ -292,9 +290,7 @@ final class UciToPgnTest extends Specification with ValidationMatchers {
       )
       val rep = Replay(pgn, None, chess.variant.KingOfTheHill).toOption.get
       val uciAnalysis = Analysis("g5hX8efz", Nil, 0, None, None, now)
-      UciToPgn(rep, uciAnalysis) match {
-        case (a, errs) => errs must beEmpty
-      }
+      UciToPgn(rep, uciAnalysis) match { case (a, errs) => errs must beEmpty }
     }
   }
 }

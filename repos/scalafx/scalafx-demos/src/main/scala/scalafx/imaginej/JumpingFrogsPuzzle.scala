@@ -160,16 +160,10 @@ case object theDummyFrog extends Frog {
 //
 object theModelValues {
   private val optionalFrogs =
-    for {
-      i <- STONE_NUMBER_LIST
-    } yield {
-      if (i < NUMBER_OF_FROGS) {
-        i -> Some(new LeftFrog())
-      } else if (i == NUMBER_OF_FROGS) {
-        i -> None
-      } else {
-        i -> Some(new RightFrog())
-      }
+    for { i <- STONE_NUMBER_LIST } yield {
+      if (i < NUMBER_OF_FROGS) { i -> Some(new LeftFrog()) }
+      else if (i == NUMBER_OF_FROGS) { i -> None }
+      else { i -> Some(new RightFrog()) }
     }
 
   val optionalFrogMap = optionalFrogs.toMap
@@ -208,22 +202,16 @@ class Model(var optionalFrogMap: Map[Int, Option[Frog]]) {
       optionalFrogMap(i - 2) == None
 
   private def positionSingleton(frog: Frog) =
-    for {
-      (i, Some(`frog`)) <- optionalFrogMap
-    } yield i
+    for { (i, Some(`frog`)) <- optionalFrogMap } yield i
 
   private def update(next: Int => Int) = (frog: Frog) => {
     optionalFrogMap = for {
       entry @ (i, _) <- optionalFrogMap
       j <- positionSingleton(frog)
     } yield {
-      if (i == j) {
-        i -> None
-      } else if (i == next(j)) {
-        i -> Some(frog)
-      } else {
-        entry
-      }
+      if (i == j) { i -> None }
+      else if (i == next(j)) { i -> Some(frog) }
+      else { entry }
     }
   }
 
@@ -303,22 +291,16 @@ object theViewValues {
     theCanvasShape
 
   val stoneShapes =
-    for {
-      i <- STONE_NUMBER_LIST
-    } yield StoneShape(i)
+    for { i <- STONE_NUMBER_LIST } yield StoneShape(i)
 
   val frogShapes =
     for {
       i <- STONE_NUMBER_LIST
       frog <- theModelValues.optionalFrogMap(i)
     } yield {
-      if (i < NUMBER_OF_FROGS) {
-        GreenFrogShape(i, frog)
-      } else if (i == NUMBER_OF_FROGS) {
-        theDummyFrogShape
-      } else {
-        RedFrogShape(i, frog)
-      }
+      if (i < NUMBER_OF_FROGS) { GreenFrogShape(i, frog) }
+      else if (i == NUMBER_OF_FROGS) { theDummyFrogShape }
+      else { RedFrogShape(i, frog) }
     }
 }
 
@@ -340,9 +322,7 @@ class View(position: FrogShape => Int, val frogShapes: List[FrogShape]) {
           at(length * TIME s) {
             frogShape.centerX -> next(frogShapeCenterX, length * STONE_STEP / 2)
           },
-          at(2 * length * TIME s) {
-            frogShape.centerY -> frogShapeCenterY
-          },
+          at(2 * length * TIME s) { frogShape.centerY -> frogShapeCenterY },
           at(2 * length * TIME s) {
             frogShape.centerX -> next(frogShapeCenterX, length * STONE_STEP)
           }

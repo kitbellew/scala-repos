@@ -82,7 +82,5 @@ class StackedBarChart[X, Y](override val delegate: jfxsc.StackedBarChart[X, Y])
   }
 
   def categoryGap: DoubleProperty = delegate.categoryGapProperty
-  def categoryGap_=(v: Double) {
-    categoryGap() = v
-  }
+  def categoryGap_=(v: Double) { categoryGap() = v }
 }

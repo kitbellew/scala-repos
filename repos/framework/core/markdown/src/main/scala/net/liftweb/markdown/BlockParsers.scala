@@ -455,9 +455,8 @@ trait BlockParsers extends Parsers {
     * speed up block processing by looking ahead
     */
   def fastBlock: Parser[MarkdownBlock] = Parser { in =>
-    if (in.atEnd) {
-      Failure("End of Input.", in)
-    } else {
+    if (in.atEnd) { Failure("End of Input.", in) }
+    else {
       in.first match {
         case l: AtxHeaderLine => atxHeader(in)
         case l: RulerLine     => ruler(in)

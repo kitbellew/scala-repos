@@ -27,9 +27,7 @@ object LogFormatter {
       if (i >= 0x20 && i <= 0x7E && i != 0x22 && i != 0x5C) {
         if (builder == null) {
           index += 1 // common case
-        } else {
-          builder.append(c)
-        }
+        } else { builder.append(c) }
       } else {
         if (builder == null) {
           builder = new StringBuilder(s.substring(0, index))
@@ -55,9 +53,7 @@ object LogFormatter {
     }
     if (builder == null) {
       s // common case: nothing needed escaping
-    } else {
-      builder.toString
-    }
+    } else { builder.toString }
   }
 }
 

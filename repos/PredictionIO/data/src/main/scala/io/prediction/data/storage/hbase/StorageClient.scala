@@ -46,9 +46,8 @@ class StorageClient(val config: StorageClientConfig)
     conf.set("zookeeper.recovery.retry", "1")
   }
 
-  try {
-    HBaseAdmin.checkHBaseAvailable(conf)
-  } catch {
+  try { HBaseAdmin.checkHBaseAvailable(conf) }
+  catch {
     case e: MasterNotRunningException =>
       error("HBase master is not running (ZooKeeper ensemble: " +
         conf.get("hbase.zookeeper.quorum") + "). Please make sure that HBase " +

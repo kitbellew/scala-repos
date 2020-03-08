@@ -17,9 +17,7 @@ class PromiseTest extends FunSuite {
     f.raise(new Exception())
     assert(p.handled == None)
     assert(f.isDefined)
-    intercept[Exception] {
-      Await.result(f)
-    }
+    intercept[Exception] { Await.result(f) }
   }
 
   test("Promise.attached should validate success") {
@@ -36,9 +34,7 @@ class PromiseTest extends FunSuite {
     val e = new Exception
     p.setException(e)
     assert(f.isDefined)
-    val actual = intercept[Exception] {
-      Await.result(f)
-    }
+    val actual = intercept[Exception] { Await.result(f) }
     assert(actual == e)
   }
 
@@ -88,9 +84,7 @@ class PromiseTest extends FunSuite {
     val second = Return(2)
 
     p.update(first)
-    val ex = intercept[Promise.ImmutableResult] {
-      p.update(second)
-    }
+    val ex = intercept[Promise.ImmutableResult] { p.update(second) }
     assert(ex.message.contains(first.toString))
     assert(ex.message.contains(second.toString))
   }
@@ -125,9 +119,7 @@ class PromiseTest extends FunSuite {
     val m = new HandledMonitor()
     val exc = new NoSuchMethodException
 
-    Monitor.using(m) {
-      p ensure { throw exc }
-    }
+    Monitor.using(m) { p ensure { throw exc } }
 
     assert(m.handled == null)
     p.update(Return(1))
@@ -139,14 +131,10 @@ class PromiseTest extends FunSuite {
     val exc = new NoSuchMethodException
     val p = new Promise[Int]
 
-    Monitor.using(m) {
-      p transform { case _ => throw exc }
-    }
+    Monitor.using(m) { p transform { case _ => throw exc } }
 
     assert(m.handled == null)
-    val actual = intercept[NoSuchMethodException] {
-      p.update(Return(1))
-    }
+    val actual = intercept[NoSuchMethodException] { p.update(Return(1)) }
     assert(actual == exc)
     assert(m.handled == exc)
   }

@@ -82,9 +82,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
   protected def generateProject(
       generator: => Projection,
       expression: Expression): Projection = {
-    try {
-      generator
-    } catch {
+    try { generator }
+    catch {
       case e: Throwable =>
         fail(s"""
             |Code generation of $expression failed:
@@ -278,11 +277,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       inputRow: InternalRow,
       expr: Expression): Unit = {
     val interpret =
-      try {
-        evaluate(expr, inputRow)
-      } catch {
-        case e: Exception => fail(s"Exception evaluating $expr", e)
-      }
+      try { evaluate(expr, inputRow) }
+      catch { case e: Exception => fail(s"Exception evaluating $expr", e) }
 
     val plan = generateProject(
       GenerateMutableProjection.generate(

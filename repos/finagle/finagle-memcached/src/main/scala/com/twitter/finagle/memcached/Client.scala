@@ -284,9 +284,7 @@ trait BaseClient[T] {
     getResult(keys) flatMap { result =>
       if (result.failures.nonEmpty) {
         Future.exception(result.failures.values.head)
-      } else {
-        Future.value(result.values.mapValues { bufferToType(_) })
-      }
+      } else { Future.value(result.values.mapValues { bufferToType(_) }) }
     }
   }
 
@@ -713,9 +711,7 @@ protected class ConnectedClient(
     }
   }
 
-  def release(): Unit = {
-    service.close()
-  }
+  def release(): Unit = { service.close() }
 }
 
 /**
@@ -734,22 +730,18 @@ trait PartitionedClient extends Client {
 
   def getResult(keys: Iterable[String]) = {
     if (keys.nonEmpty) {
-      withKeysGroupedByClient(keys) {
-        _.getResult(_)
-      }.map { GetResult.merged(_) }
-    } else {
-      Future.value(GetResult.Empty)
-    }
+      withKeysGroupedByClient(keys) { _.getResult(_) }.map {
+        GetResult.merged(_)
+      }
+    } else { Future.value(GetResult.Empty) }
   }
 
   def getsResult(keys: Iterable[String]) = {
     if (keys.nonEmpty) {
-      withKeysGroupedByClient(keys) {
-        _.getsResult(_)
-      }.map { GetResult.merged(_) }
-    } else {
-      Future.value(GetsResult(GetResult.Empty))
-    }
+      withKeysGroupedByClient(keys) { _.getsResult(_) }.map {
+        GetResult.merged(_)
+      }
+    } else { Future.value(GetsResult(GetResult.Empty)) }
   }
 
   def set(key: String, flags: Int, expiry: Time, value: Buf) =
@@ -1205,26 +1197,19 @@ case class KetamaClientBuilder private[memcached] (
       name: Name,
       useOnlyResolvedAddress: Boolean = false
   ): KetamaClientBuilder = {
-    val Name.Bound(va) = if (LocalMemcached.enabled) {
-      localMemcachedName
-    } else {
-      name
-    }
+    val Name.Bound(va) = if (LocalMemcached.enabled) { localMemcachedName }
+    else { name }
     copy(_group = CacheNodeGroup.fromVarAddr(va, useOnlyResolvedAddress))
   }
 
   def dest(name: String): KetamaClientBuilder =
-    if (LocalMemcached.enabled) {
-      withLocalMemcached
-    } else dest(Resolver.eval(name))
+    if (LocalMemcached.enabled) { withLocalMemcached }
+    else dest(Resolver.eval(name))
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
   def group(group: Group[CacheNode]): KetamaClientBuilder = {
-    if (LocalMemcached.enabled) {
-      withLocalMemcached
-    } else {
-      copy(_group = group)
-    }
+    if (LocalMemcached.enabled) { withLocalMemcached }
+    else { copy(_group = group) }
   }
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
@@ -1236,17 +1221,13 @@ case class KetamaClientBuilder private[memcached] (
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
   def cachePoolCluster(cluster: Cluster[CacheNode]): KetamaClientBuilder = {
-    if (LocalMemcached.enabled) {
-      withLocalMemcached
-    } else {
-      copy(_group = Group.fromCluster(cluster))
-    }
+    if (LocalMemcached.enabled) { withLocalMemcached }
+    else { copy(_group = Group.fromCluster(cluster)) }
   }
 
   def nodes(nodes: Seq[(String, Int, Int)]): KetamaClientBuilder = {
-    if (LocalMemcached.enabled) {
-      withLocalMemcached
-    } else {
+    if (LocalMemcached.enabled) { withLocalMemcached }
+    else {
       copy(_group = Group(nodes.map {
         case (host, port, weight) => new CacheNode(host, port, weight)
       }: _*))
@@ -1351,9 +1332,7 @@ class RubyMemCacheClient(clients: Seq[Client]) extends PartitionedClient {
     clients(index.toInt)
   }
 
-  def release() {
-    clients foreach { _.release() }
-  }
+  def release() { clients foreach { _.release() } }
 }
 
 /**
@@ -1406,9 +1385,7 @@ class PHPMemCacheClient(clients: Array[Client], keyHasher: KeyHasher)
     clients(index.toInt)
   }
 
-  def release() {
-    clients foreach { _.release() }
-  }
+  def release() { clients foreach { _.release() } }
 }
 
 /**

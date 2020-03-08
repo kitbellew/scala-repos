@@ -128,9 +128,7 @@ case class FilesystemIngestFailureLog(
     val out = new PrintWriter(new FileWriter(logFile))
     try {
       for (rec <- failureLog.values) out.println(rec.serialize.renderCompact)
-    } finally {
-      out.close()
-    }
+    } finally { out.close() }
 
     this
   }
@@ -178,9 +176,7 @@ object FilesystemIngestFailureLog {
           if (failureLog.isEmpty) initialCheckpoint
           else failureLog.values.minBy(_.lastKnownGood).lastKnownGood,
           persistDir)
-      } finally {
-        reader.close()
-      }
+      } finally { reader.close() }
     }
   }
 
@@ -429,9 +425,8 @@ abstract class KafkaShardIngestActor(
         case (
               offset,
               event @ IngestMessage(_, _, _, records, _, _, _)) :: tail =>
-          val newCheckpoint = if (records.isEmpty) {
-            checkpoint.skipTo(offset)
-          } else {
+          val newCheckpoint = if (records.isEmpty) { checkpoint.skipTo(offset) }
+          else {
             records.foldLeft(checkpoint) {
               // TODO: This nested pattern match indicates that checkpoints are too closely
               // coupled to the representation of event IDs.
@@ -490,9 +485,7 @@ abstract class KafkaShardIngestActor(
         logger.debug(
           "Kafka fetch from %s:%d in %d ms"
             .format(topic, lastCheckpoint.offset, t))
-      }) {
-        consumer.fetch(req)
-      }
+      }) { consumer.fetch(req) }
 
       val eventMessages: List[
         Validation[Error, (Long, EventMessage.EventMessageExtraction)]] =

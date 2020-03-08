@@ -579,9 +579,7 @@ object Defaults extends BuildCommon {
       None)
   }
   def scalaInstanceFromHome(dir: File): Initialize[Task[ScalaInstance]] =
-    Def.task {
-      ScalaInstance(dir)(makeClassLoader(state.value))
-    }
+    Def.task { ScalaInstance(dir)(makeClassLoader(state.value)) }
   private[this] def makeClassLoader(state: State) =
     state.classLoaderCache.apply _
 
@@ -905,9 +903,8 @@ object Defaults extends BuildCommon {
     val includeFilters = includeArgs map GlobFilter.apply
     val excludeFilters = excludeArgs.map(_.substring(1)).map(GlobFilter.apply)
 
-    if (includeFilters.isEmpty && excludeArgs.isEmpty) {
-      Seq(const(true))
-    } else if (includeFilters.isEmpty) {
+    if (includeFilters.isEmpty && excludeArgs.isEmpty) { Seq(const(true)) }
+    else if (includeFilters.isEmpty) {
       Seq({ (s: String) => !matches(excludeFilters, s) })
     } else {
       includeFilters.map { f => (s: String) =>
@@ -2379,9 +2376,8 @@ object Classpaths {
             case (_, Some(out)) if uptodate(inChanged, out) => out
             case _                                          => work(in)
           }
-          try {
-            outCache(in)
-          } catch {
+          try { outCache(in) }
+          catch {
             case e: NullPointerException =>
               val r = work(in)
               log.warn(
@@ -2424,9 +2420,7 @@ object Classpaths {
           case s: Setting[Seq[ModuleID]] @unchecked =>
             s.init.evaluate(empty) map { _ -> s.pos }
         }: _*)
-      } catch {
-        case _: Throwable => Map()
-      }
+      } catch { case _: Throwable => Map() }
 
     val outCacheFile = cacheFile / "output_dsp"
     val f = Tracked.inputChanged(cacheFile / "input_dsp") {

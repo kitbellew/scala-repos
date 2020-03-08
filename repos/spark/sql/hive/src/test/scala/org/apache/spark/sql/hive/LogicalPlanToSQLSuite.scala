@@ -91,9 +91,8 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
           )
       }
 
-    try {
-      checkAnswer(sql(convertedSQL), df)
-    } catch {
+    try { checkAnswer(sql(convertedSQL), df) }
+    catch {
       case cause: Throwable =>
         fail(
           s"""Failed to execute converted SQL string or got wrong answer:
@@ -112,13 +111,9 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
     }
   }
 
-  test("in") {
-    checkHiveQl("SELECT id FROM parquet_t0 WHERE id IN (1, 2, 3)")
-  }
+  test("in") { checkHiveQl("SELECT id FROM parquet_t0 WHERE id IN (1, 2, 3)") }
 
-  test("not in") {
-    checkHiveQl("SELECT id FROM t0 WHERE id NOT IN (1, 2, 3)")
-  }
+  test("not in") { checkHiveQl("SELECT id FROM t0 WHERE id NOT IN (1, 2, 3)") }
 
   test("not like") {
     checkHiveQl("SELECT id FROM t0 WHERE id + 5 NOT LIKE '1%'")
@@ -164,9 +159,7 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
     checkHiveQl("SELECT * FROM t0 INTERSECT SELECT * FROM t0")
   }
 
-  test("except") {
-    checkHiveQl("SELECT * FROM t0 EXCEPT SELECT * FROM t0")
-  }
+  test("except") { checkHiveQl("SELECT * FROM t0 EXCEPT SELECT * FROM t0") }
 
   test("self join") {
     checkHiveQl(
@@ -343,9 +336,7 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
       """.stripMargin)
   }
 
-  test("cluster by") {
-    checkHiveQl("SELECT id FROM parquet_t0 CLUSTER BY id")
-  }
+  test("cluster by") { checkHiveQl("SELECT id FROM parquet_t0 CLUSTER BY id") }
 
   test("distribute by") {
     checkHiveQl("SELECT id FROM parquet_t0 DISTRIBUTE BY id")

@@ -11,37 +11,23 @@ class StatusCodeHandlerTest extends ScalatraFunSuite {
   case class Exception2() extends TestException
 
   class BaseServlet extends ScalatraServlet {
-    get("/401") {
-      status = 401
-    }
-    get("/402") {
-      status = 402
-    }
+    get("/401") { status = 401 }
+    get("/402") { status = 402 }
 
-    get("/500") {
-      status = 500
-    }
+    get("/500") { status = 500 }
 
-    get("/halt401") {
-      halt(401)
-    }
+    get("/halt401") { halt(401) }
 
-    get("/traphalt") {
-      halt(418, "I'm a teapot")
-    }
+    get("/traphalt") { halt(418, "I'm a teapot") }
 
     trap(400 to 402) {
       status = 200
       "400s"
     }
 
-    trap(500) {
-      "internal error"
-    }
+    trap(500) { "internal error" }
 
-    trap(418) {
-      halt(404, "404")
-    }
+    trap(418) { halt(404, "404") }
   }
 
   class ChildServlet extends BaseServlet {
@@ -50,9 +36,7 @@ class StatusCodeHandlerTest extends ScalatraFunSuite {
       "discarded"
     }
 
-    get("/400") {
-      status = 400
-    }
+    get("/400") { status = 400 }
 
     trap(500) {
       status = 303
@@ -79,9 +63,7 @@ class StatusCodeHandlerTest extends ScalatraFunSuite {
   }
 
   test("status code 500 should be trapped by single handler") {
-    get("/base/500") {
-      body should equal("internal error")
-    }
+    get("/base/500") { body should equal("internal error") }
   }
 
   test("status handlers are composable") {

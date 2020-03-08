@@ -180,9 +180,7 @@ sealed abstract class TreeInstances {
     override def foldLeft[A, B](fa: Tree[A], z: B)(f: (B, A) => B): B =
       fa.flatten.foldLeft(z)(f)
     override def foldMapLeft1[A, B](fa: Tree[A])(z: A => B)(f: (B, A) => B): B =
-      fa.flatten match {
-        case h #:: t => t.foldLeft(z(h))(f)
-      }
+      fa.flatten match { case h #:: t => t.foldLeft(z(h))(f) }
     override def foldMap[A, B](fa: Tree[A])(f: A => B)(
         implicit F: Monoid[B]): B = fa foldMap f
     def alignWith[A, B, C](f: (\&/[A, B]) ⇒ C) = {
@@ -208,7 +206,9 @@ sealed abstract class TreeInstances {
   }
 
   implicit def treeEqual[A](implicit A0: Equal[A]): Equal[Tree[A]] =
-    new TreeEqual[A] { def A = A0 }
+    new TreeEqual[A] {
+      def A = A0
+    }
 
   implicit def treeOrder[A](implicit A0: Order[A]): Order[Tree[A]] =
     new Order[Tree[A]] with TreeEqual[A] {
@@ -254,9 +254,7 @@ object Tree extends TreeInstances {
     *  You can use Leaf for tree construction or pattern matching.
     */
   object Leaf {
-    def apply[A](root: => A): Tree[A] = {
-      Node(root, Stream.empty)
-    }
+    def apply[A](root: => A): Tree[A] = { Node(root, Stream.empty) }
 
     def unapply[A](t: Tree[A]): Option[A] = {
       t match {
@@ -273,9 +271,7 @@ object Tree extends TreeInstances {
     s.map(unfoldTree(_)(f))
 
   def unfoldTree[A, B](v: A)(f: A => (B, () => Stream[A])): Tree[B] =
-    f(v) match {
-      case (a, bs) => Node(a, unfoldForest(bs.apply())(f))
-    }
+    f(v) match { case (a, bs) => Node(a, unfoldForest(bs.apply())(f)) }
 }
 
 private trait TreeEqual[A] extends Equal[Tree[A]] {

@@ -23,9 +23,7 @@ import util._
 import scala.xml._
 
 object Tail extends DispatchSnippet {
-  def dispatch: DispatchIt = {
-    case _ => render _
-  }
+  def dispatch: DispatchIt = { case _ => render _ }
 
   def render(xhtml: NodeSeq): NodeSeq = <tail>{xhtml}</tail>
 }
@@ -37,9 +35,7 @@ object Tail extends DispatchSnippet {
 object Head extends DispatchSnippet {
   lazy val valid = Set("title", "base", "link", "meta", "style", "script")
 
-  def dispatch: DispatchIt = {
-    case _ => render _
-  }
+  def dispatch: DispatchIt = { case _ => render _ }
 
   def render(_xhtml: NodeSeq): NodeSeq = {
     def validHeadTagsOnly(in: NodeSeq): NodeSeq =
@@ -64,9 +60,7 @@ object Head extends DispatchSnippet {
       if ((S.attr("withResourceId") or S
             .attr("withresourceid")).filter(Helpers.toBoolean).isDefined) {
         WithResourceId.render(xhtml)
-      } else {
-        xhtml
-      }
+      } else { xhtml }
     }</head>
   }
 }

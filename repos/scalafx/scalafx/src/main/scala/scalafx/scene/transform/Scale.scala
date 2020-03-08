@@ -78,32 +78,24 @@ class Scale(override val delegate: jfxst.Scale = new jfxst.Scale)
     * Defines the X coordinate about which point the scale occurs.
     */
   def pivotX: DoubleProperty = delegate.pivotXProperty()
-  def pivotX_=(v: Double) {
-    pivotX() = v
-  }
+  def pivotX_=(v: Double) { pivotX() = v }
 
   /**
     * Defines the Y coordinate about which point the scale occurs.
     */
   def pivotY: DoubleProperty = delegate.pivotYProperty()
-  def pivotY_=(v: Double) {
-    pivotY() = v
-  }
+  def pivotY_=(v: Double) { pivotY() = v }
 
   /**
     * Defines the Z coordinate about which point the scale occurs.
     */
   def pivotZ: DoubleProperty = delegate.pivotZProperty()
-  def pivotZ_=(v: Double) {
-    pivotZ() = v
-  }
+  def pivotZ_=(v: Double) { pivotZ() = v }
 
   /**
     * Defines the factor by which coordinates are scaled along the Z axis direction.
     */
   def z: DoubleProperty = delegate.zProperty()
-  def z_=(v: Double) {
-    z() = v
-  }
+  def z_=(v: Double) { z() = v }
 
 }

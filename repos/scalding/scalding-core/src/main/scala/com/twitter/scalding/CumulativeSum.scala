@@ -107,9 +107,7 @@ object CumulativeSum {
         }
         .flatMap {
           case ((k, s), acc) =>
-            for (uv <- acc; u <- uv._1) yield {
-              (k, (u, uv._2))
-            }
+            for (uv <- acc; u <- uv._1) yield { (k, (u, uv._2)) }
         }
     }
   }

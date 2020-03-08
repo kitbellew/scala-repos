@@ -48,13 +48,9 @@ private class DeploymentActor(
   var currentStep: Option[DeploymentStep] = None
   var currentStepNr: Int = 0
 
-  override def preStart(): Unit = {
-    self ! NextStep
-  }
+  override def preStart(): Unit = { self ! NextStep }
 
-  override def postStop(): Unit = {
-    parent ! DeploymentFinished(plan)
-  }
+  override def postStop(): Unit = { parent ! DeploymentFinished(plan) }
 
   def receive: Receive = {
     case NextStep if steps.hasNext =>
@@ -86,9 +82,8 @@ private class DeploymentActor(
   }
 
   def performStep(step: DeploymentStep): Future[Unit] = {
-    if (step.actions.isEmpty) {
-      Future.successful(())
-    } else {
+    if (step.actions.isEmpty) { Future.successful(()) }
+    else {
       eventBus.publish(DeploymentStatus(plan, step))
 
       val futures = step.actions.map { action =>
@@ -144,9 +139,7 @@ private class DeploymentActor(
       .propose(runningTasks, toKill, killToMeetConstraints, scaleTo)
 
     def killTasksIfNeeded: Future[Unit] =
-      tasksToKill.fold(Future.successful(())) {
-        killTasks(app.id, _)
-      }
+      tasksToKill.fold(Future.successful(())) { killTasks(app.id, _) }
 
     def startTasksIfNeeded: Future[Unit] =
       tasksToStart.fold(Future.successful(())) { _ =>
@@ -187,15 +180,12 @@ private class DeploymentActor(
     val promise = Promise[Unit]()
     context.actorOf(
       Props(classOf[AppStopActor], driver, taskTracker, eventBus, app, promise))
-    promise.future.andThen {
-      case Success(_) => scheduler.stopApp(driver, app)
-    }
+    promise.future.andThen { case Success(_) => scheduler.stopApp(driver, app) }
   }
 
   def restartApp(app: AppDefinition): Future[Unit] = {
-    if (app.instances == 0) {
-      Future.successful(())
-    } else {
+    if (app.instances == 0) { Future.successful(()) }
+    else {
       val promise = Promise[Unit]()
       context.actorOf(
         Props(

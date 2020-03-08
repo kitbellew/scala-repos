@@ -86,9 +86,7 @@ class ReaderTest
   private val failedEx = new RuntimeException("ʕ •ᴥ•ʔ")
 
   private def assertFailedEx(f: Future[_]): Unit = {
-    val thrown = intercept[RuntimeException] {
-      Await.result(f)
-    }
+    val thrown = intercept[RuntimeException] { Await.result(f) }
     assert(thrown == failedEx)
   }
 
@@ -289,9 +287,7 @@ class ReaderTest
     assertReadEofAndClosed(rw)
     assert(cf.isDone)
 
-    intercept[IllegalStateException] {
-      Await.result(rw.write(buf(0, 1)))
-    }
+    intercept[IllegalStateException] { Await.result(rw.write(buf(0, 1))) }
   }
 
   test("Reader.writable - write smaller buf than read is waiting for") {
@@ -330,9 +326,7 @@ class ReaderTest
     val wf = rw.write(buf(0, 1))
     assert(!wf.isDone)
 
-    intercept[IllegalStateException] {
-      Await.result(rw.write(buf(0, 1)))
-    }
+    intercept[IllegalStateException] { Await.result(rw.write(buf(0, 1))) }
 
     // the extraneous write should not mess with the 1st one.
     assertRead(rw, 0, 1)
@@ -358,18 +352,14 @@ class ReaderTest
 
     // close before the write is satisfied wipes the pending write
     assert(!rw.close().isDone)
-    intercept[IllegalStateException] {
-      Await.result(wf)
-    }
+    intercept[IllegalStateException] { Await.result(wf) }
     assertReadEofAndClosed(rw)
   }
 
   test("Reader.writable - read while reading") {
     val rw = Reader.writable()
     val rf = rw.read(1)
-    intercept[IllegalStateException] {
-      Await.result(rw.read(1))
-    }
+    intercept[IllegalStateException] { Await.result(rw.read(1)) }
     assert(!rf.isDefined)
   }
 
@@ -379,9 +369,7 @@ class ReaderTest
     val rf = rw.read(1)
     rw.discard()
 
-    intercept[ReaderDiscarded] {
-      Await.result(rf)
-    }
+    intercept[ReaderDiscarded] { Await.result(rf) }
   }
 
   test("Reader.writable - discard with pending write") {
@@ -390,9 +378,7 @@ class ReaderTest
     val wf = rw.write(buf(0, 1))
     rw.discard()
 
-    intercept[ReaderDiscarded] {
-      Await.result(wf)
-    }
+    intercept[ReaderDiscarded] { Await.result(wf) }
   }
 
   test("Reader.writable - close not satisfied until writes are read") {
@@ -467,9 +453,7 @@ class ReaderTest
     assert(!wf.isDone)
     val cf = rw.close()
     assert(!cf.isDone)
-    intercept[IllegalStateException] {
-      Await.result(wf)
-    }
+    intercept[IllegalStateException] { Await.result(wf) }
     assertReadEofAndClosed(rw)
   }
 

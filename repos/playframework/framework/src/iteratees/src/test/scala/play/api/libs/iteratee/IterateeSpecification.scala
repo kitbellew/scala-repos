@@ -82,9 +82,7 @@ trait IterateeSpecification {
     val p = Promise[A]()
     timer.schedule(
       new java.util.TimerTask {
-        def run() {
-          p.complete(Try(a))
-        }
+        def run() { p.complete(Try(a)) }
       },
       d.toMillis)
     p.future

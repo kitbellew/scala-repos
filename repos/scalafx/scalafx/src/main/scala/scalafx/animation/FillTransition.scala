@@ -111,32 +111,24 @@ class FillTransition(
     * The target shape of this $FT.
     */
   def shape: ObjectProperty[jfxss.Shape] = delegate.shapeProperty
-  def shape_=(s: Shape) {
-    shape() = s
-  }
+  def shape_=(s: Shape) { shape() = s }
 
   /**
     * The duration of this $FT. $DV 400ms
     */
   def duration: ObjectProperty[jfxu.Duration] = delegate.durationProperty
-  def duration_=(d: Duration) {
-    duration() = d
-  }
+  def duration_=(d: Duration) { duration() = d }
 
   /**
     * Specifies the start color value for this $FT. $DV `null`
     */
   def fromValue: ObjectProperty[jfxsp.Color] = delegate.fromValueProperty
-  def fromValue_=(from: Color) {
-    fromValue() = from
-  }
+  def fromValue_=(from: Color) { fromValue() = from }
 
   /**
     * Specifies the stop color value for this $FT. $DV `null`.
     */
   def toValue: ObjectProperty[jfxsp.Color] = delegate.toValueProperty
-  def toValue_=(to: Color) {
-    toValue() = to
-  }
+  def toValue_=(to: Color) { toValue() = to }
 
 }

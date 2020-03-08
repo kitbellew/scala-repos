@@ -28,15 +28,11 @@ abstract class ParquetSourcesTestsBase extends WordSpec {
   val columnStrings = Set("a", "b", "c")
 
   def testDefaultFilter[S <: Source with HasFilterPredicate](src: S) = {
-    "default to no filter predicate" in {
-      assert(src.withFilter === None)
-    }
+    "default to no filter predicate" in { assert(src.withFilter === None) }
   }
 
   def testReturnProvidedFilter[S <: Source with HasFilterPredicate](src: S) = {
-    "return the provided filter" in {
-      assert(src.withFilter === Some(filter1))
-    }
+    "return the provided filter" in { assert(src.withFilter === Some(filter1)) }
   }
 
   def testDefaultColumns[S <: Source with HasColumnProjection](src: S) = {

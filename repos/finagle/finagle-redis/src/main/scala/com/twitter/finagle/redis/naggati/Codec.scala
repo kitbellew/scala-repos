@@ -134,9 +134,7 @@ class Codec[A: Manifest](
             case None =>
               message.getFuture.setSuccess()
           }
-        } else {
-          context.sendDownstream(event)
-        }
+        } else { context.sendDownstream(event) }
         obj match {
           case signalling: Codec.Signalling => {
             signalling.signals.foreach {
@@ -158,9 +156,8 @@ class Codec[A: Manifest](
       buffer: ChannelBuffer) = {
     val readableBytes = buffer.readableBytes()
     val nextStep =
-      try {
-        stage(buffer)
-      } catch {
+      try { stage(buffer) }
+      catch {
         case e: Throwable =>
           // reset state before throwing.
           stage = firstStage

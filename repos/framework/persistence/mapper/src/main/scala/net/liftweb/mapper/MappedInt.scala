@@ -54,9 +54,7 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
   /**
     * Called after the field is saved to the database
     */
-  override protected[mapper] def doneWithSave() {
-    orgData = data
-  }
+  override protected[mapper] def doneWithSave() { orgData = data }
 
   /**
     * Get the source field metadata for the field
@@ -272,9 +270,7 @@ abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
       val what =
         if (in.startsWith(name + "=")) in.substring((name + "=").length) else in
       Full(Integer.parseInt(what))
-    } catch {
-      case _: Exception => Empty
-    }
+    } catch { case _: Exception => Empty }
   }
 
   override def dbDisplay_? = false
@@ -291,11 +287,8 @@ abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
 
   def convertKey(in: AnyRef): Box[Int] = {
     if ((in eq null) || (in eq None)) None
-    try {
-      convertKey(in.toString)
-    } catch {
-      case _: Exception => Empty
-    }
+    try { convertKey(in.toString) }
+    catch { case _: Exception => Empty }
   }
 
   override def fieldCreatorString(dbType: DriverType, colName: String): String =
@@ -371,9 +364,7 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
   /**
     * Called after the field is saved to the database
     */
-  override protected[mapper] def doneWithSave() {
-    orgData = data
-  }
+  override protected[mapper] def doneWithSave() { orgData = data }
 
   def asJsExp: JsExp = JE.Num(get)
 

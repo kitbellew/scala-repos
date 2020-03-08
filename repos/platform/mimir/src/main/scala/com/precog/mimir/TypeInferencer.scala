@@ -83,9 +83,7 @@ trait TypeInferencer extends DAG {
             jtpe map { jtpe0 =>
               typing0 get ld map { jtpes =>
                 typing + (ld -> (jtpes + jtpe0))
-              } getOrElse {
-                typing + (ld -> Set(jtpe0))
-              }
+              } getOrElse { typing + (ld -> Set(jtpe0)) }
             } getOrElse typing
 
           case ld @ RelativeLoad(parent, _) =>
@@ -93,9 +91,7 @@ trait TypeInferencer extends DAG {
             jtpe map { jtpe0 =>
               typing0 get ld map { jtpes =>
                 typing + (ld -> (jtpes + jtpe0))
-              } getOrElse {
-                typing + (ld -> Set(jtpe0))
-              }
+              } getOrElse { typing + (ld -> Set(jtpe0)) }
             } getOrElse typing
 
           case Operate(op, parent) =>

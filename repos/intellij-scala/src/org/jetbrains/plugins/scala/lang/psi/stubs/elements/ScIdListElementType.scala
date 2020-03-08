@@ -18,9 +18,7 @@ class ScIdListElementType[Func <: ScIdList]
     extends ScStubElementType[ScIdListStub, ScIdList]("id list") {
   def serialize(stub: ScIdListStub, dataStream: StubOutputStream): Unit = {}
 
-  def createPsi(stub: ScIdListStub): ScIdList = {
-    new ScIdListImpl(stub)
-  }
+  def createPsi(stub: ScIdListStub): ScIdList = { new ScIdListImpl(stub) }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScIdList,

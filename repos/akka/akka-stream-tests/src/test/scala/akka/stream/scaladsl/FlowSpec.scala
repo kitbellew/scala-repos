@@ -679,9 +679,7 @@ class FlowSpec
           downstream3.expectSubscription()
           // IllegalStateException terminated abruptly
           checkError(downstream3)
-        } finally {
-          system.eventStream.publish(UnMute(filters))
-        }
+        } finally { system.eventStream.publish(UnMute(filters)) }
       }
     }
 

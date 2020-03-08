@@ -54,9 +54,7 @@ abstract class LightBase(override val delegate: jfxs.LightBase)
 
   /** Defines the light on or off. */
   def lightOn: BooleanProperty = delegate.lightOnProperty
-  def lightOn_=(v: Boolean) {
-    lightOn() = v
-  }
+  def lightOn_=(v: Boolean) { lightOn() = v }
 
   /** Gets the list of nodes that specifies the hierarchical scope of this Light. */
   def scope: ObservableBuffer[jfxs.Node] = delegate.getScope

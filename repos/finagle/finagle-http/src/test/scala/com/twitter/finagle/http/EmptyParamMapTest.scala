@@ -7,17 +7,11 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class EmptyParamMapTest extends FunSuite {
 
-  test("isValid") {
-    assert(EmptyParamMap.isValid == true)
-  }
+  test("isValid") { assert(EmptyParamMap.isValid == true) }
 
-  test("get") {
-    assert(EmptyParamMap.get("key") == None)
-  }
+  test("get") { assert(EmptyParamMap.get("key") == None) }
 
-  test("getAll") {
-    assert(EmptyParamMap.getAll("key").isEmpty == true)
-  }
+  test("getAll") { assert(EmptyParamMap.getAll("key").isEmpty == true) }
 
   test("+") {
     val map = EmptyParamMap + ("key" -> "value")

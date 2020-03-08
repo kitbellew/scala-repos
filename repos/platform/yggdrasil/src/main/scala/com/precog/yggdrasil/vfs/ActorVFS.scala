@@ -146,9 +146,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           ResourceError.fromExtractorError(
             "Failed to create NIHDB in %s as %s"
               .format(versionDir.toString, authorities))
-        } map {
-          NIHDBResource(_)
-        }
+        } map { NIHDBResource(_) }
       }
     }
 
@@ -317,9 +315,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           if (read < 0) None
           else if (read == bytes.length) Some(bytes)
           else Some(java.util.Arrays.copyOf(bytes, read))
-        } else {
-          readChunk(fin, remaining)
-        }
+        } else { readChunk(fin, remaining) }
       }
 
       StreamT.unfoldM[IO, Array[Byte], Long](0L) { offset =>
@@ -336,9 +332,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         projectionResource: ProjectionResource => A) = blobResource(this)
 
     def asByteStream(mimeType: MimeType)(implicit M: Monad[Future]) = OptionT {
-      M.point {
-        Some(ioStream.trans(IOF))
-      }
+      M.point { Some(ioStream.trans(IOF)) }
     }
   }
 
@@ -467,9 +461,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     private[this] var pathActors = Map.empty[Path, ActorRef]
 
-    override def postStop = {
-      logger.info("Shutdown of path actors complete")
-    }
+    override def postStop = { logger.info("Shutdown of path actors complete") }
 
     private[this] def targetActor(path: Path): IO[ActorRef] = {
       pathActors.get(path).map(IO(_)) getOrElse {
@@ -633,11 +625,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     private def promoteVersion(version: UUID): IO[PrecogUnit] = {
       // we only promote if the requested version is in progress
-      if (versionLog.isCompleted(version)) {
-        IO(PrecogUnit)
-      } else {
-        versionLog.completeVersion(version)
-      }
+      if (versionLog.isCompleted(version)) { IO(PrecogUnit) }
+      else { versionLog.completeVersion(version) }
     }
 
     private def openResource(

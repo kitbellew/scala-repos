@@ -34,9 +34,7 @@ private[streaming] class Job(val time: Time, func: () => _) {
   private var _startTime: Option[Long] = None
   private var _endTime: Option[Long] = None
 
-  def run() {
-    _result = Try(func())
-  }
+  def run() { _result = Try(func()) }
 
   def result: Try[_] = {
     if (_result == null) {
@@ -77,26 +75,18 @@ private[streaming] class Job(val time: Time, func: () => _) {
     _outputOpId = outputOpId
   }
 
-  def setCallSite(callSite: CallSite): Unit = {
-    _callSite = callSite
-  }
+  def setCallSite(callSite: CallSite): Unit = { _callSite = callSite }
 
   def callSite: CallSite = _callSite
 
-  def setStartTime(startTime: Long): Unit = {
-    _startTime = Some(startTime)
-  }
+  def setStartTime(startTime: Long): Unit = { _startTime = Some(startTime) }
 
-  def setEndTime(endTime: Long): Unit = {
-    _endTime = Some(endTime)
-  }
+  def setEndTime(endTime: Long): Unit = { _endTime = Some(endTime) }
 
   def toOutputOperationInfo: OutputOperationInfo = {
     val failureReason = if (_result != null && _result.isFailure) {
       Some(Utils.exceptionString(_result.asInstanceOf[Failure[_]].exception))
-    } else {
-      None
-    }
+    } else { None }
     OutputOperationInfo(
       time,
       outputOpId,

@@ -215,7 +215,5 @@ object Test extends Properties("Either") {
     ("prop_Either_cond", prop_Either_cond)
   )
 
-  for ((label, prop) <- tests) {
-    property(label) = prop
-  }
+  for ((label, prop) <- tests) { property(label) = prop }
 }

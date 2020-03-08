@@ -29,9 +29,7 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
           Nil
       }
     val websocketRoute =
-      path("greeter") {
-        handleWebSocketMessages(greeter)
-      }
+      path("greeter") { handleWebSocketMessages(greeter) }
 
     // tests:
     // create a testing probe representing the client-side

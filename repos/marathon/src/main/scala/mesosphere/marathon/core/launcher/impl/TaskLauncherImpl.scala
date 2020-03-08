@@ -65,9 +65,7 @@ private[launcher] class TaskLauncherImpl(
         .getOrElse(Protos.Filters.getDefaultInstance)
       _.declineOffer(offerID, filters)
     }
-    if (declined) {
-      declinedOffersMeter.mark()
-    }
+    if (declined) { declinedOffersMeter.mark() }
   }
 
   private[this] def withDriver(description: => String)(

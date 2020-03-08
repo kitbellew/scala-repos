@@ -328,9 +328,7 @@ class LazyMacros(val c: whitebox.Context)
                 }
             }
             (State.current.get, tree)
-          } finally {
-            State.current = former
-          }
+          } finally { State.current = former }
 
         if (tree == EmptyTree) None
         else Some((state0, tree))
@@ -645,12 +643,7 @@ object LazyMacros {
         .analyzer
         .resetImplicits()
 
-    try {
-      dc.State.deriveInstance(tpe, root, mkInst)
-    } finally {
-      if (root) {
-        dcRef = None
-      }
-    }
+    try { dc.State.deriveInstance(tpe, root, mkInst) }
+    finally { if (root) { dcRef = None } }
   }
 }

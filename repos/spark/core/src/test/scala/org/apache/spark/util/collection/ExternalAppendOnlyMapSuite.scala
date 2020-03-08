@@ -221,9 +221,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     sc.stop()
   }
 
-  test("spilling") {
-    testSimpleSpilling()
-  }
+  test("spilling") { testSimpleSpilling() }
 
   test("spilling with compression") {
     // Keep track of which compression codec we're using to report in test failure messages
@@ -393,9 +391,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     // Insert 10 copies each of lots of objects whose hash codes are either 0 or 1. This causes
     // problems if the map fails to group together the objects with the same code (SPARK-2043).
     for (i <- 1 to 10) {
-      for (j <- 1 to size) {
-        map.insert(FixedHashObject(j, j % 2), 1)
-      }
+      for (j <- 1 to size) { map.insert(FixedHashObject(j, j % 2), 1) }
     }
     assert(map.numSpills > 0, "map did not spill")
 

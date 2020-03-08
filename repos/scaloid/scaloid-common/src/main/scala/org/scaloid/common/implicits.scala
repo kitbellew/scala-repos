@@ -141,9 +141,7 @@ trait InterfaceImplicits {
   implicit def func2ViewOnClickListener[F](
       f: (View) => F): View.OnClickListener =
     new View.OnClickListener() {
-      def onClick(view: View) {
-        f(view)
-      }
+      def onClick(view: View) { f(view) }
     }
 
   @deprecated(
@@ -151,32 +149,24 @@ trait InterfaceImplicits {
     "3.6")
   implicit def lazy2ViewOnClickListener[F](f: => F): View.OnClickListener =
     new View.OnClickListener() {
-      def onClick(view: View) {
-        f
-      }
+      def onClick(view: View) { f }
     }
 
   implicit def func2DialogOnClickListener[F](
       f: (DialogInterface, Int) => F): DialogInterface.OnClickListener =
     new DialogInterface.OnClickListener {
-      def onClick(dialog: DialogInterface, which: Int) {
-        f(dialog, which)
-      }
+      def onClick(dialog: DialogInterface, which: Int) { f(dialog, which) }
     }
 
   implicit def lazy2DialogOnClickListener[F](
       f: => F): DialogInterface.OnClickListener =
     new DialogInterface.OnClickListener {
-      def onClick(dialog: DialogInterface, which: Int) {
-        f
-      }
+      def onClick(dialog: DialogInterface, which: Int) { f }
     }
 
   implicit def func2runnable[F](f: () => F): Runnable =
     new Runnable() {
-      def run() {
-        f()
-      }
+      def run() { f() }
     }
 
   @deprecated(
@@ -184,9 +174,7 @@ trait InterfaceImplicits {
     "3.6")
   implicit def lazy2runnable[F](f: => F): Runnable =
     new Runnable() {
-      def run() {
-        f
-      }
+      def run() { f }
     }
 
   implicit def intent2RichIntent(i: Intent) = new RichIntent(i)

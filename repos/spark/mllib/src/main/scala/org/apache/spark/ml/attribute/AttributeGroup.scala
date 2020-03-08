@@ -84,13 +84,9 @@ class AttributeGroup private (
 
   /** Size of the attribute group. Returns -1 if the size is unknown. */
   def size: Int = {
-    if (numAttributes.isDefined) {
-      numAttributes.get
-    } else if (attributes.isDefined) {
-      attributes.get.length
-    } else {
-      -1
-    }
+    if (numAttributes.isDefined) { numAttributes.get }
+    else if (attributes.isDefined) { attributes.get.length }
+    else { -1 }
   }
 
   /** Test whether this attribute group contains a specific attribute. */
@@ -100,9 +96,7 @@ class AttributeGroup private (
   def indexOf(attrName: String): Int = nameToIndex(attrName)
 
   /** Gets an attribute by its name. */
-  def apply(attrName: String): Attribute = {
-    attributes.get(indexOf(attrName))
-  }
+  def apply(attrName: String): Attribute = { attributes.get(indexOf(attrName)) }
 
   /** Gets an attribute by its name. */
   def getAttr(attrName: String): Attribute = this(attrName)
@@ -248,9 +242,7 @@ object AttributeGroup {
       new AttributeGroup(name, attributes)
     } else if (metadata.contains(NUM_ATTRIBUTES)) {
       new AttributeGroup(name, metadata.getLong(NUM_ATTRIBUTES).toInt)
-    } else {
-      new AttributeGroup(name)
-    }
+    } else { new AttributeGroup(name) }
   }
 
   /** Creates an attribute group from a [[StructField]] instance. */
@@ -258,8 +250,6 @@ object AttributeGroup {
     require(field.dataType == new VectorUDT)
     if (field.metadata.contains(ML_ATTR)) {
       fromMetadata(field.metadata.getMetadata(ML_ATTR), field.name)
-    } else {
-      new AttributeGroup(field.name)
-    }
+    } else { new AttributeGroup(field.name) }
   }
 }

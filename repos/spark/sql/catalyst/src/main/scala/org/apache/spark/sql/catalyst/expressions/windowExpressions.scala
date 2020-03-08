@@ -70,9 +70,7 @@ case class WindowSpecDefinition(
                        .isInstanceOf[NumericType]) {
             Some(
               "The data type of the expression in the ORDER BY clause should be a numeric type.")
-          } else {
-            None
-          }
+          } else { None }
         }
 
         (frame.frameType, frame.frameStart, frame.frameEnd) match {
@@ -100,17 +98,11 @@ case class WindowSpecDefinition(
   override def dataType: DataType = throw new UnsupportedOperationException
 
   override def sql: String = {
-    val partition = if (partitionSpec.isEmpty) {
-      ""
-    } else {
-      "PARTITION BY " + partitionSpec.map(_.sql).mkString(", ")
-    }
+    val partition = if (partitionSpec.isEmpty) { "" }
+    else { "PARTITION BY " + partitionSpec.map(_.sql).mkString(", ") }
 
-    val order = if (orderSpec.isEmpty) {
-      ""
-    } else {
-      "ORDER BY " + orderSpec.map(_.sql).mkString(", ")
-    }
+    val order = if (orderSpec.isEmpty) { "" }
+    else { "ORDER BY " + orderSpec.map(_.sql).mkString(", ") }
 
     s"($partition $order ${frameSpecification.toString})"
   }
@@ -260,9 +252,8 @@ case class SpecifiedWindowFrame(
     // case (RowFrame, start, end) => ??? RowFrame specific rule
     // case (RangeFrame, start, end) => ??? RangeFrame specific rule
     case (_, start, end) =>
-      if (start.notFollows(end)) {
-        None
-      } else {
+      if (start.notFollows(end)) { None }
+      else {
         val reason =
           s"The end of this Window Frame $end is smaller than the start of " +
             s"this Window Frame $start."
@@ -591,9 +582,8 @@ case class NTile(buckets: Expression)
     }
 
     val i = buckets.eval().asInstanceOf[Int]
-    if (i > 0) {
-      TypeCheckSuccess
-    } else {
+    if (i > 0) { TypeCheckSuccess }
+    else {
       TypeCheckFailure(s"Buckets expression must be positive, but got: $i")
     }
   }

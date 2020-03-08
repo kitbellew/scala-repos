@@ -68,9 +68,7 @@ final class TransactionClientIntegrationSuite extends RedisClientTest {
       Await.result(client.set(foo, bar))
       Await.result(client.watch(Seq(foo)))
       Await.result(client.set(foo, boo))
-      intercept[ClientError] {
-        Await.result(client.transaction(Seq(Get(foo))))
-      }
+      intercept[ClientError] { Await.result(client.transaction(Seq(Get(foo)))) }
     }
   }
 

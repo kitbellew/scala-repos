@@ -6,12 +6,10 @@ class A {
   var x = ""
 
   def bar =
-    try {
-      "bar"
-    } finally {
-      try {
-        x += "a"
-      } finally {
+    try { "bar" }
+    finally {
+      try { x += "a" }
+      finally {
         x += "b"
         try {
           x += "c"

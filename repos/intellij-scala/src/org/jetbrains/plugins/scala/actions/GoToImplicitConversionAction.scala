@@ -36,9 +36,7 @@ object GoToImplicitConversionAction {
 
   def getPopup = popup
 
-  def setPopup(p: JBPopup) {
-    popup = p
-  }
+  def setPopup(p: JBPopup) { popup = p }
 
   def getList = JListCompatibility.GoToImplicitConversionAction.getList
 }
@@ -227,17 +225,14 @@ class GoToImplicitConversionAction
       }
       if (expressions.length == 0)
         editor.getSelectionModel.selectLineAtCaret()
-      else if (expressions.length == 1) {
-        chooseExpression(expressions(0))
-      } else {
+      else if (expressions.length == 1) { chooseExpression(expressions(0)) }
+      else {
         ScalaRefactoringUtil.showChooser(
           editor,
           expressions,
           (elem: ScExpression) => chooseExpression(elem),
           "Expressions",
-          (expr: ScExpression) => {
-            ScalaRefactoringUtil.getShortText(expr)
-          })
+          (expr: ScExpression) => { ScalaRefactoringUtil.getShortText(expr) })
       }
     }
   }
@@ -296,13 +291,9 @@ class GoToImplicitConversionAction
       }
 
       addMouseListener(new MouseAdapter {
-        override def mouseEntered(e: MouseEvent) {
-          setBorder(ACTIVE_BORDER)
-        }
+        override def mouseEntered(e: MouseEvent) { setBorder(ACTIVE_BORDER) }
 
-        override def mouseExited(e: MouseEvent) {
-          setBorder(INACTIVE_BORDER)
-        }
+        override def mouseExited(e: MouseEvent) { setBorder(INACTIVE_BORDER) }
 
         override def mousePressed(e: MouseEvent) {
           if (!e.isPopupTrigger && e.getButton == MouseEvent.BUTTON1) {

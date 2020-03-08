@@ -47,9 +47,7 @@ private[spark] object MapStatus {
   def apply(loc: BlockManagerId, uncompressedSizes: Array[Long]): MapStatus = {
     if (uncompressedSizes.length > 2000) {
       HighlyCompressedMapStatus(loc, uncompressedSizes)
-    } else {
-      new CompressedMapStatus(loc, uncompressedSizes)
-    }
+    } else { new CompressedMapStatus(loc, uncompressedSizes) }
   }
 
   private[this] val LOG_BASE = 1.1
@@ -60,11 +58,9 @@ private[spark] object MapStatus {
     * sizes up to 35 GB with at most 10% error.
     */
   def compressSize(size: Long): Byte = {
-    if (size == 0) {
-      0
-    } else if (size <= 1L) {
-      1
-    } else {
+    if (size == 0) { 0 }
+    else if (size <= 1L) { 1 }
+    else {
       math.min(255, math.ceil(math.log(size) / math.log(LOG_BASE)).toInt).toByte
     }
   }
@@ -73,11 +69,8 @@ private[spark] object MapStatus {
     * Decompress an 8-bit encoded block size, using the reverse operation of compressSize.
     */
   def decompressSize(compressedSize: Byte): Long = {
-    if (compressedSize == 0) {
-      0
-    } else {
-      math.pow(LOG_BASE, compressedSize & 0xFF).toLong
-    }
+    if (compressedSize == 0) { 0 }
+    else { math.pow(LOG_BASE, compressedSize & 0xFF).toLong }
   }
 }
 
@@ -148,11 +141,8 @@ private[spark] class HighlyCompressedMapStatus private (
   override def location: BlockManagerId = loc
 
   override def getSizeForBlock(reduceId: Int): Long = {
-    if (emptyBlocks.contains(reduceId)) {
-      0
-    } else {
-      avgSize
-    }
+    if (emptyBlocks.contains(reduceId)) { 0 }
+    else { avgSize }
   }
 
   override def writeExternal(out: ObjectOutput): Unit = Utils.tryOrIOException {
@@ -188,16 +178,11 @@ private[spark] object HighlyCompressedMapStatus {
       if (size > 0) {
         numNonEmptyBlocks += 1
         totalSize += size
-      } else {
-        emptyBlocks.add(i)
-      }
+      } else { emptyBlocks.add(i) }
       i += 1
     }
-    val avgSize = if (numNonEmptyBlocks > 0) {
-      totalSize / numNonEmptyBlocks
-    } else {
-      0
-    }
+    val avgSize = if (numNonEmptyBlocks > 0) { totalSize / numNonEmptyBlocks }
+    else { 0 }
     emptyBlocks.trim()
     emptyBlocks.runOptimize()
     new HighlyCompressedMapStatus(loc, numNonEmptyBlocks, emptyBlocks, avgSize)

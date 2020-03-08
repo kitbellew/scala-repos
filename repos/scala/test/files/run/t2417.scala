@@ -6,11 +6,8 @@ object Test {
     val threads = Array.tabulate(numThreads)(i =>
       new Thread {
         override def run {
-          try {
-            block
-          } catch {
-            case x: Throwable => failure = x
-          }
+          try { block }
+          catch { case x: Throwable => failure = x }
         }
       })
     for (t <- threads) t.start

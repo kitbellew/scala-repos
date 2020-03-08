@@ -152,9 +152,7 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
             permit.release()
             throw e
         }
-      f ensure {
-        permit.release()
-      }
+      f ensure { permit.release() }
     }
   }
 
@@ -169,11 +167,7 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
     *         returned.
     */
   def acquireAndRunSync[T](func: => T): Future[T] = {
-    acquire() flatMap { permit =>
-      Future(func) ensure {
-        permit.release()
-      }
-    }
+    acquire() flatMap { permit => Future(func) ensure { permit.release() } }
   }
 }
 

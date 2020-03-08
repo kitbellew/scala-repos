@@ -335,9 +335,8 @@ class Engine[TD, EI, PD, Q, P, A](
 
     val algorithms = algoParamsList.map {
       case (algoName, algoParams) => {
-        try {
-          Doer(algorithmClassMap(algoName), algoParams)
-        } catch {
+        try { Doer(algorithmClassMap(algoName), algoParams) }
+        catch {
           case e: NoSuchElementException => {
             if (algoName == "") {
               logger.error(
@@ -647,16 +646,12 @@ object Engine {
     logger.info(s"Preparator: $preparator")
     logger.info(s"AlgorithmList: $algorithmList")
 
-    if (params.skipSanityCheck) {
-      logger.info("Data sanity check is off.")
-    } else {
-      logger.info("Data sanity check is on.")
-    }
+    if (params.skipSanityCheck) { logger.info("Data sanity check is off.") }
+    else { logger.info("Data sanity check is on.") }
 
     val td =
-      try {
-        dataSource.readTrainingBase(sc)
-      } catch {
+      try { dataSource.readTrainingBase(sc) }
+      catch {
         case e: StorageClientException =>
           logger.error(
             s"Error occured reading from data source. (Reason: " +
@@ -783,15 +778,11 @@ object Engine {
       .mapValues { _.zipWithUniqueId().map(_.swap) }
 
     val preparedMap: Map[EX, PD] = evalTrainMap.mapValues { td =>
-      {
-        preparator.prepareBase(sc, td)
-      }
+      { preparator.prepareBase(sc, td) }
     }
 
     val algoModelsMap: Map[EX, Map[AX, Any]] = preparedMap.mapValues { pd =>
-      {
-        algoMap.mapValues(_.trainBase(sc, pd))
-      }
+      { algoMap.mapValues(_.trainBase(sc, pd)) }
     }
 
     val suppQAsMap: Map[EX, RDD[(QX, (Q, A))]] = evalQAsMap.mapValues { qas =>
@@ -813,9 +804,7 @@ object Engine {
                 val rawPredicts: RDD[(QX, P)] =
                   algo.batchPredictBase(sc, model, qs)
                 val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
-                  case (qx, p) => {
-                    (qx, (ax, p))
-                  }
+                  case (qx, p) => { (qx, (ax, p)) }
                 }
                 predicts
               }
@@ -856,9 +845,7 @@ object Engine {
       }
 
     (0 until evalCount).map { ex =>
-      {
-        (evalInfoMap(ex), servingQPAMap(ex))
-      }
+      { (evalInfoMap(ex), servingQPAMap(ex)) }
     }.toSeq
   }
 }

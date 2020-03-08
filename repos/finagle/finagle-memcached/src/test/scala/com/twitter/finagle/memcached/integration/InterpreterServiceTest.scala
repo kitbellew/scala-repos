@@ -30,9 +30,7 @@ class InterpreterServiceTest extends FunSuite with BeforeAndAfter {
       .build()
   }
 
-  after {
-    server.stop()
-  }
+  after { server.stop() }
 
   test("set & get") {
     val key = Buf.Utf8("key")

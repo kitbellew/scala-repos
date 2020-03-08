@@ -30,11 +30,8 @@ object FileHelper extends Logging {
   def loadResourceFile[A](filename: String, cls: Class[A]): String = {
     var filedata: String = ""
     val is: InputStream = cls.getResourceAsStream(filename)
-    try {
-      filedata = IOUtils.toString(is, "UTF-8")
-    } catch {
-      case e: IOException => warn(e, e.toString)
-    }
+    try { filedata = IOUtils.toString(is, "UTF-8") }
+    catch { case e: IOException => warn(e, e.toString) }
     filedata
   }
 }

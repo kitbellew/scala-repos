@@ -65,9 +65,7 @@ class SortBasedAggregationIterator(
       val unsafeProjection =
         UnsafeProjection.create(bufferSchema.map(_.dataType))
       unsafeProjection.apply(genericMutableBuffer)
-    } else {
-      genericMutableBuffer
-    }
+    } else { genericMutableBuffer }
     initializeBuffer(buffer)
     buffer
   }
@@ -139,9 +137,7 @@ class SortBasedAggregationIterator(
     }
     // We have not seen a new group. It means that there is no new row in the input
     // iter. The current group is the last group of the iter.
-    if (!findNextPartition) {
-      sortedInputHasNewGroup = false
-    }
+    if (!findNextPartition) { sortedInputHasNewGroup = false }
   }
 
   ///////////////////////////////////////////////////////////////////////////

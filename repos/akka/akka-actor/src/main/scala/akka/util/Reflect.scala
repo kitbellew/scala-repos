@@ -33,9 +33,7 @@ private[akka] object Reflect {
       Some((i: Int) ⇒
         m.invoke(null, Array[AnyRef](i.asInstanceOf[java.lang.Integer]): _*)
           .asInstanceOf[Class[_]])
-    } catch {
-      case NonFatal(e) ⇒ None
-    }
+    } catch { case NonFatal(e) ⇒ None }
   }
 
   /**

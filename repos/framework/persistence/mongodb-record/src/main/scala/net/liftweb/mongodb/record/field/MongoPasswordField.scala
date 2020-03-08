@@ -47,9 +47,7 @@ class MongoPasswordField[OwnerType <: BsonRecord[OwnerType]](
     minLen: Int)
     extends JsonObjectField[OwnerType, Password](rec, Password) {
 
-  def this(rec: OwnerType) = {
-    this(rec, 3)
-  }
+  def this(rec: OwnerType) = { this(rec, 3) }
 
   def setPassword(in: String) = set(Password(in))
 

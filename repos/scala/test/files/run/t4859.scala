@@ -7,9 +7,7 @@ object Outer {
   println("Outer")
   object Inner {
     println("Inner")
-    def i {
-      println("Inner.i")
-    }
+    def i { println("Inner.i") }
   }
 }
 

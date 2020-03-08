@@ -133,11 +133,8 @@ class SparkContext(config: SparkConf)
     if (stopped.get()) {
       val activeContext = SparkContext.activeContext.get()
       val activeCreationSite =
-        if (activeContext == null) {
-          "(No active SparkContext.)"
-        } else {
-          activeContext.creationSite.longForm
-        }
+        if (activeContext == null) { "(No active SparkContext.)" }
+        else { activeContext.creationSite.longForm }
       throw new IllegalStateException(
         s"""Cannot call methods on a stopped SparkContext.
            |This stopped SparkContext was created at:
@@ -470,18 +467,14 @@ class SparkContext(config: SparkConf)
         .get("spark.eventLog.dir", EventLoggingListener.DEFAULT_LOG_DIR)
         .stripSuffix("/")
       Some(Utils.resolveURI(unresolvedDir))
-    } else {
-      None
-    }
+    } else { None }
 
     _eventLogCodec = {
       val compress = _conf.getBoolean("spark.eventLog.compress", false)
       if (compress && isEventLogEnabled) {
         Some(CompressionCodec.getCodecName(_conf))
           .map(CompressionCodec.getShortName)
-      } else {
-        None
-      }
+      } else { None }
     }
 
     if (master == "yarn" && deployMode == "client")
@@ -508,11 +501,8 @@ class SparkContext(config: SparkConf)
     _progressBar =
       if (_conf.getBoolean(
             "spark.ui.showConsoleProgress",
-            true) && !log.isInfoEnabled) {
-        Some(new ConsoleProgressBar(this))
-      } else {
-        None
-      }
+            true) && !log.isInfoEnabled) { Some(new ConsoleProgressBar(this)) }
+      else { None }
 
     _ui = if (conf.getBoolean("spark.ui.enabled", true)) {
       Some(
@@ -535,13 +525,9 @@ class SparkContext(config: SparkConf)
     _hadoopConfiguration = SparkHadoopUtil.get.newConfiguration(_conf)
 
     // Add each JAR given through the constructor
-    if (jars != null) {
-      jars.foreach(addJar)
-    }
+    if (jars != null) { jars.foreach(addJar) }
 
-    if (files != null) {
-      files.foreach(addFile)
-    }
+    if (files != null) { files.foreach(addFile) }
 
     _executorMemory = _conf
       .getOption("spark.executor.memory")
@@ -557,9 +543,7 @@ class SparkContext(config: SparkConf)
       (envKey, propKey) <- Seq(("SPARK_TESTING", "spark.testing"))
       value <- Option(System.getenv(envKey))
         .orElse(Option(System.getProperty(propKey)))
-    } {
-      executorEnvs(envKey) = value
-    }
+    } { executorEnvs(envKey) = value }
     Option(System.getenv("SPARK_PREPEND_CLASSES")).foreach { v =>
       executorEnvs("SPARK_PREPEND_CLASSES") = v
     }
@@ -610,24 +594,18 @@ class SparkContext(config: SparkConf)
       logger.start()
       listenerBus.addListener(logger)
       Some(logger)
-    } else {
-      None
-    }
+    } else { None }
 
     // Optionally scale number of executors dynamically based on workload. Exposed for testing.
     val dynamicAllocationEnabled = Utils.isDynamicAllocationEnabled(_conf)
     _executorAllocationManager = if (dynamicAllocationEnabled) {
       Some(new ExecutorAllocationManager(this, listenerBus, _conf))
-    } else {
-      None
-    }
+    } else { None }
     _executorAllocationManager.foreach(_.start())
 
     _cleaner = if (_conf.getBoolean("spark.cleaner.referenceTracking", true)) {
       Some(new ContextCleaner(this))
-    } else {
-      None
-    }
+    } else { None }
     _cleaner.foreach(_.start())
 
     setupAndStartListenerBus()
@@ -653,14 +631,11 @@ class SparkContext(config: SparkConf)
   } catch {
     case NonFatal(e) =>
       logError("Error initializing SparkContext.", e)
-      try {
-        stop()
-      } catch {
+      try { stop() }
+      catch {
         case NonFatal(inner) =>
           logError("Error stopping SparkContext after init error.", inner)
-      } finally {
-        throw e
-      }
+      } finally { throw e }
   }
 
   /**
@@ -698,11 +673,8 @@ class SparkContext(config: SparkConf)
     * Spark fair scheduler pool.
     */
   def setLocalProperty(key: String, value: String) {
-    if (value == null) {
-      localProperties.get.remove(key)
-    } else {
-      localProperties.get.setProperty(key, value)
-    }
+    if (value == null) { localProperties.get.remove(key) }
+    else { localProperties.get.setProperty(key, value) }
   }
 
   /**
@@ -823,13 +795,9 @@ class SparkContext(config: SparkConf)
       val partitionStart = (i * numElements) / numSlices * step + start
       val partitionEnd = (((i + 1) * numElements) / numSlices) * step + start
       def getSafeMargin(bi: BigInt): Long =
-        if (bi.isValidLong) {
-          bi.toLong
-        } else if (bi > 0) {
-          Long.MaxValue
-        } else {
-          Long.MinValue
-        }
+        if (bi.isValidLong) { bi.toLong }
+        else if (bi > 0) { Long.MaxValue }
+        else { Long.MinValue }
       val safePartitionStart = getSafeMargin(partitionStart)
       val safePartitionEnd = getSafeMargin(partitionEnd)
 
@@ -839,11 +807,8 @@ class SparkContext(config: SparkConf)
 
         override def hasNext =
           if (!overflow) {
-            if (step > 0) {
-              number < safePartitionEnd
-            } else {
-              number > safePartitionEnd
-            }
+            if (step > 0) { number < safePartitionEnd }
+            else { number > safePartitionEnd }
           } else false
 
         override def next() = {
@@ -1324,18 +1289,14 @@ class SparkContext(config: SparkConf)
   }
 
   protected[spark] def checkpointFile[T: ClassTag](path: String): RDD[T] =
-    withScope {
-      new ReliableCheckpointRDD[T](this, path)
-    }
+    withScope { new ReliableCheckpointRDD[T](this, path) }
 
   /** Build the union of a list of RDDs. */
   def union[T: ClassTag](rdds: Seq[RDD[T]]): RDD[T] = withScope {
     val partitioners = rdds.flatMap(_.partitioner).toSet
     if (rdds.forall(_.partitioner.isDefined) && partitioners.size == 1) {
       new PartitionerAwareUnionRDD(this, rdds)
-    } else {
-      new UnionRDD(this, rdds)
-    }
+    } else { new UnionRDD(this, rdds) }
   }
 
   /** Build the union of a list of RDDs passed as variable-length arguments. */
@@ -1436,9 +1397,7 @@ class SparkContext(config: SparkConf)
     * filesystems), or an HTTP, HTTPS or FTP URI.  To access the file in Spark jobs,
     * use `SparkFiles.get(fileName)` to find its download location.
     */
-  def addFile(path: String): Unit = {
-    addFile(path, false)
-  }
+  def addFile(path: String): Unit = { addFile(path, false) }
 
   /**
     * Add a file to be downloaded with this Spark job on every node.
@@ -1479,9 +1438,7 @@ class SparkContext(config: SparkConf)
 
     val key = if (!isLocal && scheme == "file") {
       env.rpcEnv.fileServer.addFile(new File(uri.getPath))
-    } else {
-      schemeCorrectedPath
-    }
+    } else { schemeCorrectedPath }
     val timestamp = System.currentTimeMillis
     addedFiles(key) = timestamp
 
@@ -1641,9 +1598,7 @@ class SparkContext(config: SparkConf)
     * they take, etc.
     */
   @DeveloperApi
-  def getRDDStorageInfo: Array[RDDInfo] = {
-    getRDDStorageInfo(_ => true)
-  }
+  def getRDDStorageInfo: Array[RDDInfo] = { getRDDStorageInfo(_ => true) }
 
   private[spark] def getRDDStorageInfo(
       filter: RDD[_] => Boolean): Array[RDDInfo] = {
@@ -1714,9 +1669,7 @@ class SparkContext(config: SparkConf)
   /**
     * Register an RDD to be persisted in memory and/or disk storage
     */
-  private[spark] def persistRDD(rdd: RDD[_]) {
-    persistentRdds(rdd.id) = rdd
-  }
+  private[spark] def persistRDD(rdd: RDD[_]) { persistentRdds(rdd.id) = rdd }
 
   /**
     * Unpersist an RDD from memory and/or disk storage
@@ -1733,9 +1686,8 @@ class SparkContext(config: SparkConf)
     * filesystems), an HTTP, HTTPS or FTP URI, or local:/path for a file on every worker node.
     */
   def addJar(path: String) {
-    if (path == null) {
-      logWarning("null specified as parameter to addJar")
-    } else {
+    if (path == null) { logWarning("null specified as parameter to addJar") }
+    else {
       var key = ""
       if (path.contains("\\")) {
         // For local paths with backslashes on Windows, URI throws an exception
@@ -1750,9 +1702,8 @@ class SparkContext(config: SparkConf)
               // --addJars option to the client to upload the file into the distributed cache
               // of the AM to make it show up in the current working directory.
               val fileName = new Path(uri.getPath).getName()
-              try {
-                env.rpcEnv.fileServer.addJar(new File(fileName))
-              } catch {
+              try { env.rpcEnv.fileServer.addJar(new File(fileName)) }
+              catch {
                 case e: Exception =>
                   // For now just log an error but allow to go through so spark examples work.
                   // The spark examples don't really need the jar distributed since its also
@@ -1762,9 +1713,8 @@ class SparkContext(config: SparkConf)
                   null
               }
             } else {
-              try {
-                env.rpcEnv.fileServer.addJar(new File(uri.getPath))
-              } catch {
+              try { env.rpcEnv.fileServer.addJar(new File(uri.getPath)) }
+              catch {
                 case exc: FileNotFoundException =>
                   logError(s"Jar not found at $path")
                   null
@@ -1810,52 +1760,32 @@ class SparkContext(config: SparkConf)
       ShutdownHookManager.removeShutdownHook(_shutdownHookRef)
     }
 
-    Utils.tryLogNonFatalError {
-      postApplicationEnd()
-    }
-    Utils.tryLogNonFatalError {
-      _ui.foreach(_.stop())
-    }
+    Utils.tryLogNonFatalError { postApplicationEnd() }
+    Utils.tryLogNonFatalError { _ui.foreach(_.stop()) }
     if (env != null) {
-      Utils.tryLogNonFatalError {
-        env.metricsSystem.report()
-      }
+      Utils.tryLogNonFatalError { env.metricsSystem.report() }
     }
-    Utils.tryLogNonFatalError {
-      _cleaner.foreach(_.stop())
-    }
-    Utils.tryLogNonFatalError {
-      _executorAllocationManager.foreach(_.stop())
-    }
+    Utils.tryLogNonFatalError { _cleaner.foreach(_.stop()) }
+    Utils.tryLogNonFatalError { _executorAllocationManager.foreach(_.stop()) }
     if (_listenerBusStarted) {
       Utils.tryLogNonFatalError {
         listenerBus.stop()
         _listenerBusStarted = false
       }
     }
-    Utils.tryLogNonFatalError {
-      _eventLogger.foreach(_.stop())
-    }
+    Utils.tryLogNonFatalError { _eventLogger.foreach(_.stop()) }
     if (_dagScheduler != null) {
-      Utils.tryLogNonFatalError {
-        _dagScheduler.stop()
-      }
+      Utils.tryLogNonFatalError { _dagScheduler.stop() }
       _dagScheduler = null
     }
     if (env != null && _heartbeatReceiver != null) {
-      Utils.tryLogNonFatalError {
-        env.rpcEnv.stop(_heartbeatReceiver)
-      }
+      Utils.tryLogNonFatalError { env.rpcEnv.stop(_heartbeatReceiver) }
     }
-    Utils.tryLogNonFatalError {
-      _progressBar.foreach(_.stop())
-    }
+    Utils.tryLogNonFatalError { _progressBar.foreach(_.stop()) }
     _taskScheduler = null
     // TODO: Cache.stop()?
     if (_env != null) {
-      Utils.tryLogNonFatalError {
-        _env.stop()
-      }
+      Utils.tryLogNonFatalError { _env.stop() }
       SparkEnv.set(null)
     }
     // Unset YARN mode system env variable, to allow switching between cluster types.
@@ -2093,9 +2023,7 @@ class SparkContext(config: SparkConf)
   }
 
   /** Cancel a given job if it's scheduled or running */
-  private[spark] def cancelJob(jobId: Int) {
-    dagScheduler.cancelJob(jobId)
-  }
+  private[spark] def cancelJob(jobId: Int) { dagScheduler.cancelJob(jobId) }
 
   /** Cancel a given stage and all jobs associated with it */
   private[spark] def cancelStage(stageId: Int) {
@@ -2217,9 +2145,8 @@ class SparkContext(config: SparkConf)
       }
     } catch {
       case e: Exception =>
-        try {
-          stop()
-        } finally {
+        try { stop() }
+        finally {
           throw new SparkException(
             s"Exception when registering SparkListener",
             e)
@@ -2336,9 +2263,7 @@ object SparkContext extends Logging {
             logWarning(
               "Multiple running SparkContexts detected in the same JVM!",
               exception)
-          } else {
-            throw exception
-          }
+          } else { throw exception }
         }
       }
     }
@@ -2375,9 +2300,7 @@ object SparkContext extends Logging {
     * Note: This function cannot be used to create multiple SparkContext instances
     * even if multiple contexts are allowed.
     */
-  def getOrCreate(): SparkContext = {
-    getOrCreate(new SparkConf())
-  }
+  def getOrCreate(): SparkContext = { getOrCreate(new SparkConf()) }
 
   /**
     * Called at the beginning of the SparkContext constructor to ensure that no SparkContext is
@@ -2415,9 +2338,7 @@ object SparkContext extends Logging {
     * properly clean up their SparkContexts.
     */
   private[spark] def clearActiveContext(): Unit = {
-    SPARK_CONTEXT_CONSTRUCTOR_LOCK.synchronized {
-      activeContext.set(null)
-    }
+    SPARK_CONTEXT_CONSTRUCTOR_LOCK.synchronized { activeContext.set(null) }
   }
 
   private[spark] val SPARK_JOB_DESCRIPTION = "spark.job.description"
@@ -2460,12 +2381,8 @@ object SparkContext extends Logging {
         // URI will be of the form "jar:file:/path/foo.jar!/package/cls.class",
         // so pull out the /path/foo.jar
         Some(uriStr.substring("jar:file:".length, uriStr.indexOf('!')))
-      } else {
-        None
-      }
-    } else {
-      None
-    }
+      } else { None }
+    } else { None }
   }
 
   /**
@@ -2491,12 +2408,8 @@ object SparkContext extends Logging {
     val res = conf.clone()
     res.setMaster(master)
     res.setAppName(appName)
-    if (sparkHome != null) {
-      res.setSparkHome(sparkHome)
-    }
-    if (jars != null && !jars.isEmpty) {
-      res.setJars(jars)
-    }
+    if (sparkHome != null) { res.setSparkHome(sparkHome) }
+    if (jars != null && !jars.isEmpty) { res.setJars(jars) }
     res.setExecutorEnv(environment.toSeq)
     res
   }
@@ -2673,9 +2586,7 @@ object SparkContext extends Logging {
             sc,
             mesosUrl,
             sc.env.securityManager)
-        } else {
-          new MesosSchedulerBackend(scheduler, sc, mesosUrl)
-        }
+        } else { new MesosSchedulerBackend(scheduler, sc, mesosUrl) }
         scheduler.initialize(backend)
         (backend, scheduler)
 

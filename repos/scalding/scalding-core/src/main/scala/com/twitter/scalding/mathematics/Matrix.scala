@@ -434,9 +434,8 @@ class Matrix[RowT, ColT, ValT](
 
   def topRowElems(k: Int)(
       implicit ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
-    if (k < 1000) {
-      topRowWithTiny(k)
-    } else {
+    if (k < 1000) { topRowWithTiny(k) }
+    else {
       val newPipe = pipe
         .groupBy(rowSym) {
           _.sortBy(valSym).reverse
@@ -623,9 +622,7 @@ class Matrix[RowT, ColT, ValT](
     if (equals(that)) {
       // No need to do any groupBy operation
       mapValues { v => mon.plus(v, v) }(mon)
-    } else {
-      elemWiseOp(that)((x, y) => mon.plus(x, y))(mon)
-    }
+    } else { elemWiseOp(that)((x, y) => mon.plus(x, y))(mon) }
   }
 
   // Matrix difference
@@ -663,9 +660,7 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // Compute the sum of all the elements in the matrix
-  def sum(implicit mon: Monoid[ValT]): Scalar[ValT] = {
-    sumRowVectors.sum
-  }
+  def sum(implicit mon: Monoid[ValT]): Scalar[ValT] = { sumRowVectors.sum }
 
   def transpose: Matrix[ColT, RowT, ValT] = {
     new Matrix[ColT, RowT, ValT](
@@ -1391,7 +1386,5 @@ class BlockMatrix[RowT, GroupT, ColT, ValT](
     new BlockMatrix(mat.transpose)
   }
 
-  def withSizeHint(hint: SizeHint) = {
-    new BlockMatrix(mat.withSizeHint(hint))
-  }
+  def withSizeHint(hint: SizeHint) = { new BlockMatrix(mat.withSizeHint(hint)) }
 }

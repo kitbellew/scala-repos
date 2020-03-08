@@ -55,8 +55,6 @@ class ColorInput(override val delegate: jfxse.ColorInput = new jfxse.ColorInput)
     * The Paint used to flood the region.
     */
   def paint: ObjectProperty[jfxsp.Paint] = delegate.paintProperty
-  def paint_=(v: Paint) {
-    paint() = v
-  }
+  def paint_=(v: Paint) { paint() = v }
 
 }

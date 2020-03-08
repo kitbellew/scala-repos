@@ -32,9 +32,7 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
       parse(
         """{"user":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"<}""")
       "x" * 1000
-    } catch {
-      case e: Throwable => e.getMessage
-    }
+    } catch { case e: Throwable => e.getMessage }
 
   "JSON Parser Specification".title
 
@@ -58,7 +56,9 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
     val executor = Executors.newFixedThreadPool(100)
     val results = (0 to 100)
       .map(_ =>
-        executor.submit(new Callable[JValue] { def call = parse(json) }))
+        executor.submit(new Callable[JValue] {
+          def call = parse(json)
+        }))
       .toList
       .map(_.get)
     results.zip(results.tail).forall(pair => pair._1 == pair._2) mustEqual true
@@ -107,8 +107,6 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
       JsonParser.Segments.segmentSize = bufSize
       JsonParser.Segments.clear
       JsonParser.parse(compactRender(json))
-    } finally {
-      JsonParser.Segments.segmentSize = existingSize
-    }
+    } finally { JsonParser.Segments.segmentSize = existingSize }
   }
 }

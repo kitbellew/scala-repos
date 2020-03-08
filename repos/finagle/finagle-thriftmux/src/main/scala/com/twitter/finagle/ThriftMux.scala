@@ -207,9 +207,7 @@ object ThriftMux
         ThriftMuxResponseClassifier.usingDeserializeCtx(
           params[param.ResponseClassifier].responseClassifier
         )
-      } else {
-        ThriftMuxResponseClassifier.DeserializeCtxOnly
-      }
+      } else { ThriftMuxResponseClassifier.DeserializeCtxOnly }
       muxer.configured(param.ResponseClassifier(classifier))
     }
 

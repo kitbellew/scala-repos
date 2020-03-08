@@ -167,9 +167,8 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
       callbackIfStopped: (Exception) => Unit): Unit = {
     val shouldCallOnStop = synchronized {
       val data = endpoints.get(endpointName)
-      if (stopped || data == null) {
-        true
-      } else {
+      if (stopped || data == null) { true }
+      else {
         data.inbox.post(message)
         receivers.offer(data)
         false
@@ -177,9 +176,8 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
     }
     if (shouldCallOnStop) {
       // We don't need to call `onStop` in the `synchronized` block
-      val error = if (stopped) {
-        new RpcEnvStoppedException()
-      } else {
+      val error = if (stopped) { new RpcEnvStoppedException() }
+      else {
         new SparkException(
           s"Could not find $endpointName or it has been stopped.")
       }
@@ -189,9 +187,7 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
 
   def stop(): Unit = {
     synchronized {
-      if (stopped) {
-        return
-      }
+      if (stopped) { return }
       stopped = true
     }
     // Stop all endpoints. This will queue all endpoints for processing by the message loops.
@@ -208,9 +204,7 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
   /**
     * Return if the endpoint exists
     */
-  def verify(name: String): Boolean = {
-    endpoints.containsKey(name)
-  }
+  def verify(name: String): Boolean = { endpoints.containsKey(name) }
 
   /** Thread pool used for dispatching messages. */
   private val threadpool: ThreadPoolExecutor = {
@@ -219,9 +213,7 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
       math.max(2, Runtime.getRuntime.availableProcessors()))
     val pool =
       ThreadUtils.newDaemonFixedThreadPool(numThreads, "dispatcher-event-loop")
-    for (i <- 0 until numThreads) {
-      pool.execute(new MessageLoop)
-    }
+    for (i <- 0 until numThreads) { pool.execute(new MessageLoop) }
     pool
   }
 
@@ -238,9 +230,7 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
               return
             }
             data.inbox.process(Dispatcher.this)
-          } catch {
-            case NonFatal(e) => logError(e.getMessage, e)
-          }
+          } catch { case NonFatal(e) => logError(e.getMessage, e) }
         }
       } catch {
         case ie: InterruptedException => // exit

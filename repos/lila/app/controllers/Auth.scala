@@ -249,9 +249,7 @@ object Auth extends LilaController {
   }
 
   def passwordResetSent(email: String) = Open { implicit ctx =>
-    fuccess {
-      Ok(html.auth.passwordResetSent(email))
-    }
+    fuccess { Ok(html.auth.passwordResetSent(email)) }
   }
 
   def passwordResetConfirm(token: String) = Open { implicit ctx =>

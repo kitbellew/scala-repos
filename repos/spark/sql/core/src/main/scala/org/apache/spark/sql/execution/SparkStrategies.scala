@@ -134,9 +134,7 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
     def unapply(plan: LogicalPlan): Option[LogicalPlan] = {
       if (plan.statistics.sizeInBytes <= conf.autoBroadcastJoinThreshold) {
         Some(plan)
-      } else {
-        None
-      }
+      } else { None }
     }
   }
 
@@ -239,9 +237,7 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         val buildSide =
           if (right.statistics.sizeInBytes <= left.statistics.sizeInBytes) {
             BuildRight
-          } else {
-            BuildLeft
-          }
+          } else { BuildLeft }
         Seq(
           joins.ShuffledHashJoin(
             leftKeys,
@@ -378,9 +374,7 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         // be used to re-write expressions so that they reference the single copy of the
         // aggregate function which actually gets computed.
         val aggregateExpressions = resultExpressions.flatMap { expr =>
-          expr.collect {
-            case agg: AggregateExpression => agg
-          }
+          expr.collect { case agg: AggregateExpression => agg }
         }.distinct
         // For those distinct aggregate expressions, we create a map from the
         // aggregate function to the corresponding attribute of the function.
@@ -527,9 +521,7 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         val buildSide =
           if (right.statistics.sizeInBytes <= left.statistics.sizeInBytes) {
             joins.BuildRight
-          } else {
-            joins.BuildLeft
-          }
+          } else { joins.BuildLeft }
         // This join could be very slow or even hang forever
         joins.BroadcastNestedLoopJoin(
           planLater(left),
@@ -607,9 +599,7 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           ShuffleExchange(
             RoundRobinPartitioning(numPartitions),
             planLater(child)) :: Nil
-        } else {
-          execution.Coalesce(numPartitions, planLater(child)) :: Nil
-        }
+        } else { execution.Coalesce(numPartitions, planLater(child)) :: Nil }
       case logical.SortPartitions(sortExprs, child) =>
         // This sort only sorts tuples within a partition. Its requiredDistribution will be
         // an UnspecifiedDistribution.

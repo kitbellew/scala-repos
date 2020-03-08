@@ -434,9 +434,8 @@ trait WSRequest {
     */
   def withBody[T](body: T)(implicit wrt: Writeable[T]): WSRequest = {
     val wsBody = InMemoryBody(wrt.transform(body))
-    if (headers.contains("Content-Type")) {
-      withBody(wsBody)
-    } else {
+    if (headers.contains("Content-Type")) { withBody(wsBody) }
+    else {
       wrt.contentType.fold(withBody(wsBody)) { contentType =>
         withBody(wsBody).withHeaders("Content-Type" -> contentType)
       }

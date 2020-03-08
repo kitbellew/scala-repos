@@ -47,9 +47,7 @@ private[spark] class RollingFileAppender(
   private val maxRetainedFiles = conf.getInt(RETAINED_FILES_PROPERTY, -1)
 
   /** Stop the appender */
-  override def stop() {
-    super.stop()
-  }
+  override def stop() { super.stop() }
 
   /** Append bytes to file after rolling over is necessary */
   override protected def appendToFile(bytes: Array[Byte], len: Int) {
@@ -67,9 +65,7 @@ private[spark] class RollingFileAppender(
       closeFile()
       moveFile()
       openFile()
-      if (maxRetainedFiles > 0) {
-        deleteOldFiles()
-      }
+      if (maxRetainedFiles > 0) { deleteOldFiles() }
     } catch {
       case e: Exception =>
         logError(s"Error rolling over $activeFile", e)
@@ -106,9 +102,7 @@ private[spark] class RollingFileAppender(
             s"rolled over $activeFile to file $altRolloverFile")
         Files.move(activeFile, altRolloverFile)
       }
-    } else {
-      logWarning(s"File $activeFile does not exist")
-    }
+    } else { logWarning(s"File $activeFile does not exist") }
   }
 
   /** Retain only last few files */

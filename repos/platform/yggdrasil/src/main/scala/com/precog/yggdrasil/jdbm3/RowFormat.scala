@@ -674,9 +674,7 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
           decoders match {
             case selDecoder :: decoders =>
               val flag = buf.get()
-              if (flag != FUndefined) {
-                selDecoder(flag).decode(row, buf)
-              }
+              if (flag != FUndefined) { selDecoder(flag).decode(row, buf) }
               decode(decoders)
             case Nil =>
             // Do nothing.
@@ -837,16 +835,13 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
             math.signum(Codec[Long].read(abuf) - Codec[Long].read(bbuf)).toInt
           case x => sys.error("Match error for: " + x)
         }
-      } else {
-        (aType.toInt & 0xFF) - (bType.toInt & 0xFF)
-      }
+      } else { (aType.toInt & 0xFF) - (bType.toInt & 0xFF) }
     }
 
     @tailrec
     def compare(cmp: Int): Int =
-      if (cmp == 0) {
-        if (abuf.remaining() > 0) compare(compareNext()) else 0
-      } else cmp
+      if (cmp == 0) { if (abuf.remaining() > 0) compare(compareNext()) else 0 }
+      else cmp
 
     compare(0)
   }
@@ -954,11 +949,8 @@ trait IdentitiesRowFormat extends RowFormat {
 
     @inline @tailrec
     def sumPackedSize(xs: Array[Long], i: Int, len: Int): Int =
-      if (i < xs.length) {
-        sumPackedSize(xs, i + 1, len + packedSize(xs(i)))
-      } else {
-        len
-      }
+      if (i < xs.length) { sumPackedSize(xs, i + 1, len + packedSize(xs(i))) }
+      else { len }
 
     val bytes = new Array[Byte](sumPackedSize(xs, 0, 0))
 
@@ -1081,21 +1073,13 @@ trait IdentitiesRowFormat extends RowFormat {
       val moreA = more(b1)
       val moreB = more(b2)
 
-      if (moreA && moreB) {
-        loop(nOffset, shift + 7, n2, m2)
-      } else if (moreA) {
-        1
-      } else if (moreB) {
-        -1
-      } else if (n2 < m2) {
-        -1
-      } else if (m2 < n2) {
-        1
-      } else if (nOffset < a.length) {
-        loop(nOffset, 0, 0L, 0L)
-      } else {
-        0
-      }
+      if (moreA && moreB) { loop(nOffset, shift + 7, n2, m2) }
+      else if (moreA) { 1 }
+      else if (moreB) { -1 }
+      else if (n2 < m2) { -1 }
+      else if (m2 < n2) { 1 }
+      else if (nOffset < a.length) { loop(nOffset, 0, 0L, 0L) }
+      else { 0 }
     }
 
     if (identities == 0) 0 else loop(0, 0, 0L, 0L)

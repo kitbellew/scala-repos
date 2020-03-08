@@ -57,11 +57,9 @@ class IntegralComparator
   }
 
   override def hashCode(obj: AnyRef): Int = {
-    if (null == obj) {
-      0
-    } else if (isIntegral(obj)) {
-      obj.asInstanceOf[Number].longValue.hashCode
-    } else {
+    if (null == obj) { 0 }
+    else if (isIntegral(obj)) { obj.asInstanceOf[Number].longValue.hashCode }
+    else {
       //Use the default:
       obj.hashCode
     }

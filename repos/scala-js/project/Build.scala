@@ -225,9 +225,7 @@ object Build extends sbt.Build {
               val content = IO.read(file)
               val patched = javadocAPIRe.replaceAllIn(content, fixJavaDocLink)
               IO.write(outFile, patched)
-            } else {
-              IO.copyFile(file, outFile)
-            }
+            } else { IO.copyFile(file, outFile) }
 
             outFile
           }
@@ -362,9 +360,8 @@ object Build extends sbt.Build {
 
     /** Depends on library as if (exportJars in library) was set to false. */
     def dependsOnLibraryNoJar: Project = {
-      if (isGeneratingEclipse) {
-        project.dependsOn(library)
-      } else {
+      if (isGeneratingEclipse) { project.dependsOn(library) }
+      else {
         project.settings(
           internalDependencyClasspath in Compile ++= {
             val prods = (products in (library, Compile)).value
@@ -377,9 +374,8 @@ object Build extends sbt.Build {
 
     /** Depends on the sources of another project. */
     def dependsOnSource(dependency: Project): Project = {
-      if (isGeneratingEclipse) {
-        project.dependsOn(dependency)
-      } else {
+      if (isGeneratingEclipse) { project.dependsOn(dependency) }
+      else {
         project.settings(
           unmanagedSourceDirectories in Compile +=
             (scalaSource in (dependency, Compile)).value
@@ -697,9 +693,7 @@ object Build extends sbt.Build {
       try {
         ir.InfoSerializers.serialize(stream, infoAndTree._1)
         ir.Serializers.serialize(stream, infoAndTree._2)
-      } finally {
-        stream.close()
-      }
+      } finally { stream.close() }
     }
     output
   }
@@ -1111,9 +1105,7 @@ object Build extends sbt.Build {
                     " := NodeJSEnv().value.withSourceMap(false)")
               }
               baseArgs :+ "source-maps"
-            } else {
-              baseArgs
-            }
+            } else { baseArgs }
 
           case _: PhantomJSEnv =>
             Seq("phantomjs")
@@ -1207,9 +1199,7 @@ object Build extends sbt.Build {
           scalacOptions.value.contains("-Xexperimental")) {
         val sourceDir = (sourceDirectory in Test).value / "require-sam"
         (sourceDir ** "*.scala").get
-      } else {
-        Nil
-      }
+      } else { Nil }
     }
   )
 
@@ -1277,9 +1267,8 @@ object Build extends sbt.Build {
         Seq(outFile)
       },
       scalacOptions in Test ++= {
-        if (isGeneratingEclipse) {
-          Seq.empty
-        } else {
+        if (isGeneratingEclipse) { Seq.empty }
+        else {
           val jar = (packageBin in (jUnitPlugin, Compile)).value
           Seq(s"-Xplugin:$jar")
         }
@@ -1427,9 +1416,7 @@ object Build extends sbt.Build {
               Array()
             ))
         }
-        else {
-          Def.task(Seq())
-        }
+        else { Def.task(Seq()) }
       }
     )
   ).dependsOn(partest % "test", library)

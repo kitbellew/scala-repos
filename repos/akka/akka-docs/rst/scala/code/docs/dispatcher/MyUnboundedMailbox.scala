@@ -32,9 +32,7 @@ object MyUnboundedMailbox {
     def numberOfMessages: Int = queue.size
     def hasMessages: Boolean = !queue.isEmpty
     def cleanUp(owner: ActorRef, deadLetters: MessageQueue) {
-      while (hasMessages) {
-        deadLetters.enqueue(owner, dequeue())
-      }
+      while (hasMessages) { deadLetters.enqueue(owner, dequeue()) }
     }
   }
 }

@@ -396,9 +396,8 @@ class JsonFormatSpec extends FunSuite {
       .matcher(expectJson)
       .replaceAll("")
     val js2 =
-      try {
-        parse(json2)
-      } catch {
+      try { parse(json2) }
+      catch {
         case e: com.fasterxml.jackson.core.JsonParseException => {
           val p =
             java.lang.Math.max(e.getLocation.getCharOffset() - 10, 0).toInt
@@ -413,12 +412,8 @@ class JsonFormatSpec extends FunSuite {
     assert(js1 === js2)
   }
 
-  test("apiUser") {
-    assertJson(JsonFormat(apiUser), apiUserJson)
-  }
-  test("repository") {
-    assertJson(JsonFormat(repository), repositoryJson)
-  }
+  test("apiUser") { assertJson(JsonFormat(apiUser), apiUserJson) }
+  test("repository") { assertJson(JsonFormat(repository), repositoryJson) }
   test("apiPushCommit") {
     assertJson(JsonFormat(apiPushCommit), apiPushCommitJson)
   }
@@ -435,9 +430,7 @@ class JsonFormatSpec extends FunSuite {
   test("apiCombinedCommitStatus") {
     assertJson(JsonFormat(apiCombinedCommitStatus), apiCombinedCommitStatusJson)
   }
-  test("apiLabel") {
-    assertJson(JsonFormat(apiLabel), apiLabelJson)
-  }
+  test("apiLabel") { assertJson(JsonFormat(apiLabel), apiLabelJson) }
   test("apiIssue") {
     assertJson(JsonFormat(apiIssue), apiIssueJson)
     assertJson(JsonFormat(apiIssuePR), apiIssuePRJson)

@@ -46,9 +46,8 @@ object Release {
         case Right(cmd) => cmd()
         case Left(msg)  => throw sys.error(s"Invalid programmatic input:\n$msg")
       }
-      if (newState.remainingCommands.isEmpty) {
-        newState
-      } else {
+      if (newState.remainingCommands.isEmpty) { newState }
+      else {
         runCommand(
           newState.remainingCommands.head,
           newState.copy(remainingCommands = newState.remainingCommands.tail))

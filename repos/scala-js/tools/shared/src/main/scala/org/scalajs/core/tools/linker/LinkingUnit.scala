@@ -19,9 +19,7 @@ final class LinkingUnit(
   lazy val globalInfo: GlobalInfo = {
     classDefs
       .find(_.encodedName == Definitions.ClassClass)
-      .fold {
-        GlobalInfo(isParentDataAccessed = false)
-      } { classClassDef =>
+      .fold { GlobalInfo(isParentDataAccessed = false) } { classClassDef =>
         val methodNames =
           classClassDef.memberMethods.map(_.info.encodedName).toSet
         GlobalInfo(
@@ -51,9 +49,7 @@ object LinkingUnit {
   object GlobalInfo {
     private[LinkingUnit] def apply(
         isParentDataAccessed: Boolean
-    ): GlobalInfo = {
-      new GlobalInfo(isParentDataAccessed)
-    }
+    ): GlobalInfo = { new GlobalInfo(isParentDataAccessed) }
   }
 
 }

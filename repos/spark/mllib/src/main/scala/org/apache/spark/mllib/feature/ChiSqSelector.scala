@@ -97,11 +97,8 @@ class ChiSqSelectorModel @Since("1.3.0") (
             j += 1
             i += 1
           } else {
-            if (indicesIdx > filterIndicesIdx) {
-              j += 1
-            } else {
-              i += 1
-            }
+            if (indicesIdx > filterIndicesIdx) { j += 1 }
+            else { i += 1 }
           }
         }
         // TODO: Sparse representation might be ineffective if (newSize ~= newValues.size)
@@ -170,11 +167,8 @@ object ChiSqSelectorModel extends Loader[ChiSqSelectorModel] {
       // Check schema explicitly since erasure makes it hard to use match-case for checking.
       Loader.checkSchema[Data](dataFrame.schema)
 
-      val features = dataArray.rdd
-        .map {
-          case Row(feature: Int) => (feature)
-        }
-        .collect()
+      val features =
+        dataArray.rdd.map { case Row(feature: Int) => (feature) }.collect()
 
       return new ChiSqSelectorModel(features)
     }

@@ -34,9 +34,8 @@ class SbtDependencyAnnotator extends Annotator {
       version: String)
 
   override def annotate(element: PsiElement, holder: AnnotationHolder): Unit =
-    try {
-      doAnnotate(element, holder)
-    } catch {
+    try { doAnnotate(element, holder) }
+    catch {
       case exc: ResolverException =>
       // TODO: find another way to notify user instead of spamming with notifications
       // NotificationUtil.showMessage(null, exc.getMessage)

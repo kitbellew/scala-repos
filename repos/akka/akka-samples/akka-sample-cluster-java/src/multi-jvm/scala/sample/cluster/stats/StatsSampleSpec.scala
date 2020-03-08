@@ -110,9 +110,7 @@ abstract class StatsSampleSpec
     }
 
     "show usage of the statsService from one node" in within(15 seconds) {
-      runOn(second) {
-        assertServiceOk()
-      }
+      runOn(second) { assertServiceOk() }
 
       testConductor.enter("done-2")
     }

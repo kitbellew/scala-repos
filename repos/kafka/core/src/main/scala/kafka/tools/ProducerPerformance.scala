@@ -346,9 +346,7 @@ object ProducerPerformance extends Logging {
         val seqId =
           config.initialMessageId + (messagesPerThread * threadId) + messageId
         generateMessageWithSeqId(topic, seqId, msgSize)
-      } else {
-        new Array[Byte](msgSize)
-      }
+      } else { new Array[Byte](msgSize) }
     }
 
     override def run {
@@ -373,11 +371,8 @@ object ProducerPerformance extends Logging {
         }
         i += 1
       }
-      try {
-        producer.close()
-      } catch {
-        case e: Throwable => error("Error when closing producer", e)
-      }
+      try { producer.close() }
+      catch { case e: Throwable => error("Error when closing producer", e) }
       totalBytesSent.addAndGet(bytesSent)
       totalMessagesSent.addAndGet(nSends)
       allDone.countDown()

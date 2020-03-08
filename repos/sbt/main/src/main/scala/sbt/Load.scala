@@ -456,9 +456,7 @@ object Load {
       import Path._
       val existing = (baseTarget.allPaths.get).filterNot(_.isDirectory)
       val toDelete = existing.filterNot(keepFile)
-      if (toDelete.nonEmpty) {
-        IO.delete(toDelete)
-      }
+      if (toDelete.nonEmpty) { IO.delete(toDelete) }
     }
   }
 

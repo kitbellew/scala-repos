@@ -53,9 +53,7 @@ abstract class WebSpec(boot: () => Any = () => {})
     */
   private val liftRules = new LiftRules()
 
-  LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
-    boot()
-  }
+  LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) { boot() }
 
   /**
     * A class that bridges between the description string
@@ -215,9 +213,7 @@ abstract class WebSpec(boot: () => Any = () => {})
           description, {
             LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
               MockWeb.useLiftRules.doWith(true) {
-                MockWeb.testS(req, session) {
-                  expectations
-                }
+                MockWeb.testS(req, session) { expectations }
               }
             }
           }) ^

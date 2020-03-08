@@ -41,9 +41,8 @@ class TestKitFix extends TestKit(ActorSystem()) with ImplicitSender
 trait IsolatedTestKitFixture extends TestKitFixture {
   override def withTestKit(testCode: TestKitFix => Any): Any = {
     val sys = new TestKitFix
-    try {
-      testCode(sys)
-    } finally {
+    try { testCode(sys) }
+    finally {
       sys.system.shutdown()
       sys.system.awaitTermination()
     }

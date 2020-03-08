@@ -14,9 +14,7 @@ trait Hashes { self: BaseClient =>
     * @return Number of fields deleted
     */
   def hDel(key: ChannelBuffer, fields: Seq[ChannelBuffer]): Future[JLong] =
-    doRequest(HDel(key, fields)) {
-      case IntegerReply(n) => Future.value(n)
-    }
+    doRequest(HDel(key, fields)) { case IntegerReply(n) => Future.value(n) }
 
   /**
     * Determine if a hash field exists
@@ -101,9 +99,7 @@ trait Hashes { self: BaseClient =>
   def hMSet(
       key: ChannelBuffer,
       fv: Map[ChannelBuffer, ChannelBuffer]): Future[Unit] =
-    doRequest(HMSet(key, fv)) {
-      case StatusReply(msg) => Future.Unit
-    }
+    doRequest(HMSet(key, fv)) { case StatusReply(msg) => Future.Unit }
 
   /**
     * Returns keys in given hash, starting at cursor

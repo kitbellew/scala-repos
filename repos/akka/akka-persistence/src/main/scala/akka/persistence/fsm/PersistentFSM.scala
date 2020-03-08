@@ -68,9 +68,7 @@ trait PersistentFSM[S <: FSMState, D, E]
   /**
     * After recovery events are handled as in usual FSM actor
     */
-  override def receiveCommand: Receive = {
-    super[PersistentFSMBase].receive
-  }
+  override def receiveCommand: Receive = { super[PersistentFSMBase].receive }
 
   /**
     * Discover the latest recorded state

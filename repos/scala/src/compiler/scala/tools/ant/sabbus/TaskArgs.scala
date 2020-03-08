@@ -36,9 +36,7 @@ trait CompilationPathProperty {
 trait TaskArgs extends CompilationPathProperty {
   this: Task =>
 
-  def setId(input: String) {
-    id = Some(input)
-  }
+  def setId(input: String) { id = Some(input) }
 
   def setParams(input: String) {
     extraArgs ++= input.split(' ').map { s =>
@@ -52,9 +50,7 @@ trait TaskArgs extends CompilationPathProperty {
     a
   }
 
-  def setTarget(input: String) {
-    compTarget = Some(input)
-  }
+  def setTarget(input: String) { compTarget = Some(input) }
 
   def setSrcPath(input: Path) {
     if (sourcePath.isEmpty) sourcePath = Some(input)
@@ -66,9 +62,7 @@ trait TaskArgs extends CompilationPathProperty {
     sourcePath.get.createPath()
   }
 
-  def setSrcPathRef(input: Reference) {
-    createSrcPath.setRefid(input)
-  }
+  def setSrcPathRef(input: Reference) { createSrcPath.setRefid(input) }
 
   def setCompilerPath(input: Path) {
     if (compilerPath.isEmpty) compilerPath = Some(input)
@@ -84,9 +78,7 @@ trait TaskArgs extends CompilationPathProperty {
     createCompilerPath.setRefid(input)
   }
 
-  def setDestdir(input: File) {
-    destinationDir = Some(input)
-  }
+  def setDestdir(input: File) { destinationDir = Some(input) }
 
   protected var id: Option[String] = None
   protected var extraArgs: Seq[Argument] = Seq()

@@ -32,9 +32,7 @@ class HttpServerDispatcher(
 
   import ReaderUtils.{readChunk, streamChunks}
 
-  trans.onClose ensure {
-    service.close()
-  }
+  trans.onClose ensure { service.close() }
 
   protected def dispatch(m: Any, eos: Promise[Unit]): Future[Response] =
     m match {
@@ -130,17 +128,11 @@ class HttpServerDispatcher(
   protected def setKeepAlive(rep: Response, keepAlive: Boolean): Unit = {
     rep.version match {
       case Version.Http10 =>
-        if (keepAlive) {
-          rep.headers.set(Fields.Connection, "keep-alive")
-        } else {
-          rep.headers.remove(Fields.Connection)
-        }
+        if (keepAlive) { rep.headers.set(Fields.Connection, "keep-alive") }
+        else { rep.headers.remove(Fields.Connection) }
       case Version.Http11 =>
-        if (keepAlive) {
-          rep.headers.remove(Fields.Connection)
-        } else {
-          rep.headers.set(Fields.Connection, "close")
-        }
+        if (keepAlive) { rep.headers.remove(Fields.Connection) }
+        else { rep.headers.set(Fields.Connection, "close") }
     }
   }
 }

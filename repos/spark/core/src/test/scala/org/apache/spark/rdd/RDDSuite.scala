@@ -202,9 +202,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       map
     }
     val mergeMaps: (StringMap, StringMap) => StringMap = (map1, map2) => {
-      for ((key, value) <- map2) {
-        map1(key) += value
-      }
+      for ((key, value) <- map2) { map1(key) += value }
       map1
     }
     val result = pairs.aggregate(emptyMap)(mergeElement, mergeMaps)
@@ -237,7 +235,9 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   }
 
   test("caching with failures") {
-    val onlySplit = new Partition { override def index: Int = 0 }
+    val onlySplit = new Partition {
+      override def index: Int = 0
+    }
     var shouldFail = true
     val rdd = new RDD[Int](sc, Nil) {
       override def getPartitions: Array[Partition] = Array(onlySplit)
@@ -248,9 +248,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
         throw new Exception("injected failure")
       }
     }.cache()
-    val thrown = intercept[Exception] {
-      rdd.collect()
-    }
+    val thrown = intercept[Exception] { rdd.collect() }
     assert(thrown.getMessage.contains("injected failure"))
   }
 
@@ -500,9 +498,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       nums.zip(sc.parallelize(1 to 4, 1)).collect()
     }
 
-    intercept[SparkException] {
-      nums.zip(sc.parallelize(1 to 5, 2)).collect()
-    }
+    intercept[SparkException] { nums.zip(sc.parallelize(1 to 5, 2)).collect() }
   }
 
   test("partition pruning") {
@@ -1009,9 +1005,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       Iterator.empty
     override def getPartitions: Array[Partition] = Array.empty
     override def getDependencies: Seq[Dependency[_]] = mutableDependencies
-    def addDependency(dep: Dependency[_]) {
-      mutableDependencies += dep
-    }
+    def addDependency(dep: Dependency[_]) { mutableDependencies += dep }
   }
 
   test(
@@ -1020,18 +1014,14 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
 
       override def compute(
           part: Partition,
-          context: TaskContext): Iterator[T] = {
-        prev.compute(part, context)
-      }
+          context: TaskContext): Iterator[T] = { prev.compute(part, context) }
 
       override protected def getPartitions: Array[Partition] = {
         prev.partitions.reverse // breaks contract, which is that `rdd.partitions(i).index == i`
       }
     }
     val rdd = new BadRDD(sc.parallelize(1 to 100, 100))
-    val e = intercept[IllegalArgumentException] {
-      rdd.partitions
-    }
+    val e = intercept[IllegalArgumentException] { rdd.partitions }
     assert(e.getMessage.contains("partitions"))
   }
 
@@ -1059,18 +1049,14 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   test("cannot run actions after SparkContext has been stopped (SPARK-5063)") {
     val existingRDD = sc.parallelize(1 to 100)
     sc.stop()
-    val thrown = intercept[IllegalStateException] {
-      existingRDD.count()
-    }
+    val thrown = intercept[IllegalStateException] { existingRDD.count() }
     assert(thrown.getMessage.contains("shutdown"))
   }
 
   test("cannot call methods on a stopped SparkContext (SPARK-5063)") {
     sc.stop()
     def assertFails(block: => Any): Unit = {
-      val thrown = intercept[IllegalStateException] {
-        block
-      }
+      val thrown = intercept[IllegalStateException] { block }
       assert(thrown.getMessage.contains("stopped"))
     }
     assertFails { sc.parallelize(1 to 100) }

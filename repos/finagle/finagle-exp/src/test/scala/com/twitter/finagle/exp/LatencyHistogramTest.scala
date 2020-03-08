@@ -18,9 +18,7 @@ class LatencyHistogramTest extends FunSuite with Matchers {
       Duration.Top.inMilliseconds,
       LatencyHistogram.DefaultSlices,
       Stopwatch.timeMillis)
-    val input = Array.fill(N) {
-      (rng.nextDouble() * range).toLong
-    }
+    val input = Array.fill(N) { (rng.nextDouble() * range).toLong }
     for (d <- input)
       histo.add(d)
 

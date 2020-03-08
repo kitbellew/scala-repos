@@ -12,7 +12,5 @@ package bar {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
-    new bar.Bippy bippy 5
-  }
+  def main(args: Array[String]): Unit = { new bar.Bippy bippy 5 }
 }

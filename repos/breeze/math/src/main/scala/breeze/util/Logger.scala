@@ -7,25 +7,15 @@ import org.slf4j.Logger
   */
 class LazyLogger(log: Logger) extends Serializable {
 
-  def info(msg: => String) {
-    if (log.isInfoEnabled) log.info(msg)
-  }
+  def info(msg: => String) { if (log.isInfoEnabled) log.info(msg) }
 
-  def debug(msg: => String) {
-    if (log.isDebugEnabled) log.debug(msg)
-  }
+  def debug(msg: => String) { if (log.isDebugEnabled) log.debug(msg) }
 
-  def trace(msg: => String) {
-    if (log.isTraceEnabled) log.trace(msg)
-  }
+  def trace(msg: => String) { if (log.isTraceEnabled) log.trace(msg) }
 
-  def warn(msg: => String) {
-    if (log.isWarnEnabled) log.warn(msg)
-  }
+  def warn(msg: => String) { if (log.isWarnEnabled) log.warn(msg) }
 
-  def error(msg: => String) {
-    if (log.isErrorEnabled) log.error(msg)
-  }
+  def error(msg: => String) { if (log.isErrorEnabled) log.error(msg) }
 
   def info(msg: => String, throwable: Throwable) {
     if (log.isInfoEnabled) log.info(msg, throwable)

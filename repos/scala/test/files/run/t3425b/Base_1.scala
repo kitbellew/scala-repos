@@ -1,10 +1,16 @@
-trait P { def reflected: Boolean }
-trait Q { def reflected: Boolean }
+trait P {
+  def reflected: Boolean
+}
+trait Q {
+  def reflected: Boolean
+}
 class PQ(val reflected: Boolean) extends P with Q {}
 
 trait A
 trait B
-trait C { val y: P }
+trait C {
+  val y: P
+}
 class ABC extends A with B with C {
   private def reflected = (
     Thread.currentThread.getStackTrace

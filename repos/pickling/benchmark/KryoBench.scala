@@ -101,9 +101,7 @@ object KryoListBench extends testing.Benchmark {
   val lst = (1 to size).toList
   var ser: KryoSerializer = _
 
-  override def tearDown() {
-    ser = null
-  }
+  override def tearDown() { ser = null }
 
   override def run() {
     val rnd: Int = Random.nextInt(10)
@@ -121,9 +119,7 @@ object KryoVectorBench extends testing.Benchmark {
   val vec = Vector() ++ (1 to size)
   var ser: KryoSerializer = _
 
-  override def tearDown() {
-    ser = null
-  }
+  override def tearDown() { ser = null }
 
   override def run() {
     val rnd: Int = Random.nextInt(10)

@@ -129,9 +129,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
 
   import com.intellij.openapi.util.{Pair => IPair}
 
-  def getAllFields: Array[PsiField] = {
-    PsiClassImplUtil.getAllFields(this)
-  }
+  def getAllFields: Array[PsiField] = { PsiClassImplUtil.getAllFields(this) }
 
   override def findMethodsAndTheirSubstitutorsByName(
       name: String,
@@ -479,9 +477,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                                 processor,
                                 state,
                                 lastParent,
-                                place)) {
-                            return false
-                          }
+                                place)) { return false }
                       }
                     case _ =>
                       if (!TypeDefinitionMembers.processDeclarations(
@@ -508,9 +504,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             val last = body.getNode.getLastChildNode
             if (ScalaPsiUtil.isLineTerminator(last.getTreePrev.getPsi)) {
               last.getTreePrev
-            } else {
-              last
-            }
+            } else { last }
         }
         if (ScalaPsiUtil.isLineTerminator(before.getPsi))
           body.getNode.addChild(

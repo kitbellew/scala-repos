@@ -76,9 +76,7 @@ trait ArrayLibSpecs[M[+_]]
       val result = testEval(input)
       result must haveSize(26)
 
-      val values = result collect {
-        case (ids, jv) if ids.length == 2 => jv
-      }
+      val values = result collect { case (ids, jv) if ids.length == 2 => jv }
 
       values mustEqual Set(
         SDecimal(-9),
@@ -140,9 +138,7 @@ trait ArrayLibSpecs[M[+_]]
       val result = testEval(input)
       result must haveSize(26)
 
-      val values = result collect {
-        case (ids, jv) if ids.length == 2 => jv
-      }
+      val values = result collect { case (ids, jv) if ids.length == 2 => jv }
       values must haveAllElementsLike {
         case SObject(obj) =>
           obj.keySet mustEqual Set("arr", "val")

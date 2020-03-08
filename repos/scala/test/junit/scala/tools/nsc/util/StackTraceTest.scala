@@ -62,9 +62,7 @@ class StackTraceTest extends Expecting {
     catch {
       case e: Throwable =>
         val t = new RuntimeException("My problem")
-        if (suppressable) {
-          t.asInstanceOf[Suppressing] addSuppressed e
-        }
+        if (suppressable) { t.asInstanceOf[Suppressing] addSuppressed e }
         throw t
     }
   def represser: String = repressed

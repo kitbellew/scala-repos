@@ -105,9 +105,7 @@ class ControllerChannelManager(
   }
 
   def removeBroker(brokerId: Int) {
-    brokerLock synchronized {
-      removeExistingBroker(brokerStateInfo(brokerId))
-    }
+    brokerLock synchronized { removeExistingBroker(brokerStateInfo(brokerId)) }
   }
 
   private def addNewBroker(broker: Broker) {
@@ -288,9 +286,7 @@ class RequestSendThread(
                 response.toString,
                 brokerNode.toString))
 
-          if (callback != null) {
-            callback(response)
-          }
+          if (callback != null) { callback(response) }
         }
       }
     } catch {
@@ -441,9 +437,7 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
                 leaderAndIsr,
                 leaderIsrAndControllerEpoch.controllerEpoch),
               replicas)
-          } else {
-            PartitionStateInfo(leaderIsrAndControllerEpoch, replicas)
-          }
+          } else { PartitionStateInfo(leaderIsrAndControllerEpoch, replicas) }
           brokerIds.filter(b => b >= 0).foreach { brokerId =>
             updateMetadataRequestMap.getOrElseUpdate(
               brokerId,

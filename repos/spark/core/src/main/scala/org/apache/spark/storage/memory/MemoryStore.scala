@@ -87,9 +87,7 @@ private[spark] class MemoryStore(
   }
 
   def getSize(blockId: BlockId): Long = {
-    entries.synchronized {
-      entries.get(blockId).size
-    }
+    entries.synchronized { entries.get(blockId).size }
   }
 
   /**
@@ -112,9 +110,7 @@ private[spark] class MemoryStore(
       val bytes = _bytes()
       assert(bytes.size == size)
       val entry = new SerializedMemoryEntry(bytes, size)
-      entries.synchronized {
-        entries.put(blockId, entry)
-      }
+      entries.synchronized { entries.put(blockId, entry) }
       logInfo(
         "Block %s stored as bytes in memory (estimated size %s, free %s)"
           .format(
@@ -122,9 +118,7 @@ private[spark] class MemoryStore(
             Utils.bytesToString(size),
             Utils.bytesToString(blocksMemoryUsed)))
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   /**
@@ -176,9 +170,7 @@ private[spark] class MemoryStore(
     if (!keepUnrolling) {
       logWarning(s"Failed to reserve initial memory threshold of " +
         s"${Utils.bytesToString(initialMemoryThreshold)} for computing block $blockId in memory.")
-    } else {
-      unrollMemoryUsedByThisBlock += initialMemoryThreshold
-    }
+    } else { unrollMemoryUsedByThisBlock += initialMemoryThreshold }
 
     // Unroll this block safely, checking whether we have exceeded our threshold periodically
     while (values.hasNext && keepUnrolling) {
@@ -191,9 +183,7 @@ private[spark] class MemoryStore(
             (currentSize * memoryGrowthFactor - memoryThreshold).toLong
           keepUnrolling =
             reserveUnrollMemoryForThisTask(blockId, amountToRequest)
-          if (keepUnrolling) {
-            unrollMemoryUsedByThisBlock += amountToRequest
-          }
+          if (keepUnrolling) { unrollMemoryUsedByThisBlock += amountToRequest }
           // New threshold is currentSize * memoryGrowthFactor
           memoryThreshold += amountToRequest
         }
@@ -243,9 +233,7 @@ private[spark] class MemoryStore(
         }
       }
       if (enoughStorageMemory) {
-        entries.synchronized {
-          entries.put(blockId, entry)
-        }
+        entries.synchronized { entries.put(blockId, entry) }
         val bytesOrValues = if (level.deserialized) "values" else "bytes"
         logInfo(
           "Block %s stored as %s in memory (estimated size %s, free %s)".format(
@@ -300,24 +288,18 @@ private[spark] class MemoryStore(
   }
 
   def remove(blockId: BlockId): Boolean = memoryManager.synchronized {
-    val entry = entries.synchronized {
-      entries.remove(blockId)
-    }
+    val entry = entries.synchronized { entries.remove(blockId) }
     if (entry != null) {
       memoryManager.releaseStorageMemory(entry.size)
       logDebug(
         s"Block $blockId of size ${entry.size} dropped " +
           s"from memory (free ${maxMemory - blocksMemoryUsed})")
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   def clear(): Unit = memoryManager.synchronized {
-    entries.synchronized {
-      entries.clear()
-    }
+    entries.synchronized { entries.clear() }
     unrollMemoryMap.clear()
     memoryManager.releaseAllStorageMemory()
     logInfo("MemoryStore cleared")

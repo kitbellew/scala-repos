@@ -53,11 +53,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
   }
 
   override def afterEach() {
-    try {
-      Utils.deleteRecursively(tempDir)
-    } finally {
-      super.afterEach()
-    }
+    try { Utils.deleteRecursively(tempDir) }
+    finally { super.afterEach() }
   }
 
   test("text files") {
@@ -245,9 +242,7 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
       val output = sc.objectFile[Any](outputDir)
       assert(output.collect().size === 3)
       assert(output.collect().head.getClass.getName === className)
-    } finally {
-      Thread.currentThread().setContextClassLoader(original)
-    }
+    } finally { Thread.currentThread().setContextClassLoader(original) }
     // scalastyle:on classforname
   }
 
@@ -455,9 +450,7 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
 
     val inRdd = sc.binaryRecords(outFileName, -1)
 
-    intercept[SparkException] {
-      inRdd.count
-    }
+    intercept[SparkException] { inRdd.count }
   }
 
   test("file caching") {

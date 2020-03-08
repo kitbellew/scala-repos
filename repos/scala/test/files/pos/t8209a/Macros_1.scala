@@ -3,7 +3,9 @@ import scala.language.implicitConversions
 import scala.reflect.macros.blackbox.Context
 
 class A
-object A { implicit def a2b(a: A): B = ??? }
+object A {
+  implicit def a2b(a: A): B = ???
+}
 class B
 class C extends A
 

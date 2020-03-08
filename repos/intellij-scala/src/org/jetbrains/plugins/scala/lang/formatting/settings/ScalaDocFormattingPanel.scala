@@ -127,9 +127,7 @@ class ScalaDocFormattingPanel(val settings: CodeStyleSettings)
   protected override def customizeSettings() {
     val provider: LanguageCodeStyleSettingsProvider =
       LanguageCodeStyleSettingsProvider.forLanguage(ScalaLanguage.Instance)
-    if (provider != null) {
-      provider.customizeSettings(this, getSettingsType)
-    }
+    if (provider != null) { provider.customizeSettings(this, getSettingsType) }
   }
 
   protected override def getTabTitle: String = "ScalaDoc"

@@ -10,9 +10,7 @@ class BasicDirectivesSpec extends RoutingSpec {
   "The `mapUnmatchedPath` directive" should {
     "map the unmatched path" in {
       Get("/abc") ~> {
-        mapUnmatchedPath(_ / "def") {
-          path("abc" / "def") { completeOk }
-        }
+        mapUnmatchedPath(_ / "def") { path("abc" / "def") { completeOk } }
       } ~> check { response shouldEqual Ok }
     }
   }
@@ -20,9 +18,7 @@ class BasicDirectivesSpec extends RoutingSpec {
   "The `extract` directive" should {
     "extract from the RequestContext" in {
       Get("/abc") ~> {
-        extract(_.request.method.value) {
-          echoComplete
-        }
+        extract(_.request.method.value) { echoComplete }
       } ~> check { responseAs[String] shouldEqual "GET" }
     }
   }

@@ -51,9 +51,7 @@ class SourceReader(decoder: CharsetDecoder, reporter: Reporter) {
       case p: PlainFile        => read(p.file)
       case z: ZipArchive#Entry => read(Channels.newChannel(z.input))
       case _                   => read(ByteBuffer.wrap(file.toByteArray))
-    } catch {
-      case e: Exception => reportEncodingError("" + file); Array()
-    }
+    } catch { case e: Exception => reportEncodingError("" + file); Array() }
   }
 
   /** Reads the specified byte channel. */

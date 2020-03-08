@@ -3,7 +3,9 @@ import java.security._
 import scala.language.{reflectiveCalls}
 
 object Test {
-  trait Bar { def bar: Unit }
+  trait Bar {
+    def bar: Unit
+  }
 
   object Mgr extends SecurityManager {
     override def checkPermission(perm: Permission) = perm match {
@@ -30,7 +32,9 @@ object Test {
   def t2() = {
     System.setSecurityManager(Mgr)
 
-    val b = new Bar { def bar = println("bar") }
+    val b = new Bar {
+      def bar = println("bar")
+    }
     b.bar
 
     val structural = b.asInstanceOf[{ def bar: Unit }]

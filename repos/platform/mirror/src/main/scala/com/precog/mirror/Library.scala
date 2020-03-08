@@ -109,9 +109,7 @@ trait LibraryModule extends Binder {
       object count extends Reduction(Namespace, "count") {
         val zero = Some(JNum(0))
 
-        override def prepare = {
-          case v => JNum(1)
-        }
+        override def prepare = { case v => JNum(1) }
 
         override def apply(left: JValue, right: JValue) = (left, right) match {
           case (JNum(l), JNum(r)) => JNum(l + r)

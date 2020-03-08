@@ -92,9 +92,7 @@ abstract class HiveComparisonTest
   protected val answerCache = new File(
     "src" + File.separator + "test" +
       File.separator + "resources" + File.separator + "golden")
-  if (!answerCache.exists) {
-    answerCache.mkdir()
-  }
+  if (!answerCache.exists) { answerCache.mkdir() }
 
   /** The [[ClassLoader]] that contains test dependencies.  Used to look for golden answers. */
   protected val testClassLoader = this.getClass.getClassLoader
@@ -138,11 +136,8 @@ abstract class HiveComparisonTest
   }
 
   override protected def afterAll(): Unit = {
-    try {
-      TestHive.reset()
-    } finally {
-      super.afterAll()
-    }
+    try { TestHive.reset() }
+    finally { super.afterAll() }
   }
 
   protected def prepareAnswer(
@@ -308,9 +303,7 @@ abstract class HiveComparisonTest
           .filter(_.exists())
           .foreach(_.delete())
 
-        if (reset) {
-          TestHive.reset()
-        }
+        if (reset) { TestHive.reset() }
 
         // Many tests drop indexes on src and srcpart at the beginning, so we need to load those
         // tables here. Since DROP INDEX DDL is just passed to Hive, it bypasses the analyzer and
@@ -427,9 +420,8 @@ abstract class HiveComparisonTest
                     case _: LogicalInsertIntoHiveTable => ()
                   }.nonEmpty
 
-                  if (containsCommands) {
-                    originalQuery
-                  } else {
+                  if (containsCommands) { originalQuery }
+                  else {
                     val convertedSQL =
                       try {
                         new SQLBuilder(originalQuery.analyzed, TestHive).toSQL
@@ -575,9 +567,7 @@ abstract class HiveComparisonTest
                 errorMessage + consoleTestCase)
               if (isSpeculative && !reset) {
                 fail("Failed on first run; retrying")
-              } else {
-                fail(errorMessage)
-              }
+              } else { fail(errorMessage) }
             }
         }
 
@@ -600,17 +590,13 @@ abstract class HiveComparisonTest
         try {
           if (tryWithoutResettingFirst && canSpeculativelyTryWithoutReset) {
             doTest(reset = false, isSpeculative = true)
-          } else {
-            doTest(reset)
-          }
+          } else { doTest(reset) }
         } catch {
           case tf: org.scalatest.exceptions.TestFailedException =>
             if (tryWithoutResettingFirst && canSpeculativelyTryWithoutReset) {
               logWarning("Test failed without reset(); retrying with reset()")
               doTest(reset = true)
-            } else {
-              throw tf
-            }
+            } else { throw tf }
         }
       } catch {
         case tf: org.scalatest.exceptions.TestFailedException => throw tf

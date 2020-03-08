@@ -205,9 +205,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
             }
           }
           .map { highSeqNr ⇒ RecoverySuccess(highSeqNr) }
-          .recover {
-            case e ⇒ ReplayMessagesFailure(e)
-          }
+          .recover { case e ⇒ ReplayMessagesFailure(e) }
           .pipeTo(replyTo)
           .onSuccess {
             case _ ⇒ if (publish) context.system.eventStream.publish(r)
@@ -338,18 +336,14 @@ private[persistence] object AsyncWriteJournal {
     private val delayed = Map.empty[Long, Desequenced]
     private var delivered = 0L
 
-    def receive = {
-      case d: Desequenced ⇒ resequence(d)
-    }
+    def receive = { case d: Desequenced ⇒ resequence(d) }
 
     @scala.annotation.tailrec
     private def resequence(d: Desequenced) {
       if (d.snr == delivered + 1) {
         delivered = d.snr
         d.target.tell(d.msg, d.sender)
-      } else {
-        delayed += (d.snr -> d)
-      }
+      } else { delayed += (d.snr -> d) }
       val ro = delayed.remove(delivered + 1)
       if (ro.isDefined) resequence(ro.get)
     }

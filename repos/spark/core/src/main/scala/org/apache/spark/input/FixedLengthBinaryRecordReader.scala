@@ -51,18 +51,12 @@ private[spark] class FixedLengthBinaryRecordReader
   private var recordValue: BytesWritable = null
 
   override def close() {
-    if (fileInputStream != null) {
-      fileInputStream.close()
-    }
+    if (fileInputStream != null) { fileInputStream.close() }
   }
 
-  override def getCurrentKey: LongWritable = {
-    recordKey
-  }
+  override def getCurrentKey: LongWritable = { recordKey }
 
-  override def getCurrentValue: BytesWritable = {
-    recordValue
-  }
+  override def getCurrentValue: BytesWritable = { recordValue }
 
   override def getProgress: Float = {
     splitStart match {
@@ -110,9 +104,7 @@ private[spark] class FixedLengthBinaryRecordReader
   }
 
   override def nextKeyValue(): Boolean = {
-    if (recordKey == null) {
-      recordKey = new LongWritable()
-    }
+    if (recordKey == null) { recordKey = new LongWritable() }
     // the key is a linear index of the record, given by the
     // position the record starts divided by the record length
     recordKey.set(currentPosition / recordLength)

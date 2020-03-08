@@ -47,9 +47,7 @@ class CookieDirectivesExamplesSpec extends RoutingSpec {
   }
   "deleteCookie" in {
     val route =
-      deleteCookie("userName") {
-        complete("The user was logged out")
-      }
+      deleteCookie("userName") { complete("The user was logged out") }
 
     // tests:
     Get("/") ~> route ~> check {

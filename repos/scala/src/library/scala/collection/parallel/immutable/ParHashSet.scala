@@ -114,9 +114,7 @@ class ParHashSet[T] private[immutable] (private[this] val trie: HashSet[T])
       i += 1
       triter.next()
     }
-    def hasNext: Boolean = {
-      i < sz
-    }
+    def hasNext: Boolean = { i < sz }
     def remaining = sz - i
   }
 

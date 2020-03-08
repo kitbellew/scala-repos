@@ -194,9 +194,7 @@ object GraphStageLogic {
       * Special `become` allowing to swap the behaviour of this StageActorRef.
       * Unbecome is not available.
       */
-    def become(receive: StageActorRef.Receive): Unit = {
-      behaviour = receive
-    }
+    def become(receive: StageActorRef.Receive): Unit = { behaviour = receive }
 
     def stop(): Unit = cell.removeFunctionRef(functionRef)
 
@@ -635,9 +633,8 @@ abstract class GraphStageLogic private[stream] (
     if (isAvailable(in)) {
       val elem = grab(in)
       andThen(elem)
-    } else if (isClosed(in)) {
-      onClose()
-    } else {
+    } else if (isClosed(in)) { onClose() }
+    else {
       requireNotReading(in)
       if (!hasBeenPulled(in)) pull(in)
       setHandler(in, new Reading(in, 1, getHandler(in))(andThen, onClose))
@@ -653,9 +650,7 @@ abstract class GraphStageLogic private[stream] (
   final protected def read[T](
       in: Inlet[T],
       andThen: Procedure[T],
-      onClose: Effect): Unit = {
-    read(in)(andThen.apply, onClose.apply)
-  }
+      onClose: Effect): Unit = { read(in)(andThen.apply, onClose.apply) }
 
   /**
     * Abort outstanding (suspended) reading for the given inlet, if there is any.
@@ -831,9 +826,7 @@ abstract class GraphStageLogic private[stream] (
   final protected def emit[T](
       out: Outlet[T],
       elem: T,
-      andThen: Effect): Unit = {
-    emit(out, elem, andThen.apply _)
-  }
+      andThen: Effect): Unit = { emit(out, elem, andThen.apply _) }
 
   /**
     * Abort outstanding (suspended) emissions for the given outlet, if there are any.
@@ -929,9 +922,7 @@ abstract class GraphStageLogic private[stream] (
 
     override def onPull(): Unit = {
       push(out, elems.next())
-      if (!elems.hasNext) {
-        followUp()
-      }
+      if (!elems.hasNext) { followUp() }
     }
   }
 
@@ -1450,9 +1441,7 @@ private[akka] trait CallbackWrapper[T] extends AsyncCallback[T] {
   private[this] val callbackState =
     new AtomicReference[CallbackState](NotInitialized(Nil))
 
-  def stopCallback(f: T ⇒ Unit): Unit = locked {
-    callbackState.set(Stopped(f))
-  }
+  def stopCallback(f: T ⇒ Unit): Unit = locked { callbackState.set(Stopped(f)) }
 
   def initCallback(f: T ⇒ Unit): Unit = locked {
     val list = (callbackState.getAndSet(Initialized(f)): @unchecked) match {

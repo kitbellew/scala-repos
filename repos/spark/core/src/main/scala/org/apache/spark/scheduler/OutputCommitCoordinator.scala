@@ -74,9 +74,7 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
   /**
     * Returns whether the OutputCommitCoordinator's internal data structures are all empty.
     */
-  def isEmpty: Boolean = {
-    authorizedCommittersByStage.isEmpty
-  }
+  def isEmpty: Boolean = { authorizedCommittersByStage.isEmpty }
 
   /**
     * Called by tasks to ask whether they can commit their output to HDFS.
@@ -118,9 +116,7 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
       maxPartitionId: Int): Unit = {
     val arr = new Array[TaskAttemptNumber](maxPartitionId + 1)
     java.util.Arrays.fill(arr, NO_AUTHORIZED_COMMITTER)
-    synchronized {
-      authorizedCommittersByStage(stage) = arr
-    }
+    synchronized { authorizedCommittersByStage(stage) = arr }
   }
 
   // Called by DAGScheduler

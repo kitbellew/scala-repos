@@ -83,9 +83,7 @@ object ScalaReflectMacroExpansionParser {
       "java.io.tmpdir") + s"/../../expansion-${context.getProjectDescriptor.getProject.getName}")
     val fo = new BufferedOutputStream(new FileOutputStream(file))
     val so = new ObjectOutputStream(fo)
-    for (expansion <- expansions) {
-      so.writeObject(expansion)
-    }
+    for (expansion <- expansions) { so.writeObject(expansion) }
     so.close()
     fo.close()
   }

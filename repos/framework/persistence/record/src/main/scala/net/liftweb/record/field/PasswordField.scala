@@ -154,9 +154,7 @@ class PasswordField[OwnerType <: Record[OwnerType]](rec: OwnerType)
     if (owner.meta.mutable_?) {
       this.setBoxPlain(in)
       owner
-    } else {
-      owner.meta.createWithMutableField(owner, this, in)
-    }
+    } else { owner.meta.createWithMutableField(owner, this, in) }
 
 }
 
@@ -176,7 +174,5 @@ class OptionalPasswordField[OwnerType <: Record[OwnerType]](rec: OwnerType)
     if (owner.meta.mutable_?) {
       this.setBoxPlain(in)
       owner
-    } else {
-      owner.meta.createWithMutableField(owner, this, in)
-    }
+    } else { owner.meta.createWithMutableField(owner, this, in) }
 }

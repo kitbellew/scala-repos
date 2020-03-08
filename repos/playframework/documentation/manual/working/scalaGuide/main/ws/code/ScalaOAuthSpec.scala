@@ -55,9 +55,7 @@ object ScalaOAuthSpec extends PlaySpecification {
     for {
       token <- request.session.get("token")
       secret <- request.session.get("secret")
-    } yield {
-      RequestToken(token, secret)
-    }
+    } yield { RequestToken(token, secret) }
   }
 
   def authenticate = Action { request =>

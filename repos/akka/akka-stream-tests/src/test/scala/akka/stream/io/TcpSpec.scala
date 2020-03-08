@@ -83,9 +83,7 @@ class TcpSpec
           .runFold(ByteString.empty)((acc, in) ⇒ acc ++ in)
       val serverConnection = server.waitAccept()
 
-      for (in ← testInput) {
-        serverConnection.write(in)
-      }
+      for (in ← testInput) { serverConnection.write(in) }
 
       serverConnection.confirmedClose()
       Await.result(resultFuture, 3.seconds) should be(expectedOutput)

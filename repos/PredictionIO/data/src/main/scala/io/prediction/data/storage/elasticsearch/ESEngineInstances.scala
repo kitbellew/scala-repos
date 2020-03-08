@@ -40,9 +40,7 @@ class ESEngineInstances(
 
   val indices = client.admin.indices
   val indexExistResponse = indices.prepareExists(index).get
-  if (!indexExistResponse.isExists) {
-    indices.prepareCreate(index).get
-  }
+  if (!indexExistResponse.isExists) { indices.prepareCreate(index).get }
   val typeExistResponse = indices.prepareTypesExists(index).setTypes(estype).get
   if (!typeExistResponse.isExists) {
     val json =
@@ -92,9 +90,7 @@ class ESEngineInstances(
       val response = client.prepareGet(index, estype, id).get
       if (response.isExists) {
         Some(read[EngineInstance](response.getSourceAsString))
-      } else {
-        None
-      }
+      } else { None }
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
@@ -143,18 +139,12 @@ class ESEngineInstances(
     getCompleted(engineId, engineVersion, engineVariant).headOption
 
   def update(i: EngineInstance): Unit = {
-    try {
-      client.prepareUpdate(index, estype, i.id).setDoc(write(i)).get
-    } catch {
-      case e: ElasticsearchException => error(e.getMessage)
-    }
+    try { client.prepareUpdate(index, estype, i.id).setDoc(write(i)).get }
+    catch { case e: ElasticsearchException => error(e.getMessage) }
   }
 
   def delete(id: String): Unit = {
-    try {
-      val response = client.prepareDelete(index, estype, id).get
-    } catch {
-      case e: ElasticsearchException => error(e.getMessage)
-    }
+    try { val response = client.prepareDelete(index, estype, id).get }
+    catch { case e: ElasticsearchException => error(e.getMessage) }
   }
 }

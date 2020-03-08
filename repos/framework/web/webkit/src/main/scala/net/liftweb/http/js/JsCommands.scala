@@ -667,9 +667,7 @@ trait HtmlFixer {
             content
           )
         )
-      } openOr {
-        content
-      }
+      } openOr { content }
 
     import scala.collection.mutable.ListBuffer
     val lb = new ListBuffer[JsCmd]

@@ -668,9 +668,7 @@ class DenseMatrixTest
 
   test("GH #148: out of bounds slice throws") {
     val temp2 = DenseMatrix.tabulate(5, 5)((x: Int, y: Int) => x + y * 10)
-    intercept[IndexOutOfBoundsException] {
-      temp2(Range(4, 6), 3)
-    }
+    intercept[IndexOutOfBoundsException] { temp2(Range(4, 6), 3) }
   }
 
   test("softmax on dm slices") {

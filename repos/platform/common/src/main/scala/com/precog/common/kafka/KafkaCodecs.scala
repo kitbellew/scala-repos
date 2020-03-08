@@ -60,9 +60,8 @@ trait EncodingFlags {
       val msgType = buffer.get()
       val stop = buffer.get()
 
-      if (stop == stopByte) {
-        success(msgType)
-      } else {
+      if (stop == stopByte) { success(msgType) }
+      else {
         failure(
           Error.invalid("Invalid message: bad stop byte. Found [" + stop + "]"))
       }

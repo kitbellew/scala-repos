@@ -83,9 +83,7 @@ object SbtData {
             "timestamp")
             .map(timestamp => version + "-" + timestamp)
             .getOrElse(version)
-        } else {
-          version
-        }
+        } else { version }
     }
   }
 
@@ -97,9 +95,7 @@ object SbtData {
       val text =
         scala.io.Source.fromFile(file, "UTF-8").mkString.replace("\r", "")
       md.digest(text.getBytes("UTF8"))
-    } else {
-      md.digest(FileUtil.loadBytes(new FileInputStream(file)))
-    }
+    } else { md.digest(FileUtil.loadBytes(new FileInputStream(file))) }
   }
 
 }

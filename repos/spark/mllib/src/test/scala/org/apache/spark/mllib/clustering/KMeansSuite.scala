@@ -250,9 +250,7 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
         if (this.x.toArray.foldLeft[Double](0.0)((acc, x) => acc + x * x) >
               that.x.toArray.foldLeft[Double](0.0)((acc, x) => acc + x * x)) {
           -1
-        } else {
-          1
-        }
+        } else { 1 }
       }
     }
 
@@ -332,9 +330,7 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
           model.save(sc, path)
           val sameModel = KMeansModel.load(sc, path)
           KMeansSuite.checkEqual(model, sameModel)
-        } finally {
-          Utils.deleteRecursively(tempDir)
-        }
+        } finally { Utils.deleteRecursively(tempDir) }
     }
   }
 

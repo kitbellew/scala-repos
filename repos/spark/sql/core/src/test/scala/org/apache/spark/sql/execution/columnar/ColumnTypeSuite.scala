@@ -160,13 +160,9 @@ class ColumnTypeSuite extends SparkFunSuite with Logging {
 
   test("column type for decimal types with different precision") {
     (1 to 18).foreach { i =>
-      assertResult(COMPACT_DECIMAL(i, 0)) {
-        ColumnType(DecimalType(i, 0))
-      }
+      assertResult(COMPACT_DECIMAL(i, 0)) { ColumnType(DecimalType(i, 0)) }
     }
 
-    assertResult(LARGE_DECIMAL(19, 0)) {
-      ColumnType(DecimalType(19, 0))
-    }
+    assertResult(LARGE_DECIMAL(19, 0)) { ColumnType(DecimalType(19, 0)) }
   }
 }

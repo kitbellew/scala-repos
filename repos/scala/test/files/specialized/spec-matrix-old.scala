@@ -12,9 +12,7 @@ class Matrix[@specialized A: ClassManifest](val rows: Int, val cols: Int) {
     arr(i)(j)
   }
 
-  def update(i: Int, j: Int, e: A) {
-    arr(i)(j) = e
-  }
+  def update(i: Int, j: Int, e: A) { arr(i)(j) = e }
 
   def rowsIterator: Iterator[Array[A]] = new Iterator[Array[A]] {
     var idx = 0;

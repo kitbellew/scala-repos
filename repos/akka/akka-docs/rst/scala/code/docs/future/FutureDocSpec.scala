@@ -103,9 +103,7 @@ class FutureDocSpec extends AkkaSpec {
     import scala.concurrent.Future
     import scala.concurrent.duration._
 
-    val future = Future {
-      "Hello" + "World"
-    }
+    val future = Future { "Hello" + "World" }
     future foreach println
     //#future-eval
     Await.result(future, 3 seconds) should be("HelloWorld")
@@ -113,9 +111,7 @@ class FutureDocSpec extends AkkaSpec {
 
   "demonstrate usage of map" in {
     //#map
-    val f1 = Future {
-      "Hello" + "World"
-    }
+    val f1 = Future { "Hello" + "World" }
     val f2 = f1 map { x => x.length }
     f2 foreach println
     //#map
@@ -126,9 +122,7 @@ class FutureDocSpec extends AkkaSpec {
 
   "demonstrate wrong usage of nested map" in {
     //#wrong-nested-map
-    val f1 = Future {
-      "Hello" + "World"
-    }
+    val f1 = Future { "Hello" + "World" }
     val f2 = Future.successful(3)
     val f3 = f1 map { x => f2 map { y => x.length * y } }
     f3 foreach println
@@ -138,9 +132,7 @@ class FutureDocSpec extends AkkaSpec {
 
   "demonstrate usage of flatMap" in {
     //#flat-map
-    val f1 = Future {
-      "Hello" + "World"
-    }
+    val f1 = Future { "Hello" + "World" }
     val f2 = Future.successful(3)
     val f3 = f1 flatMap { x => f2 map { y => x.length * y } }
     f3 foreach println
@@ -340,9 +332,7 @@ class FutureDocSpec extends AkkaSpec {
     //#and-then
     val result = Future { loadPage(url) } andThen {
       case Failure(exception) => log(exception)
-    } andThen {
-      case _ => watchSomeTV()
-    }
+    } andThen { case _        => watchSomeTV() }
     result foreach println
     //#and-then
     Await.result(result, 3 seconds) should be("foo bar")

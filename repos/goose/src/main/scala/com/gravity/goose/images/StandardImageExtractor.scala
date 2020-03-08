@@ -106,28 +106,16 @@ class StandardImageExtractor(
     if (logger.isDebugEnabled) {
       logger.debug("Starting to Look for the Most Relavent Image")
     }
-    if (image.getImageSrc == "") {
-      this.checkForKnownElements()
-    }
-    if (image.getImageSrc == "") {
-      this.checkForLargeImages(topNode, 0, 0)
-    }
-    if (image.getImageSrc == "") {
-      this.checkForMetaTag
-    }
+    if (image.getImageSrc == "") { this.checkForKnownElements() }
+    if (image.getImageSrc == "") { this.checkForLargeImages(topNode, 0, 0) }
+    if (image.getImageSrc == "") { this.checkForMetaTag }
     image
   }
 
   private def checkForMetaTag: Boolean = {
-    if (this.checkForLinkTag) {
-      return true
-    }
-    if (this.checkForOpenGraphTag) {
-      return true
-    }
-    if (logger.isDebugEnabled) {
-      logger.debug("unable to find meta image")
-    }
+    if (this.checkForLinkTag) { return true }
+    if (this.checkForOpenGraphTag) { return true }
+    if (logger.isDebugEnabled) { logger.debug("unable to find meta image") }
     false
   }
 
@@ -141,9 +129,7 @@ class StandardImageExtractor(
       val meta: Elements = doc.select("meta[property~=og:image]")
       import scala.collection.JavaConversions._
       for (item <- meta) {
-        if (item.attr("content").length < 1) {
-          return false
-        }
+        if (item.attr("content").length < 1) { return false }
         val imagePath: String = this.buildImagePath(item.attr("content"))
         this.image.imageSrc = imagePath
         this.image.imageExtractionType = "opengraph"
@@ -172,9 +158,7 @@ class StandardImageExtractor(
       val meta: Elements = doc.select("link[rel~=image_src]")
       import scala.collection.JavaConversions._
       for (item <- meta) {
-        if (item.attr("href").length < 1) {
-          return false
-        }
+        if (item.attr("href").length < 1) { return false }
         this.image.imageSrc = this.buildImagePath(item.attr("href"))
         this.image.imageExtractionType = "linktag"
         this.image.confidenceScore = 100
@@ -192,18 +176,13 @@ class StandardImageExtractor(
     }
   }
 
-  def getAllImages: ArrayList[Element] = {
-    null
-  }
+  def getAllImages: ArrayList[Element] = { null }
 
   def getImagesFromNode(node: Element): Option[Elements] = {
     val images: Elements = node.select("img")
 
-    if (images == null || images.size < 1) {
-      None
-    } else {
-      Some(images)
-    }
+    if (images == null || images.size < 1) { None }
+    else { Some(images) }
   }
 
   def getImageCandidates(node: Element): Option[ArrayList[Element]] = {
@@ -213,9 +192,7 @@ class StandardImageExtractor(
       images <- getImagesFromNode(node)
       filteredImages <- filterBadNames(images)
       goodImages <- findImagesThatPassByteSizeTest(filteredImages)
-    } {
-      return Some(goodImages)
-    }
+    } { return Some(goodImages) }
     None
 
   }
@@ -239,9 +216,7 @@ class StandardImageExtractor(
         case e: NullPointerException => {
           if (node != null) {
             Some(DepthTraversal(node.parent, parentDepth + 1, 0))
-          } else {
-            None
-          }
+          } else { None }
 
         }
       }
@@ -276,9 +251,8 @@ class StandardImageExtractor(
         var highScoreImage: Element = null
         scoredImages.foreach {
           case (key, value) => {
-            if (highScoreImage == null) {
-              highScoreImage = key
-            } else {
+            if (highScoreImage == null) { highScoreImage = key }
+            else {
               if (value > scoredImages.get(highScoreImage).get) {
                 highScoreImage = key
               }
@@ -294,9 +268,7 @@ class StandardImageExtractor(
           this.image.bytes = f.length.asInstanceOf[Int]
           if (scoredImages.size > 0) {
             this.image.confidenceScore = (100 / scoredImages.size)
-          } else {
-            this.image.confidenceScore = 0
-          }
+          } else { this.image.confidenceScore = 0 }
           trace(
             logPrefix + "High Score Image is: " + buildImagePath(
               highScoreImage.attr("src")))
@@ -361,9 +333,7 @@ class StandardImageExtractor(
           trace(logPrefix + " Removing image: " + image.attr("src"))
           image.remove()
         }
-      } catch {
-        case e: Exception => warn(e, e.toString)
-      }
+      } catch { case e: Exception => warn(e, e.toString) }
       cnt += 1
     })
 
@@ -380,11 +350,8 @@ class StandardImageExtractor(
   private def filterBadNames(images: Elements): Option[ArrayList[Element]] = {
     val goodImages: ArrayList[Element] = new ArrayList[Element]
     for (image <- images) {
-      if (this.isOkImageFileName(image)) {
-        goodImages.add(image)
-      } else {
-        image.remove()
-      }
+      if (this.isOkImageFileName(image)) { goodImages.add(image) }
+      else { image.remove() }
     }
     if (goodImages != null && goodImages.size > 0) Some(goodImages) else None
   }
@@ -396,9 +363,7 @@ class StandardImageExtractor(
     */
   private def isOkImageFileName(imageNode: Element): Boolean = {
     var imgSrc: String = imageNode.attr("src")
-    if (string.isNullOrEmpty(imgSrc)) {
-      return false
-    }
+    if (string.isNullOrEmpty(imgSrc)) { return false }
     matchBadImageNames.reset(imgSrc)
     if (matchBadImageNames.find) {
       if (logger.isDebugEnabled) {
@@ -438,9 +403,7 @@ class StandardImageExtractor(
 
       } catch {
         case e: NullPointerException => {
-          if (logger.isDebugEnabled) {
-            logger.debug(e.toString, e)
-          }
+          if (logger.isDebugEnabled) { logger.debug(e.toString, e) }
         }
       }
     }
@@ -451,9 +414,7 @@ class StandardImageExtractor(
       this.image.confidenceScore = 90
       this.image.bytes = this.getBytesForImage(knownImgSrc)
     } else {
-      if (logger.isDebugEnabled) {
-        logger.debug("No known images found")
-      }
+      if (logger.isDebugEnabled) { logger.debug("No known images found") }
     }
 
   }
@@ -504,9 +465,7 @@ class StandardImageExtractor(
       try {
         val currentBytes: Int = entity.getContentLength.asInstanceOf[Int]
         val contentType: Header = entity.getContentType
-        if (contentType.getValue.contains("image")) {
-          bytes = currentBytes
-        }
+        if (contentType.getValue.contains("image")) { bytes = currentBytes }
       } catch {
         case e: NullPointerException => {
           warn(e, "SRC: " + src + " " + e.toString)
@@ -514,14 +473,10 @@ class StandardImageExtractor(
         }
       }
     } catch {
-      case e: Exception => {
-        warn(e, "BIG SRC: " + src + " " + e.toString)
-
-      }
+      case e: Exception => { warn(e, "BIG SRC: " + src + " " + e.toString) }
     } finally {
-      try {
-        httpget.abort()
-      } catch {
+      try { httpget.abort() }
+      catch {
         case e: NullPointerException => {
           logger.error("HttpGet is null, can't abortz")
         }
@@ -594,11 +549,7 @@ class StandardImageExtractor(
                 continueVar = false
               }
             }
-          } catch {
-            case e: IOException => {
-              throw e
-            }
-          }
+          } catch { case e: IOException => { throw e } }
         }
         if (continueVar) {
           if (this.isBannerDimensions(width, height)) {
@@ -641,10 +592,7 @@ class StandardImageExtractor(
         }
       } catch {
         case e: SecretGifException => {}
-        case e: Exception => {
-          warn(e, e.toString)
-
-        }
+        case e: Exception          => { warn(e, e.toString) }
       }
     }
     imageResults
@@ -658,35 +606,25 @@ class StandardImageExtractor(
     * @param height
     */
   private def isBannerDimensions(width: Int, height: Int): Boolean = {
-    if (width == height) {
-      return false
-    }
+    if (width == height) { return false }
     if (width > height) {
       val diff: Float = (width.asInstanceOf[Float] / height.asInstanceOf[Float])
-      if (diff > 5) {
-        return true
-      }
+      if (diff > 5) { return true }
     }
     if (height > width) {
       val diff: Float = height.asInstanceOf[Float] / width.asInstanceOf[Float]
-      if (diff > 5) {
-        return true
-      }
+      if (diff > 5) { return true }
     }
     false
   }
 
-  def getMinBytesForImages: Int = {
-    minBytesForImages
-  }
+  def getMinBytesForImages: Int = { minBytesForImages }
 
   def setMinBytesForImages(minBytesForImages: Int) {
     this.minBytesForImages = minBytesForImages
   }
 
-  def getTempStoragePath: String = {
-    tempStoragePath
-  }
+  def getTempStoragePath: String = { tempStoragePath }
 
   def setTempStoragePath(tempStoragePath: String) {
     this.tempStoragePath = tempStoragePath

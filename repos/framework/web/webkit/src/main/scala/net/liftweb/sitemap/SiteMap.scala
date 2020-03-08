@@ -152,9 +152,8 @@ sealed class SiteMapSingleton {
 
       def theFunc: Menu => List[Menu] =
         (menu: Menu) => {
-          if (fired) {
-            List(menu)
-          } else if (pf.isDefinedAt(menu)) {
+          if (fired) { List(menu) }
+          else if (pf.isDefinedAt(menu)) {
             fired = true
             pf(menu)
           } else List(menu.rebuild(doAMenuItem _))

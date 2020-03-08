@@ -17,9 +17,7 @@ class PostToEventStreamStepImplTest
     with Matchers
     with GivenWhenThen
     with ScalaFutures {
-  test("name") {
-    new Fixture().step.name should be("postTaskStatusEvent")
-  }
+  test("name") { new Fixture().step.name should be("postTaskStatusEvent") }
 
   test("process running notification of staged task") {
     Given("an existing STAGED task")
@@ -177,9 +175,7 @@ class PostToEventStreamStepImplTest
         block: => Unit): (Vector[ILoggingEvent], Seq[MarathonEvent]) = {
       var logs: Vector[ILoggingEvent] = Vector.empty
       val events = captureEvents.forBlock {
-        logs = CaptureLogEvents.forBlock {
-          block
-        }
+        logs = CaptureLogEvents.forBlock { block }
       }
 
       (logs, events)

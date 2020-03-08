@@ -31,9 +31,7 @@ case class ApiIssue(
         // "diff_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.diff"),
         // "patch_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.patch")
       ))
-  } else {
-    None
-  }
+  } else { None }
 }
 
 object ApiIssue {

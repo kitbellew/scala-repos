@@ -89,16 +89,12 @@ package scala.reflect.internal.util {
       elements foreach (hs += _)
       // don't throw the following into a retained collection so gc
       // can remove them
-      for (i <- 0 until size) {
-        hs += Collider("b" + i)
-      }
+      for (i <- 0 until size) { hs += Collider("b" + i) }
       System.gc()
       Thread.sleep(1000)
       assert(hs.size == 200)
       elements foreach { i => assert(hs contains i) }
-      for (i <- 0 until size) {
-        assert(!(hs contains Collider("b" + i)))
-      }
+      for (i <- 0 until size) { assert(!(hs contains Collider("b" + i))) }
       hs.diagnostics.fullyValidate
     }
 

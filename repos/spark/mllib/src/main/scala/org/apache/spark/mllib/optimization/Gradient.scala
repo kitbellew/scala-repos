@@ -188,9 +188,7 @@ class LogisticGradient(numClasses: Int) extends Gradient {
         if (label > 0) {
           // The following is equivalent to log(1 + exp(margin)) but more numerically stable.
           MLUtils.log1pExp(margin)
-        } else {
-          MLUtils.log1pExp(margin) - margin
-        }
+        } else { MLUtils.log1pExp(margin) - margin }
       case _ =>
         /**
           * For Multinomial Logistic Regression.
@@ -238,16 +236,11 @@ class LogisticGradient(numClasses: Int) extends Gradient {
           if (maxMargin > 0) {
             for (i <- 0 until numClasses - 1) {
               margins(i) -= maxMargin
-              if (i == maxMarginIndex) {
-                temp += math.exp(-maxMargin)
-              } else {
-                temp += math.exp(margins(i))
-              }
+              if (i == maxMarginIndex) { temp += math.exp(-maxMargin) }
+              else { temp += math.exp(margins(i)) }
             }
           } else {
-            for (i <- 0 until numClasses - 1) {
-              temp += math.exp(margins(i))
-            }
+            for (i <- 0 until numClasses - 1) { temp += math.exp(margins(i)) }
           }
           temp
         }
@@ -265,11 +258,8 @@ class LogisticGradient(numClasses: Int) extends Gradient {
         val loss =
           if (label > 0.0) math.log1p(sum) - marginY else math.log1p(sum)
 
-        if (maxMargin > 0) {
-          loss + maxMargin
-        } else {
-          loss
-        }
+        if (maxMargin > 0) { loss + maxMargin }
+        else { loss }
     }
   }
 }
@@ -325,9 +315,7 @@ class HingeGradient extends Gradient {
       val gradient = data.copy
       scal(-labelScaled, gradient)
       (gradient, 1.0 - labelScaled * dotProduct)
-    } else {
-      (Vectors.sparse(weights.size, Array.empty, Array.empty), 0.0)
-    }
+    } else { (Vectors.sparse(weights.size, Array.empty, Array.empty), 0.0) }
   }
 
   override def compute(
@@ -342,8 +330,6 @@ class HingeGradient extends Gradient {
     if (1.0 > labelScaled * dotProduct) {
       axpy(-labelScaled, data, cumGradient)
       1.0 - labelScaled * dotProduct
-    } else {
-      0.0
-    }
+    } else { 0.0 }
   }
 }

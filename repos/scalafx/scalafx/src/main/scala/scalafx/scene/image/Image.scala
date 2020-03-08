@@ -148,9 +148,7 @@ class Image(override val delegate: jfxsi.Image)
   /**
     * Cancels the background loading of this image.
     */
-  def cancel() {
-    delegate.cancel()
-  }
+  def cancel() { delegate.cancel() }
 
   /**
     * Indicates whether the image is being loaded in the background.

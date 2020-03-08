@@ -7,9 +7,7 @@ import scala.tools.nsc.util._
 import scala.reflect.internal.util.AbstractFileClassLoader
 
 object Test {
-  def main(args: Array[String]) {
-    run()
-  }
+  def main(args: Array[String]) { run() }
 
   def run(): Unit = {
     val settings = new Settings()

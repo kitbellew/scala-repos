@@ -37,16 +37,14 @@ trait BigIntegerIsEuclideanRing extends EuclideanRing[BigInteger] {
 // This is not included in the *Instances trait!
 trait BigIntegerIsNRoot extends NRoot[BigInteger] {
   def nroot(a: BigInteger, k: Int): BigInteger =
-    if (a.signum < 0 && k % 2 == 1) {
-      nroot(a.negate, k).negate
-    } else if (a.signum < 0) {
+    if (a.signum < 0 && k % 2 == 1) { nroot(a.negate, k).negate }
+    else if (a.signum < 0) {
       throw new ArithmeticException(
         "Cannot find %d-root of negative number." format k)
     } else {
       def findNroot(b: BigInteger, i: Int): BigInteger =
-        if (i < 0) {
-          b
-        } else {
+        if (i < 0) { b }
+        else {
           val c = b setBit i
 
           if (((c pow k) compareTo a) <= 0)

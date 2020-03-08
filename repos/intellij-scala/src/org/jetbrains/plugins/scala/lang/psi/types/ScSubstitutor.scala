@@ -528,9 +528,7 @@ class ScSubstitutor(
                   s.hasRepeatedParam),
                 rt)
           },
-          typeMap.map {
-            case (s, sign) => (s, sign.updateTypes(substInternal))
-          }
+          typeMap.map { case (s, sign) => (s, sign.updateTypes(substInternal)) }
         )
         //todo: this is ugly workaround for
         result = updateThisType match {
@@ -579,14 +577,10 @@ class ScUndefinedSubstitutor(
   def addSubst(subst: ScUndefinedSubstitutor): ScUndefinedSubstitutor = {
     var res: ScUndefinedSubstitutor = this
     for ((name, seq) <- subst.upperMap) {
-      for (upper <- seq) {
-        res = res.addUpper(name, upper, variance = 0)
-      }
+      for (upper <- seq) { res = res.addUpper(name, upper, variance = 0) }
     }
     for ((name, seq) <- subst.lowerMap) {
-      for (lower <- seq) {
-        res = res.addLower(name, lower, variance = 0)
-      }
+      for (lower <- seq) { res = res.addLower(name, lower, variance = 0) }
     }
 
     for ((name, seq) <- subst.upperAdditionalMap) {
@@ -894,9 +888,7 @@ class ScUndefinedSubstitutor(
                       val seqIterator = set.iterator
                       while (seqIterator.hasNext) {
                         val upper = seqIterator.next()
-                        if (!lower.conforms(subst.subst(upper))) {
-                          return None
-                        }
+                        if (!lower.conforms(subst.subst(upper))) { return None }
                       }
                     }
                   case None => tvMap += ((name, rType))
@@ -905,9 +897,7 @@ class ScUndefinedSubstitutor(
             case None =>
           }
 
-          if (tvMap.get(name).isEmpty) {
-            tvMap += ((name, Nothing))
-          }
+          if (tvMap.get(name).isEmpty) { tvMap += ((name, Nothing)) }
           tvMap.get(name)
       }
     }

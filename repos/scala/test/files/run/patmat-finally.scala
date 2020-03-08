@@ -5,9 +5,8 @@ object Test extends App {
       case _ =>
     }
 
-    try {
-      ()
-    } finally {
+    try { () }
+    finally {
       s2 match {
         case _ =>
       }

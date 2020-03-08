@@ -123,9 +123,7 @@ class LocalKafkaEventStore(
               left(
                 StoreFailure(
                   "Failed insertion due to excessively large event(s)!"))
-            } else {
-              encodeAll(postSplit ::: xs, messages)
-            }
+            } else { encodeAll(postSplit ::: xs, messages) }
           }
 
         case Nil => right(messages)

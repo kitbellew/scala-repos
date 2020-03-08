@@ -23,9 +23,7 @@ package object shapeless {
 
   // Basic definitions
   type Id[+T] = T
-  type Const[C] = {
-    type λ[T] = C
-  }
+  type Const[C] = { type λ[T] = C }
 
   type ¬[T] = T => Nothing
   type ¬¬[T] = ¬[¬[T]]
@@ -33,9 +31,7 @@ package object shapeless {
   type ∨[T, U] = ¬[¬[T] ∧ ¬[U]]
 
   // Type-lambda for context bound
-  type |∨|[T, U] = {
-    type λ[X] = ¬¬[X] <:< (T ∨ U)
-  }
+  type |∨|[T, U] = { type λ[X] = ¬¬[X] <:< (T ∨ U) }
 
   // Type inequalities
   trait =:!=[A, B]
@@ -51,9 +47,7 @@ package object shapeless {
   implicit def nsubAmbig2[A, B >: A]: A <:!< B = unexpected
 
   // Type-lambda for context bound
-  type |¬|[T] = {
-    type λ[U] = U <:!< T
-  }
+  type |¬|[T] = { type λ[U] = U <:!< T }
 
   // Quantifiers
   type ∃[P[_]] = P[T] forSome { type T }
@@ -169,9 +163,7 @@ package shapeless {
             s"Could not find an implicit value of type $tpe to cache"
         }
         c.abort(c.enclosingPosition, errorMsg)
-      } else {
-        best.tree.asInstanceOf[Tree]
-      }
+      } else { best.tree.asInstanceOf[Tree] }
     }
   }
 }

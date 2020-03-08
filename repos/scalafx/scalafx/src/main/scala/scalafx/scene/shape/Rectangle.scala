@@ -62,16 +62,12 @@ class Rectangle(override val delegate: jfxss.Rectangle = new jfxss.Rectangle())
     * Defines the vertical diameter of the arc at the four corners of the rectangle.
     */
   def arcWidth: DoubleProperty = delegate.arcWidthProperty
-  def arcWidth_=(v: Double) {
-    arcWidth() = v
-  }
+  def arcWidth_=(v: Double) { arcWidth() = v }
 
   /**
     * Defines the horizontal diameter of the arc at the four corners of the rectangle.
     */
   def arcHeight: DoubleProperty = delegate.arcHeightProperty
-  def arcHeight_=(v: Double) {
-    arcHeight() = v
-  }
+  def arcHeight_=(v: Double) { arcHeight() = v }
 
 }

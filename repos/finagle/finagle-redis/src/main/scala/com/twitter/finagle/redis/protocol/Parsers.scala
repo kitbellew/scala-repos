@@ -22,9 +22,8 @@ trait UnifiedProtocolCodec {
       i: Long,
       lines: ByteArrays,
       doneFn: ByteArrays => T): NextStep = {
-    if (i <= 0) {
-      emit(doneFn(lines.reverse))
-    } else {
+    if (i <= 0) { emit(doneFn(lines.reverse)) }
+    else {
       readLine { line =>
         val header = line(0)
         header match {

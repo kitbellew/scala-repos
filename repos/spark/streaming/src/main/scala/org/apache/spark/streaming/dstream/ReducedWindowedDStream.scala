@@ -181,10 +181,7 @@ private[streaming] class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
       .asInstanceOf[RDD[(K, Array[Iterable[V]])]]
       .mapValues(mergeValues)
 
-    if (filterFunc.isDefined) {
-      Some(mergedValuesRDD.filter(filterFunc.get))
-    } else {
-      Some(mergedValuesRDD)
-    }
+    if (filterFunc.isDefined) { Some(mergedValuesRDD.filter(filterFunc.get)) }
+    else { Some(mergedValuesRDD) }
   }
 }

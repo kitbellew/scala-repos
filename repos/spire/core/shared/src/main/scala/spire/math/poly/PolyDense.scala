@@ -65,9 +65,8 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
       ct: ClassTag[C]): Polynomial[C] = {
     var i = coeffs.length - 2
     while (i >= 0 && coeffs(i) === ring.zero) i -= 1
-    if (i < 0) {
-      new PolyDense(new Array[C](0))
-    } else {
+    if (i < 0) { new PolyDense(new Array[C](0)) }
+    else {
       val arr = new Array[C](i + 1)
       System.arraycopy(coeffs, 0, arr, 0, i + 1)
       new PolyDense(arr)
@@ -92,9 +91,7 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
       var c1 = coeffs(odd)
       cfor(odd - 2)(_ >= 1, _ - 2) { i => c1 = coeffs(i) + c1 * x2 }
       c0 + c1 * x
-    } else {
-      c0
-    }
+    } else { c0 }
   }
 
   def derivative(implicit ring: Ring[C], eq: Eq[C]): Polynomial[C] = {
@@ -166,9 +163,8 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
         q: Array[C],
         u: Array[C],
         n: Int): (Polynomial[C], Polynomial[C]) = {
-      if (u.isEmpty || n < 0) {
-        (polyFromCoeffsLE(q), polyFromCoeffsBE(u))
-      } else {
+      if (u.isEmpty || n < 0) { (polyFromCoeffsLE(q), polyFromCoeffsBE(u)) }
+      else {
         val v0 = if (rhs.isZero) field.zero else rhs.maxOrderTermCoeff
         val q0 = u(0) / v0
         val uprime = zipSum(u, rhs.coeffsArray.reverse.map(_ * -q0))
@@ -190,9 +186,8 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
   }
 
   def *:(k: C)(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[C] =
-    if (k === ring.zero) {
-      Polynomial.dense(new Array[C](0))
-    } else {
+    if (k === ring.zero) { Polynomial.dense(new Array[C](0)) }
+    else {
       val cs = new Array[C](coeffs.length)
       cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = k * coeffs(i) }
       Polynomial.dense(cs)
@@ -205,9 +200,8 @@ object PolyDense {
       rhs: Polynomial[C]): Polynomial[C] = {
     val lcoeffs = lhs.coeffsArray
     val rcoeffs = rhs.coeffsArray
-    if (lcoeffs.length < rcoeffs.length) {
-      plusDense(rhs, lhs)
-    } else {
+    if (lcoeffs.length < rcoeffs.length) { plusDense(rhs, lhs) }
+    else {
       val cs = new Array[C](lcoeffs.length)
       cfor(0)(_ < rcoeffs.length, _ + 1) { i =>
         cs(i) = lcoeffs(i) + rcoeffs(i)

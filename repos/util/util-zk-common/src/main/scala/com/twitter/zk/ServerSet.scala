@@ -57,9 +57,7 @@ object ServerSet {
   def apply(
       underlying: ServerSetImpl,
       path: String,
-      pool: FuturePool): ServerSet = {
-    new ServerSet(underlying, path, pool)
-  }
+      pool: FuturePool): ServerSet = { new ServerSet(underlying, path, pool) }
 
   def apply(
       client: ZooKeeperClient,

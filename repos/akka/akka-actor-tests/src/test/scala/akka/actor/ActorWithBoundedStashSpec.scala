@@ -28,9 +28,7 @@ object ActorWithBoundedStashSpec {
 
     }
 
-    def afterWorldBehaviour: Receive = {
-      case _ ⇒ stash()
-    }
+    def afterWorldBehaviour: Receive = { case _ ⇒ stash() }
   }
 
   class StashingActorWithOverflow extends Actor with Stash {

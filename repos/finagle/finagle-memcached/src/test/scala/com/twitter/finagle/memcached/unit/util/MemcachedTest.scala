@@ -61,9 +61,7 @@ class MemcachedTest
       .newRichClient("memcache=127.0.0.1:12345")
 
     // wait until we have at least 1 node, or risk getting a ShardNotAvailable exception
-    eventually {
-      assert(st.gauges(Seq("memcache", "live_nodes"))() >= 1)
-    }
+    eventually { assert(st.gauges(Seq("memcache", "live_nodes"))() >= 1) }
 
     val numberRequests = 10
     Time.withCurrentTimeFrozen { _ =>

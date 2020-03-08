@@ -33,7 +33,9 @@ abstract class NeedsXEarly {
 }
 
 // should pass
-class GoodX extends { val x = 1 } with NeedsXEarly {}
+class GoodX extends {
+  val x = 1
+} with NeedsXEarly {}
 
 // should throw
 class BadX extends NeedsXEarly {

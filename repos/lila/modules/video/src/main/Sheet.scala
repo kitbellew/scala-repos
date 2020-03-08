@@ -54,9 +54,7 @@ private[video] final class Sheet(url: String, api: VideoApi) {
               api.video.save(video)
             case _ => funit
           }
-          .recover {
-            case e: Exception => logger.warn("sheet update", e)
-          }
+          .recover { case e: Exception => logger.warn("sheet update", e) }
       }
       .sequenceFu
       .void >>

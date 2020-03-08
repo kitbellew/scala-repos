@@ -96,9 +96,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
           }
           .getOrElse {
             val d = super.default
-            if (meta.nullable == Some(true) && d == None) {
-              Some(None)
-            } else d
+            if (meta.nullable == Some(true) && d == None) { Some(None) }
+            else d
           }
       override def length: Option[Int] = {
         val l = super.length
@@ -300,9 +299,7 @@ trait MySQLProfile extends JdbcProfile { profile =>
           "if(id-" + (-increment) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
         else
           "if(id+" + increment + ">" + maxValue + "," + minValue + ",id+" + increment + ")"
-      } else {
-        "id+(" + increment + ")"
-      }
+      } else { "id+(" + increment + ")" }
       DDL(
         Iterable(
           "create table " + quoteIdentifier(

@@ -11,9 +11,7 @@ object Test2 {
   object Id {
     def unapply(xxxx: Any): Some[a.type] = Some[a.type](a)
   }
-  val b: a.type = (a: a.type) match {
-    case Id(x) => x
-  }
+  val b: a.type = (a: a.type) match { case Id(x) => x }
 }
 
 object Test3 {
@@ -21,9 +19,7 @@ object Test3 {
   object Id {
     def unapply(xxxx: Any): Some[Test3.type] = Some[Test3.type](Test3)
   }
-  val b: Test3.type = a match {
-    case Id(x) => x
-  }
+  val b: Test3.type = a match { case Id(x) => x }
 }
 
 class Test4 {
@@ -32,9 +28,7 @@ class Test4 {
     def unapply(xxxx: Any): Some[Test4.this.type] =
       Some[Test4.this.type](Test4.this)
   }
-  val b: Test4.this.type = a match {
-    case Id(x) => x
-  }
+  val b: Test4.this.type = a match { case Id(x) => x }
 }
 
 class Super5 {
@@ -48,7 +42,5 @@ class Test5 extends Super5 {
     def unapply(xxxx: Any): Some[Test5.super.q.type] =
       Some[Test5.super.q.type](q1)
   }
-  val b: Test5.super.q.type = a match {
-    case Id(x) => x
-  }
+  val b: Test5.super.q.type = a match { case Id(x) => x }
 }

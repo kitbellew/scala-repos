@@ -41,9 +41,7 @@ private[receiver] abstract class RateLimiter(conf: SparkConf) extends Logging {
   private lazy val rateLimiter =
     GuavaRateLimiter.create(getInitialRateLimit().toDouble)
 
-  def waitToPush() {
-    rateLimiter.acquire()
-  }
+  def waitToPush() { rateLimiter.acquire() }
 
   /**
     * Return the current rate limit. If no limit has been set so far, it returns {{{Long.MaxValue}}}.
@@ -58,11 +56,8 @@ private[receiver] abstract class RateLimiter(conf: SparkConf) extends Logging {
     */
   private[receiver] def updateRate(newRate: Long): Unit =
     if (newRate > 0) {
-      if (maxRateLimit > 0) {
-        rateLimiter.setRate(newRate.min(maxRateLimit))
-      } else {
-        rateLimiter.setRate(newRate)
-      }
+      if (maxRateLimit > 0) { rateLimiter.setRate(newRate.min(maxRateLimit)) }
+      else { rateLimiter.setRate(newRate) }
     }
 
   /**

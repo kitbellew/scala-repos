@@ -46,22 +46,13 @@ private[spark] object UIUtils extends Logging {
     dateFormat.get.format(new Date(timestamp))
 
   def formatDuration(milliseconds: Long): String = {
-    if (milliseconds < 100) {
-      return "%d ms".format(milliseconds)
-    }
+    if (milliseconds < 100) { return "%d ms".format(milliseconds) }
     val seconds = milliseconds.toDouble / 1000
-    if (seconds < 1) {
-      return "%.1f s".format(seconds)
-    }
-    if (seconds < 60) {
-      return "%.0f s".format(seconds)
-    }
+    if (seconds < 1) { return "%.1f s".format(seconds) }
+    if (seconds < 60) { return "%.0f s".format(seconds) }
     val minutes = seconds / 60
-    if (minutes < 10) {
-      return "%.1f min".format(minutes)
-    } else if (minutes < 60) {
-      return "%.0f min".format(minutes)
-    }
+    if (minutes < 10) { return "%.1f min".format(minutes) }
+    else if (minutes < 60) { return "%.0f min".format(minutes) }
     val hours = minutes / 60
     "%.1f h".format(hours)
   }
@@ -77,13 +68,9 @@ private[spark] object UIUtils extends Logging {
       val year = 365 * day
 
       def toString(num: Long, unit: String): String = {
-        if (num == 0) {
-          ""
-        } else if (num == 1) {
-          s"$num $unit"
-        } else {
-          s"$num ${unit}s"
-        }
+        if (num == 0) { "" }
+        else if (num == 1) { s"$num $unit" }
+        else { s"$num ${unit}s" }
       }
 
       val millisecondsString =
@@ -127,23 +114,14 @@ private[spark] object UIUtils extends Logging {
     val thousand = 1e3
 
     val (value, unit) = {
-      if (records >= 2 * trillion) {
-        (records / trillion, " T")
-      } else if (records >= 2 * billion) {
-        (records / billion, " B")
-      } else if (records >= 2 * million) {
-        (records / million, " M")
-      } else if (records >= 2 * thousand) {
-        (records / thousand, " K")
-      } else {
-        (records, "")
-      }
+      if (records >= 2 * trillion) { (records / trillion, " T") }
+      else if (records >= 2 * billion) { (records / billion, " B") }
+      else if (records >= 2 * million) { (records / million, " M") }
+      else if (records >= 2 * thousand) { (records / thousand, " K") }
+      else { (records, "") }
     }
-    if (unit.isEmpty) {
-      "%d".formatLocal(Locale.US, value.toInt)
-    } else {
-      "%.1f%s".formatLocal(Locale.US, value, unit)
-    }
+    if (unit.isEmpty) { "%d".formatLocal(Locale.US, value.toInt) }
+    else { "%.1f%s".formatLocal(Locale.US, value, unit) }
   }
 
   // Yarn has to go through a proxy so the base uri is provided and has to be on all links
@@ -304,21 +282,15 @@ private[spark] object UIUtils extends Logging {
     val listingTableClass = {
       val _tableClass =
         if (stripeRowsWithCss) TABLE_CLASS_STRIPED else TABLE_CLASS_NOT_STRIPED
-      if (sortable) {
-        _tableClass + " sortable"
-      } else {
-        _tableClass
-      }
+      if (sortable) { _tableClass + " sortable" }
+      else { _tableClass }
     }
     val colWidth = 100.toDouble / headers.size
     val colWidthAttr = if (fixedWidth) colWidth + "%" else ""
 
     def getClass(index: Int): String = {
-      if (index < headerClasses.size) {
-        headerClasses(index)
-      } else {
-        ""
-      }
+      if (index < headerClasses.size) { headerClasses(index) }
+      else { "" }
     }
 
     val newlinesInHeader = headers.exists(_.contains("\n"))
@@ -327,9 +299,7 @@ private[spark] object UIUtils extends Logging {
         <ul class="unstyled">
           {header.split("\n").map { case t => <li> {t} </li> }}
         </ul>
-      } else {
-        Text(header)
-      }
+      } else { Text(header) }
     }
 
     val headerRow: Seq[Node] = {

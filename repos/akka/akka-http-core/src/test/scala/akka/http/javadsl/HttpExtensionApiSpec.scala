@@ -655,7 +655,5 @@ class HttpExtensionApiSpec
   private def waitFor[T](completionStage: CompletionStage[T]): T =
     completionStage.toCompletableFuture.get(1, TimeUnit.SECONDS)
 
-  override protected def afterAll(): Unit = {
-    system.terminate()
-  }
+  override protected def afterAll(): Unit = { system.terminate() }
 }

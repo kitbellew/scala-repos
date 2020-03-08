@@ -66,14 +66,10 @@ object CSVRelation extends Logging {
       // If `dropMalformed` is enabled, then it needs to parse all the values
       // so that we can decide which row is malformed.
       requiredFields ++ schemaFields.filterNot(requiredFields.contains(_))
-    } else {
-      requiredFields
-    }
+    } else { requiredFields }
     val safeRequiredIndices = new Array[Int](safeRequiredFields.length)
     schemaFields.zipWithIndex
-      .filter {
-        case (field, _) => safeRequiredFields.contains(field)
-      }
+      .filter { case (field, _) => safeRequiredFields.contains(field) }
       .foreach {
         case (field, index) =>
           safeRequiredIndices(safeRequiredFields.indexOf(field)) = index
@@ -95,9 +91,7 @@ object CSVRelation extends Logging {
             tokens ++ new Array[String](schemaFields.length - tokens.length)
           } else if (params.permissive && schemaFields.length < tokens.length) {
             tokens.take(schemaFields.length)
-          } else {
-            tokens
-          }
+          } else { tokens }
         try {
           var index: Int = 0
           var subIndex: Int = 0
@@ -112,9 +106,7 @@ object CSVRelation extends Logging {
               field.dataType,
               field.nullable,
               params.nullValue)
-            if (subIndex < requiredSize) {
-              row(subIndex) = value
-            }
+            if (subIndex < requiredSize) { row(subIndex) = value }
             subIndex = subIndex + 1
           }
           Some(row)
@@ -172,11 +164,8 @@ private[sql] class CsvOutputWriter(
   private val csvWriter = new LineCsvWriter(params, dataSchema.fieldNames.toSeq)
 
   private def rowToString(row: Seq[Any]): Seq[String] = row.map { field =>
-    if (field != null) {
-      field.toString
-    } else {
-      params.nullValue
-    }
+    if (field != null) { field.toString }
+    else { params.nullValue }
   }
 
   override def write(row: Row): Unit =
@@ -186,14 +175,10 @@ private[sql] class CsvOutputWriter(
     // TODO: Instead of converting and writing every row, we should use the univocity buffer
     val resultString =
       csvWriter.writeRow(rowToString(row.toSeq(dataSchema)), firstRow)
-    if (firstRow) {
-      firstRow = false
-    }
+    if (firstRow) { firstRow = false }
     text.set(resultString)
     recordWriter.write(NullWritable.get(), text)
   }
 
-  override def close(): Unit = {
-    recordWriter.close(context)
-  }
+  override def close(): Unit = { recordWriter.close(context) }
 }

@@ -1,4 +1,8 @@
-trait T[A] { trait U { type W = A; val x = 3 } }
+trait T[A] {
+  trait U {
+    type W = A; val x = 3
+  }
+}
 
 object Test {
   val x: ({ type V = T[this.type] })#V = null

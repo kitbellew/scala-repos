@@ -1,5 +1,7 @@
 object Test {
-  trait ZW[S] { type T }
+  trait ZW[S] {
+    type T
+  }
   def ZipWith[S, M <: ZW[S]]: M#T = sys.error("ZW")
 
   // meh must be parameterised to force an asSeenFrom that

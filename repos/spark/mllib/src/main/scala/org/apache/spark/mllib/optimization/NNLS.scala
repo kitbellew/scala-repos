@@ -44,9 +44,7 @@ private[spark] object NNLS {
     }
   }
 
-  def createWorkspace(n: Int): Workspace = {
-    new Workspace(n)
-  }
+  def createWorkspace(n: Int): Workspace = { new Workspace(n) }
 
   /**
     * Solve a least squares problem, possibly with nonnegativity constraints, by a modified
@@ -108,9 +106,7 @@ private[spark] object NNLS {
       // project the gradient
       i = 0
       while (i < n) {
-        if (grad(i) > 0.0 && x(i) == 0.0) {
-          grad(i) = 0.0
-        }
+        if (grad(i) > 0.0 && x(i) == 0.0) { grad(i) = 0.0 }
         i = i + 1
       }
       val ngrad = blas.ddot(n, grad, 1, grad, 1)
@@ -130,24 +126,16 @@ private[spark] object NNLS {
           // reject the CG step if it could lead to premature termination
           blas.dcopy(n, grad, 1, dir, 1)
           ndir = blas.ddot(n, dir, 1, dir, 1)
-        } else {
-          step = dstep
-        }
-      } else {
-        ndir = blas.ddot(n, dir, 1, dir, 1)
-      }
+        } else { step = dstep }
+      } else { ndir = blas.ddot(n, dir, 1, dir, 1) }
 
       // terminate?
-      if (stop(step, ndir, nx)) {
-        return x.clone
-      }
+      if (stop(step, ndir, nx)) { return x.clone }
 
       // don't run through the walls
       i = 0
       while (i < n) {
-        if (step * dir(i) > x(i)) {
-          step = x(i) / dir(i)
-        }
+        if (step * dir(i) > x(i)) { step = x(i) / dir(i) }
         i = i + 1
       }
 
@@ -157,9 +145,7 @@ private[spark] object NNLS {
         if (step * dir(i) > x(i) * (1 - 1e-14)) {
           x(i) = 0
           lastWall = iterno
-        } else {
-          x(i) -= step * dir(i)
-        }
+        } else { x(i) -= step * dir(i) }
         i = i + 1
       }
 

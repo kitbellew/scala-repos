@@ -94,9 +94,7 @@ class AlarmTest extends FunSuite with LocalConductors {
         }
       }
 
-      localWhenFinished(conductor) {
-        assert(ctr == 2)
-      }
+      localWhenFinished(conductor) { assert(ctr == 2) }
     }
 
   trait GenerationAlarmHelper {

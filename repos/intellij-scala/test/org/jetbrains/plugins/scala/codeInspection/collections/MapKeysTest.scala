@@ -48,9 +48,7 @@ class MapKeysTest extends OperationsOnCollectionInspectionTest {
       iteratorHint)
   }
 
-  def test5(): Unit = {
-    checkTextHasNoErrors("Seq((1, 2)).map(x => x._1)")
-  }
+  def test5(): Unit = { checkTextHasNoErrors("Seq((1, 2)).map(x => x._1)") }
 }
 
 class MapValuesTest extends OperationsOnCollectionInspectionTest {
@@ -87,7 +85,5 @@ class MapValuesTest extends OperationsOnCollectionInspectionTest {
       iteratorHint)
   }
 
-  def test4(): Unit = {
-    checkTextHasNoErrors("Seq((1, 2)).map(x => x._2)")
-  }
+  def test4(): Unit = { checkTextHasNoErrors("Seq((1, 2)).map(x => x._2)") }
 }

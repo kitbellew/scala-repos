@@ -12,9 +12,7 @@ object iq {
     /* Test isEmpty.
      * Expected: Empty
      */
-    if (q.isEmpty) {
-      Console.println("Empty")
-    }
+    if (q.isEmpty) { Console.println("Empty") }
 
     /* Test enqueing. */
     val q2 = q.enqueue(42).enqueue(0)
@@ -105,7 +103,5 @@ object iq {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    iq.main
-  }
+  def main(args: Array[String]) { iq.main }
 }

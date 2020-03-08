@@ -378,9 +378,7 @@ object PersistentFSMSpec {
       case Event(e, _) ⇒ goto(LookingAround)
     }
 
-    onTransition {
-      case (from, to) ⇒ reportActor ! s"$from -> $to"
-    }
+    onTransition { case (from, to) ⇒ reportActor ! s"$from -> $to" }
 
     override def applyEvent(
         domainEvent: DomainEvent,

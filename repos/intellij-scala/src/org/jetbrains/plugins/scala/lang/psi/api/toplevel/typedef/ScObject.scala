@@ -22,9 +22,7 @@ trait ScObject
   //Is this object generated as case class companion module
   private var isSyntheticCaseClassCompanion: Boolean = false
   def isSyntheticObject: Boolean = isSyntheticCaseClassCompanion
-  def setSyntheticObject() {
-    isSyntheticCaseClassCompanion = true
-  }
+  def setSyntheticObject() { isSyntheticCaseClassCompanion = true }
 
   def getObjectToken: PsiElement = findFirstChildByType(ScalaTokenTypes.kOBJECT)
 

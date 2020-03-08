@@ -169,9 +169,7 @@ class LogOffsetTest extends ZooKeeperTestHarness {
           .partitionErrorAndOffsets(topicAndPartition)
           .offsets
 
-      if (consumerOffsets(0) == 1) {
-        offsetChanged = true
-      }
+      if (consumerOffsets(0) == 1) { offsetChanged = true }
     }
     assertFalse(offsetChanged)
   }

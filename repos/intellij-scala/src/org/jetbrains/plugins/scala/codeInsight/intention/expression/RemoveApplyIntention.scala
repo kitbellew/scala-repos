@@ -74,9 +74,7 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
     def showErrorHint(hint: String) {
       if (ApplicationManager.getApplication.isUnitTestMode) {
         throw new RuntimeException(hint)
-      } else {
-        HintManager.getInstance().showErrorHint(editor, hint)
-      }
+      } else { HintManager.getInstance().showErrorHint(editor, hint) }
     }
 
     val expr: ScMethodCall =

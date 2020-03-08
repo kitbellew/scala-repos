@@ -58,13 +58,9 @@ object LayerTest extends JFXApp {
 
   // Handle Layers
   // Handler for Layer 1
-  layer1.onMousePressed = (e: MouseEvent) => {
-    gc1.fillOval(e.x, e.y, 20, 20)
-  }
+  layer1.onMousePressed = (e: MouseEvent) => { gc1.fillOval(e.x, e.y, 20, 20) }
   // Handler for Layer 2
-  layer2.onMousePressed = (e: MouseEvent) => {
-    gc2.fillOval(e.x, e.y, 20, 20)
-  }
+  layer2.onMousePressed = (e: MouseEvent) => { gc2.fillOval(e.x, e.y, 20, 20) }
 
   // Create Choice Box
   val layer1Title = "Layer 1 is Green"
@@ -75,11 +71,8 @@ object LayerTest extends JFXApp {
   val selectionModel: SelectionModel[String] = cb.selectionModel.get
   selectionModel.selectedItem.onChange(
     (ov: Any, olaValue: Any, newValue: Any) => {
-      if (newValue == layer1Title) {
-        layer1.toFront()
-      } else if (newValue == layer2Title) {
-        layer2.toFront()
-      }
+      if (newValue == layer1Title) { layer1.toFront() }
+      else if (newValue == layer2Title) { layer2.toFront() }
     })
   cb.value = layer1Title
 

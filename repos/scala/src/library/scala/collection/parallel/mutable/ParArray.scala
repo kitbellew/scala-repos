@@ -111,9 +111,7 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
             val end = (traversed + sz) min until
             traversed = end
             new ParArrayIterator(start, end, arr)
-          } else {
-            new ParArrayIterator(traversed, traversed, arr)
-          }
+          } else { new ParArrayIterator(traversed, traversed, arr) }
     }
 
     override def split: Seq[ParArrayIterator] = {
@@ -125,9 +123,7 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
           new ParArrayIterator(i + splitpoint, until, arr))
         i = until
         sq
-      } else {
-        Seq(this)
-      }
+      } else { Seq(this) }
     }
 
     override def toString = "ParArrayIterator(" + i + ", " + until + ")"
@@ -859,9 +855,7 @@ object ParArray extends ParFactory[ParArray] {
 
   def fromTraversables[T](xss: GenTraversableOnce[T]*) = {
     val cb = ParArrayCombiner[T]()
-    for (xs <- xss) {
-      cb ++= xs.seq
-    }
+    for (xs <- xss) { cb ++= xs.seq }
     cb.result
   }
 

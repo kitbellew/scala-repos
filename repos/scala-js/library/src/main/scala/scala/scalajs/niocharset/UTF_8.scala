@@ -105,24 +105,21 @@ private[niocharset] object UTF_8
           result
         }
 
-        if (inPos == inEnd) {
-          finalize(CoderResult.UNDERFLOW)
-        } else {
+        if (inPos == inEnd) { finalize(CoderResult.UNDERFLOW) }
+        else {
           val leading = inArray(inPos).toInt
           if (leading >= 0) {
             // US-ASCII repertoire
-            if (outPos == outEnd) {
-              finalize(CoderResult.OVERFLOW)
-            } else {
+            if (outPos == outEnd) { finalize(CoderResult.OVERFLOW) }
+            else {
               outArray(outPos) = leading.toChar
               loop(inPos + 1, outPos + 1)
             }
           } else {
             // Multi-byte
             val length = lengthByLeading(leading & 0x7f)
-            if (length == -1) {
-              finalize(CoderResult.malformedForLength(1))
-            } else {
+            if (length == -1) { finalize(CoderResult.malformedForLength(1)) }
+            else {
               val decoded = {
                 @inline
                 def inArrayOr0(offset: Int): Int =
@@ -135,9 +132,8 @@ private[niocharset] object UTF_8
                 else decode4(leading, b2, inArrayOr0(2), inArrayOr0(3))
               }
 
-              if (decoded.failure != null) {
-                finalize(decoded.failure)
-              } else if (decoded.low == 0) {
+              if (decoded.failure != null) { finalize(decoded.failure) }
+              else if (decoded.low == 0) {
                 // not a surrogate pair
                 if (outPos == outEnd)
                   finalize(CoderResult.OVERFLOW)
@@ -175,24 +171,21 @@ private[niocharset] object UTF_8
           result
         }
 
-        if (!in.hasRemaining) {
-          CoderResult.UNDERFLOW
-        } else {
+        if (!in.hasRemaining) { CoderResult.UNDERFLOW }
+        else {
           val leading = in.get().toInt
           if (leading >= 0) {
             // US-ASCII repertoire
-            if (!out.hasRemaining) {
-              finalize(1, CoderResult.OVERFLOW)
-            } else {
+            if (!out.hasRemaining) { finalize(1, CoderResult.OVERFLOW) }
+            else {
               out.put(leading.toChar)
               loop()
             }
           } else {
             // Multi-byte
             val length = lengthByLeading(leading & 0x7f)
-            if (length == -1) {
-              finalize(1, CoderResult.malformedForLength(1))
-            } else {
+            if (length == -1) { finalize(1, CoderResult.malformedForLength(1)) }
+            else {
               var bytesRead: Int = 1
 
               val decoded = {
@@ -246,9 +239,7 @@ private[niocharset] object UTF_8
         if (codePoint < 0x80) {
           // Should have been encoded with only 1 byte
           DecodedMultiByte(CoderResult.malformedForLength(2))
-        } else {
-          DecodedMultiByte(codePoint.toChar)
-        }
+        } else { DecodedMultiByte(codePoint.toChar) }
       }
     }
 
@@ -265,9 +256,7 @@ private[niocharset] object UTF_8
           // Should have been encoded with only 1 or 2 bytes
           // or it is a surrogate, which is not a valid code point
           DecodedMultiByte(CoderResult.malformedForLength(3))
-        } else {
-          DecodedMultiByte(codePoint.toChar)
-        }
+        } else { DecodedMultiByte(codePoint.toChar) }
       }
     }
 
@@ -333,9 +322,8 @@ private[niocharset] object UTF_8
           result
         }
 
-        if (inPos == inEnd) {
-          finalize(CoderResult.UNDERFLOW)
-        } else {
+        if (inPos == inEnd) { finalize(CoderResult.UNDERFLOW) }
+        else {
           val c1 = inArray(inPos)
 
           if (c1 < 0x80) {
@@ -387,9 +375,7 @@ private[niocharset] object UTF_8
                 }
               }
             }
-          } else {
-            finalize(CoderResult.malformedForLength(1))
-          }
+          } else { finalize(CoderResult.malformedForLength(1)) }
         }
       }
 
@@ -408,9 +394,8 @@ private[niocharset] object UTF_8
           result
         }
 
-        if (!in.hasRemaining) {
-          CoderResult.UNDERFLOW
-        } else {
+        if (!in.hasRemaining) { CoderResult.UNDERFLOW }
+        else {
           val c1 = in.get()
 
           if (c1 < 0x80) {
@@ -462,9 +447,7 @@ private[niocharset] object UTF_8
                 }
               }
             }
-          } else {
-            finalize(1, CoderResult.malformedForLength(1))
-          }
+          } else { finalize(1, CoderResult.malformedForLength(1)) }
         }
       }
 

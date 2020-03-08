@@ -20,17 +20,14 @@ class CaptureEvents(eventStream: EventStream) {
     var capture = Vector.empty[MarathonEvent]
     val captureEventsActor = actor {
       new Act {
-        become {
-          case captureMe: MarathonEvent => capture :+= captureMe
-        }
+        become { case captureMe: MarathonEvent => capture :+= captureMe }
       }
     }
     eventStream.subscribe(captureEventsActor, classOf[MarathonEvent])
     eventStream.subscribe(captureEventsActor, classOf[String])
 
-    try {
-      block
-    } finally {
+    try { block }
+    finally {
       eventStream.unsubscribe(captureEventsActor)
       captureEventsActor ! PoisonPill
       val probe = TestProbe()

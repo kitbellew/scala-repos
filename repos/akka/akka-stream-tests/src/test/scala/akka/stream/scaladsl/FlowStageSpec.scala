@@ -272,9 +272,7 @@ class FlowStageSpec
               override def onPush(elem: Int, ctx: Context[Int]) = {
                 if (elem == 2) {
                   throw new IllegalArgumentException("two not allowed")
-                } else {
-                  emit(Iterator(elem, elem), ctx)
-                }
+                } else { emit(Iterator(elem, elem), ctx) }
               }
             }
           })

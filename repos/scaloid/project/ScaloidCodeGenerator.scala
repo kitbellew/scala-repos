@@ -119,9 +119,7 @@ class ScaloidCodeGenerator(
       mappings: PredefinedCodeMappings,
       separator: String = ", ") =
     mappings
-      .collect {
-        case (kind, fn) if cls.isA(kind) => fn(cls)
-      }
+      .collect { case (kind, fn) if cls.isA(kind) => fn(cls) }
       .mkString(separator)
 
   class ConstructorGenerator(con: ScalaConstructor) {
@@ -197,9 +195,7 @@ class ScaloidCodeGenerator(
       case t :: Nil => "p: " + genType(t)
       case ts =>
         ts.zipWithIndex
-          .map {
-            case (t, i) => s"p${i + 1}: ${genType(t)}"
-          }
+          .map { case (t, i) => s"p${i + 1}: ${genType(t)}" }
           .mkString(", ")
     }
 
@@ -207,11 +203,7 @@ class ScaloidCodeGenerator(
     types match {
       case t :: Nil => "p"
       case ts =>
-        ts.zipWithIndex
-          .map {
-            case (_, i) => "p" + (i + 1)
-          }
-          .mkString(", ")
+        ts.zipWithIndex.map { case (_, i) => "p" + (i + 1) }.mkString(", ")
     }
 
   // listener

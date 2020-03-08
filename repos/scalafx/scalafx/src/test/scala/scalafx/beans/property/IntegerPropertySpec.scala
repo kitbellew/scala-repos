@@ -74,9 +74,7 @@ class IntegerPropertySpec extends FlatSpec with BeforeAndAfterEach {
     integerProperty.name should equal("Test Integer")
   }
 
-  it should "know its bean" in {
-    integerProperty.bean should equal(bean)
-  }
+  it should "know its bean" in { integerProperty.bean should equal(bean) }
 
   it should "be bindable to another Integer Property" in {
     integerProperty <== integerProperty2
@@ -302,12 +300,8 @@ class IntegerPropertySpec extends FlatSpec with BeforeAndAfterEach {
     var invalidateCount = 0
     var changeCount = 0
     val binding = integerProperty * integerProperty2
-    binding onInvalidate {
-      invalidateCount += 1
-    }
-    binding onChange {
-      changeCount += 1
-    }
+    binding onInvalidate { invalidateCount += 1 }
+    binding onChange { changeCount += 1 }
     integerProperty() = 1
     invalidateCount should equal(1)
     changeCount should equal(0)

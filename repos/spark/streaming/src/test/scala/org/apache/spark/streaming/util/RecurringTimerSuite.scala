@@ -36,9 +36,7 @@ class RecurringTimerSuite extends SparkFunSuite with PrivateMethodTester {
     val timer = new RecurringTimer(
       clock,
       100,
-      time => {
-        results.add(time)
-      },
+      time => { results.add(time) },
       "RecurringTimerSuite-basic")
     timer.start(0)
     eventually(timeout(10.seconds), interval(10.millis)) {
@@ -61,9 +59,7 @@ class RecurringTimerSuite extends SparkFunSuite with PrivateMethodTester {
     val timer = new RecurringTimer(
       clock,
       100,
-      time => {
-        results.add(time)
-      },
+      time => { results.add(time) },
       "RecurringTimerSuite-SPARK-10224")
     timer.start(0)
     eventually(timeout(10.seconds), interval(10.millis)) {

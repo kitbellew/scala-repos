@@ -90,9 +90,7 @@ class ClientDispatcherTest extends FunSuite {
 
     val r = service(QueryRequest("SELECT * FROM q"))
     clientq.offer(errpacket)
-    intercept[ServerError] {
-      Await.result(r)
-    }
+    intercept[ServerError] { Await.result(r) }
   }
 
   def createFields(numFields: Int): List[Field] = {
@@ -159,9 +157,7 @@ class ClientDispatcherTest extends FunSuite {
     val valueSize = 7
     val bufferSize = numFields * valueSize
     val bw = BufferWriter(new Array[Byte](bufferSize))
-    for (i <- 1 to numFields) {
-      bw.writeLengthCodedString("value" + i)
-    }
+    for (i <- 1 to numFields) { bw.writeLengthCodedString("value" + i) }
 
     Packet(0, bw)
   }

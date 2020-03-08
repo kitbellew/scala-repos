@@ -1003,9 +1003,7 @@ trait EvaluatorModule[M[+_]]
                       fullEval(rewritten, splits2, id :: splits.keys.toList)
                     back.eval(state)
                 })
-              } yield {
-                result.transform(idSpec)
-              }
+              } yield { result.transform(idSpec) }
 
               table map {
                 PendingTable(_, graph, TransSpec1.Id, IdentityOrder(graph))
@@ -1025,9 +1023,8 @@ trait EvaluatorModule[M[+_]]
                   predTable.reduce(Forall reducer MorphContext(ctx, graph))(
                     Forall.monoid))
 
-                assertion = if (truthiness getOrElse false) {
-                  N.point(())
-                } else {
+                assertion = if (truthiness getOrElse false) { N.point(()) }
+                else {
                   for {
                     _ <- report.error(graph.loc, "Assertion failed")
                     _ <- report
@@ -1134,9 +1131,8 @@ trait EvaluatorModule[M[+_]]
               val valueSpec = DerefObjectStatic(
                 DerefObjectStatic(Leaf(Source), paths.Value),
                 CPathField(valueField))
-              if (parent.valueKeys contains id) {
-                prepareEval(parent, splits)
-              } else {
+              if (parent.valueKeys contains id) { prepareEval(parent, splits) }
+              else {
                 for {
                   pending <- prepareEval(parent, splits)
                   table = pending.table.transform(liftToValues(pending.trans))
@@ -1280,13 +1276,7 @@ trait EvaluatorModule[M[+_]]
     private[this] def replaceNode(
         graph: DepGraph,
         from: DepGraph,
-        to: DepGraph) = {
-      graph mapDown { recurse =>
-        {
-          case `from` => to
-        }
-      }
-    }
+        to: DepGraph) = { graph mapDown { recurse => { case `from` => to } } }
 
     /**
       * Returns all forcing points in the graph, ordered topologically.
@@ -1306,9 +1296,8 @@ trait EvaluatorModule[M[+_]]
         case dag.UnfixedSolution(_, solution) => Set(solution)
         case dag.Extra(expr)                  => Set(expr)
       }
-      if (queue.isEmpty) {
-        acc
-      } else {
+      if (queue.isEmpty) { acc }
+      else {
         val (graph, queue2) = queue.dequeue
 
         val (queue3, addend) = {
@@ -1354,9 +1343,7 @@ trait EvaluatorModule[M[+_]]
             case dag.Memoize(parent, _) => queue2 enqueue parent
           }
 
-          val addend = Some(graph) collect {
-            case fp: StagingPoint => fp
-          }
+          val addend = Some(graph) collect { case fp: StagingPoint => fp }
 
           (queue3, addend)
         }
@@ -1405,19 +1392,13 @@ trait EvaluatorModule[M[+_]]
             Kernel(nodes3, k.seen ++ nodes3)
           }
 
-          if (kernels2 forall { _.nodes.isEmpty }) {
-            Set()
-          } else {
-            bfs(kernels2)
-          }
-        } else {
-          results
-        }
+          if (kernels2 forall { _.nodes.isEmpty }) { Set() }
+          else { bfs(kernels2) }
+        } else { results }
       }
 
-      if (nodes.size == 1) {
-        nodes.headOption
-      } else {
+      if (nodes.size == 1) { nodes.headOption }
+      else {
         val kernels = nodes map { n => Kernel(Set(n), Set(n)) }
         val results = bfs(kernels)
 

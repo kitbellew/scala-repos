@@ -35,14 +35,10 @@ class FailureSuite extends SparkFunSuite with BeforeAndAfter with Logging {
   private val numBatches = 30
   private var directory: File = null
 
-  before {
-    directory = Utils.createTempDir()
-  }
+  before { directory = Utils.createTempDir() }
 
   after {
-    if (directory != null) {
-      Utils.deleteRecursively(directory)
-    }
+    if (directory != null) { Utils.deleteRecursively(directory) }
     StreamingContext.getActive().foreach { _.stop() }
 
     // Stop SparkContext if active

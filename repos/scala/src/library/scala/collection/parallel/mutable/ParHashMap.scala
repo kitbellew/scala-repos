@@ -335,9 +335,7 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
         new FillBlocks(buckets, table, offset, fp),
         new FillBlocks(buckets, table, offset + fp, howmany - fp))
     }
-    override def merge(that: FillBlocks) {
-      this.result += that.result
-    }
+    override def merge(that: FillBlocks) { this.result += that.result }
     def shouldSplitFurther =
       howmany > scala.collection.parallel.thresholdFromSize(
         ParHashMapCombiner.numblocks,

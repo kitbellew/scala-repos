@@ -174,11 +174,9 @@ package object prime {
     }
 
     def factor(n: SafeLong): Factors = {
-      if (n == 1) {
-        Factors.one
-      } else if (isPrime(n)) {
-        Factors(Map(n -> 1), Positive)
-      } else if (n % 2 == 0) {
+      if (n == 1) { Factors.one }
+      else if (isPrime(n)) { Factors(Map(n -> 1), Positive) }
+      else if (n % 2 == 0) {
         var x = n / 2
         var e = 1
         while (x % 2 == 0) { x /= 2; e += 1 }

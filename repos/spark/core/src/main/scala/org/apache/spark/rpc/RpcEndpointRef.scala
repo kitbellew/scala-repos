@@ -116,9 +116,7 @@ private[spark] abstract class RpcEndpointRef(conf: SparkConf)
             e)
       }
 
-      if (attempts < maxRetries) {
-        Thread.sleep(retryWaitMs)
-      }
+      if (attempts < maxRetries) { Thread.sleep(retryWaitMs) }
     }
 
     throw new SparkException(

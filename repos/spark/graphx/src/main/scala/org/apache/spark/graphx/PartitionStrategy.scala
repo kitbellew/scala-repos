@@ -142,11 +142,8 @@ object PartitionStrategy {
         src: VertexId,
         dst: VertexId,
         numParts: PartitionID): PartitionID = {
-      if (src < dst) {
-        math.abs((src, dst).hashCode()) % numParts
-      } else {
-        math.abs((dst, src).hashCode()) % numParts
-      }
+      if (src < dst) { math.abs((src, dst).hashCode()) % numParts }
+      else { math.abs((dst, src).hashCode()) % numParts }
     }
   }
 

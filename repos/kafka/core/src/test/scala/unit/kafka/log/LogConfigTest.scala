@@ -77,9 +77,7 @@ class LogConfigTest {
     values.foreach((value) => {
       val props = new Properties
       props.setProperty(name, value.toString)
-      intercept[Exception] {
-        LogConfig(props)
-      }
+      intercept[Exception] { LogConfig(props) }
     })
   }
 

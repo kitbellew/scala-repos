@@ -126,9 +126,7 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
             if (!hasDequeuedSpeculatedTask) {
               hasDequeuedSpeculatedTask = true
               Some(0, TaskLocality.PROCESS_LOCAL)
-            } else {
-              None
-            }
+            } else { None }
           }
         }
       }
@@ -185,9 +183,7 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
       () => Unit)
     // It's an error if the job completes successfully even though no committer was authorized,
     // so throw an exception if the job was allowed to complete.
-    intercept[TimeoutException] {
-      Await.result(futureAction, 5 seconds)
-    }
+    intercept[TimeoutException] { Await.result(futureAction, 5 seconds) }
     assert(tempDir.list().size === 0)
   }
 

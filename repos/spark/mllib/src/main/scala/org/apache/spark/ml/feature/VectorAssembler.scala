@@ -68,9 +68,7 @@ class VectorAssembler(override val uid: String)
           // If the input column doesn't have ML attribute, assume numeric.
           if (attr == UnresolvedAttribute) {
             Some(NumericAttribute.defaultAttr.withName(c))
-          } else {
-            Some(attr.withName(c))
-          }
+          } else { Some(attr.withName(c)) }
         case _: NumericType | BooleanType =>
           // If the input column type is a compatible scalar type, assume numeric.
           Some(NumericAttribute.defaultAttr.withName(c))
@@ -83,9 +81,7 @@ class VectorAssembler(override val uid: String)
                 if (attr.name.isDefined) {
                   // TODO: Define a rigorous naming scheme.
                   attr.withName(c + "_" + attr.name.get)
-                } else {
-                  attr.withName(c + "_" + i)
-                }
+                } else { attr.withName(c + "_" + i) }
             }
           } else {
             // Otherwise, treat all attributes as numeric. If we cannot get the number of attributes

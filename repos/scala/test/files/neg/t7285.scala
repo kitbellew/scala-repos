@@ -24,10 +24,7 @@ object Test2 {
 
     case object Up extends Base {}
 
-    (d1: Base, d2: Base) =>
-      (d1) match {
-        case Test2.Base.Up => false
-      }
+    (d1: Base, d2: Base) => (d1) match { case Test2.Base.Up => false }
   }
 }
 

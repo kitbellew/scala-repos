@@ -140,11 +140,10 @@ class ScPackageImpl private (val pack: PsiPackage)
     val count = ScalaPsiManager.instance(getProject).getModificationCount
     if (tuple == null || tuple._2.longValue != count) {
       val clazz = manager.getPackageObjectByName(getQualifiedName, scope)
-      tuple =
-        (
-          clazz,
-          java.lang.Long.valueOf(count)
-        ) // TODO is it safe to cache this ignoring `scope`?
+      tuple = (
+        clazz,
+        java.lang.Long.valueOf(count)
+      ) // TODO is it safe to cache this ignoring `scope`?
       pack.putUserData(CachesUtil.PACKAGE_OBJECT_KEY, tuple)
     }
     Option(tuple._1)
@@ -154,9 +153,8 @@ class ScPackageImpl private (val pack: PsiPackage)
     val myQualifiedName = getQualifiedName
     if (myQualifiedName.length == 0) return null
     val lastDot: Int = myQualifiedName.lastIndexOf('.')
-    if (lastDot < 0) {
-      ScPackageImpl.findPackage(getProject, "")
-    } else {
+    if (lastDot < 0) { ScPackageImpl.findPackage(getProject, "") }
+    else {
       ScPackageImpl.findPackage(
         getProject,
         myQualifiedName.substring(0, lastDot))
@@ -190,17 +188,11 @@ object ScPackageImpl {
 
   class DoNotProcessPackageObjectException extends ControlThrowable
 
-  def isPackageObjectProcessing: Boolean = {
-    processing.get() > 0
-  }
+  def isPackageObjectProcessing: Boolean = { processing.get() > 0 }
 
-  def startPackageObjectProcessing() {
-    processing.set(processing.get() + 1)
-  }
+  def startPackageObjectProcessing() { processing.set(processing.get() + 1) }
 
-  def stopPackageObjectProcessing() {
-    processing.set(processing.get() - 1)
-  }
+  def stopPackageObjectProcessing() { processing.set(processing.get() - 1) }
 
   private val processing: ThreadLocal[Long] = new ThreadLocal[Long] {
     override def initialValue(): Long = 0

@@ -44,9 +44,7 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
       .subscribe(
         ProjectTopics.PROJECT_ROOTS,
         new ModuleRootAdapter {
-          override def rootsChanged(event: ModuleRootEvent) {
-            forceFSRescan()
-          }
+          override def rootsChanged(event: ModuleRootEvent) { forceFSRescan() }
         })
     CompilerTestUtil.enableExternalCompiler()
 
@@ -119,9 +117,7 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
           saveProject()
           assert(ioFile.exists, "File does not exist: " + ioFile.getPath)
           CompilerManager.getInstance(getProject).rebuild(callback)
-        } catch {
-          case e: Exception => throw new RuntimeException(e)
-        }
+        } catch { case e: Exception => throw new RuntimeException(e) }
       }
     })
     val maxCompileTime = 6000
@@ -166,11 +162,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
           Assert.fail("Compiler errors occurred! " + myMessages.mkString("\n"))
         }
         Assert.assertFalse("Code did not compile!", aborted)
-      } catch {
-        case t: Throwable => myError = t
-      } finally {
-        semaphore.up()
-      }
+      } catch { case t: Throwable => myError = t }
+      finally { semaphore.up() }
     }
 
     def hasError = myError != null
@@ -195,9 +188,7 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
       StringUtil.convertLineSeparators(text))
   }
 
-  protected def getSourceRootDir: VirtualFile = {
-    getBaseDir.findChild("src")
-  }
+  protected def getSourceRootDir: VirtualFile = { getBaseDir.findChild("src") }
 
   protected def saveProject(): Unit = {
     val applicationEx = ApplicationManagerEx.getApplicationEx

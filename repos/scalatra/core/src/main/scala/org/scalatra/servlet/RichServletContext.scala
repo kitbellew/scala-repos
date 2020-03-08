@@ -24,11 +24,8 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
     * at that path.
     */
   def resource(path: String): Option[URL] = {
-    try {
-      Option(sc.getResource(path))
-    } catch {
-      case e: MalformedURLException => throw e
-    }
+    try { Option(sc.getResource(path)) }
+    catch { case e: MalformedURLException => throw e }
   }
 
   /**

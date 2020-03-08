@@ -4,7 +4,9 @@ object Test {
     bar =
       try { 0 }
       catch { case ex: Throwable => 0 }
-    new { foo(bar) }
+    new {
+      foo(bar)
+    }
   }
 
   def main(args: Array[String]): Unit =

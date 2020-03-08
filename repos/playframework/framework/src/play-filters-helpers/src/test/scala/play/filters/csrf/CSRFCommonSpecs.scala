@@ -119,9 +119,7 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
         val token = response.body
         token must not be empty
         val rspToken = getToken(response)
-        rspToken must beSome.like {
-          case s => compareTokens(token, s)
-        }
+        rspToken must beSome.like { case s => compareTokens(token, s) }
       }
     }
     "not set the token if already set" in {

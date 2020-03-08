@@ -174,7 +174,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
     def incompleteInputError(msg: String): Unit =
       throw new MalformedInput(source.content.length - 1, msg)
 
-    object symbXMLBuilder extends SymbolicXMLBuilder(this, preserveWS = true) { // DEBUG choices
+    object symbXMLBuilder
+        extends SymbolicXMLBuilder(this, preserveWS = true) { // DEBUG choices
       val global: self.global.type = self.global
     }
 
@@ -893,9 +894,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         case _            => List(right)
       }
       if (isExpr) {
-        if (treeInfo.isLeftAssoc(op)) {
-          Apply(mkSelection(left), arguments)
-        } else {
+        if (treeInfo.isLeftAssoc(op)) { Apply(mkSelection(left), arguments) }
+        else {
           val x = freshTermName()
           Block(
             List(
@@ -906,9 +906,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
                 stripParens(left))),
             Apply(mkSelection(right), List(Ident(x))))
         }
-      } else {
-        Apply(Ident(op.encode), stripParens(left) :: arguments)
-      }
+      } else { Apply(Ident(op.encode), stripParens(left) :: arguments) }
     }
 
     /* --------- OPERAND/OPERATOR STACK --------------------------------------- */
@@ -1307,9 +1305,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             accept(DOT)
             t = selector(t)
             if (in.token == DOT) t = selectors(t, typeOK, in.skipToken())
-          } else {
-            t = selectors(t, typeOK, dotOffset)
-          }
+          } else { t = selectors(t, typeOK, dotOffset) }
         }
       }
       t
@@ -1477,9 +1473,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
 
     /* ------------- NEW LINES ------------------------------------------------- */
 
-    def newLineOpt(): Unit = {
-      if (in.token == NEWLINE) in.nextToken()
-    }
+    def newLineOpt(): Unit = { if (in.token == NEWLINE) in.nextToken() }
 
     def newLinesOpt(): Unit = {
       if (in.token == NEWLINE || in.token == NEWLINES)
@@ -1647,9 +1641,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             if (in.token == YIELD) {
               in.nextToken()
               gen.mkFor(enums, gen.Yield(expr()))
-            } else {
-              gen.mkFor(enums, expr())
-            }
+            } else { gen.mkFor(enums, expr()) }
           }
           def adjustStart(tree: Tree) =
             if (tree.pos.isRange && start < tree.pos.start)
@@ -1664,9 +1656,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
           parseReturn
         case THROW =>
           def parseThrow =
-            atPos(in.skipToken()) {
-              Throw(expr())
-            }
+            atPos(in.skipToken()) { Throw(expr()) }
           parseThrow
         case IMPLICIT =>
           implicitClosure(in.skipToken(), location)
@@ -2208,12 +2198,13 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         *
         * XXX: Hook for IDE
         */
-      def simplePattern(): Tree = (
-        // simple diagnostics for this entry point
-        simplePattern(() =>
-          syntaxErrorOrIncompleteAnd(
-            "illegal start of simple pattern",
-            skipIt = true)(errorPatternTree)))
+      def simplePattern(): Tree =
+        (
+          // simple diagnostics for this entry point
+          simplePattern(() =>
+            syntaxErrorOrIncompleteAnd(
+              "illegal start of simple pattern",
+              skipIt = true)(errorPatternTree)))
       def simplePattern(onError: () => Tree): Tree = {
         val start = in.offset
         in.token match {
@@ -2819,9 +2810,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             in.nextToken()
             newmods = newmods | Flags.DEFAULTINIT
             EmptyTree
-          } else {
-            expr()
-          }
+          } else { expr() }
         } else {
           newmods = newmods | Flags.DEFERRED
           EmptyTree
@@ -2959,9 +2948,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
                   in.nextToken()
                   newmods |= Flags.MACRO
                 }
-              } else {
-                accept(EQUALS)
-              }
+              } else { accept(EQUALS) }
               expr()
             }
           DefDef(newmods, name.toTermName, tparams, vparamss, restype, rhs)
@@ -3237,9 +3224,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
           val parents = templateParents()
           val (self1, body1) = templateBodyOpt(parenMeansSyntaxError = false)
           (parents, self1, earlyDefs ::: body1)
-        } else {
-          (List(), self, body)
-        }
+        } else { (List(), self, body) }
       } else {
         val parents = templateParents()
         val (self, body) = templateBodyOpt(parenMeansSyntaxError = false)
@@ -3337,9 +3322,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
     def templateBodyOpt(
         parenMeansSyntaxError: Boolean): (ValDef, List[Tree]) = {
       newLineOptWhenFollowedBy(LBRACE)
-      if (in.token == LBRACE) {
-        templateBody(isPre = false)
-      } else {
+      if (in.token == LBRACE) { templateBody(isPre = false) }
+      else {
         if (in.token == LPAREN) {
           if (parenMeansSyntaxError)
             syntaxError(
@@ -3548,16 +3532,13 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             val start = in.skipToken()
             if (isIdent) stats += implicitClosure(start, InBlock)
             else stats ++= localDef(Flags.IMPLICIT)
-          } else {
-            stats ++= localDef(0)
-          }
+          } else { stats ++= localDef(0) }
           acceptStatSepOpt()
         } else if (isExprIntro) {
           stats += statement(InBlock)
           if (!isCaseDefEnd) acceptStatSep()
-        } else if (isStatSep) {
-          in.nextToken()
-        } else {
+        } else if (isStatSep) { in.nextToken() }
+        else {
           val addendum = if (isModifier) " (no modifiers allowed here)" else ""
           syntaxErrorOrIncomplete(
             "illegal start of statement" + addendum,
@@ -3592,9 +3573,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             in.flushDoc
             val pkg = pkgQualId()
 
-            if (in.token == EOF) {
-              ts += makePackaging(start, pkg, List())
-            } else if (isStatSep) {
+            if (in.token == EOF) { ts += makePackaging(start, pkg, List()) }
+            else if (isStatSep) {
               in.nextToken()
               ts += makePackaging(start, pkg, topstats())
             } else {
@@ -3603,9 +3583,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
               ts ++= topStatSeq()
             }
           }
-        } else {
-          ts ++= topStatSeq()
-        }
+        } else { ts ++= topStatSeq() }
         ts.toList
       }
 

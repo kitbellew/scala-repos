@@ -71,12 +71,7 @@ private[play] object PlayIO {
     * Logs any IOExceptions encountered.
     */
   def closeQuietly(closeable: Closeable) = {
-    try {
-      if (closeable != null) {
-        closeable.close()
-      }
-    } catch {
-      case e: IOException => logger.warn("Error closing stream", e)
-    }
+    try { if (closeable != null) { closeable.close() } }
+    catch { case e: IOException => logger.warn("Error closing stream", e) }
   }
 }

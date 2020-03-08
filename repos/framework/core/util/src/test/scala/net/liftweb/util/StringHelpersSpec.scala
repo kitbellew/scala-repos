@@ -92,9 +92,7 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
       })
       (doesntContainUnderscores && isCamelCased)
     }
-    "return an empty string if given null" in {
-      camelify(null) must_== ""
-    }
+    "return an empty string if given null" in { camelify(null) must_== "" }
     "leave a CamelCased name untouched" in {
       forAll(camelCasedStrings) { (name: String) => camelify(name) == name }
     }
@@ -111,9 +109,7 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
   }
 
   "SuperListString" should {
-    """allow "foo" / "bar" """ in {
-      ("foo" / "bar") must_== List("foo", "bar")
-    }
+    """allow "foo" / "bar" """ in { ("foo" / "bar") must_== List("foo", "bar") }
 
     """allow "foo" / "bar" / "baz" """ in {
       ("foo" / "bar" / "baz") must_== List("foo", "bar", "baz")
@@ -141,9 +137,7 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
   }
 
   "The StringHelpers capify function" should {
-    "capitalize a word" in {
-      capify("hello") must_== "Hello"
-    }
+    "capitalize a word" in { capify("hello") must_== "Hello" }
     "capitalize the first letters of 2 words" in {
       capify("hello world") must_== "Hello World"
     }
@@ -164,17 +158,13 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
     }
   }
   "The StringHelpers clean function" should {
-    "return an empty string if the input is null" in {
-      clean(null) must_== ""
-    }
+    "return an empty string if the input is null" in { clean(null) must_== "" }
     "remove every character which is not a-zA-Z0-9_" in {
       clean(" He@llo Wor+ld_!") must_== "HelloWorld_"
     }
   }
   "The StringHelpers randomString" should {
-    "return an empty string if size is 0" in {
-      randomString(0) must_== ""
-    }
+    "return an empty string if size is 0" in { randomString(0) must_== "" }
     /*
     "return a string of size n" in {
       randomString(10).toSeq must haveSize(10)
@@ -228,12 +218,8 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
     "return a positive Long value if the string starts with -" in {
       parseNumber("-1234") must_== -1234L
     }
-    "return 0 if the string is null" in {
-      parseNumber(null) must_== 0L
-    }
-    "return 0 if the string is empty" in {
-      parseNumber("") must_== 0L
-    }
+    "return 0 if the string is null" in { parseNumber(null) must_== 0L }
+    "return 0 if the string is empty" in { parseNumber("") must_== 0L }
     "return 0 if the string can't be parsed" in {
       parseNumber("string") must_== 0L
     }

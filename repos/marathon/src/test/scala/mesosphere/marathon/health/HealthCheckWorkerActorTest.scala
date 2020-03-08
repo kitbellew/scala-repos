@@ -30,9 +30,7 @@ class HealthCheckWorkerActorTest
     val socket = new ServerSocket(0)
     val socketPort: Int = socket.getLocalPort
 
-    val res = Future {
-      socket.accept().close()
-    }
+    val res = Future { socket.accept().close() }
 
     val task =
       MarathonTestHelper
@@ -53,18 +51,14 @@ class HealthCheckWorkerActorTest
     try { Await.result(res, 1.seconds) }
     finally { socket.close() }
 
-    expectMsgPF(1.seconds) {
-      case Healthy(taskId, _, _) => ()
-    }
+    expectMsgPF(1.seconds) { case Healthy(taskId, _, _) => () }
   }
 
   test("A health check worker should shut itself down") {
     val socket = new ServerSocket(0)
     val socketPort: Int = socket.getLocalPort
 
-    val res = Future {
-      socket.accept().close()
-    }
+    val res = Future { socket.accept().close() }
 
     val task =
       MarathonTestHelper
@@ -85,9 +79,7 @@ class HealthCheckWorkerActorTest
     try { Await.result(res, 1.seconds) }
     finally { socket.close() }
 
-    expectMsgPF(1.seconds) {
-      case _: HealthResult => ()
-    }
+    expectMsgPF(1.seconds) { case _: HealthResult => () }
 
     watch(ref)
     expectTerminated(ref)

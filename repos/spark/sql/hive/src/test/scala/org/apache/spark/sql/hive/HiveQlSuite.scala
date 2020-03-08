@@ -190,9 +190,7 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
     val s4 =
       """CREATE TABLE page_view
         |STORED BY 'storage.handler.class.name' AS SELECT * FROM src""".stripMargin
-    intercept[AnalysisException] {
-      extractTableDesc(s4)
-    }
+    intercept[AnalysisException] { extractTableDesc(s4) }
   }
 
   test("Test CTAS #5") {
@@ -232,9 +230,7 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   test("Invalid interval term should throw AnalysisException") {
     def assertError(sql: String, errorMessage: String): Unit = {
-      val e = intercept[AnalysisException] {
-        parser.parsePlan(sql)
-      }
+      val e = intercept[AnalysisException] { parser.parsePlan(sql) }
       assert(e.getMessage.contains(errorMessage))
     }
     assertError(

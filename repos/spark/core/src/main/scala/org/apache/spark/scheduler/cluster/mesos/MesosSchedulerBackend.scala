@@ -193,9 +193,7 @@ private[spark] class MesosSchedulerBackend(
   private def createExecArg(): Array[Byte] = {
     if (execArgs == null) {
       val props = new HashMap[String, String]
-      for ((key, value) <- sc.conf.getAll) {
-        props(key) = value
-      }
+      for ((key, value) <- sc.conf.getAll) { props(key) = value }
       // Serialize the map as an array of (String, String) pairs
       execArgs = Utils.serialize(props.toArray)
     }
@@ -218,11 +216,8 @@ private[spark] class MesosSchedulerBackend(
   private def inClassLoader()(fun: => Unit) = {
     val oldClassLoader = Thread.currentThread.getContextClassLoader
     Thread.currentThread.setContextClassLoader(classLoader)
-    try {
-      fun
-    } finally {
-      Thread.currentThread.setContextClassLoader(oldClassLoader)
-    }
+    try { fun }
+    finally { Thread.currentThread.setContextClassLoader(oldClassLoader) }
   }
 
   override def disconnected(d: SchedulerDriver) {}
@@ -394,9 +389,7 @@ private[spark] class MesosSchedulerBackend(
     val (executorInfo, remainingResources) =
       if (slaveIdToExecutorInfo.contains(slaveId)) {
         (slaveIdToExecutorInfo(slaveId), resources)
-      } else {
-        createExecutorInfo(resources, slaveId)
-      }
+      } else { createExecutorInfo(resources, slaveId) }
     slaveIdToExecutorInfo(slaveId) = executorInfo
     val (finalResources, cpuResources) =
       partitionResources(remainingResources, "cpus", scheduler.CPUS_PER_TASK)
@@ -424,9 +417,7 @@ private[spark] class MesosSchedulerBackend(
           // We lost the executor on this slave, so remember that it's gone
           removeExecutor(taskIdToSlaveId(tid), "Lost executor")
         }
-        if (TaskState.isFinished(state)) {
-          taskIdToSlaveId.remove(tid)
-        }
+        if (TaskState.isFinished(state)) { taskIdToSlaveId.remove(tid) }
       }
       scheduler.statusUpdate(tid, state, status.getData.asReadOnlyByteBuffer)
     }
@@ -440,15 +431,9 @@ private[spark] class MesosSchedulerBackend(
     }
   }
 
-  override def stop() {
-    if (mesosDriver != null) {
-      mesosDriver.stop()
-    }
-  }
+  override def stop() { if (mesosDriver != null) { mesosDriver.stop() } }
 
-  override def reviveOffers() {
-    mesosDriver.reviveOffers()
-  }
+  override def reviveOffers() { mesosDriver.reviveOffers() }
 
   override def frameworkMessage(
       d: SchedulerDriver,

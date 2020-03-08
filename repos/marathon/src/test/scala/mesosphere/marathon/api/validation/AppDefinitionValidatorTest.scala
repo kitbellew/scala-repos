@@ -30,33 +30,19 @@ class AppDefinitionValidatorTest
     MarathonTestHelper.validateJsonSchema(app)
   }
 
-  test("id '/app' is valid") {
-    testValidId("/app")
-  }
+  test("id '/app' is valid") { testValidId("/app") }
 
-  test("id '/hy-phenated' is valid") {
-    testValidId("/hy-phenated")
-  }
+  test("id '/hy-phenated' is valid") { testValidId("/hy-phenated") }
 
-  test("id '/numbered9' is valid") {
-    testValidId("/numbered9")
-  }
+  test("id '/numbered9' is valid") { testValidId("/numbered9") }
 
-  test("id '/9numbered' is valid") {
-    testValidId("/9numbered")
-  }
+  test("id '/9numbered' is valid") { testValidId("/9numbered") }
 
-  test("id '/num8bered' is valid") {
-    testValidId("/num8bered")
-  }
+  test("id '/num8bered' is valid") { testValidId("/num8bered") }
 
-  test("id '/dot.ted' is valid") {
-    testValidId("/dot.ted")
-  }
+  test("id '/dot.ted' is valid") { testValidId("/dot.ted") }
 
-  test("id '/deep/ly/nes/ted' is valid") {
-    testValidId("/deep/ly/nes/ted")
-  }
+  test("id '/deep/ly/nes/ted' is valid") { testValidId("/deep/ly/nes/ted") }
 
   test("id '/all.to-9gether/now-huh12/nest/nest' is valid") {
     testValidId("/all.to-9gether/now-huh12/nest/nest")
@@ -105,25 +91,15 @@ class AppDefinitionValidatorTest
     MarathonTestHelper.validateJsonSchema(app, valid = false)
   }
 
-  test("id '/.../asd' is INVALID") {
-    testInvalid("/.../asd")
-  }
+  test("id '/.../asd' is INVALID") { testInvalid("/.../asd") }
 
-  test("id '/app!' is INVALID") {
-    testInvalid("/app!' i")
-  }
+  test("id '/app!' is INVALID") { testInvalid("/app!' i") }
 
-  test("id '/app[' is INVALID") {
-    testInvalid("/app[' i")
-  }
+  test("id '/app[' is INVALID") { testInvalid("/app[' i") }
 
-  test("id '/asd/sadf+' is INVALID") {
-    testInvalid("/asd/sadf+")
-  }
+  test("id '/asd/sadf+' is INVALID") { testInvalid("/asd/sadf+") }
 
-  test("id '/asd asd' is INVALID") {
-    testInvalid("/asd asd")
-  }
+  test("id '/asd asd' is INVALID") { testInvalid("/asd asd") }
 
   test(
     "id '/app-' is invalid because hyphens and dots are only allowed inside of path fragments") {

@@ -35,7 +35,5 @@ class PackageJoinLinesHandler extends JoinRawLinesHandlerDelegate {
       document: Document,
       file: PsiFile,
       start: Int,
-      end: Int): Int = {
-    JoinLinesHandlerDelegate.CANNOT_JOIN
-  }
+      end: Int): Int = { JoinLinesHandlerDelegate.CANNOT_JOIN }
 }

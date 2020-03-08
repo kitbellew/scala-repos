@@ -31,13 +31,9 @@ class VecStatsSpec extends Specification {
   val v4 = Vec[Double](1d, 2, 20, 23, 56, 12)
   val v5 = Vec[Double](2d, 89, 23)
 
-  "compute mean of a vector" in {
-    areClose(v1.mean, 24.5d)
-  }
+  "compute mean of a vector" in { areClose(v1.mean, 24.5d) }
 
-  "compute the median of a vector" in {
-    areClose(v1.median, 16d)
-  }
+  "compute the median of a vector" in { areClose(v1.median, 16d) }
 
   "compute the geometric mean of a vector with positive elements" in {
     areClose(v1pos.geomean, 15.9895, 1e-4)
@@ -59,17 +55,11 @@ class VecStatsSpec extends Specification {
     areClose(v1.kurt, -1.1138, 1e-4)
   }
 
-  "find the maximum element of a vector" in {
-    areClose(v1.max.get, 76d)
-  }
+  "find the maximum element of a vector" in { areClose(v1.max.get, 76d) }
 
-  "find the minimum element of a vector" in {
-    areClose(v1.min.get, -27d)
-  }
+  "find the minimum element of a vector" in { areClose(v1.min.get, -27d) }
 
-  "find the sum of all elements in a vector" in {
-    areClose(v1.sum, 245d)
-  }
+  "find the sum of all elements in a vector" in { areClose(v1.sum, 245d) }
 
   "find the product of all elements in a vector" in {
     areClose(v1.prod, 5.7677e11, 1e-4)

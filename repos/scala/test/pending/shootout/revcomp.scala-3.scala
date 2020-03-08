@@ -44,9 +44,8 @@ final class FastaInputStream(in: InputStream)
     while (line != null) {
       val c = line(0)
       if (c == gt) { // '>'
-        if (header == null) {
-          header = line
-        } else {
+        if (header == null) { header = line }
+        else {
           pos = pos - line.length - 1 // reposition to start of line
           return (header, lines)
         }

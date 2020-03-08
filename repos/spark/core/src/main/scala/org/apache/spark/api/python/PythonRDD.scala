@@ -112,9 +112,7 @@ private[spark] class PythonRunner(
       "SPARK_LOCAL_DIRS",
       localdir
     ) // it's also used in monitor thread
-    if (reuse_worker) {
-      envVars.put("SPARK_REUSE_WORKER", "1")
-    }
+    if (reuse_worker) { envVars.put("SPARK_REUSE_WORKER", "1") }
     val worker: Socket =
       env.createPythonWorker(pythonExec, envVars.asScala.toMap)
     // Whether is the worker released into idle pool
@@ -127,9 +125,8 @@ private[spark] class PythonRunner(
     context.addTaskCompletionListener { context =>
       writerThread.shutdownOnTaskCompletion()
       if (!reuse_worker || !released) {
-        try {
-          worker.close()
-        } catch {
+        try { worker.close() }
+        catch {
           case e: Exception =>
             logWarning("Failed to close worker socket", e)
         }
@@ -145,9 +142,7 @@ private[spark] class PythonRunner(
     val stdoutIterator = new Iterator[Array[Byte]] {
       override def next(): Array[Byte] = {
         val obj = _nextObj
-        if (hasNext) {
-          _nextObj = read()
-        }
+        if (hasNext) { _nextObj = read() }
         obj
       }
 
@@ -321,17 +316,13 @@ private[spark] class PythonRunner(
           logDebug(
             "Exception thrown after task completion (likely due to cleanup)",
             e)
-          if (!worker.isClosed) {
-            Utils.tryLog(worker.shutdownOutput())
-          }
+          if (!worker.isClosed) { Utils.tryLog(worker.shutdownOutput()) }
 
         case e: Exception =>
           // We must avoid throwing exceptions here, because the thread uncaught exception handler
           // will kill the whole executor (see org.apache.spark.executor.Executor).
           _exception = e
-          if (!worker.isClosed) {
-            Utils.tryLog(worker.shutdownOutput())
-          }
+          if (!worker.isClosed) { Utils.tryLog(worker.shutdownOutput()) }
       }
     }
   }
@@ -464,13 +455,9 @@ private[spark] object PythonRDD extends Logging {
           file.readFully(obj)
           objs.append(obj)
         }
-      } catch {
-        case eof: EOFException => {}
-      }
+      } catch { case eof: EOFException => {} }
       JavaRDD.fromRDD(sc.sc.parallelize(objs, parallelism))
-    } finally {
-      file.close()
-    }
+    } finally { file.close() }
   }
 
   def readBroadcastFromFile(
@@ -614,9 +601,7 @@ private[spark] object PythonRDD extends Logging {
     val fc = Utils.classForName(inputFormatClass).asInstanceOf[Class[F]]
     if (path.isDefined) {
       sc.sc.newAPIHadoopFile[K, V, F](path.get, fc, kc, vc, conf)
-    } else {
-      sc.sc.newAPIHadoopRDD[K, V, F](conf, fc, kc, vc)
-    }
+    } else { sc.sc.newAPIHadoopRDD[K, V, F](conf, fc, kc, vc) }
   }
 
   /**
@@ -698,11 +683,8 @@ private[spark] object PythonRDD extends Logging {
     val kc = Utils.classForName(keyClass).asInstanceOf[Class[K]]
     val vc = Utils.classForName(valueClass).asInstanceOf[Class[V]]
     val fc = Utils.classForName(inputFormatClass).asInstanceOf[Class[F]]
-    if (path.isDefined) {
-      sc.sc.hadoopFile(path.get, fc, kc, vc)
-    } else {
-      sc.sc.hadoopRDD(new JobConf(conf), fc, kc, vc)
-    }
+    if (path.isDefined) { sc.sc.hadoopFile(path.get, fc, kc, vc) }
+    else { sc.sc.hadoopRDD(new JobConf(conf), fc, kc, vc) }
   }
 
   def writeUTF(str: String, dataOut: DataOutputStream) {
@@ -735,17 +717,13 @@ private[spark] object PythonRDD extends Logging {
           val sock = serverSocket.accept()
           val out =
             new DataOutputStream(new BufferedOutputStream(sock.getOutputStream))
-          Utils.tryWithSafeFinally {
-            writeIteratorToStream(items, out)
-          } {
+          Utils.tryWithSafeFinally { writeIteratorToStream(items, out) } {
             out.close()
           }
         } catch {
           case NonFatal(e) =>
             logError(s"Error while sending iterator", e)
-        } finally {
-          serverSocket.close()
-        }
+        } finally { serverSocket.close() }
       }
     }.start()
 
@@ -929,11 +907,8 @@ private[spark] object PythonRDD extends Logging {
       keyConverterClass,
       valueConverterClass,
       new JavaToWritableConverter)
-    if (useNewAPI) {
-      converted.saveAsNewAPIHadoopDataset(conf)
-    } else {
-      converted.saveAsHadoopDataset(new JobConf(conf))
-    }
+    if (useNewAPI) { converted.saveAsNewAPIHadoopDataset(conf) }
+    else { converted.saveAsHadoopDataset(new JobConf(conf)) }
   }
 }
 
@@ -1017,11 +992,8 @@ private[spark] class PythonBroadcast(@transient var path: String)
   private def writeObject(out: ObjectOutputStream): Unit =
     Utils.tryOrIOException {
       val in = new FileInputStream(new File(path))
-      try {
-        Utils.copyStream(in, out)
-      } finally {
-        in.close()
-      }
+      try { Utils.copyStream(in, out) }
+      finally { in.close() }
     }
 
   /**
@@ -1032,11 +1004,7 @@ private[spark] class PythonBroadcast(@transient var path: String)
     val file = File.createTempFile("broadcast", "", dir)
     path = file.getAbsolutePath
     val out = new FileOutputStream(file)
-    Utils.tryWithSafeFinally {
-      Utils.copyStream(in, out)
-    } {
-      out.close()
-    }
+    Utils.tryWithSafeFinally { Utils.copyStream(in, out) } { out.close() }
   }
 
   /**
@@ -1046,9 +1014,7 @@ private[spark] class PythonBroadcast(@transient var path: String)
     if (!path.isEmpty) {
       val file = new File(path)
       if (file.exists()) {
-        if (!file.delete()) {
-          logWarning(s"Error deleting ${file.getPath}")
-        }
+        if (!file.delete()) { logWarning(s"Error deleting ${file.getPath}") }
       }
     }
   }

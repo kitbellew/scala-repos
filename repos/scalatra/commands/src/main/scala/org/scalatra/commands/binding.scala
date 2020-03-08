@@ -28,9 +28,7 @@ object Binding {
       cv: TypeConverter[I, A],
       tcf: TypeConverterFactory[_])(implicit
       mf: Manifest[I],
-      mt: Manifest[A]): Binding = {
-    new DefaultBinding(prev, tcf)(mf, mt, cv)
-  }
+      mt: Manifest[A]): Binding = { new DefaultBinding(prev, tcf)(mf, mt, cv) }
 
   def apply[A](initial: String)(implicit
       ma: Manifest[A],

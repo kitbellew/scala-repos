@@ -94,9 +94,7 @@ class IsotonicRegressionModel @Since("1.3.0") (
     *
     */
   @Since("1.3.0")
-  def predict(testData: RDD[Double]): RDD[Double] = {
-    testData.map(predict)
-  }
+  def predict(testData: RDD[Double]): RDD[Double] = { testData.map(predict) }
 
   /**
     * Predict labels for provided features.
@@ -136,29 +134,23 @@ class IsotonicRegressionModel @Since("1.3.0") (
         y1: Double,
         x2: Double,
         y2: Double,
-        x: Double): Double = {
-      y1 + (y2 - y1) * (x - x1) / (x2 - x1)
-    }
+        x: Double): Double = { y1 + (y2 - y1) * (x - x1) / (x2 - x1) }
 
     val foundIndex = binarySearch(boundaries, testData)
     val insertIndex = -foundIndex - 1
 
     // Find if the index was lower than all values,
     // higher than all values, in between two values or exact match.
-    if (insertIndex == 0) {
-      predictions.head
-    } else if (insertIndex == boundaries.length) {
-      predictions.last
-    } else if (foundIndex < 0) {
+    if (insertIndex == 0) { predictions.head }
+    else if (insertIndex == boundaries.length) { predictions.last }
+    else if (foundIndex < 0) {
       linearInterpolation(
         boundaries(insertIndex - 1),
         predictions(insertIndex - 1),
         boundaries(insertIndex),
         predictions(insertIndex),
         testData)
-    } else {
-      predictions(foundIndex)
-    }
+    } else { predictions(foundIndex) }
   }
 
   /** A convenient method for boundaries called by the Python API. */
@@ -307,11 +299,8 @@ class IsotonicRegression private (private var isotonic: Boolean)
     */
   @Since("1.3.0")
   def run(input: RDD[(Double, Double, Double)]): IsotonicRegressionModel = {
-    val preprocessedInput = if (isotonic) {
-      input
-    } else {
-      input.map(x => (-x._1, x._2, x._3))
-    }
+    val preprocessedInput = if (isotonic) { input }
+    else { input.map(x => (-x._1, x._2, x._3)) }
 
     val pooled = parallelPoolAdjacentViolators(preprocessedInput)
 
@@ -350,9 +339,7 @@ class IsotonicRegression private (private var isotonic: Boolean)
   private def poolAdjacentViolators(input: Array[(Double, Double, Double)])
       : Array[(Double, Double, Double)] = {
 
-    if (input.isEmpty) {
-      return Array.empty
-    }
+    if (input.isEmpty) { return Array.empty }
 
     // Pools sub array within given bounds assigning weighted average value to all elements.
     def pool(
@@ -377,14 +364,11 @@ class IsotonicRegression private (private var isotonic: Boolean)
       var j = i
 
       // Find monotonicity violating sequence, if any.
-      while (j < len - 1 && input(j)._1 > input(j + 1)._1) {
-        j = j + 1
-      }
+      while (j < len - 1 && input(j)._1 > input(j + 1)._1) { j = j + 1 }
 
       // If monotonicity was not violated, move to next data point.
-      if (i == j) {
-        i = i + 1
-      } else {
+      if (i == j) { i = i + 1 }
+      else {
         // Otherwise pool the violating sequence
         // and check if pooling caused monotonicity violation in previously processed points.
         while (i >= 0 && input(i)._1 > input(i + 1)._1) {

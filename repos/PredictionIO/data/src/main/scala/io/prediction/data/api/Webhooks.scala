@@ -68,9 +68,7 @@ private[prediction] object Webhooks {
         val data = eventClient.futureInsert(event, appId, channelId).map { id =>
           val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
 
-          if (stats) {
-            statsActorRef ! Bookkeeping(appId, result._1, event)
-          }
+          if (stats) { statsActorRef ! Bookkeeping(appId, result._1, event) }
           result
         }
         data
@@ -124,9 +122,7 @@ private[prediction] object Webhooks {
         val data = eventClient.futureInsert(event, appId, channelId).map { id =>
           val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
 
-          if (stats) {
-            statsActorRef ! Bookkeeping(appId, result._1, event)
-          }
+          if (stats) { statsActorRef ! Bookkeeping(appId, result._1, event) }
           result
         }
         data

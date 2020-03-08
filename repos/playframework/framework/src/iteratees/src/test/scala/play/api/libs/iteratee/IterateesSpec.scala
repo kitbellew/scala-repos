@@ -68,9 +68,7 @@ object IterateesSpec
       checkImmediateFoldFailure(i)
     }
 
-    "return future fold errors in promise" in {
-      checkFutureFoldFailure(i)
-    }
+    "return future fold errors in promise" in { checkFutureFoldFailure(i) }
 
     "support unflattening their state" in {
       checkUnflattenResult(i, Step.Done(1, Input.El("x")))
@@ -90,9 +88,7 @@ object IterateesSpec
       checkImmediateFoldFailure(i)
     }
 
-    "return future fold errors in promise" in {
-      checkFutureFoldFailure(i)
-    }
+    "return future fold errors in promise" in { checkFutureFoldFailure(i) }
 
     "fold input with fold1" in {
       mustExecute(1) { foldEC =>
@@ -214,17 +210,13 @@ object IterateesSpec
     val k: Input[String] => Iteratee[String, Int] = x => ???
     val i = Cont(k)
 
-    "fold with their continuation" in {
-      checkFoldResult(i, Step.Cont(k))
-    }
+    "fold with their continuation" in { checkFoldResult(i, Step.Cont(k)) }
 
     "return immediate fold errors in promise" in {
       checkImmediateFoldFailure(i)
     }
 
-    "return future fold errors in promise" in {
-      checkFutureFoldFailure(i)
-    }
+    "return future fold errors in promise" in { checkFutureFoldFailure(i) }
 
     "support unflattening their state" in {
       checkUnflattenResult(i, Step.Cont(k))
@@ -251,9 +243,7 @@ object IterateesSpec
         try {
           recurseTimes(n)
           false // Didn't overflow
-        } catch {
-          case _: StackOverflowError => true
-        }
+        } catch { case _: StackOverflowError => true }
       }
       val overflowDepth: Int = (12 until 20).map(1 << _).find(overflows).get
 
@@ -281,9 +271,7 @@ object IterateesSpec
       checkImmediateFoldFailure(i)
     }
 
-    "return future fold errors in promise" in {
-      checkFutureFoldFailure(i)
-    }
+    "return future fold errors in promise" in { checkFutureFoldFailure(i) }
 
     "support unflattening their state" in {
       checkUnflattenResult(i, Step.Error("msg", Input.El("x")))

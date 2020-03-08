@@ -11,9 +11,7 @@ import akka.actor._
 object RemoteWatcherSpec {
 
   class TestActorProxy(testActor: ActorRef) extends Actor {
-    def receive = {
-      case msg ⇒ testActor forward msg
-    }
+    def receive = { case msg ⇒ testActor forward msg }
   }
 
   class MyActor extends Actor {
@@ -92,9 +90,7 @@ class RemoteWatcherSpec
     akka.remote.transport.ActorTransportAdapter.DisassociateUnderlying.getClass)(
     _))
 
-  override def afterTermination() {
-    shutdown(remoteSystem)
-  }
+  override def afterTermination() { shutdown(remoteSystem) }
 
   val heartbeatRspB = HeartbeatRsp(remoteAddressUid)
 

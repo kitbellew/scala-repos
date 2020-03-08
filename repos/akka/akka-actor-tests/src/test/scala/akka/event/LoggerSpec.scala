@@ -139,9 +139,7 @@ object LoggerSpec {
       always ++ perMessage
     }
 
-    def receive: Receive = {
-      case m: String ⇒ log.warning(m)
-    }
+    def receive: Receive = { case m: String ⇒ log.warning(m) }
   }
 
 }
@@ -169,12 +167,8 @@ class LoggerSpec extends WordSpec with Matchers {
             case "Danger! Danger!" ⇒ true
             case _ ⇒ false
           }
-        } else {
-          probe.expectNoMsg(0.5.seconds.dilated)
-        }
-      } finally {
-        TestKit.shutdownActorSystem(system)
-      }
+        } else { probe.expectNoMsg(0.5.seconds.dilated) }
+      } finally { TestKit.shutdownActorSystem(system) }
     }
     out
   }
@@ -230,9 +224,7 @@ class LoggerSpec extends WordSpec with Matchers {
           system.log.warning("log it")
           probe1.expectMsg("log it")
           probe2.expectMsg("log it")
-        } finally {
-          TestKit.shutdownActorSystem(system)
-        }
+        } finally { TestKit.shutdownActorSystem(system) }
       }
     }
   }
@@ -275,9 +267,7 @@ class LoggerSpec extends WordSpec with Matchers {
               if w.mdc.size == 1 && w.mdc("requestId") == 4 ⇒
         }
 
-      } finally {
-        TestKit.shutdownActorSystem(system)
-      }
+      } finally { TestKit.shutdownActorSystem(system) }
     }
 
   }
@@ -301,9 +291,7 @@ class LoggerSpec extends WordSpec with Matchers {
       implicit val s = ActorSystem("foo", ticket3165Config)
       try {
         SerializationExtension(s).serialize(Warning("foo", classOf[String]))
-      } finally {
-        TestKit.shutdownActorSystem(s)
-      }
+      } finally { TestKit.shutdownActorSystem(s) }
     }
   }
 }

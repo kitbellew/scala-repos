@@ -104,9 +104,8 @@ private[serializer] class GenericAvroSerializer(schemas: Map[Long, String])
     val encoder = EncoderFactory.get.binaryEncoder(output, null)
     val schema = datum.getSchema
     val fingerprint = fingerprintCache.getOrElseUpdate(
-      schema, {
-        SchemaNormalization.parsingFingerprint64(schema)
-      })
+      schema,
+      { SchemaNormalization.parsingFingerprint64(schema) })
     schemas.get(fingerprint) match {
       case Some(_) =>
         output.writeBoolean(true)

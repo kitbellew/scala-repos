@@ -23,9 +23,7 @@ abstract class AbstractSessionSettingsSpec(folder: String)
       runTestOnFiles(unit)
     }
 
-    "Replace statements " in {
-      runTestOnFiles(replace)
-    }
+    "Replace statements " in { runTestOnFiles(replace) }
   }
 
   private def runTestOnFiles(

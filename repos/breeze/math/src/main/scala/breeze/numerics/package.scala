@@ -502,7 +502,9 @@ package object numerics {
   }
 
   object ceil extends UFunc with MappingUFunc {
-    implicit object ceilIntImpl extends Impl[Int, Int] { def apply(v: Int) = v }
+    implicit object ceilIntImpl extends Impl[Int, Int] {
+      def apply(v: Int) = v
+    }
     implicit object ceilDoubleImpl extends Impl[Double, Double] {
       def apply(v: Double) = m.ceil(v)
     }
@@ -524,7 +526,9 @@ package object numerics {
   }
 
   object rint extends UFunc with MappingUFunc {
-    implicit object rintIntImpl extends Impl[Int, Int] { def apply(v: Int) = v }
+    implicit object rintIntImpl extends Impl[Int, Int] {
+      def apply(v: Int) = v
+    }
     implicit object rintDoubleImpl extends Impl[Double, Double] {
       def apply(v: Double) = m.rint(v)
     }
@@ -612,9 +616,7 @@ package object numerics {
     implicit def isFiniteImpl[@expand.args(Double, Float) T]
         : Impl[T, Boolean] = {
       new Impl[T, Boolean] {
-        override def apply(v: T): Boolean = {
-          m.abs(v) <= Double.MaxValue
-        }
+        override def apply(v: T): Boolean = { m.abs(v) <= Double.MaxValue }
       }
     }
   }

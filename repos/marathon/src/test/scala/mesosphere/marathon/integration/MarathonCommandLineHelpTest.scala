@@ -14,9 +14,7 @@ class MarathonCommandLineHelpTest
     with BeforeAndAfter
     with GivenWhenThen {
 
-  after {
-    ProcessKeeper.stopAllProcesses()
-  }
+  after { ProcessKeeper.stopAllProcesses() }
 
   test("marathon --help shouldn't crash") {
     val cwd = new File(".")

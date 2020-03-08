@@ -329,8 +329,12 @@ trait ArbitraryTreesAndNames {
    *  implicit conversions and liftables for quasiquotes.
    */
 
-  case class TreeIsTerm(tree: Tree) { require(tree.isTerm, showRaw(tree)) }
-  case class TreeIsType(tree: Tree) { require(tree.isType, showRaw(tree)) }
+  case class TreeIsTerm(tree: Tree) {
+    require(tree.isTerm, showRaw(tree))
+  }
+  case class TreeIsType(tree: Tree) {
+    require(tree.isType, showRaw(tree))
+  }
 
   def genTreeIsTermWrapped(size: Int) =
     for (tit <- genTreeIsTerm(size)) yield TreeIsTerm(tit)

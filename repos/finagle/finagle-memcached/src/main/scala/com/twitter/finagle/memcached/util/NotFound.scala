@@ -31,37 +31,27 @@ private[twitter] class NotFound(val cutoff: Double) {
     * Remove all elements of `toRemove` from `from`.
     */
   def apply[E](from: Seq[E], toRemove: Set[E]): Set[E] = {
-    if (from.isEmpty) {
-      Set.empty
-    } else if (toRemove.isEmpty) {
-      from.toSet
-    } else if (toRemove.size >= (from.size * cutoff)) {
-      buildSet(from, toRemove)
-    } else {
-      from.toSet -- toRemove
-    }
+    if (from.isEmpty) { Set.empty }
+    else if (toRemove.isEmpty) { from.toSet }
+    else if (toRemove.size >= (from.size * cutoff)) { buildSet(from, toRemove) }
+    else { from.toSet -- toRemove }
   }
 
   /**
     * Remove all elements of `toRemove` from `from`.
     */
   def apply[E](from: Set[E], toRemove: Set[E]): Set[E] = {
-    if (from.isEmpty || toRemove.isEmpty) {
-      from
-    } else if (toRemove.size >= (from.size * cutoff)) {
-      buildSet(from, toRemove)
-    } else {
-      from -- toRemove
-    }
+    if (from.isEmpty || toRemove.isEmpty) { from }
+    else if (toRemove.size >= (from.size * cutoff)) { buildSet(from, toRemove) }
+    else { from -- toRemove }
   }
 
   /**
     * Remove all elements of `toRemove` that are keys in `from`.
     */
   def apply[K, V](from: Map[K, V], toRemove: Set[K]): Map[K, V] = {
-    if (from.isEmpty || toRemove.isEmpty) {
-      from
-    } else if (toRemove.size >= (from.size * cutoff)) {
+    if (from.isEmpty || toRemove.isEmpty) { from }
+    else if (toRemove.size >= (from.size * cutoff)) {
       val remaining = Map.newBuilder[K, V]
       val iter = from.iterator
       while (iter.hasNext) {
@@ -70,9 +60,7 @@ private[twitter] class NotFound(val cutoff: Double) {
           remaining += kv
       }
       remaining.result()
-    } else {
-      from -- toRemove
-    }
+    } else { from -- toRemove }
   }
 
 }

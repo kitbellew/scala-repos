@@ -55,15 +55,9 @@ class StorageLevel private (
 
   def toInt: Int = {
     var ret = 0
-    if (useDisk_) {
-      ret |= 4
-    }
-    if (useMemory_) {
-      ret |= 2
-    }
-    if (deserialized_) {
-      ret |= 1
-    }
+    if (useDisk_) { ret |= 4 }
+    if (useMemory_) { ret |= 2 }
+    if (deserialized_) { ret |= 1 }
     ret
   }
 
@@ -132,15 +126,9 @@ class StorageLevel2(
 
   def toInt: Int = {
     var ret = 0
-    if (useDisk_) {
-      ret |= 4
-    }
-    if (useMemory_) {
-      ret |= 2
-    }
-    if (deserialized_) {
-      ret |= 1
-    }
+    if (useDisk_) { ret |= 4 }
+    if (useMemory_) { ret |= 2 }
+    if (deserialized_) { ret |= 1 }
     ret
   }
 

@@ -215,9 +215,7 @@ object PlayDocsPlugin extends AutoPlugin {
         Load.defaultLoad(state.value, unit.localBase, state.value.log)
       val sbtFiles = ((unmanagedSourceDirectories in Test).value * "*.sbt").get
       val log = state.value.log
-      if (sbtFiles.nonEmpty) {
-        log.info("Testing .sbt files...")
-      }
+      if (sbtFiles.nonEmpty) { log.info("Testing .sbt files...") }
       val result = sbtFiles.map {
         sbtFile =>
           val relativeFile = relativeTo(baseDirectory.value)(sbtFile)
@@ -233,9 +231,7 @@ object PlayDocsPlugin extends AutoPlugin {
               false
           }
       }
-      if (result.contains(false)) {
-        throw new TestsFailedException
-      }
+      if (result.contains(false)) { throw new TestsFailedException }
     },
     parallelExecution in Test := false,
     javacOptions in Test ++= Seq("-g", "-Xlint:deprecation"),
@@ -282,9 +278,7 @@ object PlayDocsPlugin extends AutoPlugin {
       override def loadClass(name: String): Class[_] = {
         if (play.core.Build.sharedClasses.contains(name)) {
           sbtLoader.loadClass(name)
-        } else {
-          super.loadClass(name)
-        }
+        } else { super.loadClass(name) }
       }
     }
 

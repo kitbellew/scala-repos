@@ -103,9 +103,7 @@ class ConsumerFetcherManager(
           else
             warn("Failed to find leader for %s".format(noLeaderPartitionSet), t)
         }
-      } finally {
-        lock.unlock()
-      }
+      } finally { lock.unlock() }
 
       try {
         addFetcherForPartitions(leaderForPartitionsMap.map {

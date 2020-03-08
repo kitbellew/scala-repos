@@ -334,11 +334,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
   get("/register") {
     if (context.settings.allowAccountRegistration) {
-      if (context.loginAccount.isDefined) {
-        redirect("/")
-      } else {
-        html.register()
-      }
+      if (context.loginAccount.isDefined) { redirect("/") }
+      else { html.register() }
     } else NotFound
   }
 

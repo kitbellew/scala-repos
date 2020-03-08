@@ -152,9 +152,7 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
   /**
     * Called after the field is saved to the database
     */
-  override protected[mapper] def doneWithSave() {
-    orgData.setFrom(data)
-  }
+  override protected[mapper] def doneWithSave() { orgData.setFrom(data) }
 
   override def _toForm: Box[Elem] =
     fmapFunc({ s: List[String] => this.setFromAny(s) }) { name =>
@@ -168,9 +166,7 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
       }/>))
     }
 
-  protected def i_obscure_!(in: String): String = {
-    ""
-  }
+  protected def i_obscure_!(in: String): String = { "" }
 
   override def toForm: Box[Elem] = {
 

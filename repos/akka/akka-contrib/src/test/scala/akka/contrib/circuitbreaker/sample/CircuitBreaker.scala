@@ -46,9 +46,7 @@ class SimpleService extends Actor with ActorLogging {
       // Fails around 30% of the times
       if (Random.nextInt(100) < 70) {
         sender ! Response(Right(s"Successfully processed $content"))
-      } else {
-        sender ! Response(Left(s"Failure processing $content"))
-      }
+      } else { sender ! Response(Left(s"Failure processing $content")) }
 
   }
 }

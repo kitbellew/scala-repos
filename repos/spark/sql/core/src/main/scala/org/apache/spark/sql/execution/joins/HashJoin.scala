@@ -76,11 +76,8 @@ trait HashJoin {
       e.dataType match {
         case dt: IntegralType if dt.defaultSize <= 8 - width =>
           if (width == 0) {
-            if (e.dataType != LongType) {
-              keyExpr = Cast(e, LongType)
-            } else {
-              keyExpr = e
-            }
+            if (e.dataType != LongType) { keyExpr = Cast(e, LongType) }
+            else { keyExpr = e }
             width = dt.defaultSize
           } else {
             val bits = dt.defaultSize * 8
@@ -92,9 +89,7 @@ trait HashJoin {
               BitwiseOr(
                 ShiftRightUnsigned(e, Literal(15)),
                 ShiftLeft(e, Literal(17)))
-            } else {
-              e
-            }
+            } else { e }
             keyExpr = BitwiseOr(
               ShiftLeft(keyExpr, Literal(bits)),
               BitwiseAnd(Cast(rotated, LongType), Literal((1L << bits) - 1)))
@@ -158,14 +153,10 @@ trait HashJoin {
             val key = joinKeys(currentStreamedRow)
             if (!key.anyNull) {
               currentHashMatches = hashedRelation.get(key)
-              if (currentHashMatches != null) {
-                currentMatchPosition = 0
-              }
+              if (currentHashMatches != null) { currentMatchPosition = 0 }
             }
           }
-          if (currentHashMatches == null) {
-            return false
-          }
+          if (currentHashMatches == null) { return false }
 
           // found some matches
           buildSide match {
@@ -178,11 +169,8 @@ trait HashJoin {
                 currentHashMatches(currentMatchPosition),
                 currentStreamedRow)
           }
-          if (boundCondition(joinRow)) {
-            return true
-          } else {
-            currentMatchPosition += 1
-          }
+          if (boundCondition(joinRow)) { return true }
+          else { currentMatchPosition += 1 }
         }
         false // unreachable
       }
@@ -193,9 +181,7 @@ trait HashJoin {
           currentMatchPosition += 1
           numOutputRows += 1
           resultProjection(joinRow)
-        } else {
-          throw new NoSuchElementException
-        }
+        } else { throw new NoSuchElementException }
       }
     }
   }
@@ -222,15 +208,11 @@ trait HashJoin {
               resultProjection(joinedRow).copy()
             }
           }
-        } else {
-          List.empty
-        }
+        } else { List.empty }
         if (temp.isEmpty) {
           numOutputRows += 1
           resultProjection(joinedRow.withRight(rightNullRow)) :: Nil
-        } else {
-          temp
-        }
+        } else { temp }
       } else {
         numOutputRows += 1
         resultProjection(joinedRow.withRight(rightNullRow)) :: Nil
@@ -254,15 +236,11 @@ trait HashJoin {
               resultProjection(joinedRow).copy()
             }
           }
-        } else {
-          List.empty
-        }
+        } else { List.empty }
         if (temp.isEmpty) {
           numOutputRows += 1
           resultProjection(joinedRow.withLeft(leftNullRow)) :: Nil
-        } else {
-          temp
-        }
+        } else { temp }
       } else {
         numOutputRows += 1
         resultProjection(joinedRow.withLeft(leftNullRow)) :: Nil

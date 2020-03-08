@@ -12,13 +12,9 @@ trait SocketMember extends Ordered[SocketMember] {
 
   def compare(other: SocketMember) = ~userId compare ~other.userId
 
-  def push(msg: JsValue) {
-    channel push msg
-  }
+  def push(msg: JsValue) { channel push msg }
 
-  def end {
-    channel.end
-  }
+  def end { channel.end }
 }
 
 object SocketMember {

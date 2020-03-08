@@ -43,22 +43,14 @@ trait DashboardControllerBase extends ControllerBase {
             redirect(s"/dashboard/issues/mentioned${condition.toURL}")
           case _ => searchIssues("created_by")
         }
-    } getOrElse {
-      searchIssues("created_by")
-    }
+    } getOrElse { searchIssues("created_by") }
   })
 
-  get("/dashboard/issues/assigned")(usersOnly {
-    searchIssues("assigned")
-  })
+  get("/dashboard/issues/assigned")(usersOnly { searchIssues("assigned") })
 
-  get("/dashboard/issues/created_by")(usersOnly {
-    searchIssues("created_by")
-  })
+  get("/dashboard/issues/created_by")(usersOnly { searchIssues("created_by") })
 
-  get("/dashboard/issues/mentioned")(usersOnly {
-    searchIssues("mentioned")
-  })
+  get("/dashboard/issues/mentioned")(usersOnly { searchIssues("mentioned") })
 
   get("/dashboard/pulls")(usersOnly {
     val q = request.getParameter("q")
@@ -77,18 +69,14 @@ trait DashboardControllerBase extends ControllerBase {
             redirect(s"/dashboard/pulls/mentioned${condition.toURL}")
           case _ => searchPullRequests("created_by")
         }
-    } getOrElse {
-      searchPullRequests("created_by")
-    }
+    } getOrElse { searchPullRequests("created_by") }
   })
 
   get("/dashboard/pulls/created_by")(usersOnly {
     searchPullRequests("created_by")
   })
 
-  get("/dashboard/pulls/assigned")(usersOnly {
-    searchPullRequests("assigned")
-  })
+  get("/dashboard/pulls/assigned")(usersOnly { searchPullRequests("assigned") })
 
   get("/dashboard/pulls/mentioned")(usersOnly {
     searchPullRequests("mentioned")
@@ -102,11 +90,8 @@ trait DashboardControllerBase extends ControllerBase {
       key,
       if (request.hasQueryString) {
         val q = request.getParameter("q")
-        if (q == null) {
-          IssueSearchCondition(request)
-        } else {
-          IssueSearchCondition(q, Map[String, Int]())
-        }
+        if (q == null) { IssueSearchCondition(request) }
+        else { IssueSearchCondition(q, Map[String, Int]()) }
       } else
         session
           .getAs[IssueSearchCondition](key)

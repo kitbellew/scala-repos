@@ -79,9 +79,7 @@ object Test extends InteractiveTest {
     val usedMem = for (i <- 1 to N) yield {
       val src = if (i % 2 == 0) originalTyper else changedTyper
 
-      val usedMem = withGC {
-        typeCheckWith(typerUnit, src)
-      }
+      val usedMem = withGC { typeCheckWith(typerUnit, src) }
 
       usedMem / mega // report size in MB
     }

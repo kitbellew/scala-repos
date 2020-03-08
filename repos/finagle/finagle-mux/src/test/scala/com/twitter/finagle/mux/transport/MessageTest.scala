@@ -64,9 +64,7 @@ class MessageTest extends FunSuite with AssertionsForJUnit {
       body <- goodBufs
     } yield RreqOk(tag, body))
 
-    ms ++= (for {
-      tag <- goodTags
-    } yield Tdrain(tag))
+    ms ++= (for { tag <- goodTags } yield Tdrain(tag))
 
     ms ++= (for {
       tag <- goodTags
@@ -98,13 +96,9 @@ class MessageTest extends FunSuite with AssertionsForJUnit {
       ctx <- goodContexts
     } yield RdispatchNack(tag, ctx))
 
-    ms ++= (for {
-      lease <- goodDurationLeases
-    } yield Tlease(lease))
+    ms ++= (for { lease <- goodDurationLeases } yield Tlease(lease))
 
-    ms ++= (for {
-      lease <- goodTimeLeases
-    } yield Tlease(lease))
+    ms ++= (for { lease <- goodTimeLeases } yield Tlease(lease))
 
     def assertEquiv(a: Message, b: Message) = (a, b) match {
       case (

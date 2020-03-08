@@ -42,7 +42,9 @@ trait TypingContext {
 }
 
 object TypingContext {
-  val empty = new TypingContext { def visited = Set() }
+  val empty = new TypingContext {
+    def visited = Set()
+  }
 
   val undefined = new TypingContext {
     def visited = Set()

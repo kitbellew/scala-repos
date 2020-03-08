@@ -136,9 +136,7 @@ class BacktestingEvaluator(val params: BacktestingParams)
 
       // Update price change
       positions.keys.foreach { ticker =>
-        {
-          positions(ticker) *= todayRet.first(ticker).get
-        }
+        { positions(ticker) *= todayRet.first(ticker).get }
       }
 
       // Determine exit

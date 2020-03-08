@@ -21,9 +21,7 @@ class BindingSpec extends Specification {
   implicit val formats: Formats = DefaultFormats
 
   "A BasicFieldDescriptor" should {
-    "have a name" in {
-      FieldDescriptor[String]("blah").name must_== "blah"
-    }
+    "have a name" in { FieldDescriptor[String]("blah").name must_== "blah" }
     "begin the building process with a required field validation error" in {
       newBinding[String].optional("").value must_== "".success[ValidationError]
     }
@@ -96,10 +94,8 @@ class BindingSpec extends Specification {
           manifest[String],
           builder.valueManifest)
       container(
-        Right(
-          Some(
-            "joske"
-              .asInstanceOf[container.S]))).validation must_== "joske".success
+        Right(Some("joske"
+          .asInstanceOf[container.S]))).validation must_== "joske".success
     }
 
   }
@@ -133,21 +129,15 @@ class BindingSpec extends Specification {
   "BindingImplicits" should {
 
     import org.scalatra.commands.BindingImplicits._
-    "provide FieldDescriptor[Boolean]" in {
-      testBinding[Boolean](true)
-    }
+    "provide FieldDescriptor[Boolean]" in { testBinding[Boolean](true) }
 
     "provide FieldDescriptor[Float]" in {
       testBinding[Float]((random * 100).toFloat)
     }
 
-    "provide FieldDescriptor[Double]" in {
-      testBinding[Double]((random * 100))
-    }
+    "provide FieldDescriptor[Double]" in { testBinding[Double]((random * 100)) }
 
-    "provide FieldDescriptor[Int]" in {
-      testBinding[Int]((random * 100).toInt)
-    }
+    "provide FieldDescriptor[Int]" in { testBinding[Int]((random * 100).toInt) }
 
     "provide FieldDescriptor[Byte]" in {
       testBinding[Byte]((random * 100).toByte)
@@ -247,9 +237,7 @@ class BindingSpec extends Specification {
   "JsonBindingImplicits" should {
     val imports = new JsonTypeConverterFactoriesImports
     import imports._
-    "provide FieldDescriptor[Boolean]" in {
-      testLiftJsonBinding[Boolean](true)
-    }
+    "provide FieldDescriptor[Boolean]" in { testLiftJsonBinding[Boolean](true) }
 
     "provide FieldDescriptor[Float]" in {
       testLiftJsonBinding[Float]((random * 100).toFloat)

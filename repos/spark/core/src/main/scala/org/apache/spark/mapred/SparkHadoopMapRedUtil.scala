@@ -85,9 +85,8 @@ object SparkHadoopMapRedUtil extends Logging {
         val canCommit =
           outputCommitCoordinator.canCommit(jobId, splitId, taskAttemptNumber)
 
-        if (canCommit) {
-          performCommit()
-        } else {
+        if (canCommit) { performCommit() }
+        else {
           val message =
             s"$mrTaskAttemptID: Not committed because the driver did not authorize commit"
           logInfo(message)

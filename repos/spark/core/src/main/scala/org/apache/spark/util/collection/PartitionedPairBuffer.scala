@@ -45,9 +45,7 @@ private[spark] class PartitionedPairBuffer[K, V](initialCapacity: Int = 64)
 
   /** Add an element into the buffer */
   def insert(partition: Int, key: K, value: V): Unit = {
-    if (curSize == capacity) {
-      growArray()
-    }
+    if (curSize == capacity) { growArray() }
     data(2 * curSize) = (partition, key.asInstanceOf[AnyRef])
     data(2 * curSize + 1) = value.asInstanceOf[AnyRef]
     curSize += 1
@@ -63,9 +61,7 @@ private[spark] class PartitionedPairBuffer[K, V](initialCapacity: Int = 64)
     val newCapacity =
       if (capacity * 2 < 0 || capacity * 2 > MAXIMUM_CAPACITY) { // Overflow
         MAXIMUM_CAPACITY
-      } else {
-        capacity * 2
-      }
+      } else { capacity * 2 }
     val newArray = new Array[AnyRef](2 * newCapacity)
     System.arraycopy(data, 0, newArray, 0, 2 * capacity)
     data = newArray
@@ -90,9 +86,7 @@ private[spark] class PartitionedPairBuffer[K, V](initialCapacity: Int = 64)
       override def hasNext: Boolean = pos < curSize
 
       override def next(): ((Int, K), V) = {
-        if (!hasNext) {
-          throw new NoSuchElementException
-        }
+        if (!hasNext) { throw new NoSuchElementException }
         val pair = (
           data(2 * pos).asInstanceOf[(Int, K)],
           data(2 * pos + 1).asInstanceOf[V])

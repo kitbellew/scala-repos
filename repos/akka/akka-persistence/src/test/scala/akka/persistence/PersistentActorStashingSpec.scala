@@ -71,9 +71,7 @@ object PersistentActorStashingSpec {
       case Cmd("b-2") ⇒ persist(Evt("b-2"))(updateState)
     }
 
-    val processC: Receive = unstashBehavior orElse {
-      case other ⇒ stash()
-    }
+    val processC: Receive = unstashBehavior orElse { case other ⇒ stash() }
 
     def unstashBehavior: Receive = {
       case Cmd("c") ⇒

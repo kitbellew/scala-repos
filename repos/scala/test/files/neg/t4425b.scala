@@ -1,5 +1,7 @@
 object Test1 {
-  object X { def unapply(x: String)(y: String) = throw new Exception }
+  object X {
+    def unapply(x: String)(y: String) = throw new Exception
+  }
 
   def f1() {
     println("" match { case _ X _         => "ok"; case _ => "fail" })
@@ -12,7 +14,9 @@ object Test1 {
 }
 
 object Test2 {
-  object X { def unapply(x: String) = throw new Exception }
+  object X {
+    def unapply(x: String) = throw new Exception
+  }
 
   def f1() {
     println("" match { case _ X _         => "ok"; case _ => "fail" })
@@ -25,7 +29,9 @@ object Test2 {
 }
 
 object Test3 {
-  object X { def unapply(x: String) = None }
+  object X {
+    def unapply(x: String) = None
+  }
 
   def f1() {
     println("" match { case _ X _         => "ok"; case _ => "fail" })

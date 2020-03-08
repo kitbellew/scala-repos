@@ -30,9 +30,7 @@ object Probes {
         case e: Exception =>
           println(s"CATCH $probeName.$method ${e.getClass}: ${e.getMessage}")
           throw e
-      } finally {
-        println(s"LEAVE $probeName.$method at $time")
-      }
+      } finally { println(s"LEAVE $probeName.$method at $time") }
     }
   }
 

@@ -27,19 +27,13 @@ class ExpressionFilter extends ElementFilter {
           (parent.getPrevSibling == null ||
           parent.getPrevSibling.getPrevSibling == null ||
           (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT || !parent.getPrevSibling.getPrevSibling.getLastChild
-            .isInstanceOf[PsiErrorElement]))) {
-        return true
-      }
+            .isInstanceOf[PsiErrorElement]))) { return true }
     }
     false
   }
 
-  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = {
-    true
-  }
+  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = { true }
 
   @NonNls
-  override def toString: String = {
-    "simple expressions keyword filter"
-  }
+  override def toString: String = { "simple expressions keyword filter" }
 }

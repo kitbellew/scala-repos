@@ -18,9 +18,7 @@ class RespondWithDirectivesSpec extends RoutingSpec {
   "respondWithHeader" should {
     val customHeader = RawHeader("custom", "custom")
     "add the given header to successful responses" in {
-      Get() ~> {
-        respondWithHeader(customHeader) { completeOk }
-      } ~> check {
+      Get() ~> { respondWithHeader(customHeader) { completeOk } } ~> check {
         response shouldEqual HttpResponse(headers = customHeader :: Nil)
       }
     }
@@ -38,9 +36,7 @@ class RespondWithDirectivesSpec extends RoutingSpec {
   "respondWithDefaultHeader" should {
     def route(extraHeaders: HttpHeader*) =
       respondWithDefaultHeader(customHeader) {
-        respondWithHeaders(extraHeaders: _*) {
-          completeOk
-        }
+        respondWithHeaders(extraHeaders: _*) { completeOk }
       }
 
     "add the given header to a response if the header was missing before" in {
@@ -57,9 +53,7 @@ class RespondWithDirectivesSpec extends RoutingSpec {
   "respondWithDefaultHeaders" should {
     def route(extraHeaders: HttpHeader*) =
       respondWithDefaultHeaders(customHeader, customHeader2) {
-        respondWithHeaders(extraHeaders: _*) {
-          completeOk
-        }
+        respondWithHeaders(extraHeaders: _*) { completeOk }
       }
 
     "add the given headers to a response if the header was missing before" in {

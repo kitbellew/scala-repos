@@ -95,9 +95,8 @@ object MapTest extends SpecLite {
   "deleteMin" ! forAll { a: Int ==>> Int =>
     val b = a.deleteMin
     structurallySound(b)
-    if (a.isEmpty) {
-      b.isEmpty must_=== true
-    } else {
+    if (a.isEmpty) { b.isEmpty must_=== true }
+    else {
       (b.size + 1) must_=== a.size
       b must_=== a.delete(a.findMin.get._1)
     }
@@ -106,9 +105,8 @@ object MapTest extends SpecLite {
   "deleteMax" ! forAll { a: Int ==>> Int =>
     val b = a.deleteMax
     structurallySound(b)
-    if (a.isEmpty) {
-      b.isEmpty must_=== true
-    } else {
+    if (a.isEmpty) { b.isEmpty must_=== true }
+    else {
       (b.size + 1) must_=== a.size
       b must_=== a.delete(a.findMax.get._1)
     }
@@ -136,12 +134,8 @@ object MapTest extends SpecLite {
   }
 
   "Testing empty map" should {
-    "be 0 for an empty map" in {
-      empty.size must_== 0
-    }
-    "be 1 for a singleton map" in {
-      singleton(1, 'a').size must_== 1
-    }
+    "be 0 for an empty map" in { empty.size must_== 0 }
+    "be 1 for a singleton map" in { singleton(1, 'a').size must_== 1 }
     "be 3 for the list [(1,'a'), (2,'c'), (3,'b')])" in {
       fromList(List((1, 'a'), (2, 'c'), (3, 'b'))).size must_== 3
     }
@@ -172,9 +166,7 @@ object MapTest extends SpecLite {
       d.elemAt(1) must_== (5, "a").some
     }
 
-    "not find a match" in {
-      d.elemAt(2) must_== None
-    }
+    "not find a match" in { d.elemAt(2) must_== None }
 
     "elemAt" ! forAll { (a: Byte ==>> Int, b: Byte) =>
       a.elemAt(b) must_=== a.toList.lift(b)
@@ -775,9 +767,7 @@ object MapTest extends SpecLite {
       fromList(List(5 -> "a", 3 -> "b")).values must_=== (List("b", "a"))
     }
 
-    "keys" in {
-      fromList(List(5 -> "a", 3 -> "b")).keys must_=== (List(3, 5))
-    }
+    "keys" in { fromList(List(5 -> "a", 3 -> "b")).keys must_=== (List(3, 5)) }
 
     "keySet" in {
       fromList(List(5 -> "a", 3 -> "b")).keySet must_=== (ISet.fromList(

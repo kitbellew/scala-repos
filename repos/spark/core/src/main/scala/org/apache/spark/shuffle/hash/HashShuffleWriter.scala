@@ -57,9 +57,7 @@ private[spark] class HashShuffleWriter[K, V](
     val iter = if (dep.aggregator.isDefined) {
       if (dep.mapSideCombine) {
         dep.aggregator.get.combineValuesByKey(records, context)
-      } else {
-        records
-      }
+      } else { records }
     } else {
       require(
         !dep.mapSideCombine,
@@ -77,14 +75,11 @@ private[spark] class HashShuffleWriter[K, V](
   override def stop(initiallySuccess: Boolean): Option[MapStatus] = {
     var success = initiallySuccess
     try {
-      if (stopping) {
-        return None
-      }
+      if (stopping) { return None }
       stopping = true
       if (success) {
-        try {
-          Some(commitWritesAndBuildStatus())
-        } catch {
+        try { Some(commitWritesAndBuildStatus()) }
+        catch {
           case e: Exception =>
             success = false
             revertWrites()
@@ -97,9 +92,8 @@ private[spark] class HashShuffleWriter[K, V](
     } finally {
       // Release the writers back to the shuffle block manager.
       if (shuffle != null && shuffle.writers != null) {
-        try {
-          shuffle.releaseWriters(success)
-        } catch {
+        try { shuffle.releaseWriters(success) }
+        catch {
           case e: Exception => logError("Failed to release shuffle writers", e)
         }
       }
@@ -131,11 +125,7 @@ private[spark] class HashShuffleWriter[K, V](
                   s"fail to rename ${writer.file} to $output")
               }
             }
-          } else {
-            if (output.exists()) {
-              output.delete()
-            }
-          }
+          } else { if (output.exists()) { output.delete() } }
       }
     }
     MapStatus(blockManager.shuffleServerId, sizes)
@@ -143,9 +133,7 @@ private[spark] class HashShuffleWriter[K, V](
 
   private def revertWrites(): Unit = {
     if (shuffle != null && shuffle.writers != null) {
-      for (writer <- shuffle.writers) {
-        writer.revertPartialWritesAndClose()
-      }
+      for (writer <- shuffle.writers) { writer.revertPartialWritesAndClose() }
     }
   }
 }

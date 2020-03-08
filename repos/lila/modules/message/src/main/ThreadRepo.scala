@@ -56,9 +56,7 @@ object ThreadRepo {
         ),
         allowDiskUse = false
       )
-      .map {
-        _.documents.headOption ?? { ~_.getAs[List[String]]("ids") }
-      }
+      .map { _.documents.headOption ?? { ~_.getAs[List[String]]("ids") } }
   }
 
   def setRead(thread: Thread): Funit = {

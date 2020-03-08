@@ -382,9 +382,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
     override def get0(key: A, hash: Int, level: Int): Option[B] = {
       val index = (hash >>> level) & 0x1f
       val mask = (1 << index)
-      if (bitmap == -1) {
-        elems(index & 0x1f).get0(key, hash, level + 5)
-      } else if ((bitmap & mask) != 0) {
+      if (bitmap == -1) { elems(index & 0x1f).get0(key, hash, level + 5) }
+      else if ((bitmap & mask) != 0) {
         val offset = Integer.bitCount(bitmap & (mask - 1))
         elems(offset).get0(key, hash, level + 5)
       } else
@@ -450,18 +449,15 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
           } else
             HashMap.empty[A, B]
         } else if (elems.length == 1 && !subNew
-                     .isInstanceOf[HashTrieMap[_, _]]) {
-          subNew
-        } else {
+                     .isInstanceOf[HashTrieMap[_, _]]) { subNew }
+        else {
           val elemsNew = new Array[HashMap[A, B]](elems.length)
           Array.copy(elems, 0, elemsNew, 0, elems.length)
           elemsNew(offset) = subNew
           val sizeNew = size + (subNew.size - sub.size)
           new HashTrieMap(bitmap, elemsNew, sizeNew)
         }
-      } else {
-        this
-      }
+      } else { this }
     }
 
     override protected def filter0(

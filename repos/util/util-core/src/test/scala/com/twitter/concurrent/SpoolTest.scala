@@ -22,9 +22,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       assert(xs.size == 0)
     }
 
-    "map" in {
-      assert((s map { _ * 2 }) == Spool.empty[Int])
-    }
+    "map" in { assert((s map { _ * 2 }) == Spool.empty[Int]) }
 
     "mapFuture" in {
       val mapFuture = s mapFuture { Future.value(_) }
@@ -70,9 +68,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
 
     "reduce left" in {
       val fold = s.reduceLeft { (x, y) => x + y }
-      intercept[UnsupportedOperationException] {
-        Await.result(fold)
-      }
+      intercept[UnsupportedOperationException] { Await.result(fold) }
     }
 
     "zip with empty" in {
@@ -85,9 +81,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       assert(Await.result(result.toSeq) == Nil)
     }
 
-    "take" in {
-      assert(s.take(10) == Spool.empty[Int])
-    }
+    "take" in { assert(s.take(10) == Spool.empty[Int]) }
   }
 
   "Simple resolved Spool" should {
@@ -99,13 +93,9 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       assert(xs.toSeq == Seq(1, 2))
     }
 
-    "buffer to a sequence" in {
-      assert(Await.result(s.toSeq) == Seq(1, 2))
-    }
+    "buffer to a sequence" in { assert(Await.result(s.toSeq) == Seq(1, 2)) }
 
-    "map" in {
-      assert(Await.result(s.map { _ * 2 }.toSeq) == Seq(2, 4))
-    }
+    "map" in { assert(Await.result(s.map { _ * 2 }.toSeq) == Seq(2, 4)) }
 
     "mapFuture" in {
       val f = s.mapFuture { Future.value(_) }.flatMap { _.toSeq }.poll
@@ -216,25 +206,19 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     "return with exception on error" in {
       val xs = new ArrayBuffer[Option[Int]]
       s foreachElem { xs += _ }
-      intercept[Exception] {
-        Await.result(s.toSeq)
-      }
+      intercept[Exception] { Await.result(s.toSeq) }
     }
 
     "return with exception on error in callback" in {
       val xs = new ArrayBuffer[Option[Int]]
       val f = s foreach { _ => throw new Exception("sad panda") }
-      intercept[Exception] {
-        Await.result(f)
-      }
+      intercept[Exception] { Await.result(f) }
     }
 
     "return with exception on EOFException in callback" in {
       val xs = new ArrayBuffer[Option[Int]]
       val f = s foreach { _ => throw new EOFException("sad panda") }
-      intercept[EOFException] {
-        Await.result(f)
-      }
+      intercept[EOFException] { Await.result(f) }
     }
   }
 
@@ -278,9 +262,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       s foreachElem { xs += _ }
       assert(xs.toSeq == Seq(Some(1)))
       p() = Throw(new Exception("sad panda"))
-      intercept[Exception] {
-        Await.result(s.toSeq)
-      }
+      intercept[Exception] { Await.result(s.toSeq) }
     }
 
     "return with exception on error in callback" in {
@@ -290,9 +272,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       val xs = new ArrayBuffer[Option[Int]]
       val f = s foreach { _ => throw new Exception("sad panda") }
       p() = Return(2 *:: p1)
-      intercept[Exception] {
-        Await.result(f)
-      }
+      intercept[Exception] { Await.result(f) }
     }
 
     "return with exception on EOFException in callback" in {
@@ -302,9 +282,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       val xs = new ArrayBuffer[Option[Int]]
       val f = s foreach { _ => throw new EOFException("sad panda") }
       p() = Return(2 *:: p1)
-      intercept[EOFException] {
-        Await.result(f)
-      }
+      intercept[EOFException] { Await.result(f) }
     }
 
     "return a buffered seq when complete" in {
@@ -334,9 +312,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       val h = new SimpleDelayedSpoolHelper
       import h._
 
-      val f = s collect {
-        case x if x % 2 == 0 => x * 2
-      }
+      val f = s collect { case x if x % 2 == 0 => x * 2 }
 
       assert(f.isDefined == false) // 1 != 2 mod 0
       p() = Return(2 *:: p1)
@@ -395,21 +371,13 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
   // PartialFunction, which if not defined for head, recurses on the tail,
   // forcing it.
   "Lazily evaluated Spool" should {
-    "be constructed lazily" in {
-      applyLazily(Future.value _)
-    }
+    "be constructed lazily" in { applyLazily(Future.value _) }
 
     "collect lazily" in {
-      applyLazily { spool =>
-        spool.collect {
-          case x if x % 2 == 0 => x
-        }
-      }
+      applyLazily { spool => spool.collect { case x if x % 2 == 0 => x } }
     }
 
-    "map lazily" in {
-      applyLazily { spool => Future.value(spool.map(_ + 1)) }
-    }
+    "map lazily" in { applyLazily { spool => Future.value(spool.map(_ + 1)) } }
 
     "mapFuture lazily" in {
       applyLazily { spool => spool.mapFuture(Future.value(_)) }
@@ -423,19 +391,11 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
 
     "takeWhile lazily" in {
       applyLazily { spool =>
-        Future.value {
-          spool.takeWhile(_ < Int.MaxValue)
-        }
+        Future.value { spool.takeWhile(_ < Int.MaxValue) }
       }
     }
 
-    "take lazily" in {
-      applyLazily { spool =>
-        Future.value {
-          spool.take(2)
-        }
-      }
-    }
+    "take lazily" in { applyLazily { spool => Future.value { spool.take(2) } } }
 
     "zip lazily" in {
       applyLazily { spool =>

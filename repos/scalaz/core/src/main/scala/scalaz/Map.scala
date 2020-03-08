@@ -1024,7 +1024,9 @@ sealed abstract class MapInstances extends MapInstances0 {
     Contravariant[Show].contramap(Show[List[(A, B)]])(_.toAscList)
 
   implicit def mapEqual[A: Equal, B: Equal]: Equal[A ==>> B] =
-    new MapEqual[A, B] { def A = implicitly; def B = implicitly }
+    new MapEqual[A, B] {
+      def A = implicitly; def B = implicitly
+    }
 
   implicit def mapOrder[A: Order, B: Order]: Order[A ==>> B] =
     new Order[A ==>> B] with MapEqual[A, B] {

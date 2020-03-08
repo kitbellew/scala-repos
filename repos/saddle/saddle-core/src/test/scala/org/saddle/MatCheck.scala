@@ -225,9 +225,7 @@ class MatCheck extends Specification with ScalaCheck {
             val matC = matA.multiply(matB)
 
             res.contents must_== flatten(matC.getData)
-          } else {
-            res.numRows must_== 0
-          }
+          } else { res.numRows must_== 0 }
         }
       }
     }

@@ -112,7 +112,5 @@ object CommonUtil {
     try {
       new URL(str)
       true
-    } catch {
-      case _: MalformedURLException => false
-    }
+    } catch { case _: MalformedURLException => false }
 }

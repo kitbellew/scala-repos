@@ -64,25 +64,17 @@ class GenericArrayData(val array: Array[Any]) extends ArrayData {
   override def toString(): String = array.mkString("[", ",", "]")
 
   override def equals(o: Any): Boolean = {
-    if (!o.isInstanceOf[GenericArrayData]) {
-      return false
-    }
+    if (!o.isInstanceOf[GenericArrayData]) { return false }
 
     val other = o.asInstanceOf[GenericArrayData]
-    if (other eq null) {
-      return false
-    }
+    if (other eq null) { return false }
 
     val len = numElements()
-    if (len != other.numElements()) {
-      return false
-    }
+    if (len != other.numElements()) { return false }
 
     var i = 0
     while (i < len) {
-      if (isNullAt(i) != other.isNullAt(i)) {
-        return false
-      }
+      if (isNullAt(i) != other.isNullAt(i)) { return false }
       if (!isNullAt(i)) {
         val o1 = array(i)
         val o2 = other.array(i)
@@ -94,18 +86,11 @@ class GenericArrayData(val array: Array[Any]) extends ArrayData {
             }
           case f1: Float if java.lang.Float.isNaN(f1) =>
             if (!o2.isInstanceOf[Float] || !java.lang.Float.isNaN(
-                  o2.asInstanceOf[Float])) {
-              return false
-            }
+                  o2.asInstanceOf[Float])) { return false }
           case d1: Double if java.lang.Double.isNaN(d1) =>
             if (!o2.isInstanceOf[Double] || !java.lang.Double.isNaN(
-                  o2.asInstanceOf[Double])) {
-              return false
-            }
-          case _ =>
-            if (o1 != o2) {
-              return false
-            }
+                  o2.asInstanceOf[Double])) { return false }
+          case _ => if (o1 != o2) { return false }
         }
       }
       i += 1
@@ -119,9 +104,8 @@ class GenericArrayData(val array: Array[Any]) extends ArrayData {
     val len = numElements()
     while (i < len) {
       val update: Int =
-        if (isNullAt(i)) {
-          0
-        } else {
+        if (isNullAt(i)) { 0 }
+        else {
           array(i) match {
             case b: Boolean => if (b) 0 else 1
             case b: Byte    => b.toInt

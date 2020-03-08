@@ -26,9 +26,8 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
   val name = "scalajs"
   val description = "Compile to JavaScript"
   val components = {
-    if (global.forScaladoc) {
-      List[NscPluginComponent](PrepInteropComponent)
-    } else {
+    if (global.forScaladoc) { List[NscPluginComponent](PrepInteropComponent) }
+    else {
       List[NscPluginComponent](
         PreTyperComponentComponent,
         PrepInteropComponent,
@@ -99,10 +98,8 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
     import scalaJSOpts._
 
     for (option <- options) {
-      if (option == "fixClassOf") {
-        fixClassOf = true
-
-      } else if (option.startsWith("mapSourceURI:")) {
+      if (option == "fixClassOf") { fixClassOf = true }
+      else if (option.startsWith("mapSourceURI:")) {
         val uris = option.stripPrefix("mapSourceURI:").split("->")
 
         if (uris.length != 1 && uris.length != 2) {
@@ -131,9 +128,7 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
         catch {
           case e: URISyntaxException => error(s"$uriStr is not a valid URI")
         }
-      } else {
-        error("Option not understood: " + option)
-      }
+      } else { error("Option not understood: " + option) }
     }
 
     // Verify constraints

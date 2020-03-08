@@ -2,11 +2,15 @@ import scala._;
 
 object test {
 
-  abstract trait F { type If; }
+  abstract trait F {
+    type If;
+  }
 
   def f[Jf](h: Jf): F { type If = Jf } = f[Jf](h);
 
-  abstract trait G { type Ig; }
+  abstract trait G {
+    type Ig;
+  }
 
   def g[Jg](h: Jg): G { type Ig = Jg } = g[Jg](h);
 

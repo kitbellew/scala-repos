@@ -20,9 +20,7 @@ class MutableListTest {
     assertSameElements(tl, tl.iterator)
   }
   @Test def iteratorMustFailEventually(): Unit =
-    assertThrows[NoSuchElementException] {
-      MutableList[Unit]().iterator.next()
-    }
+    assertThrows[NoSuchElementException] { MutableList[Unit]().iterator.next() }
   // was: Root empty iterator held reference
   @Test def iteratorMustNotHoldOntoLast(): Unit = {
     val is = MutableList(Some(1), Some(2))

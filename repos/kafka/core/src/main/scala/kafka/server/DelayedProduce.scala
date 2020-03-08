@@ -71,9 +71,7 @@ class DelayedProduce(
         // Timeout error state will be cleared when required acks are received
         status.acksPending = true
         status.responseStatus.errorCode = Errors.REQUEST_TIMED_OUT.code
-      } else {
-        status.acksPending = false
-      }
+      } else { status.acksPending = false }
 
       trace(
         "Initial partition status for %s is %s".format(topicPartition, status))

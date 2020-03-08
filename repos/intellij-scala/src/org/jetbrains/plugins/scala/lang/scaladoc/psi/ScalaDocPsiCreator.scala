@@ -50,18 +50,14 @@ object ScalaDocPsiCreator {
         var parent = node.getTreeParent
 
         while (parent != null && parent.getPsi != null && !parent.getPsi
-                 .isInstanceOf[ScDocTag]) {
-          parent = parent.getTreeParent
-        }
+                 .isInstanceOf[ScDocTag]) { parent = parent.getTreeParent }
 
         if (parent != null && parent.getPsi != null &&
             parent.getPsi
               .asInstanceOf[ScDocTag]
               .name == MyScaladocParsing.THROWS_TAG) {
           new ScDocThrowTagValueImpl(node)
-        } else {
-          new ScDocTagValueImpl(node)
-        }
+        } else { new ScDocTagValueImpl(node) }
       case ScalaDocTokenType.DOC_CODE_LINK_VALUE =>
         new ScDocResolvableCodeReferenceImpl(node)
     }

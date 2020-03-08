@@ -195,9 +195,7 @@ class FailFastFactoryTest
       assert(pp.poll == Some(Throw(e)))
       assert(pp2.poll == Some(Throw(e)))
 
-      val ffe = intercept[FailedFastException] {
-        failfast().poll.get.get
-      }
+      val ffe = intercept[FailedFastException] { failfast().poll.get.get }
       assert(
         ffe.getMessage().contains("twitter.github.io/finagle/guide/FAQ.html"))
     }
@@ -236,9 +234,7 @@ class FailFastFactoryTest
         threadCompletionCount.incrementAndGet()
       }
 
-      whenFinished {
-        assert(threadCompletionCount.get == 2)
-      }
+      whenFinished { assert(threadCompletionCount.get == 2) }
     }
   }
 

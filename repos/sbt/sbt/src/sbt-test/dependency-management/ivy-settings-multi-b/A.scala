@@ -1,1 +1,3 @@
-object A { val x = B.x }
+object A {
+  val x = B.x
+}

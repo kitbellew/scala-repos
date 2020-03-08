@@ -66,9 +66,7 @@ trait ThriftTest { self: FunSuite =>
 
       val boundAddr = server.boundAddress
 
-      def close() {
-        server.close()
-      }
+      def close() { server.close() }
     }
 
   private val newBuilderClient = (
@@ -88,9 +86,7 @@ trait ThriftTest { self: FunSuite =>
       val service = serviceFactory.toService
       val client = serviceToIface(service, protocolFactory)
 
-      def close() {
-        service.close()
-      }
+      def close() { service.close() }
     }
 
   private val newAPIServer = (protocolFactory: TProtocolFactory) =>
@@ -101,9 +97,7 @@ trait ThriftTest { self: FunSuite =>
         .serveIface("localhost:*", processor)
       val boundAddr = server.boundAddress
 
-      def close() {
-        server.close()
-      }
+      def close() { server.close() }
     }
 
   private val newAPIClient = (

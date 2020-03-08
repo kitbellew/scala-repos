@@ -55,9 +55,7 @@ object CLI extends App with EvaluatorModule {
           case Failure(t)  => throw t
         }
         result #:: gen
-      } else {
-        Stream.empty
-      }
+      } else { Stream.empty }
     }
 
     gen
@@ -66,9 +64,8 @@ object CLI extends App with EvaluatorModule {
   def load(path: String): Seq[JValue] = {
     val basePath = config get 'base getOrElse "."
 
-    if (path == "-") {
-      stdin
-    } else {
+    if (path == "-") { stdin }
+    else {
       val file = new File(basePath + path)
 
       JParser.parseManyFromFile(file) match {

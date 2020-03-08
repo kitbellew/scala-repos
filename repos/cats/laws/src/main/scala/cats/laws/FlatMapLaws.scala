@@ -37,5 +37,7 @@ trait FlatMapLaws[F[_]] extends ApplyLaws[F] {
 
 object FlatMapLaws {
   def apply[F[_]](implicit ev: FlatMap[F]): FlatMapLaws[F] =
-    new FlatMapLaws[F] { def F: FlatMap[F] = ev }
+    new FlatMapLaws[F] {
+      def F: FlatMap[F] = ev
+    }
 }

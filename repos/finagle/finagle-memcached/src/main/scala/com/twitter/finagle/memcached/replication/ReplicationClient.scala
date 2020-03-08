@@ -361,9 +361,7 @@ class BaseReplicationClient(
     throw new UnsupportedOperationException(
       "stats is not supported for cache replication client.")
 
-  def release() {
-    clients foreach { _.release() }
-  }
+  def release() { clients foreach { _.release() } }
 
   /**
     * Translating the results sequence from all replicas into aggregated results, which can be
@@ -397,9 +395,9 @@ class BaseReplicationClient(
     * and resolve them to the ReplicationStatus to tell the consistency
     */
   private[this] def collectAndResolve[T](op: Client => Future[T]) =
-    Future.collect(clients map {
-      op(_).transform(Future.value)
-    }) map { toReplicationStatus }
+    Future.collect(clients map { op(_).transform(Future.value) }) map {
+      toReplicationStatus
+    }
 }
 
 /**
@@ -544,7 +542,5 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
     throw new UnsupportedOperationException(
       "No logical way to perform stats without a key")
 
-  def release() {
-    underlyingClient.release()
-  }
+  def release() { underlyingClient.release() }
 }

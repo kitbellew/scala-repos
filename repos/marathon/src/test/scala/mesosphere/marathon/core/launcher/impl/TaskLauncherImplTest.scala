@@ -94,7 +94,5 @@ class TaskLauncherImplTest extends MarathonSpec {
     launcher = new TaskLauncherImpl(metrics, driverHolder, ConstantClock())
   }
 
-  after {
-    driverHolder.driver.foreach(Mockito.verifyNoMoreInteractions(_))
-  }
+  after { driverHolder.driver.foreach(Mockito.verifyNoMoreInteractions(_)) }
 }

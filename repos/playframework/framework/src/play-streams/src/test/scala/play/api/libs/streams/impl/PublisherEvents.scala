@@ -18,12 +18,8 @@ trait PublisherEvents[T] {
 
   case class BoundedSubscription[T, U >: T](pr: Publisher[T], sr: Subscriber[U])
       extends Subscription {
-    def cancel(): Unit = {
-      record(Cancel)
-    }
-    def request(elements: Long): Unit = {
-      record(RequestMore(elements))
-    }
+    def cancel(): Unit = { record(Cancel) }
+    def request(elements: Long): Unit = { record(RequestMore(elements)) }
     def onNext(element: T): Unit = sr.onNext(element)
   }
 

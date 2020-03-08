@@ -93,16 +93,12 @@ private[streaming] class PythonStreamingListenerWrapper(
   /** Called when processing of a job of a batch has started. */
   override def onOutputOperationStarted(
       outputOperationStarted: JavaStreamingListenerOutputOperationStarted)
-      : Unit = {
-    listener.onOutputOperationStarted(outputOperationStarted)
-  }
+      : Unit = { listener.onOutputOperationStarted(outputOperationStarted) }
 
   /** Called when processing of a job of a batch has completed. */
   override def onOutputOperationCompleted(
       outputOperationCompleted: JavaStreamingListenerOutputOperationCompleted)
-      : Unit = {
-    listener.onOutputOperationCompleted(outputOperationCompleted)
-  }
+      : Unit = { listener.onOutputOperationCompleted(outputOperationCompleted) }
 }
 
 /**

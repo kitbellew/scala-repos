@@ -6,9 +6,7 @@ object Test {
     trait TA[X <: CharSequence]
     val ta: TA[_] = new TA[String] {}
 
-    ta match {
-      case _ => println("hi")
-    }
+    ta match { case _ => println("hi") }
 
     def f(ta: TA[_]) = ta match { case _ => "hi" }
   }

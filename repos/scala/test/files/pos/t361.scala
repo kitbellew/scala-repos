@@ -7,9 +7,7 @@ abstract class Bug361Trees { self: Bug361Global =>
   }
 
   object posAssigner {
-    def atPos[T <: Tree](pos: Int, tree: T): T = {
-      tree.pos = pos; tree
-    }
+    def atPos[T <: Tree](pos: Int, tree: T): T = { tree.pos = pos; tree }
   }
 
   def atPos[T <: Tree](pos: Int)(tree: T): T = posAssigner.atPos(pos, tree)

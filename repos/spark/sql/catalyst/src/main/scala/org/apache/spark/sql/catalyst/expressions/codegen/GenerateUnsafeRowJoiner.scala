@@ -40,18 +40,14 @@ object GenerateUnsafeRowJoiner
     extends CodeGenerator[(StructType, StructType), UnsafeRowJoiner] {
 
   override protected def create(
-      in: (StructType, StructType)): UnsafeRowJoiner = {
-    create(in._1, in._2)
-  }
+      in: (StructType, StructType)): UnsafeRowJoiner = { create(in._1, in._2) }
 
   override protected def canonicalize(
       in: (StructType, StructType)): (StructType, StructType) = in
 
   override protected def bind(
       in: (StructType, StructType),
-      inputSchema: Seq[Attribute]): (StructType, StructType) = {
-    in
-  }
+      inputSchema: Seq[Attribute]): (StructType, StructType) = { in }
 
   def create(schema1: StructType, schema2: StructType): UnsafeRowJoiner = {
     val offset = Platform.BYTE_ARRAY_OFFSET
@@ -71,9 +67,8 @@ object GenerateUnsafeRowJoiner
     val copyBitset = Seq
       .tabulate(outputBitsetWords) { i =>
         val bits = if (bitset1Remainder > 0) {
-          if (i < bitset1Words - 1) {
-            s"$getLong(obj1, offset1 + ${i * 8})"
-          } else if (i == bitset1Words - 1) {
+          if (i < bitset1Words - 1) { s"$getLong(obj1, offset1 + ${i * 8})" }
+          else if (i == bitset1Words - 1) {
             // combine last work of bitset1 and first word of bitset2
             s"$getLong(obj1, offset1 + ${i * 8}) | ($getLong(obj2, offset2) << $bitset1Remainder)"
           } else if (i - bitset1Words < bitset2Words - 1) {
@@ -86,11 +81,8 @@ object GenerateUnsafeRowJoiner
           }
         } else {
           // they are aligned by word
-          if (i < bitset1Words) {
-            s"$getLong(obj1, offset1 + ${i * 8})"
-          } else {
-            s"$getLong(obj2, offset2 + ${(i - bitset1Words) * 8})"
-          }
+          if (i < bitset1Words) { s"$getLong(obj1, offset1 + ${i * 8})" }
+          else { s"$getLong(obj2, offset2 + ${(i - bitset1Words) * 8})" }
         }
         s"$putLong(buf, ${offset + i * 8}, $bits);"
       }
@@ -144,9 +136,8 @@ object GenerateUnsafeRowJoiner
       .map {
         case (field, i) =>
           // Skip fixed length data types, and only generate code for variable length data
-          if (UnsafeRow.isFixedLength(field.dataType)) {
-            ""
-          } else {
+          if (UnsafeRow.isFixedLength(field.dataType)) { "" }
+          else {
             // Number of bytes to increase for the offset. Note that since in UnsafeRow we store the
             // offset in the upper 32 bit of the words, we can just shift the offset to the left by
             // 32 and increment that amount in place.

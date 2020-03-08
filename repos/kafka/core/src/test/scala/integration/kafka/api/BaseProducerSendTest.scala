@@ -217,9 +217,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         numRecords + 4L,
         producer.send(record0, callback).get.offset)
 
-    } finally {
-      producer.close()
-    }
+    } finally { producer.close() }
   }
 
   @Test
@@ -314,9 +312,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         s"Should have offset $numRecords but only successfully sent ${callback.offset}",
         numRecords,
         callback.offset)
-    } finally {
-      producer.close()
-    }
+    } finally { producer.close() }
   }
 
   /**
@@ -355,9 +351,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         numRecords.toLong,
         response0.get.offset)
 
-    } finally {
-      producer.close()
-    }
+    } finally { producer.close() }
   }
 
   /**
@@ -431,9 +425,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
           messageSet1(i).message)
         assertEquals(i.toLong, messageSet1(i).offset)
       }
-    } finally {
-      producer.close()
-    }
+    } finally { producer.close() }
   }
 
   /**
@@ -457,9 +449,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       // double check that the topic is created with leader elected
       TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
 
-    } finally {
-      producer.close()
-    }
+    } finally { producer.close() }
   }
 
   /**
@@ -478,9 +468,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         producer.flush()
         assertTrue("All requests are complete.", responses.forall(_.isDone()))
       }
-    } finally {
-      producer.close()
-    }
+    } finally { producer.close() }
   }
 
   /**
@@ -590,9 +578,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
             expectedNumRecords),
           expectedNumRecords,
           fetchResponse.messageSet(topic, 0).size)
-      } finally {
-        producer.close()
-      }
+      } finally { producer.close() }
     }
   }
 
@@ -619,9 +605,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
     } catch {
       case e: ExecutionException =>
         assertTrue(e.getCause.isInstanceOf[InvalidTimestampException])
-    } finally {
-      producer.close()
-    }
+    } finally { producer.close() }
 
     // Test compressed messages.
     val producerProps = new Properties()
@@ -642,9 +626,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
     } catch {
       case e: ExecutionException =>
         assertTrue(e.getCause.isInstanceOf[InvalidTimestampException])
-    } finally {
-      compressedProducer.close()
-    }
+    } finally { compressedProducer.close() }
   }
 
 }

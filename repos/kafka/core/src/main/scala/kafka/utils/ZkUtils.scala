@@ -108,9 +108,7 @@ object ZkUtils {
       list.addAll(ZooDefs.Ids.CREATOR_ALL_ACL)
       list.addAll(ZooDefs.Ids.READ_ACL_UNSAFE)
       list
-    } else {
-      ZooDefs.Ids.OPEN_ACL_UNSAFE
-    }
+    } else { ZooDefs.Ids.OPEN_ACL_UNSAFE }
 
   def maybeDeletePath(zkUrl: String, dir: String) {
     try {
@@ -445,9 +443,8 @@ class ZkUtils(
       path: String,
       data: String,
       acls: java.util.List[ACL] = DefaultAcls): Unit = {
-    try {
-      ZkPath.createEphemeral(zkClient, path, data, acls)
-    } catch {
+    try { ZkPath.createEphemeral(zkClient, path, data, acls) }
+    catch {
       case e: ZkNoNodeException => {
         createParentPath(path)
         ZkPath.createEphemeral(zkClient, path, data, acls)
@@ -463,15 +460,13 @@ class ZkUtils(
       path: String,
       data: String,
       acls: java.util.List[ACL] = DefaultAcls): Unit = {
-    try {
-      createEphemeralPath(path, data, acls)
-    } catch {
+    try { createEphemeralPath(path, data, acls) }
+    catch {
       case e: ZkNodeExistsException => {
         // this can happen when there is connection loss; make sure the data is what we intend to write
         var storedData: String = null
-        try {
-          storedData = readData(path)._1
-        } catch {
+        try { storedData = readData(path)._1 }
+        catch {
           case e1: ZkNoNodeException => // the node disappeared; treat as if node existed and let caller handles this
           case e2: Throwable         => throw e2
         }
@@ -496,9 +491,8 @@ class ZkUtils(
       path: String,
       data: String = "",
       acls: java.util.List[ACL] = DefaultAcls): Unit = {
-    try {
-      ZkPath.createPersistent(zkClient, path, data, acls)
-    } catch {
+    try { ZkPath.createPersistent(zkClient, path, data, acls) }
+    catch {
       case e: ZkNoNodeException => {
         createParentPath(path)
         ZkPath.createPersistent(zkClient, path, data, acls)
@@ -522,14 +516,12 @@ class ZkUtils(
       path: String,
       data: String,
       acls: java.util.List[ACL] = DefaultAcls) = {
-    try {
-      zkClient.writeData(path, data)
-    } catch {
+    try { zkClient.writeData(path, data) }
+    catch {
       case e: ZkNoNodeException => {
         createParentPath(path)
-        try {
-          ZkPath.createPersistent(zkClient, path, data, acls)
-        } catch {
+        try { ZkPath.createPersistent(zkClient, path, data, acls) }
+        catch {
           case e: ZkNodeExistsException =>
             zkClient.writeData(path, data)
           case e2: Throwable => throw e2
@@ -609,9 +601,8 @@ class ZkUtils(
       path: String,
       data: String,
       acls: java.util.List[ACL] = DefaultAcls): Unit = {
-    try {
-      zkClient.writeData(path, data)
-    } catch {
+    try { zkClient.writeData(path, data) }
+    catch {
       case e: ZkNoNodeException => {
         createParentPath(path)
         ZkPath.createEphemeral(zkClient, path, data, acls)
@@ -621,9 +612,8 @@ class ZkUtils(
   }
 
   def deletePath(path: String): Boolean = {
-    try {
-      zkClient.delete(path)
-    } catch {
+    try { zkClient.delete(path) }
+    catch {
       case e: ZkNoNodeException =>
         // this can happen during a connection loss event, return normally
         info(path + " deleted during connection loss; this is ok")
@@ -640,15 +630,12 @@ class ZkUtils(
     try {
       zkClient.delete(path, expectedVersion)
       true
-    } catch {
-      case e: KeeperException.BadVersionException => false
-    }
+    } catch { case e: KeeperException.BadVersionException => false }
   }
 
   def deletePathRecursive(path: String) {
-    try {
-      zkClient.deleteRecursive(path)
-    } catch {
+    try { zkClient.deleteRecursive(path) }
+    catch {
       case e: ZkNoNodeException =>
         // this can happen during a connection loss event, return normally
         info(path + " deleted during connection loss; this is ok")
@@ -665,9 +652,8 @@ class ZkUtils(
   def readDataMaybeNull(path: String): (Option[String], Stat) = {
     val stat: Stat = new Stat()
     val dataAndStat =
-      try {
-        (Some(zkClient.readData(path, stat)), stat)
-      } catch {
+      try { (Some(zkClient.readData(path, stat)), stat) }
+      catch {
         case e: ZkNoNodeException =>
           (None, stat)
         case e2: Throwable => throw e2
@@ -684,9 +670,8 @@ class ZkUtils(
   def getChildrenParentMayNotExist(path: String): Seq[String] = {
     import scala.collection.JavaConversions._
     // triggers implicit conversion from java list to scala Seq
-    try {
-      zkClient.getChildren(path)
-    } catch {
+    try { zkClient.getChildren(path) }
+    catch {
       case e: ZkNoNodeException => Nil
       case e2: Throwable        => throw e2
     }
@@ -695,9 +680,7 @@ class ZkUtils(
   /**
     * Check if the given path exists
     */
-  def pathExists(path: String): Boolean = {
-    zkClient.exists(path)
-  }
+  def pathExists(path: String): Boolean = { zkClient.exists(path) }
 
   def getCluster(): Cluster = {
     val cluster = new Cluster
@@ -1023,9 +1006,7 @@ class ZkUtils(
     }
   }
 
-  def getConsumerGroups() = {
-    getChildren(ConsumersPath)
-  }
+  def getConsumerGroups() = { getChildren(ConsumersPath) }
 
   def getTopicsByConsumerGroup(consumerGroup: String) = {
     getChildrenParentMayNotExist(
@@ -1044,11 +1025,7 @@ class ZkUtils(
     }
   }
 
-  def close() {
-    if (zkClient != null) {
-      zkClient.close()
-    }
-  }
+  def close() { if (zkClient != null) { zkClient.close() } }
 }
 
 private object ZKStringSerializer extends ZkSerializer {
@@ -1109,9 +1086,7 @@ object ZkPath {
     isNamespacePresent = true
   }
 
-  def resetNamespaceCheckedState {
-    isNamespacePresent = false
-  }
+  def resetNamespaceCheckedState { isNamespacePresent = false }
 
   def createPersistent(
       client: ZkClient,
@@ -1243,9 +1218,8 @@ class ZKCheckedEphemeral(
 
   private def createRecursive(prefix: String, suffix: String) {
     debug("Path: %s, Prefix: %s, Suffix: %s".format(path, prefix, suffix))
-    if (suffix.isEmpty()) {
-      createEphemeral
-    } else {
+    if (suffix.isEmpty()) { createEphemeral }
+    else {
       zkHandle.create(
         prefix,
         new Array[Byte](0),

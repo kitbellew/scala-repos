@@ -52,8 +52,6 @@ class Bloom(override val delegate: jfxse.Bloom = new jfxse.Bloom)
     * The threshold value controls the minimum luminosity value of the pixels that will be made to glow.
     */
   def threshold: DoubleProperty = delegate.thresholdProperty
-  def threshold_=(v: Double) {
-    threshold() = v
-  }
+  def threshold_=(v: Double) { threshold() = v }
 
 }

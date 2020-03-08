@@ -178,19 +178,11 @@ trait TimingQueryLogger[M[+_], P] extends QueryLogger[M, P] {
       if (stats == null) {
         val stats = Stats(1, nanos, nanos * nanos, nanos, nanos)
 
-        if (table.putIfAbsent(pos, stats) != stats) {
-          loop()
-        }
-      } else {
-        if (!table.replace(pos, stats, stats derive nanos)) {
-          loop()
-        }
-      }
+        if (table.putIfAbsent(pos, stats) != stats) { loop() }
+      } else { if (!table.replace(pos, stats, stats derive nanos)) { loop() } }
     }
 
-    M point {
-      loop()
-    }
+    M point { loop() }
   }
 
   def done: M[Unit] = {

@@ -51,13 +51,9 @@ class ProducerSendThread[K, V](
     Map("clientId" -> clientId))
 
   override def run {
-    try {
-      processEvents
-    } catch {
-      case e: Throwable => error("Error in sending events: ", e)
-    } finally {
-      shutdownLatch.countDown
-    }
+    try { processEvents }
+    catch { case e: Throwable => error("Error in sending events: ", e) }
+    finally { shutdownLatch.countDown }
   }
 
   def shutdown = {

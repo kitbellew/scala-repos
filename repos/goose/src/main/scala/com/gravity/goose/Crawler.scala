@@ -83,17 +83,12 @@ class Crawler(config: Configuration) {
             trace(logPrefix + "Image fetching enabled...")
             val imageExtractor = getImageExtractor(article)
             try {
-              if (article.rawDoc == null) {
-                article.topImage = new Image
-              } else {
+              if (article.rawDoc == null) { article.topImage = new Image }
+              else {
                 article.topImage =
                   imageExtractor.getBestImage(article.rawDoc, article.topNode)
               }
-            } catch {
-              case e: Exception => {
-                warn(e, e.toString)
-              }
-            }
+            } catch { case e: Exception => { warn(e, e.toString) } }
           }
           article.topNode = extractor.postExtractionCleanup(article.topNode)
 
@@ -112,15 +107,12 @@ class Crawler(config: Configuration) {
   def getHTML(
       crawlCandidate: CrawlCandidate,
       parsingCandidate: ParsingCandidate): Option[String] = {
-    if (crawlCandidate.rawHTML != null) {
-      Some(crawlCandidate.rawHTML)
-    } else {
+    if (crawlCandidate.rawHTML != null) { Some(crawlCandidate.rawHTML) }
+    else {
       config.getHtmlFetcher
         .getHtml(config, parsingCandidate.url.toString) match {
-        case Some(html) => {
-          Some(html)
-        }
-        case _ => None
+        case Some(html) => { Some(html) }
+        case _          => None
       }
     }
   }
@@ -130,19 +122,14 @@ class Crawler(config: Configuration) {
     new UpgradedImageIExtractor(httpClient, article, config)
   }
 
-  def getOutputFormatter: OutputFormatter = {
-    StandardOutputFormatter
-  }
+  def getOutputFormatter: OutputFormatter = { StandardOutputFormatter }
 
-  def getDocCleaner: DocumentCleaner = {
-    new StandardDocumentCleaner
-  }
+  def getDocCleaner: DocumentCleaner = { new StandardDocumentCleaner }
 
   def getDocument(url: String, rawlHtml: String): Option[Document] = {
 
-    try {
-      Some(Jsoup.parse(rawlHtml))
-    } catch {
+    try { Some(Jsoup.parse(rawlHtml)) }
+    catch {
       case e: Exception => {
         trace("Unable to parse " + url + " properly into JSoup Doc")
         None
@@ -150,9 +137,7 @@ class Crawler(config: Configuration) {
     }
   }
 
-  def getExtractor: ContentExtractor = {
-    config.contentExtractor
-  }
+  def getExtractor: ContentExtractor = { config.contentExtractor }
 
   /**
     * cleans up any temp files we have laying around like temp images
@@ -166,9 +151,7 @@ class Crawler(config: Configuration) {
     dir.list.foreach(filename => {
       if (filename.startsWith(article.linkhash)) {
         val f: File = new File(dir.getAbsolutePath + "/" + filename)
-        if (!f.delete) {
-          warn("Unable to remove temp file: " + filename)
-        }
+        if (!f.delete) { warn("Unable to remove temp file: " + filename) }
       }
     })
   }

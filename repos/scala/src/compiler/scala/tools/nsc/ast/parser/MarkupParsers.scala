@@ -392,10 +392,9 @@ trait MarkupParsers {
 
         val ts = new ArrayBuffer[Tree]
         val start = curOffset
-        tmppos =
-          o2p(
-            curOffset
-          ) // Iuli: added this line, as it seems content_LT uses tmppos when creating trees
+        tmppos = o2p(
+          curOffset
+        ) // Iuli: added this line, as it seems content_LT uses tmppos when creating trees
         content_LT(ts)
 
         // parse more XML?
@@ -483,9 +482,7 @@ trait MarkupParsers {
 
               case '{'
                   if xCheckEmbeddedBlock => // embedded Scala patterns, if not double brace
-                do {
-                  ts ++= xScalaPatterns
-                } while (xCheckEmbeddedBlock)
+                do { ts ++= xScalaPatterns } while (xCheckEmbeddedBlock)
                 assert(!xEmbeddedBlock, "problem with embedded block")
 
               case SU =>

@@ -32,9 +32,7 @@ class FlowSupervisionSpec extends AkkaSpec {
   "Stream supervision" must {
 
     "stop and complete stream with failure by default" in {
-      intercept[RuntimeException] {
-        run(failingMap)
-      } should be(exc)
+      intercept[RuntimeException] { run(failingMap) } should be(exc)
     }
 
     "support resume " in {

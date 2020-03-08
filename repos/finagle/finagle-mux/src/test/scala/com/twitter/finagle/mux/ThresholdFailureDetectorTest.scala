@@ -17,9 +17,7 @@ class ThresholdFailureDetectorTest
     with Eventually
     with IntegrationPatience {
   def testt(desc: String)(f: TimeControl => Unit): Unit =
-    test(desc) {
-      Time.withCurrentTimeFrozen(f)
-    }
+    test(desc) { Time.withCurrentTimeFrozen(f) }
 
   private class Ctx(closeTimeout: Duration = 1000.milliseconds) {
     val n = new AtomicInteger(0)
@@ -117,9 +115,7 @@ class ThresholdFailureDetectorTest
     tc.advance(5.milliseconds)
     latch.flip() // rtt = 10, maxPing = 10
 
-    eventually {
-      assert(until.isDone)
-    }
+    eventually { assert(until.isDone) }
 
     assert(d.status == Status.Open)
 

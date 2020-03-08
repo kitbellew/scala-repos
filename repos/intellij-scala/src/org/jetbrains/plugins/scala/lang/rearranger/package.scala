@@ -216,8 +216,6 @@ package object rearranger {
     scalaModifiersByName.get(modifierName)
   }
 
-  def getTokenById(modifierId: String) = {
-    scalaTokensById.get(modifierId)
-  }
+  def getTokenById(modifierId: String) = { scalaTokensById.get(modifierId) }
 
 }

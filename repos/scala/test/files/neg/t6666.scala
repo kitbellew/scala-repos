@@ -45,7 +45,10 @@ object O3
 object O6
     extends C({
       val x = "".toString
-      F.byname(x); F.hof(() => x); (new { val xx = x }.xx)
+      F.byname(x); F.hof(() => x);
+      (new {
+        val xx = x
+      }.xx)
     })
 
 class C1
@@ -66,7 +69,9 @@ class C3
 class C4
     extends C({
       def x = "".toString
-      object Nested { def xx = x }
+      object Nested {
+        def xx = x
+      }
       Nested.xx
     })
 
@@ -74,7 +79,10 @@ class C4
 class C6
     extends C({
       val x = "".toString
-      F.byname(x); F.hof(() => x); (new { val xx = x }.xx)
+      F.byname(x); F.hof(() => x);
+      (new {
+        val xx = x
+      }.xx)
     })
 
 class C11(a: Any) {
@@ -109,7 +117,9 @@ class C14(a: Any) {
   def this() = {
     this({
       def x = "".toString
-      object Nested { def xx = x }
+      object Nested {
+        def xx = x
+      }
       Nested.xx
     })
   }
@@ -124,7 +134,9 @@ class COuter
 class CEarly(a: Any) extends {
   val early = {
     def x = "".toString
-    object Nested { def xx = x }
+    object Nested {
+      def xx = x
+    }
     Nested.xx
   }
 } with AnyRef

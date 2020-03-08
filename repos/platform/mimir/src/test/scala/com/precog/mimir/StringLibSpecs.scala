@@ -992,9 +992,7 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(8)
 
-      val ns = result.toList.collect {
-        case (_, SDecimal(n)) => n
-      }
+      val ns = result.toList.collect { case (_, SDecimal(n)) => n }
 
       ns must contain(
         BigDecimal("42"),
@@ -1019,9 +1017,7 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(6)
 
-      val ss = result.toList.collect {
-        case (_, SString(s)) => s
-      }
+      val ss = result.toList.collect { case (_, SString(s)) => s }
 
       ss must contain(
         "4",
@@ -1042,9 +1038,7 @@ trait StringLibSpecs[M[+_]]
       val resultE = testEval(input)
       resultE must haveSize(1)
 
-      val result = resultE.collect {
-        case (_, SString(s)) => s
-      }
+      val result = resultE.collect { case (_, SString(s)) => s }
 
       result must contain("3")
     }
@@ -1056,9 +1050,7 @@ trait StringLibSpecs[M[+_]]
 
     def mogrify(result: Set[(Vector[SValue], SValue)]): List[Vector[String]] =
       result.toList
-        .map {
-          case (Vector(n), SArray(elems)) => (n, elems)
-        }
+        .map { case (Vector(n), SArray(elems)) => (n, elems) }
         .sorted(o)
         .map(_._2.map { case SString(s) => s })
 

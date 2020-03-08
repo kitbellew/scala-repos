@@ -26,13 +26,9 @@ object Test extends BytecodeTest {
 }
 
 class Lean {
-  def string {
-    "" == toString
-  }
+  def string { "" == toString }
 
-  def module {
-    Nil == (toString: Any)
-  }
+  def module { Nil == (toString: Any) }
 
   def moduleIndirect {
     val n: Nil.type = null

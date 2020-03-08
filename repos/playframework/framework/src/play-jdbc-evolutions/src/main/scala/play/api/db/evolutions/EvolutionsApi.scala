@@ -168,9 +168,7 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         }
       }
 
-    } finally {
-      connection.close()
-    }
+    } finally { connection.close() }
   }
 
   def evolve(scripts: Seq[Script], autocommit: Boolean): Unit = {
@@ -234,9 +232,7 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         logAfter(script)
       }
 
-      if (!autocommit) {
-        connection.commit()
-      }
+      if (!autocommit) { connection.commit() }
 
     } catch {
       case NonFatal(e) => {
@@ -267,13 +263,9 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
             message,
             lastScript.evolution.revision,
             autocommit)
-        } else {
-          updateLastProblem(message, applying)
-        }
+        } else { updateLastProblem(message, applying) }
       }
-    } finally {
-      connection.close()
-    }
+    } finally { connection.close() }
 
     checkEvolutionsState()
   }
@@ -336,9 +328,7 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
     } catch {
       case e: InconsistentDatabase => throw e
       case NonFatal(_)             => createPlayEvolutionsTable()
-    } finally {
-      connection.close()
-    }
+    } finally { connection.close() }
   }
 
   def resetScripts(): Seq[Script] = {
@@ -353,9 +343,7 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         "update ${schema}play_evolutions set state = 'applied' where state = 'applying_up' and id = " + revision)
       execute(
         "delete from ${schema}play_evolutions where state = 'applying_down' and id = " + revision);
-    } finally {
-      connection.close()
-    }
+    } finally { connection.close() }
   }
 
   // SQL helpers

@@ -59,9 +59,7 @@ case class Spdy(
       // These settings still provide sufficient compression to fit the
       // compressed header block within the TCP initial congestion window.
       new SpdyFrameCodec(_version, 8192, maxHeaderSizeInBytes, 9, 11, 8)
-    } else {
-      new SpdyRawFrameCodec(_version, 8192, maxHeaderSizeInBytes)
-    }
+    } else { new SpdyRawFrameCodec(_version, 8192, maxHeaderSizeInBytes) }
   }
 
   def client = { config =>

@@ -72,9 +72,7 @@ class RetryBudgetTest extends FunSuite with Matchers {
   }
 
   test("apply ttl bounds check") {
-    intercept[IllegalArgumentException] {
-      RetryBudget(Duration.Zero, 5, 0.1)
-    }
+    intercept[IllegalArgumentException] { RetryBudget(Duration.Zero, 5, 0.1) }
     intercept[IllegalArgumentException] {
       RetryBudget(Duration.fromSeconds(61), 5, 0.1)
     }

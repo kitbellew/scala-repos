@@ -65,9 +65,7 @@ class Throwable(s: String, private var e: Throwable)
         sprintln("  at " + stackTrace(i))
         i += 1
       }
-    } else {
-      sprintln("  <no stack trace available>")
-    }
+    } else { sprintln("  <no stack trace available>") }
 
     // Causes
     var wCause: Throwable = this
@@ -88,9 +86,7 @@ class Throwable(s: String, private var e: Throwable)
         var sameFrameCount: Int = 0
         while (sameFrameCount < thisLength && sameFrameCount < parentLength &&
                thisTrace(thisLength - sameFrameCount - 1) == parentTrace(
-                 parentLength - sameFrameCount - 1)) {
-          sameFrameCount += 1
-        }
+                 parentLength - sameFrameCount - 1)) { sameFrameCount += 1 }
 
         /* If at least one, decrement so that the first common frame is still
          * printed. According to Harmony this is spec'ed and common practice.
@@ -108,9 +104,7 @@ class Throwable(s: String, private var e: Throwable)
 
         if (sameFrameCount > 0)
           sprintln("  ... " + sameFrameCount + " more")
-      } else {
-        sprintln("  <no stack trace available>")
-      }
+      } else { sprintln("  <no stack trace available>") }
     }
   }
 

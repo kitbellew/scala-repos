@@ -98,13 +98,10 @@ private[spark] class SortShuffleWriter[K, V, C](
   /** Close this writer, passing along whether the map completed */
   override def stop(success: Boolean): Option[MapStatus] = {
     try {
-      if (stopping) {
-        return None
-      }
+      if (stopping) { return None }
       stopping = true
-      if (success) {
-        return Option(mapStatus)
-      } else {
+      if (success) { return Option(mapStatus) }
+      else {
         // The map task failed, so delete our output data.
         shuffleBlockResolver.removeDataByMap(dep.shuffleId, mapId)
         return None

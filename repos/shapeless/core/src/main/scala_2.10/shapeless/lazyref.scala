@@ -58,11 +58,8 @@ object LazyMacrosRef {
         }
       case None =>
         lmSym.updateAttachment[LazyMacrosRef.type](this)
-        try {
-          forward
-        } finally {
-          lmSym.removeAttachment[LazyMacrosRef.type]
-        }
+        try { forward }
+        finally { lmSym.removeAttachment[LazyMacrosRef.type] }
     }
   }
 
@@ -90,11 +87,8 @@ object LazyMacrosRef {
         }
       case None =>
         lmSym.updateAttachment[LazyMacrosRef.type](this)
-        try {
-          forward
-        } finally {
-          lmSym.removeAttachment[LazyMacrosRef.type]
-        }
+        try { forward }
+        finally { lmSym.removeAttachment[LazyMacrosRef.type] }
     }
   }
 }

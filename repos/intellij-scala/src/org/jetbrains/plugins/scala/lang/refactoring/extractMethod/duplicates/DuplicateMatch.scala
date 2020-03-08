@@ -129,9 +129,7 @@ class DuplicateMatch(
             ScType.extractDesignatorSingletonType(t)
           else Some(t)
         val Seq(newTp1, newTp2) = Seq(t1, t2).map(extractFromSingletonType)
-        newTp1.zip(newTp2).forall {
-          case (tp1, tp2) => tp1.equiv(tp2)
-        }
+        newTp1.zip(newTp2).forall { case (tp1, tp2) => tp1.equiv(tp2) }
       case (Failure(_, _), Failure(_, _)) => true
       case _                              => false
     }

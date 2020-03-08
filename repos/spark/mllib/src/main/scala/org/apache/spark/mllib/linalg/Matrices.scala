@@ -325,9 +325,8 @@ class DenseMatrix @Since("1.3.0") (
   }
 
   private[mllib] def toBreeze: BM[Double] = {
-    if (!isTransposed) {
-      new BDM[Double](numRows, numCols, values)
-    } else {
+    if (!isTransposed) { new BDM[Double](numRows, numCols, values) }
+    else {
       val breezeMatrix = new BDM[Double](numCols, numRows, values)
       breezeMatrix.t
     }
@@ -664,9 +663,7 @@ class SparseMatrix @Since("1.3.0") (
     require(j >= 0 && j < numCols, s"Expected 0 <= j < $numCols, got j = $j.")
     if (!isTransposed) {
       Arrays.binarySearch(rowIndices, colPtrs(j), colPtrs(j + 1), i)
-    } else {
-      Arrays.binarySearch(rowIndices, colPtrs(i), colPtrs(i + 1), j)
-    }
+    } else { Arrays.binarySearch(rowIndices, colPtrs(i), colPtrs(i + 1), j) }
   }
 
   private[mllib] def update(i: Int, j: Int, v: Double): Unit = {
@@ -675,9 +672,7 @@ class SparseMatrix @Since("1.3.0") (
       throw new NoSuchElementException(
         "The given row and column indices correspond to a zero " +
           "value. Only non-zero elements in Sparse Matrices can be updated.")
-    } else {
-      values(ind) = v
-    }
+    } else { values(ind) = v }
   }
 
   @Since("1.4.0")
@@ -747,9 +742,7 @@ class SparseMatrix @Since("1.3.0") (
     * set to false.
     */
   @Since("1.3.0")
-  def toDense: DenseMatrix = {
-    new DenseMatrix(numRows, numCols, toArray)
-  }
+  def toDense: DenseMatrix = { new DenseMatrix(numRows, numCols, toArray) }
 
   @Since("1.5.0")
   override def numNonzeros: Int = values.count(_ != 0)
@@ -834,9 +827,8 @@ object SparseMatrix {
     (sortedEntries.view :+ (numRows, numCols, 1.0)).foreach {
       case (i, j, v) =>
         if (v != 0) {
-          if (i == prevRow && j == prevCol) {
-            prevVal += v
-          } else {
+          if (i == prevRow && j == prevCol) { prevVal += v }
+          else {
             if (prevVal != 0) {
               require(
                 prevRow >= 0 && prevRow < numRows,
@@ -1172,11 +1164,8 @@ object Matrices {
     */
   @Since("1.3.0")
   def horzcat(matrices: Array[Matrix]): Matrix = {
-    if (matrices.isEmpty) {
-      return new DenseMatrix(0, 0, Array[Double]())
-    } else if (matrices.length == 1) {
-      return matrices(0)
-    }
+    if (matrices.isEmpty) { return new DenseMatrix(0, 0, Array[Double]()) }
+    else if (matrices.length == 1) { return matrices(0) }
     val numRows = matrices(0).numRows
     var hasSparse = false
     var numCols = 0
@@ -1214,9 +1203,7 @@ object Matrices {
           case dnMat: DenseMatrix =>
             val data = new ArrayBuffer[(Int, Int, Double)]()
             dnMat.foreachActive { (i, j, v) =>
-              if (v != 0.0) {
-                data.append((i, j + startCol, v))
-              }
+              if (v != 0.0) { data.append((i, j + startCol, v)) }
             }
             startCol += nCols
             data
@@ -1235,11 +1222,8 @@ object Matrices {
     */
   @Since("1.3.0")
   def vertcat(matrices: Array[Matrix]): Matrix = {
-    if (matrices.isEmpty) {
-      return new DenseMatrix(0, 0, Array[Double]())
-    } else if (matrices.length == 1) {
-      return matrices(0)
-    }
+    if (matrices.isEmpty) { return new DenseMatrix(0, 0, Array[Double]()) }
+    else if (matrices.length == 1) { return matrices(0) }
     val numCols = matrices(0).numCols
     var hasSparse = false
     var numRows = 0
@@ -1288,9 +1272,7 @@ object Matrices {
           case dnMat: DenseMatrix =>
             val data = new ArrayBuffer[(Int, Int, Double)]()
             dnMat.foreachActive { (i, j, v) =>
-              if (v != 0.0) {
-                data.append((i + startRow, j, v))
-              }
+              if (v != 0.0) { data.append((i + startRow, j, v)) }
             }
             startRow += nRows
             data

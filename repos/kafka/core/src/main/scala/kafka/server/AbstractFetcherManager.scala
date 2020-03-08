@@ -143,9 +143,7 @@ abstract class AbstractFetcherManager(
 
   def closeAllFetchers() {
     mapLock synchronized {
-      for ((_, fetcher) <- fetcherThreadMap) {
-        fetcher.shutdown()
-      }
+      for ((_, fetcher) <- fetcherThreadMap) { fetcher.shutdown() }
       fetcherThreadMap.clear()
     }
   }

@@ -21,10 +21,14 @@ trait LinkingUnitAsyncJSEnv extends LinkingUnitJSEnv with AsyncJSEnv {
 
   override def loadLibs(
       libs: Seq[ResolvedJSDependency]): LinkingUnitAsyncJSEnv =
-    new LinkingUnitAsyncLoadedLibs { val loadedLibs = libs }
+    new LinkingUnitAsyncLoadedLibs {
+      val loadedLibs = libs
+    }
 
   override def loadLinkingUnit(linkingUnit: LinkingUnit): AsyncJSEnv =
-    new AsyncLoadedUnit { val loadedUnit = linkingUnit }
+    new AsyncLoadedUnit {
+      val loadedUnit = linkingUnit
+    }
 
   private[jsenv] trait LinkingUnitAsyncLoadedLibs
       extends LinkingUnitLoadedLibs

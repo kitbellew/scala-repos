@@ -120,9 +120,7 @@ class IteratorTest {
     assertFalse(r3 contains 5)
     assertTrue(r3.isEmpty)
   }
-  @Test def take(): Unit = {
-    assertEquals(10, (Iterator from 0 take 10).size)
-  }
+  @Test def take(): Unit = { assertEquals(10, (Iterator from 0 take 10).size) }
   @Test def foreach(): Unit = {
     val it1 = Iterator.from(0) take 20
     var n = 0

@@ -374,9 +374,7 @@ class IMain(
         if (name endsWith "$") symbolOfTerm(name.init) else symbolOfIdent(name)
       def pathOf(s: String) = s"${s.replace('.', '/')}.class"
       sym.toOption map (s => pathOf(flatPath(s)))
-    } else {
-      None
-    }
+    } else { None }
   }
   def translateEnclosingClass(n: String) =
     symbolOfTerm(n).enclClass.toOption map flatPath
@@ -791,9 +789,7 @@ class IMain(
   /** This instance is no longer needed, so release any resources
     *  it is using.  The reporter's output gets flushed.
     */
-  def close() {
-    reporter.flush()
-  }
+  def close() { reporter.flush() }
 
   /** Here is where we:
     *
@@ -1304,7 +1300,9 @@ class IMain(
 
   /** Parse a line into and return parsing result (error, incomplete or success with list of trees) */
   object parse {
-    abstract sealed class Result { def trees: List[Tree] }
+    abstract sealed class Result {
+      def trees: List[Tree]
+    }
     case class Error(trees: List[Tree]) extends Result
     case class Incomplete(trees: List[Tree]) extends Result
     case class Success(trees: List[Tree]) extends Result
@@ -1349,9 +1347,7 @@ class IMain(
     definedTerms filterNot (x => isUserVarName("" + x) || directlyBoundNames(x))
 
   private var _replScope: Scope = _
-  private def resetReplScope() {
-    _replScope = newScope
-  }
+  private def resetReplScope() { _replScope = newScope }
   def replScope = {
     if (_replScope eq null)
       _replScope = newScope

@@ -51,9 +51,7 @@ object StackTrace {
     try {
       // Intentionally throw a JavaScript error
       new js.Object().asInstanceOf[js.Dynamic].undef()
-    } catch {
-      case js.JavaScriptException(e) => e
-    }
+    } catch { case js.JavaScriptException(e) => e }
   }
 
   /** Captures browser-specific state recording the stack trace of a JS error.
@@ -68,9 +66,7 @@ object StackTrace {
     try {
       js.Dynamic.global.Packages.org.mozilla.javascript.JavaScriptException
       true
-    } catch {
-      case js.JavaScriptException(_) => false
-    }
+    } catch { case js.JavaScriptException(_) => false }
   }
 
   /** Extracts a throwable's stack trace from captured browser-specific state.
@@ -213,9 +209,7 @@ object StackTrace {
         else
           decodeMethodName(mtch(2).get)
       (className, methodName)
-    } else {
-      ("<jscode>", functionName)
-    }
+    } else { ("<jscode>", functionName) }
   }
 
   // decodeClassName -----------------------------------------------------------
@@ -297,9 +291,8 @@ object StackTrace {
   // end of decodeClassName ----------------------------------------------------
 
   private def decodeMethodName(encodedName: String): String = {
-    if (encodedName startsWith "init___") {
-      "<init>"
-    } else {
+    if (encodedName startsWith "init___") { "<init>" }
+    else {
       val methodNameLen = encodedName.indexOf("__")
       if (methodNameLen < 0) encodedName
       else encodedName.substring(0, methodNameLen)
@@ -345,19 +338,13 @@ object StackTrace {
     @inline def `opera#sourceloc` = e.`opera#sourceloc`
     @inline def stacktrace = e.stacktrace
 
-    if (!e) {
-      js.Array[String]()
-    } else if (isRhino) {
-      extractRhino(e)
-    } else if (arguments && stack) {
-      extractChrome(e)
-    } else if (stack && sourceURL) {
-      extractSafari(e)
-    } else if (stack && number) {
-      extractIE(e)
-    } else if (stack && fileName) {
-      extractFirefox(e)
-    } else if (message && `opera#sourceloc`) {
+    if (!e) { js.Array[String]() }
+    else if (isRhino) { extractRhino(e) }
+    else if (arguments && stack) { extractChrome(e) }
+    else if (stack && sourceURL) { extractSafari(e) }
+    else if (stack && number) { extractIE(e) }
+    else if (stack && fileName) { extractFirefox(e) }
+    else if (message && `opera#sourceloc`) {
       // e.message.indexOf("Backtrace:") > -1 -> opera9
       // 'opera#sourceloc' in e -> opera9, opera10a
       // !e.stacktrace -> opera9
@@ -374,18 +361,13 @@ object StackTrace {
       }
     } else if (message && stack && stacktrace) {
       // stacktrace && stack -> opera10b
-      if (stacktrace.indexOf("called from line") < 0) {
-        extractOpera10b(e)
-      } else {
-        extractOpera11(e)
-      }
+      if (stacktrace.indexOf("called from line") < 0) { extractOpera10b(e) }
+      else { extractOpera11(e) }
     } else if (stack && !fileName) {
       /* Chrome 27 does not have e.arguments as earlier versions,
        * but still does not have e.fileName as Firefox */
       extractChrome(e)
-    } else {
-      extractOther(e)
-    }
+    } else { extractOther(e) }
   }
 
   private def extractRhino(e: js.Dynamic): js.Array[String] = {
@@ -546,9 +528,7 @@ object StackTrace {
     result
   }
 
-  private def extractOther(e: js.Dynamic): js.Array[String] = {
-    js.Array()
-  }
+  private def extractOther(e: js.Dynamic): js.Array[String] = { js.Array() }
 
   /* End copy-paste-translate from stacktrace.js
    * ---------------------------------------------------------------------------

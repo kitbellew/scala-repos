@@ -26,11 +26,17 @@ object Test {
   import scala.beans.BeanProperty
 
   // bug #637
-  trait S { def getField(): Int }
-  class O extends S { @BeanProperty val field = 0 }
+  trait S {
+    def getField(): Int
+  }
+  class O extends S {
+    @BeanProperty val field = 0
+  }
 
   // bug #1070
-  trait T { @BeanProperty var field = 1 }
+  trait T {
+    @BeanProperty var field = 1
+  }
 
   // annotation on annotation constructor
   @(ann @ann(100))(200)

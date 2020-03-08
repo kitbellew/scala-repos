@@ -32,9 +32,8 @@ object NumberConverter {
     * @param m is treated as signed
     */
   private def unsignedLongDiv(x: Long, m: Int): Long = {
-    if (x >= 0) {
-      x / m
-    } else {
+    if (x >= 0) { x / m }
+    else {
       // Let uval be the value of the unsigned long with the same bits as x
       // Two's complement => x = uval - 2*MAX - 2
       // => uval = x + 2*MAX + 2
@@ -78,9 +77,7 @@ object NumberConverter {
     while (i < value.length && value(i) >= 0) {
       if (v >= bound) {
         // Check for overflow
-        if (unsignedLongDiv(-1 - value(i), radix) < v) {
-          return -1
-        }
+        if (unsignedLongDiv(-1 - value(i), radix) < v) { return -1 }
       }
       v = v * radix + value(i)
       i += 1
@@ -127,13 +124,9 @@ object NumberConverter {
   def convert(n: Array[Byte], fromBase: Int, toBase: Int): UTF8String = {
     if (fromBase < Character.MIN_RADIX || fromBase > Character.MAX_RADIX
         || Math.abs(toBase) < Character.MIN_RADIX
-        || Math.abs(toBase) > Character.MAX_RADIX) {
-      return null
-    }
+        || Math.abs(toBase) > Character.MAX_RADIX) { return null }
 
-    if (n.length == 0) {
-      return null
-    }
+    if (n.length == 0) { return null }
 
     var (negative, first) = if (n(0) == '-') (true, 1) else (false, 0)
 
@@ -148,11 +141,8 @@ object NumberConverter {
     // Do the conversion by going through a 64 bit integer
     var v = encode(fromBase, value.length - n.length + first)
     if (negative && toBase > 0) {
-      if (v < 0) {
-        v = -1
-      } else {
-        v = -v
-      }
+      if (v < 0) { v = -1 }
+      else { v = -v }
     }
     if (toBase < 0 && v < 0) {
       v = -v

@@ -516,27 +516,17 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "basic set difference queries" := {
-      "clicks difference clicks" := {
-        query("//clicks difference //clicks")
-      }
+      "clicks difference clicks" := { query("//clicks difference //clicks") }
       "clicks.timeString difference clicks.timeString" := {
         query("(//clicks).timeString difference (//clicks).timeString")
       }
     }
 
     "basic intersect and union queries" := {
-      "constant intersection" := {
-        query("4 intersect 4")
-      }
-      "constant union" := {
-        query("4 union 5")
-      }
-      "empty intersection" := {
-        query("4 intersect 5")
-      }
-      "heterogeneous union" := {
-        query("{foo: 3} union 9")
-      }
+      "constant intersection" := { query("4 intersect 4") }
+      "constant union" := { query("4 union 5") }
+      "empty intersection" := { query("4 intersect 5") }
+      "heterogeneous union" := { query("{foo: 3} union 9") }
       "heterogeneous intersection" := {
         query("obj := {foo: 5} obj.foo intersect 5")
       }

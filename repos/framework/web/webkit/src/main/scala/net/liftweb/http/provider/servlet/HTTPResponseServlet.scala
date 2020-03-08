@@ -58,11 +58,8 @@ class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
     * Encode the JSESSIONID in the URL if specified by LiftRules
     */
   def encodeUrl(url: String): String =
-    if (shouldEncodeUrl) {
-      resp encodeURL url
-    } else {
-      url
-    }
+    if (shouldEncodeUrl) { resp encodeURL url }
+    else { url }
 
   def addHeaders(headers: List[HTTPParam]) {
     val appearOnce = Set(

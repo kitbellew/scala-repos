@@ -264,11 +264,8 @@ trait DefaultFormats extends Formats {
 
   val dateFormat = new DateFormat {
     def parse(s: String) =
-      try {
-        Some(formatter.parse(s))
-      } catch {
-        case e: ParseException => None
-      }
+      try { Some(formatter.parse(s)) }
+      catch { case e: ParseException => None }
 
     def format(d: Date) = formatter.format(d)
 

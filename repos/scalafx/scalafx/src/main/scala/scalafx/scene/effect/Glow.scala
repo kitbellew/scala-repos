@@ -52,8 +52,6 @@ class Glow(override val delegate: jfxse.Glow = new jfxse.Glow)
     * The level value, which controls the intensity of the glow effect.
     */
   def level: DoubleProperty = delegate.levelProperty
-  def level_=(v: Double) {
-    level() = v
-  }
+  def level_=(v: Double) { level() = v }
 
 }

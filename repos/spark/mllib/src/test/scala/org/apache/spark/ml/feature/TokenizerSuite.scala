@@ -33,9 +33,7 @@ class TokenizerSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  test("params") {
-    ParamsSuite.checkParams(new Tokenizer)
-  }
+  test("params") { ParamsSuite.checkParams(new Tokenizer) }
 
   test("read/write") {
     val t = new Tokenizer()
@@ -52,9 +50,7 @@ class RegexTokenizerSuite
 
   import org.apache.spark.ml.feature.RegexTokenizerSuite._
 
-  test("params") {
-    ParamsSuite.checkParams(new RegexTokenizer)
-  }
+  test("params") { ParamsSuite.checkParams(new RegexTokenizer) }
 
   test("RegexTokenizer") {
     val tokenizer0 = new RegexTokenizer()

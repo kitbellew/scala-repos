@@ -45,9 +45,7 @@ object FileUtils {
   // prefer file.readString()
   def readFile(f: File, cs: Charset): Either[IOException, String] =
     try Right(f.readString()(cs))
-    catch {
-      case e: IOException => Left(e)
-    }
+    catch { case e: IOException => Left(e) }
 
   def writeChanges(
       changes: List[FileEdit],
@@ -69,21 +67,15 @@ object FileUtils {
         }
 
       val deleteFiles = changes.collect { case ed: DeleteFile => ed }
-      for (ed <- deleteFiles) {
-        ed.file.delete()
-      }
+      for (ed <- deleteFiles) { ed.file.delete() }
 
       Right(
-        for {
-          (file, contents) <- rewriteList
-        } yield {
+        for { (file, contents) <- rewriteList } yield {
           file.writeString(contents)(cs)
           file
         }
       )
-    } catch {
-      case e: Exception => Left(e)
-    }
+    } catch { case e: Exception => Left(e) }
   }
 
   def writeDiffChanges(
@@ -114,9 +106,7 @@ object FileUtils {
         diffFile.writeString(diffContents)
         diffFile
       })
-    } catch {
-      case e: Exception => Left(e)
-    }
+    } catch { case e: Exception => Left(e) }
   }
 
 }

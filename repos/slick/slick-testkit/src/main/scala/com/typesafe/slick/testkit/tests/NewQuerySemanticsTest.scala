@@ -75,9 +75,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
       )
     ).named("setup")
 
-    val qa = for {
-      c <- coffees.take(3)
-    } yield (c.supID, (c.name, 42))
+    val qa = for { c <- coffees.take(3) } yield (c.supID, (c.name, 42))
     val qa2 = coffees.take(3).map(_.name).take(2)
     val qb = qa.take(2).map(_._2)
     val qb2 = qa.map(n => n).take(2).map(_._2)
@@ -277,9 +275,8 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     } yield (c1, c2)
 
     // Explicit self-join with condition
-    val q5b = for {
-      t <- q5_0 join q5_0 on (_.name === _.name)
-    } yield (t._1, t._2)
+    val q5b =
+      for { t <- q5_0 join q5_0 on (_.name === _.name) } yield (t._1, t._2)
 
     // Unused outer query result, unbound TableQuery
     val q6 = coffees.flatMap(c => suppliers)
@@ -330,9 +327,11 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     } yield (c._1.name, c._1.supID, c._2)
 
     // Transitive push-down without union
-    val q71 = for {
-      c <- coffees.filter(_.price < 800).map((_, 1))
-    } yield (c._1.name, c._1.supID, c._2)
+    val q71 =
+      for { c <- coffees.filter(_.price < 800).map((_, 1)) } yield (
+        c._1.name,
+        c._1.supID,
+        c._2)
 
     def a5 = seq(
       q7a.result.named("Simple union").map(_.toSet).map { r7a =>
@@ -440,9 +439,9 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     val q3 = for (u <- users filter (_.id === 42)) yield u.first ~ u.last
 
-    val q4 = (for {
-      (u, o) <- users join orders on (_.id === _.userID)
-    } yield (u.last, u.first ~ o.orderID)).sortBy(_._1).map(_._2)
+    val q4 = (for { (u, o) <- users join orders on (_.id === _.userID) } yield (
+      u.last,
+      u.first ~ o.orderID)).sortBy(_._1).map(_._2)
 
     val q6a =
       (for (o <- orders if o.orderID === (for {

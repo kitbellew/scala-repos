@@ -241,9 +241,7 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
       .mapPartitionsWithIndex { (idx, iter) =>
         if (idx == 3) { // must come from one of the later merges, therefore higher partition index
           Iterator("3", "3", "3", "3", "3")
-        } else {
-          Iterator("0", "1", "2", "3", "4")
-        }
+        } else { Iterator("0", "1", "2", "3", "4") }
       }
       .toDF("a")
     val results = df.stat.freqItems(Array("a"), 0.25)

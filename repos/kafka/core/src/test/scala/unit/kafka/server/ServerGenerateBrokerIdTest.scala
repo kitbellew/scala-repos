@@ -140,9 +140,8 @@ class ServerGenerateBrokerIdTest extends ZooKeeperTestHarness {
       config2,
       threadNamePrefix = Option(this.getClass.getName)
     ) // user specified broker id
-    try {
-      server1.startup()
-    } catch {
+    try { server1.startup() }
+    catch {
       case e: kafka.common.InconsistentBrokerIdException => //success
     }
     server1.shutdown()
@@ -162,9 +161,7 @@ class ServerGenerateBrokerIdTest extends ZooKeeperTestHarness {
     val propsB = TestUtils.createBrokerConfig(1, zkConnect)
     val configB = KafkaConfig.fromProps(propsB)
     val serverB = new KafkaServer(configB)
-    intercept[RuntimeException] {
-      serverB.startup()
-    }
+    intercept[RuntimeException] { serverB.startup() }
 
     // verify no broker metadata was written
     serverB.config.logDirs.foreach { logDir =>

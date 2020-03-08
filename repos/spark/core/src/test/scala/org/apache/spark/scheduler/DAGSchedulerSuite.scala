@@ -41,9 +41,7 @@ class DAGSchedulerEventProcessLoopTester(dagScheduler: DAGScheduler)
     try {
       // Forward event to `onReceive` directly to avoid processing event asynchronously.
       onReceive(event)
-    } catch {
-      case NonFatal(e) => onError(e)
-    }
+    } catch { case NonFatal(e) => onError(e) }
   }
 
   override def onError(e: Throwable): Unit = {
@@ -86,16 +84,13 @@ class MyRDD(
       .toArray
 
   override def getPreferredLocations(partition: Partition): Seq[String] = {
-    if (locations.isDefinedAt(partition.index)) {
-      locations(partition.index)
-    } else if (tracker != null && dependencies.size == 1 &&
-               dependencies(0).isInstanceOf[ShuffleDependency[_, _, _]]) {
+    if (locations.isDefinedAt(partition.index)) { locations(partition.index) }
+    else if (tracker != null && dependencies.size == 1 &&
+             dependencies(0).isInstanceOf[ShuffleDependency[_, _, _]]) {
       // If we have only one shuffle dependency, use the same code path as ShuffledRDD for locality
       val dep = dependencies(0).asInstanceOf[ShuffleDependency[_, _, _]]
       tracker.getPreferredLocationsForShuffle(dep, partition.index)
-    } else {
-      Nil
-    }
+    } else { Nil }
   }
 
   override def toString: String = "DAGSchedulerSuiteRDD " + id
@@ -159,9 +154,7 @@ class DAGSchedulerSuite
       stageByOrderOfExecution += stageInfo.stageId
       if (stageInfo.failureReason.isEmpty) {
         successfulStages += stageInfo.stageId
-      } else {
-        failedStages += stageInfo.stageId
-      }
+      } else { failedStages += stageInfo.stageId }
     }
 
     override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = {
@@ -239,16 +232,11 @@ class DAGSchedulerSuite
   }
 
   override def afterEach(): Unit = {
-    try {
-      scheduler.stop()
-    } finally {
-      super.afterEach()
-    }
+    try { scheduler.stop() }
+    finally { super.afterEach() }
   }
 
-  override def afterAll() {
-    super.afterAll()
-  }
+  override def afterAll() { super.afterAll() }
 
   /**
     * Type of RDD we use for testing. Note that we should never call the real RDD compute methods.
@@ -344,9 +332,7 @@ class DAGSchedulerSuite
   }
 
   /** Sends JobCancelled to the DAG scheduler. */
-  private def cancel(jobId: Int) {
-    runEvent(JobCancelled(jobId))
-  }
+  private def cancel(jobId: Int) { runEvent(JobCancelled(jobId)) }
 
   test("[SPARK-3353] parent stage should have lower stage id") {
     sparkListener.stageByOrderOfExecution.clear()
@@ -536,9 +522,7 @@ class DAGSchedulerSuite
       override def schedulingMode: SchedulingMode = SchedulingMode.NONE
       override def start(): Unit = {}
       override def stop(): Unit = {}
-      override def submitTasks(taskSet: TaskSet): Unit = {
-        taskSets += taskSet
-      }
+      override def submitTasks(taskSet: TaskSet): Unit = { taskSets += taskSet }
       override def cancelTasks(stageId: Int, interruptThread: Boolean) {
         throw new UnsupportedOperationException
       }

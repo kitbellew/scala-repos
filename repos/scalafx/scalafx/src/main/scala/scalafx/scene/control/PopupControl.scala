@@ -95,66 +95,50 @@ class PopupControl(
     * The id of this Node.
     */
   def id: StringProperty = delegate.idProperty
-  def id_=(v: String) {
-    id() = v
-  }
+  def id_=(v: String) { id() = v }
 
   /**
     * Property for overriding the control's computed maximum height.
     */
   def maxHeight: DoubleProperty = delegate.maxHeightProperty
-  def maxHeight_=(v: Double) {
-    maxHeight() = v
-  }
+  def maxHeight_=(v: Double) { maxHeight() = v }
 
   /**
     * Property for overriding the control's computed maximum width.
     */
   def maxWidth: DoubleProperty = delegate.maxWidthProperty
-  def maxWidth_=(v: Double) {
-    maxWidth() = v
-  }
+  def maxWidth_=(v: Double) { maxWidth() = v }
 
   /**
     * Property for overriding the control's computed minimum height.
     */
   def minHeight: DoubleProperty = delegate.minHeightProperty
-  def minHeight_=(v: Double) {
-    minHeight() = v
-  }
+  def minHeight_=(v: Double) { minHeight() = v }
 
   /**
     * Property for overriding the control's computed minimum width.
     */
   def minWidth: DoubleProperty = delegate.minWidthProperty
-  def minWidth_=(v: Double) {
-    minWidth() = v
-  }
+  def minWidth_=(v: Double) { minWidth() = v }
 
   /**
     * Property for overriding the control's computed preferred height.
     *
     */
   def prefHeight: DoubleProperty = delegate.prefHeightProperty
-  def prefHeight_=(v: Double) {
-    prefHeight() = v
-  }
+  def prefHeight_=(v: Double) { prefHeight() = v }
 
   /**
     * Property for overriding the control's computed preferred width.
     */
   def prefWidth: DoubleProperty = delegate.prefWidthProperty
-  def prefWidth_=(v: Double) {
-    prefWidth() = v
-  }
+  def prefWidth_=(v: Double) { prefWidth() = v }
 
   /**
     * A string representation of the CSS style associated with this specific Node.
     */
   def style: StringProperty = delegate.styleProperty
-  def style_=(v: String) {
-    style() = v
-  }
+  def style_=(v: String) { style() = v }
 
   /**
     * @since 8.0

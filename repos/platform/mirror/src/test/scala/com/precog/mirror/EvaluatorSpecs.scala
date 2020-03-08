@@ -34,26 +34,18 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
       "/nums3" -> Vector(JNum(1), JNum(2), JNum(3)))
 
     "evaluate basic literals" >> {
-      "strings" >> {
-        "\"foo\"" must evalTo(JString("foo"))
-      }
+      "strings" >> { "\"foo\"" must evalTo(JString("foo")) }
 
-      "numerics" >> {
-        "42" must evalTo(JNum(42))
-      }
+      "numerics" >> { "42" must evalTo(JNum(42)) }
 
       "booleans" >> {
         "true" must evalTo(JTrue)
         "false" must evalTo(JFalse)
       }
 
-      "undefined" >> {
-        "undefined" must evalTo()
-      }
+      "undefined" >> { "undefined" must evalTo() }
 
-      "null" >> {
-        "null" must evalTo(JNull)
-      }
+      "null" >> { "null" must evalTo(JNull) }
     }
 
     "evaluate compound literals" >> {
@@ -61,35 +53,21 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
         "{a:1, b:2}" must evalTo(JObject(Map("a" -> JNum(1), "b" -> JNum(2))))
       }
 
-      "arrays" >> {
-        "[1, 2]" must evalTo(JArray(JNum(1) :: JNum(2) :: Nil))
-      }
+      "arrays" >> { "[1, 2]" must evalTo(JArray(JNum(1) :: JNum(2) :: Nil)) }
     }
 
     "evaluate simple arithmetic expressions" >> {
-      "add" >> {
-        "6 + 7" must evalTo(JNum(13))
-      }
+      "add" >> { "6 + 7" must evalTo(JNum(13)) }
 
-      "sub" >> {
-        "6 - 7" must evalTo(JNum(-1))
-      }
+      "sub" >> { "6 - 7" must evalTo(JNum(-1)) }
 
-      "mul" >> {
-        "6 * 7" must evalTo(JNum(42))
-      }
+      "mul" >> { "6 * 7" must evalTo(JNum(42)) }
 
-      "div" >> {
-        "6 / 2" must evalTo(JNum(3))
-      }
+      "div" >> { "6 / 2" must evalTo(JNum(3)) }
 
-      "mod" >> {
-        "6 % 2" must evalTo(JNum(0))
-      }
+      "mod" >> { "6 % 2" must evalTo(JNum(0)) }
 
-      "pow" >> {
-        "6 ^ 2" must evalTo(JNum(36))
-      }
+      "pow" >> { "6 ^ 2" must evalTo(JNum(36)) }
     }
 
     "evalute simple numeric comparisons" >> {
@@ -129,9 +107,7 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
         "6 != 6" must evalTo(JFalse)
       }
 
-      "neg" >> {
-        "neg 5" must evalTo(JNum(-5))
-      }
+      "neg" >> { "neg 5" must evalTo(JNum(-5)) }
     }
 
     "evaluate the boolean combinators" >> {
@@ -160,13 +136,9 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
         JObject(Map("a" -> JNum(1), "b" -> JNum(2))))
     }
 
-    "evaluate a simple object deref" in {
-      "{a:1}.a" must evalTo(JNum(1))
-    }
+    "evaluate a simple object deref" in { "{a:1}.a" must evalTo(JNum(1)) }
 
-    "evaluate a simple array deref" in {
-      "([42])[0]" must evalTo(JNum(42))
-    }
+    "evaluate a simple array deref" in { "([42])[0]" must evalTo(JNum(42)) }
 
     "map constant addition over a set of numbers" in {
       "//nums + 5" must evalTo(JNum(6), JNum(7), JNum(8))
@@ -190,22 +162,16 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
     }
 
     "evaluate a trivial assertion" >> {
-      "success" >> {
-        "assert true 42" must evalTo(JNum(42))
-      }
+      "success" >> { "assert true 42" must evalTo(JNum(42)) }
 
-      "failure" >> {
-        "assert false 42" must evalAndThrow[RuntimeException]
-      }
+      "failure" >> { "assert false 42" must evalAndThrow[RuntimeException] }
     }
 
     "evaluate a trivial conditional expression" in {
       "if true then 42 else 12" must evalTo(JNum(42))
     }
 
-    "evaluate a simple union" in {
-      "1 union 2" must evalTo(JNum(1), JNum(2))
-    }
+    "evaluate a simple union" in { "1 union 2" must evalTo(JNum(1), JNum(2)) }
 
     "evaluate a simple intersect" in {
       "1 union 2 intersect 1" must evalTo(JNum(1))

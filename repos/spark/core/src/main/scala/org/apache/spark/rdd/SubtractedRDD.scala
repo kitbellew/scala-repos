@@ -93,9 +93,8 @@ private[spark] class SubtractedRDD[K: ClassTag, V: ClassTag, W: ClassTag](
     val map = new JHashMap[K, ArrayBuffer[V]]
     def getSeq(k: K): ArrayBuffer[V] = {
       val seq = map.get(k)
-      if (seq != null) {
-        seq
-      } else {
+      if (seq != null) { seq }
+      else {
         val seq = new ArrayBuffer[V]()
         map.put(k, seq)
         seq

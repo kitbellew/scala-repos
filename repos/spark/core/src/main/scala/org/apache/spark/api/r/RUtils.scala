@@ -73,11 +73,8 @@ private[spark] object RUtils {
     if (isYarnCluster || (isYarnClient && !isDriver)) {
       val sparkRPkgPath = new File("sparkr").getAbsolutePath
       val rPkgPath = new File("rpkg")
-      if (rPkgPath.exists()) {
-        Seq(sparkRPkgPath, rPkgPath.getAbsolutePath)
-      } else {
-        Seq(sparkRPkgPath)
-      }
+      if (rPkgPath.exists()) { Seq(sparkRPkgPath, rPkgPath.getAbsolutePath) }
+      else { Seq(sparkRPkgPath) }
     } else {
       // Otherwise, assume the package is local
       // TODO: support this for Mesos
@@ -85,11 +82,8 @@ private[spark] object RUtils {
         throw new SparkException(
           "SPARK_HOME not set. Can't locate SparkR package.")
       }
-      if (!rPackages.isEmpty) {
-        Seq(sparkRPkgPath, rPackages.get)
-      } else {
-        Seq(sparkRPkgPath)
-      }
+      if (!rPackages.isEmpty) { Seq(sparkRPkgPath, rPackages.get) }
+      else { Seq(sparkRPkgPath) }
     }
   }
 
@@ -98,8 +92,6 @@ private[spark] object RUtils {
     try {
       val builder = new ProcessBuilder(Arrays.asList("R", "--version"))
       builder.start().waitFor() == 0
-    } catch {
-      case e: Exception => false
-    }
+    } catch { case e: Exception => false }
   }
 }

@@ -79,14 +79,20 @@ object split extends UFunc {
 object hsplit extends UFunc {
   implicit def implIntVec[T: ClassTag]
       : Impl2[DenseVector[T], Int, IndexedSeq[DenseVector[T]]] =
-    new Impl2[DenseVector[T], Int, IndexedSeq[DenseVector[T]]] { //For vectors just an alias
+    new Impl2[
+      DenseVector[T],
+      Int,
+      IndexedSeq[DenseVector[T]]] { //For vectors just an alias
       def apply(v: DenseVector[T], n: Int): IndexedSeq[DenseVector[T]] =
         hsplit(v, n)
     }
 
   implicit def implSeqVec[T: ClassTag]
       : Impl2[DenseVector[T], Seq[Int], IndexedSeq[DenseVector[T]]] =
-    new Impl2[DenseVector[T], Seq[Int], IndexedSeq[DenseVector[T]]] { //For vectors just an alias
+    new Impl2[
+      DenseVector[T],
+      Seq[Int],
+      IndexedSeq[DenseVector[T]]] { //For vectors just an alias
       def apply(v: DenseVector[T], n: Seq[Int]): IndexedSeq[DenseVector[T]] =
         hsplit(v, n)
     }

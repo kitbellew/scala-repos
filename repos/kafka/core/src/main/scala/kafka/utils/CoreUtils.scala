@@ -69,11 +69,8 @@ object CoreUtils extends Logging {
     * @param action The action to execute
     */
   def swallow(log: (Object, Throwable) => Unit, action: => Unit) {
-    try {
-      action
-    } catch {
-      case e: Throwable => log(e.getMessage(), e)
-    }
+    try { action }
+    catch { case e: Throwable => log(e.getMessage(), e) }
   }
 
   /**
@@ -93,18 +90,15 @@ object CoreUtils extends Logging {
     * @param file The root file at which to begin deleting
     */
   def rm(file: File) {
-    if (file == null) {
-      return
-    } else if (file.isDirectory) {
+    if (file == null) { return }
+    else if (file.isDirectory) {
       val files = file.listFiles()
       if (files != null) {
         for (f <- files)
           rm(f)
       }
       file.delete()
-    } else {
-      file.delete()
-    }
+    } else { file.delete() }
   }
 
   /**
@@ -207,9 +201,7 @@ object CoreUtils extends Logging {
   def parseCsvList(csvList: String): Seq[String] = {
     if (csvList == null || csvList.isEmpty)
       Seq.empty[String]
-    else {
-      csvList.split("\\s*,\\s*").filter(v => !v.equals(""))
-    }
+    else { csvList.split("\\s*,\\s*").filter(v => !v.equals("")) }
   }
 
   /**
@@ -257,11 +249,8 @@ object CoreUtils extends Logging {
     */
   def inLock[T](lock: Lock)(fun: => T): T = {
     lock.lock()
-    try {
-      fun
-    } finally {
-      lock.unlock()
-    }
+    try { fun }
+    finally { lock.unlock() }
   }
 
   def inReadLock[T](lock: ReadWriteLock)(fun: => T): T =

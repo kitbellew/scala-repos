@@ -6,8 +6,6 @@ object P {
     println("c: " + c)
   }
 
-  def main(args: Array[String]) {
-    baz
-  }
+  def main(args: Array[String]) { baz }
 }
 //Char

@@ -72,9 +72,7 @@ class ProxyTest extends WordSpec {
       val pf = new ProxyFactory[TestImpl](_())
       val proxied = pf(new TestImpl)
 
-      intercept[RuntimeException] {
-        proxied.whoops
-      }
+      intercept[RuntimeException] { proxied.whoops }
     }
 
     "MethodCall returnsUnit must be true for unit/void methods" in {
@@ -120,13 +118,13 @@ class ProxyTest extends WordSpec {
       val pf = new ProxyFactory[TestImpl](_())
       val targetless = pf()
 
-      intercept[NonexistentTargetException] {
-        targetless.foo
-      }
+      intercept[NonexistentTargetException] { targetless.foo }
     }
 
     "MethodCall can be invoked with alternate target" in {
-      val alt = new TestImpl { override def foo = "alt foo" }
+      val alt = new TestImpl {
+        override def foo = "alt foo"
+      }
       val pf = new ProxyFactory[TestImpl](m => m(alt))
       val targetless = pf()
 
@@ -142,7 +140,9 @@ class ProxyTest extends WordSpec {
     }
 
     "MethodCall can be invoked with alternate target and arguments" in {
-      val alt = new TestImpl { override def bar(i: Int) = Some(i.toLong * 10) }
+      val alt = new TestImpl {
+        override def bar(i: Int) = Some(i.toLong * 10)
+      }
       val pf =
         new ProxyFactory[TestImpl](m => m(alt, Array(3.asInstanceOf[AnyRef])))
       val targetless = pf()
@@ -233,9 +233,8 @@ class ProxyTest extends WordSpec {
       proxyConstructor
         .newInstance(new reflect.InvocationHandler {
           def invoke(p: AnyRef, method: reflect.Method, args: Array[AnyRef]) = {
-            try {
-              f.apply(() => method.invoke(instance, args: _*))
-            } catch {
+            try { f.apply(() => method.invoke(instance, args: _*)) }
+            catch {
               case e: reflect.InvocationTargetException => throw e.getCause
             }
           }

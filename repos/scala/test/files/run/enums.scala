@@ -65,9 +65,7 @@ object Test4 {
     try {
       Direction.withName("Nord")
       assert(false)
-    } catch {
-      case e: Exception => /* do nothing */
-    }
+    } catch { case e: Exception => /* do nothing */ }
     0
   }
 }
@@ -102,9 +100,15 @@ object Test5 {
 }
 
 object SerializationTest {
-  object Types extends Enumeration { val X, Y = Value }
-  class A extends java.io.Serializable { val types = Types.values }
-  class B extends java.io.Serializable { val types = Set(Types.X, Types.Y) }
+  object Types extends Enumeration {
+    val X, Y = Value
+  }
+  class A extends java.io.Serializable {
+    val types = Types.values
+  }
+  class B extends java.io.Serializable {
+    val types = Set(Types.X, Types.Y)
+  }
 
   def serialize(obj: AnyRef) = {
     val baos = new java.io.ByteArrayOutputStream()
@@ -133,9 +137,8 @@ object Test {
     Console.print("test " + name);
     try {
       val actual: Int = closure;
-      if (actual == expected) {
-        Console.print(" was successful");
-      } else {
+      if (actual == expected) { Console.print(" was successful"); }
+      else {
         Console.print(" failed: expected " + expected + ", found " + actual);
       }
     } catch {

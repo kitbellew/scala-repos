@@ -10,9 +10,7 @@ object Messages {
       val props = new Properties()
       props.load(getClass.getResourceAsStream("/reference.conf"))
       props
-    } catch {
-      case _: Throwable => new Properties()
-    }
+    } catch { case _: Throwable => new Properties() }
   }
 
   def format(
@@ -23,9 +21,7 @@ object Messages {
       val rawMessage = messages.getProperty(s"$key.message")
       val message = rawMessage.substring(0, rawMessage.length - 1).substring(1)
       MessageFormat.format(message, args: _*)
-    } catch {
-      case _: Throwable => customMessage.getOrElse("")
-    }
+    } catch { case _: Throwable => customMessage.getOrElse("") }
   }
 
 }

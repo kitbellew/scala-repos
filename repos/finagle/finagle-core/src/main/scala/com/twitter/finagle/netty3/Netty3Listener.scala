@@ -98,9 +98,7 @@ object Netty3Listener {
 
       val p = new Promise[Unit]
       closing.addListener(new ChannelGroupFutureListener {
-        def operationComplete(f: ChannelGroupFuture) {
-          p.setDone()
-        }
+        def operationComplete(f: ChannelGroupFuture) { p.setDone() }
       })
 
       p.within(deadline - Time.now) transform { _ =>

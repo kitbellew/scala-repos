@@ -1,13 +1,9 @@
 class Force {
   val t1 = new Thread {
-    override def run() {
-      scala.`package`
-    }
+    override def run() { scala.`package` }
   }
   val t2 = new Thread {
-    override def run() {
-      scala.Predef
-    }
+    override def run() { scala.Predef }
   }
   t1.start()
   t2.start()
@@ -16,9 +12,7 @@ class Force {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    new Force()
-  }
+  def main(args: Array[String]) { new Force() }
 }
 
 /* Was deadlocking:

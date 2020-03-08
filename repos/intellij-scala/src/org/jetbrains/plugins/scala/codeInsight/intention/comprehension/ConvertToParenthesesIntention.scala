@@ -50,8 +50,6 @@ class ConvertToParenthesesIntention extends PsiElementBaseIntentionAction {
     }
 
     for (cr <- statement.findChildrenByType(TokenType.WHITE_SPACE)
-         if cr.getText.contains('\n')) {
-      cr.delete()
-    }
+         if cr.getText.contains('\n')) { cr.delete() }
   }
 }

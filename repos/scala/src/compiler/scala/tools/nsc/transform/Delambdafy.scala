@@ -205,9 +205,8 @@ abstract class Delambdafy
           val body = localTyper.typedPos(originalFunction.pos) {
             val newTarget = Select(gen.mkAttributedThis(oldClass), target)
             val args: List[Tree] = mapWithIndex(bridgeParams) { (param, i) =>
-              if (i < numCaptures) {
-                gen.mkAttributedRef(param)
-              } else {
+              if (i < numCaptures) { gen.mkAttributedRef(param) }
+              else {
                 val functionParam = functionParamTypes(i - numCaptures)
                 val targetParam = targetParams(i)
                 if (enteringErasure(
@@ -719,9 +718,7 @@ abstract class Delambdafy
     val isSpecialized = name1.toTypeName != sym.name
     val functionalInterface = if (!isSpecialized) {
       currentRun.runDefinitions.Scala_Java8_CompatPackage_JFunction(arity)
-    } else {
-      pack.info.decl(name1.toTypeName.prepend("J"))
-    }
+    } else { pack.info.decl(name1.toTypeName.prepend("J")) }
     (functionalInterface, isSpecialized)
   }
 }

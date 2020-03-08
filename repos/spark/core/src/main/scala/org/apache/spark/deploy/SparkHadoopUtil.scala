@@ -71,9 +71,7 @@ class SparkHadoopUtil extends Logging {
   def transferCredentials(
       source: UserGroupInformation,
       dest: UserGroupInformation) {
-    for (token <- source.getTokens.asScala) {
-      dest.addToken(token)
-    }
+    for (token <- source.getTokens.asScala) { dest.addToken(token) }
   }
 
   /**
@@ -257,9 +255,7 @@ class SparkHadoopUtil extends Logging {
   def globPathIfNecessary(pattern: Path): Seq[Path] = {
     if (pattern.toString.exists("{}[]*?\\".toSet.contains)) {
       globPath(pattern)
-    } else {
-      Seq(pattern)
-    }
+    } else { Seq(pattern) }
   }
 
   /**
@@ -428,10 +424,7 @@ object SparkHadoopUtil {
     // Check each time to support changing to/from YARN
     val yarnMode = java.lang.Boolean.valueOf(
       System.getProperty("SPARK_YARN_MODE", System.getenv("SPARK_YARN_MODE")))
-    if (yarnMode) {
-      yarn
-    } else {
-      hadoop
-    }
+    if (yarnMode) { yarn }
+    else { hadoop }
   }
 }

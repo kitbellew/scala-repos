@@ -28,9 +28,7 @@ trait OutputHelpers {
     val folder2: String = folder + "/" + (pkg.replace(".", "/")) + "/"
     new File(folder2).mkdirs()
     val file = new File(folder2 + fileName)
-    if (!file.exists()) {
-      file.createNewFile();
-    }
+    if (!file.exists()) { file.createNewFile(); }
     val fw = new FileWriter(file.getAbsoluteFile());
     val bw = new BufferedWriter(fw);
     bw.write(content);

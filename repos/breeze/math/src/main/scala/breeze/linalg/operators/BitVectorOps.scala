@@ -12,9 +12,7 @@ import breeze.storage.Zero
 trait BitVectorOps {
 
   implicit object anyImpl extends any.Impl[BitVector, Boolean] {
-    override def apply(v: BitVector): Boolean = {
-      v.data.cardinality() != 0
-    }
+    override def apply(v: BitVector): Boolean = { v.data.cardinality() != 0 }
   }
 
   implicit object allImpl extends all.Impl[BitVector, Boolean] {
@@ -77,9 +75,7 @@ trait BitVectorOps {
 
   implicit val bv_bv_OpNe: OpNe.Impl2[BitVector, BitVector, BitVector] =
     new OpNe.Impl2[BitVector, BitVector, BitVector] {
-      def apply(a: BitVector, b: BitVector): BitVector = {
-        a ^^ b
-      }
+      def apply(a: BitVector, b: BitVector): BitVector = { a ^^ b }
     }
 
   implicit val bv_bv_OpEq: OpEq.Impl2[BitVector, BitVector, BitVector] =
@@ -197,9 +193,7 @@ trait BitVectorOps {
       implicit op: OpMulInner.Impl2[BitVector, Other, T])
       : OpMulInner.Impl2[Other, BitVector, T] = {
     new OpMulInner.Impl2[Other, BitVector, T] {
-      def apply(a: Other, b: BitVector): T = {
-        op(b, a)
-      }
+      def apply(a: Other, b: BitVector): T = { op(b, a) }
     }
   }
 

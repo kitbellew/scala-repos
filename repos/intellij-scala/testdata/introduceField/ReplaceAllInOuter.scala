@@ -6,9 +6,7 @@ class Test {
     1 /*end*/
   }
 
-  def foo() {
-    1
-  }
+  def foo() { 1 }
 
   1
 }

@@ -1,13 +1,19 @@
 package p {
   class ViewEnv[AIn] {
     type A = AIn
-    class SubView { def has(x: A): Boolean = ??? }
+    class SubView {
+      def has(x: A): Boolean = ???
+    }
     def get: SubView = new SubView
   }
 
-  trait HasA { type A }
+  trait HasA {
+    type A
+  }
   trait Indexable[R] extends HasA
-  class ArrayTC[AIn] extends Indexable[Array[AIn]] { type A = AIn }
+  class ArrayTC[AIn] extends Indexable[Array[AIn]] {
+    type A = AIn
+  }
 }
 
 package object p {

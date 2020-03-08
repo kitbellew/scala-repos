@@ -55,9 +55,7 @@ sealed abstract class EndoInstances {
       Endo.endo(g andThen fa.run andThen f)
 
     def zip[A, B](a: => Endo[A], b: => Endo[B]) =
-      Endo {
-        case (x, y) => (a(x), b(y))
-      }
+      Endo { case (x, y) => (a(x), b(y)) }
 
     // CAUTION: cheats with null
     def unzip[A, B](a: Endo[(A, B)]) =

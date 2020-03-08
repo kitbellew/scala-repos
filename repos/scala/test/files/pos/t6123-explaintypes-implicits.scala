@@ -9,7 +9,5 @@ object ImplicitBugReport {
       : CanBuildExp[Traversable[T], TraversableExp[T, ExpT]] = ???
   def toExpTempl[T, That](t: T)(implicit c: CanBuildExp[T, That]): That = ???
 
-  def testBug() {
-    val a1 = toExpTempl(Seq(1, 2, 3, 5))
-  }
+  def testBug() { val a1 = toExpTempl(Seq(1, 2, 3, 5)) }
 }

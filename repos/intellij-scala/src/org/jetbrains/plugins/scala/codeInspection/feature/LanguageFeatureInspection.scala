@@ -47,9 +47,7 @@ class LanguageFeatureInspection
       "scala.language",
       "postfixOps",
       _.postfixOps,
-      _.postfixOps = true) {
-      case e: ScPostfixExpr => e.operation
-    },
+      _.postfixOps = true) { case e: ScPostfixExpr => e.operation },
     Feature(
       "reflective call",
       "scala.language",
@@ -189,7 +187,5 @@ private class EnableFeatureFix(
     f: ScalaCompilerSettings => Unit)
     extends AbstractFixOnPsiElement("Enable " + name + "s", e) {
 
-  def doApplyFix(project: Project) {
-    f(settings)
-  }
+  def doApplyFix(project: Project) { f(settings) }
 }

@@ -47,16 +47,13 @@ class MessageWriter(segmentSize: Int)
       if (magicValue > MagicValue_V0)
         writeLong(timestamp)
       // write the key
-      if (key == null) {
-        writeInt(-1)
-      } else {
+      if (key == null) { writeInt(-1) }
+      else {
         writeInt(key.length)
         write(key, 0, key.length)
       }
       // write the payload with length prefix
-      withLengthPrefix {
-        writePayload(this)
-      }
+      withLengthPrefix { writePayload(this) }
     }
   }
 
@@ -184,9 +181,7 @@ class BufferingOutputStream(segmentSize: Int) extends OutputStream {
         offset += amount
         remaining -= amount
       }
-    } else {
-      throw new IndexOutOfBoundsException()
-    }
+    } else { throw new IndexOutOfBoundsException() }
   }
 
   def write(in: InputStream): Unit = {
@@ -218,9 +213,7 @@ class BufferingOutputStream(segmentSize: Int) extends OutputStream {
         currentSegment.written += amount
         remaining -= amount
       }
-    } else {
-      throw new IndexOutOfBoundsException()
-    }
+    } else { throw new IndexOutOfBoundsException() }
   }
 
   def reserve(len: Int): ReservedOutput = {

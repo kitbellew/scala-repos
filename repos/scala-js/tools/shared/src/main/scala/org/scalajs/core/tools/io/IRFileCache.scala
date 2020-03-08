@@ -180,9 +180,7 @@ final class IRFileCache {
       /* If we have 0 references, try to become a tombstone. We could be
        * referenced again in a race. In this case, don't do anything.
        */
-      if (refs == 0 && _references.compareAndSet(0, -1)) {
-        cleanup()
-      }
+      if (refs == 0 && _references.compareAndSet(0, -1)) { cleanup() }
     }
 
     /** Clean up, after becoming a tombstone */
@@ -248,9 +246,7 @@ final class IRFileCache {
     override val info: Infos.ClassInfo = _irFile.info
     override val relativePath: String = _irFile.relativePath
 
-    override def exists: Boolean = {
-      _tree != null || _irFile.exists
-    }
+    override def exists: Boolean = { _tree != null || _irFile.exists }
 
     override def tree: ClassDef = {
       if (_tree == null) {

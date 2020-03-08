@@ -137,9 +137,7 @@ private[graphx] class EdgePartition[
   @inline private def attrs(pos: Int): ED = data(pos)
 
   /** Look up vid in activeSet, throwing an exception if it is None. */
-  def isActive(vid: VertexId): Boolean = {
-    activeSet.get.contains(vid)
-  }
+  def isActive(vid: VertexId): Boolean = { activeSet.get.contains(vid) }
 
   /** The number of active vertices, if any exist. */
   def numActives: Option[Int] = activeSet.map(_.size)
@@ -257,9 +255,7 @@ private[graphx] class EdgePartition[
     *
     * @param f an external state mutating user defined function.
     */
-  def foreach(f: Edge[ED] => Unit) {
-    iterator.foreach(f)
-  }
+  def foreach(f: Edge[ED] => Unit) { iterator.foreach(f) }
 
   /**
     * Merge all the edges with the same src and dest id into a single
@@ -414,12 +410,8 @@ private[graphx] class EdgePartition[
         val localDstId = localDstIds(pos)
         triplet.srcId = local2global(localSrcId)
         triplet.dstId = local2global(localDstId)
-        if (includeSrc) {
-          triplet.srcAttr = vertexAttrs(localSrcId)
-        }
-        if (includeDst) {
-          triplet.dstAttr = vertexAttrs(localDstId)
-        }
+        if (includeSrc) { triplet.srcAttr = vertexAttrs(localSrcId) }
+        if (includeDst) { triplet.dstAttr = vertexAttrs(localDstId) }
         triplet.attr = data(pos)
         pos += 1
         triplet
@@ -599,12 +591,8 @@ private class AggregatingEdgeContext[VD, ED, A](
   override def dstAttr: VD = _dstAttr
   override def attr: ED = _attr
 
-  override def sendToSrc(msg: A) {
-    send(_localSrcId, msg)
-  }
-  override def sendToDst(msg: A) {
-    send(_localDstId, msg)
-  }
+  override def sendToSrc(msg: A) { send(_localSrcId, msg) }
+  override def sendToDst(msg: A) { send(_localDstId, msg) }
 
   @inline private def send(localId: Int, msg: A) {
     if (bitset.get(localId)) {

@@ -91,9 +91,7 @@ class GroupBuilder(val groupFields: Fields)
     * Override the number of reducers used in the groupBy.
     */
   def reducers(r: Int) = {
-    if (r > 0) {
-      numReducers = Some(r)
-    }
+    if (r > 0) { numReducers = Some(r) }
     this
   }
 

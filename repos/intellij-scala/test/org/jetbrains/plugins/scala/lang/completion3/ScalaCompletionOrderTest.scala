@@ -38,37 +38,23 @@ class ScalaCompletionOrderTest
     checkPreferredItems(0, "aname", "asurName", "aimark", "sporta")
   }
 
-  def testUnapplyInCaseCluase(): Unit = {
-    checkPreferredItems(0, "arg")
-  }
+  def testUnapplyInCaseCluase(): Unit = { checkPreferredItems(0, "arg") }
 
-  def testSCL2022() {
-    checkPreferredItems(0, "re", "replacer")
-  }
+  def testSCL2022() { checkPreferredItems(0, "re", "replacer") }
 
-  def testSortByScope(): Unit = {
-    checkPreferredItems(0, "v1", "v2", "v3")
-  }
+  def testSortByScope(): Unit = { checkPreferredItems(0, "v1", "v2", "v3") }
 
-  def testUseNameAfterNew(): Unit = {
-    checkPreferredItems(0, "Frost")
-  }
+  def testUseNameAfterNew(): Unit = { checkPreferredItems(0, "Frost") }
 
-  def testUseNameCaseLabelType(): Unit = {
-    checkPreferredItems(0, "BadFrost")
-  }
+  def testUseNameCaseLabelType(): Unit = { checkPreferredItems(0, "BadFrost") }
 
-  def testUseNameWithError(): Unit = {
-    checkPreferredItems(0, "Abrakadabra")
-  }
+  def testUseNameWithError(): Unit = { checkPreferredItems(0, "Abrakadabra") }
 
   def testUseNameWithErrorVarTypeSuggestion(): Unit = {
     checkPreferredItems(0, "Frost")
   }
 
-  def testUseNameInAssignement(): Unit = {
-    checkPreferredItems(0, "Fast")
-  }
+  def testUseNameInAssignement(): Unit = { checkPreferredItems(0, "Fast") }
 
   def testWithStat(): Unit = {
     val lookup = invokeCompletion(getTestName(false) + ".scala")

@@ -208,9 +208,8 @@ private final class Analyzer(
 
       if (!_linked) {
         _linking = true
-        try {
-          linkClassesImpl()
-        } catch {
+        try { linkClassesImpl() }
+        catch {
           case CyclicDependencyException(chain) =>
             throw CyclicDependencyException(this :: chain)
         }
@@ -280,9 +279,8 @@ private final class Analyzer(
        * during the initial link. In a refiner, this must not happen anymore.
        */
       methodInfos.get(ctorName).getOrElse {
-        if (!allowAddingSyntheticMethods) {
-          createNonExistentMethod(ctorName)
-        } else {
+        if (!allowAddingSyntheticMethods) { createNonExistentMethod(ctorName) }
+        else {
           val inherited = lookupMethod(ctorName)
           if (inherited.owner eq this) {
             // Can happen only for non-existent constructors, at this point
@@ -328,17 +326,14 @@ private final class Analyzer(
             case Some(m) if !m.isAbstract => Some(m)
             case _                        => tryLookupInherited(ancestorInfo.superClass)
           }
-        } else {
-          None
-        }
+        } else { None }
       }
       val existing =
         if (isScalaClass) tryLookupInherited(this)
         else methodInfos.get(methodName).filter(!_.isAbstract)
 
-      if (!allowAddingSyntheticMethods) {
-        existing
-      } else if (existing.exists(m => !m.isDefaultBridge || m.owner == this)) {
+      if (!allowAddingSyntheticMethods) { existing }
+      else if (existing.exists(m => !m.isDefaultBridge || m.owner == this)) {
         /* If we found a non-bridge, it must be the right target.
          * If we found a bridge directly in this class/interface, it must also
          * be the right target.
@@ -419,9 +414,8 @@ private final class Analyzer(
     }
 
     def tryLookupReflProxyMethod(proxyName: String): Option[MethodInfo] = {
-      if (!allowAddingSyntheticMethods) {
-        tryLookupMethod(proxyName)
-      } else {
+      if (!allowAddingSyntheticMethods) { tryLookupMethod(proxyName) }
+      else {
         /* The lookup for a target method in this code implements the
          * algorithm defining `java.lang.Class.getMethod`. This mimics how
          * reflective calls are implemented on the JVM, at link time.
@@ -450,9 +444,7 @@ private final class Analyzer(
                     loop(ancestorInfo.superClass)
                 }
             }
-          } else {
-            None
-          }
+          } else { None }
         }
 
         loop(this)
@@ -589,9 +581,8 @@ private final class Analyzer(
     }
 
     def accessModule()(implicit from: From): Unit = {
-      if (!isStaticModule) {
-        _errors += NotAModule(this, from)
-      } else if (!isModuleAccessed) {
+      if (!isStaticModule) { _errors += NotAModule(this, from) }
+      else if (!isModuleAccessed) {
         isModuleAccessed = true
         instantiated()
         if (isScalaClass)
@@ -681,9 +672,7 @@ private final class Analyzer(
         implicit from: From): Unit = {
       if (isReflProxyName(methodName)) {
         tryLookupReflProxyMethod(methodName).foreach(_.reach(this))
-      } else {
-        lookupMethod(methodName).reach(this)
-      }
+      } else { lookupMethod(methodName).reach(this) }
     }
 
     def callStaticMethod(methodName: String)(implicit from: From): Unit = {

@@ -323,9 +323,8 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
   @inline
   private def wrapTransform(tree: Tree)(body: Tree => Node)(
       implicit pos: Position): Node = {
-    try {
-      setNodePosition(body(tree), pos)
-    } catch {
+    try { setNodePosition(body(tree), pos) }
+    catch {
       case e: TransformException =>
         throw e // pass through
       case e: RuntimeException =>
@@ -338,9 +337,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
       attachSourceFile(node, pos.source)
       node.setLineno(pos.line + 1)
       node.setCharno(pos.column)
-    } else {
-      attachSourceFile(node, dummySourceName)
-    }
+    } else { attachSourceFile(node, dummySourceName) }
     node
   }
 

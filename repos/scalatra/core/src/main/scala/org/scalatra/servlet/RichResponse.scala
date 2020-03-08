@@ -71,9 +71,7 @@ case class RichResponse(res: HttpServletResponse) {
     res.setContentType(contentType getOrElse null)
   }
 
-  def redirect(uri: String): Unit = {
-    res.sendRedirect(uri)
-  }
+  def redirect(uri: String): Unit = { res.sendRedirect(uri) }
 
   def outputStream: OutputStream = res.getOutputStream
 

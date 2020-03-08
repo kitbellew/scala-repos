@@ -127,9 +127,13 @@ object ASMConverters {
   case class NewArray(opcode: Int, desc: String, dims: Int) extends Instruction
   case class TypeOp(opcode: Int, desc: String) extends Instruction
   case class VarOp(opcode: Int, `var`: Int) extends Instruction
-  case class Label(offset: Int) extends Instruction { def opcode: Int = -1 }
+  case class Label(offset: Int) extends Instruction {
+    def opcode: Int = -1
+  }
   case class FrameEntry(`type`: Int, local: List[Any], stack: List[Any])
-      extends Instruction { def opcode: Int = -1 }
+      extends Instruction {
+    def opcode: Int = -1
+  }
   case class LineNumber(line: Int, start: Label) extends Instruction {
     def opcode: Int = -1
   }
@@ -344,9 +348,7 @@ object ASMConverters {
 
   private def createLabelNodes(
       instructions: List[Instruction]): Map[Label, asm.Label] = {
-    val labels = instructions collect {
-      case l: Label => l
-    }
+    val labels = instructions collect { case l: Label => l }
     assert(labels.distinct == labels, s"Duplicate labels in: $labels")
     labels.map(l => (l, new asm.Label())).toMap
   }

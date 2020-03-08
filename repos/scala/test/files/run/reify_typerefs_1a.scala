@@ -8,9 +8,7 @@ class Expression {
 }
 
 object Test extends App {
-  val code = reify {
-    List(new Expression, new Expression)
-  };
+  val code = reify { List(new Expression, new Expression) };
 
   val toolbox = cm.mkToolBox()
   val evaluated = toolbox.eval(code.tree)

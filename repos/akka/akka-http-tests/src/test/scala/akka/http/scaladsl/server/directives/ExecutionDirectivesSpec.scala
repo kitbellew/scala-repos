@@ -41,11 +41,7 @@ class ExecutionDirectivesSpec extends RoutingSpec {
     }
     "handle an exception happening during route building" in {
       exceptionShouldBeHandled {
-        get {
-          handleExceptions(handler) {
-            throw MyException
-          }
-        }
+        get { handleExceptions(handler) { throw MyException } }
       }
     }
     "not interfere with alternative routes" in EventFilter[MyException.type](
@@ -63,9 +59,7 @@ class ExecutionDirectivesSpec extends RoutingSpec {
       message = "buh").intercept {
       Get("/abc") ~>
         get {
-          handleExceptions(handler) {
-            throw new RuntimeException("buh")
-          }
+          handleExceptions(handler) { throw new RuntimeException("buh") }
         } ~> check {
         status shouldEqual StatusCodes.InternalServerError
         responseAs[String] shouldEqual "There was an internal server error."
@@ -75,9 +69,7 @@ class ExecutionDirectivesSpec extends RoutingSpec {
       RuntimeException](occurrences = 2, message = "buh2").intercept {
       Get("/abc") ~> Accept(MediaTypes.`application/json`) ~>
         get {
-          handleExceptions(handler) {
-            throw new RuntimeException("buh2")
-          }
+          handleExceptions(handler) { throw new RuntimeException("buh2") }
         } ~> check {
         status shouldEqual StatusCodes.InternalServerError
         responseAs[String] shouldEqual "There was an internal server error."
@@ -87,9 +79,7 @@ class ExecutionDirectivesSpec extends RoutingSpec {
         MediaTypes.`text/xml`,
         MediaRanges.`*/*`.withQValue(0f)) ~>
         get {
-          handleExceptions(handler) {
-            throw new RuntimeException("buh2")
-          }
+          handleExceptions(handler) { throw new RuntimeException("buh2") }
         } ~> check {
         status shouldEqual StatusCodes.InternalServerError
         responseAs[String] shouldEqual "There was an internal server error."

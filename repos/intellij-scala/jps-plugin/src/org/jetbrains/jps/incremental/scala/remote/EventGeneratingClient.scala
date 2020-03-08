@@ -32,27 +32,19 @@ class EventGeneratingClient(listener: Event => Unit, canceled: => Boolean)
     listener(ProgressEvent(text, done))
   }
 
-  def debug(text: String) {
-    listener(DebugEvent(text))
-  }
+  def debug(text: String) { listener(DebugEvent(text)) }
 
   def generated(source: File, module: File, name: String) {
     listener(GeneratedEvent(source, module, name))
   }
 
-  def deleted(module: File) {
-    listener(DeletedEvent(module))
-  }
+  def deleted(module: File) { listener(DeletedEvent(module)) }
 
   def isCanceled = canceled
 
-  def processed(source: File) {
-    listener(SourceProcessedEvent(source))
-  }
+  def processed(source: File) { listener(SourceProcessedEvent(source)) }
 
-  override def compilationEnd() {
-    listener(CompilationEndEvent())
-  }
+  override def compilationEnd() { listener(CompilationEndEvent()) }
 
   override def worksheetOutput(text: String) {
     listener(WorksheetOutputEvent(text))

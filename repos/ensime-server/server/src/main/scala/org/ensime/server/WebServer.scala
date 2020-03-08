@@ -49,11 +49,7 @@ trait WebServer {
   val route = seal {
     path("rpc") {
       post {
-        entity(as[RpcRequest]) { request =>
-          complete {
-            restHandler(request)
-          }
-        }
+        entity(as[RpcRequest]) { request => complete { restHandler(request) } }
       }
     } ~ path("docs") {
       complete {

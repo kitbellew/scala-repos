@@ -1,8 +1,6 @@
 package a
 object Foo extends pack.Bar {
-  for (i <- 0 to 10) {
-    test("")
-  }
+  for (i <- 0 to 10) { test("") }
 }
 package pack {
   class Bar {

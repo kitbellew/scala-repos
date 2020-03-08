@@ -134,9 +134,7 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
       null,
       "key".getBytes,
       new Array[Byte](serverMessageMaxBytes + 1))
-    intercept[ExecutionException] {
-      producer2.send(record).get
-    }
+    intercept[ExecutionException] { producer2.send(record).get }
   }
 
   /**
@@ -150,9 +148,7 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
       null,
       "key".getBytes,
       "value".getBytes)
-    intercept[ExecutionException] {
-      producer1.send(record).get
-    }
+    intercept[ExecutionException] { producer1.send(record).get }
   }
 
   /**
@@ -183,9 +179,7 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
       null,
       "key".getBytes,
       "value".getBytes)
-    intercept[ExecutionException] {
-      producer4.send(record).get
-    }
+    intercept[ExecutionException] { producer4.send(record).get }
   }
 
   /**
@@ -202,15 +196,9 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
       new Integer(1),
       "key".getBytes,
       "value".getBytes)
-    intercept[IllegalArgumentException] {
-      producer1.send(record)
-    }
-    intercept[IllegalArgumentException] {
-      producer2.send(record)
-    }
-    intercept[IllegalArgumentException] {
-      producer3.send(record)
-    }
+    intercept[IllegalArgumentException] { producer1.send(record) }
+    intercept[IllegalArgumentException] { producer2.send(record) }
+    intercept[IllegalArgumentException] { producer3.send(record) }
   }
 
   /**
@@ -365,9 +353,7 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
       try {
         futures.map(_.get)
         sent += numRecords
-      } catch {
-        case e: Exception => failed = true
-      }
+      } catch { case e: Exception => failed = true }
     }
 
     override def shutdown() {

@@ -44,7 +44,9 @@ object Test extends App {
   val b = new Base
   b.test1(b = "nix")(982)(f = 0)
   val s = new Sub1
-  s.test1(a = new { override def toString = "bla" })(m = 0)()
+  s.test1(a = new {
+    override def toString = "bla"
+  })(m = 0)()
 
   // defaults are chosen dynamically
   val b2: Base = new Sub1
@@ -147,8 +149,11 @@ object Test extends App {
   println(a2.print)
   val b1 = new B("dklfj")(e = "nixda")
   println(b1.printB)
-  val c1 = new C(a = "dlkf", c = new { override def toString() = "struct" })(
-    e = "???")
+  val c1 = new C(
+    a = "dlkf",
+    c = new {
+      override def toString() = "struct"
+    })(e = "???")
   println(c1.print)
   val c2 = C("dflkj", c = Some(209): Option[Int])(None, "!!")
   println(c2.print)
@@ -198,8 +203,12 @@ object Test extends App {
   println(b11.copy()(2))
 
   // bug #2057
-  class O { class I(val x: Int = 1) }
-  class U extends O { val f = new I() }
+  class O {
+    class I(val x: Int = 1)
+  }
+  class U extends O {
+    val f = new I()
+  }
   val u1 = new U
   println(u1.f.x)
 
@@ -256,18 +265,22 @@ object Test extends App {
 
   // #2290
   def spawn(a: Int, b: => Unit) = { () }
-  def t {
-    spawn(b = { val ttt = 1; ttt }, a = 0)
-  }
+  def t { spawn(b = { val ttt = 1; ttt }, a = 0) }
 
   // #2382
-  class A2382[+T](x: T => Int) { def foo(a: T => Int = x) = 0 }
+  class A2382[+T](x: T => Int) {
+    def foo(a: T => Int = x) = 0
+  }
 
   // #2390
-  case class A2390[T](x: Int) { def copy(a: Int)(b: Int = 0) = 0 }
+  case class A2390[T](x: Int) {
+    def copy(a: Int)(b: Int = 0) = 0
+  }
 
   // #2489
-  class A2489 { def foo { def bar(a: Int = 1) = a; bar(); val u = 0 } }
+  class A2489 {
+    def foo { def bar(a: Int = 1) = a; bar(); val u = 0 }
+  }
   class A2489x2 {
     def foo {
       val v = 10; def bar(a: Int = 1, b: Int = 2) = a; bar(); val u = 0
@@ -285,7 +298,9 @@ object Test extends App {
 
   // #2784
   class Test2784 {
-    object t { def f(x: Int) = x }
+    object t {
+      def f(x: Int) = x
+    }
     val one = t f (x = 1)
   }
 
@@ -434,7 +449,9 @@ class A[T <: String, U](a: Int = 0, b: T)(c: String = b, d: Int) {
   def print = c + a + b + d
 }
 class B[T](a: T, b: Int = 1)(c: T = a, e: String = "dklsf")
-    extends A(5, e)("dlkd", 10) { def printB = super.print + e + a + b + c }
+    extends A(5, e)("dlkd", 10) {
+  def printB = super.print + e + a + b + c
+}
 
 case class C[U](a: String, b: Int = 234, c: U)(d: U = c, e: String = "dlkfj") {
   def print = toString + d + e
@@ -498,5 +515,9 @@ class B5 extends A5(y = 20, x = 2)() {
 }
 
 // overriding default can be less specific (but has to conform to argument type!)
-class A6 { def foo(a: Object = "dlkf") = 0 }
-class B6 extends A6 { override def foo(a: Object = new Object) = 1 }
+class A6 {
+  def foo(a: Object = "dlkf") = 0
+}
+class B6 extends A6 {
+  override def foo(a: Object = new Object) = 1
+}

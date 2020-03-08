@@ -65,9 +65,7 @@ class BinaryClassificationMetrics @Since("1.3.0") (
     * Unpersist intermediate RDDs used in the computation.
     */
   @Since("1.0.0")
-  def unpersist() {
-    cumulativeCounts.unpersist()
-  }
+  def unpersist() { cumulativeCounts.unpersist() }
 
   /**
     * Returns thresholds in descending order.

@@ -42,12 +42,8 @@ class SVGPath(override val delegate: jfxss.SVGPath = new jfxss.SVGPath())
     extends Shape(delegate)
     with SFXDelegate[jfxss.SVGPath] {
   def content: StringProperty = delegate.contentProperty
-  def content_=(v: String) {
-    content() = v
-  }
+  def content_=(v: String) { content() = v }
 
   def fillRule: ObjectProperty[jfxss.FillRule] = delegate.fillRuleProperty
-  def fillRule_=(v: FillRule) {
-    fillRule() = v
-  }
+  def fillRule_=(v: FillRule) { fillRule() = v }
 }

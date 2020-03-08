@@ -184,9 +184,8 @@ class Log(
         // if an index just delete it, it will be rebuilt
         val baseName = new File(
           CoreUtils.replaceSuffix(file.getPath, SwapFileSuffix, ""))
-        if (baseName.getPath.endsWith(IndexFileSuffix)) {
-          file.delete()
-        } else if (baseName.getPath.endsWith(LogFileSuffix)) {
+        if (baseName.getPath.endsWith(IndexFileSuffix)) { file.delete() }
+        else if (baseName.getPath.endsWith(LogFileSuffix)) {
           // delete the index
           val index = new File(
             CoreUtils
@@ -225,9 +224,8 @@ class Log(
           fileAlreadyExists = true)
 
         if (indexFile.exists()) {
-          try {
-            segment.index.sanityCheck()
-          } catch {
+          try { segment.index.sanityCheck() }
+          catch {
             case e: java.lang.IllegalArgumentException =>
               warn(
                 "Found a corrupted index file, %s, deleting and rebuilding index..."
@@ -327,9 +325,8 @@ class Log(
         "Recovering unflushed segment %d in log %s."
           .format(curr.baseOffset, name))
       val truncatedBytes =
-        try {
-          curr.recover(config.maxMessageSize)
-        } catch {
+        try { curr.recover(config.maxMessageSize) }
+        catch {
           case e: InvalidOffsetException =>
             val startOffset = curr.baseOffset
             warn(
@@ -585,9 +582,8 @@ class Log(
     if (messageSetValidBytes < 0)
       throw new CorruptRecordException(
         "Illegal length of message set " + messageSetValidBytes + " Message set cannot be appended to log. Possible causes are corrupted produce requests")
-    if (messageSetValidBytes == messages.sizeInBytes) {
-      messages
-    } else {
+    if (messageSetValidBytes == messages.sizeInBytes) { messages }
+    else {
       // trim invalid bytes
       val validByteBuffer = messages.buffer.duplicate()
       validByteBuffer.limit(messageSetValidBytes)
@@ -645,17 +641,12 @@ class Log(
             entry.getValue.size
           else
             exposedPos
-        } else {
-          entry.getValue.size
-        }
+        } else { entry.getValue.size }
       }
       val fetchInfo =
         entry.getValue.read(startOffset, maxOffset, maxLength, maxPosition)
-      if (fetchInfo == null) {
-        entry = segments.higherEntry(entry.getKey)
-      } else {
-        return fetchInfo
-      }
+      if (fetchInfo == null) { entry = segments.higherEntry(entry.getKey) }
+      else { return fetchInfo }
     }
 
     // okay we are beyond the end of the last segment with no data fetched although the start offset is in range,
@@ -752,9 +743,7 @@ class Log(
             config.segmentMs - segment.rollJitterMs
           ))
       roll()
-    } else {
-      segment
-    }
+    } else { segment }
   }
 
   /**
@@ -1112,9 +1101,7 @@ object Log {
     val index = name.lastIndexOf('-')
     val topic: String = name.substring(0, index)
     val partition: String = name.substring(index + 1)
-    if (topic.length < 1 || partition.length < 1) {
-      throwException(dir)
-    }
+    if (topic.length < 1 || partition.length < 1) { throwException(dir) }
     TopicAndPartition(topic, partition.toInt)
   }
 

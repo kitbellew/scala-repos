@@ -111,9 +111,7 @@ class VM(
     monitor.foreach { _.start() }
   }
 
-  def exit(exitCode: Int): Unit = {
-    vm.exit(exitCode)
-  }
+  def exit(exitCode: Int): Unit = { vm.exit(exitCode) }
 
   def dispose() =
     try {
@@ -136,9 +134,7 @@ class VM(
     v
   }
 
-  def resume(): Unit = {
-    vm.resume()
-  }
+  def resume(): Unit = { vm.resume() }
 
   def newStepRequest(thread: ThreadReference, stride: Int, depth: Int): Unit = {
     erm.deleteEventRequests(erm.stepRequests)
@@ -167,22 +163,16 @@ class VM(
         request.enable()
       }
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
-  def clearAllBreakpoints(): Unit = {
-    erm.deleteAllBreakpoints()
-  }
+  def clearAllBreakpoints(): Unit = { erm.deleteAllBreakpoints() }
 
   def clearBreakpoints(bps: Iterable[Breakpoint]): Unit = {
     for (bp <- bps) {
       for (req <- erm.breakpointRequests();
            pos <- sourceMap.locToPos(req.location())) {
-        if (pos.file == bp.file && pos.line == bp.line) {
-          req.disable()
-        }
+        if (pos.file == bp.file && pos.line == bp.line) { req.disable() }
       }
     }
   }
@@ -199,11 +189,7 @@ class VM(
     }
   }
 
-  def initLocationMap() = {
-    for (t <- vm.allClasses) {
-      typeAdded(t)
-    }
-  }
+  def initLocationMap() = { for (t <- vm.allClasses) { typeAdded(t) } }
 
   def locations(file: File, line: Int): Set[Location] = {
 
@@ -320,9 +306,7 @@ class VM(
         var result: Option[Field] = None
         var tpe = tpeIn
         while (tpe != null && result.isEmpty) {
-          for (f <- tpe.fields()) {
-            if (f.name() == name) result = Some(f)
-          }
+          for (f <- tpe.fields()) { if (f.name() == name) result = Some(f) }
           tpe = tpe.superclass
         }
         result
@@ -490,9 +474,7 @@ class VM(
       objectId: DebugObjectId,
       name: String): Option[Value] = {
     for (obj <- savedObjects.get(objectId);
-         f <- fieldByName(obj, name)) yield {
-      remember(obj.getValue(f))
-    }
+         f <- fieldByName(obj, name)) yield { remember(obj.getValue(f)) }
   }
 
   private def valueForIndex(

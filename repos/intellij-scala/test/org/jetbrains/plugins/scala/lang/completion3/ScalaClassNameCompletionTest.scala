@@ -19,11 +19,8 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
       ScalaCodeStyleSettings.getInstance(getProjectAdapter)
     val oldValue = settings.isAddFullQualifiedImports
     settings.setAddFullQualifiedImports(false)
-    try {
-      body
-    } finally {
-      settings.setAddFullQualifiedImports(oldValue)
-    }
+    try { body }
+    finally { settings.setAddFullQualifiedImports(oldValue) }
   }
 
   def testClassNameRenamed() {
@@ -173,9 +170,7 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
         '\t'
       )
       checkResultByText(resultText)
-    } catch {
-      case t: Exception => settings.setImportsWithPrefix(oldValue)
-    }
+    } catch { case t: Exception => settings.setImportsWithPrefix(oldValue) }
   }
 
   def testImportsMess() {

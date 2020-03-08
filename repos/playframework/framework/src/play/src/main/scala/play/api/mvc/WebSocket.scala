@@ -166,9 +166,8 @@ object WebSocket {
     implicit val jsonMessageFlowTransformer
         : MessageFlowTransformer[JsValue, JsValue] = {
       def closeOnException[T](block: => T) =
-        try {
-          Left(block)
-        } catch {
+        try { Left(block) }
+        catch {
           case NonFatal(e) =>
             Right(
               CloseMessage(

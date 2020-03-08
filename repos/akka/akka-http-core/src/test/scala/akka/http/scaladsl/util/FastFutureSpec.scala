@@ -98,14 +98,10 @@ class FastFutureSpec extends FreeSpec with Matchers {
     }
     "map" - {
       "map success" in {
-        test(Success(23), _.map(_ + 19)) {
-          _ shouldEqual Success(42)
-        }
+        test(Success(23), _.map(_ + 19)) { _ shouldEqual Success(42) }
       }
       "report exceptions from user function" in {
-        test(Success(23), _.map(failF)) {
-          _ shouldEqual Failure(TheException)
-        }
+        test(Success(23), _.map(failF)) { _ shouldEqual Failure(TheException) }
       }
       "propagate errors" in {
         test(Failure(TheException), _.map(neverCalled)) {
@@ -163,9 +159,7 @@ class FastFutureSpec extends FreeSpec with Matchers {
     }
     "recover" - {
       "Success" in {
-        test(Success(23), _.recover(neverCalled)) {
-          _ shouldEqual Success(23)
-        }
+        test(Success(23), _.recover(neverCalled)) { _ shouldEqual Success(23) }
       }
       "Failure -> Success" in {
         test(Failure(UnexpectedException), _.recover { case _ ⇒ 23 }) {

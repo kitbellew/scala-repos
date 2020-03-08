@@ -15,9 +15,7 @@ import scala.collection.immutable.HashSet
 case class ScUndefinedType(tpt: ScTypeParameterType) extends NonValueType {
   var level = 0
 
-  def visitType(visitor: ScalaTypeVisitor) {
-    visitor.visitUndefinedType(this)
-  }
+  def visitType(visitor: ScalaTypeVisitor) { visitor.visitUndefinedType(this) }
 
   def this(tpt: ScTypeParameterType, level: Int) {
     this(tpt)
@@ -165,7 +163,5 @@ case class ScAbstractType(
     }
   }
 
-  def visitType(visitor: ScalaTypeVisitor) {
-    visitor.visitAbstractType(this)
-  }
+  def visitType(visitor: ScalaTypeVisitor) { visitor.visitAbstractType(this) }
 }

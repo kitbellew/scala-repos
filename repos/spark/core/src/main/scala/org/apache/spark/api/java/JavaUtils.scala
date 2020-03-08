@@ -24,11 +24,8 @@ import scala.collection.mutable
 
 private[spark] object JavaUtils {
   def optionToOptional[T](option: Option[T]): Optional[T] =
-    if (option.isDefined) {
-      Optional.of(option.get)
-    } else {
-      Optional.empty[T]
-    }
+    if (option.isDefined) { Optional.of(option.get) }
+    else { Optional.empty[T] }
 
   // Workaround for SPARK-3926 / SI-8911
   def mapAsSerializableJavaMap[A, B](
@@ -46,11 +43,8 @@ private[spark] object JavaUtils {
     override def size: Int = underlying.size
 
     override def get(key: AnyRef): B =
-      try {
-        underlying.getOrElse(key.asInstanceOf[A], null.asInstanceOf[B])
-      } catch {
-        case ex: ClassCastException => null.asInstanceOf[B]
-      }
+      try { underlying.getOrElse(key.asInstanceOf[A], null.asInstanceOf[B]) }
+      catch { case ex: ClassCastException => null.asInstanceOf[B] }
 
     override def entrySet: ju.Set[ju.Map.Entry[A, B]] =
       new ju.AbstractSet[ju.Map.Entry[A, B]] {

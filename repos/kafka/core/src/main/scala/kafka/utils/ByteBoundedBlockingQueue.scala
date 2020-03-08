@@ -69,9 +69,7 @@ class ByteBoundedBlockingQueue[E](
         if (currentByteSize.get() < queueByteCapacity)
           putLock.notify()
         success
-      } else {
-        false
-      }
+      } else { false }
     }
   }
 
@@ -87,9 +85,8 @@ class ByteBoundedBlockingQueue[E](
     if (e == null)
       throw new NullPointerException("Putting null element into queue.")
     putLock synchronized {
-      if (currentByteSize.get() >= queueByteCapacity) {
-        false
-      } else {
+      if (currentByteSize.get() >= queueByteCapacity) { false }
+      else {
         val success = queue.offer(e)
         if (success)
           currentByteSize.addAndGet(sizeFunction.get(e))

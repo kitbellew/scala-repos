@@ -75,17 +75,14 @@ object LAScheduler extends LAScheduler with Loggable {
       def execute(f: () => Unit): Unit =
         es.execute(new Runnable {
           def run() {
-            try {
-              f()
-            } catch {
+            try { f() }
+            catch {
               case e: Exception => logger.error("Lift Actor Scheduler", e)
             }
           }
         })
 
-      def shutdown(): Unit = {
-        es.shutdown()
-      }
+      def shutdown(): Unit = { es.shutdown() }
     }
   }
 
@@ -99,18 +96,14 @@ object LAScheduler extends LAScheduler with Loggable {
     */
   def execute(f: () => Unit) {
     synchronized {
-      if (exec eq null) {
-        exec = createExecutor()
-      }
+      if (exec eq null) { exec = createExecutor() }
       exec.execute(f)
     }
   }
 
   def shutdown() {
     synchronized {
-      if (exec ne null) {
-        exec.shutdown()
-      }
+      if (exec ne null) { exec.shutdown() }
 
       exec = null
     }
@@ -227,9 +220,7 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
   }
 
   private def processMailbox(ignoreProcessing: Boolean) {
-    around {
-      proc2(ignoreProcessing)
-    }
+    around { proc2(ignoreProcessing) }
   }
 
   /**
@@ -271,9 +262,7 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
 
     try {
       while (true) {
-        baseMailbox.synchronized {
-          putListIntoMB()
-        }
+        baseMailbox.synchronized { putListIntoMB() }
 
         var keepOnDoingHighPriory = true
 
@@ -286,18 +275,12 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
                 mb => testTranslate(hiPriPf.isDefinedAt)(mb.item)) match {
                 case Full(mb) =>
                   mb.remove()
-                  try {
-                    execTranslate(hiPriPf)(mb.item)
-                  } catch {
-                    case e: Exception => if (eh.isDefinedAt(e)) eh(e)
-                  }
+                  try { execTranslate(hiPriPf)(mb.item) }
+                  catch { case e: Exception => if (eh.isDefinedAt(e)) eh(e) }
                 case _ =>
                   baseMailbox.synchronized {
-                    if (msgList.isEmpty) {
-                      keepOnDoingHighPriory = false
-                    } else {
-                      putListIntoMB()
-                    }
+                    if (msgList.isEmpty) { keepOnDoingHighPriory = false }
+                    else { putListIntoMB() }
                   }
               }
             }
@@ -311,20 +294,15 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
           mb => testTranslate(pf.isDefinedAt)(mb.item)) match {
           case Full(mb) =>
             mb.remove()
-            try {
-              execTranslate(pf)(mb.item)
-            } catch {
-              case e: Exception => if (eh.isDefinedAt(e)) eh(e)
-            }
+            try { execTranslate(pf)(mb.item) }
+            catch { case e: Exception => if (eh.isDefinedAt(e)) eh(e) }
           case _ =>
             baseMailbox.synchronized {
               if (msgList.isEmpty) {
                 processing = false
                 clearProcessing = false
                 return
-              } else {
-                putListIntoMB()
-              }
+              } else { putListIntoMB() }
             }
         }
       }
@@ -335,11 +313,7 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
 
         throw exception
     } finally {
-      if (clearProcessing) {
-        baseMailbox.synchronized {
-          processing = false
-        }
-      }
+      if (clearProcessing) { baseMailbox.synchronized { processing = false } }
     }
   }
 
@@ -374,9 +348,7 @@ class MockSpecializedLiftActor[T] extends SpecializedLiftActor[T] {
     * message handler.
   **/
   override def !(msg: T): Unit = {
-    messagesReceived.synchronized {
-      messagesReceived ::= msg
-    }
+    messagesReceived.synchronized { messagesReceived ::= msg }
   }
 
   // We aren't required to implement a real message handler for the Mock actor
@@ -503,11 +475,8 @@ trait LiftActor
   override protected def execTranslate(f: Any => Unit)(v: Any) = v match {
     case MsgWithResp(msg, future) =>
       responseFuture = future
-      try {
-        f(msg)
-      } finally {
-        responseFuture = null
-      }
+      try { f(msg) }
+      finally { responseFuture = null }
     case v => f(v)
   }
 
@@ -516,9 +485,7 @@ trait LiftActor
     * to the message
     */
   protected def reply(v: Any) {
-    if (null ne responseFuture) {
-      responseFuture.satisfy(v)
-    }
+    if (null ne responseFuture) { responseFuture.satisfy(v) }
   }
 }
 

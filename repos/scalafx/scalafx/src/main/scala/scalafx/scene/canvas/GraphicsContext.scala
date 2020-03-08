@@ -72,16 +72,12 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
   /**
     * Appends an SVG Path string to the current path.
     */
-  def appendSVGPath(svgpath: String) {
-    delegate.appendSVGPath(svgpath)
-  }
+  def appendSVGPath(svgpath: String) { delegate.appendSVGPath(svgpath) }
 
   /**
     * Applies the given effect to the entire canvas.
     */
-  def applyEffect(e: Effect) {
-    delegate.applyEffect(e)
-  }
+  def applyEffect(e: Effect) { delegate.applyEffect(e) }
 
   /**
     * Adds path elements to the current path to make an arc that uses Euclidean degrees.
@@ -106,9 +102,7 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
   /**
     * Starts a Path
     */
-  def beginPath() {
-    delegate.beginPath()
-  }
+  def beginPath() { delegate.beginPath() }
 
   /**
     * Adds segments to the current path to make a cubic bezier curve.
@@ -119,9 +113,7 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
       xc2: Double,
       yc2: Double,
       x1: Double,
-      y1: Double) {
-    delegate.bezierCurveTo(xc1, yc1, xc2, yc2, x1, y1)
-  }
+      y1: Double) { delegate.bezierCurveTo(xc1, yc1, xc2, yc2, x1, y1) }
 
   /**
     * Gets the Canvas that the GraphicsContext is issuing draw commands to.
@@ -138,16 +130,12 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
   /**
     * Clips using the current path
     */
-  def clip() {
-    delegate.clip()
-  }
+  def clip() { delegate.clip() }
 
   /**
     * Closes the path.
     */
-  def closePath() {
-    delegate.closePath()
-  }
+  def closePath() { delegate.closePath() }
 
   /**
     * Draws an image at the given x, y position using the width and height of the given image.
@@ -175,9 +163,7 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
       dx: Double,
       dy: Double,
       dw: Double,
-      dh: Double) {
-    delegate.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
-  }
+      dh: Double) { delegate.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh) }
 
   /*
    * IMPLEMENTATION NOTE ABOUT EFFECT: Although there is a "getter" and a setter for Effect, the getEffect in JavaFX
@@ -193,9 +179,7 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
   /**
     * Sets the effect to be applied after the next draw call, or null to disable effects.
     */
-  def setEffect(e: Effect) {
-    delegate.setEffect(e)
-  }
+  def setEffect(e: Effect) { delegate.setEffect(e) }
 
   /*
    * IMPLEMENTATION NOTE ABOUT FILL: In original JavaFX class there is a getter and setter for fill. However, there
@@ -207,17 +191,13 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
     * the current fill attribute.
     */
   def fill: Paint = delegate.getFill
-  def fill_=(p: Paint) {
-    delegate.setFill(p)
-  }
+  def fill_=(p: Paint) { delegate.setFill(p) }
 
   /**
     * Fills the path with the current fill paint.
     * This method is correspondent to fill() method in JavaFx class.
     */
-  def fillPath() {
-    delegate.fill()
-  }
+  def fillPath() { delegate.fill() }
 
   /**
     * Fills an arc using the current fill paint.
@@ -246,9 +226,7 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
   def fillPolygon(
       xPoints: Array[Double],
       yPoints: Array[Double],
-      nPoints: Int) {
-    delegate.fillPolygon(xPoints, yPoints, nPoints)
-  }
+      nPoints: Int) { delegate.fillPolygon(xPoints, yPoints, nPoints) }
 
   /**
     * Fills a polygon with the given points using the currently set fill paint.
@@ -295,79 +273,59 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
     * the filling rule constant for determining the interior of the path.
     */
   def fillRule = delegate.getFillRule
-  def fillRule_=(fillRule: FillRule) {
-    delegate.setFillRule(fillRule)
-  }
+  def fillRule_=(fillRule: FillRule) { delegate.setFillRule(fillRule) }
 
   /**
     * the current Font.
     */
   def font: Font = delegate.getFont
-  def font_=(f: Font) {
-    delegate.setFont(f)
-  }
+  def font_=(f: Font) { delegate.setFont(f) }
 
   /**
     * the current global alpha.
     */
   def globalAlpha = delegate.getGlobalAlpha
-  def globalAlpha_=(alpha: Double) {
-    delegate.setGlobalAlpha(alpha)
-  }
+  def globalAlpha_=(alpha: Double) { delegate.setGlobalAlpha(alpha) }
 
   /**
     * the global blend mode.
     */
   def globalBlendMode = delegate.getGlobalBlendMode
-  def globalBlendMode_=(op: BlendMode) {
-    delegate.setGlobalBlendMode(op)
-  }
+  def globalBlendMode_=(op: BlendMode) { delegate.setGlobalBlendMode(op) }
 
   /**
     * the current stroke line cap.
     */
   def lineCap: StrokeLineCap = new StrokeLineCap(delegate.getLineCap)
-  def lineCap_=(cap: StrokeLineCap) {
-    delegate.setLineCap(cap)
-  }
+  def lineCap_=(cap: StrokeLineCap) { delegate.setLineCap(cap) }
 
   /**
     * the current stroke line join.
     */
   def lineJoin: StrokeLineJoin = new StrokeLineJoin(delegate.getLineJoin)
-  def lineJoin_=(join: StrokeLineJoin) {
-    delegate.setLineJoin(join)
-  }
+  def lineJoin_=(join: StrokeLineJoin) { delegate.setLineJoin(join) }
 
   /**
     * the current line width.
     */
   def lineWidth = delegate.getLineWidth
-  def lineWidth_=(lw: Double) {
-    delegate.setLineWidth(lw)
-  }
+  def lineWidth_=(lw: Double) { delegate.setLineWidth(lw) }
 
   /**
     * Adds segments to the current path to make a line at the given x,y coordinate.
     */
-  def lineTo(x1: Double, y1: Double) {
-    delegate.lineTo(x1, y1)
-  }
+  def lineTo(x1: Double, y1: Double) { delegate.lineTo(x1, y1) }
 
   /**
     * the current miter limit.
     */
   def miterLimit = delegate.getMiterLimit
-  def miterLimit_=(ml: Double) {
-    delegate.setMiterLimit(ml)
-  }
+  def miterLimit_=(ml: Double) { delegate.setMiterLimit(ml) }
 
   /**
     * Issues a move command for the current path to the given x,y coordinate.
     */
-  def moveTo(x0: Double, y0: Double) {
-    delegate.moveTo(x0, y0)
-  }
+  def moveTo(x0: Double, y0: Double) { delegate.moveTo(x0, y0) }
 
   /**
     * Returns a PixelWriter object that can be used to modify the pixels of the Canvas associated with this
@@ -398,46 +356,34 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
     * Pops the state off of the stack, setting the following attributes to their value at the time when that state was
     * pushed onto the stack.
     */
-  def restore() {
-    delegate.restore()
-  }
+  def restore() { delegate.restore() }
 
   /**
     * Rotates the current transform in degrees.
     */
-  def rotate(degrees: Double) {
-    delegate.rotate(degrees)
-  }
+  def rotate(degrees: Double) { delegate.rotate(degrees) }
 
   /**
     * Saves the following attributes onto a stack.
     */
-  def save() {
-    delegate.save()
-  }
+  def save() { delegate.save() }
 
   /**
     * Scales the current transform by x, y.
     */
-  def scale(x: Double, y: Double) {
-    delegate.scale(x, y)
-  }
+  def scale(x: Double, y: Double) { delegate.scale(x, y) }
 
   /**
     * the current stroke.
     */
   def stroke: Paint = delegate.getStroke
-  def stroke_=(s: Paint) {
-    delegate.setStroke(s)
-  }
+  def stroke_=(s: Paint) { delegate.setStroke(s) }
 
   /**
     * Strokes the path with the current stroke paint.
     * This method is correspondent to stroke() method in JavaFx class.
     */
-  def strokePath() {
-    delegate.stroke()
-  }
+  def strokePath() { delegate.stroke() }
 
   /**
     * Strokes an Arc using the current stroke paint.
@@ -473,9 +419,7 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
   def strokePolygon(
       xPoints: Array[Double],
       yPoints: Array[Double],
-      nPoints: Int) {
-    delegate.strokePolygon(xPoints, yPoints, nPoints)
-  }
+      nPoints: Int) { delegate.strokePolygon(xPoints, yPoints, nPoints) }
 
   /**
     * Strokes a polygon with the given points using the currently set stroke paint.
@@ -490,9 +434,7 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
   def strokePolyline(
       xPoints: Array[Double],
       yPoints: Array[Double],
-      nPoints: Int) {
-    delegate.strokePolyline(xPoints, yPoints, nPoints)
-  }
+      nPoints: Int) { delegate.strokePolyline(xPoints, yPoints, nPoints) }
 
   /**
     * Draws a polyline with the given points using the currently set stroke paint attribute.
@@ -539,17 +481,13 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
     * the current TextAlignment.
     */
   def textAlign = delegate.getTextAlign
-  def textAlign_=(align: TextAlignment) {
-    delegate.setTextAlign(align)
-  }
+  def textAlign_=(align: TextAlignment) { delegate.setTextAlign(align) }
 
   /**
     * the current Text Baseline.
     */
   def textBaseline = delegate.getTextBaseline
-  def textBaseline_=(baseline: VPos) {
-    delegate.setTextBaseline(baseline)
-  }
+  def textBaseline_=(baseline: VPos) { delegate.setTextBaseline(baseline) }
 
   /*
    * IMPLEMENTATION NOTE ABOUT TRANSFORM: Although there is more than a getter and setter for Transform. Besides, one
@@ -565,9 +503,7 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
   /**
     * Sets the current transform.
     */
-  def setTransform(xform: Affine) {
-    delegate.setTransform(xform)
-  }
+  def setTransform(xform: Affine) { delegate.setTransform(xform) }
 
   /**
     * Returns a copy of the current transform.
@@ -583,16 +519,12 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
       mxy: Double,
       myy: Double,
       mxt: Double,
-      myt: Double) {
-    delegate.setTransform(mxx, myx, mxy, myy, mxt, myt)
-  }
+      myt: Double) { delegate.setTransform(mxx, myx, mxy, myy, mxt, myt) }
 
   /**
     * Concatenates the input with the current transform.
     */
-  def transform(xform: Affine) {
-    delegate.transform(xform)
-  }
+  def transform(xform: Affine) { delegate.transform(xform) }
 
   /**
     * Concatenates the input with the current transform.
@@ -603,15 +535,11 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
       mxy: Double,
       myy: Double,
       mxt: Double,
-      myt: Double) {
-    delegate.transform(mxx, myx, mxy, myy, mxt, myt)
-  }
+      myt: Double) { delegate.transform(mxx, myx, mxy, myy, mxt, myt) }
 
   /**
     * Translates the current transform by x, y.
     */
-  def translate(x: Double, y: Double) {
-    delegate.translate(x, y)
-  }
+  def translate(x: Double, y: Double) { delegate.translate(x, y) }
 
 }

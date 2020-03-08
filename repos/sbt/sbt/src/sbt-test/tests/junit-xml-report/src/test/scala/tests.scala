@@ -3,9 +3,7 @@ import org.junit.Test
 package a.pkg {
   class OneSecondTest {
     @Test
-    def oneSecond(): Unit = {
-      Thread.sleep(1000)
-    }
+    def oneSecond(): Unit = { Thread.sleep(1000) }
   }
 }
 

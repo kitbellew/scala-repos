@@ -29,9 +29,7 @@ object ScalaRecursionManager {
     try {
       recursionMap.set(m)
       body
-    } finally {
-      recursionMap.set(currentMap)
-    }
+    } finally { recursionMap.set(currentMap) }
   }
 
   private def getSearches[Dom <: PsiElement](
@@ -89,9 +87,7 @@ object ScalaRecursionManager {
 
         //computations
         Some(compute)
-      } finally {
-        removeLast(element, key)
-      }
+      } finally { removeLast(element, key) }
     } else None
   }
 

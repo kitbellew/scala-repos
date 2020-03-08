@@ -7,9 +7,7 @@ final class LastPostCache(api: BlogApi, ttl: Duration, collection: String) {
   private val cache = lila.memo.MixedCache.single[List[MiniPost]](
     api.prismicApi flatMap { prismic =>
       api.recent(prismic, none, 3) map {
-        _ ?? {
-          _.results.toList flatMap MiniPost.fromDocument(collection)
-        }
+        _ ?? { _.results.toList flatMap MiniPost.fromDocument(collection) }
       }
     },
     timeToLive = ttl,
@@ -20,7 +18,5 @@ final class LastPostCache(api: BlogApi, ttl: Duration, collection: String) {
 
   def apply = cache get true
 
-  private[blog] def clear {
-    cache invalidate true
-  }
+  private[blog] def clear { cache invalidate true }
 }

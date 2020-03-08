@@ -196,14 +196,11 @@ object DecisionTreeRunner {
         val classIndexMap = {
           if (classCounts.keySet != Set(0.0, 1.0)) {
             sortedClasses.zipWithIndex.toMap
-          } else {
-            Map[Double, Int]()
-          }
+          } else { Map[Double, Int]() }
         }
         val examples = {
-          if (classIndexMap.isEmpty) {
-            origExamples
-          } else {
+          if (classIndexMap.isEmpty) { origExamples }
+          else {
             origExamples.map(lp =>
               LabeledPoint(classIndexMap(lp.label), lp.features))
           }
@@ -236,9 +233,8 @@ object DecisionTreeRunner {
         case Classification => {
           // classCounts: class --> # examples in class
           val testExamples = {
-            if (classIndexMap.isEmpty) {
-              origTestExamples
-            } else {
+            if (classIndexMap.isEmpty) { origTestExamples }
+            else {
               origTestExamples.map(lp =>
                 LabeledPoint(classIndexMap(lp.label), lp.features))
             }

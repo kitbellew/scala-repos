@@ -29,13 +29,9 @@ class MockSampler extends RandomSampler[Long, Long] {
 
   private var s: Long = _
 
-  override def setSeed(seed: Long) {
-    s = seed
-  }
+  override def setSeed(seed: Long) { s = seed }
 
-  override def sample(items: Iterator[Long]): Iterator[Long] = {
-    Iterator(s)
-  }
+  override def sample(items: Iterator[Long]): Iterator[Long] = { Iterator(s) }
 
   override def clone: MockSampler = new MockSampler
 }

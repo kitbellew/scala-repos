@@ -139,9 +139,7 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
 
     override protected def skipComment(): Boolean = {
       if (in.ch == '/') {
-        do {
-          in.next
-        } while ((in.ch != CR) && (in.ch != LF) && (in.ch != SU))
+        do { in.next } while ((in.ch != CR) && (in.ch != LF) && (in.ch != SU))
         true
       } else if (in.ch == '*') {
         docBuffer = null
@@ -151,20 +149,14 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
           docBuffer = new StringBuilder(scaladoc._1)
         do {
           do {
-            if (in.ch != '*' && in.ch != SU) {
-              in.next; putDocChar(in.ch)
-            }
+            if (in.ch != '*' && in.ch != SU) { in.next; putDocChar(in.ch) }
           } while (in.ch != '*' && in.ch != SU)
-          while (in.ch == '*') {
-            in.next; putDocChar(in.ch)
-          }
+          while (in.ch == '*') { in.next; putDocChar(in.ch) }
         } while (in.ch != '/' && in.ch != SU)
         if (in.ch == '/') in.next
         else incompleteInputError("unclosed comment")
         true
-      } else {
-        false
-      }
+      } else { false }
     }
   }
 
@@ -279,9 +271,7 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
               val pos = doc.pos.withEnd(t.pos.end)
               // always make the position transparent
               pos.makeTransparent
-            } else {
-              t.pos
-            }
+            } else { t.pos }
           }
         }
         joined.find(_.pos.isOpaqueRange) foreach { main =>

@@ -48,9 +48,7 @@ abstract class Camera(override val delegate: jfxs.Camera)
     * Objects farther away from the eye than the farClip plane are not drawn.
     */
   def farClip: DoubleProperty = delegate.farClipProperty
-  def farClip_=(v: Double) {
-    farClip() = v
-  }
+  def farClip_=(v: Double) { farClip() = v }
 
   /**
     * Specifies the near clipping plane of this `Camera` in the eye coordinate system of this node.
@@ -58,7 +56,5 @@ abstract class Camera(override val delegate: jfxs.Camera)
     * Objects closer to the eye than the nearClip plane are not drawn.
     */
   def nearClip: DoubleProperty = delegate.nearClipProperty
-  def nearClip_=(v: Double) {
-    nearClip() = v
-  }
+  def nearClip_=(v: Double) { nearClip() = v }
 }

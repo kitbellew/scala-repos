@@ -149,9 +149,7 @@ trait HttpComponentsClient extends Client {
       params: Iterable[(String, String)],
       files: Iterable[(String, Any)]) {
 
-    if (params.isEmpty && files.isEmpty) {
-      return
-    }
+    if (params.isEmpty && files.isEmpty) { return }
 
     req match {
       case r: HttpEntityEnclosingRequestBase =>
@@ -206,7 +204,5 @@ case class UploadableBody(uploadable: Uploadable) extends ContentBody {
 
   def getFilename = uploadable.fileName
 
-  def writeTo(out: OutputStream) {
-    out.write(uploadable.content)
-  }
+  def writeTo(out: OutputStream) { out.write(uploadable.content) }
 }

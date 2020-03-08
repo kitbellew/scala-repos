@@ -119,9 +119,7 @@ class SystemJSTest {
     } else if (inRhino) {
       assertFalse(js.isUndefined(js.Dynamic.global.Packages))
       assertFalse(inNode || inPhantomJS)
-    } else {
-      fail("No known platform tag found.")
-    }
+    } else { fail("No known platform tag found.") }
     assertEquals(inNode, Platform.executingInNodeJS)
     assertEquals(inPhantomJS, Platform.executingInPhantomJS)
     assertEquals(inRhino, Platform.executingInRhino)

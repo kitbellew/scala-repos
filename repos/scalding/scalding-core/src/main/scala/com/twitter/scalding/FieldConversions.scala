@@ -32,9 +32,8 @@ trait LowPriorityFieldConversions {
     case v: Enumeration#Value => v.toString
     case fld: Field[_]        => fld.id
     case flds: Fields => {
-      if (flds.size == 1) {
-        flds.get(0)
-      } else {
+      if (flds.size == 1) { flds.get(0) }
+      else {
         throw new Exception(
           "Cannot convert Fields(" + flds.toString + ") to a single fields arg")
       }
@@ -128,11 +127,8 @@ trait FieldConversions extends LowPriorityFieldConversions {
     * '* means Fields.ALL, otherwise we take the .name
     */
   implicit def symbolToFields(x: Symbol) = {
-    if (x == '*) {
-      Fields.ALL
-    } else {
-      new Fields(x.name)
-    }
+    if (x == '*) { Fields.ALL }
+    else { new Fields(x.name) }
   }
   implicit def fieldToFields(f: Field[_]) = RichFields(f)
 
@@ -144,15 +140,11 @@ trait FieldConversions extends LowPriorityFieldConversions {
     if (!avoid(guess)) {
       //We are good:
       guess
-    } else if (0 == trial) {
-      newSymbol(avoid, guess, 1)
-    } else {
+    } else if (0 == trial) { newSymbol(avoid, guess, 1) }
+    else {
       val newGuess = Symbol(guess.name + trial.toString)
-      if (!avoid(newGuess)) {
-        newGuess
-      } else {
-        newSymbol(avoid, guess, trial + 1)
-      }
+      if (!avoid(newGuess)) { newGuess }
+      else { newSymbol(avoid, guess, trial + 1) }
     }
   }
 
@@ -162,9 +154,8 @@ trait FieldConversions extends LowPriorityFieldConversions {
       rightPipe: Pipe): (Fields, Pipe) = {
     val leftSet = asSet(left)
     val collisions = asSet(left) & asSet(right)
-    if (collisions.isEmpty) {
-      (right, rightPipe)
-    } else {
+    if (collisions.isEmpty) { (right, rightPipe) }
+    else {
       // Rename the collisions with random integer names:
       val leftSetSyms = leftSet.map { f => Symbol(f.toString) }
       val (_, reversedRename) = asList(right)

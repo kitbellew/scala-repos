@@ -65,9 +65,7 @@ class SparkContextSchedulerCreationSuite
   }
 
   test("bad-master") {
-    val e = intercept[SparkException] {
-      createTaskScheduler("localhost:1234")
-    }
+    val e = intercept[SparkException] { createTaskScheduler("localhost:1234") }
     assert(e.getMessage.contains("Could not parse Master URL"))
   }
 
@@ -117,16 +115,12 @@ class SparkContextSchedulerCreationSuite
   }
 
   test("bad-local-n") {
-    val e = intercept[SparkException] {
-      createTaskScheduler("local[2*]")
-    }
+    val e = intercept[SparkException] { createTaskScheduler("local[2*]") }
     assert(e.getMessage.contains("Could not parse Master URL"))
   }
 
   test("bad-local-n-failures") {
-    val e = intercept[SparkException] {
-      createTaskScheduler("local[2*,4]")
-    }
+    val e = intercept[SparkException] { createTaskScheduler("local[2*,4]") }
     assert(e.getMessage.contains("Could not parse Master URL"))
   }
 

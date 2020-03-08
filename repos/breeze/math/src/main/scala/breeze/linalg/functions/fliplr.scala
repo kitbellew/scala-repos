@@ -12,9 +12,8 @@ object fliplr extends UFunc {
   implicit def implDM[T]: Impl[DenseMatrix[T], DenseMatrix[T]] =
     new Impl[DenseMatrix[T], DenseMatrix[T]] {
       def apply(v: DenseMatrix[T]): DenseMatrix[T] = {
-        if (!v.isTranspose) {
-          v(::, v.cols - 1 to 0 by -1).copy
-        } else { // we can't deal with strides on the minor axis, so, copy to make it column major
+        if (!v.isTranspose) { v(::, v.cols - 1 to 0 by -1).copy }
+        else { // we can't deal with strides on the minor axis, so, copy to make it column major
           apply(v.copy)
         }
       }
@@ -32,9 +31,8 @@ object flipud extends UFunc {
   implicit def implDM[T]: Impl[DenseMatrix[T], DenseMatrix[T]] =
     new Impl[DenseMatrix[T], DenseMatrix[T]] {
       def apply(v: DenseMatrix[T]): DenseMatrix[T] = {
-        if (v.isTranspose) {
-          v(v.cols - 1 to 0 by -1, ::).copy
-        } else { // we can't deal with strides on the minor axis, so, copy to make it column major
+        if (v.isTranspose) { v(v.cols - 1 to 0 by -1, ::).copy }
+        else { // we can't deal with strides on the minor axis, so, copy to make it column major
           fliplr(v.t).t.copy
         }
       }

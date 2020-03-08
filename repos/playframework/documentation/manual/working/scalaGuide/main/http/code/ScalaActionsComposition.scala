@@ -39,9 +39,7 @@ package scalaguide.http.scalaactionscomposition {
         //#basic-logging
 
         //#basic-logging-index
-        def index = LoggingAction {
-          Ok("Hello World")
-        }
+        def index = LoggingAction { Ok("Hello World") }
         //#basic-logging-index
 
         testAction(index)
@@ -76,18 +74,14 @@ package scalaguide.http.scalaactionscomposition {
         object LoggingAction extends ActionBuilder[Request] {
           def invokeBlock[A](
               request: Request[A],
-              block: (Request[A]) => Future[Result]) = {
-            block(request)
-          }
+              block: (Request[A]) => Future[Result]) = { block(request) }
           override def composeAction[A](action: Action[A]) = new Logging(action)
         }
         //#actions-wrapping-builder
 
         {
           //#actions-wrapping-index
-          def index = LoggingAction {
-            Ok("Hello World")
-          }
+          def index = LoggingAction { Ok("Hello World") }
           //#actions-wrapping-index
 
           testAction(index)
@@ -95,11 +89,7 @@ package scalaguide.http.scalaactionscomposition {
 
         {
           //#actions-wrapping-direct
-          def index = Logging {
-            Action {
-              Ok("Hello World")
-            }
-          }
+          def index = Logging { Action { Ok("Hello World") } }
           //#actions-wrapping-direct
 
           testAction(index)
@@ -119,13 +109,7 @@ package scalaguide.http.scalaactionscomposition {
         //#actions-def-wrapping
 
         val request = FakeRequest().withTextBody("hello with the parse")
-        testAction(
-          logging {
-            Action {
-              Ok("Hello World")
-            }
-          },
-          request)
+        testAction(logging { Action { Ok("Hello World") } }, request)
       }
 
       "allow modifying the request object" in {

@@ -414,9 +414,7 @@ class Word2Vec extends Serializable with Logging {
                     index,
                     syn0Local
                       .slice(index * vectorSize, (index + 1) * vectorSize)))
-              } else {
-                None
-              }
+              } else { None }
             }
             .flatten ++ Iterator
             .tabulate(vocabSize) { index =>
@@ -426,9 +424,7 @@ class Word2Vec extends Serializable with Logging {
                     index + vocabSize,
                     syn1Local
                       .slice(index * vectorSize, (index + 1) * vectorSize)))
-              } else {
-                None
-              }
+              } else { None }
             }
             .flatten
       }
@@ -594,11 +590,8 @@ class Word2VecModel private[spark] (
     val vecNorm = blas.snrm2(vectorSize, fVector, 1)
     while (ind < numWords) {
       val norm = wordVecNorms(ind)
-      if (norm == 0.0) {
-        cosVec(ind) = 0.0
-      } else {
-        cosVec(ind) /= norm
-      }
+      if (norm == 0.0) { cosVec(ind) = 0.0 }
+      else { cosVec(ind) /= norm }
       ind += 1
     }
     var topResults = wordList

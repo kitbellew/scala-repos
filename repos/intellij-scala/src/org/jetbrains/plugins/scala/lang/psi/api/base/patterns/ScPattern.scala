@@ -73,9 +73,7 @@ trait ScPattern extends ScalaPsiElement {
         case _                         =>
       }
 
-      for (sub <- p.subpatterns) {
-        inner(sub)
-      }
+      for (sub <- p.subpatterns) { inner(sub) }
     }
 
     inner(this)
@@ -90,16 +88,12 @@ trait ScPattern extends ScalaPsiElement {
         case ScTypedPattern(te) =>
           te.accept(new ScalaRecursiveElementVisitor {
             override def visitTypeVariableTypeElement(
-                tvar: ScTypeVariableTypeElement): Unit = {
-              b += tvar
-            }
+                tvar: ScTypeVariableTypeElement): Unit = { b += tvar }
           })
         case _ =>
       }
 
-      for (sub <- p.subpatterns) {
-        inner(sub)
-      }
+      for (sub <- p.subpatterns) { inner(sub) }
     }
 
     inner(this)

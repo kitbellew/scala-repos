@@ -684,9 +684,7 @@ class JavaSparkContext(val sc: SparkContext)
   def broadcast[T](value: T): Broadcast[T] = sc.broadcast(value)(fakeClassTag)
 
   /** Shut down the SparkContext. */
-  def stop() {
-    sc.stop()
-  }
+  def stop() { sc.stop() }
 
   override def close(): Unit = stop()
 
@@ -704,18 +702,14 @@ class JavaSparkContext(val sc: SparkContext)
     * filesystems), or an HTTP, HTTPS or FTP URI.  To access the file in Spark jobs,
     * use `SparkFiles.get(fileName)` to find its download location.
     */
-  def addFile(path: String) {
-    sc.addFile(path)
-  }
+  def addFile(path: String) { sc.addFile(path) }
 
   /**
     * Adds a JAR dependency for all tasks to be executed on this SparkContext in the future.
     * The `path` passed can be either a local file, a file in HDFS (or other Hadoop-supported
     * filesystems), or an HTTP, HTTPS or FTP URI.
     */
-  def addJar(path: String) {
-    sc.addJar(path)
-  }
+  def addJar(path: String) { sc.addJar(path) }
 
   /**
     * Returns the Hadoop configuration used for the Hadoop code (e.g. file systems) we reuse.
@@ -723,17 +717,13 @@ class JavaSparkContext(val sc: SparkContext)
     * '''Note:''' As it will be reused in all Hadoop RDDs, it's better not to modify it unless you
     * plan to set some global configurations for all Hadoop RDDs.
     */
-  def hadoopConfiguration(): Configuration = {
-    sc.hadoopConfiguration
-  }
+  def hadoopConfiguration(): Configuration = { sc.hadoopConfiguration }
 
   /**
     * Set the directory under which RDDs are going to be checkpointed. The directory must
     * be a HDFS path if running on a cluster.
     */
-  def setCheckpointDir(dir: String) {
-    sc.setCheckpointDir(dir)
-  }
+  def setCheckpointDir(dir: String) { sc.setCheckpointDir(dir) }
 
   def getCheckpointDir: Optional[String] =
     JavaUtils.optionToOptional(sc.getCheckpointDir)
@@ -752,16 +742,12 @@ class JavaSparkContext(val sc: SparkContext)
   /**
     * Pass-through to SparkContext.setCallSite.  For API support only.
     */
-  def setCallSite(site: String) {
-    sc.setCallSite(site)
-  }
+  def setCallSite(site: String) { sc.setCallSite(site) }
 
   /**
     * Pass-through to SparkContext.setCallSite.  For API support only.
     */
-  def clearCallSite() {
-    sc.clearCallSite()
-  }
+  def clearCallSite() { sc.clearCallSite() }
 
   /**
     * Set a local property that affects jobs submitted from this thread, such as the
@@ -780,9 +766,7 @@ class JavaSparkContext(val sc: SparkContext)
     * @param logLevel The desired log level as a string.
     * Valid log levels include: ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE, WARN
     */
-  def setLogLevel(logLevel: String) {
-    sc.setLogLevel(logLevel)
-  }
+  def setLogLevel(logLevel: String) { sc.setLogLevel(logLevel) }
 
   /**
     * Assigns a group ID to all the jobs started by this thread until the group ID is set to a

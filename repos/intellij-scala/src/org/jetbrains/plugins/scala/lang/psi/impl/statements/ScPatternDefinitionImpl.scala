@@ -52,9 +52,8 @@ class ScPatternDefinitionImpl private (
     val plist = this.pList
     if (plist != null) {
       val patterns = plist.patterns
-      if (patterns.length == 1) {
-        patterns(0).bindings
-      } else patterns.flatMap((p: ScPattern) => p.bindings)
+      if (patterns.length == 1) { patterns(0).bindings }
+      else patterns.flatMap((p: ScPattern) => p.bindings)
     } else Seq.empty
   }
 
@@ -84,9 +83,8 @@ class ScPatternDefinitionImpl private (
 
   def typeElement: Option[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
-      stub.asInstanceOf[ScValueStub].getTypeElement
-    } else findChild(classOf[ScTypeElement])
+    if (stub != null) { stub.asInstanceOf[ScValueStub].getTypeElement }
+    else findChild(classOf[ScTypeElement])
   }
 
   def pList: ScPatternList = {

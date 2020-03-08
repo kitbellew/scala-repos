@@ -83,7 +83,9 @@ object FizzBuzzExample {
     * Creates an HList that is the reverse solution to the fizzbuzz challenge for
     * the number N. Each element of the HList is a subtype of FizzBuzz.
     */
-  sealed trait RevFizzBuzz[N <: Nat] extends DepFn0 { type Out <: HList }
+  sealed trait RevFizzBuzz[N <: Nat] extends DepFn0 {
+    type Out <: HList
+  }
 
   object RevFizzBuzz {
     type Aux[N <: Nat, L <: HList] = RevFizzBuzz[N] { type Out = L }
@@ -106,7 +108,9 @@ object FizzBuzzExample {
     * Creates an HList that is the solution to the fizzbuzz challenge for the
     * number N. Each element of the HList is a subtype of FizzBuzz.
     */
-  sealed trait FizzBuzzResult[N <: Nat] extends DepFn0 { type Out <: HList }
+  sealed trait FizzBuzzResult[N <: Nat] extends DepFn0 {
+    type Out <: HList
+  }
 
   object FizzBuzzResult {
     type Aux[N <: Nat, L <: HList] = FizzBuzzResult[N] { type Out = L }

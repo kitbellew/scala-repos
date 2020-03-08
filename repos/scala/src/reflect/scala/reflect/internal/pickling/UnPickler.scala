@@ -39,9 +39,8 @@ abstract class UnPickler {
       classRoot: Symbol,
       moduleRoot: Symbol,
       filename: String) {
-    try {
-      new Scan(bytes, offset, classRoot, moduleRoot, filename).run()
-    } catch {
+    try { new Scan(bytes, offset, classRoot, moduleRoot, filename).run() }
+    catch {
       case ex: IOException =>
         throw ex
       case ex: MissingRequirementError =>
@@ -775,9 +774,7 @@ abstract class UnPickler {
       *  Similar in intent to what SymbolLoader does (but here we don't have access to
       *  error reporting, so we rely on the typechecker to report the error).
       */
-    def toTypeError(e: MissingRequirementError) = {
-      new TypeError(e.msg)
-    }
+    def toTypeError(e: MissingRequirementError) = { new TypeError(e.msg) }
 
     /** A lazy type which when completed returns type at index `i`. */
     private class LazyTypeRef(i: Int)
@@ -815,9 +812,7 @@ abstract class UnPickler {
           }
           if (currentRunId != definedAtRunId)
             sym.setInfo(adaptToNewRunMap(fixLocalChildTp))
-        } catch {
-          case e: MissingRequirementError => throw toTypeError(e)
-        }
+        } catch { case e: MissingRequirementError => throw toTypeError(e) }
       override def complete(sym: Symbol): Unit = {
         completeInternal(sym)
         if (!isCompilerUniverse) markAllCompleted(sym)
@@ -840,9 +835,7 @@ abstract class UnPickler {
                 sym.tpe =:= sym.owner.thisType.memberType(alt))))
 
           sym.asInstanceOf[TermSymbol].setAlias(alias)
-        } catch {
-          case e: MissingRequirementError => throw toTypeError(e)
-        }
+        } catch { case e: MissingRequirementError => throw toTypeError(e) }
     }
   }
 }

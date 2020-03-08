@@ -97,9 +97,7 @@ object HttpMuxer extends Service[Request, Response] {
     * add handlers to mutate dispatching strategies.
     */
   def addHandler(pattern: String, service: Service[Request, Response]): Unit =
-    synchronized {
-      underlying = underlying.withHandler(pattern, service)
-    }
+    synchronized { underlying = underlying.withHandler(pattern, service) }
 
   def addRichHandler(
       pattern: String,

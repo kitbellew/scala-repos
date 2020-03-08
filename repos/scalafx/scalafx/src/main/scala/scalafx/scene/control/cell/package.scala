@@ -67,9 +67,7 @@ package object cell {
       */
     def converter: ObjectProperty[StringConverter[J]] =
       ObjectProperty(delegate.converterProperty().getValue)
-    def converter_=(v: StringConverter[J]) {
-      converter() = v
-    }
+    def converter_=(v: StringConverter[J]) { converter() = v }
 
   }
 
@@ -93,9 +91,7 @@ package object cell {
       * A property representing whether the `ComboBox`, when shown to the user, is editable or not.
       */
     def comboBoxEditable: BooleanProperty = delegate.comboBoxEditableProperty()
-    def comboBoxEditable_=(v: Boolean) {
-      comboBoxEditable() = v
-    }
+    def comboBoxEditable_=(v: Boolean) { comboBoxEditable() = v }
 
   }
 
@@ -117,9 +113,7 @@ package object cell {
     /**
       * Types that contains the method `updateItem(item: Any, empty: Boolean): Unit`
       */
-    type Updated = {
-      def updateItem(item: Any, empty: Boolean)
-    }
+    type Updated = { def updateItem(item: Any, empty: Boolean) }
 
     /**
       * Updates the item associated with this Cell.
@@ -139,9 +133,7 @@ package object cell {
     *
     * @tparam T The type of the elements contained within the inner element inside the Cell.
     */
-  type Itemable[T] = {
-    def getItems(): jfxc.ObservableList[T]
-  }
+  type Itemable[T] = { def getItems(): jfxc.ObservableList[T] }
 
   /**
     * [[http://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/Cell.html javafx.scene.control.Cell]]s that contains the method `getItems(): ObservableList[T]`.

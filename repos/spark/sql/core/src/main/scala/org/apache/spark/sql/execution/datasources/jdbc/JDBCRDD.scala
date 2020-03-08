@@ -167,15 +167,9 @@ private[sql] object JDBCRDD extends Logging {
             i = i + 1
           }
           return new StructType(fields)
-        } finally {
-          rs.close()
-        }
-      } finally {
-        statement.close()
-      }
-    } finally {
-      conn.close()
-    }
+        } finally { rs.close() }
+      } finally { statement.close() }
+    } finally { conn.close() }
 
     throw new RuntimeException("This line is unreachable.")
   }
@@ -236,18 +230,12 @@ private[sql] object JDBCRDD extends Logging {
         // It applies too for the following And filter.
         // If we can make sure compileFilter supports all filters, we can remove this check.
         val or = Seq(f1, f2).flatMap(compileFilter(_))
-        if (or.size == 2) {
-          or.map(p => s"($p)").mkString(" OR ")
-        } else {
-          null
-        }
+        if (or.size == 2) { or.map(p => s"($p)").mkString(" OR ") }
+        else { null }
       case And(f1, f2) =>
         val and = Seq(f1, f2).flatMap(compileFilter(_))
-        if (and.size == 2) {
-          and.map(p => s"($p)").mkString(" AND ")
-        } else {
-          null
-        }
+        if (and.size == 2) { and.map(p => s"($p)").mkString(" AND ") }
+        else { null }
       case _ => null
     })
   }
@@ -334,13 +322,9 @@ private[sql] class JDBCRDD(
   private def getWhereClause(part: JDBCPartition): String = {
     if (part.whereClause != null && filterWhereClause.length > 0) {
       "WHERE " + filterWhereClause + " AND " + part.whereClause
-    } else if (part.whereClause != null) {
-      "WHERE " + part.whereClause
-    } else if (filterWhereClause.length > 0) {
-      "WHERE " + filterWhereClause
-    } else {
-      ""
-    }
+    } else if (part.whereClause != null) { "WHERE " + part.whereClause }
+    else if (filterWhereClause.length > 0) { "WHERE " + filterWhereClause }
+    else { "" }
   }
 
   // Each JDBC-to-Catalyst conversion corresponds to a tag defined here so that
@@ -442,9 +426,7 @@ private[sql] class JDBCRDD(
                 val dateVal = rs.getDate(pos)
                 if (dateVal != null) {
                   mutableRow.setInt(i, DateTimeUtils.fromJavaDate(dateVal))
-                } else {
-                  mutableRow.update(i, null)
-                }
+                } else { mutableRow.update(i, null) }
               // When connecting with Oracle DB through JDBC, the precision and scale of BigDecimal
               // object returned by ResultSet.getBigDecimal is not correctly matched to the table
               // schema reported by ResultSetMetaData.getPrecision and ResultSetMetaData.getScale.
@@ -455,11 +437,8 @@ private[sql] class JDBCRDD(
               // So it is needed to set precision and scale for Decimal based on JDBC metadata.
               case DecimalConversion(p, s) =>
                 val decimalVal = rs.getBigDecimal(pos)
-                if (decimalVal == null) {
-                  mutableRow.update(i, null)
-                } else {
-                  mutableRow.update(i, Decimal(decimalVal, p, s))
-                }
+                if (decimalVal == null) { mutableRow.update(i, null) }
+                else { mutableRow.update(i, Decimal(decimalVal, p, s)) }
               case DoubleConversion =>
                 mutableRow.setDouble(i, rs.getDouble(pos))
               case FloatConversion   => mutableRow.setFloat(i, rs.getFloat(pos))
@@ -472,9 +451,7 @@ private[sql] class JDBCRDD(
                 val t = rs.getTimestamp(pos)
                 if (t != null) {
                   mutableRow.setLong(i, DateTimeUtils.fromJavaTimestamp(t))
-                } else {
-                  mutableRow.update(i, null)
-                }
+                } else { mutableRow.update(i, null) }
               case BinaryConversion => mutableRow.update(i, rs.getBytes(pos))
               case BinaryLongConversion =>
                 val bytes = rs.getBytes(pos)
@@ -520,9 +497,7 @@ private[sql] class JDBCRDD(
                     case _ => array.asInstanceOf[Array[Any]]
                   }
                   mutableRow.update(i, new GenericArrayData(data))
-                } else {
-                  mutableRow.update(i, null)
-                }
+                } else { mutableRow.update(i, null) }
             }
             if (rs.wasNull) mutableRow.setNullAt(i)
             i = i + 1
@@ -536,26 +511,19 @@ private[sql] class JDBCRDD(
 
       def close() {
         if (closed) return
-        try {
-          if (null != rs) {
-            rs.close()
-          }
-        } catch {
+        try { if (null != rs) { rs.close() } }
+        catch {
           case e: Exception => logWarning("Exception closing resultset", e)
         }
-        try {
-          if (null != stmt) {
-            stmt.close()
-          }
-        } catch {
+        try { if (null != stmt) { stmt.close() } }
+        catch {
           case e: Exception => logWarning("Exception closing statement", e)
         }
         try {
           if (null != conn) {
             if (!conn.isClosed && !conn.getAutoCommit) {
-              try {
-                conn.commit()
-              } catch {
+              try { conn.commit() }
+              catch {
                 case NonFatal(e) =>
                   logWarning("Exception committing transaction", e)
               }
@@ -573,9 +541,7 @@ private[sql] class JDBCRDD(
         if (!finished) {
           if (!gotNext) {
             nextValue = getNext()
-            if (finished) {
-              close()
-            }
+            if (finished) { close() }
             gotNext = true
           }
         }
@@ -583,19 +549,14 @@ private[sql] class JDBCRDD(
       }
 
       override def next(): InternalRow = {
-        if (!hasNext) {
-          throw new NoSuchElementException("End of stream")
-        }
+        if (!hasNext) { throw new NoSuchElementException("End of stream") }
         gotNext = false
         nextValue
       }
     }
 
   private def nullSafeConvert[T](input: T, f: T => Any): Any = {
-    if (input == null) {
-      null
-    } else {
-      f(input)
-    }
+    if (input == null) { null }
+    else { f(input) }
   }
 }

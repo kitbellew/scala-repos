@@ -211,9 +211,9 @@ private[akka] trait Pump {
   // Exchange input buffer elements and output buffer "requests" until one of them becomes empty.
   // Generate upstream requestMore for every Nth consumed input element
   final def pump(): Unit = {
-    try while (transferState.isExecutable) {
-      currentAction()
-    } catch { case NonFatal(e) ⇒ pumpFailed(e) }
+    try while (transferState.isExecutable) { currentAction() } catch {
+      case NonFatal(e) ⇒ pumpFailed(e)
+    }
 
     if (isPumpFinished) pumpFinished()
   }

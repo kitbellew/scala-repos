@@ -34,7 +34,9 @@ trait DistributedBackend extends RelationalBackend with Logging {
       extends super.DatabaseDef {
     protected[this] def createDatabaseActionContext[T](
         _useSameThread: Boolean): Context =
-      new BasicActionContext { val useSameThread = _useSameThread }
+      new BasicActionContext {
+        val useSameThread = _useSameThread
+      }
 
     protected[this] def createStreamingDatabaseActionContext[T](
         s: Subscriber[_ >: T],
@@ -89,9 +91,7 @@ trait DistributedBackend extends RelationalBackend with Logging {
       throw new SlickException(
         "DistributedBackend does not currently support transactions")
 
-    def force() {
-      sessions.foreach(_.force)
-    }
+    def force() { sessions.foreach(_.force) }
 
     def withTransaction[T](f: => T) =
       throw new SlickException(

@@ -21,19 +21,13 @@ class MatchFilter extends ElementFilter {
       val parent = leaf.getParent
       if (parent.isInstanceOf[ScExpression] && (parent.getParent
             .isInstanceOf[ScInfixExpr] ||
-          parent.getParent.isInstanceOf[ScPostfixExpr])) {
-        return true
-      }
+          parent.getParent.isInstanceOf[ScPostfixExpr])) { return true }
     }
     false
   }
 
-  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = {
-    true
-  }
+  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = { true }
 
   @NonNls
-  override def toString: String = {
-    "'match' keyword filter"
-  }
+  override def toString: String = { "'match' keyword filter" }
 }

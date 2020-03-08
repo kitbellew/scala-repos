@@ -76,13 +76,9 @@ class NextIteratorSuite extends SparkFunSuite with Matchers {
       if (ints.size == 0) {
         finished = true
         0
-      } else {
-        ints.remove(0)
-      }
+      } else { ints.remove(0) }
     }
 
-    override def close() {
-      closeCalled += 1
-    }
+    override def close() { closeCalled += 1 }
   }
 }

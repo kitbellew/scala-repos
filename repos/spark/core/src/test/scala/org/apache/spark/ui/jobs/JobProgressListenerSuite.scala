@@ -44,9 +44,7 @@ class JobProgressListenerSuite
   private def createStageEndEvent(stageId: Int, failed: Boolean = false) = {
     val stageInfo =
       new StageInfo(stageId, 0, stageId.toString, 0, null, null, "")
-    if (failed) {
-      stageInfo.failureReason = Some("Failed!")
-    }
+    if (failed) { stageInfo.failureReason = Some("Failed!") }
     SparkListenerStageCompleted(stageInfo)
   }
 
@@ -162,12 +160,8 @@ class JobProgressListenerSuite
 
     // Run a bunch of jobs to get the listener into a state where we've exceeded both the
     // job and stage retention limits:
-    for (jobId <- 1 to 10) {
-      runJob(listener, jobId, shouldFail = false)
-    }
-    for (jobId <- 200 to 210) {
-      runJob(listener, jobId, shouldFail = true)
-    }
+    for (jobId <- 1 to 10) { runJob(listener, jobId, shouldFail = false) }
+    for (jobId <- 200 to 210) { runJob(listener, jobId, shouldFail = true) }
     assertActiveJobsStateIsEmpty(listener)
     // Snapshot the sizes of various soft- and hard-size-limited collections:
     val softLimitSizes = listener.getSizesOfSoftSizeLimitedCollections

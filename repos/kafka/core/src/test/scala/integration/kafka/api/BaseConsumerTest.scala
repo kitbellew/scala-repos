@@ -285,9 +285,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
 
       consumer0.subscribe(List[String]().asJava)
       assertEquals(0, consumer0.assignment.size())
-    } finally {
-      consumer0.close()
-    }
+    } finally { consumer0.close() }
   }
 
   @Test
@@ -457,9 +455,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     }
     consumer.subscribe(topicsToSubscribe.asJava, rebalanceListener)
 
-    def consumerAssignment(): Set[TopicPartition] = {
-      partitionAssignment
-    }
+    def consumerAssignment(): Set[TopicPartition] = { partitionAssignment }
 
     /**
       * Subscribe consumer to a new set of topics.
@@ -480,9 +476,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
       subscriptionChanged = true
     }
 
-    def isSubscribeRequestProcessed(): Boolean = {
-      !subscriptionChanged
-    }
+    def isSubscribeRequestProcessed(): Boolean = { !subscriptionChanged }
 
     override def doWork(): Unit = {
       if (subscriptionChanged) {

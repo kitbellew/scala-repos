@@ -11,9 +11,7 @@ import org.scalatest.junit.JUnitRunner
 final class HyperLogLogCodecSuite extends RedisRequestTest {
 
   test("Throw a ClientError if PFADD is called with no arguments", CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("PFADD\r\n"))
-    }
+    intercept[ClientError] { codec(wrap("PFADD\r\n")) }
   }
 
   test("Correctly encode PFADD with one element", CodecTest) {
@@ -35,11 +33,7 @@ final class HyperLogLogCodecSuite extends RedisRequestTest {
 
   test(
     "Throw a ClientError if PFCOUNT is called with no arguments",
-    CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("PFCOUNT\r\n"))
-    }
-  }
+    CodecTest) { intercept[ClientError] { codec(wrap("PFCOUNT\r\n")) } }
 
   test("Correctly encode PFCOUNT with one key", CodecTest) {
     unwrap(codec(wrap("PFCOUNT foo\r\n"))) {
@@ -58,19 +52,11 @@ final class HyperLogLogCodecSuite extends RedisRequestTest {
 
   test(
     "Throw a ClientError if PFMERGE is called with no arguments",
-    CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("PFMERGE\r\n"))
-    }
-  }
+    CodecTest) { intercept[ClientError] { codec(wrap("PFMERGE\r\n")) } }
 
   test(
     "Throw a ClientError if PFMERGE is called with one argument",
-    CodecTest) {
-    intercept[ClientError] {
-      codec(wrap("PFMERGE foo\r\n"))
-    }
-  }
+    CodecTest) { intercept[ClientError] { codec(wrap("PFMERGE foo\r\n")) } }
 
   test("Correctly encode PFMERGE with one source key", CodecTest) {
     unwrap(codec(wrap("PFMERGE foo bar\r\n"))) {

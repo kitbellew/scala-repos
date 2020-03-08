@@ -176,9 +176,7 @@ class GradientBoostedTreesSuite
            "classification",
            "Classification",
            "regression",
-           "Regression")) {
-      BoostingStrategy.defaultParams(algo)
-    }
+           "Regression")) { BoostingStrategy.defaultParams(algo) }
   }
 
   test("model save/load") {
@@ -202,9 +200,7 @@ class GradientBoostedTreesSuite
             DecisionTreeSuite.checkEqual(treeA, treeB)
         }
         assert(model.treeWeights === sameModel.treeWeights)
-      } finally {
-        Utils.deleteRecursively(tempDir)
-      }
+      } finally { Utils.deleteRecursively(tempDir) }
     }
   }
 

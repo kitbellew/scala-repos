@@ -151,8 +151,6 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
         case null ⇒ 0L
         case bytes ⇒ counterFromBytes(bytes)
       }
-    } finally {
-      ro.snapshot().close()
-    }
+    } finally { ro.snapshot().close() }
   }
 }

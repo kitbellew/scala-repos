@@ -4,9 +4,7 @@ trait Benchmark {
     repeat(warmup)(f)
     System.gc
     println("done")
-    val t = time {
-      repeat(count)(f)
-    }
+    val t = time { repeat(count)(f) }
     println(name + "\t" + t + "ms")
   }
 

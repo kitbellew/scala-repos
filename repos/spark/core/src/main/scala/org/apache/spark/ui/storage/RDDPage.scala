@@ -73,11 +73,8 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
     val page: Int = {
       // If the user has changed to a larger page size, then go to page 1 in order to avoid
       // IndexOutOfBoundsException.
-      if (blockPageSize <= blockPrevPageSize) {
-        blockPage
-      } else {
-        1
-      }
+      if (blockPageSize <= blockPrevPageSize) { blockPage }
+      else { 1 }
     }
     val blockTableHTML =
       try {
@@ -256,11 +253,8 @@ private[ui] class BlockDataSource(
       case unknownColumn =>
         throw new IllegalArgumentException(s"Unknown column: $unknownColumn")
     }
-    if (desc) {
-      ordering.reverse
-    } else {
-      ordering
-    }
+    if (desc) { ordering.reverse }
+    else { ordering }
   }
 }
 

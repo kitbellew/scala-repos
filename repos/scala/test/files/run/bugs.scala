@@ -6,10 +6,10 @@
 // Bug 98
 
 object Bug98Test {
-  object MyCase { def name = "mycase" }
-  def test(args: Array[String]) {
-    println(MyCase.name)
+  object MyCase {
+    def name = "mycase"
   }
+  def test(args: Array[String]) { println(MyCase.name) }
 }
 
 //############################################################################
@@ -26,9 +26,7 @@ class Bug120C(x: Int) extends Bug120A(Bug120Test.print("one", 1)) with Bug120B {
   println("C")
 }
 object Bug120Test {
-  def print[A](str: String, res: A): A = {
-    println(str); res
-  }
+  def print[A](str: String, res: A): A = { println(str); res }
   def test(args: Array[String]) {
     val c = new Bug120C(1)
     ()
@@ -53,11 +51,15 @@ object Bug135Test {
 //############################################################################
 // Bug 142
 
-abstract class Bug142Foo1 { class Inner; def foo: Inner; foo; }
+abstract class Bug142Foo1 {
+  class Inner; def foo: Inner; foo;
+}
 abstract class Bug142Foo2 {
   class Inner; def foo: Inner = { Console.println("ok"); null };
 }
-abstract class Bug142Foo3 { type Inner; def foo: Inner; foo; }
+abstract class Bug142Foo3 {
+  type Inner; def foo: Inner; foo;
+}
 abstract class Bug142Foo4 {
   type Inner;
   def foo: Inner = { Console.println("ok"); null.asInstanceOf[Inner] };
@@ -67,11 +69,15 @@ trait Bug142Bar1 {
   type Inner;
   def foo: Inner = { Console.println("ok"); null.asInstanceOf[Inner] };
 }
-trait Bug142Bar2 { type Inner; def foo: Inner; foo; }
+trait Bug142Bar2 {
+  type Inner; def foo: Inner; foo;
+}
 trait Bug142Bar3 {
   class Inner; def foo: Inner = { Console.println("ok"); null };
 }
-trait Bug142Bar4 { class Inner; def foo: Inner; foo; }
+trait Bug142Bar4 {
+  class Inner; def foo: Inner; foo;
+}
 
 object Bug142Test1 extends Bug142Foo1 with Bug142Bar1 {
   def test(args: Array[String]) {}
@@ -211,11 +217,11 @@ object Bug176Test {
 //############################################################################
 // Bug 199
 
-class Bug199C { object o; }
+class Bug199C {
+  object o;
+}
 object Bug199Test {
-  def test(args: Array[String]) = {
-    (new Bug199C).o; ()
-  }
+  def test(args: Array[String]) = { (new Bug199C).o; () }
 }
 
 //############################################################################
@@ -234,15 +240,13 @@ class Bug213Bar extends Bug213Foo {
 object Bug213Test {
   def test(args: Array[String]): Unit = {
     val foo: Bug213Foo = new Bug213Bar;
-    try {
-      foo.testAll;
-    } catch {
+    try { foo.testAll; }
+    catch {
       case e: ClassCastException =>
         Console.println("Cannot cast unit to Nothing");
     }
-    try {
-      foo.testAllRef;
-    } catch {
+    try { foo.testAllRef; }
+    catch {
       case e: ClassCastException =>
         Console.println("Cannot cast empty string to Null");
     }
@@ -295,7 +299,9 @@ object Bug226Test {
 
   def test(args: Array[String]) {
     var xs = new Array[Int](1);
-    class X { xs };
+    class X {
+      xs
+    };
     xs = id(xs);
     id(xs);
     ()
@@ -337,9 +343,7 @@ object Bug257Test {
     f2(x);
   }
 
-  def test(args: Array[String]) {
-    f(sayhello())(sayhi())
-  }
+  def test(args: Array[String]) { f(sayhello())(sayhi()) }
 }
 
 //############################################################################
@@ -349,12 +353,16 @@ object Bug257Test {
 
 abstract class Bug266AFoo {
   type T >: Null <: AnyRef;
-  abstract class I0 { def f(x: T): Unit; f(null); }
+  abstract class I0 {
+    def f(x: T): Unit; f(null);
+  }
 }
 
 object Bug266ATest extends Bug266AFoo {
   type T = String;
-  class I1 extends I0 { def f(x: String) { Console.println("hello") } }
+  class I1 extends I0 {
+    def f(x: String) { Console.println("hello") }
+  }
   def test(args: Array[String]): Unit = { new I1; () }
 }
 
@@ -444,16 +452,16 @@ object Bug396Test extends Bug396B with Bug396C {
 
 object Bug399Test {
   def f(x: String): String = {
-    trait C { def f: String = x; }
+    trait C {
+      def f: String = x;
+    }
     class D extends C;
     trait F extends C;
     class G extends D with F;
     (new G).f
   }
 
-  def test(args: Array[String]) {
-    Console.println(f("a"));
-  }
+  def test(args: Array[String]) { Console.println(f("a")); }
 }
 
 //############################################################################
@@ -463,9 +471,8 @@ object Test {
   var errors: Int = 0
   def test(bug: Int, test: => Unit) {
     Console.println("<<< bug " + bug)
-    try {
-      test;
-    } catch {
+    try { test; }
+    catch {
       case exception: Throwable =>
         Console.print(
           "Exception in thread \"" + Thread.currentThread + "\" " + exception);

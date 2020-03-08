@@ -221,9 +221,7 @@ object SBTConsole {
         sys.error(strs mkString " | ")
       }
 
-      if (validForest.size > 1) {
-        sys.error("ambiguous parse (good luck!)")
-      }
+      if (validForest.size > 1) { sys.error("ambiguous parse (good luck!)") }
 
       val tree = validForest.head
       val Right(dag) = decorate(emit(tree))

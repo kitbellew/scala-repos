@@ -104,9 +104,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
         tp: ScType,
         clazz: PsiClass,
         subst: ScSubstitutor): ScType = {
-      if (clazz.getTypeParameters.isEmpty) {
-        tp
-      } else {
+      if (clazz.getTypeParameters.isEmpty) { tp }
+      else {
         ScParameterizedType(
           tp,
           clazz.getTypeParameters.map {
@@ -341,9 +340,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                     ScUnderScoreSectionUtil.underscores(n).nonEmpty
                   case None => false
                 }
-                if (!fromUnderscore) {
-                  updateRes(expected)
-                } else {
+                if (!fromUnderscore) { updateRes(expected) }
+                else {
                   expected match {
                     case ScFunctionType(retType, _) => updateRes(retType)
                     case _                          => //do not update res, we haven't expected type
@@ -377,9 +375,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
           }
 
           val oldNonValueType = nonValueType
-          try {
-            lastClause(withExpected = true)
-          } catch {
+          try { lastClause(withExpected = true) }
+          catch {
             case e: SafeCheckException =>
               nonValueType = oldNonValueType
               lastClause(withExpected = false)

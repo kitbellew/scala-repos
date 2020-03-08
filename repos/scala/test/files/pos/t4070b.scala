@@ -1,7 +1,9 @@
 package a {
   abstract class DeliteOp[B]
   abstract class DeliteCollection[A]
-  abstract class Exp[T] { def Type: T }
+  abstract class Exp[T] {
+    def Type: T
+  }
 
   trait DeliteOpMap[A, B, C[X] <: DeliteCollection[X]] extends DeliteOp[C[B]] {
     val in: Exp[C[A]]
@@ -25,7 +27,9 @@ package b {
 
   abstract class DeliteOp[B]
   abstract class DeliteCollection[A]
-  abstract class Exp[T] { def Type: T }
+  abstract class Exp[T] {
+    def Type: T
+  }
 
   trait DeliteOpMap[A, B, C[X] <: DeliteCollection[X]] extends DeliteOp[C[B]] {
     val in: Exp[C[A]]

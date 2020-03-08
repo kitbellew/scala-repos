@@ -171,9 +171,7 @@ final case class TreeLoc[A](
       tree map f,
       lefts map ff,
       rights map ff,
-      parents.map {
-        case (l, t, r) => (l map ff, f(t), r map ff)
-      })
+      parents.map { case (l, t, r) => (l map ff, f(t), r map ff) })
   }
 
   def cojoin: TreeLoc[TreeLoc[A]] = {
@@ -472,7 +470,9 @@ sealed abstract class TreeLocInstances {
     }
 
   implicit def treeLocEqual[A](implicit A: Equal[A]): Equal[TreeLoc[A]] =
-    new TreeLocEqual[A] { def E = A }
+    new TreeLocEqual[A] {
+      def E = A
+    }
 
   implicit def treeLocOrder[A](implicit A: Order[A]): Order[TreeLoc[A]] =
     new Order[TreeLoc[A]] with TreeLocEqual[A] {

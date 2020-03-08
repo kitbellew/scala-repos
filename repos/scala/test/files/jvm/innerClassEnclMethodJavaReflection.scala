@@ -53,11 +53,8 @@ object Test extends App {
     val faulty = new collection.mutable.ListBuffer[(String, Throwable)]
 
     def tryGetClass(name: String) =
-      try {
-        Some[Class[_]](classLoader.loadClass(name))
-      } catch {
-        case AllowedMissingClass(_) => None
-      }
+      try { Some[Class[_]](classLoader.loadClass(name)) }
+      catch { case AllowedMissingClass(_) => None }
 
     for (name <- classFullNames; cls <- tryGetClass(name)) {
       try {

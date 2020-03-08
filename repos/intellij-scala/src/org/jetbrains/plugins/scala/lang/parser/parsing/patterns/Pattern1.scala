@@ -30,9 +30,8 @@ object Pattern1 {
     val backupMarker = builder.mark
     builder.getTokenType match {
       case ScalaTokenTypes.tIDENTIFIER =>
-        if (isVarId) {
-          backupMarker.rollbackTo()
-        } else {
+        if (isVarId) { backupMarker.rollbackTo() }
+        else {
           builder.advanceLexer() //Ate id
           builder.getTokenType match {
             case ScalaTokenTypes.tCOLON =>

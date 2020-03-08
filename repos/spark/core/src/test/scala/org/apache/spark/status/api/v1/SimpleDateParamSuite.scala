@@ -30,9 +30,7 @@ class SimpleDateParamSuite extends SparkFunSuite with Matchers {
     new SimpleDateParam("2015-02-20T17:21:17.190EST").timestamp should be(
       1424470877190L)
     new SimpleDateParam("2015-02-20").timestamp should be(1424390400000L) // GMT
-    intercept[WebApplicationException] {
-      new SimpleDateParam("invalid date")
-    }
+    intercept[WebApplicationException] { new SimpleDateParam("invalid date") }
   }
 
 }

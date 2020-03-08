@@ -47,20 +47,14 @@ class TestMemoryManager(conf: SparkConf)
   override private[memory] def releaseExecutionMemory(
       numBytes: Long,
       taskAttemptId: Long,
-      memoryMode: MemoryMode): Unit = {
-    available += numBytes
-  }
+      memoryMode: MemoryMode): Unit = { available += numBytes }
   override def maxStorageMemory: Long = Long.MaxValue
 
   private var oomOnce = false
   private var available = Long.MaxValue
 
-  def markExecutionAsOutOfMemoryOnce(): Unit = {
-    oomOnce = true
-  }
+  def markExecutionAsOutOfMemoryOnce(): Unit = { oomOnce = true }
 
-  def limit(avail: Long): Unit = {
-    available = avail
-  }
+  def limit(avail: Long): Unit = { available = avail }
 
 }

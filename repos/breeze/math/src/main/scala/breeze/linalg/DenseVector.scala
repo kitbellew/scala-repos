@@ -75,11 +75,8 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
       throw new IndexOutOfBoundsException(
         i + " not in [-" + size + "," + size + ")")
     val trueI = if (i < 0) i + size else i
-    if (noOffsetOrStride) {
-      data(trueI)
-    } else {
-      data(offset + trueI * stride)
-    }
+    if (noOffsetOrStride) { data(trueI) }
+    else { data(offset + trueI * stride) }
   }
 
   def update(i: Int, v: V): Unit = {
@@ -87,11 +84,8 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
       throw new IndexOutOfBoundsException(
         i + " not in [-" + size + "," + size + ")")
     val trueI = if (i < 0) i + size else i
-    if (noOffsetOrStride) {
-      data(trueI) = v
-    } else {
-      data(offset + trueI * stride) = v
-    }
+    if (noOffsetOrStride) { data(trueI) = v }
+    else { data(offset + trueI * stride) = v }
   }
 
   private[linalg] val noOffsetOrStride = offset == 0 && stride == 1
@@ -130,9 +124,7 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
   override def hashCode(): Int =
     ArrayUtil.zeroSkippingHashCode(data, offset, stride, length)
 
-  override def toString = {
-    valuesIterator.mkString("DenseVector(", ", ", ")")
-  }
+  override def toString = { valuesIterator.mkString("DenseVector(", ", ", ")") }
 
   /**
     * Returns a copy of this DenseVector. stride will always be 1, offset will always be 0.
@@ -228,9 +220,7 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
   // <editor-fold defaultstate="collapsed" desc=" Conversions (DenseMatrix, Array, Scala Vector) ">
 
   /** Creates a copy of this DenseVector that is represented as a 1 by length DenseMatrix */
-  def toDenseMatrix: DenseMatrix[V] = {
-    copy.asDenseMatrix
-  }
+  def toDenseMatrix: DenseMatrix[V] = { copy.asDenseMatrix }
 
   /** Creates a view of this DenseVector that is represented as a 1 by length DenseMatrix */
   def asDenseMatrix: DenseMatrix[V] = {
@@ -238,9 +228,8 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
   }
 
   override def toArray(implicit cm: ClassTag[V]): Array[V] =
-    if (stride == 1) {
-      ArrayUtil.copyOfRange(data, offset, offset + length)
-    } else {
+    if (stride == 1) { ArrayUtil.copyOfRange(data, offset, offset + length) }
+    else {
       val arr = new Array[V](length)
       var i = 0
       var off = offset
@@ -374,16 +363,12 @@ object DenseVector
   implicit def canCreateZerosLike[V: ClassTag: Zero]
       : CanCreateZerosLike[DenseVector[V], DenseVector[V]] =
     new CanCreateZerosLike[DenseVector[V], DenseVector[V]] {
-      def apply(v1: DenseVector[V]): DenseVector[V] = {
-        zeros[V](v1.length)
-      }
+      def apply(v1: DenseVector[V]): DenseVector[V] = { zeros[V](v1.length) }
     }
 
   implicit def canCopyDenseVector[V: ClassTag]: CanCopy[DenseVector[V]] = {
     new CanCopy[DenseVector[V]] {
-      def apply(v1: DenseVector[V]): DenseVector[V] = {
-        v1.copy
-      }
+      def apply(v1: DenseVector[V]): DenseVector[V] = { v1.copy }
     }
   }
 
@@ -409,13 +394,10 @@ object DenseVector
 
         // threeway fork, following benchmarks and hotspot docs on Array Bounds Check Elimination (ABCE)
         // https://wikis.oracle.com/display/HotSpotInternals/RangeCheckElimination
-        if (from.noOffsetOrStride) {
-          fastestPath(out, fn, from.data)
-        } else if (from.stride == 1) {
+        if (from.noOffsetOrStride) { fastestPath(out, fn, from.data) }
+        else if (from.stride == 1) {
           mediumPath(out, fn, from.data, from.offset)
-        } else {
-          slowPath(out, fn, from.data, from.offset, from.stride)
-        }
+        } else { slowPath(out, fn, from.data, from.offset, from.stride) }
         DenseVector[V2](out)
       }
 
@@ -515,9 +497,7 @@ object DenseVector
         val offset = from.offset
         if (stride == 1) {
           cforRange(offset until offset + length) { j => data(j) = fn(data(j)) }
-        } else {
-          slowPath(fn, data, length, stride, offset)
-        }
+        } else { slowPath(fn, data, length, stride, offset) }
       }
 
       private def slowPath(
@@ -564,9 +544,7 @@ object DenseVector
       /**Maps all active key-value pairs from the given collection. */
       def mapActive(
           from: DenseVector[V],
-          fn: (Int, V) => V2): DenseVector[V2] = {
-        map(from, fn)
-      }
+          fn: (Int, V) => V2): DenseVector[V2] = { map(from, fn) }
     }
 
   // slicing
@@ -655,9 +633,7 @@ object DenseVector
     override def mapActive(
         from: DenseVector[V],
         from2: DenseVector[V],
-        fn: ((Int), V, V) => RV): DenseVector[RV] = {
-      map(from, from2, fn)
-    }
+        fn: ((Int), V, V) => RV): DenseVector[RV] = { map(from, from2, fn) }
   }
 
   implicit def zipMapKV[V, R: ClassTag]: CanZipMapKeyValuesDenseVector[V, R] =
@@ -688,9 +664,7 @@ object DenseVector
         val ad = x.data
         val bd = y.data
         cforRange(0 until x.length) { i => bd(i) += ad(i) * a }
-      } else {
-        cforRange(0 until x.length) { i => y(i) += x(i) * a }
-      }
+      } else { cforRange(0 until x.length) { i => y(i) += x(i) * a } }
     }
 
   }
@@ -703,9 +677,7 @@ object DenseVector
   implicit val canAddD: OpAdd.Impl2[
     DenseVector[Double],
     DenseVector[Double],
-    DenseVector[Double]] = {
-    pureFromUpdate_Double(canAddIntoD)
-  }
+    DenseVector[Double]] = { pureFromUpdate_Double(canAddIntoD) }
   implicitly[
     BinaryRegistry[Vector[Double], Vector[Double], OpAdd.type, Vector[Double]]]
     .register(canAddD)
@@ -725,9 +697,7 @@ object DenseVector
   implicit val canSubD: OpSub.Impl2[
     DenseVector[Double],
     DenseVector[Double],
-    DenseVector[Double]] = {
-    pureFromUpdate_Double(canSubIntoD)
-  }
+    DenseVector[Double]] = { pureFromUpdate_Double(canSubIntoD) }
   implicitly[
     BinaryRegistry[Vector[Double], Vector[Double], OpSub.type, Vector[Double]]]
     .register(canSubD)
@@ -744,9 +714,7 @@ object DenseVector
           a.data,
           b.data,
           a.length)
-      } else {
-        blasPath(a, b)
-      }
+      } else { blasPath(a, b) }
     }
 
     val UNROLL_FACTOR = 6

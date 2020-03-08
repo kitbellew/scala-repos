@@ -90,9 +90,8 @@ class GaussianMixture private (
     */
   @Since("1.3.0")
   def setInitialModel(model: GaussianMixtureModel): this.type = {
-    if (model.k == k) {
-      initialModel = Some(model)
-    } else {
+    if (model.k == k) { initialModel = Some(model) }
+    else {
       throw new IllegalArgumentException(
         "mismatched cluster count (model.k != k)")
     }

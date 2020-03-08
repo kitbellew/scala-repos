@@ -35,9 +35,7 @@ object ExistentialClause {
         existMarker.done(ScalaElementTypes.EXISTENTIAL_CLAUSE)
         return true
     }
-    def foo() {
-      ExistentialDclSeq parse builder
-    }
+    def foo() { ExistentialDclSeq parse builder }
     ParserUtils.parseLoopUntilRBrace(builder, foo)
     builder.restoreNewlinesState
     existMarker.done(ScalaElementTypes.EXISTENTIAL_CLAUSE)

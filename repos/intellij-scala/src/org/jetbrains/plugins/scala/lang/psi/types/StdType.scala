@@ -16,9 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.synthetic.{
 
 abstract class StdType(val name: String, val tSuper: Option[StdType])
     extends ValueType {
-  def visitType(visitor: ScalaTypeVisitor) {
-    visitor.visitStdType(this)
-  }
+  def visitType(visitor: ScalaTypeVisitor) { visitor.visitStdType(this) }
 
   /**
     * Return wrapped to option appropriate synthetic class.

@@ -212,9 +212,7 @@ final class MongoJobManager(
   def listChannels(jobId: JobId): Future[Seq[String]] = {
     database {
       distinct("channel").from(settings.messages).where("jobId" === jobId)
-    } map (_.collect {
-      case JString(channel) => channel
-    }.toList)
+    } map (_.collect { case JString(channel) => channel }.toList)
   }
 
   def addMessage(
@@ -237,9 +235,9 @@ final class MongoJobManager(
     val filter = since map { id =>
       filter0 && MongoFieldFilter("id", MongoFilterOperators.$gt, id)
     } getOrElse filter0
-    database {
-      selectAll.from(settings.messages).where(filter)
-    } map { _.map(_.deserialize[Message]).toList }
+    database { selectAll.from(settings.messages).where(filter) } map {
+      _.map(_.deserialize[Message]).toList
+    }
   }
 
   protected def transition(jobId: JobId)(

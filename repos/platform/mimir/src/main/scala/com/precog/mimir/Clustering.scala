@@ -51,9 +51,8 @@ trait KMediansCoreSetClustering {
         epsilon: Double): CoreSet = {
       val threshold = (k / epsilon) * math.log(points.length)
 
-      if (points.length < threshold) {
-        (points, weights)
-      } else {
+      if (points.length < threshold) { (points, weights) }
+      else {
         val centers = createCenters(points, weights)
         //System.err.println("*** centers.length=%s" format centers.length)
 
@@ -120,9 +119,8 @@ trait KMediansCoreSetClustering {
     }
 
     def ++(coreSetTree: CoreSetTree): CoreSetTree = {
-      if (coreSetTree.k < k) {
-        coreSetTree ++ this
-      } else {
+      if (coreSetTree.k < k) { coreSetTree ++ this }
+      else {
         coreSetTree.tree.foldLeft(this) {
           case (acc, (level, coreset)) =>
             acc.insertCoreSet(coreset, level)
@@ -220,9 +218,7 @@ trait KMediansCoreSetClustering {
           minCost = cost
           i = -1
           j = centers.length
-        } else {
-          centers(j) = prevCenter
-        }
+        } else { centers(j) = prevCenter }
         j += 1
       }
       i += 1
@@ -243,17 +239,15 @@ trait KMediansCoreSetClustering {
   private def createCenters(
       points: Array[Array[Double]],
       weights: Array[Long]): Array[Array[Double]] = {
-    if (points.length < 100) {
-      points
-    } else {
+    if (points.length < 100) { points }
+    else {
       val k = math.max(4, math.pow(points.length, 0.25).toInt + 1)
       val weight = weights.qsum
 
       val (cost, clustering, isCenter) = approxKMedian(points, weights, k)
 
-      if (cost == 0) {
-        clustering
-      } else {
+      if (cost == 0) { clustering }
+      else {
         var radius = cost / weight
 
         val sampleSize =
@@ -283,17 +277,13 @@ trait KMediansCoreSetClustering {
           val relPos = (math.log(distances(i)) - logRadius + logWeight) / log2
           val klass = math.max(math.floor(relPos).toInt + 1, 0)
           assignments(i) = klass
-          if (klass < klassCounts.length) {
-            klassCounts(klass) += weights(i)
-          }
+          if (klass < klassCounts.length) { klassCounts(klass) += weights(i) }
           i += 1
         }
 
         val thresholdCount = weight / (10 * logWeight)
         i = klassCounts.length - 1
-        while (i >= 0 && klassCounts(i) < thresholdCount) {
-          i -= 1
-        }
+        while (i >= 0 && klassCounts(i) < thresholdCount) { i -= 1 }
         val alpha = i
         //System.err.println("thresholdCount=%s alpha=%s" format (thresholdCount, alpha))
 
@@ -378,9 +368,7 @@ trait KMediansCoreSetClustering {
       j = 0
       while (j < points.length) {
         val w = weight(j, i + 1)
-        if (w < distances(j)) {
-          distances(j) = w
-        }
+        if (w < distances(j)) { distances(j) = w }
         j += 1
       }
 
@@ -604,28 +592,18 @@ trait ClusteringLibModule[M[+_]]
               range flatMap { i =>
                 if (dc.isDefinedAt(i)) {
                   val n = dc(i)
-                  if (n.isValidInt && n > 0) {
-                    Some(n.toInt)
-                  } else {
-                    None
-                  }
-                } else {
-                  None
-                }
+                  if (n.isValidInt && n > 0) { Some(n.toInt) }
+                  else { None }
+                } else { None }
               }
 
             case nc: NumColumn =>
               range flatMap { i =>
                 if (nc.isDefinedAt(i)) {
                   val n = nc(i)
-                  if (n.isValidInt && n > 0) {
-                    Some(n.toInt)
-                  } else {
-                    None
-                  }
-                } else {
-                  None
-                }
+                  if (n.isValidInt && n > 0) { Some(n.toInt) }
+                  else { None }
+                } else { None }
               }
 
             case _ => List.empty[Int]
@@ -760,9 +738,7 @@ trait ClusteringLibModule[M[+_]]
               case Some((head, tail)) =>
                 table map { tbl =>
                   merge(Some(tbl.cross(head)(modelConcat)), tail).run
-                } getOrElse {
-                  merge(Some(head), tail).run
-                }
+                } getOrElse { merge(Some(head), tail).run }
               case None =>
                 M.point(table)
             })

@@ -27,9 +27,7 @@ object IOTest extends SpecLite {
       try {
         bad.unsafePerformIO
         fail("should have thrown")
-      } catch {
-        case t: Throwable => t must_== err
-      }
+      } catch { case t: Throwable => t must_== err }
     }
 
     "catch exceptions captured via fail()" in {

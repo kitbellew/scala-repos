@@ -67,9 +67,7 @@ final class SortedSetClientIntegrationSuite extends RedisClientTest {
                  ZInterval(0),
                  true,
                  Some(Limit(0, 5))))
-             .left) {
-        assert(left.asTuples == Seq())
-      }
+             .left) { assert(left.asTuples == Seq()) }
     }
   }
 
@@ -115,9 +113,7 @@ final class SortedSetClientIntegrationSuite extends RedisClientTest {
                  ZInterval(10),
                  true,
                  Some(Limit(0, 1))))
-             .left) {
-        assert(left.asTuples == Seq())
-      }
+             .left) { assert(left.asTuples == Seq()) }
       for (left <- Await
              .result(
                client.zRevRangeByScore(
@@ -126,9 +122,7 @@ final class SortedSetClientIntegrationSuite extends RedisClientTest {
                  ZInterval(0),
                  true,
                  Some(Limit(0, 1))))
-             .left) {
-        assert(left.asTuples == Seq())
-      }
+             .left) { assert(left.asTuples == Seq()) }
     }
   }
 

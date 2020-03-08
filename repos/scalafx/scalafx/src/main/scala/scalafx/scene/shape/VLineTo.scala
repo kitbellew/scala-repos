@@ -44,7 +44,5 @@ class VLineTo(override val delegate: jfxss.VLineTo = new jfxss.VLineTo())
     extends PathElement(delegate)
     with SFXDelegate[jfxss.VLineTo] {
   def y: DoubleProperty = delegate.yProperty
-  def y_=(v: Double) {
-    y() = v
-  }
+  def y_=(v: Double) { y() = v }
 }

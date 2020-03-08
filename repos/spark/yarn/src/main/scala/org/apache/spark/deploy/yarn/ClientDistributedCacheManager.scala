@@ -141,11 +141,8 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
       conf: Configuration,
       uri: URI,
       statCache: Map[URI, FileStatus]): LocalResourceVisibility = {
-    if (isPublic(conf, uri, statCache)) {
-      LocalResourceVisibility.PUBLIC
-    } else {
-      LocalResourceVisibility.PRIVATE
-    }
+    if (isPublic(conf, uri, statCache)) { LocalResourceVisibility.PUBLIC }
+    else { LocalResourceVisibility.PRIVATE }
   }
 
   /**

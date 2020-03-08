@@ -70,9 +70,7 @@ class WeightedPageRank(args: Args) extends Job(args) {
     if (CURITERATION < MAXITERATIONS - 1 && totalDiff > THRESHOLD) {
       val newArgs = args + ("curiteration", Some((CURITERATION + 1).toString))
       Some(clone(newArgs))
-    } else {
-      None
-    }
+    } else { None }
   }
 
   def getInputPagerank(fileName: String) = {
@@ -103,15 +101,11 @@ class WeightedPageRank(args: Args) extends Job(args) {
                   // convert string to int array
                   if (input._2 != null && input._2.length > 0) {
                     input._2.split(",").map { _.toInt }
-                  } else {
-                    Array[Int]()
-                  },
+                  } else { Array[Int]() },
                   // convert string to float array
                   if (input._3 != null && input._3.length > 0) {
                     input._3.split(",").map { _.toFloat }
-                  } else {
-                    Array[Float]()
-                  },
+                  } else { Array[Float]() },
                   input._4)
               }
           }
@@ -180,9 +174,7 @@ class WeightedPageRank(args: Args) extends Job(args) {
             }
           }
       }
-      .groupBy('src_id) {
-        _.sum[Double]('mass_n)
-      }
+      .groupBy('src_id) { _.sum[Double]('mass_n) }
 
     // 'sum_mass
     val sumPagerankNext = pagerankNext.groupAll {

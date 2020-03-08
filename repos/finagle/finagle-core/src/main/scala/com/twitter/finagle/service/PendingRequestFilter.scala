@@ -62,7 +62,5 @@ private[finagle] class PendingRequestFilter[Req, Rep](limit: Int)
     if (pending.incrementAndGet() > limit) {
       pending.decrementAndGet()
       Future.exception(Failure.rejected(PendingRequestsLimitExceeded))
-    } else {
-      service(req).respond(decFn)
-    }
+    } else { service(req).respond(decFn) }
 }

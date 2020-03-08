@@ -92,9 +92,7 @@ object TestUtils extends Logging {
   /**
     * Create a temporary directory
     */
-  def tempDir(): File = {
-    tempRelativeDir(IoTmpDir)
-  }
+  def tempDir(): File = { tempRelativeDir(IoTmpDir) }
 
   def tempTopic(): String = "testTopic" + random.nextInt(1000000)
 
@@ -110,9 +108,7 @@ object TestUtils extends Logging {
     Runtime
       .getRuntime()
       .addShutdownHook(new Thread() {
-        override def run() = {
-          CoreUtils.rm(f)
-        }
+        override def run() = { CoreUtils.rm(f) }
       })
     f
   }
@@ -915,9 +911,8 @@ object TestUtils extends Logging {
       } catch {
         case e: AssertionError =>
           val ellapsed = System.currentTimeMillis - startTime
-          if (ellapsed > maxWaitMs) {
-            throw e
-          } else {
+          if (ellapsed > maxWaitMs) { throw e }
+          else {
             info(
               "Attempt failed, sleeping for " + wait + ", and then retrying.")
             Thread.sleep(wait)
@@ -1250,9 +1245,7 @@ object TestUtils extends Logging {
               // swallow the exception
               debug(
                 "consumer timed out after receiving " + messages.length + " message(s).")
-            } else {
-              throw e
-            }
+            } else { throw e }
         }
       }
     }
@@ -1349,9 +1342,7 @@ object TestUtils extends Logging {
   // a X509TrustManager to trust self-signed certs for unit tests.
   def trustAllCerts: X509TrustManager = {
     val trustManager = new X509TrustManager() {
-      override def getAcceptedIssuers: Array[X509Certificate] = {
-        null
-      }
+      override def getAcceptedIssuers: Array[X509Certificate] = { null }
       override def checkClientTrusted(
           certs: Array[X509Certificate],
           authType: String) {}
@@ -1412,9 +1403,7 @@ object TestUtils extends Logging {
     } catch {
       case ie: InterruptedException => failWithTimeout()
       case e                        => exceptions += e
-    } finally {
-      threadPool.shutdownNow()
-    }
+    } finally { threadPool.shutdownNow() }
     assertTrue(
       s"$message failed with exception(s) $exceptions",
       exceptions.isEmpty)

@@ -60,17 +60,13 @@ object Light {
       * The azimuth of the light.
       */
     def azimuth: DoubleProperty = delegate.azimuthProperty
-    def azimuth_=(v: Double) {
-      azimuth() = v
-    }
+    def azimuth_=(v: Double) { azimuth() = v }
 
     /**
       * The elevation of the light.
       */
     def elevation: DoubleProperty = delegate.elevationProperty
-    def elevation_=(v: Double) {
-      elevation() = v
-    }
+    def elevation_=(v: Double) { elevation() = v }
 
   }
 
@@ -96,9 +92,7 @@ object Light {
       * The z coordinate of the light position.
       */
     def z: DoubleProperty = delegate.zProperty
-    def z_=(v: Double) {
-      z() = v
-    }
+    def z_=(v: Double) { z() = v }
 
   }
 
@@ -131,33 +125,25 @@ object Light {
       * The x coordinate of the direction vector for this light.
       */
     def pointsAtX: DoubleProperty = delegate.pointsAtXProperty
-    def pointsAtX_=(v: Double) {
-      pointsAtX() = v
-    }
+    def pointsAtX_=(v: Double) { pointsAtX() = v }
 
     /**
       * The y coordinate of the direction vector for this light.
       */
     def pointsAtY: DoubleProperty = delegate.pointsAtYProperty
-    def pointsAtY_=(v: Double) {
-      pointsAtY() = v
-    }
+    def pointsAtY_=(v: Double) { pointsAtY() = v }
 
     /**
       * The z coordinate of the direction vector for this light.
       */
     def pointsAtZ: DoubleProperty = delegate.pointsAtZProperty
-    def pointsAtZ_=(v: Double) {
-      pointsAtZ() = v
-    }
+    def pointsAtZ_=(v: Double) { pointsAtZ() = v }
 
     /**
       * The specular exponent, which controls the focus of this light source.
       */
     def specularExponent: DoubleProperty = delegate.specularExponentProperty
-    def specularExponent_=(v: Double) {
-      specularExponent() = v
-    }
+    def specularExponent_=(v: Double) { specularExponent() = v }
 
   }
 

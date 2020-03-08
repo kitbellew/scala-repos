@@ -102,9 +102,7 @@ class WebEngine(override val delegate: jfxsw.WebEngine = new jfxsw.WebEngine)
     * JavaScript alert handler property.
     */
   def onAlert = delegate.onAlertProperty
-  def onAlert_=(v: jfxe.EventHandler[jfxsw.WebEvent[String]]) {
-    onAlert() = v
-  }
+  def onAlert_=(v: jfxe.EventHandler[jfxsw.WebEvent[String]]) { onAlert() = v }
 
   /**
     * The event handler called when an error occurs.
@@ -112,9 +110,7 @@ class WebEngine(override val delegate: jfxsw.WebEngine = new jfxsw.WebEngine)
     * @since 8.0
     */
   def onError = delegate.onErrorProperty
-  def onError_=(v: jfxe.EventHandler[jfxsw.WebErrorEvent]) {
-    onError() = v
-  }
+  def onError_=(v: jfxe.EventHandler[jfxsw.WebErrorEvent]) { onError() = v }
 
   /**
     * JavaScript window resize handler property.
@@ -157,9 +153,7 @@ class WebEngine(override val delegate: jfxsw.WebEngine = new jfxsw.WebEngine)
     * @since 2.2
     */
   def javaScriptEnabled: BooleanProperty = delegate.javaScriptEnabledProperty
-  def javaScriptEnabled_=(v: Boolean) {
-    javaScriptEnabled() = v
-  }
+  def javaScriptEnabled_=(v: Boolean) { javaScriptEnabled() = v }
 
   /**
     * Specifies the directory to be used by this WebEngine to store local user data.
@@ -179,9 +173,7 @@ class WebEngine(override val delegate: jfxsw.WebEngine = new jfxsw.WebEngine)
     */
   def userStyleSheetLocation: StringProperty =
     delegate.userStyleSheetLocationProperty
-  def userStyleSheetLocation_=(v: String) {
-    userStyleSheetLocation() = v
-  }
+  def userStyleSheetLocation_=(v: String) { userStyleSheetLocation() = v }
 
   /**
     * Title of the current Web page.
@@ -191,16 +183,12 @@ class WebEngine(override val delegate: jfxsw.WebEngine = new jfxsw.WebEngine)
   /**
     * Loads a Web page into this engine.
     */
-  def load(url: String) {
-    delegate.load(url)
-  }
+  def load(url: String) { delegate.load(url) }
 
   /**
     * Loads the given HTML content directly.
     */
-  def loadContent(content: String) {
-    delegate.loadContent(content)
-  }
+  def loadContent(content: String) { delegate.loadContent(content) }
 
   /**
     * Loads the given content directly.
@@ -215,9 +203,7 @@ class WebEngine(override val delegate: jfxsw.WebEngine = new jfxsw.WebEngine)
     * @since 8.0
     */
   def userAgent: StringProperty = delegate.userAgentProperty
-  def userAgent_=(v: String) {
-    userAgent() = v
-  }
+  def userAgent_=(v: String) { userAgent() = v }
 
   /**
     * Prints the content of the editor using the given printer job.

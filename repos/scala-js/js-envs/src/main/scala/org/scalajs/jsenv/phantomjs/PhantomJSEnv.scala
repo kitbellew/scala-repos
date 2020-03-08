@@ -43,9 +43,7 @@ class PhantomJSEnv(
 
   override def jsRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): JSRunner = {
-    new PhantomRunner(libs, code)
-  }
+      code: VirtualJSFile): JSRunner = { new PhantomRunner(libs, code) }
 
   override def asyncRunner(
       libs: Seq[ResolvedJSDependency],
@@ -55,9 +53,7 @@ class PhantomJSEnv(
 
   override def comRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): ComJSRunner = {
-    new ComPhantomRunner(libs, code)
-  }
+      code: VirtualJSFile): ComJSRunner = { new ComPhantomRunner(libs, code) }
 
   protected class PhantomRunner(
       libs: Seq[ResolvedJSDependency],
@@ -79,7 +75,8 @@ class PhantomJSEnv(
 
     private var mgrIsRunning: Boolean = false
 
-    private object websocketListener extends WebsocketListener { // scalastyle:ignore
+    private object websocketListener
+        extends WebsocketListener { // scalastyle:ignore
       def onRunning(): Unit = ComPhantomRunner.this.synchronized {
         mgrIsRunning = true
         ComPhantomRunner.this.notifyAll()
@@ -281,16 +278,12 @@ class PhantomJSEnv(
           val result = fragmentsBuf.result()
           fragmentsBuf.clear()
           result
-        } else if (frag(0) == '1') {
-          loop()
-        } else {
-          throw new AssertionError("Bad fragmentation flag in " + frag)
-        }
+        } else if (frag(0) == '1') { loop() }
+        else { throw new AssertionError("Bad fragmentation flag in " + frag) }
       }
 
-      try {
-        loop()
-      } catch {
+      try { loop() }
+      catch {
         case e: Throwable if !e.isInstanceOf[TimeoutException] =>
           fragmentsBuf.clear() // the protocol is broken, so discard the buffer
           throw e
@@ -472,9 +465,7 @@ class PhantomJSEnv(
                |    phantom.exit(status !== 'success');
                |});
                |""".stripMargin)
-      } finally {
-        out.close()
-      }
+      } finally { out.close() }
 
       logger.debug(
         "PhantomJS using launcher at: " + launcherTmpF.getAbsolutePath())
@@ -489,11 +480,8 @@ class PhantomJSEnv(
       val out = new BufferedWriter(
         new OutputStreamWriter(new FileOutputStream(webTmpF), "UTF-8"))
 
-      try {
-        writeWebpageLauncher(out)
-      } finally {
-        out.close()
-      }
+      try { writeWebpageLauncher(out) }
+      finally { out.close() }
 
       logger.debug(
         "PhantomJS using webpage launcher at: " + webTmpF.getAbsolutePath())

@@ -54,9 +54,7 @@ trait HTTPProvider {
     */
   protected def service(req: HTTPRequest, resp: HTTPResponse)(
       chain: => Unit) = {
-    tryo {
-      LiftRules.early.toList.foreach(_(req))
-    }
+    tryo { LiftRules.early.toList.foreach(_(req)) }
 
     CurrentHTTPReqResp.doWith(req -> resp) {
       val newReq = Req(
@@ -72,9 +70,7 @@ trait HTTPProvider {
             .applyBox(resp.encodeUrl(url), LiftRules.urlDecorate.toList) openOr
             resp.encodeUrl(url)) {
           if (!(isLiftRequest_?(newReq) &&
-                actualServlet.service(newReq, resp))) {
-            chain
-          }
+                actualServlet.service(newReq, resp))) { chain }
         }
       }
     }
@@ -145,9 +141,7 @@ trait HTTPProvider {
         logger.error(
           "LiftWeb core resource bundle for locale " + Locale
             .getDefault() + ", was not found ! ")
-    } finally {
-      LiftRules.bootFinished()
-    }
+    } finally { LiftRules.bootFinished() }
   }
 
   private def liftHandled(in: String): Boolean =

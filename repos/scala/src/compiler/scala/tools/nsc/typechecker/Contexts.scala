@@ -1495,9 +1495,7 @@ trait Contexts { self: Analyzer =>
     }
 
     final def emitWarnings() = if (_warningBuffer != null) {
-      _warningBuffer foreach {
-        case (pos, msg) => reporter.warning(pos, msg)
-      }
+      _warningBuffer foreach { case (pos, msg) => reporter.warning(pos, msg) }
       _warningBuffer = null
     }
 

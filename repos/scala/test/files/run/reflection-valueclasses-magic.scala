@@ -117,9 +117,7 @@ object Test extends App {
     test(typeOf[Boolean], true, "^", true)
   }
 
-  def testUnit() {
-    header(typeOf[Unit])
-  }
+  def testUnit() { header(typeOf[Unit]) }
 
   testNumeric(typeOf[Byte], 2.toByte)
   testNumeric(typeOf[Short], 2.toShort)

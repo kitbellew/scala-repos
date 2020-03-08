@@ -142,17 +142,13 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
   step {
     actorSystem.scheduler.schedule(
       Duration(0, "milliseconds"),
-      Duration(clock.duration, "milliseconds")) {
-      ticker ! Tick
-    }
+      Duration(clock.duration, "milliseconds")) { ticker ! Tick }
 
     startup.copoint
   }
 
   "An asynchronous query" should {
-    "return a job ID" in {
-      execute(1).copoint must not(throwA[Exception])
-    }
+    "return a job ID" in { execute(1).copoint must not(throwA[Exception]) }
 
     "return the results of a completed job" in {
       val result = for {

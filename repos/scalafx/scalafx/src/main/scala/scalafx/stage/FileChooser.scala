@@ -137,9 +137,7 @@ class FileChooser(
     * The title of the displayed dialog.
     */
   def title: StringProperty = delegate.titleProperty
-  def title_=(v: String) {
-    title() = v
-  }
+  def title_=(v: String) { title() = v }
 
   /**
     * Gets the extension filters used in the displayed file dialog.

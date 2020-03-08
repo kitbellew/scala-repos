@@ -44,18 +44,13 @@ class StringLiteralProcessor extends CopyPastePreProcessor {
       val elementType =
         if (e.getNode == null) null else e.getNode.getElementType
       if ((elementType == ScalaTokenTypes.tSTRING || elementType == ScalaTokenTypes.tCHAR)
-          && rawText != null && rawText.rawText != null) {
-        rawText.rawText
-      } else if (elementType == ScalaTokenTypes.tSTRING) {
+          && rawText != null && rawText.rawText != null) { rawText.rawText }
+      else if (elementType == ScalaTokenTypes.tSTRING) {
         LineTokenizer
           .tokenize(text.toCharArray, false, true)
           .map(line => StringUtil.escapeStringCharacters(line))
           .mkString("\\n")
-      } else {
-        text
-      }
-    } else {
-      text
-    }
+      } else { text }
+    } else { text }
   }
 }

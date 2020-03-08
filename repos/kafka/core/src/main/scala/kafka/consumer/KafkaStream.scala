@@ -46,11 +46,7 @@ class KafkaStream[K, V](
     * This method clears the queue being iterated during the consumer rebalancing. This is mainly
     * to reduce the number of duplicates received by the consumer
     */
-  def clear() {
-    iter.clearCurrentChunk()
-  }
+  def clear() { iter.clearCurrentChunk() }
 
-  override def toString(): String = {
-    "%s kafka stream".format(clientId)
-  }
+  override def toString(): String = { "%s kafka stream".format(clientId) }
 }

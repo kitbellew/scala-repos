@@ -80,9 +80,7 @@ class SimpleFunctionRegistry extends FunctionRegistry {
   }
 
   override def lookupFunction(name: String): Option[ExpressionInfo] =
-    synchronized {
-      functionBuilders.get(name).map(_._1)
-    }
+    synchronized { functionBuilders.get(name).map(_._1) }
 
   def copy(): SimpleFunctionRegistry = synchronized {
     val registry = new SimpleFunctionRegistry

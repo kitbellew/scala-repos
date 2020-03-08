@@ -87,9 +87,8 @@ trait InlineParsers extends BaseParsers {
     */
   def markdownText(special: Set[Char], markdownEscapes: Boolean) = Parser {
     in =>
-      if (in.atEnd) {
-        Failure("End of input.", in)
-      } else {
+      if (in.atEnd) { Failure("End of input.", in) }
+      else {
         var start = in.offset
         var i = in.offset
         val s = in.source
@@ -113,9 +112,7 @@ trait InlineParsers extends BaseParsers {
             result.append(xmlEscape)
             i += 1
             start = i
-          } else {
-            i += 1
-          }
+          } else { i += 1 }
         }
         if (start != i) result.append(s.subSequence(start, i).toString)
         if (result.length == 0) Failure("No text consumed.", in)
@@ -153,9 +150,8 @@ trait InlineParsers extends BaseParsers {
     * based on a one char lookahead.
     */
   def elementParsers(ctx: InlineContext) = Parser { in =>
-    if (in.atEnd) {
-      Failure("End of Input Reached", in)
-    } else {
+    if (in.atEnd) { Failure("End of Input Reached", in) }
+    else {
       in.first match {
         case ' ' => br(in)
         case '`' => code(in)
@@ -207,9 +203,8 @@ trait InlineParsers extends BaseParsers {
   /** A shortcut markdown link of the form <http://example.com>
     */
   def fastLink(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("a")) {
-      failure("Cannot nest a link in a link.")
-    } else {
+    if (ctx.tags.contains("a")) { failure("Cannot nest a link in a link.") }
+    else {
       elem('<') ~> markdownText(Set('>', ' ', '<', '\n'), true) <~ '>' ^^ { u =>
         deco.decorateLink(u, u, None)
       }
@@ -223,9 +218,8 @@ trait InlineParsers extends BaseParsers {
   /** A markdown link with the full url given.
     */
   def fullLink(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("a")) {
-      failure("Cannot nest a link in a link.")
-    } else {
+    if (ctx.tags.contains("a")) { failure("Cannot nest a link in a link.") }
+    else {
       '[' ~> linkInline(
         ctx.addTag("a")) ~ ("](" ~ ows) ~ url ~ ows ~ title <~ (ows ~ ')') ^^ {
         case txt ~ _ ~ u ~ _ ~ ttl => deco.decorateLink(txt, u, ttl)
@@ -235,9 +229,8 @@ trait InlineParsers extends BaseParsers {
   /** A markdown link which references an url by id.
     */
   def referenceLink(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("a")) {
-      failure("Cannot nest a link in a link.")
-    } else {
+    if (ctx.tags.contains("a")) { failure("Cannot nest a link in a link.") }
+    else {
       ref(ctx.addTag("a")) ^^ {
         case (LinkDefinition(_, u, ttl), txt) => deco.decorateLink(txt, u, ttl)
       }
@@ -292,9 +285,7 @@ trait InlineParsers extends BaseParsers {
     */
   def ref(ctx: InlineContext): Parser[(LinkDefinition, String)] =
     ('[' ~> linkInline(ctx) ~ (']' ~ opt(' ') ~ '[') ~ idReference(
-      ctx) <~ ']' ^^ {
-      case t ~ dummy ~ pair => (pair._2, t)
-    }) |
+      ctx) <~ ']' ^^ { case t ~ dummy ~ pair => (pair._2, t) }) |
       ('[' ~> idReference(ctx) <~ (']' ~ opt(opt(' ') ~ '[' ~ ows ~ ']')) ^^ {
         case (t, ld) => (ld, t)
       })
@@ -330,9 +321,7 @@ trait InlineParsers extends BaseParsers {
   def span(limiter: String, ctx: InlineContext): Parser[String] =
     (limiter ~ not(ws)) ~>
       (spanInline((not(lookbehind(Set(' ', '\t', '\n'))) ~ limiter), ctx) +) <~
-      limiter ^^ {
-      _.mkString
-    }
+      limiter ^^ { _.mkString }
 
   /** Either an emphasis or a strong text wrapped in asterisks.
     */
@@ -346,38 +335,26 @@ trait InlineParsers extends BaseParsers {
   /**Parses emphasized text wrapped in asterisks: *foo*
     */
   def emAsterisk(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("em")) {
-      failure("Cannot nest emphasis.")
-    } else {
-      span("*", ctx.addTag("em")) ^^ { deco.decorateEmphasis(_) }
-    }
+    if (ctx.tags.contains("em")) { failure("Cannot nest emphasis.") }
+    else { span("*", ctx.addTag("em")) ^^ { deco.decorateEmphasis(_) } }
 
   /**Parses emphasized text wrapped in underscores: _foo_
     */
   def emUnderscore(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("em")) {
-      failure("Cannot nest emphasis.")
-    } else {
-      span("_", ctx.addTag("em")) ^^ { deco.decorateEmphasis(_) }
-    }
+    if (ctx.tags.contains("em")) { failure("Cannot nest emphasis.") }
+    else { span("_", ctx.addTag("em")) ^^ { deco.decorateEmphasis(_) } }
 
   /**Parses strong text in asterisks: **foo**
     */
   def strongAsterisk(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("strong")) {
-      failure("Cannot nest strong text.")
-    } else {
-      span("**", ctx.addTag("strong")) ^^ { deco.decorateStrong(_) }
-    }
+    if (ctx.tags.contains("strong")) { failure("Cannot nest strong text.") }
+    else { span("**", ctx.addTag("strong")) ^^ { deco.decorateStrong(_) } }
 
   /**Parses strong text in underscores: __foo__
     */
   def strongUnderscore(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("strong")) {
-      failure("Cannot nest strong text.")
-    } else {
-      span("__", ctx.addTag("strong")) ^^ { deco.decorateStrong(_) }
-    }
+    if (ctx.tags.contains("strong")) { failure("Cannot nest strong text.") }
+    else { span("__", ctx.addTag("strong")) ^^ { deco.decorateStrong(_) } }
 
   /**
     * Runs the inline parser on the given input and returns the result

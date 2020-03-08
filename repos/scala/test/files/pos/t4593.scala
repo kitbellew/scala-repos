@@ -8,11 +8,7 @@ trait A {
 
     var x: B = D
 
-    def y = synchronized {
-      x match {
-        case D => {}
-      }
-    }
+    def y = synchronized { x match { case D => {} } }
 
   }
 

@@ -29,9 +29,7 @@ class RegressionEvaluatorSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  test("params") {
-    ParamsSuite.checkParams(new RegressionEvaluator)
-  }
+  test("params") { ParamsSuite.checkParams(new RegressionEvaluator) }
 
   test("Regression Evaluator: default params") {
 

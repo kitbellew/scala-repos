@@ -91,9 +91,7 @@ class DeploymentFormatsTest extends MarathonSpec {
     marshalUnmarshal(genGroup(Set(genGroup(), genGroup(Set(genGroup())))))
   }
 
-  test("Can write/read byte arrays") {
-    marshalUnmarshal("Hello".getBytes)
-  }
+  test("Can write/read byte arrays") { marshalUnmarshal("Hello".getBytes) }
 
   test("DeploymentPlan can be serialized") {
     val plan = DeploymentPlan(

@@ -113,9 +113,7 @@ class ScDocTagValueImpl(node: ASTNode)
   def getVariants: Array[AnyRef] = {
     val result = ArrayBuilder.make[AnyRef]()
     val parameters = getParametersVariants
-    if (parameters == null) {
-      return Array[AnyRef]()
-    }
+    if (parameters == null) { return Array[AnyRef]() }
     parameters.foreach { param =>
       result += new ScalaLookupItem(param, param.name, None)
     }
@@ -162,9 +160,7 @@ class ScDocTagValueImpl(node: ASTNode)
       case func: ScFunction =>
         if (parentTagType == PARAM_TAG) {
           filterParamsByName(PARAM_TAG, func.parameters)
-        } else {
-          filterParamsByName(TYPE_PARAM_TAG, func.typeParameters)
-        }
+        } else { filterParamsByName(TYPE_PARAM_TAG, func.typeParameters) }
       case clazz: ScClass =>
         val constr = clazz.constructor
 
@@ -184,15 +180,11 @@ class ScDocTagValueImpl(node: ASTNode)
       case traitt: ScTrait =>
         if (parentTagType == TYPE_PARAM_TAG) {
           filterParamsByName(TYPE_PARAM_TAG, traitt.typeParameters)
-        } else {
-          Array.empty[ScNamedElement]
-        }
+        } else { Array.empty[ScNamedElement] }
       case typeAlias: ScTypeAlias =>
         if (parentTagType == TYPE_PARAM_TAG) {
           filterParamsByName(TYPE_PARAM_TAG, typeAlias.typeParameters)
-        } else {
-          Array.empty[ScNamedElement]
-        }
+        } else { Array.empty[ScNamedElement] }
       case _ => Array.empty[ScNamedElement]
     }
   }

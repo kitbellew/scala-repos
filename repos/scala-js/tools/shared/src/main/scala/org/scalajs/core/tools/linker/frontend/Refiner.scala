@@ -52,9 +52,7 @@ final class Refiner {
 
         linkedClassesByName
           .get(encodedName)
-          .map {
-            refineClassDef(_, analyzerInfo)
-          }
+          .map { refineClassDef(_, analyzerInfo) }
           .orElse(optDummyParent)
       }
 

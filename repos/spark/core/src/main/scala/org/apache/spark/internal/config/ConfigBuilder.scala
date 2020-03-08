@@ -28,9 +28,8 @@ private object ConfigHelpers {
       converter: String => T,
       key: String,
       configType: String): T = {
-    try {
-      converter(s)
-    } catch {
+    try { converter(s) }
+    catch {
       case _: NumberFormatException =>
         throw new IllegalArgumentException(
           s"$key should be $configType, but was $s")
@@ -38,9 +37,8 @@ private object ConfigHelpers {
   }
 
   def toBoolean(s: String, key: String): Boolean = {
-    try {
-      s.toBoolean
-    } catch {
+    try { s.toBoolean }
+    catch {
       case _: IllegalArgumentException =>
         throw new IllegalArgumentException(
           s"$key should be boolean, but was $s")
@@ -63,11 +61,8 @@ private object ConfigHelpers {
 
   def byteFromString(str: String, unit: ByteUnit): Long = {
     val (input, multiplier) =
-      if (str.length() > 0 && str.charAt(0) == '-') {
-        (str.substring(1), -1)
-      } else {
-        (str, 1)
-      }
+      if (str.length() > 0 && str.charAt(0) == '-') { (str.substring(1), -1) }
+      else { (str, 1) }
     multiplier * JavaUtils.byteStringAs(input, unit)
   }
 

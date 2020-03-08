@@ -203,9 +203,7 @@ class DistributedPubSubMediatorSpec
         mediator ! Put(u3)
       }
 
-      runOn(first, second) {
-        awaitCount(3)
-      }
+      runOn(first, second) { awaitCount(3) }
       enterBarrier("3-registered")
 
       runOn(second) {
@@ -213,9 +211,7 @@ class DistributedPubSubMediatorSpec
         mediator ! Put(u4)
       }
 
-      runOn(first, second) {
-        awaitCount(4)
-      }
+      runOn(first, second) { awaitCount(4) }
       enterBarrier("4-registered")
 
       runOn(first) {
@@ -242,9 +238,7 @@ class DistributedPubSubMediatorSpec
       awaitCount(5)
       enterBarrier("5-registered")
 
-      runOn(third) {
-        chatUser("u5") ! Whisper("/user/u4", "go")
-      }
+      runOn(third) { chatUser("u5") ! Whisper("/user/u4", "go") }
 
       runOn(second) {
         expectMsg("go")
@@ -262,18 +256,14 @@ class DistributedPubSubMediatorSpec
       awaitCount(6)
       enterBarrier("6-registered")
 
-      runOn(first) {
-        mediator ! Remove("/user/u6")
-      }
+      runOn(first) { mediator ! Remove("/user/u6") }
       awaitCount(5)
 
       enterBarrier("after-4")
     }
 
     "remove terminated users" in within(5 seconds) {
-      runOn(second) {
-        chatUser("u3") ! PoisonPill
-      }
+      runOn(second) { chatUser("u3") ! PoisonPill }
 
       awaitCount(4)
       enterBarrier("after-5")
@@ -287,17 +277,13 @@ class DistributedPubSubMediatorSpec
       awaitCount(6)
       enterBarrier("7-registered")
 
-      runOn(third) {
-        chatUser("u5") ! Talk("/user/u7", "hi")
-      }
+      runOn(third) { chatUser("u5") ! Talk("/user/u7", "hi") }
 
       runOn(first, second) {
         expectMsg("hi")
         lastSender.path.name should ===("u7")
       }
-      runOn(third) {
-        expectNoMsg(2.seconds)
-      }
+      runOn(third) { expectNoMsg(2.seconds) }
 
       enterBarrier("after-6")
     }
@@ -320,9 +306,7 @@ class DistributedPubSubMediatorSpec
       awaitCount(8)
       enterBarrier("topic1-registered")
 
-      runOn(third) {
-        chatUser("u5") ! Shout("topic1", "hello all")
-      }
+      runOn(third) { chatUser("u5") ! Shout("topic1", "hello all") }
 
       runOn(first) {
         val names = receiveWhile(messages = 2) {
@@ -334,22 +318,16 @@ class DistributedPubSubMediatorSpec
         expectMsg("hello all")
         lastSender.path.name should ===("u10")
       }
-      runOn(third) {
-        expectNoMsg(2.seconds)
-      }
+      runOn(third) { expectNoMsg(2.seconds) }
 
       enterBarrier("after-7")
     }
 
     "demonstrate usage of Publish" in within(15 seconds) {
-      def later(): Unit = {
-        awaitCount(10)
-      }
+      def later(): Unit = { awaitCount(10) }
 
       //#start-subscribers
-      runOn(first) {
-        system.actorOf(Props[Subscriber], "subscriber1")
-      }
+      runOn(first) { system.actorOf(Props[Subscriber], "subscriber1") }
       runOn(second) {
         system.actorOf(Props[Subscriber], "subscriber2")
         system.actorOf(Props[Subscriber], "subscriber3")
@@ -369,17 +347,11 @@ class DistributedPubSubMediatorSpec
     }
 
     "demonstrate usage of Send" in within(15 seconds) {
-      def later(): Unit = {
-        awaitCount(12)
-      }
+      def later(): Unit = { awaitCount(12) }
 
       //#start-send-destinations
-      runOn(first) {
-        system.actorOf(Props[Destination], "destination")
-      }
-      runOn(second) {
-        system.actorOf(Props[Destination], "destination")
-      }
+      runOn(first) { system.actorOf(Props[Destination], "destination") }
+      runOn(second) { system.actorOf(Props[Destination], "destination") }
       //#start-send-destinations
 
       //#send-message
@@ -438,9 +410,7 @@ class DistributedPubSubMediatorSpec
       awaitCount(19)
       enterBarrier("12-registered")
 
-      runOn(first) {
-        chatUser("u12") ! ShoutToGroups("topic2", "hi")
-      }
+      runOn(first) { chatUser("u12") ! ShoutToGroups("topic2", "hi") }
 
       runOn(first, second) {
         expectMsg("hi")
@@ -508,9 +478,7 @@ class DistributedPubSubMediatorSpec
       }
 
       enterBarrier("verified-delta-with-many")
-      within(10.seconds) {
-        awaitCount(19 + many)
-      }
+      within(10.seconds) { awaitCount(19 + many) }
 
       enterBarrier("after-13")
     }
@@ -519,16 +487,12 @@ class DistributedPubSubMediatorSpec
       mediator ! Count
       val countBefore = expectMsgType[Int]
 
-      runOn(first) {
-        testConductor.exit(third, 0).await
-      }
+      runOn(first) { testConductor.exit(third, 0).await }
 
       enterBarrier("third-shutdown")
 
       // third had 2 entries u5 and u11, and those should be removed everywhere
-      runOn(first, second) {
-        awaitCount(countBefore - 2)
-      }
+      runOn(first, second) { awaitCount(countBefore - 2) }
 
       enterBarrier("after-14")
     }

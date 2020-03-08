@@ -218,9 +218,8 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("++ with a long stream") {
     var count = 0
     def genLongStream(len: Int): AsyncStream[Int] =
-      if (len == 0) {
-        AsyncStream.of(1)
-      } else {
+      if (len == 0) { AsyncStream.of(1) }
+      else {
         count = count + 1
         1 +:: genLongStream(len - 1)
       }
@@ -492,9 +491,8 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
       // is called and an immediately-available future thereafter.
       var used = false
       def f(x: Int) =
-        if (used) {
-          Future.value(x)
-        } else {
+        if (used) { Future.value(x) }
+        else {
           used = true
           first
         }

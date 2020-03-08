@@ -50,9 +50,7 @@ class InputStreamReader private[io] (
             discarded = true
             throw exc
         }
-      } ensure {
-        permit.release()
-      }
+      } ensure { permit.release() }
     }
   }
 

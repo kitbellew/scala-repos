@@ -287,9 +287,7 @@ object TestGraphGenerators {
       testStore: P#Store[Int, Int],
       sink1: P#Sink[Int],
       sink2: P#Sink[(Int, Int)]) =
-    for {
-      in <- genProd2
-    } yield in.sumByKey(testStore)
+    for { in <- genProd2 } yield in.sumByKey(testStore)
 
   def written[P <: Platform[P]](implicit
       genSource1: Arbitrary[Producer[P, Int]],
@@ -298,9 +296,7 @@ object TestGraphGenerators {
       testStore: P#Store[Int, Int],
       sink1: P#Sink[Int],
       sink2: P#Sink[(Int, Int)]): Gen[TailProducer[P, Int]] =
-    for {
-      in <- genProd1
-    } yield in.write(sink1)
+    for { in <- genProd1 } yield in.write(sink1)
 
   def genProd2[P <: Platform[P]](implicit
       genSource1: Arbitrary[Producer[P, Int]],

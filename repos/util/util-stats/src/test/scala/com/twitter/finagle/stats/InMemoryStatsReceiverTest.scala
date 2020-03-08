@@ -34,17 +34,13 @@ class InMemoryStatsReceiverTest
   test("threadsafe counter") {
     val inMemoryStatsReceiver = new InMemoryStatsReceiver
     (1 to 50).par.foreach(_ => inMemoryStatsReceiver.counter("same").incr())
-    eventually {
-      assert(inMemoryStatsReceiver.counter("same")() == 50)
-    }
+    eventually { assert(inMemoryStatsReceiver.counter("same")() == 50) }
   }
 
   test("threadsafe stats") {
     val inMemoryStatsReceiver = new InMemoryStatsReceiver
     (1 to 50).par.foreach(_ => inMemoryStatsReceiver.stat("same").add(1.0f))
-    eventually {
-      assert(inMemoryStatsReceiver.stat("same")().size == 50)
-    }
+    eventually { assert(inMemoryStatsReceiver.stat("same")().size == 50) }
   }
 
   test("ReadableCounter.toString") {

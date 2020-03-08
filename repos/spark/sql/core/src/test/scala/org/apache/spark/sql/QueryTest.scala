@@ -145,9 +145,7 @@ abstract class QueryTest extends PlanTest {
                |
                |${stackTraceToString(ae)}
                |""".stripMargin)
-          } else {
-            throw ae
-          }
+          } else { throw ae }
       }
 
     checkJsonFormat(analyzedDF)
@@ -225,17 +223,14 @@ abstract class QueryTest extends PlanTest {
         case _: CoGroup         => return
         case _: LogicalRelation => return
       }
-      .transformAllExpressions {
-        case a: ImperativeAggregate => return
-      }
+      .transformAllExpressions { case a: ImperativeAggregate => return }
 
     // bypass hive tests before we fix all corner cases in hive module.
     if (this.getClass.getName.startsWith("org.apache.spark.sql.hive")) return
 
     val jsonString =
-      try {
-        logicalPlan.toJSON
-      } catch {
+      try { logicalPlan.toJSON }
+      catch {
         case NonFatal(e) =>
           fail(
             s"""

@@ -48,9 +48,7 @@ class TestConductorSpec
       runOn(master) {
         system.actorOf(
           Props(new Actor {
-            def receive = {
-              case x ⇒ testActor ! x; sender() ! x
-            }
+            def receive = { case x ⇒ testActor ! x; sender() ! x }
           }).withDeploy(Deploy.local),
           "echo")
       }
@@ -75,9 +73,7 @@ class TestConductorSpec
 
       enterBarrier("throttled_send")
 
-      runOn(slave) {
-        for (i ← 0 to 9) echo ! i
-      }
+      runOn(slave) { for (i ← 0 to 9) echo ! i }
 
       within(0.6 seconds, 2 seconds) {
         expectMsg(500 millis, 0)
@@ -95,9 +91,7 @@ class TestConductorSpec
 
       enterBarrier("throttled_recv")
 
-      runOn(slave) {
-        for (i ← 10 to 19) echo ! i
-      }
+      runOn(slave) { for (i ← 10 to 19) echo ! i }
 
       val (min, max) =
         if (isNode(master)) (0 seconds, 500 millis)

@@ -32,9 +32,7 @@ class StaticOnlyWithManualPicklerTest extends FunSuite {
         pickle(x)
         throw new AssertionError(
           "Should have used the fake implementation pickler")
-      } catch {
-        case FakeImplementation() => JSONPickle("")
-      }
+      } catch { case FakeImplementation() => JSONPickle("") }
     try {
       unpickle[NotClosed](pkl)
       throw new AssertionError(

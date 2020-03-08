@@ -80,9 +80,7 @@ private[netty] class Inbox(
   private var numActiveThreads = 0
 
   // OnStart should be the first message to process
-  inbox.synchronized {
-    messages.add(OnStart)
-  }
+  inbox.synchronized { messages.add(OnStart) }
 
   /**
     * Process stored messages.
@@ -90,15 +88,10 @@ private[netty] class Inbox(
   def process(dispatcher: Dispatcher): Unit = {
     var message: InboxMessage = null
     inbox.synchronized {
-      if (!enableConcurrent && numActiveThreads != 0) {
-        return
-      }
+      if (!enableConcurrent && numActiveThreads != 0) { return }
       message = messages.poll()
-      if (message != null) {
-        numActiveThreads += 1
-      } else {
-        return
-      }
+      if (message != null) { numActiveThreads += 1 }
+      else { return }
     }
     while (true) {
       safelyCall(endpoint) {
@@ -132,11 +125,7 @@ private[netty] class Inbox(
           case OnStart =>
             endpoint.onStart()
             if (!endpoint.isInstanceOf[ThreadSafeRpcEndpoint]) {
-              inbox.synchronized {
-                if (!stopped) {
-                  enableConcurrent = true
-                }
-              }
+              inbox.synchronized { if (!stopped) { enableConcurrent = true } }
             }
 
           case OnStop =>
@@ -218,9 +207,7 @@ private[netty] class Inbox(
     catch {
       case NonFatal(e) =>
         try endpoint.onError(e)
-        catch {
-          case NonFatal(ee) => logError(s"Ignoring error", ee)
-        }
+        catch { case NonFatal(ee) => logError(s"Ignoring error", ee) }
     }
   }
 

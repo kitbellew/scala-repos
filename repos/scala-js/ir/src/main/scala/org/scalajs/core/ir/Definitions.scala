@@ -78,14 +78,11 @@ object Definitions {
         compressedPrefixes collectFirst {
           case (prefix, compressed) if base.startsWith(prefix) =>
             compressed + base.substring(prefix.length)
-        } getOrElse {
-          "L" + base
-        }
+        } getOrElse { "L" + base }
       })
     if (Trees.isKeyword(encoded) || encoded.charAt(0).isDigit ||
-        encoded.charAt(0) == '$') {
-      "$" + encoded
-    } else encoded
+        encoded.charAt(0) == '$') { "$" + encoded }
+    else encoded
   }
 
   // !!! Duplicate logic: this code must be in sync with runtime.StackTrace

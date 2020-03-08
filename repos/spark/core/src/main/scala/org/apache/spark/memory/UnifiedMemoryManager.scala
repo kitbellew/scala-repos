@@ -161,9 +161,7 @@ private[spark] class UnifiedMemoryManager private[memory] (
     }
 
   override def acquireUnrollMemory(blockId: BlockId, numBytes: Long): Boolean =
-    synchronized {
-      acquireStorageMemory(blockId, numBytes)
-    }
+    synchronized { acquireStorageMemory(blockId, numBytes) }
 }
 
 object UnifiedMemoryManager {

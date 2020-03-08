@@ -11,13 +11,9 @@ class CommonsStatsReceiverTest
     with BeforeAndAfter
     with OneInstancePerTest {
 
-  before {
-    Stats.flush
-  }
+  before { Stats.flush }
 
-  after {
-    Stats.flush
-  }
+  after { Stats.flush }
 
   test(
     "counter should return a new counter object with the given name and reflect incr operations") {
@@ -43,9 +39,7 @@ class CommonsStatsReceiverTest
     assert(Stats.getVariable[Float]("bar_95_0_percentile").read === 0.0f)
     assert(Stats.getVariable[Float]("bar_99_0_percentile").read === 0.0f)
 
-    for (i <- 0.until(10000)) {
-      stat.add(i.toFloat)
-    }
+    for (i <- 0.until(10000)) { stat.add(i.toFloat) }
 
     //TODO find a way to poke at the stats, need to do something with a StatsModule
   }

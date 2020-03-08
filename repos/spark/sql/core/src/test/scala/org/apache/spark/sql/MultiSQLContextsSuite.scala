@@ -76,9 +76,7 @@ class MultiSQLContextsSuite extends SparkFunSuite with BeforeAndAfterAll {
         assert(
           message.contains("Only one SQLContext/HiveContext may be running"))
       }
-    } finally {
-      sparkContext.stop()
-    }
+    } finally { sparkContext.stop() }
   }
 
   test("test the flag to disallow creating multiple root SQLContext") {

@@ -140,11 +140,8 @@ private[sql] object StatFunctions extends Logging {
       */
     def insert(x: Double): QuantileSummaries = {
       headSampled.append(x)
-      if (headSampled.size >= defaultHeadSize) {
-        this.withHeadBufferInserted
-      } else {
-        this
-      }
+      if (headSampled.size >= defaultHeadSize) { this.withHeadBufferInserted }
+      else { this }
     }
 
     /**
@@ -156,9 +153,7 @@ private[sql] object StatFunctions extends Logging {
       * @return a new quantile summary object.
       */
     private def withHeadBufferInserted: QuantileSummaries = {
-      if (headSampled.isEmpty) {
-        return this
-      }
+      if (headSampled.isEmpty) { return this }
       var currentCount = count
       val sorted = headSampled.toArray.sorted
       val newSamples: ArrayBuffer[Stats] = new ArrayBuffer[Stats]()
@@ -180,9 +175,7 @@ private[sql] object StatFunctions extends Logging {
         val delta =
           if (newSamples.isEmpty || (sampleIdx == sampled.size && opsIdx == sorted.length - 1)) {
             0
-          } else {
-            math.floor(2 * relativeError * currentCount).toInt
-          }
+          } else { math.floor(2 * relativeError * currentCount).toInt }
 
         val tuple = Stats(currentSample, 1, delta)
         newSamples.append(tuple)
@@ -245,11 +238,9 @@ private[sql] object StatFunctions extends Logging {
       require(
         other.headSampled.isEmpty,
         "Other buffer needs to be compressed before merge")
-      if (other.count == 0) {
-        this.shallowCopy
-      } else if (count == 0) {
-        other.shallowCopy
-      } else {
+      if (other.count == 0) { this.shallowCopy }
+      else if (count == 0) { other.shallowCopy }
+      else {
         // Merge the two buffers.
         // The GK algorithm is a bit unclear about it, but it seems there is no need to adjust the
         // statistics during the merging: the invariants are still respected after the merge.
@@ -283,13 +274,9 @@ private[sql] object StatFunctions extends Logging {
         headSampled.isEmpty,
         "Cannot operate on an uncompressed summary, call compress() first")
 
-      if (quantile <= relativeError) {
-        return sampled.head.value
-      }
+      if (quantile <= relativeError) { return sampled.head.value }
 
-      if (quantile >= 1 - relativeError) {
-        return sampled.last.value
-      }
+      if (quantile >= 1 - relativeError) { return sampled.last.value }
 
       // Target rank
       val rank = math.ceil(quantile * count).toInt
@@ -341,9 +328,7 @@ private[sql] object StatFunctions extends Logging {
         currentSamples: IndexedSeq[Stats],
         mergeThreshold: Double): ArrayBuffer[Stats] = {
       val res: ArrayBuffer[Stats] = ArrayBuffer.empty
-      if (currentSamples.isEmpty) {
-        return res
-      }
+      if (currentSamples.isEmpty) { return res }
       // Start for the last element, which is always part of the set.
       // The head contains the current new head, that may be merged with the current element.
       var head = currentSamples.last
@@ -441,12 +426,9 @@ private[sql] object StatFunctions extends Logging {
       .queryExecution
       .toRdd
       .aggregate(new CovarianceCounter)(
-        seqOp = (counter, row) => {
-          counter.add(row.getDouble(0), row.getDouble(1))
-        },
-        combOp = (baseCounter, other) => {
-          baseCounter.merge(other)
-        })
+        seqOp =
+          (counter, row) => { counter.add(row.getDouble(0), row.getDouble(1)) },
+        combOp = (baseCounter, other) => { baseCounter.merge(other) })
   }
 
   /**
@@ -502,9 +484,7 @@ private[sql] object StatFunctions extends Logging {
       .toSeq
     // Back ticks can't exist in DataFrame column names, therefore drop them. To be able to accept
     // special keywords and `.`, wrap the column names in ``.
-    def cleanColumnName(name: String): String = {
-      name.replace("`", "")
-    }
+    def cleanColumnName(name: String): String = { name.replace("`", "") }
     // In the map, the column names (._1) are not ordered by the index (._2). This was the bug in
     // SPARK-8681. We need to explicitly sort by the column index and assign the column names.
     val headerNames = distinctCol2.toSeq.sortBy(_._2).map { r =>

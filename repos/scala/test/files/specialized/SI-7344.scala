@@ -17,7 +17,11 @@ class Test[@specialized(Int, Double) X](val x: X) {
     // expected to specialize:
     specMe("x", "specMe")
     specMe(123, "specMe$mIc$sp")
-    specMe(1.3, new { override def toString = "specMe$mDc$sp" })
+    specMe(
+      1.3,
+      new {
+        override def toString = "specMe$mDc$sp"
+      })
 
     x
   }

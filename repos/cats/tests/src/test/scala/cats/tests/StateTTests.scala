@@ -10,9 +10,7 @@ import org.scalacheck.Arbitrary
 class StateTTests extends CatsSuite {
   import StateTTests._
 
-  test("basic state usage") {
-    add1.run(1).value should ===(2 -> 1)
-  }
+  test("basic state usage") { add1.run(1).value should ===(2 -> 1) }
 
   test("traversing state is stack-safe") {
     val ns = (0 to 100000).toList

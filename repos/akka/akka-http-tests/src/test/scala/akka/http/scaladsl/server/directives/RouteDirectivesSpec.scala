@@ -64,9 +64,7 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
           Promise
             .failed[String](RejectionError(AuthorizationFailedRejection))
             .future) ~>
-          check {
-            rejection shouldEqual AuthorizationFailedRejection
-          }
+          check { rejection shouldEqual AuthorizationFailedRejection }
       }
     }
     "allow easy handling of futured ToResponseMarshallers" in {
@@ -122,17 +120,13 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
           xml.NodeSeq] shouldEqual <data><name>Ida</name><age>83</age></data>
       }
       Get().withHeaders(Accept(MediaTypes.`text/plain`)) ~> Route.seal(
-        route) ~> check {
-        status shouldEqual StatusCodes.NotAcceptable
-      }
+        route) ~> check { status shouldEqual StatusCodes.NotAcceptable }
     }
   }
 
   "the redirect directive should" - {
     "produce proper 'Found' redirections" in {
-      Get() ~> {
-        redirect("/foo", Found)
-      } ~> check {
+      Get() ~> { redirect("/foo", Found) } ~> check {
         response shouldEqual HttpResponse(
           status = 302,
           entity = HttpEntity(
@@ -144,9 +138,7 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
     }
 
     "produce proper 'NotModified' redirections" in {
-      Get() ~> {
-        redirect("/foo", NotModified)
-      } ~> check {
+      Get() ~> { redirect("/foo", NotModified) } ~> check {
         response shouldEqual HttpResponse(
           304,
           headers = Location("/foo") :: Nil)

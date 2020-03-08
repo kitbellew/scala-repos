@@ -2,7 +2,9 @@ import scala.reflect.runtime.universe._
 import scala.tools.reflect.ToolBox
 import scala.tools.reflect.Eval
 
-trait O { trait I }
+trait O {
+  trait I
+}
 
 object A extends O {
   val impl = new I {}

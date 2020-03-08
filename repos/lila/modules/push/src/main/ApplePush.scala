@@ -81,9 +81,7 @@ private final class ApnsActor(certificate: InputStream, password: String)
     m
   }
 
-  override def postStop() {
-    Option(manager).foreach(_.shutdown())
-  }
+  override def postStop() { Option(manager).foreach(_.shutdown()) }
 
   def receive = {
     case ApplePush.Notification(token, alert, payload) =>

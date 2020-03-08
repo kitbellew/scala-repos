@@ -37,9 +37,7 @@ trait SigarProvider {
       val sigar = verifiedSigarInstance
       SigarProvider.close(sigar)
       true
-    } catch {
-      case e: Throwable ⇒ false
-    }
+    } catch { case e: Throwable ⇒ false }
 
   /** Create sigar and verify it works. */
   def verifiedSigarInstance: SigarProxy = {
@@ -61,9 +59,7 @@ trait SigarProvider {
     *  2) Attempt to provision library via sigar-loader.
     */
   def createSigarInstance: SigarProxy = {
-    TryNative {
-      verifiedSigarInstance
-    } orElse TryNative {
+    TryNative { verifiedSigarInstance } orElse TryNative {
       provisionSigarLibrary()
       verifiedSigarInstance
     } recover {

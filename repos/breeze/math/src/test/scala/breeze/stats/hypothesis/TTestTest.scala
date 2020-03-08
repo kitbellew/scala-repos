@@ -21,13 +21,9 @@ class TTestTest extends FunSuite with Matchers {
     tTest(List(1.0, 1, 2, 3)) should be(0.0336 +- threshold)
   }
   test("T Test one sample should throw error when given vector of length 1") {
-    intercept[IllegalArgumentException] {
-      tTest(Array(1.0))
-    }
+    intercept[IllegalArgumentException] { tTest(Array(1.0)) }
   }
   test("T Test two sample should throw error when given vector of length 1") {
-    intercept[IllegalArgumentException] {
-      tTest(Array(1.0, 2), Array(9.0))
-    }
+    intercept[IllegalArgumentException] { tTest(Array(1.0, 2), Array(9.0)) }
   }
 }

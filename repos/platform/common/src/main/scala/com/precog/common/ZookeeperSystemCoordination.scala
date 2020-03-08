@@ -176,13 +176,10 @@ class ZookeeperSystemCoordination(
       retries: Int = defaultRetries,
       delay: Int = defaultDelay): Validation[Error, Unit] = {
     val activePath = base + delimeter + active
-    if (retries < 0) {
-      Failure(Invalid("Unable to acquire relay agent lock"))
-    } else {
+    if (retries < 0) { Failure(Invalid("Unable to acquire relay agent lock")) }
+    else {
       if (!zkc.exists(activePath)) {
-        if (!zkc.exists(base)) {
-          zkc.createPersistent(base, true)
-        }
+        if (!zkc.exists(base)) { zkc.createPersistent(base, true) }
         zkc.createEphemeral(activePath)
         logger.info("Acquired lock")
         Success(())
@@ -313,9 +310,7 @@ class ZookeeperSystemCoordination(
       )
 
       logger.debug("%s: SAVE".format(checkpoint))
-    } else {
-      logger.debug("Skipping yggCheckpoint save")
-    }
+    } else { logger.debug("Skipping yggCheckpoint save") }
   }
 
   def relayAgentExists(agent: String) = zkc.exists(relayAgentPath(agent))

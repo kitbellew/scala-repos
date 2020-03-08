@@ -102,9 +102,7 @@ class DialogPane(
     * the [[scalafx.scene.control.DialogPane]] class javadoc.</p>
     */
   def headerText: StringProperty = delegate.headerTextProperty
-  def headerText_=(value: String): Unit = {
-    headerText() = value
-  }
+  def headerText_=(value: String): Unit = { headerText() = value }
 
   /**
     * Property representing the content area of the dialog.
@@ -121,9 +119,7 @@ class DialogPane(
     * the content text will not be displayed in a default DialogPane instance.
     */
   def contentText: StringProperty = delegate.contentTextProperty
-  def contentText_=(value: String): Unit = {
-    contentText() = value
-  }
+  def contentText_=(value: String): Unit = { contentText() = value }
 
   /**
     * A property that represents the dialog expandable content area.
@@ -140,9 +136,7 @@ class DialogPane(
     * Represents whether the dialogPane is expanded.
     */
   def expanded: BooleanProperty = delegate.expandedProperty
-  def expanded_=(v: Boolean) {
-    expanded() = v
-  }
+  def expanded_=(v: Boolean) { expanded() = v }
 
   /**
     * Observable list of button types used for the dialog button bar area

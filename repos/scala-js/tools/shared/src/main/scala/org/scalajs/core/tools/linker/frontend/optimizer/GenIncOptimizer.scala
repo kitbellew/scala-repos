@@ -287,9 +287,8 @@ abstract class GenIncOptimizer private[optimizer] (
       (name: String) => CollOps.getAcc(newChildrenByParent, name)
 
     // Walk the tree to add children
-    if (batchMode) {
-      objectClass.walkForAdditions(getNewChildren)
-    } else {
+    if (batchMode) { objectClass.walkForAdditions(getNewChildren) }
+    else {
       val existingParents =
         CollOps.parFlatMapKeys(newChildrenByParent)(classes.get)
       for (parent <- existingParents)
@@ -341,9 +340,8 @@ abstract class GenIncOptimizer private[optimizer] (
       if (methodSetChanged) {
         // Remove deleted methods
         methods retain { (methodName, method) =>
-          if (newMethodNames.contains(methodName)) {
-            true
-          } else {
+          if (newMethodNames.contains(methodName)) { true }
+          else {
             deletedMethods += methodName
             method.delete()
             false
@@ -394,9 +392,7 @@ abstract class GenIncOptimizer private[optimizer] (
     if (encodedName == Definitions.ObjectClass) {
       assert(superClass.isEmpty)
       assert(objectClass == null)
-    } else {
-      assert(superClass.isDefined)
-    }
+    } else { assert(superClass.isDefined) }
 
     /** Parent chain from this to Object. */
     val parentChain: List[Class] =
@@ -510,18 +506,14 @@ abstract class GenIncOptimizer private[optimizer] (
           for {
             intf <- existingInterfaces
             methodName <- methodAttributeChanges
-          } {
-            intf.tagDynamicCallersOf(methodName)
-          }
+          } { intf.tagDynamicCallersOf(methodName) }
           if (newInterfaces.size != oldInterfaces.size ||
               newInterfaces.size != existingInterfaces.size) {
             val allMethodNames = allMethods().keys
             for {
               intf <- oldInterfaces ++ newInterfaces -- existingInterfaces
               methodName <- allMethodNames
-            } {
-              intf.tagDynamicCallersOf(methodName)
-            }
+            } { intf.tagDynamicCallersOf(methodName) }
           }
         } else {
           val allMethodNames = allMethods().keys
@@ -581,9 +573,8 @@ abstract class GenIncOptimizer private[optimizer] (
       val oldTryNewInlineable = tryNewInlineable
       isInlineable = linkedClass.optimizerHints.inline
 
-      if (!isInlineable) {
-        tryNewInlineable = None
-      } else {
+      if (!isInlineable) { tryNewInlineable = None }
+      else {
         val allFields = reverseParentChain.flatMap(_.fields)
         val (fieldValues, fieldTypes) = (for {
           f @ FieldDef(Ident(name, originalName), tpe, mutable) <- allFields
@@ -922,9 +913,7 @@ abstract class GenIncOptimizer private[optimizer] (
 
           val newAttributes = (inlineable, isForwarder)
           newAttributes != oldAttributes
-        } else {
-          false
-        }
+        } else { false }
       }
     }
 

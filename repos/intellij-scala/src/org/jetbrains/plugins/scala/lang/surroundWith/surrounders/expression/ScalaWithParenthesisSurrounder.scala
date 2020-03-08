@@ -23,14 +23,10 @@ class ScalaWithParenthesisSurrounder extends ScalaExpressionSurrounder {
   }
   override def isApplicable(element: PsiElement): Boolean = {
     element match {
-      case _: ScBlockExpr => true
-      case _: ScBlock     => false
-      case _: ScExpression | _: PsiWhiteSpace => {
-        true
-      }
-      case e => {
-        ScalaPsiUtil.isLineTerminator(e)
-      }
+      case _: ScBlockExpr                     => true
+      case _: ScBlock                         => false
+      case _: ScExpression | _: PsiWhiteSpace => { true }
+      case e                                  => { ScalaPsiUtil.isLineTerminator(e) }
     }
   }
 

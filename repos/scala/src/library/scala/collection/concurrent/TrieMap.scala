@@ -728,9 +728,7 @@ private[concurrent] object CNode {
         if (xidx < yidx) new CNode(bmp, Array(x, y), gen)
         else new CNode(bmp, Array(y, x), gen)
       }
-    } else {
-      new LNode(x.k, x.v, y.k, y.v)
-    }
+    } else { new LNode(x.k, x.v, y.k, y.v) }
 
 }
 
@@ -1275,8 +1273,6 @@ private[concurrent] object Debug {
     logbuffer.clear()
   }
 
-  def clear() {
-    logbuffer.clear()
-  }
+  def clear() { logbuffer.clear() }
 
 }

@@ -60,9 +60,7 @@ object Expr1 {
 
         ParserPatcher getSuitablePatcher builder parse builder
 
-        if (!Expr.parse(builder)) {
-          builder error ErrMsg("wrong.expression")
-        }
+        if (!Expr.parse(builder)) { builder error ErrMsg("wrong.expression") }
         val rollbackMarker = builder.mark
         builder.getTokenType match {
           case ScalaTokenTypes.tSEMICOLON =>
@@ -97,9 +95,7 @@ object Expr1 {
           case _ =>
             builder error ErrMsg("condition.expected")
         }
-        if (!Expr.parse(builder)) {
-          builder error ErrMsg("wrong.expression")
-        }
+        if (!Expr.parse(builder)) { builder error ErrMsg("wrong.expression") }
         exprMarker.done(ScalaElementTypes.WHILE_STMT)
         return true
       //---------------------try statement------------------------//
@@ -224,9 +220,7 @@ object Expr1 {
       //----------------throw statment--------------//
       case ScalaTokenTypes.kTHROW =>
         builder.advanceLexer() //Ate throw
-        if (!Expr.parse(builder)) {
-          builder error ErrMsg("wrong.expression")
-        }
+        if (!Expr.parse(builder)) { builder error ErrMsg("wrong.expression") }
         exprMarker.done(ScalaElementTypes.THROW_STMT)
         return true
       //--------------implicit closure--------------//

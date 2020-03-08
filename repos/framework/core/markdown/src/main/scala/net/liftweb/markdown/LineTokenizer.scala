@@ -67,9 +67,8 @@ class LineTokenizer() extends Parsers {
     * The resulting parser succeeds if the given line parser consumes the whole String.
     */
   def p[T](parser: lineParsers.Parser[T]): Parser[T] = Parser { in =>
-    if (in.atEnd) {
-      Failure("End of Input.", in)
-    } else {
+    if (in.atEnd) { Failure("End of Input.", in) }
+    else {
       lineParsers.parseAll(parser, in.first) match {
         case lineParsers.Success(t, _) => Success(t, in.rest)
         case n: lineParsers.NoSuccess  => Failure(n.msg, in)
@@ -111,9 +110,8 @@ class LineTokenizer() extends Parsers {
       case (lds, Some(title)) => success(lds.toLinkDefinition(Some(title)))
       case (lds, None) =>
         Parser { in =>
-          if (in.atEnd) {
-            Success(lds.toLinkDefinition(None), in)
-          } else {
+          if (in.atEnd) { Success(lds.toLinkDefinition(None), in) }
+          else {
             lineParsers.parseAll(
               lineParsers.linkDefinitionTitle,
               in.first) match {
@@ -157,9 +155,8 @@ class LineTokenizer() extends Parsers {
     */
   def lineToken =
     Parser { in =>
-      if (in.atEnd) {
-        Failure("End of Input.", in)
-      } else {
+      if (in.atEnd) { Failure("End of Input.", in) }
+      else {
         val line = in.first
         (firstChar(line), indicatorChar(line)) match {
           case ('=', _) => p(lineParsers.setextHeader1)(in)
@@ -185,9 +182,8 @@ class LineTokenizer() extends Parsers {
   /** Parses link definitions and verbatim xml blocks
     */
   def preprocessToken = Parser { in =>
-    if (in.atEnd) {
-      Failure("End of Input.", in)
-    } else {
+    if (in.atEnd) { Failure("End of Input.", in) }
+    else {
       val line = in.first
       (firstChar(line), indicatorChar(line)) match {
         //link definitions have absolute precedence
@@ -205,9 +201,7 @@ class LineTokenizer() extends Parsers {
     */
   def innerTokens(
       lookup: Map[String, LinkDefinition]): Parser[MarkdownLineReader] =
-    phrase(lineToken *) ^^ {
-      case ts => new MarkdownLineReader(ts, lookup)
-    }
+    phrase(lineToken *) ^^ { case ts => new MarkdownLineReader(ts, lookup) }
 
   /** Parses first level line tokens, i.e. Markdown lines, XML chunks and link definitions.
     */
@@ -230,11 +224,8 @@ class LineTokenizer() extends Parsers {
     */
   def splitLines(s: String): List[String] = {
     def chopWindoze(line: String) = {
-      if (line.endsWith("\r")) {
-        line.substring(0, line.length - 1)
-      } else {
-        line
-      }
+      if (line.endsWith("\r")) { line.substring(0, line.length - 1) }
+      else { line }
     }
 
     s.split('\n').map(chopWindoze(_)).toList

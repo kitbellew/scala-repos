@@ -100,9 +100,7 @@ abstract class ScheduledService[T](
     * operation.
     */
   def delay: ObjectProperty[jfxu.Duration] = delegate.delayProperty
-  def delay_=(v: jfxu.Duration) {
-    delay() = v
-  }
+  def delay_=(v: jfxu.Duration) { delay() = v }
 
   /**
     * The maximum allowed value for the cumulativePeriod.
@@ -117,9 +115,7 @@ abstract class ScheduledService[T](
     * Indicates whether the ScheduledService should automatically restart in the case of a failure in the Task.
     */
   def restartOnFailure: BooleanProperty = delegate.restartOnFailureProperty
-  def restartOnFailure_=(v: Boolean) {
-    restartOnFailure() = v
-  }
+  def restartOnFailure_=(v: Boolean) { restartOnFailure() = v }
 
   /**
     * The last successfully computed value.
@@ -144,17 +140,13 @@ abstract class ScheduledService[T](
     */
   def maximumFailureCount: IntegerProperty =
     delegate.maximumFailureCountProperty
-  def maximumFailureCount_=(v: Int) {
-    maximumFailureCount() = v
-  }
+  def maximumFailureCount_=(v: Int) { maximumFailureCount() = v }
 
   /**
     * The minimum amount of time to allow between the start of the last run and the start of the next run.
     */
   def period: ObjectProperty[jfxu.Duration] = delegate.periodProperty
-  def period_=(v: jfxu.Duration) {
-    period() = v
-  }
+  def period_=(v: jfxu.Duration) { period() = v }
 
   /**
     * Computes the amount of time to add to the period on each failure.

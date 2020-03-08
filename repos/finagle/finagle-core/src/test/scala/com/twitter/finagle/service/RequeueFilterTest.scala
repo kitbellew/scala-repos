@@ -87,11 +87,8 @@ class RequeueFilterTest extends FunSuite {
       if (s == "no" && numNos == 0) {
         numNos += 1
         Future.exception(new FailedFastException(s))
-      } else if (s == "fail") {
-        Future.exception(new FailedFastException(s))
-      } else {
-        Future.value(s.length)
-      }
+      } else if (s == "fail") { Future.exception(new FailedFastException(s)) }
+      else { Future.value(s.length) }
     })
 
     // a successful request
@@ -147,9 +144,7 @@ class RequeueFilterTest extends FunSuite {
 
       // at this point we should have exhausted our budget
       assert(1 == stats.counter("budget_exhausted")())
-      intercept[FailedFastException] {
-        Await.result(response, 1.second)
-      }
+      intercept[FailedFastException] { Await.result(response, 1.second) }
     }
   }
 }

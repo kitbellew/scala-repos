@@ -35,9 +35,7 @@ class ThrottledHandlerTest
       handler = new StringHandler(BareFormatter, None)
     }
 
-    after {
-      Logger.clearHandlers
-    }
+    after { Logger.clearHandlers }
 
     "throttle keyed log messages" in {
       val log = Logger()

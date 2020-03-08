@@ -83,24 +83,17 @@ sealed trait Spool[+A] {
           case Throw(cause)           => Future.exception(cause)
         }
       }
-    } else {
-      Future { f(None) }
-    }
+    } else { Future { f(None) } }
   }
 
   def foldLeft[B](z: B)(f: (B, A) => B): Future[B] =
-    if (isEmpty) {
-      Future.value(z)
-    } else {
-      tail.flatMap(s => s.foldLeft(f(z, head))(f))
-    }
+    if (isEmpty) { Future.value(z) }
+    else { tail.flatMap(s => s.foldLeft(f(z, head))(f)) }
 
   def reduceLeft[B >: A](f: (B, A) => B): Future[B] =
     if (isEmpty) {
       Future.exception(new UnsupportedOperationException("empty.reduceLeft"))
-    } else {
-      tail.flatMap(s => s.foldLeft[B](head)(f))
-    }
+    } else { tail.flatMap(s => s.foldLeft[B](head)(f)) }
 
   /**
     * Zips two [[Spool Spools]] returning a Spool of Tuple2s.
@@ -160,9 +153,7 @@ sealed trait Spool[+A] {
     */
   def mapFuture[B](f: A => Future[B]): Future[Spool[B]] = {
     if (isEmpty) Future.value(empty[B])
-    else {
-      f(head) map { h => new LazyCons(h, tail flatMap (_ mapFuture f)) }
-    }
+    else { f(head) map { h => new LazyCons(h, tail flatMap (_ mapFuture f)) } }
   }
 
   def filter(f: A => Boolean): Future[Spool[A]] = collect {
@@ -173,25 +164,17 @@ sealed trait Spool[+A] {
     * Take elements from the head of the Spool (lazily), while the given condition is true.
     */
   def takeWhile(f: A => Boolean): Spool[A] =
-    if (isEmpty) {
-      this
-    } else if (f(head)) {
-      new LazyCons(head, tail map (_ takeWhile f))
-    } else {
-      empty[A]
-    }
+    if (isEmpty) { this }
+    else if (f(head)) { new LazyCons(head, tail map (_ takeWhile f)) }
+    else { empty[A] }
 
   /**
     * Take the first n elements of the Spool as another Spool (adapted from Stream.take)
     */
   def take(n: Int): Spool[A] = {
-    if (n <= 0 || isEmpty) {
-      empty[A]
-    } else if (n == 1) {
-      new LazyCons(head, Future.value(empty[A]))
-    } else {
-      new LazyCons(head, tail map (_ take (n - 1)))
-    }
+    if (n <= 0 || isEmpty) { empty[A] }
+    else if (n == 1) { new LazyCons(head, Future.value(empty[A])) }
+    else { new LazyCons(head, tail map (_ take (n - 1))) }
   }
 
   /**
@@ -217,9 +200,7 @@ sealed trait Spool[+A] {
 
   private[this] def distinctByNonEmpty[B](fn: A => B): Spool[A] = {
     val set = mutable.HashSet[B]()
-    set.synchronized {
-      set += fn(head)
-    }
+    set.synchronized { set += fn(head) }
     head *:: tail.flatMap { spool =>
       spool.filter { item =>
         val fned = fn(item)

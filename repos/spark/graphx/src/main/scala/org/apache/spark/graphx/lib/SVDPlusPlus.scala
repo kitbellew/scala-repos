@@ -156,9 +156,7 @@ object SVDPlusPlus {
               val out = vd._1.clone()
               blas.daxpy(out.length, vd._4, msg.get, 1, out, 1)
               (vd._1, out, vd._3, vd._4)
-            } else {
-              vd
-            }
+            } else { vd }
         }
         .cache()
       materialize(gJoinT1)

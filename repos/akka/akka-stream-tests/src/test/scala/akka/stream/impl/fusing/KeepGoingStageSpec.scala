@@ -69,9 +69,8 @@ class KeepGoingStageSpec extends AkkaSpec {
             failStage(TE("test"))
             listener.foreach(_ ! EndOfEventHandler)
           case Throw ⇒
-            try {
-              throw TE("test")
-            } finally listener.foreach(_ ! EndOfEventHandler)
+            try { throw TE("test") }
+            finally listener.foreach(_ ! EndOfEventHandler)
         }
 
         setHandler(

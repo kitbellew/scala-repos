@@ -128,12 +128,16 @@ object Reads extends ConstraintReads with PathReads with DefaultReads {
         }
 
       def empty: Reads[Nothing] =
-        new Reads[Nothing] { def reads(js: JsValue) = JsError(Seq()) }
+        new Reads[Nothing] {
+          def reads(js: JsValue) = JsError(Seq())
+        }
 
     }
 
   def apply[A](f: JsValue => JsResult[A]): Reads[A] =
-    new Reads[A] { def reads(json: JsValue) = f(json) }
+    new Reads[A] {
+      def reads(json: JsValue) = f(json)
+    }
 
   implicit def functorReads(implicit a: Applicative[Reads]) =
     new Functor[Reads] {
@@ -384,9 +388,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         formatter: DateTimeFormatter): TemporalParser[LocalDateTime] =
       new TemporalParser[LocalDateTime] {
         def parse(input: String): Option[LocalDateTime] =
-          try {
-            Some(LocalDateTime.parse(input, formatter))
-          } catch {
+          try { Some(LocalDateTime.parse(input, formatter)) }
+          catch {
             case _: DateTimeParseException           => None
             case _: UnsupportedTemporalTypeException => None
           }
@@ -402,9 +405,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         formatter: DateTimeFormatter): TemporalParser[OffsetDateTime] =
       new TemporalParser[OffsetDateTime] {
         def parse(input: String): Option[OffsetDateTime] =
-          try {
-            Some(OffsetDateTime.parse(input, formatter))
-          } catch {
+          try { Some(OffsetDateTime.parse(input, formatter)) }
+          catch {
             case _: DateTimeParseException           => None
             case _: UnsupportedTemporalTypeException => None
           }
@@ -419,9 +421,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         formatter: DateTimeFormatter): TemporalParser[LocalDate] =
       new TemporalParser[LocalDate] {
         def parse(input: String): Option[LocalDate] =
-          try {
-            Some(LocalDate.parse(input, formatter))
-          } catch {
+          try { Some(LocalDate.parse(input, formatter)) }
+          catch {
             case _: DateTimeParseException           => None
             case _: UnsupportedTemporalTypeException => None
           }
@@ -437,9 +438,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         formatter: DateTimeFormatter): TemporalParser[Instant] =
       new TemporalParser[Instant] {
         def parse(input: String): Option[Instant] =
-          try {
-            Some(Instant.from(formatter.parse(input)))
-          } catch {
+          try { Some(Instant.from(formatter.parse(input))) }
+          catch {
             case _: DateTimeException                => None
             case _: DateTimeParseException           => None
             case _: UnsupportedTemporalTypeException => None
@@ -456,9 +456,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         formatter: DateTimeFormatter): TemporalParser[ZonedDateTime] =
       new TemporalParser[ZonedDateTime] {
         def parse(input: String): Option[ZonedDateTime] =
-          try {
-            Some(ZonedDateTime.parse(input, formatter))
-          } catch {
+          try { Some(ZonedDateTime.parse(input, formatter)) }
+          catch {
             case _: DateTimeParseException           => None
             case _: UnsupportedTemporalTypeException => None
           }
@@ -1066,11 +1065,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     def parseUuid(s: String): Option[UUID] = {
       val uncheckedUuid = Try(UUID.fromString(s)).toOption
 
-      if (checkUuuidValidity) {
-        uncheckedUuid filter check(s)
-      } else {
-        uncheckedUuid
-      }
+      if (checkUuuidValidity) { uncheckedUuid filter check(s) }
+      else { uncheckedUuid }
     }
 
     def reads(json: JsValue) = json match {

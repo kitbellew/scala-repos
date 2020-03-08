@@ -123,9 +123,7 @@ class FileJobManager[M[+_]] private[FileJobManager] (
             },
             j => j)
           .toOption
-      } else {
-        None
-      }
+      } else { None }
     }
   }
 
@@ -279,9 +277,7 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         val length = chunks.foldLeft(0)(_ + _.length)
         output.writeInt(length)
         chunks.foreach { bytes => output.write(bytes) }
-      } finally {
-        output.close()
-      }
+      } finally { output.close() }
     }
   }
 
@@ -302,12 +298,8 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         }
 
         Some(FileData(mime, data :: StreamT.empty[M, Array[Byte]]))
-      } finally {
-        input.close()
-      }
-    } else {
-      None
-    }
+      } finally { input.close() }
+    } else { None }
   }
 
   def remove(file: String): M[Unit] = M.point {

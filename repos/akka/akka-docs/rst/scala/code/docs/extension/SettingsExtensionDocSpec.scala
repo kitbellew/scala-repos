@@ -69,9 +69,7 @@ object SettingsExtensionDocSpec {
       case someMessage =>
     }
 
-    def connect(dbUri: String, circuitBreakerTimeout: Duration) = {
-      "dummy"
-    }
+    def connect(dbUri: String, circuitBreakerTimeout: Duration) = { "dummy" }
   }
 
 }

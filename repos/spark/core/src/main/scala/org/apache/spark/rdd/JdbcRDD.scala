@@ -100,33 +100,24 @@ class JdbcRDD[T: ClassTag](
       val rs = stmt.executeQuery()
 
       override def getNext(): T = {
-        if (rs.next()) {
-          mapRow(rs)
-        } else {
+        if (rs.next()) { mapRow(rs) }
+        else {
           finished = true
           null.asInstanceOf[T]
         }
       }
 
       override def close() {
-        try {
-          if (null != rs) {
-            rs.close()
-          }
-        } catch {
+        try { if (null != rs) { rs.close() } }
+        catch {
           case e: Exception => logWarning("Exception closing resultset", e)
         }
-        try {
-          if (null != stmt) {
-            stmt.close()
-          }
-        } catch {
+        try { if (null != stmt) { stmt.close() } }
+        catch {
           case e: Exception => logWarning("Exception closing statement", e)
         }
         try {
-          if (null != conn) {
-            conn.close()
-          }
+          if (null != conn) { conn.close() }
           logInfo("closed connection")
         } catch {
           case e: Exception => logWarning("Exception closing connection", e)

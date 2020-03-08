@@ -42,8 +42,6 @@ class CloseOnReleaseServiceTest extends FunSuite with MockitoSugar {
     import h._
 
     wrapper.close()
-    intercept[WriteException] {
-      Await.result(wrapper(132))
-    }
+    intercept[WriteException] { Await.result(wrapper(132)) }
   }
 }

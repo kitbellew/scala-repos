@@ -36,9 +36,7 @@ import scala.xml.{NodeSeq, Text}
 trait ModelSnippet[T <: Mapper[T]] extends StatefulSnippet {
   import mapper.view.{ModelView => MV}
   class ModelView(e: T, snippet: ModelSnippet[T]) extends MV[T](e, snippet) {
-    def this(e: T) {
-      this(e, this)
-    }
+    def this(e: T) { this(e, this) }
   }
 
   /**
@@ -49,9 +47,7 @@ trait ModelSnippet[T <: Mapper[T]] extends StatefulSnippet {
   /**
     * Action when save is successful. Defaults to using the ModelView's redirectOnSave
     */
-  var onSave = (view: MV[T]) => {
-    view.redirectOnSave.foreach(redirectTo)
-  }
+  var onSave = (view: MV[T]) => { view.redirectOnSave.foreach(redirectTo) }
 
   /**
     * The list snippet

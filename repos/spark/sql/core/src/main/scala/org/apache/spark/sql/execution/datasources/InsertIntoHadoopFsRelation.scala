@@ -74,9 +74,7 @@ private[sql] case class InsertIntoHadoopFsRelation(
     if (query.schema.fieldNames.length != query.schema.fieldNames.distinct.length) {
       val duplicateColumns = query.schema.fieldNames
         .groupBy(identity)
-        .collect {
-          case (x, ys) if ys.length > 1 => "\"" + x + "\""
-        }
+        .collect { case (x, ys) if ys.length > 1 => "\"" + x + "\"" }
         .mkString(", ")
       throw new AnalysisException(
         s"Duplicate column(s) : $duplicateColumns found, " +

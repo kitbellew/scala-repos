@@ -116,9 +116,7 @@ abstract class Receiver[T](val storageLevel: StorageLevel)
     * These single items will be aggregated together into data blocks before
     * being pushed into Spark's memory.
     */
-  def store(dataItem: T) {
-    supervisor.pushSingle(dataItem)
-  }
+  def store(dataItem: T) { supervisor.pushSingle(dataItem) }
 
   /** Store an ArrayBuffer of received data as a data block into Spark's memory. */
   def store(dataBuffer: ArrayBuffer[T]) {
@@ -167,9 +165,7 @@ abstract class Receiver[T](val storageLevel: StorageLevel)
     * that the data in the ByteBuffer must be serialized using the same serializer
     * that Spark is configured to use.
     */
-  def store(bytes: ByteBuffer) {
-    supervisor.pushBytes(bytes, None, None)
-  }
+  def store(bytes: ByteBuffer) { supervisor.pushBytes(bytes, None, None) }
 
   /**
     * Store the bytes of received data as a data block into Spark's memory.
@@ -193,9 +189,7 @@ abstract class Receiver[T](val storageLevel: StorageLevel)
     * is defined by the Spark configuration `spark.streaming.receiverRestartDelay`.
     * The `message` will be reported to the driver.
     */
-  def restart(message: String) {
-    supervisor.restartReceiver(message)
-  }
+  def restart(message: String) { supervisor.restartReceiver(message) }
 
   /**
     * Restart the receiver. This method schedules the restart and returns
@@ -220,9 +214,7 @@ abstract class Receiver[T](val storageLevel: StorageLevel)
   }
 
   /** Stop the receiver completely. */
-  def stop(message: String) {
-    supervisor.stop(message, None)
-  }
+  def stop(message: String) { supervisor.stop(message, None) }
 
   /** Stop the receiver completely due to an exception */
   def stop(message: String, error: Throwable) {
@@ -230,17 +222,13 @@ abstract class Receiver[T](val storageLevel: StorageLevel)
   }
 
   /** Check if the receiver has started or not. */
-  def isStarted(): Boolean = {
-    supervisor.isReceiverStarted()
-  }
+  def isStarted(): Boolean = { supervisor.isReceiverStarted() }
 
   /**
     * Check if receiver has been marked for stopping. Use this to identify when
     * the receiving of data should be stopped.
     */
-  def isStopped(): Boolean = {
-    supervisor.isReceiverStopped()
-  }
+  def isStopped(): Boolean = { supervisor.isReceiverStopped() }
 
   /**
     * Get the unique identifier the receiver input stream that this
@@ -261,9 +249,7 @@ abstract class Receiver[T](val storageLevel: StorageLevel)
   @transient private var _supervisor: ReceiverSupervisor = null
 
   /** Set the ID of the DStream that this receiver is associated with. */
-  private[streaming] def setReceiverId(_id: Int) {
-    id = _id
-  }
+  private[streaming] def setReceiverId(_id: Int) { id = _id }
 
   /** Attach Network Receiver executor to this receiver. */
   private[streaming] def attachSupervisor(exec: ReceiverSupervisor) {

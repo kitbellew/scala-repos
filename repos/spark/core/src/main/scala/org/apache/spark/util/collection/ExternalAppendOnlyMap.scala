@@ -133,9 +133,7 @@ class ExternalAppendOnlyMap[K, V, C](
   /**
     * Insert the given key and value into the map.
     */
-  def insert(key: K, value: V): Unit = {
-    insertAll(Iterator((key, value)))
-  }
+  def insert(key: K, value: V): Unit = { insertAll(Iterator((key, value))) }
 
   /**
     * Insert the given iterator of keys and values into the map.
@@ -232,9 +230,8 @@ class ExternalAppendOnlyMap[K, V, C](
             curWriteMetrics)
         }
       }
-      if (objectsWritten > 0) {
-        flush()
-      } else if (writer != null) {
+      if (objectsWritten > 0) { flush() }
+      else if (writer != null) {
         val w = writer
         writer = null
         w.revertPartialWritesAndClose()
@@ -244,13 +241,9 @@ class ExternalAppendOnlyMap[K, V, C](
       if (!success) {
         // This code path only happens if an exception was thrown above before we set success;
         // close our stuff and let the exception be thrown further
-        if (writer != null) {
-          writer.revertPartialWritesAndClose()
-        }
+        if (writer != null) { writer.revertPartialWritesAndClose() }
         if (file.exists()) {
-          if (!file.delete()) {
-            logWarning(s"Error deleting ${file}")
-          }
+          if (!file.delete()) { logWarning(s"Error deleting ${file}") }
         }
       }
     }
@@ -271,9 +264,7 @@ class ExternalAppendOnlyMap[K, V, C](
       CompletionIterator[(K, C), Iterator[(K, C)]](
         currentMap.iterator,
         freeCurrentMap())
-    } else {
-      new ExternalIterator()
-    }
+    } else { new ExternalIterator() }
   }
 
   private def freeCurrentMap(): Unit = {
@@ -375,9 +366,7 @@ class ExternalAppendOnlyMap[K, V, C](
       * input streams.
       */
     override def next(): (K, C) = {
-      if (mergeHeap.length == 0) {
-        throw new NoSuchElementException
-      }
+      if (mergeHeap.length == 0) { throw new NoSuchElementException }
       // Select a key from the StreamBuffer that holds the lowest key hash
       val minBuffer = mergeHeap.dequeue()
       val minPairs = minBuffer.pairs
@@ -398,12 +387,8 @@ class ExternalAppendOnlyMap[K, V, C](
 
       // Repopulate each visited stream buffer and add it back to the queue if it is non-empty
       mergedBuffers.foreach { buffer =>
-        if (buffer.isEmpty) {
-          readNextHashCode(buffer.iterator, buffer.pairs)
-        }
-        if (!buffer.isEmpty) {
-          mergeHeap.enqueue(buffer)
-        }
+        if (buffer.isEmpty) { readNextHashCode(buffer.iterator, buffer.pairs) }
+        if (!buffer.isEmpty) { mergeHeap.enqueue(buffer) }
       }
 
       (minKey, minCombiner)
@@ -532,9 +517,7 @@ class ExternalAppendOnlyMap[K, V, C](
 
     override def hasNext: Boolean = {
       if (nextItem == null) {
-        if (deserializeStream == null) {
-          return false
-        }
+        if (deserializeStream == null) { return false }
         nextItem = readNextItem()
       }
       nextItem != null
@@ -542,9 +525,7 @@ class ExternalAppendOnlyMap[K, V, C](
 
     override def next(): (K, C) = {
       val item = if (nextItem == null) readNextItem() else nextItem
-      if (item == null) {
-        throw new NoSuchElementException
-      }
+      if (item == null) { throw new NoSuchElementException }
       nextItem = null
       item
     }
@@ -561,9 +542,7 @@ class ExternalAppendOnlyMap[K, V, C](
         fileStream = null
       }
       if (file.exists()) {
-        if (!file.delete()) {
-          logWarning(s"Error deleting ${file}")
-        }
+        if (!file.delete()) { logWarning(s"Error deleting ${file}") }
       }
     }
 
@@ -579,9 +558,7 @@ private[spark] object ExternalAppendOnlyMap {
   /**
     * Return the hash code of the given object. If the object is null, return a special hash code.
     */
-  private def hash[T](obj: T): Int = {
-    if (obj == null) 0 else obj.hashCode()
-  }
+  private def hash[T](obj: T): Int = { if (obj == null) 0 else obj.hashCode() }
 
   /**
     * A comparator which sorts arbitrary keys based on their hash codes.

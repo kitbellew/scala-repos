@@ -158,9 +158,7 @@ object functions {
     * @since 1.3.0
     */
   def approxCountDistinct(e: Column, rsd: Double): Column =
-    withAggregateFunction {
-      HyperLogLogPlusPlus(e.expr, rsd, 0, 0)
-    }
+    withAggregateFunction { HyperLogLogPlusPlus(e.expr, rsd, 0, 0) }
 
   /**
     * Aggregate function: returns the approximate number of distinct items in a group.
@@ -302,9 +300,7 @@ object functions {
     * @since 2.0.0
     */
   def covar_pop(column1: Column, column2: Column): Column =
-    withAggregateFunction {
-      CovPopulation(column1.expr, column2.expr)
-    }
+    withAggregateFunction { CovPopulation(column1.expr, column2.expr) }
 
   /**
     * Aggregate function: returns the population covariance for two columns.
@@ -323,9 +319,7 @@ object functions {
     * @since 2.0.0
     */
   def covar_samp(column1: Column, column2: Column): Column =
-    withAggregateFunction {
-      CovSample(column1.expr, column2.expr)
-    }
+    withAggregateFunction { CovSample(column1.expr, column2.expr) }
 
   /**
     * Aggregate function: returns the sample covariance for two columns.
@@ -2202,9 +2196,7 @@ object functions {
     * @since 1.5.0
     */
   def regexp_replace(e: Column, pattern: String, replacement: String): Column =
-    withExpr {
-      RegExpReplace(e.expr, lit(pattern).expr, lit(replacement).expr)
-    }
+    withExpr { RegExpReplace(e.expr, lit(pattern).expr, lit(replacement).expr) }
 
   /**
     * Decodes a BASE64 encoded string column and returns it as a binary column.
@@ -2291,9 +2283,7 @@ object functions {
     * @group string_funcs
     */
   def substring_index(str: Column, delim: String, count: Int): Column =
-    withExpr {
-      SubstringIndex(str.expr, lit(delim).expr, lit(count).expr)
-    }
+    withExpr { SubstringIndex(str.expr, lit(delim).expr, lit(count).expr) }
 
   /**
     * Translate any character in the src by a character in replaceString.

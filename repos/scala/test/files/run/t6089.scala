@@ -6,9 +6,6 @@ object Test {
     bippo((m: @unchecked) match { case Foo(2) => bungus(m) })
 
   def main(args: Array[String]): Unit =
-    try {
-      bungus(Foo(0))
-    } catch {
-      case x: MatchError => println(x)
-    }
+    try { bungus(Foo(0)) }
+    catch { case x: MatchError => println(x) }
 }

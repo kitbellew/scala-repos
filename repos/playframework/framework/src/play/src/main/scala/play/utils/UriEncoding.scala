@@ -48,9 +48,8 @@ object UriEncoding {
     val out = new ByteArrayOutputStream()
     for (b <- in) {
       val allowed = segmentChars.get(b & 0xFF)
-      if (allowed) {
-        out.write(b)
-      } else {
+      if (allowed) { out.write(b) }
+      else {
         out.write('%')
         out.write(upperHex((b >> 4) & 0xF))
         out.write(upperHex(b & 0xF))
@@ -198,15 +197,10 @@ object UriEncoding {
     * If the character isn't a valid hex digit, return -1 instead.
     */
   private def fromHex(b: Int): Int = {
-    if (b >= '0' && b <= '9') {
-      b - '0'
-    } else if (b >= 'A' && b <= 'Z') {
-      10 + b - 'A'
-    } else if (b >= 'a' && b <= 'z') {
-      10 + b - 'a'
-    } else {
-      -1
-    }
+    if (b >= '0' && b <= '9') { b - '0' }
+    else if (b >= 'A' && b <= 'Z') { 10 + b - 'A' }
+    else if (b >= 'a' && b <= 'z') { 10 + b - 'a' }
+    else { -1 }
   }
 
   /**
@@ -226,15 +220,12 @@ object UriEncoding {
     def splitLoop(start: Int): Unit =
       if (start < s.length) {
         var end = s.indexOf(c, start)
-        if (end == -1) {
-          result += s.substring(start)
-        } else {
+        if (end == -1) { result += s.substring(start) }
+        else {
           result += s.substring(start, end)
           splitLoop(end + 1)
         }
-      } else if (start == s.length) {
-        result += ""
-      }
+      } else if (start == s.length) { result += "" }
     splitLoop(0)
     result
   }

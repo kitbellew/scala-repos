@@ -27,9 +27,7 @@ class ReceiveTimeoutSpec extends AkkaSpec {
       val timeoutActor = system.actorOf(Props(new Actor {
         context.setReceiveTimeout(500 milliseconds)
 
-        def receive = {
-          case ReceiveTimeout ⇒ timeoutLatch.open
-        }
+        def receive = { case ReceiveTimeout ⇒ timeoutLatch.open }
       }))
 
       Await.ready(timeoutLatch, TestLatch.DefaultTimeout)
@@ -81,9 +79,7 @@ class ReceiveTimeoutSpec extends AkkaSpec {
       val timeoutLatch = TestLatch()
 
       val timeoutActor = system.actorOf(Props(new Actor {
-        def receive = {
-          case ReceiveTimeout ⇒ timeoutLatch.open
-        }
+        def receive = { case ReceiveTimeout ⇒ timeoutLatch.open }
       }))
 
       intercept[TimeoutException] { Await.ready(timeoutLatch, 1 second) }

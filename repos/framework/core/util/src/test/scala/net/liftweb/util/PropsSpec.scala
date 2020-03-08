@@ -31,9 +31,7 @@ object PropsSpec extends Specification {
   case class TestProps() extends Props
 
   "Props" should {
-    "Detect test mode correctly" in {
-      TestProps().testMode must_== true
-    }
+    "Detect test mode correctly" in { TestProps().testMode must_== true }
 
     "Allow modification of whereToLook before run-mode is set" in {
       val testProps = TestProps()
@@ -82,9 +80,7 @@ object PropsSpec extends Specification {
       testProps.autoDetectRunModeFn.get must_== before
     }
 
-    "Parse and cast to int" in {
-      TestProps().getInt("an.int") must_== Full(42)
-    }
+    "Parse and cast to int" in { TestProps().getInt("an.int") must_== Full(42) }
 
     "Parse and cast to long" in {
       TestProps().getLong("a.long") must_== Full(9223372036854775807L)

@@ -73,16 +73,13 @@ private[spark] class ApproximateActionListener[T, U, R](
     val finishTime = startTime + timeout
     while (true) {
       val time = System.currentTimeMillis()
-      if (failure.isDefined) {
-        throw failure.get
-      } else if (finishedTasks == totalTasks) {
+      if (failure.isDefined) { throw failure.get }
+      else if (finishedTasks == totalTasks) {
         return new PartialResult(evaluator.currentResult(), true)
       } else if (time >= finishTime) {
         resultObject = Some(new PartialResult(evaluator.currentResult(), false))
         return resultObject.get
-      } else {
-        this.wait(finishTime - time)
-      }
+      } else { this.wait(finishTime - time) }
     }
     // Should never be reached, but required to keep the compiler happy
     return null

@@ -17,14 +17,10 @@ class LongEqualityCheckBenchmark {
   var b: Long = 0L
 
   @Benchmark
-  def compare(x: Blackhole): Unit = {
-    x.consume(a compare b)
-  }
+  def compare(x: Blackhole): Unit = { x.consume(a compare b) }
 
   @Benchmark
-  def eqeq(x: Blackhole): Unit = {
-    x.consume(a == b)
-  }
+  def eqeq(x: Blackhole): Unit = { x.consume(a == b) }
 
   @Benchmark
   def eqeqeq(x: Blackhole): Unit = {

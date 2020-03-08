@@ -69,9 +69,7 @@ class ReadOnlyLongPropertySpec extends FlatSpec with BeforeAndAfterEach {
     readOnlyLongProperty.name should equal("Test Read-only Long")
   }
 
-  it should "know its bean" in {
-    readOnlyLongProperty.bean should equal(bean)
-  }
+  it should "know its bean" in { readOnlyLongProperty.bean should equal(bean) }
 
   it should "be bindable to another Long Property" in {
     longProperty1 <== readOnlyLongProperty
@@ -249,12 +247,8 @@ class ReadOnlyLongPropertySpec extends FlatSpec with BeforeAndAfterEach {
     var invalidateCount = 0
     var changeCount = 0
     val binding = readOnlyLongProperty * longProperty2
-    binding onInvalidate {
-      invalidateCount += 1
-    }
-    binding onChange {
-      changeCount += 1
-    }
+    binding onInvalidate { invalidateCount += 1 }
+    binding onChange { changeCount += 1 }
     longProperty2() = 1
     invalidateCount should equal(1)
     changeCount should equal(1)

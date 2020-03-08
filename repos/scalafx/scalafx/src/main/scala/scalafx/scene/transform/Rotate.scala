@@ -100,40 +100,30 @@ class Rotate(override val delegate: jfxst.Rotate = new jfxst.Rotate)
     * Defines the angle of rotation measured in degrees.
     */
   def angle: DoubleProperty = delegate.angleProperty()
-  def angle_=(v: Double) {
-    angle() = v
-  }
+  def angle_=(v: Double) { angle() = v }
 
   /**
     * Defines the axis of rotation at the pivot point.
     */
   def axis: ObjectProperty[jfxg.Point3D] = delegate.axisProperty()
-  def axis_=(v: Point3D) {
-    axis() = v
-  }
+  def axis_=(v: Point3D) { axis() = v }
 
   /**
     * Defines the X coordinate of the rotation pivot point.
     */
   def pivotX: DoubleProperty = delegate.pivotXProperty()
-  def pivotX_=(v: Double) {
-    pivotX() = v
-  }
+  def pivotX_=(v: Double) { pivotX() = v }
 
   /**
     * Defines the Y coordinate of the rotation pivot point.
     */
   def pivotY: DoubleProperty = delegate.pivotYProperty()
-  def pivotY_=(v: Double) {
-    pivotY() = v
-  }
+  def pivotY_=(v: Double) { pivotY() = v }
 
   /**
     * Defines the Z coordinate of the rotation pivot point.
     */
   def pivotZ: DoubleProperty = delegate.pivotZProperty()
-  def pivotZ_=(v: Double) {
-    pivotZ() = v
-  }
+  def pivotZ_=(v: Double) { pivotZ() = v }
 
 }

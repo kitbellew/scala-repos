@@ -135,9 +135,8 @@ object LiftRules extends LiftRulesMocker {
     * Get the real instance of LiftRules
     */
   def realInstance: LiftRules =
-    if (devOrTest) {
-      LiftRulesMocker.calcLiftRulesInstance()
-    } else prodInstance
+    if (devOrTest) { LiftRulesMocker.calcLiftRulesInstance() }
+    else prodInstance
 
   type DispatchPF = PartialFunction[Req, () => Box[LiftResponse]];
 
@@ -263,11 +262,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   val jsonOutputConverter = new FactoryMaker[JsonAST.JValue => String]({
     import json.{prettyRender, compactRender}
 
-    if (Props.devMode) {
-      prettyRender _
-    } else {
-      compactRender _
-    }
+    if (Props.devMode) { prettyRender _ }
+    else { compactRender _ }
   }) {}
 
   /**
@@ -429,12 +425,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         req) - 2 // this request and any open comet requests
 
       // dump the oldest requests
-      which.drop(max).foreach {
-        case (actor, req) => actor ! BreakOut()
-      }
-      invalid.foreach {
-        case (actor, req) => actor ! BreakOut()
-      }
+      which.drop(max).foreach { case (actor, req) => actor ! BreakOut() }
+      invalid.foreach { case (actor, req)         => actor ! BreakOut() }
     }
 
   /**
@@ -939,9 +931,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Set the Ajax end JavaScript function.  The
     * Java-callable alternative to assigning the var ajaxStart
     */
-  def setAjaxStart(f: Func0[JsCmd]): Unit = {
-    ajaxStart = Full(f: () => JsCmd)
-  }
+  def setAjaxStart(f: Func0[JsCmd]): Unit = { ajaxStart = Full(f: () => JsCmd) }
 
   /**
     * The function that calculates if the response should be rendered in
@@ -979,9 +969,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Set the Ajax end JavaScript function.  The
     * Java-callable alternative to assigning the var ajaxEnd
     */
-  def setAjaxEnd(f: Func0[JsCmd]): Unit = {
-    ajaxEnd = Full(f: () => JsCmd)
-  }
+  def setAjaxEnd(f: Func0[JsCmd]): Unit = { ajaxEnd = Full(f: () => JsCmd) }
 
   /**
     * An XML header is inserted at the very beginning of returned XHTML pages.
@@ -1164,26 +1152,20 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   def setSiteMapFunc(smf: () => SiteMap) {
     sitemapFunc = Full(smf)
-    if (!Props.devMode) {
-      resolveSitemap()
-    }
+    if (!Props.devMode) { resolveSitemap() }
   }
 
   /**
     * Define the sitemap.
     */
-  def setSiteMap(sm: SiteMap) {
-    this.setSiteMapFunc(() => sm)
-  }
+  def setSiteMap(sm: SiteMap) { this.setSiteMapFunc(() => sm) }
 
   private def runAsSafe[T](f: => T): T = synchronized {
     val old = _doneBoot
     try {
       _doneBoot = false
       f
-    } finally {
-      _doneBoot = old
-    }
+    } finally { _doneBoot = old }
   }
 
   private case class PerRequestPF[A, B](f: PartialFunction[A, B])
@@ -1219,11 +1201,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * mode, the sitemap may be recomputed on each page load.
     */
   def siteMap: Box[SiteMap] =
-    if (Props.devMode) {
-      this.synchronized {
-        sitemapRequestVar.is
-      }
-    } else _sitemap
+    if (Props.devMode) { this.synchronized { sitemapRequestVar.is } }
+    else _sitemap
 
   /**
     * A unified set of properties for managing how to treat
@@ -1315,9 +1294,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
   @volatile private[http] var ending = false
 
-  private[http] def bootFinished() {
-    _doneBoot = true
-  }
+  private[http] def bootFinished() { _doneBoot = true }
 
   /**
     * Holds user's DispatchPF functions that will be executed in a stateless context. This means that
@@ -1402,9 +1379,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Sets the HTTPContext
     */
   def setContext(in: HTTPContext): Unit = synchronized {
-    if (in ne _context) {
-      _context = in
-    }
+    if (in ne _context) { _context = in }
   }
 
   private var otherPackages: List[String] = Nil
@@ -1788,21 +1763,15 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     val liftReq: LiftRules.LiftRequestPF = new LiftRules.LiftRequestPF {
       def functionName = "Default CSS Fixer"
 
-      def isDefinedAt(r: Req): Boolean = {
-        r.path.partPath == path
-      }
+      def isDefinedAt(r: Req): Boolean = { r.path.partPath == path }
 
-      def apply(r: Req): Boolean = {
-        r.path.partPath == path
-      }
+      def apply(r: Req): Boolean = { r.path.partPath == path }
     }
 
     val cssFixer: LiftRules.DispatchPF = new LiftRules.DispatchPF {
       def functionName = "default css fixer"
 
-      def isDefinedAt(r: Req): Boolean = {
-        r.path.partPath == path
-      }
+      def isDefinedAt(r: Req): Boolean = { r.path.partPath == path }
 
       def apply(r: Req): () => Box[LiftResponse] = {
         val cssPath = path.mkString("/", "/", ".css")
@@ -2248,22 +2217,16 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     }
 
     def prepend(r: T): RulesSeq[T] = {
-      safe_? {
-        rules = r :: rules
-      }
+      safe_? { rules = r :: rules }
       this
     }
 
     private[http] def remove(f: T => Boolean) {
-      safe_? {
-        rules = rules.filterNot(f)
-      }
+      safe_? { rules = rules.filterNot(f) }
     }
 
     def append(r: T): RulesSeq[T] = {
-      safe_? {
-        rules = rules ::: List(r)
-      }
+      safe_? { rules = rules ::: List(r) }
       this
     }
   }
@@ -2420,9 +2383,7 @@ trait FormVendor {
       val name = builder.manifest.toString
       if (globalForms.containsKey(name)) {
         globalForms.put(name, builder :: globalForms.get(name))
-      } else {
-        globalForms.put(name, List(builder))
-      }
+      } else { globalForms.put(name, List(builder)) }
     }
   }
 
@@ -2431,9 +2392,7 @@ trait FormVendor {
       val name = builder.manifest.toString
       if (globalForms.containsKey(name)) {
         globalForms.put(name, builder :: globalForms.get(name))
-      } else {
-        globalForms.put(name, List(builder))
-      }
+      } else { globalForms.put(name, List(builder)) }
     }
   }
 

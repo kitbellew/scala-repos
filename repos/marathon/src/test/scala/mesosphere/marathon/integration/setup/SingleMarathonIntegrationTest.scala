@@ -327,9 +327,7 @@ trait SingleMarathonIntegrationTest
 
     val deleteResult: RestResult[ITDeploymentResult] =
       marathon.deleteGroup(testBasePath, force = true)
-    if (deleteResult.code != 404) {
-      waitForChange(deleteResult)
-    }
+    if (deleteResult.code != 404) { waitForChange(deleteResult) }
 
     waitForCleanSlateInMesos()
 

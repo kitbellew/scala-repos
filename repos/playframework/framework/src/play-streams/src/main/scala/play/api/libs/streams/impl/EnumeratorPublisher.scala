@@ -103,9 +103,7 @@ private[streams] class EnumeratorSubscription[T, U >: T](
 
   // SubscriptionHandle methods
 
-  override def start(): Unit = {
-    subr.onSubscribe(this)
-  }
+  override def start(): Unit = { subr.onSubscribe(this) }
 
   override def subscriber: Subscriber[U] = subr
 

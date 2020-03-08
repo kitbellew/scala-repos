@@ -115,9 +115,8 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
             null
           var tries = 0
           while (tries < MAX_SPINS && initial == null) {
-            try {
-              initial = iteratorSetup()
-            } catch {
+            try { initial = iteratorSetup() }
+            catch {
               case t: Throwable =>
                 logger.warn("Failure on load iterator initialization")
             }
@@ -126,14 +125,11 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
           if (initial == null) {
             throw new VicciniException(
               "Initial drop failed with too many concurrent mods.")
-          } else {
-            initial
-          }
+          } else { initial }
         }
 
-        if (iterator.isEmpty) {
-          None
-        } else {
+        if (iterator.isEmpty) { None }
+        else {
           val keyColumns =
             sortKeyRefs.map(JDBMSlice.columnFor(CPath("[0]"), sliceSize))
           val valColumns =

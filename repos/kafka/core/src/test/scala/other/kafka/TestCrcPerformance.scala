@@ -38,9 +38,7 @@ object TestCrcPerformance {
 
     // create message test
     val start = System.nanoTime
-    for (i <- 0 until numMessages) {
-      new Message(content)
-    }
+    for (i <- 0 until numMessages) { new Message(content) }
     val ellapsed = System.nanoTime - start
     println(
       "%d messages created in %.2f seconds + (%.2f ns per message).".format(

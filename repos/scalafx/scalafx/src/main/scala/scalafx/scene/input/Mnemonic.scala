@@ -52,16 +52,12 @@ class Mnemonic(override val delegate: jfxsi.Mnemonic)
     * The KeyCombination
     */
   def keyCombination = delegate.getKeyCombination
-  def keyCombination_=(v: KeyCombination) {
-    delegate.setKeyCombination(v)
-  }
+  def keyCombination_=(v: KeyCombination) { delegate.setKeyCombination(v) }
 
   /**
     * Returns the Node
     */
   def node: Node = delegate.getNode
-  def node_=(n: Node) {
-    delegate.setNode(n)
-  }
+  def node_=(n: Node) { delegate.setNode(n) }
 
 }

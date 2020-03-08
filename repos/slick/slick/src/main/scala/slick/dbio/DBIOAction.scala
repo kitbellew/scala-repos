@@ -649,9 +649,7 @@ trait SynchronousDatabaseAction[
           ok = true
           throw new NoSuchElementException(
             "Action.failed (fused) not completed with a Throwable")
-        } catch {
-          case NonFatal(ex) if !ok => ex
-        }
+        } catch { case NonFatal(ex) if !ok => ex }
       }
       override def nonFusedEquivalentAction = superFailed
     }
@@ -661,9 +659,7 @@ trait SynchronousDatabaseAction[
     new SynchronousDatabaseAction.Fused[Try[R], NoStream, B, E] {
       def run(context: B#Context): Try[R] = {
         try Success(self.run(context))
-        catch {
-          case NonFatal(ex) => Failure(ex)
-        }
+        catch { case NonFatal(ex) => Failure(ex) }
       }
       override def nonFusedEquivalentAction = superAsTry
     }

@@ -63,11 +63,8 @@ final class CookedReader(
 
   private def read[A](file: File)(f: ReadableByteChannel => A): A = {
     val channel = new FileInputStream(file).getChannel()
-    try {
-      f(channel)
-    } finally {
-      channel.close()
-    }
+    try { f(channel) }
+    finally { channel.close() }
   }
 
   private def loadFromDisk(): Validation[IOException, CookedBlockMetadata] = {
@@ -90,9 +87,7 @@ final class CookedReader(
       _.flatMap { path =>
         val tpes = groupedPaths.get(path) map {
           _.map { case (segId, _) => segId.ctype }
-        } getOrElse {
-          Array.empty[CType]
-        }
+        } getOrElse { Array.empty[CType] }
 
         tpes.map { tpe => ColumnRef(path, tpe) }.toSet
       }
@@ -125,16 +120,12 @@ final class CookedReader(
 
   def metadata: Validation[IOException, CookedBlockMetadata] = {
     val segs = maybeBlock
-    if (segs != null) {
-      Success(segs)
-    } else {
+    if (segs != null) { Success(segs) }
+    else {
       lock.synchronized {
         val block = maybeBlock
-        if (block == null) {
-          loadFromDisk()
-        } else {
-          Success(block)
-        }
+        if (block == null) { loadFromDisk() }
+        else { Success(block) }
       }
     }
   }

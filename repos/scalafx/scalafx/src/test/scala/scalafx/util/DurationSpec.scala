@@ -57,17 +57,11 @@ class DurationSpec extends FlatSpec {
     Duration.ZERO should equal(jfxu.Duration.ZERO)
   }
 
-  it should "support addition" in {
-    (500 ms) + (500 ms) should equal(1 s)
-  }
+  it should "support addition" in { (500 ms) + (500 ms) should equal(1 s) }
 
-  it should "support subtraction" in {
-    (1 s) - (.5 s) should equal(500 ms)
-  }
+  it should "support subtraction" in { (1 s) - (.5 s) should equal(500 ms) }
 
-  it should "support multiplication" in {
-    (5 m) * 12 should equal(1 h)
-  }
+  it should "support multiplication" in { (5 m) * 12 should equal(1 h) }
 
   it should "*not* support multiplication of Durations" in {
     // the semantics for multiplying durations is just stupid...  the second test case shows why we are not supporting this
@@ -75,9 +69,7 @@ class DurationSpec extends FlatSpec {
     // (5 s) * (5 s) should equal (25000 s) // WTF??? - oh yeah, we are just multiplying milliseconds and ignoring units :(
   }
 
-  it should "support division" in {
-    (1 h) / 3 should equal(20 m)
-  }
+  it should "support division" in { (1 h) / 3 should equal(20 m) }
 
   it should "support proper division of Durations" in {
     // the semantics for dividing durations is equally stupid...  fortunately we can fix it by cancelling units
@@ -133,7 +125,5 @@ class DurationSpec extends FlatSpec {
     (5 ms) =!= (5 s) should be(true)
   }
 
-  it should "support unary negation" in {
-    -(5 s) should equal(-5 s)
-  }
+  it should "support unary negation" in { -(5 s) should equal(-5 s) }
 }

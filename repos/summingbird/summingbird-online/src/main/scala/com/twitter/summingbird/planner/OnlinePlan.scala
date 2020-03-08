@@ -187,9 +187,7 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
             dep,
             updatedBolt = FlatMapNode(),
             updatedRegistry = distinctAddToList(nodeSet, activeBolt))
-        } else {
-          recurse(dep, updatedBolt = activeBolt)
-        }
+        } else { recurse(dep, updatedBolt = activeBolt) }
       }
 
       /*

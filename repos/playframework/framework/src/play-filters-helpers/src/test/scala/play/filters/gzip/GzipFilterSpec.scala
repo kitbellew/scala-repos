@@ -167,9 +167,7 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
         "play.filters.gzip.bufferSize" -> 512
       )
       .overrides(
-        bind[Router].to(Router.from {
-          case _ => Action(result)
-        }),
+        bind[Router].to(Router.from { case _ => Action(result) }),
         bind[HttpFilters].to[Filters]
       )
       .build

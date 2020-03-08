@@ -20,9 +20,7 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
   // (like the iterator) may have a reference to inner
   private var requiresCopyOnWrite = false
 
-  def this() = {
-    this(new js.Array[E])
-  }
+  def this() = { this(new js.Array[E]) }
 
   def this(c: Collection[_ <: E]) = {
     this()
@@ -182,9 +180,8 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
     iterator().mkString("[", ",", "]")
 
   override def equals(obj: Any): Boolean = {
-    if (obj.asInstanceOf[AnyRef] eq this) {
-      true
-    } else {
+    if (obj.asInstanceOf[AnyRef] eq this) { true }
+    else {
       obj match {
         case obj: List[_] =>
           val oIter = obj.listIterator
@@ -303,9 +300,8 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
     }
 
     override protected def innerPush(elem: E): Unit = {
-      if (toIndex < self.size) {
-        innerSplice(size, 0, elem)
-      } else {
+      if (toIndex < self.size) { innerSplice(size, 0, elem) }
+      else {
         changeSize(1)
         self.innerPush(elem)
       }

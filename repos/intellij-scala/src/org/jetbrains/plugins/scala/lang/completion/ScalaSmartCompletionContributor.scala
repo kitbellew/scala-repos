@@ -558,9 +558,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                       end = true
                     } else prefixIndex -= 1
                   }
-                  if (!end) {
-                    presentation.setItemText(s"... $arrowText ")
-                  }
+                  if (!end) { presentation.setItemText(s"... $arrowText ") }
                 } else presentation.setItemText(text)
                 presentation.setIcon(Icons.LAMBDA)
               case _ =>
@@ -794,14 +792,10 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
         val typez: ArrayBuffer[ScType] = new ArrayBuffer[ScType]
         if (infix.lOp == ref) {
           val op: String = infix.operation.getText
-          if (op.endsWith(":")) {
-            typez ++= ref.expectedTypes()
-          }
+          if (op.endsWith(":")) { typez ++= ref.expectedTypes() }
         } else if (infix.rOp == ref) {
           val op: String = infix.operation.getText
-          if (!op.endsWith(":")) {
-            typez ++= ref.expectedTypes()
-          }
+          if (!op.endsWith(":")) { typez ++= ref.expectedTypes() }
         }
         acceptTypes(
           typez,
@@ -1026,9 +1020,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
             new AfterNewLookupElementRenderer(_, _, _),
             new ScalaConstructorInsertHandler,
             renamesMap)
-          if (element != null) {
-            result.addElement(element)
-          }
+          if (element != null) { result.addElement(element) }
         }
 
         for (typez <- types) {

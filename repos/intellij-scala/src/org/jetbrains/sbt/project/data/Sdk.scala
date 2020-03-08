@@ -72,9 +72,7 @@ object SdkUtils {
         val fstInt = fst.toInt
         val sndInt = snd.toInt
         fstInt >= sndInt
-      } catch {
-        case exc: NumberFormatException => false
-      }
+      } catch { case exc: NumberFormatException => false }
 
     val matchingSdks = for {
       sdk <- allAndroidSdks

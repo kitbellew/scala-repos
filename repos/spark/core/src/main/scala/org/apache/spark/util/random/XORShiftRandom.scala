@@ -51,9 +51,7 @@ private[spark] class XORShiftRandom(init: Long) extends JavaRandom(init) {
     (nextSeed & ((1L << bits) - 1)).asInstanceOf[Int]
   }
 
-  override def setSeed(s: Long) {
-    seed = XORShiftRandom.hashSeed(s)
-  }
+  override def setSeed(s: Long) { seed = XORShiftRandom.hashSeed(s) }
 }
 
 /** Contains benchmark method and main method to run benchmark of the RNG */

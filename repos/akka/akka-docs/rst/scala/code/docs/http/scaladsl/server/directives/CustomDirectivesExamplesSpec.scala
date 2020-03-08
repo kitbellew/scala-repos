@@ -14,13 +14,9 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
     // tests:
     val route = getOrPut { complete("ok") }
 
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "ok"
-    }
+    Get("/") ~> route ~> check { responseAs[String] shouldEqual "ok" }
 
-    Put("/") ~> route ~> check {
-      responseAs[String] shouldEqual "ok"
-    }
+    Put("/") ~> route ~> check { responseAs[String] shouldEqual "ok" }
   }
 
   "map-0" in {
@@ -32,9 +28,7 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Get("/?text=abcdefg") ~> lengthDirective(x =>
-      complete(x.toString)) ~> check {
-      responseAs[String] === "7"
-    }
+      complete(x.toString)) ~> check { responseAs[String] === "7" }
   }
 
   "tmap-1" in {
@@ -42,9 +36,7 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
       parameters(("a".as[Int], "b".as[Int]))
 
     val myDirective: Directive1[String] =
-      twoIntParameters.tmap {
-        case (a, b) => (a + b).toString
-      }
+      twoIntParameters.tmap { case (a, b) => (a + b).toString }
 
     // tests:
     Get("/?a=2&b=5") ~> myDirective(x => complete(x)) ~> check {

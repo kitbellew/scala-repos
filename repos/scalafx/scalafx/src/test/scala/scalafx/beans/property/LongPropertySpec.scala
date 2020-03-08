@@ -70,13 +70,9 @@ class LongPropertySpec extends FlatSpec with BeforeAndAfterEach {
     longProperty() should equal(500)
   }
 
-  it should "know its name" in {
-    longProperty.name should equal("Test Long")
-  }
+  it should "know its name" in { longProperty.name should equal("Test Long") }
 
-  it should "know its bean" in {
-    longProperty.bean should equal(bean)
-  }
+  it should "know its bean" in { longProperty.bean should equal(bean) }
 
   it should "be bindable to another Long Property" in {
     longProperty <== longProperty2
@@ -302,12 +298,8 @@ class LongPropertySpec extends FlatSpec with BeforeAndAfterEach {
     var invalidateCount = 0
     var changeCount = 0
     val binding = longProperty * longProperty2
-    binding onInvalidate {
-      invalidateCount += 1
-    }
-    binding onChange {
-      changeCount += 1
-    }
+    binding onInvalidate { invalidateCount += 1 }
+    binding onChange { changeCount += 1 }
     longProperty() = 1
     invalidateCount should equal(1)
     changeCount should equal(0)

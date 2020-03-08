@@ -26,9 +26,7 @@ class ScalaProblemHighlightFilter extends ProblemHighlightFilter {
         if (vFile != null && ProjectRootManager
               .getInstance(file.getProject)
               .getFileIndex
-              .isInLibrarySource(vFile)) {
-          return false
-        }
+              .isInLibrarySource(vFile)) { return false }
       }
       true
     } else false

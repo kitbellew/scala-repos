@@ -68,9 +68,7 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
       try {
         path.getName.toLong
         true
-      } catch {
-        case _: NumberFormatException => false
-      }
+      } catch { case _: NumberFormatException => false }
   }
 
   private val serializer =
@@ -111,11 +109,8 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
       fc.deleteOnExit(tempPath)
       try {
         val output = fc.create(tempPath, EnumSet.of(CreateFlag.CREATE))
-        try {
-          output.write(bytes)
-        } finally {
-          output.close()
-        }
+        try { output.write(bytes) }
+        finally { output.close() }
         try {
           // Try to commit the batch
           // It will fail if there is an existing file (someone has committed the batch)
@@ -168,9 +163,7 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
       val input = fc.open(batchMetadataFile)
       val bytes = IOUtils.toByteArray(input)
       Some(serializer.deserialize[T](ByteBuffer.wrap(bytes)))
-    } else {
-      None
-    }
+    } else { None }
   }
 
   override def get(startId: Option[Long], endId: Long): Array[(Long, T)] = {
@@ -199,9 +192,7 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
       .reverse
     for (batchId <- batchIds) {
       val batch = get(batchId)
-      if (batch.isDefined) {
-        return Some((batchId, batch.get))
-      }
+      if (batch.isDefined) { return Some((batchId, batch.get)) }
     }
     None
   }

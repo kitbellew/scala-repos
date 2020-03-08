@@ -109,9 +109,7 @@ private[concurrent] object ExecutionContextImpl {
                     // When we block, switch out the BlockContext temporarily so that nested blocking does not created N new Threads
                     BlockContext.withBlockContext(
                       BlockContext.defaultBlockContext) { thunk }
-                  } finally {
-                    isdone = true
-                  }
+                  } finally { isdone = true }
 
                 true
               }
@@ -127,9 +125,7 @@ private[concurrent] object ExecutionContextImpl {
       reporter: Throwable => Unit): ExecutorService = {
     def getInt(name: String, default: String) =
       (try System.getProperty(name, default)
-      catch {
-        case e: SecurityException => default
-      }) match {
+      catch { case e: SecurityException => default }) match {
         case s if s.charAt(0) == 'x' =>
           (Runtime.getRuntime.availableProcessors * s
             .substring(1)

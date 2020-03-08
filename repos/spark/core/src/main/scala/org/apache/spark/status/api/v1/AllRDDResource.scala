@@ -81,9 +81,7 @@ private[spark] object AllRDDResource {
           diskUsed = status.diskUsedByRdd(rddId)
         )
       })
-    } else {
-      None
-    }
+    } else { None }
     val partitions = if (includeDetails) {
       Some(blocks.map {
         case (id, block, locations) =>
@@ -95,9 +93,7 @@ private[spark] object AllRDDResource {
             executors = locations
           )
       })
-    } else {
-      None
-    }
+    } else { None }
 
     new RDDStorageInfo(
       id = rddId,

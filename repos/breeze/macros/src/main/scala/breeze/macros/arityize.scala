@@ -151,9 +151,7 @@ object arityize {
       case Apply(who, args) =>
         for (w2 <- expandArity(c, order, bindings)(who);
              args2 = args.flatMap(arg => expandArity(c, order, bindings)(arg)))
-          yield {
-            Apply(w2, args2)
-          }
+          yield { Apply(w2, args2) }
       case Select(lhs, name) =>
         for (w2 <- expandArity(c, order, bindings)(lhs)) yield {
           Select(w2, name)
@@ -214,9 +212,8 @@ object arityize {
           newTypeName(vdef.name.encoded + (i + 1)),
           vdef.tparams,
           vdef.rhs))
-    } else if (shouldRepeat(c)(vdef.mods)) {
-      List.fill(order)(vdef)
-    } else {
+    } else if (shouldRepeat(c)(vdef.mods)) { List.fill(order)(vdef) }
+    else {
       shouldRelativize(c)(vdef.mods) match {
         case Some(x) =>
           List(

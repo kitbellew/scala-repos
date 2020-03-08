@@ -333,9 +333,7 @@ private[ann] class SoftmaxFunction extends ActivationFunction {
       var i = 0
       var max = Double.MinValue
       while (i < x.rows) {
-        if (x(i, j) > max) {
-          max = x(i, j)
-        }
+        if (x(i, j) > max) { max = x(i, j) }
         i += 1
       }
       var sum = 0.0
@@ -592,9 +590,7 @@ private[ml] object FeedForwardTopology {
       layers(i * 2) = new AffineLayer(layerSizes(i), layerSizes(i + 1))
       layers(i * 2 + 1) = if (softmax && i == layerSizes.length - 2) {
         new FunctionalLayer(new SoftmaxFunction())
-      } else {
-        new FunctionalLayer(new SigmoidFunction())
-      }
+      } else { new FunctionalLayer(new SigmoidFunction()) }
     }
     FeedForwardTopology(layers)
   }
@@ -663,9 +659,7 @@ private[ml] class FeedForwardModel private (
   override def weights(): Vector = {
     // TODO: extract roll
     var size = 0
-    for (i <- 0 until layerModels.length) {
-      size += layerModels(i).size
-    }
+    for (i <- 0 until layerModels.length) { size += layerModels(i).size }
     val array = new Array[Double](size)
     var offset = 0
     for (i <- 0 until layerModels.length) {

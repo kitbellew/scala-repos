@@ -103,9 +103,7 @@ final class OneVsRestModel private[ml] (
 
     // persist if underlying dataset is not persistent.
     val handlePersistence = dataset.rdd.getStorageLevel == StorageLevel.NONE
-    if (handlePersistence) {
-      newDataset.persist(StorageLevel.MEMORY_AND_DISK)
-    }
+    if (handlePersistence) { newDataset.persist(StorageLevel.MEMORY_AND_DISK) }
 
     // update the accumulator column with the result of prediction of models
     val aggregatedDataset =
@@ -133,9 +131,7 @@ final class OneVsRestModel private[ml] (
             .withColumnRenamed(tmpColName, accColName)
       }
 
-    if (handlePersistence) {
-      newDataset.unpersist()
-    }
+    if (handlePersistence) { newDataset.unpersist() }
 
     // output the index of the classifier with highest confidence as prediction
     val labelUDF = udf { (predictions: Map[Int, Double]) =>
@@ -243,9 +239,7 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
       }
       .toArray[ClassificationModel[_, _]]
 
-    if (handlePersistence) {
-      multiclassLabeled.unpersist()
-    }
+    if (handlePersistence) { multiclassLabeled.unpersist() }
 
     // extract label metadata from label column if present, or create a nominal attribute
     // to output the number of labels

@@ -64,9 +64,7 @@ object Test extends App {
             case _ =>
               sys.error(s"unexpected $action in exception handler")
           }
-      } finally {
-        println(s"finally $action")
-      }
+      } finally { println(s"finally $action") }
     println(s"normal flow $action")
     result
   }

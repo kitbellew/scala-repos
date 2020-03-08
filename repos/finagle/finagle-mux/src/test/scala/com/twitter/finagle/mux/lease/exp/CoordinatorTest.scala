@@ -35,9 +35,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
     import conductor._
 
     Time.withCurrentTimeFrozen { ctl =>
-      localThread(conductor) {
-        coord.gateCycle()
-      }
+      localThread(conductor) { coord.gateCycle() }
 
       localThread(conductor) {
         waitForBeat(1)
@@ -62,9 +60,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
     import conductor._
 
     Time.withCurrentTimeFrozen { ctl =>
-      localThread(conductor) {
-        coord.warmup()
-      }
+      localThread(conductor) { coord.warmup() }
 
       localThread(conductor) {
         waitForBeat(1)
@@ -161,9 +157,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
         }
       }
 
-      localWhenFinished(conductor) {
-        assert(incr == 2)
-      }
+      localWhenFinished(conductor) { assert(incr == 2) }
     }
 
   test("Coordinator sleeps until finished draining") {

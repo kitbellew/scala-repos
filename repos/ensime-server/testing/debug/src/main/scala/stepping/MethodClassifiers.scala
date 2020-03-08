@@ -26,9 +26,7 @@ trait BaseTrait {
       t: Object): Unit = ()
 
   def concreteTraitMethodWithDefault(
-      someArg2: String = "yet another default String") = {
-    someArg2
-  }
+      someArg2: String = "yet another default String") = { someArg2 }
 
   def abstractMethodWithDefault(
       someArg3: String = "last default String"): String
@@ -44,9 +42,7 @@ class ConcreteClass extends BaseTrait {
   def abstractMethodWithDefault(someArg3: String): String = ""
 
   // static call to a Java method, but not a forwarder!
-  def console() {
-    System.console()
-  }
+  def console() { System.console() }
 
   val abstractField1: String = "f1"
   var abstractMField1: String = "f2"
@@ -79,9 +75,7 @@ class MethodClassifiers {
 
 object MethodClassifiers {
 
-  def main(args: Array[String]) {
-    new MethodClassifiers().mainTest()
-  }
+  def main(args: Array[String]) { new MethodClassifiers().mainTest() }
 
 }
 

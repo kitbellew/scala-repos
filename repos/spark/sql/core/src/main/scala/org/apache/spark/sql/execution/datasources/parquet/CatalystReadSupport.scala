@@ -174,9 +174,8 @@ private[parquet] object CatalystReadSupport {
     // Unannotated repeated group should be interpreted as required list of required element, so
     // list element type is just the group itself.  Clip it.
     if (parquetList.getOriginalType == null && parquetList.isRepetition(
-          Repetition.REPEATED)) {
-      clipParquetType(parquetList, elementType)
-    } else {
+          Repetition.REPEATED)) { clipParquetType(parquetList, elementType) }
+    else {
       assert(
         parquetList.getOriginalType == OriginalType.LIST,
         "Invalid Parquet schema. " +

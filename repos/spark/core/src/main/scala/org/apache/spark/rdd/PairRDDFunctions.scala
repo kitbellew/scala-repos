@@ -369,9 +369,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     * to a "combiner" in MapReduce. Output will be hash-partitioned with numPartitions partitions.
     */
   def reduceByKey(func: (V, V) => V, numPartitions: Int): RDD[(K, V)] =
-    self.withScope {
-      reduceByKey(new HashPartitioner(numPartitions), func)
-    }
+    self.withScope { reduceByKey(new HashPartitioner(numPartitions), func) }
 
   /**
     * Merge the values for each key using an associative and commutative reduce function. This will
@@ -437,9 +435,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
   def countByKeyApprox(
       timeout: Long,
       confidence: Double = 0.95): PartialResult[Map[K, BoundedDouble]] =
-    self.withScope {
-      self.map(_._1).countByValueApprox(timeout, confidence)
-    }
+    self.withScope { self.map(_._1).countByValueApprox(timeout, confidence) }
 
   /**
     * Return approximate number of distinct values for each key in this RDD.
@@ -592,11 +588,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       throw new SparkException(
         "Default partitioner cannot partition array keys.")
     }
-    if (self.partitioner == Some(partitioner)) {
-      self
-    } else {
-      new ShuffledRDD[K, V, V](self, partitioner)
-    }
+    if (self.partitioner == Some(partitioner)) { self }
+    else { new ShuffledRDD[K, V, V](self, partitioner) }
   }
 
   /**
@@ -622,9 +615,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       other: RDD[(K, W)],
       partitioner: Partitioner): RDD[(K, (V, Option[W]))] = self.withScope {
     this.cogroup(other, partitioner).flatMapValues { pair =>
-      if (pair._2.isEmpty) {
-        pair._1.iterator.map(v => (v, None))
-      } else {
+      if (pair._2.isEmpty) { pair._1.iterator.map(v => (v, None)) }
+      else {
         for (v <- pair._1.iterator; w <- pair._2.iterator) yield (v, Some(w))
       }
     }
@@ -640,9 +632,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       other: RDD[(K, W)],
       partitioner: Partitioner): RDD[(K, (Option[V], W))] = self.withScope {
     this.cogroup(other, partitioner).flatMapValues { pair =>
-      if (pair._1.isEmpty) {
-        pair._2.iterator.map(w => (None, w))
-      } else {
+      if (pair._1.isEmpty) { pair._2.iterator.map(w => (None, w)) }
+      else {
         for (v <- pair._1.iterator; w <- pair._2.iterator) yield (Some(v), w)
       }
     }
@@ -729,9 +720,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     * (k, v2) is in `other`. Performs a hash join across the cluster.
     */
   def join[W](other: RDD[(K, W)], numPartitions: Int): RDD[(K, (V, W))] =
-    self.withScope {
-      join(other, new HashPartitioner(numPartitions))
-    }
+    self.withScope { join(other, new HashPartitioner(numPartitions)) }
 
   /**
     * Perform a left outer join of `this` and `other`. For each element (k, v) in `this`, the
@@ -740,9 +729,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     * using the existing partitioner/parallelism level.
     */
   def leftOuterJoin[W](other: RDD[(K, W)]): RDD[(K, (V, Option[W]))] =
-    self.withScope {
-      leftOuterJoin(other, defaultPartitioner(self, other))
-    }
+    self.withScope { leftOuterJoin(other, defaultPartitioner(self, other)) }
 
   /**
     * Perform a left outer join of `this` and `other`. For each element (k, v) in `this`, the
@@ -763,9 +750,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     * RDD using the existing partitioner/parallelism level.
     */
   def rightOuterJoin[W](other: RDD[(K, W)]): RDD[(K, (Option[V], W))] =
-    self.withScope {
-      rightOuterJoin(other, defaultPartitioner(self, other))
-    }
+    self.withScope { rightOuterJoin(other, defaultPartitioner(self, other)) }
 
   /**
     * Perform a right outer join of `this` and `other`. For each element (k, w) in `other`, the
@@ -789,9 +774,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     * parallelism level.
     */
   def fullOuterJoin[W](other: RDD[(K, W)]): RDD[(K, (Option[V], Option[W]))] =
-    self.withScope {
-      fullOuterJoin(other, defaultPartitioner(self, other))
-    }
+    self.withScope { fullOuterJoin(other, defaultPartitioner(self, other)) }
 
   /**
     * Perform a full outer join of `this` and `other`. For each element (k, v) in `this`, the
@@ -946,9 +929,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     * list of values for that key in `this` as well as `other`.
     */
   def cogroup[W](other: RDD[(K, W)]): RDD[(K, (Iterable[V], Iterable[W]))] =
-    self.withScope {
-      cogroup(other, defaultPartitioner(self, other))
-    }
+    self.withScope { cogroup(other, defaultPartitioner(self, other)) }
 
   /**
     * For each key k in `this` or `other1` or `other2`, return a resulting RDD that contains a
@@ -966,9 +947,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
   def cogroup[W](
       other: RDD[(K, W)],
       numPartitions: Int): RDD[(K, (Iterable[V], Iterable[W]))] =
-    self.withScope {
-      cogroup(other, new HashPartitioner(numPartitions))
-    }
+    self.withScope { cogroup(other, new HashPartitioner(numPartitions)) }
 
   /**
     * For each key k in `this` or `other1` or `other2`, return a resulting RDD that contains a
@@ -999,9 +978,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
 
   /** Alias for cogroup. */
   def groupWith[W](other: RDD[(K, W)]): RDD[(K, (Iterable[V], Iterable[W]))] =
-    self.withScope {
-      cogroup(other, defaultPartitioner(self, other))
-    }
+    self.withScope { cogroup(other, defaultPartitioner(self, other)) }
 
   /** Alias for cogroup. */
   def groupWith[W1, W2](other1: RDD[(K, W1)], other2: RDD[(K, W2)])
@@ -1061,9 +1038,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         val process = (it: Iterator[(K, V)]) =>
           {
             val buf = new ArrayBuffer[V]
-            for (pair <- it if pair._1 == key) {
-              buf += pair._2
-            }
+            for (pair <- it if pair._1 == key) { buf += pair._2 }
             buf
           }: Seq[V]
         val res = self.context.runJob(self, process, Array(index))
@@ -1282,9 +1257,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
               recordsWritten)
             recordsWritten += 1
           }
-        } {
-          writer.close(hadoopContext)
-        }
+        } { writer.close(hadoopContext) }
         committer.commitTask(hadoopContext)
         outputMetricsAndBytesWrittenCallback.foreach {
           case (om, callback) =>
@@ -1380,9 +1353,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
             recordsWritten)
           recordsWritten += 1
         }
-      } {
-        writer.close()
-      }
+      } { writer.close() }
       writer.commit()
       outputMetricsAndBytesWrittenCallback.foreach {
         case (om, callback) =>

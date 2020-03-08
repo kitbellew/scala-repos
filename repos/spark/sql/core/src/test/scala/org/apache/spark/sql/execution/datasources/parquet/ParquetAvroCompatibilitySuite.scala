@@ -130,9 +130,8 @@ class ParquetAvroCompatibilitySuite
       checkAnswer(
         sqlContext.read.parquet(path),
         (0 until 10).map { i =>
-          if (i % 3 == 0) {
-            Row.apply(Seq.fill(7)(null): _*)
-          } else {
+          if (i % 3 == 0) { Row.apply(Seq.fill(7)(null): _*) }
+          else {
             Row(
               i % 2 == 0,
               i,
@@ -161,9 +160,8 @@ class ParquetAvroCompatibilitySuite
                 .newBuilder()
                 .setStringsColumn(Seq.tabulate(3)(i => s"val_$i").asJava)
 
-            if (i % 3 == 0) {
-              builder.setMaybeIntsColumn(null).build()
-            } else {
+            if (i % 3 == 0) { builder.setMaybeIntsColumn(null).build() }
+            else {
               builder
                 .setMaybeIntsColumn(Seq.tabulate(3)(Int.box).asJava)
                 .build()

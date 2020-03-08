@@ -52,62 +52,46 @@ abstract class ComboBoxBase[T](override val delegate: jfxsc.ComboBoxBase[T])
   /**
     * Arms the ComboBox.
     */
-  def arm() {
-    delegate.arm()
-  }
+  def arm() { delegate.arm() }
 
   /**
     * Indicates that the ComboBox has been "armed" such that a mouse release will cause the ComboBox show() method to be invoked.
     */
   def armed: BooleanProperty = delegate.armedProperty
-  def armed_=(v: Boolean) {
-    armed() = v
-  }
+  def armed_=(v: Boolean) { armed() = v }
 
   /**
     * Disarms the ComboBox.
     */
-  def disarm() {
-    delegate.disarm()
-  }
+  def disarm() { delegate.disarm() }
 
   /**
     * Specifies whether the ComboBox allows for user input.
     */
   def editable: BooleanProperty = delegate.editableProperty
-  def editable_=(v: Boolean) {
-    editable() = v
-  }
+  def editable_=(v: Boolean) { editable() = v }
 
   /**
     * Closes the popup / dialog that was shown when show() was called.
     */
-  def hide() {
-    delegate.hide()
-  }
+  def hide() { delegate.hide() }
 
   /**
     * The ComboBox action, which is invoked whenever the ComboBox value property is changed.
     */
   def onAction = delegate.onActionProperty
-  def onAction_=(v: jfxe.EventHandler[jfxe.ActionEvent]) {
-    onAction() = v
-  }
+  def onAction_=(v: jfxe.EventHandler[jfxe.ActionEvent]) { onAction() = v }
 
   /**
     * The ComboBox prompt text to display, or null if no prompt text is displayed.
     */
   def promptText: StringProperty = delegate.promptTextProperty
-  def promptText_=(v: String) {
-    promptText() = v
-  }
+  def promptText_=(v: String) { promptText() = v }
 
   /**
     * Requests that the ComboBox display the popup aspect of the user interface.
     */
-  def show() {
-    delegate.show()
-  }
+  def show() { delegate.show() }
 
   /**
     * Represents the current state of the ComboBox popup, and whether it is currently visible on screen (although it may be hidden behind other windows).
@@ -118,9 +102,7 @@ abstract class ComboBoxBase[T](override val delegate: jfxsc.ComboBoxBase[T])
     * The value of this ComboBox is defined as the selected item if the input is not editable, or if it is editable, the most recent user action: either the value input by the user, or the last selected item.
     */
   def value: ObjectProperty[T] = delegate.valueProperty
-  def value_=(v: T) {
-    value() = v
-  }
+  def value_=(v: T) { value() = v }
 
   /**
     * Sets the Hidden event handler for this ComboBoxBase type UI object

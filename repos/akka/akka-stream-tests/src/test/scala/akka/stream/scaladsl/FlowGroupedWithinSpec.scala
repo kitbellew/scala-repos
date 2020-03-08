@@ -135,9 +135,7 @@ class FlowGroupedWithinSpec extends AkkaSpec with ScriptedTest {
 
       downstream.expectNoMsg(1500.millis)
 
-      downstream.within(1000.millis) {
-        downstream.expectNext(List(4))
-      }
+      downstream.within(1000.millis) { downstream.expectNext(List(4)) }
 
       upstream.sendComplete()
       downstream.expectComplete

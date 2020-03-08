@@ -84,7 +84,9 @@ class StringContextTest {
   // verifying that the standard interpolators can be supplanted
   @Test def antiHijack_?() = {
     object AllYourStringsAreBelongToMe {
-      case class StringContext(args: Any*) { def s(args: Any) = "!!!!" }
+      case class StringContext(args: Any*) {
+        def s(args: Any) = "!!!!"
+      }
     }
     import AllYourStringsAreBelongToMe._
     //assertEquals("????", s"????")

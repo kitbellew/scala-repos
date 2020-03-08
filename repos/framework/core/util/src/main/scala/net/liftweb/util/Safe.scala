@@ -32,9 +32,7 @@ object Safe {
   /**
     * Marks access to a given object as safe for the duration of the function
     */
-  def runSafe[T](x: Int)(f: => T): T = {
-    threadLocal.doWith(x)(f)
-  }
+  def runSafe[T](x: Int)(f: => T): T = { threadLocal.doWith(x)(f) }
 
   def randomString(len: Int): String = StringHelpers.randomString(len)
 }

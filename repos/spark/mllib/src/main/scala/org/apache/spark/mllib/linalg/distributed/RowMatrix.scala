@@ -254,11 +254,8 @@ class RowMatrix @Since("1.0.0") (
         if (n < 100 || (k > n / 2 && n <= 15000)) {
           // If n is small or k is large compared with n, we better compute the Gramian matrix first
           // and then compute its eigenvalues locally, instead of making multiple passes.
-          if (k < n / 3) {
-            SVDMode.LocalARPACK
-          } else {
-            SVDMode.LocalLAPACK
-          }
+          if (k < n / 3) { SVDMode.LocalARPACK }
+          else { SVDMode.LocalLAPACK }
         } else {
           // If k is small compared with n, we use ARPACK with distributed multiplication.
           SVDMode.DistARPACK
@@ -315,9 +312,7 @@ class RowMatrix @Since("1.0.0") (
       logWarning(
         s"Requested $k singular values but only found ${sigmas.length} converged.")
     }
-    while (i < math.min(k, sigmas.length) && sigmas(i) >= threshold) {
-      i += 1
-    }
+    while (i < math.min(k, sigmas.length) && sigmas(i) >= threshold) { i += 1 }
     val sk = i
 
     if (sk < k) {
@@ -350,9 +345,7 @@ class RowMatrix @Since("1.0.0") (
       }
       val U = this.multiply(Matrices.fromBreeze(N))
       SingularValueDecomposition(U, s, V)
-    } else {
-      SingularValueDecomposition(null, s, V)
-    }
+    } else { SingularValueDecomposition(null, s, V) }
   }
 
   /**
@@ -513,9 +506,7 @@ class RowMatrix @Since("1.0.0") (
     *         columns of this matrix.
     */
   @Since("1.2.0")
-  def columnSimilarities(): CoordinateMatrix = {
-    columnSimilarities(0.0)
-  }
+  def columnSimilarities(): CoordinateMatrix = { columnSimilarities(0.0) }
 
   /**
     * Compute similarities between columns of this matrix using a sampling approach.
@@ -567,11 +558,8 @@ class RowMatrix @Since("1.0.0") (
           " however there is no correctness guarantee.")
     }
 
-    val gamma = if (threshold < 1e-6) {
-      Double.PositiveInfinity
-    } else {
-      10 * math.log(numCols()) / threshold
-    }
+    val gamma = if (threshold < 1e-6) { Double.PositiveInfinity }
+    else { 10 * math.log(numCols()) / threshold }
 
     columnSimilaritiesDIMSUM(
       computeColumnSummaryStatistics().normL2.toArray,
@@ -618,9 +606,7 @@ class RowMatrix @Since("1.0.0") (
           logWarning("R is not invertible and return Q as null")
           null
       }
-    } else {
-      null
-    }
+    } else { null }
     QRDecomposition(finalQ, finalR)
   }
 
@@ -741,9 +727,8 @@ class RowMatrix @Since("1.0.0") (
 
   /** Updates or verifies the number of rows. */
   private def updateNumRows(m: Long) {
-    if (nRows <= 0) {
-      nRows = m
-    } else {
+    if (nRows <= 0) { nRows = m }
+    else {
       require(
         nRows == m,
         s"The number of rows $m is different from what specified or previously computed: ${nRows}.")

@@ -6,9 +6,7 @@ class TestPos {
     case Wrapper /*[_ <: T ]*/ (x) => x // _ <: T, which is a subtype of T
   }
 
-  def unwrapOption[T](x: Option[T]): T = x match {
-    case Some(xs) => xs
-  }
+  def unwrapOption[T](x: Option[T]): T = x match { case Some(xs) => xs }
 
   case class Down[+T](x: T)
   case class Up[-T](f: T => Unit)

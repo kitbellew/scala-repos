@@ -101,9 +101,7 @@ private[spark] abstract class StreamBasedRecordReader[T](
       key = fileIn.getPath
       processed = true
       true
-    } else {
-      false
-    }
+    } else { false }
   }
 
   /**
@@ -203,11 +201,8 @@ class PortableDataStream(
     */
   def toArray(): Array[Byte] = {
     val stream = open()
-    try {
-      ByteStreams.toByteArray(stream)
-    } finally {
-      Closeables.close(stream, true)
-    }
+    try { ByteStreams.toByteArray(stream) }
+    finally { Closeables.close(stream, true) }
   }
 
   /**

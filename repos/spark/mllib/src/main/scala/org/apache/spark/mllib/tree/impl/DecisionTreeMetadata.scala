@@ -76,11 +76,8 @@ private[spark] class DecisionTreeMetadata(
     * For ordered features, there is 1 more bin than split.
     */
   def numSplits(featureIndex: Int): Int =
-    if (isUnordered(featureIndex)) {
-      numBins(featureIndex)
-    } else {
-      numBins(featureIndex) - 1
-    }
+    if (isUnordered(featureIndex)) { numBins(featureIndex) }
+    else { numBins(featureIndex) - 1 }
 
   /**
     * Set number of splits for a continuous feature.
@@ -168,9 +165,7 @@ private[spark] object DecisionTreeMetadata extends Logging {
             if (numCategories <= maxCategoriesForUnorderedFeature) {
               unorderedFeatures.add(featureIndex)
               numBins(featureIndex) = numUnorderedBins(numCategories)
-            } else {
-              numBins(featureIndex) = numCategories
-            }
+            } else { numBins(featureIndex) = numCategories }
           }
       }
     } else {
@@ -178,23 +173,17 @@ private[spark] object DecisionTreeMetadata extends Logging {
       strategy.categoricalFeaturesInfo.foreach {
         case (featureIndex, numCategories) =>
           // If a categorical feature has only 1 category, we treat it as continuous: SPARK-9957
-          if (numCategories > 1) {
-            numBins(featureIndex) = numCategories
-          }
+          if (numCategories > 1) { numBins(featureIndex) = numCategories }
       }
     }
 
     // Set number of features to use per node (for random forests).
     val _featureSubsetStrategy = featureSubsetStrategy match {
       case "auto" =>
-        if (numTrees == 1) {
-          "all"
-        } else {
-          if (strategy.algo == Classification) {
-            "sqrt"
-          } else {
-            "onethird"
-          }
+        if (numTrees == 1) { "all" }
+        else {
+          if (strategy.algo == Classification) { "sqrt" }
+          else { "onethird" }
         }
       case _ => featureSubsetStrategy
     }

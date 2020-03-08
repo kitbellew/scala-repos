@@ -113,9 +113,7 @@ object CSRFConfig {
       !methodWhiteList.contains(_)
     } else {
       if (methodBlackList.isEmpty) { _ => true }
-      else {
-        methodBlackList.contains
-      }
+      else { methodBlackList.contains }
     }
 
     val contentTypeWhiteList =
@@ -128,9 +126,7 @@ object CSRFConfig {
         _.forall(!contentTypeWhiteList.contains(_))
       } else {
         if (contentTypeBlackList.isEmpty) { _ => true }
-        else {
-          _.exists(contentTypeBlackList.contains)
-        }
+        else { _.exists(contentTypeBlackList.contains) }
       }
 
     val protectHeaders = config

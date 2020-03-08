@@ -11,12 +11,8 @@ import akka.http.impl.engine.parsing.SpecializedHeaderValueParsers.ContentLength
 class ContentLengthHeaderParserSpec extends WordSpec with Matchers {
 
   "specialized ContentLength parser" should {
-    "accept zero" in {
-      parse("0") shouldEqual 0L
-    }
-    "accept positive value" in {
-      parse("43234398") shouldEqual 43234398L
-    }
+    "accept zero" in { parse("0") shouldEqual 0L }
+    "accept positive value" in { parse("43234398") shouldEqual 43234398L }
     "accept positive value > Int.MaxValue <= Long.MaxValue" in {
       parse("274877906944") shouldEqual 274877906944L
       parse(

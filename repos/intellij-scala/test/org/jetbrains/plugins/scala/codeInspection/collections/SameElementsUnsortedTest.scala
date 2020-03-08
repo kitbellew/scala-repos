@@ -11,17 +11,11 @@ class SameElementsUnsortedTest extends OperationsOnCollectionInspectionTest {
 
   override def hint: String = InspectionBundle.message("sameElements.unsorted")
 
-  def testSeqSet(): Unit = {
-    check(s"Seq(1) ${START}sameElements$END Set(1)")
-  }
+  def testSeqSet(): Unit = { check(s"Seq(1) ${START}sameElements$END Set(1)") }
 
-  def testSetSet(): Unit = {
-    check(s"Set(1) ${START}sameElements$END Set(1)")
-  }
+  def testSetSet(): Unit = { check(s"Set(1) ${START}sameElements$END Set(1)") }
 
-  def testSeqMap(): Unit = {
-    check(s"Map(1) ${START}sameElements$END Seq(1)")
-  }
+  def testSeqMap(): Unit = { check(s"Map(1) ${START}sameElements$END Seq(1)") }
 
   def testSeqIterable(): Unit = {
     check(s"Seq(1) ${START}sameElements$END Iterable(1)")

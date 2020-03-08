@@ -122,11 +122,8 @@ class Hakker(name: String, chair: Int) extends Actor {
     case Busy(chopstick) =>
       pubStateChange("waiting", "thinking")
       become(thinking(left, right) orElse (managementEvents))
-      if (waitingForLeft) {
-        right ! Put(self)
-      } else {
-        left ! Put(self)
-      }
+      if (waitingForLeft) { right ! Put(self) }
+      else { left ! Put(self) }
       self ! Eat
     case Identify => identify("Waiting for Chopstick")
   }
@@ -178,9 +175,7 @@ class Hakker(name: String, chair: Int) extends Actor {
       subscribers -= subscriber
   }
 
-  def initializing: Receive = {
-    case Identify => identify("Initializing")
-  }
+  def initializing: Receive = { case Identify => identify("Initializing") }
 
   def identify(busyWith: String): Unit = {
     sender() ! Identification(name, busyWith)

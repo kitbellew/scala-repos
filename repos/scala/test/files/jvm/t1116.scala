@@ -21,7 +21,5 @@ object Foo {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    Serialize.write(Foo.obj_foo(3))
-  }
+  def main(args: Array[String]) { Serialize.write(Foo.obj_foo(3)) }
 }

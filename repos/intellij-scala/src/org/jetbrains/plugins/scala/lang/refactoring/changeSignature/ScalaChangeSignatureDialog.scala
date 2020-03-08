@@ -182,9 +182,7 @@ class ScalaChangeSignatureDialog(
         super.prepareEditor(editor, row, column)
       }
 
-      override def editingCanceled(e: ChangeEvent) {
-        super.editingCanceled(e)
-      }
+      override def editingCanceled(e: ChangeEvent) { super.editingCanceled(e) }
     }
   }
 

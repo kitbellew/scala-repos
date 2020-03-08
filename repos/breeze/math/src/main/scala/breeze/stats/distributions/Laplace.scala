@@ -28,20 +28,15 @@ case class Laplace(location: Double, scale: Double)(
   def draw(): Double = {
     // from numpy
     val u = rand.uniform.draw()
-    if (u < 0.5) {
-      location + scale * log(2 * u)
-    } else {
-      location - scale * log(2 * (1 - u))
-    }
+    if (u < 0.5) { location + scale * log(2 * u) }
+    else { location - scale * log(2 * (1 - u)) }
   }
 
   def unnormalizedLogPdf(x: Double): Double = {
     -math.abs(x - location) / scale
   }
 
-  def probability(x: Double, y: Double): Double = {
-    cdf(y) - cdf(x)
-  }
+  def probability(x: Double, y: Double): Double = { cdf(y) - cdf(x) }
 
   def cdf(x: Double) = x match {
     case Double.NegativeInfinity => 0.0

@@ -13,9 +13,7 @@ import org.apache.tools.ant.Task
 
 class Break extends Task {
 
-  def setId(input: String) {
-    id = Some(input)
-  }
+  def setId(input: String) { id = Some(input) }
 
   private var id: Option[String] = None
 

@@ -147,9 +147,8 @@ class LogManager(
       }
 
       var recoveryPoints = Map[TopicAndPartition, Long]()
-      try {
-        recoveryPoints = this.recoveryPointCheckpoints(dir).read
-      } catch {
+      try { recoveryPoints = this.recoveryPointCheckpoints(dir).read }
+      catch {
         case e: Exception => {
           warn(
             "Error occured while reading recovery-point-offset-checkpoint file of directory " + dir,
@@ -197,9 +196,7 @@ class LogManager(
           "There was an error in one of the threads during logs loading: " + e.getCause)
         throw e.getCause
       }
-    } finally {
-      threadPools.foreach(_.shutdown())
-    }
+    } finally { threadPools.foreach(_.shutdown()) }
 
     info("Logs loading complete.")
   }
@@ -248,9 +245,7 @@ class LogManager(
     val jobs = mutable.Map.empty[File, Seq[Future[_]]]
 
     // stop the cleaner first
-    if (cleaner != null) {
-      CoreUtils.swallow(cleaner.shutdown())
-    }
+    if (cleaner != null) { CoreUtils.swallow(cleaner.shutdown()) }
 
     // close logs in each dir
     for (dir <- this.logDirs) {
@@ -447,9 +442,8 @@ class LogManager(
     * data directory with the fewest partitions.
     */
   private def nextLogDir(): File = {
-    if (logDirs.size == 1) {
-      logDirs(0)
-    } else {
+    if (logDirs.size == 1) { logDirs(0) }
+    else {
       // count the number of logs in each parent directory (including 0 for empty directories
       val logCounts = allLogs.groupBy(_.dir.getParent).mapValues(_.size)
       val zeros = logDirs.map(dir => (dir.getPath, 0)).toMap
@@ -483,9 +477,7 @@ class LogManager(
       if (diff - segment.size >= 0) {
         diff -= segment.size
         true
-      } else {
-        false
-      }
+      } else { false }
     }
     log.deleteOldSegments(shouldDelete)
   }
@@ -520,9 +512,7 @@ class LogManager(
     * Map of log dir to logs by topic and partitions in that dir
     */
   private def logsByDir = {
-    this.logsByTopicPartition.groupBy {
-      case (_, log) => log.dir.getParent
-    }
+    this.logsByTopicPartition.groupBy { case (_, log) => log.dir.getParent }
   }
 
   /**

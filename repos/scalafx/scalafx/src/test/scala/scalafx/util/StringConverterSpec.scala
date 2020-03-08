@@ -75,14 +75,8 @@ class StringConverterSpec extends FlatSpec {
       isNumberFormat: Boolean) {
     it should "not convert a Irregular String" in {
       if (isNumberFormat) {
-        intercept[NumberFormatException] {
-          converter.fromString("ABCSDE")
-        }
-      } else {
-        intercept[ParseException] {
-          converter.fromString("ABCSDE")
-        }
-      }
+        intercept[NumberFormatException] { converter.fromString("ABCSDE") }
+      } else { intercept[ParseException] { converter.fromString("ABCSDE") } }
     }
   }
 
@@ -91,14 +85,8 @@ class StringConverterSpec extends FlatSpec {
       isNumberFormat: Boolean) {
     it should "not convert a Null String" in {
       if (isNumberFormat) {
-        intercept[NumberFormatException] {
-          converter.fromString(null)
-        }
-      } else {
-        intercept[NullPointerException] {
-          converter.fromString(null)
-        }
-      }
+        intercept[NumberFormatException] { converter.fromString(null) }
+      } else { intercept[NullPointerException] { converter.fromString(null) } }
     }
   }
 

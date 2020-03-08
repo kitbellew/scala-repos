@@ -1,5 +1,7 @@
 object Bug1565 {
-  object X0 { 0; (a: Int, b: Int, c: Int) => println(List(a, b)) }
+  object X0 {
+    0; (a: Int, b: Int, c: Int) => println(List(a, b))
+  }
   def x() = { 0; (a: Int, b: Int) => println(List(a, b)); 0 }
 
   (a: Int, b: Int) => println(List(a, b))

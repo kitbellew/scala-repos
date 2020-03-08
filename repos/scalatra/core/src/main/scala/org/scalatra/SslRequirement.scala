@@ -26,9 +26,7 @@ trait SslRequirement extends Handler with ServletApiImplicits {
         oldUri.getFragment
       ).toString
       res.redirect(uri)
-    } else {
-      super.handle(req, res)
-    }
+    } else { super.handle(req, res) }
   }
 
   /**

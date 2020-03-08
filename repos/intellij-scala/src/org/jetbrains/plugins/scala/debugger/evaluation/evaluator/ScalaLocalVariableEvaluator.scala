@@ -37,15 +37,11 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
     myParameterIndex = parameterIndex
   }
 
-  def setMethodName(name: String) {
-    myMethodName = name
-  }
+  def setMethodName(name: String) { myMethodName = name }
 
   private def sourceName(frameProxy: StackFrameProxyImpl) =
     try frameProxy.location().sourceName()
-    catch {
-      case e: AbsentInformationException => ""
-    }
+    catch { case e: AbsentInformationException => "" }
 
   def evaluate(context: EvaluationContextImpl): AnyRef = {
 
@@ -113,11 +109,8 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
           try {
             val values = frameProxy.getArgumentValues
             if (values != null && !values.isEmpty && myParameterIndex >= 0 && myParameterIndex < values
-                  .size()) {
-              Some(values.get(myParameterIndex))
-            } else {
-              None
-            }
+                  .size()) { Some(values.get(myParameterIndex)) }
+            else { None }
           } catch { case ignore: InternalException => None }
         } else None
       }
@@ -161,18 +154,15 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
                 case _ =>
                   frameProxy.setValue(myEvaluatedVariable, value)
               }
-            } else {
-              frameProxy.setValue(myEvaluatedVariable, value)
-            }
+            } else { frameProxy.setValue(myEvaluatedVariable, value) }
           } catch {
             case e: EvaluateException =>
               LOG.error(e)
           }
         }
         def getExpectedType: Type = {
-          try {
-            myEvaluatedVariable.getType
-          } catch {
+          try { myEvaluatedVariable.getType }
+          catch {
             case e: EvaluateException =>
               LOG.error(e)
               null

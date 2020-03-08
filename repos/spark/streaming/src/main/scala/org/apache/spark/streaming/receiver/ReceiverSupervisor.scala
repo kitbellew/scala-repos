@@ -230,8 +230,6 @@ private[streaming] abstract class ReceiverSupervisor(
     if (stoppingError != null) {
       logError("Stopped receiver with error: " + stoppingError)
       throw stoppingError
-    } else {
-      logInfo("Stopped receiver without error")
-    }
+    } else { logInfo("Stopped receiver without error") }
   }
 }

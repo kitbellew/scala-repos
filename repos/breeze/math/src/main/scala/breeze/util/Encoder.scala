@@ -144,9 +144,7 @@ trait Encoder[T] {
     */
   def tabulateArray[V: ClassTag](f: T => V): Array[V] = {
     val arr = new Array[V](index.size)
-    for ((e, i) <- index.pairs) {
-      arr(i) = f(e)
-    }
+    for ((e, i) <- index.pairs) { arr(i) = f(e) }
     arr
   }
 

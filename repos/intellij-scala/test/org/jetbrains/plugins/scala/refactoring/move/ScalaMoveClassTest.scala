@@ -37,13 +37,9 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
     doTest("packageObject", Array("com.`package`"), "org")
   }
 
-  def testPackageObject2() {
-    doTest("packageObject2", Array("com"), "org")
-  }
+  def testPackageObject2() { doTest("packageObject2", Array("com"), "org") }
 
-  def testSimple() {
-    doTest("simple", Array("com.A"), "org")
-  }
+  def testSimple() { doTest("simple", Array("com.A"), "org") }
 
   def testSCL2625() {
     doTest(
@@ -68,17 +64,11 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
     doTest("scl4621", Array("moveRefactoring.foo.O"), "moveRefactoring.bar")
   }
 
-  def testSCL4619() {
-    doTest("scl4619", Array("foo.B"), "bar")
-  }
+  def testSCL4619() { doTest("scl4619", Array("foo.B"), "bar") }
 
-  def testSCL4875() {
-    doTest("scl4875", Array("com.A"), "org")
-  }
+  def testSCL4875() { doTest("scl4875", Array("com.A"), "org") }
 
-  def testSCL4878() {
-    doTest("scl4878", Array("org.B"), "com")
-  }
+  def testSCL4878() { doTest("scl4878", Array("org.B"), "com") }
 
   def testSCL4894() {
     doTest(
@@ -123,11 +113,8 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
     val settings = ScalaApplicationSettings.getInstance()
     val moveCompanionOld = settings.MOVE_COMPANION
     settings.MOVE_COMPANION = moveCompanion
-    try {
-      performAction(classNames, newPackageName, mode)
-    } finally {
-      PsiTestUtil.removeSourceRoot(getModuleAdapter, rootDir)
-    }
+    try { performAction(classNames, newPackageName, mode) }
+    finally { PsiTestUtil.removeSourceRoot(getModuleAdapter, rootDir) }
     settings.MOVE_COMPANION = moveCompanionOld
     val rootAfter: String = root + "/after"
     val rootDir2: VirtualFile = LocalFileSystem.getInstance.findFileByPath(

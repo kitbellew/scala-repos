@@ -306,9 +306,7 @@ class ReviveOffersActorTest
 
   private[this] implicit var actorSystem: ActorSystem = _
 
-  before {
-    actorSystem = ActorSystem()
-  }
+  before { actorSystem = ActorSystem() }
 
   after {
     actorSystem.shutdown()

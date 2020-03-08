@@ -49,9 +49,7 @@ private[io] class AtomicFileOutputStream private (
         IO.copyTo(
           FileVirtualBinaryFile(tmpFile),
           WritableFileVirtualBinaryFile(baseFile))
-      } finally {
-        tmpFile.delete()
-      }
+      } finally { tmpFile.delete() }
     }
   }
 }

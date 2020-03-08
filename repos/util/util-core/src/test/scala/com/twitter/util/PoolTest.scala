@@ -44,9 +44,7 @@ class PoolTest extends WordSpec {
         assert(Await.result(pool.reserve()) == 6)
         assert(Await.result(pool.reserve()) == 8)
         val promise = pool.reserve()
-        intercept[TimeoutException] {
-          Await.result(promise, 1.millisecond)
-        }
+        intercept[TimeoutException] { Await.result(promise, 1.millisecond) }
         pool.release(8)
         pool.release(6)
         assert(Await.result(promise) == 8)

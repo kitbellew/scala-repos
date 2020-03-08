@@ -1,1 +1,3 @@
-object A { final val x = 1 }
+object A {
+  final val x = 1
+}

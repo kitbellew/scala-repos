@@ -26,6 +26,10 @@ object Foo {
 
 object Bar {
   def f(x: Quux { def g(x: Int): Int }): Int = x g 5
-  f(new Quux { def g(x: String) = x })
-  f(new Quux { def g(x: Int) = x })
+  f(new Quux {
+    def g(x: String) = x
+  })
+  f(new Quux {
+    def g(x: Int) = x
+  })
 }

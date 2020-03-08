@@ -217,9 +217,8 @@ object Swagger {
       val ranges = csvString.substring(15, csvString.length() - 1).split(",")
       buildAllowableRangeValues(ranges, csvString, inclusive = false)
     } else {
-      if (csvString.isBlank) {
-        AllowableValues.AnyValue
-      } else {
+      if (csvString.isBlank) { AllowableValues.AnyValue }
+      else {
         val params = csvString.split(",").toList
         implicit val format = DefaultJsonFormats.GenericFormat(
           DefaultReaders.StringReader,
@@ -242,20 +241,14 @@ object Swagger {
       throw new RuntimeException(
         "Allowable values format " + inputStr + "is incorrect")
     }
-    if (ranges(0).equalsIgnoreCase("Infinity")) {
-      min = Float.PositiveInfinity
-    } else if (ranges(0).equalsIgnoreCase("-Infinity")) {
+    if (ranges(0).equalsIgnoreCase("Infinity")) { min = Float.PositiveInfinity }
+    else if (ranges(0).equalsIgnoreCase("-Infinity")) {
       min = Float.NegativeInfinity
-    } else {
-      min = ranges(0).toFloat
-    }
-    if (ranges(1).equalsIgnoreCase("Infinity")) {
-      max = Float.PositiveInfinity
-    } else if (ranges(1).equalsIgnoreCase("-Infinity")) {
+    } else { min = ranges(0).toFloat }
+    if (ranges(1).equalsIgnoreCase("Infinity")) { max = Float.PositiveInfinity }
+    else if (ranges(1).equalsIgnoreCase("-Infinity")) {
       max = Float.NegativeInfinity
-    } else {
-      max = ranges(1).toFloat
-    }
+    } else { max = ranges(1).toFloat }
     val allowableValues =
       AllowableValues.AllowableRangeValues(
         if (inclusive) Range.inclusive(min.toInt, max.toInt)

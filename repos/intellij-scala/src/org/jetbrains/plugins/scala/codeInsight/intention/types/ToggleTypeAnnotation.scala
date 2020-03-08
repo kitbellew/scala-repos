@@ -23,12 +23,9 @@ class ToggleTypeAnnotation extends PsiElementBaseIntentionAction {
   def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
     if (element == null || !IntentionAvailabilityChecker.checkIntention(
           this,
-          element)) {
-      false
-    } else {
-      def message(key: String) {
-        setText(ScalaBundle.message(key))
-      }
+          element)) { false }
+    else {
+      def message(key: String) { setText(ScalaBundle.message(key)) }
       ToggleTypeAnnotation.complete(new Description(message), element)
     }
   }
@@ -93,9 +90,7 @@ object ToggleTypeAnnotation {
       return true
     }
 
-    for {
-      param <- element.parentsInFile.findByType(classOf[ScParameter])
-    } {
+    for { param <- element.parentsInFile.findByType(classOf[ScParameter]) } {
       param.parentsInFile.findByType(classOf[ScFunctionExpr]) match {
         case Some(func) =>
           if (param.typeElement.isDefined) {

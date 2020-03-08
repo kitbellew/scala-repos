@@ -70,9 +70,7 @@ object ResourceServer {
     if (!Props.devMode && lastModCache.containsKey(str)) lastModCache.get(str)
     else {
       val ret: Long =
-        (for {
-          uc <- tryo(in.openConnection)
-        } yield {
+        (for { uc <- tryo(in.openConnection) } yield {
           uc.getLastModified match {
             case 0L =>
               uc match {

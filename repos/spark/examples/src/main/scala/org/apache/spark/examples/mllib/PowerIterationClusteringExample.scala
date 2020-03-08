@@ -109,12 +109,8 @@ object PowerIterationClusteringExample {
           s"$k -> ${v.sorted.mkString("[", ",", "]")}"
       }
       .mkString(", ")
-    val sizesStr = assignments
-      .map {
-        _._2.length
-      }
-      .sorted
-      .mkString("(", ",", ")")
+    val sizesStr =
+      assignments.map { _._2.length }.sorted.mkString("(", ",", ")")
     println(s"Cluster assignments: $assignmentsStr\ncluster sizes: $sizesStr")
     // $example off$
 
@@ -140,9 +136,7 @@ object PowerIterationClusteringExample {
       case (((x0, y0), i0), ((x1, y1), i1)) =>
         if (i0 < i1) {
           Some((i0.toLong, i1.toLong, gaussianSimilarity((x0, y0), (x1, y1))))
-        } else {
-          None
-        }
+        } else { None }
     }
     distancesRdd
   }

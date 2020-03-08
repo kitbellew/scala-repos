@@ -17,9 +17,7 @@ class Decoder(storageCommands: collection.Set[ChannelBuffer])
   case class AwaitingData(tokens: Seq[ChannelBuffer], bytesNeeded: Int)
       extends State
 
-  final protected[memcached] def start() {
-    state = AwaitingCommand()
-  }
+  final protected[memcached] def start() { state = AwaitingCommand() }
 
   override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent) {
     super.exceptionCaught(ctx, e)
@@ -45,9 +43,7 @@ class Decoder(storageCommands: collection.Set[ChannelBuffer])
 
   final protected[memcached] def awaitData(
       tokens: Seq[ChannelBuffer],
-      bytesNeeded: Int) {
-    state = AwaitingData(tokens, bytesNeeded)
-  }
+      bytesNeeded: Int) { state = AwaitingData(tokens, bytesNeeded) }
 
   private[this] def needsData(tokens: Seq[ChannelBuffer]): Int = {
     val commandName = tokens.head

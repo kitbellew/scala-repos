@@ -525,9 +525,7 @@ object BindingValidators {
   def notNull: BindingValidator[AnyRef] = notNull()
   def notNull(
       messageFormat: String = "%s is required."): BindingValidator[AnyRef] =
-    (s: String) => {
-      _ flatMap (Validation.notNull(s, _, messageFormat))
-    }
+    (s: String) => { _ flatMap (Validation.notNull(s, _, messageFormat)) }
 
   def nonEmptyCollection[TResult <: Traversable[_]]: BindingValidator[TResult] =
     nonEmptyCollection[TResult]()

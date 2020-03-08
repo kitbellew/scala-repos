@@ -60,9 +60,7 @@ object ConfigCommand {
       case e: Throwable =>
         println("Error while executing topic command " + e.getMessage)
         println(Utils.stackTrace(e))
-    } finally {
-      zkUtils.close()
-    }
+    } finally { zkUtils.close() }
   }
 
   private def alterConfig(zkUtils: ZkUtils, opts: ConfigCommandOptions) {

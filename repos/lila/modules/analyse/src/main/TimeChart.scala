@@ -34,9 +34,7 @@ final class TimeChart(game: Game, moves: List[String]) {
       )
   }
 
-  def maxTime = moveTimes.foldLeft(0f) {
-    case (x, y) => if (y > x) y else x
-  }
+  def maxTime = moveTimes.foldLeft(0f) { case (x, y) => if (y > x) y else x }
 
   private val moveTimes = game.moveTimesInSeconds
   private val indexedMoveTimes = game.moveTimesInSeconds.zipWithIndex map {

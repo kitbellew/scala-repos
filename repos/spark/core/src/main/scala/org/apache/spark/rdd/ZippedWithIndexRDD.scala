@@ -44,11 +44,9 @@ private[spark] class ZippedWithIndexRDD[T: ClassTag](prev: RDD[T])
   /** The start index of each partition. */
   @transient private val startIndices: Array[Long] = {
     val n = prev.partitions.length
-    if (n == 0) {
-      Array[Long]()
-    } else if (n == 1) {
-      Array(0L)
-    } else {
+    if (n == 0) { Array[Long]() }
+    else if (n == 1) { Array(0L) }
+    else {
       prev.context
         .runJob(
           prev,

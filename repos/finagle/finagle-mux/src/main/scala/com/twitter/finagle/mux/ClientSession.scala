@@ -152,9 +152,7 @@ private[twitter] class ClientSession(
             safeLog(s"Finished draining a connection to $name", Level.FINE)
           state = Drained
         } finally writeLk.unlock()
-      } else {
-        readLk.unlock()
-      }
+      } else { readLk.unlock() }
 
     case _ => // do nothing.
   }
@@ -198,9 +196,7 @@ private[twitter] class ClientSession(
     val done = new Promise[Unit]
     if (pingPromise.compareAndSet(null, done)) {
       trans.write(pingMessage).before(done)
-    } else {
-      FuturePingNack
-    }
+    } else { FuturePingNack }
   }
 
   private[this] val detector =

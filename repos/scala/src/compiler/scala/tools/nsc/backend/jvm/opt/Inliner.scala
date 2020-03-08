@@ -417,9 +417,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       hasSerializableClosureInstantiation) =
       cloneInstructions(callee, labelsMap)
     val keepLineNumbers = callsiteClass == calleeDeclarationClass
-    if (!keepLineNumbers) {
-      removeLineNumberNodes(clonedInstructions)
-    }
+    if (!keepLineNumbers) { removeLineNumberNodes(clonedInstructions) }
 
     // local vars in the callee are shifted by the number of locals at the callsite
     val localVarShift = callsiteMethod.maxLocals
@@ -908,9 +906,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
               fieldDeclClass,
               fieldRefClass,
               destinationClass)
-          } yield {
-            res
-          }
+          } yield { res }
 
         case mi: MethodInsnNode =>
           if (mi.owner.charAt(0) == '[')
@@ -952,9 +948,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
                 methodNode.access,
                 methodDeclClass,
                 methodRefClass)
-            } yield {
-              res
-            }
+            } yield { res }
           }
 
         case _: InvokeDynamicInsnNode
@@ -1024,9 +1018,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
               methodDeclClass,
               methodRefClass,
               destinationClass)
-          } yield {
-            res
-          }
+          } yield { res }
 
         case _: InvokeDynamicInsnNode => Left(UnknownInvokeDynamicInstruction)
 

@@ -70,9 +70,8 @@ object ScalaBuilder {
         val result = using(
           new DataInputStream(
             new BufferedInputStream(new FileInputStream(file)))) { in =>
-          try {
-            Some(IncrementalityType.valueOf(in.readUTF()))
-          } catch {
+          try { Some(IncrementalityType.valueOf(in.readUTF())) }
+          catch {
             case _: IOException | _: IllegalArgumentException |
                 _: NullPointerException =>
               None
@@ -167,9 +166,7 @@ object ScalaBuilder {
           .getSortedTargetChunks(context)
           .asScala
         target <- chunk.getTargets.asScala
-      } {
-        if (!context.getScope.isAffected(target)) return false
-      }
+      } { if (!context.getScope.isAffected(target)) return false }
       true
     }
 
@@ -189,9 +186,7 @@ object ScalaBuilder {
   }
 
   private def cleanLocalServerCache() {
-    lock.synchronized {
-      cachedServer = None
-    }
+    lock.synchronized { cachedServer = None }
   }
 
   private lazy val sbtData = {
@@ -228,8 +223,6 @@ object ScalaBuilder {
       new RemoteServer(
         InetAddress.getByName(null),
         settings.getCompileServerPort)
-    } else {
-      localServer
-    }
+    } else { localServer }
   }
 }

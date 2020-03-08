@@ -61,9 +61,7 @@ private[spark] class UnsafeCartesianRDD(
       val iter = sorter.getIterator
       val unsafeRow = new UnsafeRow(numFieldsOfRight)
       new Iterator[UnsafeRow] {
-        override def hasNext: Boolean = {
-          iter.hasNext
-        }
+        override def hasNext: Boolean = { iter.hasNext }
         override def next(): UnsafeRow = {
           iter.loadNext()
           unsafeRow.pointTo(

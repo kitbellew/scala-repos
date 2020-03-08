@@ -111,21 +111,13 @@ abstract class AbstractTestRunConfiguration(
   def getWorkingDirectory: String =
     ExternalizablePath.localPathValue(workingDirectory)
 
-  def setTestClassPath(s: String) {
-    testClassPath = s
-  }
+  def setTestClassPath(s: String) { testClassPath = s }
 
-  def setTestPackagePath(s: String) {
-    testPackagePath = s
-  }
+  def setTestPackagePath(s: String) { testPackagePath = s }
 
-  def setTestArgs(s: String) {
-    testArgs = s
-  }
+  def setTestArgs(s: String) { testArgs = s }
 
-  def setJavaOptions(s: String) {
-    javaOptions = s
-  }
+  def setJavaOptions(s: String) { javaOptions = s }
 
   def setWorkingDirectory(s: String) {
     workingDirectory = ExternalizablePath.urlValue(s)
@@ -157,9 +149,7 @@ abstract class AbstractTestRunConfiguration(
 
   private var generatedName: String = ""
 
-  def setGeneratedName(name: String) {
-    generatedName = name
-  }
+  def setGeneratedName(name: String) { generatedName = name }
 
   override def isGeneratedName =
     getName == null || getName.equals(suggestedName)
@@ -176,11 +166,8 @@ abstract class AbstractTestRunConfiguration(
     setModule(configuration.getModule)
     val workDir = configuration.getWorkingDirectory
     setWorkingDirectory(
-      if (workDir != null && !workDir.trim.isEmpty) {
-        workDir
-      } else {
-        provideDefaultWorkingDir
-      }
+      if (workDir != null && !workDir.trim.isEmpty) { workDir }
+      else { provideDefaultWorkingDir }
     )
 
     setTestName(configuration.getTestName)
@@ -214,9 +201,7 @@ abstract class AbstractTestRunConfiguration(
         if (getModule != null) mScope(getModule)
         else GlobalSearchScope.EMPTY_SCOPE
       for (module <- ModuleManager.getInstance(getProject).getModules) {
-        if (moduleGuard(module)) {
-          scope = scope.union(mScope(module))
-        }
+        if (moduleGuard(module)) { scope = scope.union(mScope(module)) }
       }
       scope
     }
@@ -254,9 +239,7 @@ abstract class AbstractTestRunConfiguration(
     envs = variables
   }
 
-  def getModule: Module = {
-    getConfigurationModule.getModule
-  }
+  def getModule: Module = { getConfigurationModule.getModule }
 
   def getValidModules: java.util.List[Module] = getProject.modulesWithScala
 
@@ -387,9 +370,7 @@ abstract class AbstractTestRunConfiguration(
             throw new ExecutionException("Test name not found.")
       }
       suiteClass = getSuiteClass
-    } catch {
-      case e if clazz == null => classNotFoundError()
-    }
+    } catch { case e if clazz == null => classNotFoundError() }
     if (clazz == null && pack == null) classNotFoundError()
     if (suiteClass == null)
       throw new ExecutionException(errorMessage)
@@ -468,9 +449,7 @@ abstract class AbstractTestRunConfiguration(
           case SearchForTest.IN_WHOLE_PROJECT =>
             var jdk: Sdk = null
             for (module <- ModuleManager.getInstance(project).getModules
-                 if jdk == null) {
-              jdk = JavaParameters.getModuleJdk(module)
-            }
+                 if jdk == null) { jdk = JavaParameters.getModuleJdk(module) }
             params.configureByProject(
               project,
               JavaParameters.JDK_AND_CLASSES_AND_TESTS,
@@ -492,9 +471,7 @@ abstract class AbstractTestRunConfiguration(
             val printer: PrintStream = new PrintStream(outputStream)
             if (getFailedTests == null) {
               printer.println("-s")
-              for (cl <- getClasses) {
-                printer.println(cl)
-              }
+              for (cl <- getClasses) { printer.println(cl) }
               if (testKind == TestKind.TEST_NAME && testName != "") {
                 //this is a "by-name" test for single suite, better fail in a known manner then do something undefined
                 assert(getClasses.size == 1)
@@ -525,9 +502,7 @@ abstract class AbstractTestRunConfiguration(
             }
 
             val parms: Array[String] = ParametersList.parse(getTestArgs)
-            for (parm <- parms) {
-              printer.println(parm)
-            }
+            for (parm <- parms) { printer.println(parm) }
 
             printer.close()
             params.getProgramParametersList.add("@" + fileWithParams.getPath)

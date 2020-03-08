@@ -74,9 +74,7 @@ private[deploy] object RPackageUtils extends Logging {
       // scalastyle:off println
       printStream.println(msg)
       // scalastyle:on println
-      if (e != null) {
-        e.printStackTrace(printStream)
-      }
+      if (e != null) { e.printStackTrace(printStream) }
     } else {
       level match {
         case Level.INFO    => logInfo(msg)
@@ -156,18 +154,14 @@ private[deploy] object RPackageUtils extends Logging {
         val entryPath = entry.getName.substring(entryRIndex)
         if (entry.isDirectory) {
           val dir = new File(tempDir, entryPath)
-          if (verbose) {
-            print(s"Creating directory: $dir", printStream)
-          }
+          if (verbose) { print(s"Creating directory: $dir", printStream) }
           dir.mkdirs
         } else {
           val inStream = jar.getInputStream(entry)
           val outPath = new File(tempDir, entryPath)
           Files.createParentDirs(outPath)
           val outStream = new FileOutputStream(outPath)
-          if (verbose) {
-            print(s"Extracting $entry to $outPath", printStream)
-          }
+          if (verbose) { print(s"Extracting $entry to $outPath", printStream) }
           Utils.copyStream(inStream, outStream, closeStreams = true)
         }
       }
@@ -228,9 +222,8 @@ private[deploy] object RPackageUtils extends Logging {
   private def listFilesRecursively(
       dir: File,
       excludePatterns: Seq[String]): Set[File] = {
-    if (!dir.exists()) {
-      Set.empty[File]
-    } else {
+    if (!dir.exists()) { Set.empty[File] }
+    else {
       if (dir.isDirectory) {
         val subDir = dir.listFiles(new FilenameFilter {
           override def accept(dir: File, name: String): Boolean = {
@@ -240,9 +233,7 @@ private[deploy] object RPackageUtils extends Logging {
           }
         })
         subDir.flatMap(listFilesRecursively(_, excludePatterns)).toSet
-      } else {
-        Set(dir)
-      }
+      } else { Set(dir) }
     }
   }
 
@@ -267,9 +258,7 @@ private[deploy] object RPackageUtils extends Logging {
         zipOutputStream.closeEntry()
         fis.close()
       }
-    } finally {
-      zipOutputStream.close()
-    }
+    } finally { zipOutputStream.close() }
     zipFile
   }
 }

@@ -56,37 +56,27 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
   private val settings = new ConcurrentHashMap[String, String]()
 
-  if (loadDefaults) {
-    loadFromSystemProperties(false)
-  }
+  if (loadDefaults) { loadFromSystemProperties(false) }
 
   private[spark] def loadFromSystemProperties(silent: Boolean): SparkConf = {
     // Load any spark.* system properties
     for ((key, value) <- Utils.getSystemProperties
-         if key.startsWith("spark.")) {
-      set(key, value, silent)
-    }
+         if key.startsWith("spark.")) { set(key, value, silent) }
     this
   }
 
   /** Set a configuration variable. */
-  def set(key: String, value: String): SparkConf = {
-    set(key, value, false)
-  }
+  def set(key: String, value: String): SparkConf = { set(key, value, false) }
 
   private[spark] def set(
       key: String,
       value: String,
       silent: Boolean): SparkConf = {
-    if (key == null) {
-      throw new NullPointerException("null key")
-    }
+    if (key == null) { throw new NullPointerException("null key") }
     if (value == null) {
       throw new NullPointerException("null value for " + key)
     }
-    if (!silent) {
-      logDeprecationWarning(key)
-    }
+    if (!silent) { logDeprecationWarning(key) }
     settings.put(key, value)
     this
   }
@@ -107,14 +97,10 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * The master URL to connect to, such as "local" to run locally with one thread, "local[4]" to
     * run locally with 4 cores, or "spark://master:7077" to run on a Spark standalone cluster.
     */
-  def setMaster(master: String): SparkConf = {
-    set("spark.master", master)
-  }
+  def setMaster(master: String): SparkConf = { set("spark.master", master) }
 
   /** Set a name for your application. Shown in the Spark web UI. */
-  def setAppName(name: String): SparkConf = {
-    set("spark.app.name", name)
-  }
+  def setAppName(name: String): SparkConf = { set("spark.app.name", name) }
 
   /** Set JAR files to distribute to the cluster. */
   def setJars(jars: Seq[String]): SparkConf = {
@@ -124,9 +110,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   }
 
   /** Set JAR files to distribute to the cluster. (Java-friendly version.) */
-  def setJars(jars: Array[String]): SparkConf = {
-    setJars(jars.toSeq)
-  }
+  def setJars(jars: Array[String]): SparkConf = { setJars(jars.toSeq) }
 
   /**
     * Set an environment variable to be used when launching executors for this application.
@@ -143,9 +127,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * (for example spark.executorEnv.PATH) but this method makes them easier to set.
     */
   def setExecutorEnv(variables: Seq[(String, String)]): SparkConf = {
-    for ((k, v) <- variables) {
-      setExecutorEnv(k, v)
-    }
+    for ((k, v) <- variables) { setExecutorEnv(k, v) }
     this
   }
 
@@ -160,9 +142,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   /**
     * Set the location where Spark is installed on worker nodes.
     */
-  def setSparkHome(home: String): SparkConf = {
-    set("spark.home", home)
-  }
+  def setSparkHome(home: String): SparkConf = { set("spark.home", home) }
 
   /** Set multiple parameters together */
   def setAll(settings: Traversable[(String, String)]): SparkConf = {
@@ -172,9 +152,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
   /** Set a parameter if it isn't already configured */
   def setIfMissing(key: String, value: String): SparkConf = {
-    if (settings.putIfAbsent(key, value) == null) {
-      logDeprecationWarning(key)
-    }
+    if (settings.putIfAbsent(key, value) == null) { logDeprecationWarning(key) }
     this
   }
 
@@ -260,9 +238,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * - The return type if defined by the configuration entry.
     * - This will throw an exception is the config is not optional and the value is not set.
     */
-  private[spark] def get[T](entry: ConfigEntry[T]): T = {
-    entry.readFrom(this)
-  }
+  private[spark] def get[T](entry: ConfigEntry[T]): T = { entry.readFrom(this) }
 
   /**
     * Get a time parameter as seconds; throws a NoSuchElementException if it's not set. If no
@@ -286,9 +262,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * suffix is provided then milliseconds are assumed.
     * @throws NoSuchElementException
     */
-  def getTimeAsMs(key: String): Long = {
-    Utils.timeStringAsMs(get(key))
-  }
+  def getTimeAsMs(key: String): Long = { Utils.timeStringAsMs(get(key)) }
 
   /**
     * Get a time parameter as milliseconds, falling back to a default if not set. If no
@@ -303,9 +277,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * suffix is provided then bytes are assumed.
     * @throws NoSuchElementException
     */
-  def getSizeAsBytes(key: String): Long = {
-    Utils.byteStringAsBytes(get(key))
-  }
+  def getSizeAsBytes(key: String): Long = { Utils.byteStringAsBytes(get(key)) }
 
   /**
     * Get a size parameter as bytes, falling back to a default if not set. If no
@@ -327,9 +299,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * suffix is provided then Kibibytes are assumed.
     * @throws NoSuchElementException
     */
-  def getSizeAsKb(key: String): Long = {
-    Utils.byteStringAsKb(get(key))
-  }
+  def getSizeAsKb(key: String): Long = { Utils.byteStringAsKb(get(key)) }
 
   /**
     * Get a size parameter as Kibibytes, falling back to a default if not set. If no
@@ -344,9 +314,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * suffix is provided then Mebibytes are assumed.
     * @throws NoSuchElementException
     */
-  def getSizeAsMb(key: String): Long = {
-    Utils.byteStringAsMb(get(key))
-  }
+  def getSizeAsMb(key: String): Long = { Utils.byteStringAsMb(get(key)) }
 
   /**
     * Get a size parameter as Mebibytes, falling back to a default if not set. If no
@@ -361,9 +329,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * suffix is provided then Gibibytes are assumed.
     * @throws NoSuchElementException
     */
-  def getSizeAsGb(key: String): Long = {
-    Utils.byteStringAsGb(get(key))
-  }
+  def getSizeAsGb(key: String): Long = { Utils.byteStringAsGb(get(key)) }
 
   /**
     * Get a size parameter as Gibibytes, falling back to a default if not set. If no

@@ -27,14 +27,10 @@ class GroupMetadataTest extends JUnitSuite {
   var group: GroupMetadata = null
 
   @Before
-  def setUp() {
-    group = new GroupMetadata("groupId", "consumer")
-  }
+  def setUp() { group = new GroupMetadata("groupId", "consumer") }
 
   @Test
-  def testCanRebalanceWhenStable() {
-    assertTrue(group.canRebalance)
-  }
+  def testCanRebalanceWhenStable() { assertTrue(group.canRebalance) }
 
   @Test
   def testCanRebalanceWhenAwaitingSync() {
@@ -86,9 +82,7 @@ class GroupMetadataTest extends JUnitSuite {
   }
 
   @Test(expected = classOf[IllegalStateException])
-  def testStableToStableIllegalTransition() {
-    group.transitionTo(Stable)
-  }
+  def testStableToStableIllegalTransition() { group.transitionTo(Stable) }
 
   @Test(expected = classOf[IllegalStateException])
   def testStableToAwaitingSyncIllegalTransition() {

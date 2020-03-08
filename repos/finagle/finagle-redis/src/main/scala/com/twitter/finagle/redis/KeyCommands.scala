@@ -14,9 +14,7 @@ trait Keys { self: BaseClient =>
     * @return Number of keys removed
     */
   def del(keys: Seq[ChannelBuffer]): Future[JLong] =
-    doRequest(Del(keys)) {
-      case IntegerReply(n) => Future.value(n)
-    }
+    doRequest(Del(keys)) { case IntegerReply(n) => Future.value(n) }
 
   /**
     * Serialize the value stored at key in a Redis-specific format and
@@ -36,9 +34,7 @@ trait Keys { self: BaseClient =>
     * @return true if key exists, false otherwise
     */
   def exists(key: ChannelBuffer): Future[JBoolean] =
-    doRequest(Exists(key)) {
-      case IntegerReply(n) => Future.value((n == 1))
-    }
+    doRequest(Exists(key)) { case IntegerReply(n) => Future.value((n == 1)) }
 
   /**
     * Sets how long it will take the key to expire
@@ -48,9 +44,7 @@ trait Keys { self: BaseClient =>
     * false otherwise.
     */
   def expire(key: ChannelBuffer, ttl: JLong): Future[JBoolean] =
-    doRequest(Expire(key, ttl)) {
-      case IntegerReply(n) => Future.value(n == 1)
-    }
+    doRequest(Expire(key, ttl)) { case IntegerReply(n) => Future.value(n == 1) }
 
   /**
     * Same effect and semantic as "expire", but takes an absolute Unix timestamp
@@ -86,9 +80,7 @@ trait Keys { self: BaseClient =>
     *         false if key was not moved for any reason.
     */
   def move(key: ChannelBuffer, db: ChannelBuffer): Future[JBoolean] =
-    doRequest(Move(key, db)) {
-      case IntegerReply(n) => Future.value(n == 1)
-    }
+    doRequest(Move(key, db)) { case IntegerReply(n) => Future.value(n == 1) }
 
   /**
     * Set a key's time to live in milliseconds.
@@ -156,11 +148,8 @@ trait Keys { self: BaseClient =>
   def ttl(key: ChannelBuffer): Future[Option[JLong]] =
     doRequest(Ttl(key)) {
       case IntegerReply(n) => {
-        if (n != -1) {
-          Future.value(Some(n))
-        } else {
-          Future.value(None)
-        }
+        if (n != -1) { Future.value(Some(n)) }
+        else { Future.value(None) }
       }
     }
 

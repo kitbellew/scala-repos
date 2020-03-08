@@ -82,9 +82,7 @@ private[streaming] class DirectKafkaInputDStream[
         new DirectKafkaRateController(
           id,
           RateEstimator.create(ssc.conf, context.graph.batchDuration)))
-    } else {
-      None
-    }
+    } else { None }
   }
 
   protected val kc = new KafkaCluster(kafkaParams)
@@ -124,9 +122,7 @@ private[streaming] class DirectKafkaInputDStream[
       Some(effectiveRateLimitPerPartition.map {
         case (tp, limit) => tp -> (secsPerBatch * limit).toLong
       })
-    } else {
-      None
-    }
+    } else { None }
   }
 
   protected var currentOffsets = fromOffsets
@@ -138,16 +134,13 @@ private[streaming] class DirectKafkaInputDStream[
     // Either.fold would confuse @tailrec, do it manually
     if (o.isLeft) {
       val err = o.left.get.toString
-      if (retries <= 0) {
-        throw new SparkException(err)
-      } else {
+      if (retries <= 0) { throw new SparkException(err) }
+      else {
         log.error(err)
         Thread.sleep(kc.config.refreshLeaderBackoffMs)
         latestLeaderOffsets(retries - 1)
       }
-    } else {
-      o.right.get
-    }
+    } else { o.right.get }
   }
 
   // limits the maximum number of messages per partition

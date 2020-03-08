@@ -93,9 +93,8 @@ trait JavaConversionHelpers {
                 case "void" => "Unit"
                 case n      => n.capitalize
               })
-            } else if (c == classOf[java.lang.Object]) {
-              ScalaType("Any")
-            } else {
+            } else if (c == classOf[java.lang.Object]) { ScalaType("Any") }
+            else {
               ScalaType(
                 name = c.getName.replace("$", innerClassDelim(c)),
                 params = c.getTypeParameters.map(step(_, nextLevel)).toList
@@ -136,11 +135,8 @@ trait JavaConversionHelpers {
           p.toString.replace("$", ".")
         case _: WildcardType => "?"
         case c: Class[_] =>
-          if (c.isArray) {
-            step(c.getComponentType) + arrayNotation
-          } else {
-            c.getName.replace("$", innerClassDelim(c))
-          }
+          if (c.isArray) { step(c.getComponentType) + arrayNotation }
+          else { c.getName.replace("$", innerClassDelim(c)) }
         case _ =>
           tpe.toString
       }

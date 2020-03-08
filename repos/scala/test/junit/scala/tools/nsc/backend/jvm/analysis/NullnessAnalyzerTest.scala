@@ -22,9 +22,7 @@ import scala.collection.convert.decorateAsScala._
 object NullnessAnalyzerTest extends ClearAfterClass.Clearable {
   var noOptCompiler = newCompiler(extraArgs = "-Yopt:l:none")
 
-  def clear(): Unit = {
-    noOptCompiler = null
-  }
+  def clear(): Unit = { noOptCompiler = null }
 }
 
 @RunWith(classOf[JUnit4])

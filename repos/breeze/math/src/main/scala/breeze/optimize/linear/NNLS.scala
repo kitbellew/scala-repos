@@ -128,9 +128,7 @@ class NNLS(val maxIters: Int = -1) extends SerializableLogging {
 
       // project the gradient
       cforRange(0 until n) { i =>
-        if (grad(i) > 0.0 && x(i) == 0.0) {
-          grad(i) = 0.0
-        }
+        if (grad(i) > 0.0 && x(i) == 0.0) { grad(i) = 0.0 }
       }
 
       val ngrad = grad.dot(grad)
@@ -150,12 +148,8 @@ class NNLS(val maxIters: Int = -1) extends SerializableLogging {
           // reject the CG step if it could lead to premature termination
           dir := grad
           ndir = dir dot dir
-        } else {
-          step = dstep
-        }
-      } else {
-        ndir = dir dot dir
-      }
+        } else { step = dstep }
+      } else { ndir = dir dot dir }
 
       // terminate?
       if (stop(step, ndir, nx)) {
@@ -173,18 +167,14 @@ class NNLS(val maxIters: Int = -1) extends SerializableLogging {
       } else {
         // don't run through the walls
         cforRange(0 until n) { i =>
-          if (step * dir(i) > x(i)) {
-            step = x(i) / dir(i)
-          }
+          if (step * dir(i) > x(i)) { step = x(i) / dir(i) }
         }
         // take the step
         cforRange(0 until n) { i =>
           if (step * dir(i) > x(i) * (1 - 1e-14)) {
             x(i) = 0
             nextWall = nextIter
-          } else {
-            x(i) -= step * dir(i)
-          }
+          } else { x(i) -= step * dir(i) }
         }
         lastDir := dir
         nextNorm = ngrad

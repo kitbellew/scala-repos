@@ -17,9 +17,7 @@ class VariablesCompletionProcessor(
     extends BaseProcessor(kinds) {
   def execute(element: PsiElement, state: ResolveState): Boolean = {
     val named = element.asInstanceOf[PsiNamedElement]
-    if (kindMatches(element)) {
-      candidatesSet += new ScalaResolveResult(named)
-    }
+    if (kindMatches(element)) { candidatesSet += new ScalaResolveResult(named) }
     true
   }
 }

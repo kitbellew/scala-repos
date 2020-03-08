@@ -49,8 +49,12 @@ object IngestProcessing {
   case object AllOrNothing extends ErrorHandling
   case object IngestAllPossible extends ErrorHandling
 
-  sealed trait Durability { def jobId: Option[JobId] }
-  case object LocalDurability extends Durability { val jobId = None }
+  sealed trait Durability {
+    def jobId: Option[JobId]
+  }
+  case object LocalDurability extends Durability {
+    val jobId = None
+  }
   case class GlobalDurability(jid: JobId) extends Durability {
     val jobId = Some(jid)
   }
@@ -195,9 +199,7 @@ class DefaultIngestProcessingSelectors(
               maxFields,
               ingestStore))
         }
-      } else {
-        None
-      }
+      } else { None }
     }
   }
 

@@ -234,9 +234,7 @@ class GroupCoordinator(
                   JoinGroupResult(
                     members = if (memberId == group.leaderId) {
                       group.currentMemberMetadata
-                    } else {
-                      Map.empty
-                    },
+                    } else { Map.empty },
                     memberId = memberId,
                     generationId = group.generationId,
                     subProtocol = group.protocol,
@@ -445,9 +443,8 @@ class GroupCoordinator(
       responseCallback(Errors.NONE.code)
     } else {
       val group = groupManager.getGroup(groupId)
-      if (group == null) {
-        responseCallback(Errors.UNKNOWN_MEMBER_ID.code)
-      } else {
+      if (group == null) { responseCallback(Errors.UNKNOWN_MEMBER_ID.code) }
+      else {
         group synchronized {
           if (group.is(Dead)) {
             // if the group is marked as dead, it means some other thread has just removed the group
@@ -595,13 +592,8 @@ class GroupCoordinator(
       (Errors.GROUP_LOAD_IN_PROGRESS, GroupCoordinator.EmptyGroup)
     } else {
       val group = groupManager.getGroup(groupId)
-      if (group == null) {
-        (Errors.NONE, GroupCoordinator.DeadGroup)
-      } else {
-        group synchronized {
-          (Errors.NONE, group.summary)
-        }
-      }
+      if (group == null) { (Errors.NONE, GroupCoordinator.DeadGroup) }
+      else { group synchronized { (Errors.NONE, group.summary) } }
     }
   }
 

@@ -31,9 +31,7 @@ abstract class PositionManagerTestBase extends ScalaDebuggerTestCase {
       waitForBreakpoint()
       val posManager = new ScalaPositionManager(getDebugProcess)
       for ((position, className) <- sourcePositions.zip(expectedClassNames)) {
-        val classes = managed {
-          posManager.getAllClasses(position)
-        }
+        val classes = managed { posManager.getAllClasses(position) }
         val classNames = classes.asScala.map(_.name())
         Assert.assertTrue(
           s"Wrong classes are found at ${position.toString} (found: ${classNames

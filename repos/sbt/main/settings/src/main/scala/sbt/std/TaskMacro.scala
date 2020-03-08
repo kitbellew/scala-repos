@@ -421,7 +421,9 @@ object TaskMacro {
       Instance.idTransform)
 
   // TODO 2.11 Remove this after dropping 2.10.x support.
-  private object HasCompat { val compat = ??? }; import HasCompat._
+  private object HasCompat {
+    val compat = ???
+  }; import HasCompat._
 
   private[this] def inputTaskDynMacro0[T: c.WeakTypeTag](c: Context)(
       t: c.Expr[Initialize[Task[T]]]): c.Expr[Initialize[InputTask[T]]] = {

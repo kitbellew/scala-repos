@@ -186,9 +186,7 @@ class MarathonSchedulerService @Inject() (
     // Block on the latch which will be countdown only when shutdown has been
     // triggered. This is to prevent run()
     // from exiting.
-    scala.concurrent.blocking {
-      latch.await()
-    }
+    scala.concurrent.blocking { latch.await() }
 
     log.info("Completed run")
   }
@@ -225,9 +223,7 @@ class MarathonSchedulerService @Inject() (
       // The following block asynchronously runs the driver. Note that driver.run()
       // blocks until the driver has been stopped (or aborted).
       Future {
-        scala.concurrent.blocking {
-          driver.foreach(_.run())
-        }
+        scala.concurrent.blocking { driver.foreach(_.run()) }
       } onComplete {
         case Success(_) =>
           log.info(
@@ -248,9 +244,7 @@ class MarathonSchedulerService @Inject() (
           // aren't then the driver was stopped via external means. For example,
           // our leadership could have been defeated or perhaps it was
           // abdicated. Therefore, for these cases we offer our leadership again.
-          if (isRunning) {
-            offerLeadership()
-          }
+          if (isRunning) { offerLeadership() }
         case Failure(t) =>
           log.error("Exception while running driver", t)
           abdicateAfterFailure(
@@ -414,9 +408,8 @@ class MarathonSchedulerService @Inject() (
     timer.schedule(
       new TimerTask {
         def run() {
-          if (leader.get()) {
-            schedulerActor ! ScaleApps
-          } else log.info("Not leader therefore not scaling apps")
+          if (leader.get()) { schedulerActor ! ScaleApps }
+          else log.info("Not leader therefore not scaling apps")
         }
       },
       scaleAppsInitialDelay.toMillis,
@@ -459,9 +452,7 @@ class MarathonSchedulerService @Inject() (
       new Gauge[Long] {
         val startedAt = System.currentTimeMillis()
 
-        override def getValue: Long = {
-          System.currentTimeMillis() - startedAt
-        }
+        override def getValue: Long = { System.currentTimeMillis() - startedAt }
       }
     )
   }

@@ -154,9 +154,7 @@ private[finagle] class InetResolver(
       .flatMap { seq: Seq[Try[Seq[Address]]] =>
         // Filter out all successes. If there was at least 1 success, consider
         // the entire operation a success
-        val results = seq.collect {
-          case Return(subset) => subset
-        }.flatten
+        val results = seq.collect { case Return(subset) => subset }.flatten
 
         // Consider any result a success. Ignore partial failures.
         if (results.nonEmpty) {
@@ -168,9 +166,7 @@ private[finagle] class InetResolver(
           failures.incr()
           log.warning("Resolution failed for all hosts")
 
-          seq.collectFirst {
-            case Throw(e) => e
-          } match {
+          seq.collectFirst { case Throw(e) => e } match {
             case Some(_: UnknownHostException) => Future.value(Addr.Neg)
             case Some(e)                       => Future.value(Addr.Failed(e))
             case None                          => Future.value(Addr.Bound(Set[Address]()))

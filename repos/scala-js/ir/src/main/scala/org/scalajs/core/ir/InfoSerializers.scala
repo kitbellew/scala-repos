@@ -140,9 +140,7 @@ object InfoSerializers {
       val methods0 = readList(readMethod())
       val methods = if (useHacks065) {
         methods0.filter(m => !Definitions.isReflProxyName(m.encodedName))
-      } else {
-        methods0
-      }
+      } else { methods0 }
 
       val info = ClassInfo(
         encodedName,

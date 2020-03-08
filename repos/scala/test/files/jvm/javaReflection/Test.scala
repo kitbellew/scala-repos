@@ -60,9 +60,8 @@ object Test {
 
   def assertNotAnonymous(c: Class[_]) = {
     val an =
-      try {
-        c.isAnonymousClass
-      } catch {
+      try { c.isAnonymousClass }
+      catch {
         // isAnonymousClass is implemented using getSimpleName, which may throw.
         case e: InternalError => false
       }

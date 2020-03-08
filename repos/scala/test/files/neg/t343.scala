@@ -6,7 +6,5 @@ class C {
 }
 
 object Test {
-  def main(args: Array[String]) = {
-    val c = new C().get;
-  }
+  def main(args: Array[String]) = { val c = new C().get; }
 }

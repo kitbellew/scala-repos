@@ -6,17 +6,11 @@ import org.scalatra.test.scalatest.ScalatraFunSuite
 import org.scalatra.util.io.withTempFile
 
 class ScalatraTestServlet extends ScalatraServlet {
-  get("/") {
-    "root"
-  }
+  get("/") { "root" }
 
-  get("/this/:test/should/:pass") {
-    params("test") + params("pass")
-  }
+  get("/this/:test/should/:pass") { params("test") + params("pass") }
 
-  get("/xml/:must/:val") {
-    <h1>{params("must") + params("val")}</h1>
-  }
+  get("/xml/:must/:val") { <h1>{params("must") + params("val")}</h1> }
 
   post("/post/test") {
     params.get("posted_value") match {
@@ -25,17 +19,11 @@ class ScalatraTestServlet extends ScalatraServlet {
     }
   }
 
-  post("/post/:test/val") {
-    params("posted_value") + params("test")
-  }
+  post("/post/:test/val") { params("posted_value") + params("test") }
 
-  get("/no_content") {
-    status = 204
-  }
+  get("/no_content") { status = 204 }
 
-  get("/return-int") {
-    403
-  }
+  get("/return-int") { 403 }
 
   get("/redirect") {
     session("halted") = "halted"
@@ -43,69 +31,41 @@ class ScalatraTestServlet extends ScalatraServlet {
     session("halted") = "did not halt"
   }
 
-  get("/redirected") {
-    session("halted")
-  }
+  get("/redirected") { session("halted") }
 
-  get("/print_referrer") {
-    (request referrer) getOrElse ("NONE")
-  }
+  get("/print_referrer") { (request referrer) getOrElse ("NONE") }
 
-  get("/binary/test") {
-    "test".getBytes
-  }
+  get("/binary/test") { "test".getBytes }
 
-  get("/file") {
-    new File(params("filename"))
-  }
+  get("/file") { new File(params("filename")) }
 
-  get("/returns-unit") {
-    ()
-  }
+  get("/returns-unit") { () }
 
-  get("/trailing-slash-is-optional/?") {
-    "matched trailing slash route"
-  }
+  get("/trailing-slash-is-optional/?") { "matched trailing slash route" }
 
-  get("/people/") {
-    "people"
-  }
+  get("/people/") { "people" }
 
-  get("/people/:person") {
-    params.getOrElse("person", "<no person>")
-  }
+  get("/people/:person") { params.getOrElse("person", "<no person>") }
 
-  get("/init-param/:name") {
-    initParameter(params("name")).toString
-  }
+  get("/init-param/:name") { initParameter(params("name")).toString }
 }
 
 class ScalatraTest extends ScalatraFunSuite {
   val filterHolder = addServlet(classOf[ScalatraTestServlet], "/*")
   filterHolder.setInitParameter("bofh-excuse", "decreasing electron flux")
 
-  test("GET / should return 'root'") {
-    get("/") {
-      body should equal("root")
-    }
-  }
+  test("GET / should return 'root'") { get("/") { body should equal("root") } }
 
   test("GET /this/will/should/work should return 'willwork'") {
-    get("/this/will/should/work") {
-      body should equal("willwork")
-    }
+    get("/this/will/should/work") { body should equal("willwork") }
   }
 
   test("GET /xml/really/works should return '<h1>reallyworks</h1>'") {
-    get("/xml/really/works") {
-      body should equal("<h1>reallyworks</h1>")
-    }
+    get("/xml/really/works") { body should equal("<h1>reallyworks</h1>") }
   }
 
   test("POST /post/test with posted_value=yes should return 'yes'") {
-    post("/post/test", "posted_value" -> "yes") {
-      body should equal("yes")
-    }
+    post("/post/test", "posted_value" -> "yes") { body should equal("yes") }
   }
 
   test(
@@ -138,9 +98,7 @@ class ScalatraTest extends ScalatraFunSuite {
 
   test(
     "POST /post/test with posted_value=<multi-byte str> should return the multi-byte str") {
-    post("/post/test", "posted_value" -> "こんにちは") {
-      body should equal("こんにちは")
-    }
+    post("/post/test", "posted_value" -> "こんにちは") { body should equal("こんにちは") }
   }
 
   test("GET /print_referrer should return Referer") {
@@ -148,27 +106,19 @@ class ScalatraTest extends ScalatraFunSuite {
     get(
       "/print_referrer",
       Map.empty[String, String],
-      Map(referer -> "somewhere")) {
-      body should equal("somewhere")
-    }
+      Map(referer -> "somewhere")) { body should equal("somewhere") }
   }
 
   test("GET /print_refrerer should return NONE when no referrer") {
-    get("/print_referrer") {
-      body should equal("NONE")
-    }
+    get("/print_referrer") { body should equal("NONE") }
   }
 
   test("POST /post/test without params return \"posted_value is null\"") {
-    post("/post/test") {
-      body should equal("posted_value is null")
-    }
+    post("/post/test") { body should equal("posted_value is null") }
   }
 
   test("render binary response when action returns a byte array") {
-    get("/binary/test") {
-      body should equal("test")
-    }
+    get("/binary/test") { body should equal("test") }
   }
 
   test("render a file when returned by an action") {
@@ -181,9 +131,7 @@ class ScalatraTest extends ScalatraFunSuite {
   }
 
   test("Do not output response body if action returns Unit") {
-    get("/returns-unit") {
-      body should equal("")
-    }
+    get("/returns-unit") { body should equal("") }
   }
 
   test("optional trailing slash if route ends in '/?'") {
@@ -197,9 +145,7 @@ class ScalatraTest extends ScalatraFunSuite {
   }
 
   test("named parameter doesn't match if empty") {
-    get("/people/") {
-      body should equal("people")
-    }
+    get("/people/") { body should equal("people") }
   }
 
   test("init parameter returns Some if set") {
@@ -209,9 +155,7 @@ class ScalatraTest extends ScalatraFunSuite {
   }
 
   test("init parameter returns None if not set") {
-    get("/init-param/derp") {
-      body should equal("None")
-    }
+    get("/init-param/derp") { body should equal("None") }
   }
 
   test("int return value sets status and no body") {

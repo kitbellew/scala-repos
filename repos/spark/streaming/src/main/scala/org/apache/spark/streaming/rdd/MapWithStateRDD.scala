@@ -60,10 +60,9 @@ private[streaming] object MapWithStateRDDRecord {
         wrappedState.wrap(newStateMap.get(key))
         val returned =
           mappingFunction(batchTime, key, Some(value), wrappedState)
-        if (wrappedState.isRemoved) {
-          newStateMap.remove(key)
-        } else if (wrappedState.isUpdated
-                   || (wrappedState.exists && timeoutThresholdTime.isDefined)) {
+        if (wrappedState.isRemoved) { newStateMap.remove(key) }
+        else if (wrappedState.isUpdated
+                 || (wrappedState.exists && timeoutThresholdTime.isDefined)) {
           newStateMap.put(key, wrappedState.get(), batchTime.milliseconds)
         }
         mappedData ++= returned
@@ -192,9 +191,7 @@ private[streaming] class MapWithStateRDD[
     partitionedDataRDD = null
   }
 
-  def setFullScan(): Unit = {
-    doFullScan = true
-  }
+  def setFullScan(): Unit = { doFullScan = true }
 }
 
 private[streaming] object MapWithStateRDD {

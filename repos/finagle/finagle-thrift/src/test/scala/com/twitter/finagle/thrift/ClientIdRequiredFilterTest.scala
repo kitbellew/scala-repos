@@ -39,9 +39,7 @@ class ClientIdRequiredFilterTest extends FunSuite with MockitoSugar {
     import c._
 
     ClientId.let(None) {
-      intercept[NoClientIdSpecifiedException] {
-        Await.result(service(request))
-      }
+      intercept[NoClientIdSpecifiedException] { Await.result(service(request)) }
       verify(underlying, times(0)).apply(Matchers.anyString())
     }
   }

@@ -217,9 +217,8 @@ trait ClassHelpers { self: ControlHelpers =>
     * @return the result of the method invocation or throws the root exception causing an error
     */
   def invokeControllerMethod(clz: Class[_], meth: String) = {
-    try {
-      clz.getMethod(meth).invoke(clz.newInstance)
-    } catch {
+    try { clz.getMethod(meth).invoke(clz.newInstance) }
+    catch {
       case c: InvocationTargetException => {
         def findRoot(e: Throwable) {
           if (e.getCause == null || e.getCause == e) throw e
@@ -417,11 +416,8 @@ trait ClassHelpers { self: ControlHelpers =>
           case Nil => Empty
           case x :: xs =>
             Full(() => {
-              try {
-                Full(x.invoke(instance))
-              } catch {
-                case e: InvocationTargetException => throw e.getCause
-              }
+              try { Full(x.invoke(instance)) }
+              catch { case e: InvocationTargetException => throw e.getCause }
             })
         }
       }

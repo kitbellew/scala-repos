@@ -4,7 +4,9 @@ import java.io.File
 import File.{pathSeparator => /}
 import scala.io.Source
 
-class Holder { var value: Any = _ }
+class Holder {
+  var value: Any = _
+}
 
 import scala.tools.nsc.{GenericRunnerSettings, Interpreter, Settings}
 

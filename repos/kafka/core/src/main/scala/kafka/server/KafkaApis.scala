@@ -517,9 +517,7 @@ class KafkaApis(
                 s"Topic and partition to exceptions: $exceptionsSummary"
             )
             requestChannel.closeConnection(request.processor, request)
-          } else {
-            requestChannel.noOperation(request.processor, request)
-          }
+          } else { requestChannel.noOperation(request.processor, request) }
         } else {
           val respHeader = new ResponseHeader(request.header.correlationId)
           val respBody = request.header.apiVersion match {
@@ -678,9 +676,8 @@ class KafkaApis(
       request.apiRemoteCompleteTimeMs = SystemTime.milliseconds
 
       // Do not throttle replication traffic
-      if (fetchRequest.isFromFollower) {
-        fetchResponseCallback(0)
-      } else {
+      if (fetchRequest.isFromFollower) { fetchResponseCallback(0) }
+      else {
         quotaManagers(ApiKeys.FETCH.id).recordAndMaybeThrottle(
           fetchRequest.clientId,
           FetchResponse.responseSize(
@@ -929,9 +926,8 @@ class KafkaApis(
       : Seq[MetadataResponse.TopicMetadata] = {
     val topicResponses =
       metadataCache.getTopicMetadata(topics, securityProtocol)
-    if (topics.isEmpty || topicResponses.size == topics.size) {
-      topicResponses
-    } else {
+    if (topics.isEmpty || topicResponses.size == topics.size) { topicResponses }
+    else {
       val nonExistentTopics = topics -- topicResponses.map(_.topic).toSet
       val responsesForNonExistentTopics = nonExistentTopics.map { topic =>
         if (topic == TopicConstants.GROUP_METADATA_TOPIC_NAME) {

@@ -72,18 +72,15 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
   def traverse[G[_], B](f: A => G[B])(implicit
       G: Applicative[G],
       F: Traverse[F]): G[WriterT[F, W, B]] = {
-    G.map(F.traverse(run) {
-      case (w, a) => G.map(f(a))(b => (w, b))
-    })(WriterT(_))
+    G.map(F.traverse(run) { case (w, a) => G.map(f(a))(b => (w, b)) })(
+      WriterT(_))
   }
 
   def foldRight[B](z: => B)(f: (A, => B) => B)(implicit F: Foldable[F]) =
     F.foldr(run, z) { a => b => f(a._2, b) }
 
   def bimap[C, D](f: W => C, g: A => D)(implicit F: Functor[F]) =
-    writerT[F, C, D](F.map(run)({
-      case (a, b) => (f(a), g(b))
-    }))
+    writerT[F, C, D](F.map(run)({ case (a, b) => (f(a), g(b)) }))
 
   def leftMap[C](f: W => C)(implicit F: Functor[F]): WriterT[F, C, A] =
     bimap(f, identity)
@@ -96,17 +93,12 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
     })(writerT(_))
 
   def rwst[R, S](implicit F: Functor[F]): ReaderWriterStateT[F, R, W, S, A] =
-    ReaderWriterStateT((r, s) =>
-      F.map(self.run) {
-        case (w, a) => (w, a, s)
-      })
+    ReaderWriterStateT((r, s) => F.map(self.run) { case (w, a) => (w, a, s) })
 
   def wpoint[G[_]](implicit
       F: Functor[F],
       P: Applicative[G]): WriterT[F, G[W], A] =
-    writerT(F.map(self.run) {
-      case (w, a) => (P.point(w), a)
-    })
+    writerT(F.map(self.run) { case (w, a) => (P.point(w), a) })
 
   def colocal[X](f: W => X)(implicit F: Functor[F]): WriterT[F, X, A] =
     mapWritten(f)

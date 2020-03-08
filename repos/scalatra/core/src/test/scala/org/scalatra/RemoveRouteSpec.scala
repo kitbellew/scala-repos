@@ -5,13 +5,9 @@ import org.scalatra.test.scalatest.ScalatraWordSpec
 class RemoveRouteServlet extends ScalatraServlet {
   val foo = get("/foo") { "foo" }
 
-  post("/remove") {
-    removeRoute("GET", foo)
-  }
+  post("/remove") { removeRoute("GET", foo) }
 
-  notFound {
-    "not found"
-  }
+  notFound { "not found" }
 }
 
 class RemoveRouteSpec extends ScalatraWordSpec {
@@ -20,13 +16,9 @@ class RemoveRouteSpec extends ScalatraWordSpec {
   "a route" should {
     "not run" when {
       "it has been removed" in {
-        get("/foo") {
-          body should equal("foo")
-        }
+        get("/foo") { body should equal("foo") }
         post("/remove") {}
-        get("/foo") {
-          body should equal("not found")
-        }
+        get("/foo") { body should equal("not found") }
       }
     }
   }

@@ -325,9 +325,8 @@ object KafkaUtils {
       messageHandler: MessageAndMetadata[K, V] => R
   ): RDD[R] = sc.withScope {
     val kc = new KafkaCluster(kafkaParams)
-    val leaderMap = if (leaders.isEmpty) {
-      leadersForRanges(kc, offsetRanges)
-    } else {
+    val leaderMap = if (leaders.isEmpty) { leadersForRanges(kc, offsetRanges) }
+    else {
       // This could be avoided by refactoring KafkaRDD.leaders and KafkaCluster to use Broker
       leaders.map {
         case (tp: TopicAndPartition, Broker(host, port)) => (tp, (host, port))

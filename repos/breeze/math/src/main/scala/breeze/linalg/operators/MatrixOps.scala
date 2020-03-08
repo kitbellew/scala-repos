@@ -23,9 +23,7 @@ trait MatrixGenericOps { this: Matrix.type =>
       require(a.cols == b.cols, "Col dimension mismatch!")
       val bb = subtype(b)
       // TODO: might make sense to have a "am I sparse?" check and use activeIterator instead?
-      for (i <- 0 until a.rows; j <- 0 until a.cols) {
-        a(i, j) = bb(i, j)
-      }
+      for (i <- 0 until a.rows; j <- 0 until a.cols) { a(i, j) = bb(i, j) }
 
     }
   }
@@ -33,9 +31,7 @@ trait MatrixGenericOps { this: Matrix.type =>
     new SetMMOp[V, MM]
 
   implicit def canCopyMatrix[V: ClassTag] = new CanCopy[Matrix[V]] {
-    def apply(v1: Matrix[V]) = {
-      v1.copy
-    }
+    def apply(v1: Matrix[V]) = { v1.copy }
   }
 
   import breeze.math.PowImplicits._

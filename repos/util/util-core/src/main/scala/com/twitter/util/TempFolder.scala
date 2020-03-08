@@ -48,11 +48,8 @@ trait TempFolder {
     } while (!folder.mkdir())
     _folderName.set(folder)
 
-    try {
-      f
-    } finally {
-      Files.delete(folder)
-    }
+    try { f }
+    finally { Files.delete(folder) }
   }
 
   /**

@@ -78,9 +78,7 @@ class ContinuousQueryManagerSuite
 
       assert(sqlContext.streams.active.toSet === Set(q2, q3))
       val ex1 = withClue("no error while getting non-active query") {
-        intercept[IllegalArgumentException] {
-          sqlContext.streams.get(q1.name)
-        }
+        intercept[IllegalArgumentException] { sqlContext.streams.get(q1.name) }
       }
       assert(
         ex1.getMessage.contains(q1.name),
@@ -276,11 +274,8 @@ class ContinuousQueryManagerSuite
           query
         }
       }
-      try {
-        body(queries)
-      } finally {
-        queries.foreach(_.stop())
-      }
+      try { body(queries) }
+      finally { queries.foreach(_.stop()) }
     }
   }
 
@@ -299,9 +294,7 @@ class ContinuousQueryManagerSuite
         assert(
           returnedValue === expectedReturnedValue,
           "Returned value does not match expected")
-      } else {
-        sqlContext.streams.awaitAnyTermination()
-      }
+      } else { sqlContext.streams.awaitAnyTermination() }
     }
 
     AwaitTerminationTester.test(

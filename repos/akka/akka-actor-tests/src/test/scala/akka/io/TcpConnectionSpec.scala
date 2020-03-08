@@ -56,9 +56,7 @@ class TcpConnectionSpec extends AkkaSpec("""
       clientSocketOnServer.close()
       clientSocket.read(ByteBuffer.allocate(1))
       null
-    } catch {
-      case NonFatal(e) ⇒ e.getMessage
-    }
+    } catch { case NonFatal(e) ⇒ e.getMessage }
   }
 
   lazy val ConnectionRefusedMessagePrefix: String = {
@@ -71,9 +69,7 @@ class TcpConnectionSpec extends AkkaSpec("""
       clientSocket.finishConnect()
       clientSocket.write(ByteBuffer.allocate(1))
       null
-    } catch {
-      case NonFatal(e) ⇒ e.getMessage.take(15)
-    }
+    } catch { case NonFatal(e) ⇒ e.getMessage.take(15) }
   }
 
   "An outgoing connection" must {

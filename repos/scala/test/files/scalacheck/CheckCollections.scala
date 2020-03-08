@@ -47,7 +47,5 @@ object Test extends Properties("reflect.internal.util.Collections") {
 
   checkStackOverflow()
 
-  for {
-    (label, prop) <- tests
-  } property(label) = prop
+  for { (label, prop) <- tests } property(label) = prop
 }

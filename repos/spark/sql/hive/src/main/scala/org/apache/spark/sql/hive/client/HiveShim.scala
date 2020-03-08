@@ -131,9 +131,7 @@ private[client] sealed abstract class Shim {
   protected def findMethod(
       klass: Class[_],
       name: String,
-      args: Class[_]*): Method = {
-    klass.getMethod(name, args: _*)
-  }
+      args: Class[_]*): Method = { klass.getMethod(name, args: _*) }
 
 }
 

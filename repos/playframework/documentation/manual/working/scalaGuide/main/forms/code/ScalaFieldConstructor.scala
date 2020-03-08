@@ -48,8 +48,6 @@ package scalaguide.forms.scalafieldconstructor {
 
   }
 
-  package html.models {
-    case class User(username: String)
-  }
+  package html.models { case class User(username: String) }
 
 }

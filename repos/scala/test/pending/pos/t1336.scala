@@ -4,7 +4,5 @@ object Foo {
     f(1, 2)
   }
 
-  for ((a, b) <- this) {
-    println((a, b))
-  }
+  for ((a, b) <- this) { println((a, b)) }
 }

@@ -40,9 +40,7 @@ case object AnyToTiny extends MatrixJoiner {
   override def apply(
       left: Pipe,
       joinFields: (Fields, Fields),
-      right: Pipe): Pipe = {
-    RichPipe(left).joinWithTiny(joinFields, right)
-  }
+      right: Pipe): Pipe = { RichPipe(left).joinWithTiny(joinFields, right) }
 }
 class BigToSmall(red: Int) extends MatrixJoiner {
   override def apply(
@@ -748,9 +746,7 @@ object MatrixProduct extends java.io.Serializable {
       ColVector[IdxT, ValT]] {
       def apply(
           left: DiagonalMatrix[IdxT, ValT],
-          right: ColVector[IdxT, ValT]) = {
-        (left * (right.diag)).toCol
-      }
+          right: ColVector[IdxT, ValT]) = { (left * (right.diag)).toCol }
     }
   implicit def rowDiagProduct[IdxT, ValT](
       implicit ring: Ring[ValT]): MatrixProduct[
@@ -763,8 +759,6 @@ object MatrixProduct extends java.io.Serializable {
       RowVector[IdxT, ValT]] {
       def apply(
           left: RowVector[IdxT, ValT],
-          right: DiagonalMatrix[IdxT, ValT]) = {
-        ((left.diag) * right).toRow
-      }
+          right: DiagonalMatrix[IdxT, ValT]) = { ((left.diag) * right).toRow }
     }
 }

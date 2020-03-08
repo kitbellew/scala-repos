@@ -98,11 +98,7 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
             pos -= 1
             deleteOne()
           }
-        } else {
-          if (pos < inputs(sfidx).length) {
-            deleteOne()
-          }
-        }
+        } else { if (pos < inputs(sfidx).length) { deleteOne() } }
       }
     }
 

@@ -21,21 +21,15 @@ class UrlGeneratorSupportTest extends ScalatraFunSuite {
   addFilter(new UrlGeneratorContextTestFilter, "/*")
 
   test("Url of a servlet mounted on /*") {
-    get("/foo") {
-      body should equal("/foo")
-    }
+    get("/foo") { body should equal("/foo") }
   }
 
   test("Url of a servlet mounted on /servlet-path/*") {
-    get("/servlet-path/foo") {
-      body should equal("/servlet-path/foo")
-    }
+    get("/servlet-path/foo") { body should equal("/servlet-path/foo") }
   }
 
   test("Url of a filter does not duplicate the servlet path") {
-    get("/filtered/foo") {
-      body should equal("/filtered/foo")
-    }
+    get("/filtered/foo") { body should equal("/filtered/foo") }
   }
 }
 
@@ -48,9 +42,7 @@ class UrlGeneratorNonRootContextSupportTest extends ScalatraFunSuite {
   addFilter(new UrlGeneratorContextTestFilter, "/*")
 
   test("Url of a servlet mounted on /*") {
-    get("/context/foo") {
-      body should equal("/context/foo")
-    }
+    get("/context/foo") { body should equal("/context/foo") }
   }
 
   test("Url of a servlet mounted on /servlet-path/*") {
@@ -60,8 +52,6 @@ class UrlGeneratorNonRootContextSupportTest extends ScalatraFunSuite {
   }
 
   test("Url of a filter does not duplicate the servlet path") {
-    get("/context/filtered/foo") {
-      body should equal("/context/filtered/foo")
-    }
+    get("/context/filtered/foo") { body should equal("/context/filtered/foo") }
   }
 }

@@ -288,31 +288,15 @@ object Test extends App {
         x21: Int,
         x22: Int) => x1)
 
-  testAnonFunClass(
-    {
-      case x: Int => x
-    }: PartialFunction[Int, Int],
-    sp = true)
+  testAnonFunClass({ case x: Int => x }: PartialFunction[Int, Int], sp = true)
 
-  testAnonFunClass({
-    case x: Int => x
-  }: PartialFunction[Any, Any])
+  testAnonFunClass({ case x: Int => x }: PartialFunction[Any, Any])
 
-  testAnonFunClass(
-    {
-      case x: Int => ()
-    }: PartialFunction[Int, Unit],
-    sp = true)
+  testAnonFunClass({ case x: Int => () }: PartialFunction[Int, Unit], sp = true)
 
-  testAnonFunClass({
-    case x: String => 1
-  }: PartialFunction[String, Int])
+  testAnonFunClass({ case x: String => 1 }: PartialFunction[String, Int])
 
-  testAnonFunClass({
-    case x: String => ()
-  }: PartialFunction[String, Unit])
+  testAnonFunClass({ case x: String => () }: PartialFunction[String, Unit])
 
-  testAnonFunClass({
-    case x: String => x
-  }: PartialFunction[String, String])
+  testAnonFunClass({ case x: String => x }: PartialFunction[String, String])
 }

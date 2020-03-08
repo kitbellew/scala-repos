@@ -49,9 +49,7 @@ private[pickling] class IrScalaSymbols[
           sym.asInstanceOf[u.TypeSymbol])} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym.isSealed} directSubclasses=${tools
           .directSubclasses(classSym)})")
       }
-    } else {
-      List(s"'${sym.fullName}' is not a class or trait")
-    }
+    } else { List(s"'${sym.fullName}' is not a class or trait") }
   }
 
   def newClass(tpe: Type): IrClass =
@@ -97,9 +95,7 @@ private[pickling] class IrScalaSymbols[
     // TODO - Should we iterate down ALL of the hierarchy here for members, or make the algorithms do it later...
     private val allMethods = {
       val constructorArgs = tpe.members
-        .collect {
-          case meth: MethodSymbol => meth
-        }
+        .collect { case meth: MethodSymbol => meth }
         .toList
         .filter { x =>
           //System.err.println(s"$x - param: ${x.isParamAccessor}, var: ${x.isVar}, val: ${x.isVal}, owner: ${x.owner}, owner-constructor: ${x.owner.isConstructor}")

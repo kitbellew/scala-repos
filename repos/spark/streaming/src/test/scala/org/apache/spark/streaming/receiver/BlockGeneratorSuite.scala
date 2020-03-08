@@ -40,11 +40,7 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     .set("spark.streaming.blockInterval", s"${blockIntervalMs}ms")
   @volatile private var blockGenerator: BlockGenerator = null
 
-  after {
-    if (blockGenerator != null) {
-      blockGenerator.stop()
-    }
-  }
+  after { if (blockGenerator != null) { blockGenerator.stop() } }
 
   test("block generation and data callbacks") {
     val listener = new TestBlockGeneratorListener
@@ -141,18 +137,12 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     thread.join()
 
     // Verify that the generator cannot be used any more
-    intercept[SparkException] {
-      blockGenerator.addData(1)
-    }
-    intercept[SparkException] {
-      blockGenerator.addDataWithCallback(1, 1)
-    }
+    intercept[SparkException] { blockGenerator.addData(1) }
+    intercept[SparkException] { blockGenerator.addDataWithCallback(1, 1) }
     intercept[SparkException] {
       blockGenerator.addMultipleDataWithCallback(Iterator(1), 1)
     }
-    intercept[SparkException] {
-      blockGenerator.start()
-    }
+    intercept[SparkException] { blockGenerator.start() }
     blockGenerator.stop() // Calling stop again should be fine
   }
 
@@ -182,12 +172,8 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     assert(blockGenerator.isStopped() === false)
 
     // Verify that data cannot be added
-    intercept[SparkException] {
-      blockGenerator.addData(1)
-    }
-    intercept[SparkException] {
-      blockGenerator.addDataWithCallback(1, null)
-    }
+    intercept[SparkException] { blockGenerator.addData(1) }
+    intercept[SparkException] { blockGenerator.addDataWithCallback(1, null) }
     intercept[SparkException] {
       blockGenerator.addMultipleDataWithCallback(Iterator(1), null)
     }
@@ -251,9 +237,7 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     */
   private def stopBlockGenerator(blockGenerator: BlockGenerator): Thread = {
     val thread = new Thread() {
-      override def run(): Unit = {
-        blockGenerator.stop()
-      }
+      override def run(): Unit = { blockGenerator.stop() }
     }
     thread.start()
     thread

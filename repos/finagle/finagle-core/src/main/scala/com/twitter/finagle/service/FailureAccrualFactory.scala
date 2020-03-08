@@ -434,9 +434,8 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
     reviveTimerTask = None
   }
 
-  def close(deadline: Time): Future[Unit] = underlying.close(deadline).ensure {
-    cancelReviveTimerTask()
-  }
+  def close(deadline: Time): Future[Unit] =
+    underlying.close(deadline).ensure { cancelReviveTimerTask() }
 
   override def toString = s"failure_accrual_${underlying.toString}"
 

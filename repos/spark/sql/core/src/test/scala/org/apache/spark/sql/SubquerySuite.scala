@@ -23,9 +23,7 @@ class SubquerySuite extends QueryTest with SharedSQLContext {
   import testImplicits._
 
   test("simple uncorrelated scalar subquery") {
-    assertResult(Array(Row(1))) {
-      sql("select (select 1 as b) as b").collect()
-    }
+    assertResult(Array(Row(1))) { sql("select (select 1 as b) as b").collect() }
 
     assertResult(Array(Row(3))) {
       sql("select (select (select 1) + 1) + 1").collect()

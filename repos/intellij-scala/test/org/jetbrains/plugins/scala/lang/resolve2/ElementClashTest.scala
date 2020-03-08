@@ -4,9 +4,7 @@ package org.jetbrains.plugins.scala.lang.resolve2
   * Pavel.Fatin, 02.02.2010
   */
 class ElementClashTest extends ResolveTestBase {
-  override def folderPath: String = {
-    super.folderPath + "element/clash/"
-  }
+  override def folderPath: String = { super.folderPath + "element/clash/" }
   //TODO classes clash
 //  def testClass = doTest
   //TODO classes clash

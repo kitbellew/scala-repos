@@ -47,9 +47,7 @@ trait SecureFlagSpec
         sslPort = sslPort,
         application = GuiceApplicationBuilder()
           .routes { case _ => action }
-          .build())) {
-      block(port)
-    }
+          .build())) { block(port) }
   }
 
   "Play https server" should {

@@ -43,9 +43,7 @@ class ShoppingCartSpec
   val shoppingCart = system.actorOf(ShoppingCart.props("user-1"))
 
   def join(from: RoleName, to: RoleName): Unit = {
-    runOn(from) {
-      cluster join node(to).address
-    }
+    runOn(from) { cluster join node(to).address }
     enterBarrier(from.name + "-joined")
   }
 

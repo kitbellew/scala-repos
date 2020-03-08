@@ -39,9 +39,7 @@ abstract class Flatten extends InfoTransform {
       replaceSymbolInCurrentScope(sym)
     }
   }
-  private def liftSymbol(sym: Symbol) {
-    liftClass(sym)
-  }
+  private def liftSymbol(sym: Symbol) { liftClass(sym) }
   // This is a short-term measure partially working around objects being
   // lifted out of parameterized classes, leaving them referencing
   // invisible type parameters.

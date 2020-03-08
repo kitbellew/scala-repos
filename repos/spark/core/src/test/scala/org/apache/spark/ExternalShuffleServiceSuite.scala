@@ -51,11 +51,8 @@ class ExternalShuffleServiceSuite extends ShuffleSuite with BeforeAndAfterAll {
   }
 
   override def afterAll() {
-    try {
-      server.close()
-    } finally {
-      super.afterAll()
-    }
+    try { server.close() }
+    finally { super.afterAll() }
   }
 
   // This test ensures that the external shuffle service is actually in use for the other tests.
@@ -87,9 +84,7 @@ class ExternalShuffleServiceSuite extends ShuffleSuite with BeforeAndAfterAll {
 
     // Now Spark will receive FetchFailed, and not retry the stage due to "spark.test.noStageRetry"
     // being set.
-    val e = intercept[SparkException] {
-      rdd.count()
-    }
+    val e = intercept[SparkException] { rdd.count() }
     e.getMessage should include(
       "Fetch failure will not retry stage due to testing config")
   }

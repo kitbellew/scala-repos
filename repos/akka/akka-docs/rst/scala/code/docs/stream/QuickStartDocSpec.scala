@@ -28,9 +28,7 @@ class QuickStartDocSpec
   implicit val materializer = ActorMaterializer()
   //#create-materializer
 
-  override def afterAll(): Unit = {
-    system.terminate()
-  }
+  override def afterAll(): Unit = { system.terminate() }
 
   "demonstrate Source" in {
     //#create-source

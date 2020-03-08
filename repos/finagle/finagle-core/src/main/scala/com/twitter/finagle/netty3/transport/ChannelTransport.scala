@@ -163,11 +163,8 @@ class ChannelTransport[In, Out](ch: Channel)
     ch.getPipeline.get(classOf[SslHandler]) match {
       case null => None
       case handler =>
-        try {
-          handler.getEngine.getSession.getPeerCertificates.headOption
-        } catch {
-          case NonFatal(_) => None
-        }
+        try { handler.getEngine.getSession.getPeerCertificates.headOption }
+        catch { case NonFatal(_) => None }
     }
 
   private[this] val closep = new Promise[Throwable]

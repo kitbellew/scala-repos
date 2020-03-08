@@ -70,13 +70,9 @@ trait ProvidesTransformedQuasiMonteCarlo {
     def apply(alpha: Double, beta: Double): QuasiRandomVariableSpec = {
       require(alpha > 0)
       require(beta > 0)
-      if (alpha == 1.0) {
-        breeze.stats.distributions.Exponential(beta)
-      } else if (alpha > 1) {
-        GammaQuasiRandomVariableSpecAlphaGeq1(alpha, beta)
-      } else {
-        GammaQuasiRandomVariableSpecAlphaLeq1(alpha, beta)
-      }
+      if (alpha == 1.0) { breeze.stats.distributions.Exponential(beta) }
+      else if (alpha > 1) { GammaQuasiRandomVariableSpecAlphaGeq1(alpha, beta) }
+      else { GammaQuasiRandomVariableSpecAlphaLeq1(alpha, beta) }
     }
   }
 

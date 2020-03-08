@@ -134,12 +134,8 @@ object EnumeratorsSpec
 }*/
 
   "Enumerator.apply" should {
-    "enumerate zero args" in {
-      mustEnumerateTo()(Enumerator())
-    }
-    "enumerate 1 arg" in {
-      mustEnumerateTo(1)(Enumerator(1))
-    }
+    "enumerate zero args" in { mustEnumerateTo()(Enumerator()) }
+    "enumerate 1 arg" in { mustEnumerateTo(1)(Enumerator(1)) }
     "enumerate more than 1 arg" in {
       mustEnumerateTo(1, 2)(Enumerator(1, 2))
       mustEnumerateTo(1, 2, 3)(Enumerator(1, 2, 3))
@@ -300,9 +296,7 @@ object EnumeratorsSpec
           extends ByteArrayInputStream(bytes) {
         @volatile var closed = false
 
-        override def close() = {
-          closed = true
-        }
+        override def close() = { closed = true }
       }
 
       "when done normally" in {
@@ -335,9 +329,7 @@ object EnumeratorsSpec
           out.close()
           val enumerator = Enumerator.fromFile(f)(fromFileEC).map(new String(_))
           mustEnumerateTo(s)(enumerator)
-        } finally {
-          f.delete()
-        }
+        } finally { f.delete() }
       }
     }
   }
@@ -353,9 +345,7 @@ object EnumeratorsSpec
           out.close()
           val enumerator = Enumerator.fromPath(f)(fromPathEC).map(new String(_))
           mustEnumerateTo(s)(enumerator)
-        } finally {
-          Files.delete(f)
-        }
+        } finally { Files.delete(f) }
       }
     }
   }

@@ -162,13 +162,9 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
   /**
     * Signal that the scheduler has registered with Mesos.
     */
-  protected def markRegistered(): Unit = {
-    registerLatch.countDown()
-  }
+  protected def markRegistered(): Unit = { registerLatch.countDown() }
 
-  protected def markErr(): Unit = {
-    registerLatch.countDown()
-  }
+  protected def markErr(): Unit = { registerLatch.countDown() }
 
   def createResource(
       name: String,
@@ -215,9 +211,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
             resourceName,
             r.getScalar.getValue - usage,
             Some(r.getRole))
-        } else {
-          r
-        }
+        } else { r }
       }
     }
 
@@ -338,20 +332,16 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
      */
     val splitter = Splitter.on(';').trimResults().withKeyValueSeparator(':')
     // kv splitter
-    if (constraintsVal.isEmpty) {
-      Map()
-    } else {
+    if (constraintsVal.isEmpty) { Map() }
+    else {
       try {
         splitter
           .split(constraintsVal)
           .asScala
           .toMap
           .mapValues(v =>
-            if (v == null || v.isEmpty) {
-              Set[String]()
-            } else {
-              v.split(',').toSet
-            })
+            if (v == null || v.isEmpty) { Set[String]() }
+            else { v.split(',').toSet })
       } catch {
         case NonFatal(e) =>
           throw new IllegalArgumentException(

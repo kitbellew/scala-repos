@@ -151,9 +151,7 @@ abstract class LazyVals
                     "Unexpected tree on the RHS of a module accessor: " + rhs)
                   (rhs, EmptyTree)
               }
-            } else {
-              (transform(rhs), EmptyTree)
-            }
+            } else { (transform(rhs), EmptyTree) }
 
             val ddef1 = deriveDefDef(tree)(_ =>
               if (LocalLazyValFinder.find(res)) typed(addBitmapDefs(sym, res))
@@ -389,9 +387,7 @@ abstract class LazyVals
         val sym = meth
           .newVariable(nme.newBitmapName(nme.BITMAP_NORMAL, n), meth.pos)
           .setInfo(ByteTpe)
-        enteringTyper {
-          sym addAnnotation VolatileAttr
-        }
+        enteringTyper { sym addAnnotation VolatileAttr }
 
         bitmaps(meth) = (sym :: bmps).reverse
         sym

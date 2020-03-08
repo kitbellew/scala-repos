@@ -81,9 +81,7 @@ class ResolveProcessor(
   @volatile
   private var resolveScope: GlobalSearchScope = null
   def getResolveScope: GlobalSearchScope = {
-    if (resolveScope == null) {
-      resolveScope = ref.getResolveScope
-    }
+    if (resolveScope == null) { resolveScope = ref.getResolveScope }
     resolveScope
   }
 
@@ -102,9 +100,7 @@ class ResolveProcessor(
     * This method useful for resetting precednce if we dropped
     * all found candidates to seek implicit conversion candidates.
     */
-  def resetPrecedence() {
-    precedence = 0
-  }
+  def resetPrecedence() { precedence = 0 }
 
   import org.jetbrains.plugins.scala.lang.resolve.processor.PrecedenceHelper.PrecedenceTypes._
   def checkImports(): Boolean = precedence <= IMPORT
@@ -131,9 +127,7 @@ class ResolveProcessor(
 
     def update: Boolean = {
       val iterator = levelSet.iterator()
-      while (iterator.hasNext) {
-        candidatesSet += iterator.next()
-      }
+      while (iterator.hasNext) { candidatesSet += iterator.next() }
       qualifiedNamesSet.addAll(levelQualifiedNamesSet)
       levelSet.clear()
       levelQualifiedNamesSet.clear()
@@ -234,18 +228,14 @@ class ResolveProcessor(
   override def candidatesS: Set[ScalaResolveResult] = {
     var res = candidatesSet
     val iterator = levelSet.iterator()
-    while (iterator.hasNext) {
-      res += iterator.next()
-    }
+    while (iterator.hasNext) { res += iterator.next() }
     if (!compareWithIgnoredSet(res)) {
       res.clear()
       restartFromHistory()
       //now let's add everything again
       res = candidatesSet
       val iterator = levelSet.iterator()
-      while (iterator.hasNext) {
-        res += iterator.next()
-      }
+      while (iterator.hasNext) { res += iterator.next() }
     }
 
     /*

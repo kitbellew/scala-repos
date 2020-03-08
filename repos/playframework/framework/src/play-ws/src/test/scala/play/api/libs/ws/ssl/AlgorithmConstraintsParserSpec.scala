@@ -53,17 +53,11 @@ object AlgorithmConstraintsParserSpec
         AlgorithmConstraint("EC", Some(NotEqual(1024))))
     }
 
-    "fail to recognize 'EC > 1024'" in {
-      expression must failOn("EC > 1024")
-    }
+    "fail to recognize 'EC > 1024'" in { expression must failOn("EC > 1024") }
 
-    "fail to recognize 'EC keySize'" in {
-      expression must failOn("EC keySize")
-    }
+    "fail to recognize 'EC keySize'" in { expression must failOn("EC keySize") }
 
-    "fail to recognize ''" in {
-      expression must failOn("")
-    }
+    "fail to recognize ''" in { expression must failOn("") }
 
   }
 

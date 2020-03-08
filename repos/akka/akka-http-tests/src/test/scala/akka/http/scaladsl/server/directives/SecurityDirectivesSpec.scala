@@ -31,9 +31,7 @@ class SecurityDirectivesSpec extends RoutingSpec {
 
   "basic authentication" should {
     "reject requests without Authorization header with an AuthenticationFailedRejection" in {
-      Get() ~> {
-        dontBasicAuth { echoComplete }
-      } ~> check {
+      Get() ~> { dontBasicAuth { echoComplete } } ~> check {
         rejection shouldEqual AuthenticationFailedRejection(
           CredentialsMissing,
           challenge)
@@ -74,26 +72,22 @@ class SecurityDirectivesSpec extends RoutingSpec {
       } ~> check { responseAs[String] shouldEqual "Alice" }
     }
     "extract the object representing the user identity created for the anonymous user" in {
-      Get() ~> {
-        authWithAnonymous { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "We are Legion" }
+      Get() ~> { authWithAnonymous { echoComplete } } ~> check {
+        responseAs[String] shouldEqual "We are Legion"
+      }
     }
     "properly handle exceptions thrown in its inner route" in {
       object TestException extends RuntimeException
       EventFilter[TestException.type](occurrences = 1).intercept {
         Get() ~> Authorization(BasicHttpCredentials("Alice", "")) ~> {
-          Route.seal {
-            doBasicAuth { _ ⇒ throw TestException }
-          }
+          Route.seal { doBasicAuth { _ ⇒ throw TestException } }
         } ~> check { status shouldEqual StatusCodes.InternalServerError }
       }
     }
   }
   "bearer token authentication" should {
     "reject requests without Authorization header with an AuthenticationFailedRejection" in {
-      Get() ~> {
-        dontOAuth2Auth { echoComplete }
-      } ~> check {
+      Get() ~> { dontOAuth2Auth { echoComplete } } ~> check {
         rejection shouldEqual AuthenticationFailedRejection(
           CredentialsMissing,
           challenge)
@@ -134,17 +128,15 @@ class SecurityDirectivesSpec extends RoutingSpec {
       } ~> check { responseAs[String] shouldEqual "myToken" }
     }
     "extract the object representing the user identity created for the anonymous user" in {
-      Get() ~> {
-        authWithAnonymous { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "We are Legion" }
+      Get() ~> { authWithAnonymous { echoComplete } } ~> check {
+        responseAs[String] shouldEqual "We are Legion"
+      }
     }
     "properly handle exceptions thrown in its inner route" in {
       object TestException extends RuntimeException
       EventFilter[TestException.type](occurrences = 1).intercept {
         Get() ~> Authorization(OAuth2BearerToken("myToken")) ~> {
-          Route.seal {
-            doOAuth2Auth { _ ⇒ throw TestException }
-          }
+          Route.seal { doOAuth2Auth { _ ⇒ throw TestException } }
         } ~> check { status shouldEqual StatusCodes.InternalServerError }
       }
     }
@@ -169,14 +161,14 @@ class SecurityDirectivesSpec extends RoutingSpec {
 
   "authorization directives" should {
     "authorize" in {
-      Get() ~> {
-        authorize(_ ⇒ true) { complete("OK") }
-      } ~> check { responseAs[String] shouldEqual "OK" }
+      Get() ~> { authorize(_ ⇒ true) { complete("OK") } } ~> check {
+        responseAs[String] shouldEqual "OK"
+      }
     }
     "not authorize" in {
-      Get() ~> {
-        authorize(_ ⇒ false) { complete("OK") }
-      } ~> check { rejection shouldEqual AuthorizationFailedRejection }
+      Get() ~> { authorize(_ ⇒ false) { complete("OK") } } ~> check {
+        rejection shouldEqual AuthorizationFailedRejection
+      }
     }
 
     "authorizeAsync" in {

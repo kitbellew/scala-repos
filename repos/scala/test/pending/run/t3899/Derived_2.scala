@@ -1,7 +1,5 @@
 trait T extends Base_1 {
-  def t1(as: String*): Array[String] = {
-    varargs1(as: _*)
-  }
+  def t1(as: String*): Array[String] = { varargs1(as: _*) }
   def t2(as: String*): Array[String] = {
     // This is the bug reported in the ticket.
     super.varargs1(as: _*)
@@ -9,12 +7,8 @@ trait T extends Base_1 {
 }
 
 class C extends Base_1 {
-  def c1(as: String*): Array[String] = {
-    varargs1(as: _*)
-  }
-  def c2(as: String*): Array[String] = {
-    super.varargs1(as: _*)
-  }
+  def c1(as: String*): Array[String] = { varargs1(as: _*) }
+  def c2(as: String*): Array[String] = { super.varargs1(as: _*) }
 }
 
 object Test extends App {

@@ -173,9 +173,7 @@ class CachedTableSuite
         .table("testData")
         .queryExecution
         .withCachedData
-        .collect {
-          case r: InMemoryRelation => r
-        }
+        .collect { case r: InMemoryRelation => r }
         .size
     }
 
@@ -214,9 +212,7 @@ class CachedTableSuite
   }
 
   test("correct error on uncache of non-cached table") {
-    intercept[IllegalArgumentException] {
-      sqlContext.uncacheTable("testData")
-    }
+    intercept[IllegalArgumentException] { sqlContext.uncacheTable("testData") }
   }
 
   test("SELECT star from cached table") {

@@ -45,9 +45,7 @@ class RangeSpecs extends WordSpec {
     }
 
     "print nicely with mkString" should {
-      "for trivial ranges" in {
-        assert(Range(4, 4).mkString("_") === "4")
-      }
+      "for trivial ranges" in { assert(Range(4, 4).mkString("_") === "4") }
       "for proper ranges" in {
         assert(testRange.mkString("_") === "4_5")
         assert(testRange.mkString("-") === "4-5")

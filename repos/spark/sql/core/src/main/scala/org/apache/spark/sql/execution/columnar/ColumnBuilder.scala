@@ -165,9 +165,8 @@ private[columnar] object ColumnBuilder {
   val MAX_BATCH_SIZE_IN_BYTE = 4 * 1024 * 1024L
 
   private[columnar] def ensureFreeSpace(orig: ByteBuffer, size: Int) = {
-    if (orig.remaining >= size) {
-      orig
-    } else {
+    if (orig.remaining >= size) { orig }
+    else {
       // grow in steps of initial size
       val capacity = orig.capacity()
       val newSize = capacity + size.max(capacity)

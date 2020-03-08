@@ -49,14 +49,10 @@ object WizardRules extends Factory with FormVendor {
   }
 
   private[http] def isValidWizardSession(id: String): Boolean =
-    S.synchronizeForSession {
-      currentWizards.is.contains(id)
-    }
+    S.synchronizeForSession { currentWizards.is.contains(id) }
 
   private[http] def deregisterWizardSession(id: String) {
-    S.synchronizeForSession {
-      currentWizards.set(currentWizards.is - id)
-    }
+    S.synchronizeForSession { currentWizards.set(currentWizards.is - id) }
   }
 }
 
@@ -202,9 +198,7 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
   protected def submitOrAjax(id: String): String =
     (if (ajaxForms_?) {
        SHtml.makeAjaxCall(LiftRules.jsArtifacts.serialize(id)).toJsCmd
-     } else {
-       "document.getElementById(" + id.encJs + ").submit()"
-     })
+     } else { "document.getElementById(" + id.encJs + ").submit()" })
 
   protected def renderHtml(): NodeSeq = {
     val nextId = Helpers.nextFuncName
@@ -245,9 +239,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
 
         for {
           screen <- VisitedScreens.is.toList
-          field <- screen.screenFields.collect {
-            case c: ConfirmField => c
-          } if field.show_? && field.onConfirm_?
+          field <- screen.screenFields.collect { case c: ConfirmField => c }
+          if field.show_? && field.onConfirm_?
         } yield ScreenFieldInfo(
           field,
           field.displayHtml,
@@ -307,9 +300,7 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
     to.foreach(_.enterScreen())
 
     (from, to) match {
-      case (Full(old), Full(cur)) if old eq cur => {
-        /* do nothing */
-      }
+      case (Full(old), Full(cur)) if old eq cur => { /* do nothing */ }
       case (Full(old), Full(cur)) => {
         old.transitionOutOfTo(Full(cur))
         cur.transitionIntoFrom(Full(old))
@@ -405,9 +396,7 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
   protected def finish(): Unit
 
   def nextScreen(): JsCmd = {
-    (for {
-      screen <- CurrentScreen.is
-    } yield {
+    (for { screen <- CurrentScreen.is } yield {
       screen.validate match {
         case Nil => {
           val snapshot = createSnapshot
@@ -431,18 +420,12 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
                     VisitedScreens.foreach { s => s.postFinish() }
                   }
 
-                  case x :: xs =>
-                    x.apply {
-                      useAndFinish(xs)
-                    }
+                  case x :: xs => x.apply { useAndFinish(xs) }
                 }
               }
               useAndFinish(dbConnections)
-              if (ajaxForms_?) {
-                AjaxOnDone.is
-              } else {
-                Noop
-              }
+              if (ajaxForms_?) { AjaxOnDone.is }
+              else { Noop }
 
             case _ => SetHtml(FormGUID, renderHtml())
           }
@@ -456,15 +439,12 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
   }
 
   def prevScreen(): JsCmd = {
-    (for {
-      snapshot <- PrevSnapshot.is
-    } yield {
+    (for { snapshot <- PrevSnapshot.is } yield {
       val cur = if (CurrentScreen.set_?) CurrentScreen.get else Empty
       snapshot.restore()
 
-      if (CurrentScreen.set_?) {
-        doTransition(cur, CurrentScreen.get)
-      } else {
+      if (CurrentScreen.set_?) { doTransition(cur, CurrentScreen.get) }
+      else {
         cur.foreach(_.transitionIntoFrom(Empty))
         cur.foreach(_.enterScreen())
       }

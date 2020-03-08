@@ -30,9 +30,7 @@ object RemoteDeliveryMultiJvmSpec extends MultiNodeConfig {
   final case class Letter(n: Int, route: List[ActorRef])
 
   class Postman extends Actor {
-    def receive = {
-      case Letter(n, route) ⇒ route.head ! Letter(n, route.tail)
-    }
+    def receive = { case Letter(n, route) ⇒ route.head ! Letter(n, route.tail) }
   }
 
 }

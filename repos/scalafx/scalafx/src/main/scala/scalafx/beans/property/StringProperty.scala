@@ -60,7 +60,5 @@ class StringProperty(
   def this(bean: Object, name: String, initialValue: String) =
     this(new jfxbp.SimpleStringProperty(bean, name, initialValue))
 
-  def value_=(v: String) {
-    delegate.set(v)
-  }
+  def value_=(v: String) { delegate.set(v) }
 }

@@ -16,13 +16,9 @@ class ScalaConsoleRunConfigurationEditor(
     extends SettingsEditor[ScalaConsoleRunConfiguration] {
   val form = new ScalaConsoleRunConfigurationForm(project, configuration)
 
-  def resetEditorFrom(s: ScalaConsoleRunConfiguration) {
-    form(s)
-  }
+  def resetEditorFrom(s: ScalaConsoleRunConfiguration) { form(s) }
 
-  def applyEditorTo(s: ScalaConsoleRunConfiguration) {
-    s(form)
-  }
+  def applyEditorTo(s: ScalaConsoleRunConfiguration) { s(form) }
 
   def createEditor: JComponent = form.getPanel
 }

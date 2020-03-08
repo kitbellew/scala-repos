@@ -55,9 +55,7 @@ object MacroUtil {
         .map(ScalaPsiElementFactory
           .createExpressionFromText(result.toString, _)
           .asInstanceOf[ScExpression])
-    } catch {
-      case _: IncorrectOperationException => None
-    }
+    } catch { case _: IncorrectOperationException => None }
 
   def getComponentFromArrayType(scType: ScType): Option[ScType] = scType match {
     case javaArrType: JavaArrayType => Some(javaArrType.arg)

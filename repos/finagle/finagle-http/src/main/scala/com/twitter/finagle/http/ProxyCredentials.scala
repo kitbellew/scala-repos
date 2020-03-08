@@ -12,9 +12,7 @@ object ProxyCredentials {
     for {
       user <- credentials.get("http_proxy_user")
       pass <- credentials.get("http_proxy_pass")
-    } yield {
-      ProxyCredentials(user, pass)
-    }
+    } yield { ProxyCredentials(user, pass) }
   }
 }
 

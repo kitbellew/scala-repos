@@ -46,9 +46,7 @@ object TraversableKryoIntBenchSize
   var ser: KryoSerializer = _
   val coll = (1 to size).toVector
 
-  override def tearDown() {
-    ser = null
-  }
+  override def tearDown() { ser = null }
 
   override def run() {
     val rnd: Int = Random.nextInt(10)

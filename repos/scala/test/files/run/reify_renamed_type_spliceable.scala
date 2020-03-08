@@ -8,9 +8,7 @@ abstract class C {
 object Test extends App {
   def foo(c: C) = {
     import c.{T => U}
-    reify {
-      val x: U = null
-    }
+    reify { val x: U = null }
   }
 
   val expr = foo(new C {

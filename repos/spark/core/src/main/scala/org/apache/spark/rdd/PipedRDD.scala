@@ -71,9 +71,7 @@ private[spark] class PipedRDD[T: ClassTag](
     * @param filterName of file or directory to leave out
     */
   class NotEqualsFileNameFilter(filterName: String) extends FilenameFilter {
-    def accept(dir: File, name: String): Boolean = {
-      !name.equals(filterName)
-    }
+    def accept(dir: File, name: String): Boolean = { !name.equals(filterName) }
   }
 
   override def compute(
@@ -144,11 +142,8 @@ private[spark] class PipedRDD[T: ClassTag](
             System.err.println(line)
             // scalastyle:on println
           }
-        } catch {
-          case t: Throwable => childThreadException.set(t)
-        } finally {
-          err.close()
-        }
+        } catch { case t: Throwable => childThreadException.set(t) }
+        finally { err.close() }
       }
     }.start()
 
@@ -160,22 +155,14 @@ private[spark] class PipedRDD[T: ClassTag](
         try {
           // scalastyle:off println
           // input the pipe context firstly
-          if (printPipeContext != null) {
-            printPipeContext(out.println)
-          }
+          if (printPipeContext != null) { printPipeContext(out.println) }
           for (elem <- firstParent[T].iterator(split, context)) {
-            if (printRDDElement != null) {
-              printRDDElement(elem, out.println)
-            } else {
-              out.println(elem)
-            }
+            if (printRDDElement != null) { printRDDElement(elem, out.println) }
+            else { out.println(elem) }
           }
           // scalastyle:on println
-        } catch {
-          case t: Throwable => childThreadException.set(t)
-        } finally {
-          out.close()
-        }
+        } catch { case t: Throwable => childThreadException.set(t) }
+        finally { out.close() }
       }
     }.start()
 
@@ -183,16 +170,13 @@ private[spark] class PipedRDD[T: ClassTag](
     val lines = Source.fromInputStream(proc.getInputStream).getLines()
     new Iterator[String] {
       def next(): String = {
-        if (!hasNext()) {
-          throw new NoSuchElementException()
-        }
+        if (!hasNext()) { throw new NoSuchElementException() }
         lines.next()
       }
 
       def hasNext(): Boolean = {
-        val result = if (lines.hasNext) {
-          true
-        } else {
+        val result = if (lines.hasNext) { true }
+        else {
           val exitStatus = proc.waitFor()
           cleanup()
           if (exitStatus != 0) {
@@ -232,9 +216,7 @@ private object PipedRDD {
   def tokenize(command: String): Seq[String] = {
     val buf = new ArrayBuffer[String]
     val tok = new StringTokenizer(command)
-    while (tok.hasMoreElements) {
-      buf += tok.nextToken()
-    }
+    while (tok.hasMoreElements) { buf += tok.nextToken() }
     buf
   }
 }

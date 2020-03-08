@@ -94,9 +94,7 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
 
   // Push a tracer for the client.
   override def test(testName: String, testTags: Tag*)(f: => Unit): Unit =
-    super.test(testName, testTags: _*) {
-      Trace.letTracer(tracer)(f)
-    }
+    super.test(testName, testTags: _*) { Trace.letTracer(tracer)(f) }
 
   def buf(b: Byte*) = Buf.ByteArray.Owned(b.toArray)
 
@@ -231,9 +229,7 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     )
 
     val id = Trace.nextId
-    val resp = Trace.letId(id) {
-      client(Request(Path.empty, buf(1)))
-    }
+    val resp = Trace.letId(id) { client(Request(Path.empty, buf(1))) }
     assert(resp.poll.isDefined)
     val Buf.Utf8(respStr) = Await.result(resp).body
     assert(respStr == id.toString)

@@ -45,9 +45,7 @@ object DispatcherActorSpec {
     val oneWay = new CountDownLatch(1)
   }
   class OneWayTestActor extends Actor {
-    def receive = {
-      case "OneWay" ⇒ OneWayTestActor.oneWay.countDown()
-    }
+    def receive = { case "OneWay" ⇒ OneWayTestActor.oneWay.countDown() }
   }
 }
 
@@ -82,10 +80,9 @@ class DispatcherActorSpec
       val works = new AtomicBoolean(true)
       val latch = new CountDownLatch(100)
       val start = new CountDownLatch(1)
-      val fastOne = system.actorOf(
-        Props(new Actor {
-          def receive = { case "sabotage" ⇒ works.set(false) }
-        }).withDispatcher(throughputDispatcher))
+      val fastOne = system.actorOf(Props(new Actor {
+        def receive = { case "sabotage" ⇒ works.set(false) }
+      }).withDispatcher(throughputDispatcher))
 
       val slowOne = system.actorOf(Props(new Actor {
         def receive = {

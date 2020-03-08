@@ -339,9 +339,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       testCodeGen(
         "SELECT  sum('a'), avg('a'), count(null) FROM testData",
         Row(null, null, 0) :: Nil)
-    } finally {
-      sqlContext.dropTempTable("testData3x")
-    }
+    } finally { sqlContext.dropTempTable("testData3x") }
   }
 
   test("Add Parser of SQL COALESCE()") {
@@ -554,9 +552,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       mapData.collect().sortBy(_.data(1)).reverse.map(Row.fromTuple).toSeq)
   }
 
-  test("external sorting") {
-    sortTest()
-  }
+  test("external sorting") { sortTest() }
 
   test("limit") {
     checkAnswer(sql("SELECT * FROM testData LIMIT 10"), testData.take(10).toSeq)
@@ -620,9 +616,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test("average") {
-    checkAnswer(sql("SELECT AVG(a) FROM testData2"), Row(2.0))
-  }
+  test("average") { checkAnswer(sql("SELECT AVG(a) FROM testData2"), Row(2.0)) }
 
   test("average overflow") {
     checkAnswer(
@@ -1025,9 +1019,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       val values = r.split(",").map(_.trim)
       val v4 =
         try values(3).toInt
-        catch {
-          case _: NumberFormatException => null
-        }
+        catch { case _: NumberFormatException => null }
       Row(values(0).toInt, values(1), values(2).toBoolean, v4)
     }
 
@@ -1059,9 +1051,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       val values = r.split(",").map(_.trim)
       val v4 =
         try values(3).toInt
-        catch {
-          case _: NumberFormatException => null
-        }
+        catch { case _: NumberFormatException => null }
       Row(Row(values(0).toInt, values(2).toBoolean), Map(values(1) -> v4))
     }
 
@@ -1087,9 +1077,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       val values = r.split(",").map(_.trim)
       val v4 =
         try values(3).toInt
-        catch {
-          case _: NumberFormatException => null
-        }
+        catch { case _: NumberFormatException => null }
       Row(
         Row(values(0).toInt, values(2).toBoolean),
         scala.collection.mutable.Map(values(1) -> v4))
@@ -1667,15 +1655,11 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
           7L * 1000 * 1000 * 3600 * 24 * 7 + 123)))
     withTempPath(f => {
       // Currently we don't yet support saving out values of interval data type.
-      val e = intercept[AnalysisException] {
-        df.write.json(f.getCanonicalPath)
-      }
+      val e = intercept[AnalysisException] { df.write.json(f.getCanonicalPath) }
       e.message.contains("Cannot save interval data type into external storage")
     })
 
-    val e1 = intercept[AnalysisException] {
-      sql("select interval")
-    }
+    val e1 = intercept[AnalysisException] { sql("select interval") }
     assert(
       e1.message.contains(
         "at least one time unit should be given for interval literal"))

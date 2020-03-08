@@ -49,9 +49,7 @@ trait ScalaResultsHandlingSpec
           port,
           GuiceApplicationBuilder()
             .routes { case _ => Action(result) }
-            .build())) {
-        block(port)
-      }
+            .build())) { block(port) }
     }
 
     "add Date header" in makeRequest(Results.Ok("Hello world")) { response =>
@@ -299,21 +297,20 @@ trait ScalaResultsHandlingSpec
       val aCookie = Cookie("a", "1")
       val bCookie = Cookie("b", "2")
       val cCookie = Cookie("c", "3")
-      makeRequest {
-        Results.Ok.withCookies(aCookie, bCookie, cCookie)
-      } { response =>
-        response.allHeaders.get(SET_COOKIE) must beSome.like {
-          case rawCookieHeaders =>
-            val decodedCookieHeaders: Set[Set[Cookie]] = rawCookieHeaders
-              .map { headerValue =>
-                Cookies.decodeSetCookieHeader(headerValue).to[Set]
-              }
-              .to[Set]
-            decodedCookieHeaders must_== (Set(
-              Set(aCookie),
-              Set(bCookie),
-              Set(cCookie)))
-        }
+      makeRequest { Results.Ok.withCookies(aCookie, bCookie, cCookie) } {
+        response =>
+          response.allHeaders.get(SET_COOKIE) must beSome.like {
+            case rawCookieHeaders =>
+              val decodedCookieHeaders: Set[Set[Cookie]] = rawCookieHeaders
+                .map { headerValue =>
+                  Cookies.decodeSetCookieHeader(headerValue).to[Set]
+                }
+                .to[Set]
+              decodedCookieHeaders must_== (Set(
+                Set(aCookie),
+                Set(bCookie),
+                Set(cCookie)))
+          }
       }
     }
 

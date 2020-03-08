@@ -94,9 +94,7 @@ private[deploy] object CommandUtils extends Logging {
           (
             libraryPathName,
             libraryPaths.mkString(File.pathSeparator)))
-      } else {
-        command.environment
-      }
+      } else { command.environment }
 
     // set auth secret to env variable if needed
     if (securityMgr.isAuthenticationEnabled) {
@@ -122,9 +120,8 @@ private[deploy] object CommandUtils extends Logging {
     //       terminating. Otherwise if the worker dies the executor logs will silently stop.
     new Thread("redirect output to " + file) {
       override def run() {
-        try {
-          Utils.copyStream(in, out, true)
-        } catch {
+        try { Utils.copyStream(in, out, true) }
+        catch {
           case e: IOException =>
             logInfo("Redirection to " + file + " closed: " + e.getMessage)
         }

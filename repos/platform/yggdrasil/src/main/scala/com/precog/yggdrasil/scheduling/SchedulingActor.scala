@@ -136,20 +136,12 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
     }
 
     override def postStop = {
-      scheduledAwake foreach { sa =>
-        if (!sa.isCancelled) {
-          sa.cancel()
-        }
-      }
+      scheduledAwake foreach { sa => if (!sa.isCancelled) { sa.cancel() } }
     }
 
     def scheduleNextTask(): Unit = {
       // Just make sure we don't multi-schedule
-      scheduledAwake foreach { sa =>
-        if (!sa.isCancelled) {
-          sa.cancel()
-        }
-      }
+      scheduledAwake foreach { sa => if (!sa.isCancelled) { sa.cancel() } }
 
       scheduleQueue.headOption foreach { head =>
         val delay = Duration(
@@ -265,9 +257,7 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
                 } yield PrecogUnit
             }
           }
-        ) flatMap {
-          identity[Future[PrecogUnit]]
-        } onFailure {
+        ) flatMap { identity[Future[PrecogUnit]] } onFailure {
           case t: Throwable =>
             logger.error("Scheduled query execution failed by thrown error.", t)
             ourself ! TaskComplete(

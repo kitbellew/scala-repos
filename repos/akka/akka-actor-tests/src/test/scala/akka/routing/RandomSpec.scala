@@ -21,13 +21,9 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
       val actor = system.actorOf(
         RandomPool(7).props(Props(new Actor {
-          def receive = {
-            case "hello" ⇒ sender() ! "world"
-          }
+          def receive = { case "hello" ⇒ sender() ! "world" }
 
-          override def postStop() {
-            stopLatch.countDown()
-          }
+          override def postStop() { stopLatch.countDown() }
         })),
         "random-shutdown")
 
@@ -37,9 +33,7 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       actor ! "hello"
       actor ! "hello"
 
-      within(2 seconds) {
-        for (i ← 1 to 5) expectMsg("world")
-      }
+      within(2 seconds) { for (i ← 1 to 5) expectMsg("world") }
 
       system.stop(actor)
       Await.ready(stopLatch, 5 seconds)
@@ -52,9 +46,7 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
       val counter = new AtomicInteger
       var replies = Map.empty[Int, Int]
-      for (i ← 0 until connectionCount) {
-        replies = replies + (i -> 0)
-      }
+      for (i ← 0 until connectionCount) { replies = replies + (i -> 0) }
 
       val actor = system.actorOf(
         RandomPool(connectionCount).props(routeeProps = Props(new Actor {
@@ -89,13 +81,9 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
       val actor = system.actorOf(
         RandomPool(6).props(routeeProps = Props(new Actor {
-          def receive = {
-            case "hello" ⇒ helloLatch.countDown()
-          }
+          def receive = { case "hello" ⇒ helloLatch.countDown() }
 
-          override def postStop() {
-            stopLatch.countDown()
-          }
+          override def postStop() { stopLatch.countDown() }
         })),
         "random-broadcast"
       )

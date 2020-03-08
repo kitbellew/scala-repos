@@ -285,9 +285,7 @@ case class HadoopTest(
     val path = getWritePathFor(src)
     // We read the write tap in order to add its contents in the test buffers
     val it = openForRead(Config.defaultFrom(this), src.createTap(Write)(this))
-    while (it != null && it.hasNext) {
-      buf += new Tuple(it.next.getTuple)
-    }
+    while (it != null && it.hasNext) { buf += new Tuple(it.next.getTuple) }
     it.close()
     //Clean up this data off the disk
     new File(path).delete()

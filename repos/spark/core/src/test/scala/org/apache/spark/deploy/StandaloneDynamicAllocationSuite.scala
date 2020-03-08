@@ -89,9 +89,7 @@ class StandaloneDynamicAllocationSuite
       workerRpcEnvs = null
       master = null
       workers = null
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   test("dynamic allocation default behavior") {

@@ -93,9 +93,7 @@ sealed class Metadata private[types] (private[types] val map: Map[String, Any])
                 v0 == v1
             }
           }
-        } else {
-          false
-        }
+        } else { false }
       case other =>
         false
     }
@@ -103,9 +101,7 @@ sealed class Metadata private[types] (private[types] val map: Map[String, Any])
 
   override def hashCode: Int = Metadata.hash(this)
 
-  private def get[T](key: String): T = {
-    map(key).asInstanceOf[T]
-  }
+  private def get[T](key: String): T = { map(key).asInstanceOf[T] }
 
   private[sql] def jsonValue: JValue = Metadata.toJsonValue(this)
 }
@@ -280,9 +276,7 @@ class MetadataBuilder {
     put(key, value)
 
   /** Builds the [[Metadata]] instance. */
-  def build(): Metadata = {
-    new Metadata(map.toMap)
-  }
+  def build(): Metadata = { new Metadata(map.toMap) }
 
   private def put(key: String, value: Any): this.type = {
     map.put(key, value)

@@ -34,9 +34,7 @@ class PluginRegistry {
   private val receiveHooks = new ListBuffer[ReceiveHook]
   receiveHooks += new ProtectedBranchReceiveHook()
 
-  def addPlugin(pluginInfo: PluginInfo): Unit = {
-    plugins += pluginInfo
-  }
+  def addPlugin(pluginInfo: PluginInfo): Unit = { plugins += pluginInfo }
 
   def getPlugins(): List[PluginInfo] = plugins.toList
 
@@ -219,9 +217,8 @@ object PluginRegistry {
 
   def shutdown(context: ServletContext, settings: SystemSettings): Unit = {
     instance.getPlugins().foreach { pluginInfo =>
-      try {
-        pluginInfo.pluginClass.shutdown(instance, context, settings)
-      } catch {
+      try { pluginInfo.pluginClass.shutdown(instance, context, settings) }
+      catch {
         case e: Exception => {
           logger.error(s"Error during plugin shutdown", e)
         }

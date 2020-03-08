@@ -22,9 +22,7 @@ class RangeDirectivesExamplesSpec extends RoutingSpec {
 
   "withRangeSupport" in {
     val route =
-      withRangeSupport {
-        complete("ABCDEFGH")
-      }
+      withRangeSupport { complete("ABCDEFGH") }
 
     Get() ~> addHeader(Range(ByteRange(3, 4))) ~> route ~> check {
       headers should contain(`Content-Range`(ContentRange(3, 4, 8)))

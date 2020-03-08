@@ -149,9 +149,7 @@ class PagedSeq[T: ClassTag] protected (
       current = first1
     while (absindex >= current.end && current.next != null)
       current = current.next
-    while (absindex >= current.end && !current.isLast) {
-      current = addMore()
-    }
+    while (absindex >= current.end && !current.isLast) { current = addMore() }
     current
   }
 

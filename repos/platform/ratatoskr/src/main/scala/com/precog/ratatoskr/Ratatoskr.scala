@@ -126,12 +126,8 @@ object Ratatoskr {
       commandMap
         .get(args(0))
         .map { c => c.run(args.slice(1, args.length)) }
-        .getOrElse {
-          die(usage("Unknown command: [%s]".format(args(0))))
-        }
-    } else {
-      die(usage())
-    }
+        .getOrElse { die(usage("Unknown command: [%s]".format(args(0)))) }
+    } else { die(usage()) }
   }
 
   def die(msg: String, code: Int = 1) {
@@ -151,9 +147,7 @@ object ChownTools extends Command {
   val name = "dbchown"
   val description = "change ownership"
 
-  def run(args: Array[String]) {
-    sys.error("FIXME for NIHDB")
-  }
+  def run(args: Array[String]) { sys.error("FIXME for NIHDB") }
 }
 
 object KafkaTools extends Command {
@@ -232,11 +226,8 @@ object KafkaTools extends Command {
         "The files to process",
         { (s: String) => config.files = config.files :+ (new File(s)) })
     }
-    if (parser.parse(args)) {
-      process(config)
-    } else {
-      parser
-    }
+    if (parser.parse(args)) { process(config) }
+    else { parser }
   }
 
   def process(config: Config) {
@@ -254,13 +245,9 @@ object KafkaTools extends Command {
 
       if (itr.hasNext && !range.done(i)) {
         val next = itr.next
-        if (range.contains(i)) {
-          format.dump(i, next)
-        }
+        if (range.contains(i)) { format.dump(i, next) }
         traverse(itr, range, format, i + 1)
-      } else {
-        ()
-      }
+      } else { () }
     }
 
     val ms = new FileMessageSet(file, false)
@@ -421,9 +408,7 @@ object KafkaTools extends Command {
           state.index + 1,
           state.pathSize + (path -> (state.pathSize
             .getOrElse(path, 0L) + size)))
-      } else {
-        state.inc
-      }
+      } else { state.inc }
     }
 
     def process(config: Config, range: MessageRange) = {
@@ -445,9 +430,7 @@ object KafkaTools extends Command {
             )
             .toMap
         }
-        .getOrElse {
-          Map.empty
-        }
+        .getOrElse { Map.empty }
 
       //println("Got lookup DB:" + accountLookup)
 
@@ -465,18 +448,15 @@ object KafkaTools extends Command {
                     processIngest(config.trackInterval, state, imessage)
 
                   case Success(ArchiveMessage(_, path, _, _, _)) =>
-                    if (config.cumulative) {
-                      state.inc
-                    } else {
+                    if (config.cumulative) { state.inc }
+                    else {
                       trackState(state)
 
                       if (path.length > 0) {
                         //println("Deleting from path " + path)
                         ReportState(index + 1, currentPathSize + (path -> 0L))
                           .unsafeTap { newState => trackState(newState) }
-                      } else {
-                        state.inc
-                      }
+                      } else { state.inc }
                     }
 
                   case other =>
@@ -575,21 +555,14 @@ object KafkaTools extends Command {
           case (Right(s), Right(f)) => Some(MessageRange(s, f))
           case _                    => None
         }
-      } else {
-        None
-      }
+      } else { None }
     }
 
     def parseOffset(s: String): Either[Unit, Option[Int]] = {
       try {
-        Right(if (s.trim.length == 0) {
-          None
-        } else {
-          Some(s.toInt)
-        })
-      } catch {
-        case ex => Left("Parse error for: " + s)
-      }
+        Right(if (s.trim.length == 0) { None }
+        else { Some(s.toInt) })
+      } catch { case ex => Left("Parse error for: " + s) }
     }
   }
 
@@ -710,14 +683,9 @@ object ZookeeperTools extends Command {
     if (parser.parse(args)) {
       val conn: ZkConnection = new ZkConnection(config.zkConn)
       val client: ZkClient = new ZkClient(conn)
-      try {
-        process(conn, client, config)
-      } finally {
-        client.close
-      }
-    } else {
-      parser
-    }
+      try { process(conn, client, config) }
+      finally { client.close }
+    } else { parser }
   }
 
   def process(conn: ZkConnection, client: ZkClient, config: Config) {
@@ -800,9 +768,8 @@ object ZookeeperTools extends Command {
 
   def pathsAt(path: String, client: ZkClient): Buffer[(String, String)] = {
     val children = client.watchForChilds(path)
-    if (children == null) {
-      ListBuffer[(String, String)]()
-    } else {
+    if (children == null) { ListBuffer[(String, String)]() }
+    else {
       children.asScala map { child =>
         val bytes =
           client.readData(path + "/" + child).asInstanceOf[Array[Byte]]
@@ -867,14 +834,9 @@ object IngestTools extends Command {
     if (parser.parse(args)) {
       val conn = new ZkConnection(config.zkConn)
       val client = new ZkClient(conn)
-      try {
-        process(conn, client, config)
-      } finally {
-        client.close
-      }
-    } else {
-      parser
-    }
+      try { process(conn, client, config) }
+      finally { client.close }
+    } else { parser }
   }
 
   val shardCheckpointPath =
@@ -1009,11 +971,8 @@ object ImportTools extends Command with Logging {
         })
     }
 
-    if (parser.parse(args)) {
-      process(config)
-    } else {
-      parser
-    }
+    if (parser.parse(args)) { process(config) }
+    else { parser }
   }
 
   def process(config: Config) {
@@ -1167,14 +1126,10 @@ object ImportTools extends Command with Logging {
               bb.flip()
               if (n >= 0) loop(offset + 1, parser) else Future(())
             }
-          } else {
-            if (n >= 0) loop(offset + 1, parser) else Future(())
-          }
+          } else { if (n >= 0) loop(offset + 1, parser) else Future(()) }
         }
 
-        loop(0L, AsyncParser.stream()) onComplete {
-          case _ => ch.close()
-        }
+        loop(0L, AsyncParser.stream()) onComplete { case _ => ch.close() }
     }
 
     val complete =
@@ -1208,11 +1163,8 @@ object CSVTools extends Command {
         "delimeter",
         "field delimeter",
         { s: String =>
-          if (s.length == 1) {
-            config.delimeter = s.charAt(0)
-          } else {
-            sys.error("Invalid delimeter")
-          }
+          if (s.length == 1) { config.delimeter = s.charAt(0) }
+          else { sys.error("Invalid delimeter") }
         })
       opt(
         "t",
@@ -1229,11 +1181,8 @@ object CSVTools extends Command {
         "csv file to convert (headers required)",
         { s: String => config.input = s })
     }
-    if (parser.parse(args)) {
-      process(config)
-    } else {
-      parser
-    }
+    if (parser.parse(args)) { process(config) }
+    else { parser }
   }
 
   def process(config: Config) {
@@ -1243,9 +1192,7 @@ object CSVTools extends Command {
         config.delimeter,
         config.teaseTimestamps,
         config.verbose)
-      .foreach {
-        case jval => println(jval.renderCompact)
-      }
+      .foreach { case jval => println(jval.renderCompact) }
   }
 
   class Config(
@@ -1306,11 +1253,8 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
         "Mongo server config",
         { s: String => config.servers = s })
     }
-    if (parser.parse(args)) {
-      process(config)
-    } else {
-      parser
-    }
+    if (parser.parse(args)) { process(config) }
+    else { parser }
   }
 
   def process(config: Config) {
@@ -1323,9 +1267,7 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
         config.delete.map(delete(_, apiKeys))
       _ <- Future.sequence(actions)
       _ <- Stoppable.stop(stoppable)
-    } yield {
-      defaultActorSystem.shutdown
-    }
+    } yield { defaultActorSystem.shutdown }
 
     Await.result(job, Duration(30, "seconds"))
   }
@@ -1371,9 +1313,7 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
   }
 
   def showRoot(apiKeyManager: APIKeyManager[Future]) = {
-    for (rootAPIKey <- apiKeyManager.rootAPIKey) yield {
-      println(rootAPIKey)
-    }
+    for (rootAPIKey <- apiKeyManager.rootAPIKey) yield { println(rootAPIKey) }
   }
 
   def printAPIKey(t: APIKeyRecord): Unit = {

@@ -44,9 +44,7 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
   protected def i_is_! = data
   protected def i_was_! = orgData
 
-  override def doneWithSave() {
-    orgData = data
-  }
+  override def doneWithSave() { orgData = data }
 
   import scala.reflect.runtime.universe._
   def manifest: TypeTag[Double] = typeTag[Double]

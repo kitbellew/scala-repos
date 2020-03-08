@@ -35,9 +35,7 @@ trait PimpedJson {
       (js \ key).asOpt[A]
 
     def noNull = JsObject {
-      js.fields collect {
-        case (key, value) if value != JsNull => key -> value
-      }
+      js.fields collect { case (key, value) if value != JsNull => key -> value }
     }
   }
 

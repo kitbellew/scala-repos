@@ -59,8 +59,5 @@ trait FunSpecStaticStringTest extends ScalaTestTestCase {
         "FunSpecTest consts"))
   }
 
-  def testFunSpecValSum() = {
-    addFunSpec()
-
-  }
+  def testFunSpecValSum() = { addFunSpec() }
 }

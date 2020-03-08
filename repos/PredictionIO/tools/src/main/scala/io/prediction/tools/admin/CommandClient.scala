@@ -98,9 +98,7 @@ class CommandClient(
               s"Unable to initialize Event Store for this app ID: ${id}.")
           }
           r
-        } getOrElse {
-          GeneralResponse(0, s"Unable to create new app.")
-        }
+        } getOrElse { GeneralResponse(0, s"Unable to create new app.") }
       }
     }
     response
@@ -122,9 +120,7 @@ class CommandClient(
     val response = appClient.getByName(appName) map { app =>
       val data = if (eventClient.remove(app.id)) {
         GeneralResponse(1, s"Removed Event Store for this app ID: ${app.id}")
-      } else {
-        GeneralResponse(0, s"Error removing Event Store for this app.")
-      }
+      } else { GeneralResponse(0, s"Error removing Event Store for this app.") }
 
       val dbInit = eventClient.init(app.id)
       val data2 = if (dbInit) {
@@ -138,9 +134,7 @@ class CommandClient(
             s" ${app.id}.")
       }
       GeneralResponse(data.status * data2.status, data.message + data2.message)
-    } getOrElse {
-      GeneralResponse(0, s"App ${appName} does not exist.")
-    }
+    } getOrElse { GeneralResponse(0, s"App ${appName} does not exist.") }
     response
   }
 
@@ -155,14 +149,10 @@ class CommandClient(
         GeneralResponse(0, s"Error removing Event Store for app ${app.name}.");
       }
       data
-    } getOrElse {
-      GeneralResponse(0, s"App ${appName} does not exist.")
-    }
+    } getOrElse { GeneralResponse(0, s"App ${appName} does not exist.") }
     response
   }
 
   def futureTrain(req: TrainRequest)(
-      implicit ec: ExecutionContext): Future[GeneralResponse] = Future {
-    null
-  }
+      implicit ec: ExecutionContext): Future[GeneralResponse] = Future { null }
 }

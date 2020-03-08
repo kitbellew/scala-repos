@@ -156,9 +156,7 @@ trait ScFunction
       .foreach { p => paramClauses.deleteChildRange(p._1, p._2) }
   }
 
-  def isNative: Boolean = {
-    hasAnnotation("scala.native").isDefined
-  }
+  def isNative: Boolean = { hasAnnotation("scala.native").isDefined }
 
   override def hasModifierProperty(name: String): Boolean = {
     if (name == "abstract") {

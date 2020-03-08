@@ -51,9 +51,7 @@ object Artifact {
       val url = new URL("jar:%s!/%s".format(file.toURI.toString, resource))
       Option(url.openStream).flatMap(it =>
         using(new BufferedInputStream(it))(readProperty(_, name)))
-    } catch {
-      case _: IOException => None
-    }
+    } catch { case _: IOException => None }
   }
 
   private def readProperty(input: InputStream, name: String): Option[String] = {

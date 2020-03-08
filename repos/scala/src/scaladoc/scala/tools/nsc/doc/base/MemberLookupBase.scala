@@ -29,7 +29,9 @@ trait MemberLookupBase {
       pos: Position,
       query: String,
       site: Symbol) =
-    new EntityLink(title) { lazy val link = memberLookup(pos, query, site) }
+    new EntityLink(title) {
+      lazy val link = memberLookup(pos, query, site)
+    }
 
   private var showExplanation = true
   private def explanation: String =

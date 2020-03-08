@@ -58,9 +58,7 @@ class NNLSSuite extends SparkFunSuite {
       val solved =
         (breeze.linalg.norm(x - answer) < 0.01) && // L2 norm
           ((x - answer).toArray.map(_.abs).max < 0.001) // inf norm
-      if (solved) {
-        numSolved += 1
-      }
+      if (solved) { numSolved += 1 }
     }
 
     assert(numSolved > 50)

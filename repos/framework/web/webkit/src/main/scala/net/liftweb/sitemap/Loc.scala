@@ -147,9 +147,7 @@ trait Loc[T] {
                   case i: Loc.UseParentParams => true
                 }.isEmpty) {
               parentMenu.loc.allParams.asInstanceOf[List[Loc.LocParam[Any]]]
-            } else {
-              Nil
-            }
+            } else { Nil }
           case _ => Nil
         }
     }
@@ -184,21 +182,22 @@ trait Loc[T] {
 
   def rewrite: LocRewrite = Empty
 
-  def rewritePF: Box[LiftRules.RewritePF] = rewrite.map(rw =>
-    new NamedPartialFunction[RewriteRequest, RewriteResponse] {
-      def functionName = rw match {
-        case rw: NamedPartialFunction[_, _] => rw.functionName
-        case _                              => "Unnamed"
-      }
+  def rewritePF: Box[LiftRules.RewritePF] =
+    rewrite.map(rw =>
+      new NamedPartialFunction[RewriteRequest, RewriteResponse] {
+        def functionName = rw match {
+          case rw: NamedPartialFunction[_, _] => rw.functionName
+          case _                              => "Unnamed"
+        }
 
-      def isDefinedAt(in: RewriteRequest) = rw.isDefinedAt(in)
+        def isDefinedAt(in: RewriteRequest) = rw.isDefinedAt(in)
 
-      def apply(in: RewriteRequest): RewriteResponse = {
-        val (ret, param) = rw.apply(in)
-        requestValue.set(param)
-        ret
-      }
-    })
+        def apply(in: RewriteRequest): RewriteResponse = {
+          val (ret, param) = rw.apply(in)
+          requestValue.set(param)
+          ret
+        }
+      })
 
   /**
     * A `PartialFunction` that maps a snippet name, and an optional `Loc` value, in a `Tuple2`,
@@ -242,12 +241,8 @@ trait Loc[T] {
   protected def findStatelessCalc
       : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) =
     (
-      allParams.collect {
-        case v @ Loc.CalcStateless(_) => v
-      }.headOption,
-      allParams.collect {
-        case v @ Loc.CalcParamStateless(_) => v
-      }.headOption)
+      allParams.collect { case v @ Loc.CalcStateless(_)      => v }.headOption,
+      allParams.collect { case v @ Loc.CalcParamStateless(_) => v }.headOption)
 
   /**
     * The cached Loc params
@@ -500,9 +495,7 @@ trait Loc[T] {
 
   def inGroup_?(group: String): Boolean = groupSet.contains(group)
 
-  def init() {
-    params.foreach(_ onCreate (this))
-  }
+  def init() { params.foreach(_ onCreate (this)) }
 
 }
 
@@ -784,9 +777,7 @@ object Loc {
       extends PartialFunction[String, NodeSeq => NodeSeq]
       with ValueSnippets[Any]
       with AnyLocParam {
-    def snippets = {
-      case (s, _) if isDefinedAt(s) => apply(s)
-    }
+    def snippets = { case (s, _) if isDefinedAt(s) => apply(s) }
   }
 
   /**
@@ -938,15 +929,11 @@ object Loc {
     def createPath(value: T): String = {
       val path: List[String] = pathList(value).map(Helpers.urlEncode)
 
-      if (matchHead_?) {
-        path.mkString("/", "/", "/")
-      } else if (SiteMap.rawIndex_? && path == List("index")) {
-        "/"
-      } else if (path.length > 1 && path.last == "index") {
+      if (matchHead_?) { path.mkString("/", "/", "/") }
+      else if (SiteMap.rawIndex_? && path == List("index")) { "/" }
+      else if (path.length > 1 && path.last == "index") {
         path.dropRight(1).mkString("/", "/", "/")
-      } else {
-        path.mkString("/", "/", "")
-      }
+      } else { path.mkString("/", "/", "") }
     }
 
     /**

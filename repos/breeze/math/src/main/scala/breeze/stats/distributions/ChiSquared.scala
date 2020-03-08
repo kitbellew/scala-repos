@@ -19,16 +19,11 @@ case class ChiSquared(k: Double)(implicit rand: RandBasis = Rand)
   def draw(): Double = innerGamma.draw()
 
   override def pdf(x: Double): Double =
-    if (x > 0.0) {
-      math.exp(logPdf(x))
-    } else if (x == 0.0) {
-      if (k > 2.0) {
-        0.0
-      } else if (k == 2.0) {
-        0.5
-      } else {
-        Double.PositiveInfinity
-      }
+    if (x > 0.0) { math.exp(logPdf(x)) }
+    else if (x == 0.0) {
+      if (k > 2.0) { 0.0 }
+      else if (k == 2.0) { 0.5 }
+      else { Double.PositiveInfinity }
     } else {
       throw new IllegalArgumentException(
         "Domain of ChiSquared.pdf is [0,Infinity), you tried to apply to " + x)
@@ -49,14 +44,10 @@ case class ChiSquared(k: Double)(implicit rand: RandBasis = Rand)
     innerGamma.probability(x, y)
   }
 
-  override def inverseCdf(p: Double): Double = {
-    innerGamma.inverseCdf(p)
-  }
+  override def inverseCdf(p: Double): Double = { innerGamma.inverseCdf(p) }
 
   // Probability that x < a <= Y
-  override def cdf(x: Double): Double = {
-    innerGamma.cdf(x)
-  }
+  override def cdf(x: Double): Double = { innerGamma.cdf(x) }
 }
 
 object ChiSquared

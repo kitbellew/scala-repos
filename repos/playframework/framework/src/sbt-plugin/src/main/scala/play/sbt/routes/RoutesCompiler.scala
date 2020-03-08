@@ -166,9 +166,7 @@ object RoutesCompiler extends AutoPlugin {
             op -> OpSuccess(Set(op.task.file), inputs.toSet)
           case (op, Left(_)) => op -> OpFailure
         }.toMap
-        val errors = results.collect {
-          case (_, Left(e)) => e
-        }.flatten
+        val errors = results.collect { case (_, Left(e)) => e }.flatten
         (opResults, errors)
     }
 

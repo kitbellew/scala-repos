@@ -194,11 +194,7 @@ trait Trees extends api.Trees {
         if (sym != null && isFree(sym)) s += sym.asInstanceOf[S]
       for (t <- this) {
         addIfFree(t.symbol)
-        if (t.tpe != null) {
-          for (tp <- t.tpe) {
-            addIfFree(symOfType(tp))
-          }
-        }
+        if (t.tpe != null) { for (tp <- t.tpe) { addIfFree(symOfType(tp)) } }
       }
       s.toList
     }
@@ -1657,9 +1653,7 @@ trait Trees extends api.Trees {
         treeCopy.PackageDef(
           tree,
           transform(pid).asInstanceOf[RefTree],
-          atOwner(mclass(tree.symbol)) {
-            transformStats(stats, currentOwner)
-          }
+          atOwner(mclass(tree.symbol)) { transformStats(stats, currentOwner) }
         )
       case Annotated(annot, arg) =>
         treeCopy.Annotated(tree, transform(annot), transform(arg))

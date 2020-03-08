@@ -340,9 +340,7 @@ object SimpleConsumerShell extends Logging {
                 "Error consuming topic, partition, replica (%s, %d, %d) with offset [%d]"
                   .format(topic, partitionId, replicaId, offset),
                 e)
-          } finally {
-            info(s"Consumed $numMessagesConsumed messages")
-          }
+          } finally { info(s"Consumed $numMessagesConsumed messages") }
         }
       },
       false

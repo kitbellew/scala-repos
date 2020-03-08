@@ -31,17 +31,15 @@ object NamedCometPerTabSpec extends Specification {
   "NamedCometPerTabSpec Specification".title
 
   class CometA extends NamedCometActorTrait {
-    override def lowPriority = {
-      case msg => JsCmds.Noop
-    }
-    def render = {
-      "nada" #> Text("nada")
-    }
+    override def lowPriority = { case msg => JsCmds.Noop }
+    def render = { "nada" #> Text("nada") }
   }
 
   "A NamedCometDispatcher" should {
     step {
-      val cometA = new CometA { override def name = Full("1") }
+      val cometA = new CometA {
+        override def name = Full("1")
+      }
       cometA.localSetup
 
       // HACK! to ensure tests doesn't fail when trying to access actor before they've been registered

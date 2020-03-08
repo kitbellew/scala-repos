@@ -160,16 +160,12 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
 
   test("A group update should not contain a version") {
     val update = GroupUpdate(None, version = Some(Timestamp.now()))
-    intercept[IllegalArgumentException] {
-      update(Group.empty, Timestamp.now())
-    }
+    intercept[IllegalArgumentException] { update(Group.empty, Timestamp.now()) }
   }
 
   test("A group update should not contain a scaleBy") {
     val update = GroupUpdate(None, scaleBy = Some(3))
-    intercept[IllegalArgumentException] {
-      update(Group.empty, Timestamp.now())
-    }
+    intercept[IllegalArgumentException] { update(Group.empty, Timestamp.now()) }
   }
 
   test(

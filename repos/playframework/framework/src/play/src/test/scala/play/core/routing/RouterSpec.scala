@@ -8,21 +8,13 @@ import org.specs2.mutable.Specification
 object RouterSpec extends Specification {
 
   "Router dynamic string builder" should {
-    "handle empty parts" in {
-      dynamicString("") must_== ""
-    }
-    "handle simple parts" in {
-      dynamicString("xyz") must_== "xyz"
-    }
+    "handle empty parts" in { dynamicString("") must_== "" }
+    "handle simple parts" in { dynamicString("xyz") must_== "xyz" }
     "handle parts containing backslashes" in {
       dynamicString("x/y") must_== "x%2Fy"
     }
-    "handle parts containing spaces" in {
-      dynamicString("x y") must_== "x%20y"
-    }
-    "handle parts containing pluses" in {
-      dynamicString("x+y") must_== "x+y"
-    }
+    "handle parts containing spaces" in { dynamicString("x y") must_== "x%20y" }
+    "handle parts containing pluses" in { dynamicString("x+y") must_== "x+y" }
     "handle parts with unicode characters" in {
       dynamicString("ℛat") must_== "%E2%84%9Bat"
     }

@@ -1,1 +1,5 @@
-package p { object Test { Crash } }
+package p {
+  object Test {
+    Crash
+  }
+}

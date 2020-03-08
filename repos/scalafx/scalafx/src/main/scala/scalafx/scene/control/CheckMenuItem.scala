@@ -60,7 +60,5 @@ class CheckMenuItem(
     * (and causes the selected state to be toggled).
     */
   def selected: BooleanProperty = delegate.selectedProperty
-  def selected_=(v: Boolean) {
-    selected() = v
-  }
+  def selected_=(v: Boolean) { selected() = v }
 }

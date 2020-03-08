@@ -60,30 +60,22 @@ class MethodDirectivesSpec extends RoutingSpec {
       Put() ~> {
         get { completeOk } ~
           put { reject(RequestEntityExpectedRejection) }
-      } ~> check {
-        rejections shouldEqual List(RequestEntityExpectedRejection)
-      }
+      } ~> check { rejections shouldEqual List(RequestEntityExpectedRejection) }
     }
     "be cancelled if the match happens after the rejection (example 2)" in {
       Put() ~> {
         (get & complete(Ok)) ~ (put & reject(RequestEntityExpectedRejection))
-      } ~> check {
-        rejections shouldEqual List(RequestEntityExpectedRejection)
-      }
+      } ~> check { rejections shouldEqual List(RequestEntityExpectedRejection) }
     }
     "be cancelled if the match happens before the rejection" in {
       Put() ~> {
         put { reject(RequestEntityExpectedRejection) } ~ get { completeOk }
-      } ~> check {
-        rejections shouldEqual List(RequestEntityExpectedRejection)
-      }
+      } ~> check { rejections shouldEqual List(RequestEntityExpectedRejection) }
     }
     "be cancelled if the match happens before the rejection (example 2)" in {
       Put() ~> {
         (put & reject(RequestEntityExpectedRejection)) ~ (get & complete(Ok))
-      } ~> check {
-        rejections shouldEqual List(RequestEntityExpectedRejection)
-      }
+      } ~> check { rejections shouldEqual List(RequestEntityExpectedRejection) }
     }
   }
 }

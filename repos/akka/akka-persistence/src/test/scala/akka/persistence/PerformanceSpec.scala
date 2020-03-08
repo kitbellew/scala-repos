@@ -27,9 +27,7 @@ object PerformanceSpec {
     private var startTime: Long = 0L
     private var stopTime: Long = 0L
 
-    def startMeasure(): Unit = {
-      startTime = System.nanoTime
-    }
+    def startMeasure(): Unit = { startTime = System.nanoTime }
 
     def stopMeasure(): Double = {
       stopTime = System.nanoTime
@@ -175,12 +173,8 @@ class PerformanceSpec
   }
 
   "Warmup persistent actor" should {
-    "exercise" in {
-      stressCommandsourcedPersistentActor(None)
-    }
-    "exercise some more" in {
-      stressCommandsourcedPersistentActor(None)
-    }
+    "exercise" in { stressCommandsourcedPersistentActor(None) }
+    "exercise some more" in { stressCommandsourcedPersistentActor(None) }
   }
 
   "A command sourced persistent actor" should {
@@ -202,9 +196,7 @@ class PerformanceSpec
   }
 
   "A mixed command and event sourced persistent actor" should {
-    "have some reasonable throughput" in {
-      stressMixedPersistentActor(None)
-    }
+    "have some reasonable throughput" in { stressMixedPersistentActor(None) }
   }
 
 }

@@ -134,9 +134,7 @@ case class OffsetCommitRequest(
     }
 
     // version 2 or above specific data
-    if (versionId >= 2) {
-      buffer.putLong(retentionMs)
-    }
+    if (versionId >= 2) { buffer.putLong(retentionMs) }
 
     buffer.putInt(requestInfoGroupedByTopic.size) // number of topics
     requestInfoGroupedByTopic.foreach(
@@ -207,7 +205,5 @@ case class OffsetCommitRequest(
     offsetCommitRequest.toString()
   }
 
-  override def toString = {
-    describe(details = true)
-  }
+  override def toString = { describe(details = true) }
 }

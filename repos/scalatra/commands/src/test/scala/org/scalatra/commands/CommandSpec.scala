@@ -164,9 +164,7 @@ class CommandSpec extends Specification {
 
         private var _fullname: String = _
 
-        def fullName: Option[String] = Option {
-          _fullname
-        }
+        def fullName: Option[String] = Option { _fullname }
 
         afterBinding {
           _fullname =
@@ -191,9 +189,7 @@ class CommandSpec extends Specification {
 class CommandSample extends ParamsOnlyCommand {
   var bound = false
 
-  afterBinding {
-    bound = true
-  }
+  afterBinding { bound = true }
 }
 
 class CommandSupportSpec extends Specification with Mockito {

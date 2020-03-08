@@ -54,24 +54,17 @@ private[spark] class OpenHashMap[K: ClassTag,
 
   /** Tests whether this map contains a binding for a key. */
   def contains(k: K): Boolean = {
-    if (k == null) {
-      haveNullValue
-    } else {
-      _keySet.getPos(k) != OpenHashSet.INVALID_POS
-    }
+    if (k == null) { haveNullValue }
+    else { _keySet.getPos(k) != OpenHashSet.INVALID_POS }
   }
 
   /** Get the value for a given key */
   def apply(k: K): V = {
-    if (k == null) {
-      nullValue
-    } else {
+    if (k == null) { nullValue }
+    else {
       val pos = _keySet.getPos(k)
-      if (pos < 0) {
-        null.asInstanceOf[V]
-      } else {
-        _values(pos)
-      }
+      if (pos < 0) { null.asInstanceOf[V] }
+      else { _values(pos) }
     }
   }
 
@@ -96,9 +89,8 @@ private[spark] class OpenHashMap[K: ClassTag,
     */
   def changeValue(k: K, defaultValue: => V, mergeValue: (V) => V): V = {
     if (k == null) {
-      if (haveNullValue) {
-        nullValue = mergeValue(nullValue)
-      } else {
+      if (haveNullValue) { nullValue = mergeValue(nullValue) }
+      else {
         haveNullValue = true
         nullValue = defaultValue
       }
@@ -135,9 +127,7 @@ private[spark] class OpenHashMap[K: ClassTag,
         val ret = (_keySet.getValue(pos), _values(pos))
         pos += 1
         ret
-      } else {
-        null
-      }
+      } else { null }
     }
 
     def hasNext: Boolean = nextPair != null

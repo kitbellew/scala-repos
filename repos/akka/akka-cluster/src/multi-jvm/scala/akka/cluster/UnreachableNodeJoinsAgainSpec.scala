@@ -128,9 +128,7 @@ abstract class UnreachableNodeJoinsAgainSpec
     }
 
     "mark the node as DOWN" taggedAs LongRunningTest in {
-      runOn(master) {
-        cluster down victim
-      }
+      runOn(master) { cluster down victim }
 
       val allButVictim = allBut(victim, roles)
       runOn(allButVictim: _*) {
@@ -210,18 +208,14 @@ abstract class UnreachableNodeJoinsAgainSpec
           endActor ! EndActor.SendEnd
           endProbe.expectMsg(EndActor.EndAck)
 
-        } finally {
-          shutdown(freshSystem)
-        }
+        } finally { shutdown(freshSystem) }
         // no barrier here, because it is not part of testConductor roles any more
       }
 
       runOn(allBut(victim): _*) {
         awaitMembersUp(expectedNumberOfMembers)
         // don't end the test until the freshSystem is done
-        runOn(master) {
-          expectMsg(20 seconds, EndActor.End)
-        }
+        runOn(master) { expectMsg(20 seconds, EndActor.End) }
         endBarrier()
       }
 

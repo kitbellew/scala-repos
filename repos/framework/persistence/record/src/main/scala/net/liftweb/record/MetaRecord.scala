@@ -172,9 +172,7 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     */
   def createRecord: BaseRecord = {
     val rec = instantiateRecord
-    rec runSafe {
-      fieldList.foreach(fh => fh.field(rec).setName_!(fh.name))
-    }
+    rec runSafe { fieldList.foreach(fh => fh.field(rec).setName_!(fh.name)) }
     rec
   }
 
@@ -224,11 +222,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     */
   def validate(inst: BaseRecord): List[FieldError] = {
     foreachCallback(inst, _.beforeValidation)
-    try {
-      fieldList.flatMap(_.field(inst).validate)
-    } finally {
-      foreachCallback(inst, _.afterValidation)
-    }
+    try { fieldList.flatMap(_.field(inst).validate) }
+    finally { foreachCallback(inst, _.afterValidation) }
   }
 
   /**
@@ -444,9 +439,7 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     * @param req - The Req to read from
     */
   def setFieldsFromReq(inst: BaseRecord, req: Req) {
-    for (fh <- fieldList) {
-      fh.field(inst).setFromAny(req.param(fh.name))
-    }
+    for (fh <- fieldList) { fh.field(inst).setFromAny(req.param(fh.name)) }
   }
 
   /**
@@ -459,9 +452,7 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     for {
       fh <- fieldList
       fld <- rec.fieldByName(fh.name)
-    } {
-      fh.field(inst).setFromAny(fld.valueBox)
-    }
+    } { fh.field(inst).setFromAny(fld.valueBox) }
   }
 
   def copy(rec: BaseRecord): BaseRecord = {

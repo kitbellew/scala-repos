@@ -54,9 +54,7 @@ object CheckDistribution {
 
   }
 
-  def main(args: Array[String]) {
-    runMain(args(0).toInt)
-  }
+  def main(args: Array[String]) { runMain(args(0).toInt) }
 
 }
 
@@ -185,9 +183,7 @@ object Upgrade_0_8_3 {
 
     if (!fromGood || !toGood) {
       logger.error("Doesn't match!! There is an import error.")
-    } else {
-      logger.info("Count matches. Looks like we are good to go.")
-    }
+    } else { logger.info("Count matches. Looks like we are good to go.") }
   }
 
   /* For upgrade from 0.8.2 to 0.8.3 only */

@@ -190,9 +190,7 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
                 hasAssign = true
                 used = true
               }
-              if (holder.isValueReadUsed(decElem)) {
-                used = true
-              }
+              if (holder.isValueReadUsed(decElem)) { used = true }
             }
           }
           holder.retrieveUnusedReferencesInfo(runnable)

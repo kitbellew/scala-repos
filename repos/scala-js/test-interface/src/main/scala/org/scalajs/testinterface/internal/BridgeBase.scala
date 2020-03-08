@@ -15,9 +15,7 @@ abstract class BridgeBase(frameworkName: String) {
   protected[this] val framework = FrameworkLoader.loadFramework(frameworkName)
 
   @JSExport
-  def init(): Unit = {
-    Com.init(handleMsg _)
-  }
+  def init(): Unit = { Com.init(handleMsg _) }
 
   private def handleMsg(msg: String): Unit = {
     val pos = msg.indexOf(':')
@@ -30,9 +28,8 @@ abstract class BridgeBase(frameworkName: String) {
         msg.substring(pos + 1)
     }
 
-    try {
-      handleMsgImpl(cmd, strArg)
-    } catch {
+    try { handleMsgImpl(cmd, strArg) }
+    catch {
       case NonFatal(t) =>
         val data = js.JSON.stringify(ThrowableSerializer.serialize(t))
         Com.send("bad:" + data)

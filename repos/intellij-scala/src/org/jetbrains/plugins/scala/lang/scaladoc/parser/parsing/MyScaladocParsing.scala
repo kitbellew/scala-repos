@@ -26,24 +26,18 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
   private var canHaveTags = true
   private var flags = 0
 
-  private def setFlag(flag: Int) {
-    flags |= flag
-  }
+  private def setFlag(flag: Int) { flags |= flag }
 
   private def isSetFlag(flag: Int): Boolean = (flags & flag) != 0
 
-  private def clearFlag(flag: Int) {
-    flags &= ~flag
-  }
+  private def clearFlag(flag: Int) { flags &= ~flag }
 
   private def isEndOfComment(implicit builder: PsiBuilder): Boolean =
     builder.eof() || builder.getTokenType == DOC_COMMENT_END
 
   def parse() {
     while (parseCommentData(psiBuilder)) {}
-    while (!psiBuilder.eof()) {
-      psiBuilder.advanceLexer()
-    }
+    while (!psiBuilder.eof()) { psiBuilder.advanceLexer() }
   }
 
   private def parseCommentData(implicit builder: PsiBuilder): Boolean = {
@@ -86,9 +80,7 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
     val tokenText = builder.getTokenText
     val marker = builder.mark()
     setFlag(tokenType.getFlagConst)
-    if (!isEndOfComment) {
-      builder.advanceLexer()
-    }
+    if (!isEndOfComment) { builder.advanceLexer() }
 
     def closedBy(message: String = "new paragraph") {
       marker.done(tokenType)
@@ -128,9 +120,7 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
           } else {
             if (tokenText.length > builder.getTokenText.length) {
               builder.error("Header closed by opening new one")
-            } else {
-              builder.advanceLexer()
-            }
+            } else { builder.advanceLexer() }
 
             canHaveTags = true
             marker.done(tokenType)
@@ -149,9 +139,7 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
           if (tokenType == DOC_LINK_TAG || tokenType == DOC_HTTP_LINK_TAG) {
             marker.done(tokenType)
             return true
-          } else {
-            builder.error("Closing link element before opening one")
-          }
+          } else { builder.error("Closing link element before opening one") }
         case a: ScaladocSyntaxElementType
             if a == DOC_MONOSPACE_TAG || tokenType != DOC_MONOSPACE_TAG =>
           if (tokenType == a) { //
@@ -202,9 +190,7 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
       }
     }
 
-    if (!canClose(builder.getTokenType)) {
-      builder.error("No closing element")
-    }
+    if (!canClose(builder.getTokenType)) { builder.error("No closing element") }
     marker.done(tokenType)
     true
   }
@@ -221,11 +207,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
     while (!isEndOfComment && builder.getTokenType != DOC_INNER_CLOSE_CODE_TAG) {
       builder.advanceLexer()
     }
-    if (isEndOfComment) {
-      builder.error("Unclosed code tag")
-    } else {
-      builder.advanceLexer()
-    }
+    if (isEndOfComment) { builder.error("Unclosed code tag") }
+    else { builder.advanceLexer() }
     marker.done(DOC_INNER_CODE_TAG)
 
     true
@@ -250,9 +233,7 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
     else {
       tagName match {
         case THROWS_TAG =>
-          if (!isEndOfComment) {
-            builder.advanceLexer()
-          }
+          if (!isEndOfComment) { builder.advanceLexer() }
           StableId.parse(
             new ScalaPsiBuilderImpl(builder),
             true,
@@ -296,9 +277,7 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
         val tagValMarker = builder.mark()
         builder.advanceLexer()
         tagValMarker.done(DOC_TAG_VALUE_TOKEN)
-      } else {
-        builder.advanceLexer()
-      }
+      } else { builder.advanceLexer() }
     }
     marker.done(if (isInInlinedTag) DOC_INLINED_TAG else DOC_TAG)
     isInInlinedTag = false

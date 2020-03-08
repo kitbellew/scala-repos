@@ -56,8 +56,6 @@ object ScentryAuthStore {
     }
     def invalidate()(implicit
         request: HttpServletRequest,
-        response: HttpServletResponse) {
-      app.session.invalidate()
-    }
+        response: HttpServletResponse) { app.session.invalidate() }
   }
 }

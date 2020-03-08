@@ -8,15 +8,9 @@ package lang.resolve2
 class InterpolatedStringTest extends ResolveTestBase {
   override def folderPath: String = super.folderPath + "interpolatedString/"
 
-  def testPrefixResolve() {
-    doTest()
-  }
+  def testPrefixResolve() { doTest() }
 
-  def testResolveImplicit() {
-    doTest()
-  }
+  def testResolveImplicit() { doTest() }
 
-  def testResolveInsideString() {
-    doTest()
-  }
+  def testResolveInsideString() { doTest() }
 }

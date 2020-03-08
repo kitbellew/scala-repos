@@ -140,7 +140,9 @@ trait StreamInstances {
   }
 
   implicit def streamEqual[A](implicit A0: Equal[A]): Equal[Stream[A]] =
-    new StreamEqual[A] { def A = A0 }
+    new StreamEqual[A] {
+      def A = A0
+    }
   implicit def streamOrder[A](implicit A0: Order[A]): Order[Stream[A]] =
     new Order[Stream[A]] with StreamEqual[A] {
       def A = A0
@@ -217,9 +219,7 @@ trait StreamFunctions {
       f: A => (B, () => Stream[A])): Stream[Tree[B]] =
     as.map(a => {
       def unfoldTree(x: A): Tree[B] =
-        f(x) match {
-          case (b, bs) => Tree.Node(b, unfoldForest(bs())(f))
-        }
+        f(x) match { case (b, bs) => Tree.Node(b, unfoldForest(bs())(f)) }
 
       unfoldTree(a)
     })

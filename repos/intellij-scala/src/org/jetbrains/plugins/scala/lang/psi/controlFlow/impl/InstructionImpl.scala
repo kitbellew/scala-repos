@@ -23,13 +23,9 @@ sealed class InstructionImpl(
 
   def succ() = mySucc
 
-  def addPred(p: Instruction) {
-    myPred += p
-  }
+  def addPred(p: Instruction) { myPred += p }
 
-  def addSucc(s: Instruction) {
-    mySucc += s
-  }
+  def addSucc(s: Instruction) { mySucc += s }
 
   override def toString = {
     val builder = new StringBuilder

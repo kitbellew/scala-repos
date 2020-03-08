@@ -208,9 +208,7 @@ class ScribeHandlerTest extends WordSpec with BeforeAndAfter with Eventually {
           assert(scribe.flusher.getQueue().size() == 0)
         }
         // publish the rest.
-        for (i <- 1 until 100) {
-          scribe.publish(record1)
-        }
+        for (i <- 1 until 100) { scribe.publish(record1) }
       }
       scribe.flusher.shutdown()
       scribe.flusher.awaitTermination(15, TimeUnit.SECONDS)

@@ -52,9 +52,7 @@ private[round] final class Socket(
       if (bye > 0) bye = bye - 1
       time = nowMillis
     }
-    def setBye {
-      bye = 3
-    }
+    def setBye { bye = 3 }
     private def isBye = bye > 0
 
     private def isHostingSimul: Fu[Boolean] = userId ?? { u =>
@@ -185,9 +183,7 @@ private[round] final class Socket(
       }
 
     case round.TournamentStanding(id) =>
-      owners.foreach {
-        _ push makeMessage("tournamentStanding", id)
-      }
+      owners.foreach { _ push makeMessage("tournamentStanding", id) }
 
     case NotifyCrowd =>
       delayedCrowdNotification = false

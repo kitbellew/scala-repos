@@ -82,21 +82,15 @@ class ConcurrentHashMap[K >: Null, V >: Null]
       if (oldValue === old) {
         put(key, newValue)
         true
-      } else {
-        false
-      }
-    } else {
-      throw new NullPointerException()
-    }
+      } else { false }
+    } else { throw new NullPointerException() }
   }
 
   override def replace(key: K, value: V): V = {
     if (key != null && value != null) {
       if (inner(Box(key)) != null) put(key, value)
       else null
-    } else {
-      throw new NullPointerException()
-    }
+    } else { throw new NullPointerException() }
   }
 
   override def clear(): Unit =
@@ -128,9 +122,7 @@ class ConcurrentHashMap[K >: Null, V >: Null]
             if (lastKey != null) {
               inner.remove(lastKey)
               lastKey = null
-            } else {
-              throw new IllegalStateException()
-            }
+            } else { throw new IllegalStateException() }
           }
         }
       }

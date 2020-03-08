@@ -136,7 +136,9 @@ package Generic1TestsAux {
   }
 
   /** This version of Pointed isn't complete & NOT working but it allows to show bugs in IsHCons1/ISCCons/Generic1 macro generation */
-  trait Pointed[F[_]] { def point[A](a: A): F[A] }
+  trait Pointed[F[_]] {
+    def point[A](a: A): F[A]
+  }
 
   object Pointed extends Pointed0 {
     def apply[F[_]](implicit f: Lazy[Pointed[F]]): Pointed[F] = f.value
@@ -184,9 +186,7 @@ package Generic1TestsAux {
     implicit def ccons[F[_]](
         implicit ihc: IsCCons1[F, Pointed, Pointed]): Pointed[F] =
       new Pointed[F] {
-        def point[A](a: A): F[A] = {
-          ihc.pack(Left(ihc.fh.point(a)))
-        }
+        def point[A](a: A): F[A] = { ihc.pack(Left(ihc.fh.point(a))) }
       }
 
     implicit def generic[F[_]](implicit gen: Generic1[F, Pointed]): Pointed[F] =

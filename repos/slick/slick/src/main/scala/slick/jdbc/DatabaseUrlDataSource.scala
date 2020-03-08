@@ -49,7 +49,5 @@ class DatabaseUrlDataSource extends DriverDataSource(null) {
     }
   }
 
-  private[this] def defaultUrl(): String = {
-    System.getenv("DATABASE_URL")
-  }
+  private[this] def defaultUrl(): String = { System.getenv("DATABASE_URL") }
 }

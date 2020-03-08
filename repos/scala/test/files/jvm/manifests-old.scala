@@ -4,7 +4,9 @@ object Test extends App {
 }
 
 class Foo[T](x: T)
-trait Bar[T] { def f: T }
+trait Bar[T] {
+  def f: T
+}
 
 object Test1 extends TestUtil {
   print(())
@@ -50,7 +52,9 @@ object Test1 extends TestUtil {
   print(new Foo(List(new Foo(2))))
   println()
 
-  print(new Bar[String] { def f = "abc" })
+  print(new Bar[String] {
+    def f = "abc"
+  })
   println()
 }
 

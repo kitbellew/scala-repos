@@ -186,9 +186,7 @@ private[controllers] class AssetInfo(
     configuredCacheControl.getOrElse {
       if (isProd) {
         if (aggressiveCaching) aggressiveCacheControl else defaultCacheControl
-      } else {
-        "no-cache"
-      }
+      } else { "no-cache" }
     }
   }
 
@@ -197,11 +195,8 @@ private[controllers] class AssetInfo(
       Option(url.openConnection)
         .map {
           case urlConnection: T @unchecked =>
-            try {
-              f(urlConnection)
-            } finally {
-              Resources.closeUrlConnection(urlConnection)
-            }
+            try { f(urlConnection) }
+            finally { Resources.closeUrlConnection(urlConnection) }
         }
         .filterNot(_ == -1)
         .map(httpDateFormat.print)
@@ -310,9 +305,7 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
         }
         val maybeMinifiedPath = if (checkForMinified) {
           minifiedPathFor('.').orElse(minifiedPathFor('-')).getOrElse(path)
-        } else {
-          path
-        }
+        } else { path }
         if (!isDev) minifiedPathsCache.put(path, maybeMinifiedPath)
         maybeMinifiedPath
       }
@@ -324,9 +317,7 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
 
   private def assetInfoFromResource(name: String): Option[AssetInfo] = {
     blocking {
-      for {
-        url <- resource(name)
-      } yield {
+      for { url <- resource(name) } yield {
         val gzipUrl: Option[URL] = resource(name + ".gz")
         new AssetInfo(name, url, gzipUrl, digest(name))
       }
@@ -334,9 +325,8 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
   }
 
   private def assetInfo(name: String): Future[Option[AssetInfo]] = {
-    if (isDev) {
-      Future.successful(assetInfoFromResource(name))
-    } else {
+    if (isDev) { Future.successful(assetInfoFromResource(name)) }
+    else {
       assetInfoCache.putIfAbsent(name)(assetInfoFromResource)(
         Implicits.trampoline)
     }
@@ -423,9 +413,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
           ifModifiedSince <- parseModifiedDate(ifModifiedSinceStr)
           lastModified <- assetInfo.parsedLastModified
           if !lastModified.after(ifModifiedSince)
-        } yield {
-          NotModified
-        }
+        } yield { NotModified }
     }
   }
 
@@ -469,11 +457,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
     }
     if (gzipRequested && gzipAvailable) {
       response.withHeaders(VARY -> ACCEPT_ENCODING, CONTENT_ENCODING -> "gzip")
-    } else if (gzipAvailable) {
-      response.withHeaders(VARY -> ACCEPT_ENCODING)
-    } else {
-      response
-    }
+    } else if (gzipAvailable) { response.withHeaders(VARY -> ACCEPT_ENCODING) }
+    else { response }
   }
 
   /**
@@ -495,9 +480,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
             assetAt(path, bareFile, aggressiveCaching = true)
           case _ => assetAt(path, file.name, false)
         }
-      } else {
-        assetAt(path, file.name, false)
-      }
+      } else { assetAt(path, file.name, false) }
   }
 
   /**
@@ -592,9 +575,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
     val pathFile = new File(path)
     if (!resourceFile.getCanonicalPath.startsWith(pathFile.getCanonicalPath)) {
       None
-    } else {
-      Some(resourceName)
-    }
+    } else { Some(resourceName) }
   }
 
   private val dblSlashPattern = """//+""".r

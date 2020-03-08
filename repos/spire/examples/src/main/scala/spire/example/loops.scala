@@ -10,9 +10,7 @@ class Loops {
     }
   }
 
-  def simple(): Unit = {
-    cfor(0)(_ < 10, _ + 1) { i => println(i) }
-  }
+  def simple(): Unit = { cfor(0)(_ < 10, _ + 1) { i => println(i) } }
 
   def simplew(): Unit = {
     var i = 0

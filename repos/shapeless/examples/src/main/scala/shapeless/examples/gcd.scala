@@ -27,7 +27,9 @@ object GCDExamples {
   import ops.nat._
   import test._
 
-  trait GCD[X <: Nat, Y <: Nat] { type Out <: Nat }
+  trait GCD[X <: Nat, Y <: Nat] {
+    type Out <: Nat
+  }
 
   object GCD {
     def gcd[N <: Nat](x: Nat, y: Nat)(implicit
@@ -36,12 +38,16 @@ object GCDExamples {
 
     type Aux[X <: Nat, Y <: Nat, Z <: Nat] = GCD[X, Y] { type Out = Z }
 
-    implicit def gcd0[X <: Nat]: Aux[X, X, X] = new GCD[X, X] { type Out = X }
+    implicit def gcd0[X <: Nat]: Aux[X, X, X] = new GCD[X, X] {
+      type Out = X
+    }
     implicit def gcd1[X <: Nat, Y <: Nat, Z <: Nat, Out0 <: Nat](implicit
         ev0: LT[X, Y],
         ev1: Diff.Aux[Y, X, Z],
         ev2: Aux[X, Z, Out0]): Aux[X, Y, Out0] =
-      new GCD[X, Y] { type Out = Out0 }
+      new GCD[X, Y] {
+        type Out = Out0
+      }
     implicit def gcd2[X <: Nat, Y <: Nat, Out0 <: Nat](implicit
         ev0: LT[Y, X],
         ev1: Aux[Y, X, Out0]): Aux[X, Y, Out0] = new GCD[X, Y] {

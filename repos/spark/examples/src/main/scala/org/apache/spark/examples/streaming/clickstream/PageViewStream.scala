@@ -79,11 +79,8 @@ object PageViewStream {
         val normalCount = statuses.count(_ == 200)
         val errorCount = statuses.size - normalCount
         val errorRatio = errorCount.toFloat / statuses.size
-        if (errorRatio > 0.05) {
-          "%s: **%s**".format(zip, errorRatio)
-        } else {
-          "%s: %s".format(zip, errorRatio)
-        }
+        if (errorRatio > 0.05) { "%s: **%s**".format(zip, errorRatio) }
+        else { "%s: %s".format(zip, errorRatio) }
     }
 
     // Return the number unique users in last 15 seconds

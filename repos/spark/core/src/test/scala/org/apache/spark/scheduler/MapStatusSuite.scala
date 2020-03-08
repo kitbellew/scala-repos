@@ -89,9 +89,7 @@ class MapStatusSuite extends SparkFunSuite {
     assert(status1.location == loc)
     for (i <- 0 until 3000) {
       val estimate = status1.getSizeForBlock(i)
-      if (sizes(i) > 0) {
-        assert(estimate === avg)
-      }
+      if (sizes(i) > 0) { assert(estimate === avg) }
     }
   }
 
@@ -103,10 +101,7 @@ class MapStatusSuite extends SparkFunSuite {
 
   test("RoaringBitmap: runOptimize succeeded") {
     val r = new RoaringBitmap
-    (1 to 200000).foreach(i =>
-      if (i % 200 != 0) {
-        r.add(i)
-      })
+    (1 to 200000).foreach(i => if (i % 200 != 0) { r.add(i) })
     val size1 = r.getSizeInBytes
     val success = r.runOptimize()
     r.trim()
@@ -117,10 +112,7 @@ class MapStatusSuite extends SparkFunSuite {
 
   test("RoaringBitmap: runOptimize failed") {
     val r = new RoaringBitmap
-    (1 to 200000).foreach(i =>
-      if (i % 200 == 0) {
-        r.add(i)
-      })
+    (1 to 200000).foreach(i => if (i % 200 == 0) { r.add(i) })
     val size1 = r.getSizeInBytes
     val success = r.runOptimize()
     r.trim()

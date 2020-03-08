@@ -60,9 +60,7 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
   test("removeSelfEdges") {
     withSpark { sc =>
       val edgeArray = Array((1 -> 2), (2 -> 3), (3 -> 3), (4 -> 3), (1 -> 1))
-        .map {
-          case (a, b) => (a.toLong, b.toLong)
-        }
+        .map { case (a, b) => (a.toLong, b.toLong) }
       val correctEdges = edgeArray.filter { case (a, b) => a != b }.toSet
       val graph = Graph.fromEdgeTuples(sc.parallelize(edgeArray), 1)
       val canonicalizedEdges =
@@ -206,11 +204,8 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       assert(edges.count === 50)
       edges.collect.foreach {
         case (vid, edges) =>
-          if (vid > 0 && vid < 49) {
-            assert(edges.size == 2)
-          } else {
-            assert(edges.size == 1)
-          }
+          if (vid > 0 && vid < 49) { assert(edges.size == 2) }
+          else { assert(edges.size == 1) }
       }
       edges.collect.foreach {
         case (vid, edges) =>

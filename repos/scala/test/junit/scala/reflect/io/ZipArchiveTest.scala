@@ -13,23 +13,19 @@ class ZipArchiveTest {
   def corruptZip {
     val f = JFile.createTempFile("test", ".jar")
     val fza = new FileZipArchive(f)
-    try {
-      fza.iterator
-    } catch {
+    try { fza.iterator }
+    catch {
       case x: IOException =>
         assertTrue(x.getMessage, x.getMessage.contains(f.getPath))
-    } finally {
-      f.delete()
-    }
+    } finally { f.delete() }
   }
 
   @Test
   def missingFile {
     val f = new JFile("xxx.does.not.exist")
     val fza = new FileZipArchive(f)
-    try {
-      fza.iterator
-    } catch {
+    try { fza.iterator }
+    catch {
       case x: IOException =>
         assertTrue(x.getMessage, x.getMessage.contains(f.getPath))
     }

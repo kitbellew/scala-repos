@@ -23,9 +23,7 @@ object CalendarOps {
         }
 
         truncateIter(cal, field, currentField - 1)
-      } else {
-        cal
-      }
+      } else { cal }
     }
 
     val cloned = date.clone().asInstanceOf[Calendar]

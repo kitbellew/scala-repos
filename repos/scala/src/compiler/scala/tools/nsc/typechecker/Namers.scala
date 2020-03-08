@@ -797,9 +797,7 @@ trait Namers extends MethodSynthesis {
     }
 
     // Hooks which are overridden in the presentation compiler
-    def enterExistingSym(sym: Symbol, tree: Tree): Context = {
-      this.context
-    }
+    def enterExistingSym(sym: Symbol, tree: Tree): Context = { this.context }
     def enterIfNotThere(sym: Symbol) {}
 
     def enterSyntheticSym(tree: Tree): Symbol = {
@@ -1191,9 +1189,8 @@ trait Namers extends MethodSynthesis {
        */
       def typesFromOverridden(methResTp: Type): Type = {
         val overridden = overriddenSymbol(methResTp)
-        if (overridden == NoSymbol || overridden.isOverloaded) {
-          methResTp
-        } else {
+        if (overridden == NoSymbol || overridden.isOverloaded) { methResTp }
+        else {
           overridden
             .cookJavaRawInfo() // #3404 xform java rawtypes into existentials
           var overriddenTp = site.memberType(overridden) match {
@@ -1231,9 +1228,7 @@ trait Namers extends MethodSynthesis {
             // that way, we can leave out the result type even if method is recursive.
             meth setInfo thisMethodType(overriddenTp)
             overriddenTp
-          } else {
-            methResTp
-          }
+          } else { methResTp }
         }
       }
 
@@ -1246,18 +1241,13 @@ trait Namers extends MethodSynthesis {
         if (tpt.isEmpty) WildcardType else typer.typedType(tpt).tpe
       val resTpFromOverride =
         if (methOwner.isClass && (tpt.isEmpty || mexists(vparamss)(
-              _.tpt.isEmpty))) {
-          typesFromOverridden(methResTp)
-        } else {
-          methResTp
-        }
+              _.tpt.isEmpty))) { typesFromOverridden(methResTp) }
+        else { methResTp }
 
       // Add a () parameter section if this overrides some method with () parameters
       if (methOwner.isClass && vparamss.isEmpty &&
           overriddenSymbol(methResTp).alternatives.exists(
-            _.info.isInstanceOf[MethodType])) {
-        vparamSymss = ListOfNil
-      }
+            _.info.isInstanceOf[MethodType])) { vparamSymss = ListOfNil }
 
       // issue an error for missing parameter types
       mforeach(vparamss) { vparam =>
@@ -1286,14 +1276,11 @@ trait Namers extends MethodSynthesis {
       // because @macroImpl annotation only gets assigned during typechecking
       // otherwise macro defs wouldn't be able to robustly coexist with their clients
       // because a client could be typechecked before a macro def that it uses
-      if (meth.isMacro) {
-        typer.computeMacroDefType(ddef, resTpFromOverride)
-      }
+      if (meth.isMacro) { typer.computeMacroDefType(ddef, resTpFromOverride) }
 
       val res = thisMethodType({
-        val rt = (if (!tpt.isEmpty) {
-                    methResTp
-                  } else {
+        val rt = (if (!tpt.isEmpty) { methResTp }
+                  else {
                     // return type is inferred, we don't just use resTpFromOverride. Here, C.f has type String:
                     //   trait T { def f: Object }; class C <: T { def f = "" }
                     // using resTpFromOverride as expected type allows for the following (C.f has type A):
@@ -1488,9 +1475,7 @@ trait Namers extends MethodSynthesis {
           MissingParameterOrValTypeError(tpt)
           ErrorType
         } else assignTypeToTree(vdef, typer, WildcardType)
-      } else {
-        typer.typedType(tpt).tpe
-      }
+      } else { typer.typedType(tpt).tpe }
       pluginsTypeSig(
         result,
         typer,

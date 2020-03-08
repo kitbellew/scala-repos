@@ -69,11 +69,8 @@ private[server] object WebSocketHandler {
     */
   private def messageToFrame(message: Message): WebSocketFrame = {
     def byteStringToByteBuf(bytes: ByteString): ByteBuf = {
-      if (bytes.isEmpty) {
-        Unpooled.EMPTY_BUFFER
-      } else {
-        Unpooled.wrappedBuffer(bytes.asByteBuffer)
-      }
+      if (bytes.isEmpty) { Unpooled.EMPTY_BUFFER }
+      else { Unpooled.wrappedBuffer(bytes.asByteBuffer) }
     }
 
     message match {

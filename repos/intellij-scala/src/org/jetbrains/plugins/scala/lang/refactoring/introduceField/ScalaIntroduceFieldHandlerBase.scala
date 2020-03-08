@@ -85,9 +85,7 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
             )
             .showInBestPositionFor(editor)
       }
-    } catch {
-      case _: IntroduceException => return
-    }
+    } catch { case _: IntroduceException => return }
   }
 
   protected def anchorForNewDeclaration(

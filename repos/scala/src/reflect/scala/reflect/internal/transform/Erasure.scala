@@ -87,9 +87,7 @@ trait Erasure {
     if (valueClassIsParametric(clazz)) {
       val underlying = tref.memberType(clazz.derivedValueClassUnbox).resultType
       boxingErasure(underlying)
-    } else {
-      scalaErasure(underlyingOfValueClass(clazz))
-    }
+    } else { scalaErasure(underlyingOfValueClass(clazz)) }
   }
 
   /** Does this value class have an underlying type that's a type parameter of
@@ -395,8 +393,6 @@ trait Erasure {
       // since the erasure type map gets applied to every symbol, we have to catch the
       // symbol here
       tp
-    } else {
-      specialErasure(sym)(tp)
-    }
+    } else { specialErasure(sym)(tp) }
   }
 }

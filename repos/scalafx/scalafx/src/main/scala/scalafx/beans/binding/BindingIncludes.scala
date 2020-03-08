@@ -164,9 +164,7 @@ trait BindingIncludes extends Bindings {
   implicit def closure2InvalidationListener(
       il: jfxb.Observable => Unit): InvalidationListener =
     new jfxb.InvalidationListener {
-      def invalidated(observable: jfxb.Observable) {
-        il(observable)
-      }
+      def invalidated(observable: jfxb.Observable) { il(observable) }
     }
 
   /**
@@ -182,9 +180,7 @@ trait BindingIncludes extends Bindings {
       def changed(
           observable: jfxbv.ObservableValue[_ <: P],
           oldValue: P,
-          newValue: P) {
-        cl(observable, oldValue, newValue)
-      }
+          newValue: P) { cl(observable, oldValue, newValue) }
     }
 
   // Upconversions from primitives to bindings

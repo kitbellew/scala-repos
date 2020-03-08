@@ -28,8 +28,6 @@ trait AttributesTest {
   }
 
   test("-= should remove request attribute") {
-    get("/attributes-test") {
-      header("two") should equal(null)
-    }
+    get("/attributes-test") { header("two") should equal(null) }
   }
 }

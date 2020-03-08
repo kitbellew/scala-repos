@@ -138,9 +138,7 @@ class Netty4ClientChannelInitializerTest
       connect()
     }
 
-    eventually {
-      assert(observedExn.isInstanceOf[ReadTimeoutException])
-    }
+    eventually { assert(observedExn.isInstanceOf[ReadTimeoutException]) }
   }
 
   test("Netty4ClientChannelInitializer pipelines enforce write timeouts") {
@@ -176,9 +174,7 @@ class Netty4ClientChannelInitializerTest
       client.pipeline.write("msg")
 
     }
-    eventually {
-      assert(observedExn.isInstanceOf[WriteTimedOutException])
-    }
+    eventually { assert(observedExn.isInstanceOf[WriteTimedOutException]) }
   }
 
   test("end to end: asymmetric protocol") {

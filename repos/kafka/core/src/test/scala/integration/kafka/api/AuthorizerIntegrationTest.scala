@@ -295,13 +295,9 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
           "metadata")).asJava)
   }
 
-  private def createHeartbeatRequest = {
-    new HeartbeatRequest(group, 1, "")
-  }
+  private def createHeartbeatRequest = { new HeartbeatRequest(group, 1, "") }
 
-  private def createLeaveGroupRequest = {
-    new LeaveGroupRequest(group, "")
-  }
+  private def createLeaveGroupRequest = { new LeaveGroupRequest(group, "") }
 
   private def createLeaderAndIsrRequest = {
     new requests.LeaderAndIsrRequest(
@@ -781,11 +777,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
           i.toString.getBytes,
           i.toString.getBytes))
     }
-    try {
-      futures.foreach(_.get)
-    } catch {
-      case e: ExecutionException => throw e.getCause
-    }
+    try { futures.foreach(_.get) }
+    catch { case e: ExecutionException => throw e.getCause }
   }
 
   private def addAndVerifyAcls(acls: Set[Acl], resource: Resource) = {
@@ -814,9 +807,7 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     val maxIters = numRecords * 50
     var iters = 0
     while (records.size < numRecords) {
-      for (record <- consumer.poll(50).asScala) {
-        records.add(record)
-      }
+      for (record <- consumer.poll(50).asScala) { records.add(record) }
       if (iters > maxIters)
         throw new IllegalStateException(
           "Failed to consume the expected records after " + iters + " iterations.")

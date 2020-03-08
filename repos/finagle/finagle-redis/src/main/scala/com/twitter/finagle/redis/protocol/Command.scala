@@ -262,9 +262,7 @@ object Commands {
   def doMatch(cmd: String, args: List[Array[Byte]]) =
     commandMap
       .get(cmd.toUpperCase)
-      .map {
-        _(args)
-      }
+      .map { _(args) }
       .getOrElse(throw ClientError("Unsupported command: " + cmd))
 
   def trimList(list: Seq[Array[Byte]], count: Int, from: String = "") = {
@@ -448,9 +446,8 @@ class CommandCodec extends UnifiedProtocolCodec {
       "Invalid client command protocol")
     val cmd = BytesToString(lines.head)
     val args = lines.tail
-    try {
-      Commands.doMatch(cmd, args)
-    } catch {
+    try { Commands.doMatch(cmd, args) }
+    catch {
       case e: ClientError => throw e
       case t: Throwable =>
         log.warning(

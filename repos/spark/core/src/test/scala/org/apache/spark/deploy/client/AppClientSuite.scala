@@ -86,9 +86,7 @@ class AppClientSuite
       masterRpcEnv = null
       workers = null
       master = null
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   test("interface methods of AppClient using local Master") {
@@ -200,35 +198,23 @@ class AppClientSuite
     val execAddedList = new ConcurrentLinkedQueue[String]()
     val execRemovedList = new ConcurrentLinkedQueue[String]()
 
-    def connected(id: String): Unit = {
-      connectedIdList.add(id)
-    }
+    def connected(id: String): Unit = { connectedIdList.add(id) }
 
-    def disconnected(): Unit = {
-      synchronized {
-        disconnectedCount += 1
-      }
-    }
+    def disconnected(): Unit = { synchronized { disconnectedCount += 1 } }
 
-    def dead(reason: String): Unit = {
-      deadReasonList.add(reason)
-    }
+    def dead(reason: String): Unit = { deadReasonList.add(reason) }
 
     def executorAdded(
         id: String,
         workerId: String,
         hostPort: String,
         cores: Int,
-        memory: Int): Unit = {
-      execAddedList.add(id)
-    }
+        memory: Int): Unit = { execAddedList.add(id) }
 
     def executorRemoved(
         id: String,
         message: String,
-        exitStatus: Option[Int]): Unit = {
-      execRemovedList.add(id)
-    }
+        exitStatus: Option[Int]): Unit = { execRemovedList.add(id) }
   }
 
   /** Create AppClient and supporting objects */

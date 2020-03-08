@@ -185,9 +185,7 @@ object Statistics {
   class Timer(val prefix: String, val phases: Seq[String]) extends Quantity {
     var nanos: Long = 0
     var timings = 0
-    def start() = {
-      (nanos, System.nanoTime())
-    }
+    def start() = { (nanos, System.nanoTime()) }
     def stop(prev: TimerSnapshot) {
       val (nanos0, start) = prev
       nanos = nanos0 + System.nanoTime() - start

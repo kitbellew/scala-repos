@@ -240,9 +240,7 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
       s ← sMethods
       j ← jMethods
       result = delegationCheck(s, j)
-    } yield {
-      result
-    }
+    } yield { result }
 
     for {
       row ← results.groupBy(_.s)
@@ -292,9 +290,13 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
     def matches: Boolean
   }
   case class MatchFailure(s: Method, j: Method, reason: String = "")
-      extends MatchResult { val matches = false }
+      extends MatchResult {
+    val matches = false
+  }
   case class Match(s: Method, j: Method, reason: String = "")
-      extends MatchResult { val matches = true }
+      extends MatchResult {
+    val matches = true
+  }
 
   def delegationCheck(s: Method, j: Method): MatchResult = {
     if (nameMatch(s.name, j.name)) {
@@ -311,9 +313,7 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
           MatchFailure(s, j, "Types of parameters don't match!")
       else
         MatchFailure(s, j, "Same name, but different number of parameters!")
-    } else {
-      MatchFailure(s, j, "Names don't match!")
-    }
+    } else { MatchFailure(s, j, "Names don't match!") }
   }
 
   def nameMatch(scalaName: String, javaName: String): Boolean =

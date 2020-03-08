@@ -118,9 +118,8 @@ object Arrays {
   @noinline
   private def quickSort[@specialized K](a: Array[K], i0: Int, iN: Int)(
       implicit ord: Ordering[K]): Unit = {
-    if (iN - i0 < qSortThreshold) {
-      insertionSort(a, i0, iN)
-    } else {
+    if (iN - i0 < qSortThreshold) { insertionSort(a, i0, iN) }
+    else {
       val iK = (i0 + iN) >>> 1 // Unsigned div by 2
       // Find index of median of first, central, and last elements
       var pL = {
@@ -253,9 +252,8 @@ object Arrays {
   @noinline
   private def quickSortAnyRef(a: Array[AnyRef], i0: Int, iN: Int)(
       implicit ord: Ordering[AnyRef]): Unit = {
-    if (iN - i0 < qSortThreshold) {
-      insertionSortAnyRef(a, i0, iN)
-    } else {
+    if (iN - i0 < qSortThreshold) { insertionSortAnyRef(a, i0, iN) }
+    else {
       val iK = (i0 + iN) >>> 1 // Unsigned div by 2
       // Find index of median of first, central, and last elements
       var pL = {
@@ -512,14 +510,11 @@ object Arrays {
       // Indices are unsigned 31-bit integer, so this does not overflow
       val mid = (startIndex + endIndex) >>> 1
       val elem = a(mid)
-      if (lt(key, elem)) {
-        binarySearchImpl(a, startIndex, mid, key, lt)
-      } else if (key == elem) {
+      if (lt(key, elem)) { binarySearchImpl(a, startIndex, mid, key, lt) }
+      else if (key == elem) {
         // Found
         mid
-      } else {
-        binarySearchImpl(a, mid + 1, endIndex, key, lt)
-      }
+      } else { binarySearchImpl(a, mid + 1, endIndex, key, lt) }
     }
   }
 
@@ -537,14 +532,11 @@ object Arrays {
       // Indices are unsigned 31-bit integer, so this does not overflow
       val mid = (startIndex + endIndex) >>> 1
       val cmp = key.asInstanceOf[Comparable[AnyRef]].compareTo(a(mid))
-      if (cmp < 0) {
-        binarySearchImplRef(a, startIndex, mid, key)
-      } else if (cmp == 0) {
+      if (cmp < 0) { binarySearchImplRef(a, startIndex, mid, key) }
+      else if (cmp == 0) {
         // Found
         mid
-      } else {
-        binarySearchImplRef(a, mid + 1, endIndex, key)
-      }
+      } else { binarySearchImplRef(a, mid + 1, endIndex, key) }
     }
   }
 

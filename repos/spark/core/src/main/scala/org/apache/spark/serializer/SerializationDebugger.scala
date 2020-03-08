@@ -49,9 +49,7 @@ private[spark] object SerializationDebugger extends Logging {
           logWarning("Exception in serialization debugger", t)
           e
       }
-    } else {
-      e
-    }
+    } else { e }
   }
 
   /**
@@ -89,11 +87,9 @@ private[spark] object SerializationDebugger extends Logging {
       * Return the path as a list. If everything can be serialized, return an empty list.
       */
     def visit(o: Any, stack: List[String]): List[String] = {
-      if (o == null) {
-        List.empty
-      } else if (visited.contains(o)) {
-        List.empty
-      } else {
+      if (o == null) { List.empty }
+      else if (visited.contains(o)) { List.empty }
+      else {
         visited += o
         o match {
           // Primitive value, string, and primitive arrays are always serializable
@@ -129,9 +125,7 @@ private[spark] object SerializationDebugger extends Logging {
       var i = 0
       while (i < o.length) {
         val childStack = visit(o(i), s"element of array (index: $i)" :: stack)
-        if (childStack.nonEmpty) {
-          return childStack
-        }
+        if (childStack.nonEmpty) { return childStack }
         i += 1
       }
       return List.empty
@@ -152,9 +146,7 @@ private[spark] object SerializationDebugger extends Logging {
       var i = 0
       while (i < childObjects.length) {
         val childStack = visit(childObjects(i), "writeExternal data" :: stack)
-        if (childStack.nonEmpty) {
-          return childStack
-        }
+        if (childStack.nonEmpty) { return childStack }
         i += 1
       }
       return List.empty
@@ -204,9 +196,7 @@ private[spark] object SerializationDebugger extends Logging {
           val elem = s"writeObject data (class: ${slotDesc.getName})"
           val childStack =
             visitSerializableWithWriteObjectMethod(finalObj, elem :: stack)
-          if (childStack.nonEmpty) {
-            return childStack
-          }
+          if (childStack.nonEmpty) { return childStack }
         } else {
           // Visit all the fields objects of the class corresponding to the current slot.
           val fields: Array[ObjectStreamField] = slotDesc.getFields
@@ -222,9 +212,7 @@ private[spark] object SerializationDebugger extends Logging {
               s", name: ${fieldDesc.getName}" +
               s", type: ${fieldDesc.getType})"
             val childStack = visit(objFieldValues(j), elem :: stack)
-            if (childStack.nonEmpty) {
-              return childStack
-            }
+            if (childStack.nonEmpty) { return childStack }
             j += 1
           }
         }
@@ -245,9 +233,8 @@ private[spark] object SerializationDebugger extends Logging {
         stack: List[String]): List[String] = {
       val innerObjectsCatcher = new ListObjectOutputStream
       var notSerializableFound = false
-      try {
-        innerObjectsCatcher.writeObject(o)
-      } catch {
+      try { innerObjectsCatcher.writeObject(o) }
+      catch {
         case io: IOException =>
           notSerializableFound = true
       }
@@ -260,14 +247,10 @@ private[spark] object SerializationDebugger extends Logging {
         var k = 0
         while (k < innerObjects.length) {
           val childStack = visit(innerObjects(k), stack)
-          if (childStack.nonEmpty) {
-            return childStack
-          }
+          if (childStack.nonEmpty) { return childStack }
           k += 1
         }
-      } else {
-        visited ++= innerObjectsCatcher.outputArray
-      }
+      } else { visited ++= innerObjectsCatcher.outputArray }
       return List.empty
     }
   }
@@ -282,9 +265,8 @@ private[spark] object SerializationDebugger extends Logging {
       o: Object): (Object, ObjectStreamClass) = {
     val cl = o.getClass
     val desc = ObjectStreamClass.lookupAny(cl)
-    if (!desc.hasWriteReplaceMethod) {
-      (o, desc)
-    } else {
+    if (!desc.hasWriteReplaceMethod) { (o, desc) }
+    else {
       // write place
       findObjectAndDescriptor(desc.invokeWriteReplace(o))
     }
@@ -378,9 +360,8 @@ private[spark] object SerializationDebugger extends Logging {
     * this field will be null and this the debug helper should be disabled.
     */
   private val reflect: ObjectStreamClassReflection =
-    try {
-      new ObjectStreamClassReflection
-    } catch {
+    try { new ObjectStreamClassReflection }
+    catch {
       case e: Exception =>
         logWarning("Cannot find private methods using reflection", e)
         null

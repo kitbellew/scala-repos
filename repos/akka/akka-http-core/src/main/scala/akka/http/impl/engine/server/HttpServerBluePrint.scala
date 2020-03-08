@@ -151,9 +151,7 @@ private[http] object HttpServerBluePrint {
         var entitySource: SubSourceOutlet[RequestOutput] = _
 
         // optimization: to avoid allocations the "idle" case in and out handlers are put directly on the GraphStageLogic itself
-        override def onPull(): Unit = {
-          pull(in)
-        }
+        override def onPull(): Unit = { pull(in) }
 
         // optimization: this callback is used to handle entity substream cancellation to avoid allocating a dedicated handler
         override def onDownstreamFinish(): Unit = {
@@ -195,9 +193,8 @@ private[http] object HttpServerBluePrint {
         setIdleHandlers()
 
         def setIdleHandlers(): Unit = {
-          if (completionDeferred) {
-            completeStage()
-          } else {
+          if (completionDeferred) { completeStage() }
+          else {
             setHandler(in, this)
             setHandler(out, this)
             if (downstreamPullWaiting) {
@@ -478,7 +475,9 @@ private[http] object HttpServerBluePrint {
         handler: HttpRequest ⇒ HttpResponse): Cancellable =
       materializer.scheduleOnce(
         delay,
-        new Runnable { def run() = trigger.invoke((self, handler(request))) })
+        new Runnable {
+          def run() = trigger.invoke((self, handler(request)))
+        })
 
     import akka.http.impl.util.JavaMapping.Implicits._
 

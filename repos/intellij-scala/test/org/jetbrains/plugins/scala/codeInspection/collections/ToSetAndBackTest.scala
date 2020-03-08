@@ -52,15 +52,9 @@ class ToSetAndBackTest extends OperationsOnCollectionInspectionTest {
     )
   }
 
-  def testMap(): Unit = {
-    checkTextHasNoErrors("Map(1 -> 2).toSet.toSeq")
-  }
+  def testMap(): Unit = { checkTextHasNoErrors("Map(1 -> 2).toSet.toSeq") }
 
-  def testSeqToList(): Unit = {
-    checkTextHasNoErrors("Seq(1).toSet.toList")
-  }
+  def testSeqToList(): Unit = { checkTextHasNoErrors("Seq(1).toSet.toList") }
 
-  def testSeqToList2(): Unit = {
-    checkTextHasNoErrors("Seq(1).toSet.to[List]")
-  }
+  def testSeqToList2(): Unit = { checkTextHasNoErrors("Seq(1).toSet.to[List]") }
 }

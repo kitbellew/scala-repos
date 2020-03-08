@@ -39,9 +39,7 @@ class CoarseGrainedSchedulerBackendSuite
     val buffer =
       new SerializableBuffer(java.nio.ByteBuffer.allocate(2 * frameSize))
     val larger = sc.parallelize(Seq(buffer))
-    val thrown = intercept[SparkException] {
-      larger.collect()
-    }
+    val thrown = intercept[SparkException] { larger.collect() }
     assert(
       thrown.getMessage.contains("using broadcast variables for large values"))
     val smaller = sc.parallelize(1 to 4).collect()

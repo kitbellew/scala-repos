@@ -44,9 +44,7 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
     val applicationWithRouter = GuiceApplicationBuilder()
       .router(Router.from {
         case GET(p"/Bob") =>
-          Action {
-            Ok("Hello Bob") as "text/html; charset=utf-8"
-          }
+          Action { Ok("Hello Bob") as "text/html; charset=utf-8" }
       })
       .build()
 
@@ -148,12 +146,7 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
 
     // #scalafunctionaltest-testws
     val appWithRoutes = GuiceApplicationBuilder()
-      .router(Router.from {
-        case GET(p"/") =>
-          Action {
-            Ok("ok")
-          }
-      })
+      .router(Router.from { case GET(p"/") => Action { Ok("ok") } })
       .build()
 
     "test WS logic" in new WithServer(app = appWithRoutes, port = 3333) {

@@ -316,9 +316,7 @@ class TreeTableColumn[S, T](
         jfxsc.TreeTableColumn.CellDataFeatures[S, T],
         jfxbv.ObservableValue[T]] {
         def call(v: jfxsc.TreeTableColumn.CellDataFeatures[S, T])
-            : jfxbv.ObservableValue[T] = {
-          f(v).delegate
-        }
+            : jfxbv.ObservableValue[T] = { f(v).delegate }
       })
   }
 
@@ -329,9 +327,7 @@ class TreeTableColumn[S, T](
   def sortType: ObjectProperty[jfxsc.TreeTableColumn.SortType] =
     delegate.sortTypeProperty
 
-  def sortType_=(v: TreeTableColumn.SortType) {
-    sortType() = v
-  }
+  def sortType_=(v: TreeTableColumn.SortType) { sortType() = v }
 
   /**
     * This event handler will be fired when the user successfully initiates editing.

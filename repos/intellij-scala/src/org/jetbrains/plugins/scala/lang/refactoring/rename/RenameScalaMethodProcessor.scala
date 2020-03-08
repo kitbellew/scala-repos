@@ -131,9 +131,7 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
     for {
       setter <- getterOrSetter
       elem <- ScalaOverridingMemberSearcher.search(setter, deep = true)
-    } {
-      buff += elem
-    }
+    } { buff += elem }
     if (!buff.isEmpty) {
       def addGettersAndSetters() {
         def nameWithSetterSuffix(oldName: String, newName: String): String = {

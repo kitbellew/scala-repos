@@ -40,9 +40,7 @@ object ScalaActionUtil {
         case _: ScalaFile => enable()
         case _            => disable()
       }
-    } catch {
-      case e: Exception => disable()
-    }
+    } catch { case e: Exception => disable() }
   }
 
   def showHint(editor: Editor, text: String) {
@@ -54,9 +52,7 @@ object ScalaActionUtil {
     val hintManager: HintManagerImpl = HintManagerImpl.getInstanceImpl
 
     label.addMouseMotionListener(new MouseMotionAdapter {
-      override def mouseMoved(e: MouseEvent) {
-        hintManager.hideAllHints()
-      }
+      override def mouseMoved(e: MouseEvent) { hintManager.hideAllHints() }
     })
 
     val position = editor.getCaretModel.getLogicalPosition

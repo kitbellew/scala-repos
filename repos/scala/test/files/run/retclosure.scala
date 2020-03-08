@@ -17,7 +17,5 @@ object Test {
     }
   }
 
-  def main(args: Array[String]) {
-    Console.println(response)
-  }
+  def main(args: Array[String]) { Console.println(response) }
 }

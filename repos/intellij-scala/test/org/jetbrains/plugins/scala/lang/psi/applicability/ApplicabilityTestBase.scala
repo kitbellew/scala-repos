@@ -123,9 +123,7 @@ abstract class ApplicabilityTestBase extends SimpleTestCase {
       val message = "\n\n             code: " + line +
         "\n  actual problems: " + problemsIn(file).toString + "\n"
       Assert.assertTrue(message, pattern.isDefinedAt(problemsIn(file)))
-    } finally {
-      Compatibility.seqClass = None
-    }
+    } finally { Compatibility.seqClass = None }
   }
 
   private def problemsIn(file: ScalaFile): List[ApplicabilityProblem] = {
@@ -153,9 +151,7 @@ abstract class ApplicabilityTestBase extends SimpleTestCase {
     val id = ids.toIterator
     val typedDefinition = Parameter.replaceAllIn(
       definition,
-      _ match {
-        case Parameter(n, t) => n + ": " + id.next
-      })
+      _ match { case Parameter(n, t) => n + ": " + id.next })
 
     val typeParameters = "[" + ids.mkString(", ") + "]"
     val typeArguments = "[" + types.mkString(", ") + "]"

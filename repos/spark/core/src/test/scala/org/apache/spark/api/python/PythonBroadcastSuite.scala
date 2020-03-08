@@ -58,8 +58,6 @@ class PythonBroadcastSuite
           broadcast,
           new KryoSerializer(conf).newInstance())
       assertBroadcastIsValid(deserializedBroadcast)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally { Utils.deleteRecursively(tempDir) }
   }
 }

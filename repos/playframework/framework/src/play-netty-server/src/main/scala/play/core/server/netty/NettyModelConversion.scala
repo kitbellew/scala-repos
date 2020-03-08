@@ -51,9 +51,7 @@ private[server] class NettyModelConversion(
 
     if (request.getDecoderResult.isFailure) {
       Failure(request.getDecoderResult.cause())
-    } else {
-      tryToCreateRequest(request, requestId, remoteAddress, sslHandler)
-    }
+    } else { tryToCreateRequest(request, requestId, remoteAddress, sslHandler) }
   }
 
   /** Try to create the request. May fail if the path is invalid */
@@ -68,9 +66,7 @@ private[server] class NettyModelConversion(
       val parameters: Map[String, Seq[String]] = {
         val decodedParameters = uri.parameters()
         if (decodedParameters.isEmpty) Map.empty
-        else {
-          decodedParameters.asScala.mapValues(_.asScala).toMap
-        }
+        else { decodedParameters.asScala.mapValues(_.asScala).toMap }
       }
       // wrapping into URI to handle absoluteURI
       val path = new URI(uri.path()).getRawPath
@@ -148,12 +144,8 @@ private[server] class NettyModelConversion(
               }
             }
             .groupBy(_._1)
-            .map {
-              case (name, values) => name -> values.map(_._2).toSeq
-            }
-        } else {
-          Map.empty
-        }
+            .map { case (name, values) => name -> values.map(_._2).toSeq }
+        } else { Map.empty }
       }
       override val headers = new NettyHeadersWrapper(request.headers)
       override def remoteAddress = _remoteAddress.getAddress.toString
@@ -169,11 +161,8 @@ private[server] class NettyModelConversion(
     request match {
       case full: FullHttpRequest =>
         val content = httpContentToByteString(full)
-        if (content.isEmpty) {
-          None
-        } else {
-          Some(Source.single(content))
-        }
+        if (content.isEmpty) { None }
+        else { Some(Source.single(content)) }
       case streamed: StreamedHttpRequest =>
         Some(
           Source.fromPublisher(
@@ -257,9 +246,7 @@ private[server] class NettyModelConversion(
         if (response.headers().contains(CONTENT_TYPE)) {
           logger.warn(
             s"Content-Type set both in header (${response.headers().get(CONTENT_TYPE)}) and attached to entity ($contentType), ignoring content type from entity. To remove this warning, use Result.as(...) to set the content type, rather than setting the header manually.")
-        } else {
-          response.headers().add(CONTENT_TYPE, contentType)
-        }
+        } else { response.headers().add(CONTENT_TYPE, contentType) }
       }
 
       connectionHeader.header.foreach { headerValue =>
@@ -342,11 +329,8 @@ private[server] class NettyModelConversion(
 
   /** Convert a ByteString to a Netty ByteBuf. */
   private def byteStringToByteBuf(bytes: ByteString): ByteBuf = {
-    if (bytes.isEmpty) {
-      Unpooled.EMPTY_BUFFER
-    } else {
-      Unpooled.wrappedBuffer(bytes.asByteBuffer)
-    }
+    if (bytes.isEmpty) { Unpooled.EMPTY_BUFFER }
+    else { Unpooled.wrappedBuffer(bytes.asByteBuffer) }
   }
 
   private def byteStringToHttpContent(bytes: ByteString): HttpContent = {
@@ -361,9 +345,7 @@ private[server] class NettyModelConversion(
           case x509: X509Certificate => x509
         }
       }
-    } catch {
-      case e: SSLPeerUnverifiedException => None
-    }
+    } catch { case e: SSLPeerUnverifiedException => None }
   }
 
   // cache the date header of the last response so we only need to compute it every second

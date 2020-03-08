@@ -66,9 +66,7 @@ trait FileDeclarationsHolder
           lastParent,
           place)) return false
 
-    if (context != null) {
-      return true
-    }
+    if (context != null) { return true }
 
     if (ScalaPsiUtil.kindProjectorPluginEnabled(place)) {
       val manager = place.getManager

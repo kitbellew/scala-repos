@@ -137,9 +137,7 @@ object Tournament extends LilaController {
 
   def player(id: String, userId: String) = Open { implicit ctx =>
     JsonOk {
-      env.api.playerInfo(id, userId) flatMap {
-        _ ?? env.jsonView.playerInfo
-      }
+      env.api.playerInfo(id, userId) flatMap { _ ?? env.jsonView.playerInfo }
     }
   }
 
@@ -179,9 +177,7 @@ object Tournament extends LilaController {
   }
 
   def form = Auth { implicit ctx => me =>
-    NoLame {
-      Ok(html.tournament.form(env.forms.create, env.forms)).fuccess
-    }
+    NoLame { Ok(html.tournament.form(env.forms.create, env.forms)).fuccess }
   }
 
   def create = AuthBody { implicit ctx => implicit me =>

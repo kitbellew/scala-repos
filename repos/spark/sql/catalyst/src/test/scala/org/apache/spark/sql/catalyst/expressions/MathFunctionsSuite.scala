@@ -200,13 +200,9 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     checkEvaluation(Conv(Literal("11abc"), Literal(10), Literal(16)), "B")
   }
 
-  test("e") {
-    testLeaf(EulerNumber, math.E)
-  }
+  test("e") { testLeaf(EulerNumber, math.E) }
 
-  test("pi") {
-    testLeaf(Pi, math.Pi)
-  }
+  test("pi") { testLeaf(Pi, math.Pi) }
 
   test("sin") {
     testUnary(Sin, math.sin)

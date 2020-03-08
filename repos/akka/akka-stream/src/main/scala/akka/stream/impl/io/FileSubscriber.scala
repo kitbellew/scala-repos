@@ -59,9 +59,8 @@ private[akka] class FileSubscriber(
 
   def receive = {
     case ActorSubscriberMessage.OnNext(bytes: ByteString) ⇒
-      try {
-        bytesWritten += chan.write(bytes.asByteBuffer)
-      } catch {
+      try { bytesWritten += chan.write(bytes.asByteBuffer) }
+      catch {
         case ex: Exception ⇒
           closeAndComplete(IOResult(bytesWritten, Failure(ex)))
           cancel()
@@ -76,9 +75,8 @@ private[akka] class FileSubscriber(
       context.stop(self)
 
     case ActorSubscriberMessage.OnComplete ⇒
-      try {
-        chan.force(true)
-      } catch {
+      try { chan.force(true) }
+      catch {
         case ex: Exception ⇒
           closeAndComplete(IOResult(bytesWritten, Failure(ex)))
       }

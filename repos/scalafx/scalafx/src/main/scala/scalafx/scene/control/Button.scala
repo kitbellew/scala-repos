@@ -58,17 +58,13 @@ class Button(override val delegate: jfxsc.Button = new jfxsc.Button)
     * scene consumes it.
     */
   def cancelButton: BooleanProperty = delegate.cancelButtonProperty
-  def cancelButton_=(b: Boolean) {
-    cancelButton() = b
-  }
+  def cancelButton_=(b: Boolean) { cancelButton() = b }
 
   /**
     * A default Button is the button that receives a keyboard VK_ENTER press, if no other node in the
     * scene consumes it.
     */
   def defaultButton: BooleanProperty = delegate.defaultButtonProperty
-  def defaultButton_=(b: Boolean) {
-    defaultButton() = b
-  }
+  def defaultButton_=(b: Boolean) { defaultButton() = b }
 
 }

@@ -212,13 +212,9 @@ final class EMLDAOptimizer extends LDAOptimizer {
         TopicCounts) =
       (m0, m1) => {
         val sum =
-          if (m0._1) {
-            m0._2 += m1._2
-          } else if (m1._1) {
-            m1._2 += m0._2
-          } else {
-            m0._2 + m1._2
-          }
+          if (m0._1) { m0._2 += m1._2 }
+          else if (m1._1) { m1._2 += m0._2 }
+          else { m0._2 + m1._2 }
         (true, sum)
       }
     // M-STEP: Aggregation computes new N_{kj}, N_{wk} counts.
@@ -571,9 +567,7 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
   }
 
   /** Calculate learning rate rho for the current [[iteration]]. */
-  private def rho(): Double = {
-    math.pow(getTau0 + this.iteration, -getKappa)
-  }
+  private def rho(): Double = { math.pow(getTau0 + this.iteration, -getKappa) }
 
   /**
     * Get a random matrix to initialize lambda.

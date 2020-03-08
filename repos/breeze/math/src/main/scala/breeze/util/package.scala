@@ -24,11 +24,8 @@ package object util {
     val stream = new BufferedInputStream(
       new GZIPInputStream(new FileInputStream(loc)))
     val oin = nonstupidObjectInputStream(stream, ignoreSerialVersionUID)
-    try {
-      oin.readObject().asInstanceOf[T]
-    } finally {
-      oin.close()
-    }
+    try { oin.readObject().asInstanceOf[T] }
+    finally { oin.close() }
   }
 
   /**
@@ -64,9 +61,8 @@ package object util {
 
           var localClass: Class[_] =
             null; // the class in the local JVM that this descriptor represents.
-          try {
-            localClass = Class.forName(resultClassDescriptor.getName)
-          } catch {
+          try { localClass = Class.forName(resultClassDescriptor.getName) }
+          catch {
             case e: ClassNotFoundException =>
               logger.error(
                 "No local class for " + resultClassDescriptor.getName,
@@ -227,21 +223,13 @@ package object util {
       bs
     }
 
-    def |(other: BitSet) = {
-      copy |= other
-    }
+    def |(other: BitSet) = { copy |= other }
 
-    def &~(other: BitSet) = {
-      copy &~= other
-    }
+    def &~(other: BitSet) = { copy &~= other }
 
-    def &(other: BitSet) = {
-      copy &= other
-    }
+    def &(other: BitSet) = { copy &= other }
 
-    def ^(other: BitSet) = {
-      copy ^= other
-    }
+    def ^(other: BitSet) = { copy ^= other }
 
     def copy = bs.clone().asInstanceOf[java.util.BitSet]
 

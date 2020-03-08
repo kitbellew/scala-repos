@@ -125,9 +125,7 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
                         .getOrElse(item.getFieldName, List[FileItem]())
                     )),
                   params.formParams)
-              } else {
-                BodyParams(params.fileParams, params.formParams)
-              }
+              } else { BodyParams(params.fileParams, params.formParams) }
           }
 
         req.setAttribute(BodyParamsKey, bodyParams)
@@ -170,17 +168,13 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
       formMap: Map[String, Seq[String]]): HttpServletRequestWrapper = {
     val wrapped = new HttpServletRequestWrapper(req) {
       override def getParameter(name: String): String =
-        formMap.get(name) map {
-          _.head
-        } getOrElse null
+        formMap.get(name) map { _.head } getOrElse null
 
       override def getParameterNames: java.util.Enumeration[String] =
         formMap.keysIterator.asJavaEnumeration
 
       override def getParameterValues(name: String): Array[String] =
-        formMap.get(name) map {
-          _.toArray
-        } getOrElse null
+        formMap.get(name) map { _.toArray } getOrElse null
 
       override def getParameterMap: JMap[String, Array[String]] = {
         (new JHashMap[String, Array[String]].asScala ++ (formMap transform {
@@ -280,9 +274,7 @@ case class FileItem(part: Part) {
     using(new FileOutputStream(file)) { out => io.copy(getInputStream, out) }
   }
 
-  def write(fileName: String): Unit = {
-    part.write(fileName)
-  }
+  def write(fileName: String): Unit = { part.write(fileName) }
 
   def get(): Array[Byte] = org.scalatra.util.io.readBytes(getInputStream)
 

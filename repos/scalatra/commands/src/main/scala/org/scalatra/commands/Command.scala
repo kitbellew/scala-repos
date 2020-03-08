@@ -69,14 +69,10 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
   /**
     * Perform command as afterBinding task.
     */
-  afterBinding {
-    _errors = bindings.values.filter(_.isInvalid).toSeq
-  }
+  afterBinding { _errors = bindings.values.filter(_.isInvalid).toSeq }
 
   implicit def binding2field[T: Manifest: TypeConverterFactory](
-      field: FieldDescriptor[T]): Field[T] = {
-    new Field(bind(field), this)
-  }
+      field: FieldDescriptor[T]): Field[T] = { new Field(bind(field), this) }
 
   implicit def autoBind[T: Manifest: TypeConverterFactory](
       fieldName: String): Field[T] =

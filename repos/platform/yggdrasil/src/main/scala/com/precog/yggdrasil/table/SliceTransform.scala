@@ -101,14 +101,10 @@ trait SliceTransforms[M[+_]]
           SliceTransform.right(())
 
         case Map1(source, f) =>
-          composeSliceTransform2(source) map {
-            _ mapRoot f
-          }
+          composeSliceTransform2(source) map { _ mapRoot f }
 
         case DeepMap1(source, f) =>
-          composeSliceTransform2(source) map {
-            _ mapColumns f
-          }
+          composeSliceTransform2(source) map { _ mapColumns f }
 
         case Map2(left, right, f) =>
           val l0 = composeSliceTransform2(left)
@@ -145,9 +141,8 @@ trait SliceTransforms[M[+_]]
             (s: Slice, filter: Slice) =>
               assert(filter.size == s.size)
 
-              if (s.columns.isEmpty) {
-                s
-              } else {
+              if (s.columns.isEmpty) { s }
+              else {
 
                 val definedAt = new BitSet
                 filter.columns.values.foreach {
@@ -283,10 +278,8 @@ trait SliceTransforms[M[+_]]
                     }
 
                   case Right((left, right)) =>
-                    val tests: Array[BoolColumn] =
-                      (for (l <- left; r <- right) yield {
-                        new FuzzyEqColumn(l, r)
-                      }).toArray
+                    val tests: Array[BoolColumn] = (for (l <- left; r <- right)
+                      yield { new FuzzyEqColumn(l, r) }).toArray
                     new OrLotsColumn(tests)
                 })(collection.breakOut)
 
@@ -371,14 +364,10 @@ trait SliceTransforms[M[+_]]
           composeSliceTransform2(target) map { _.definedConst(value) }
 
         case WrapObject(source, field) =>
-          composeSliceTransform2(source) map {
-            _ wrap CPathField(field)
-          }
+          composeSliceTransform2(source) map { _ wrap CPathField(field) }
 
         case WrapArray(source) =>
-          composeSliceTransform2(source) map {
-            _ wrap CPathIndex(0)
-          }
+          composeSliceTransform2(source) map { _ wrap CPathIndex(0) }
 
         case OuterObjectConcat(objects @ _*) =>
           if (objects.size == 1) {
@@ -595,24 +584,16 @@ trait SliceTransforms[M[+_]]
           }
 
         case ObjectDelete(source, mask) =>
-          composeSliceTransform2(source) map {
-            _ deleteFields mask
-          }
+          composeSliceTransform2(source) map { _ deleteFields mask }
 
         case Typed(source, tpe) =>
-          composeSliceTransform2(source) map {
-            _ typed tpe
-          }
+          composeSliceTransform2(source) map { _ typed tpe }
 
         case TypedSubsumes(source, tpe) =>
-          composeSliceTransform2(source) map {
-            _ typedSubsumes tpe
-          }
+          composeSliceTransform2(source) map { _ typedSubsumes tpe }
 
         case IsType(source, tpe) =>
-          composeSliceTransform2(source) map {
-            _ isType tpe
-          }
+          composeSliceTransform2(source) map { _ isType tpe }
 
         case Scan(source, scanner) =>
           composeSliceTransform2(source) andThen {
@@ -656,14 +637,10 @@ trait SliceTransforms[M[+_]]
           }
 
         case DerefMetadataStatic(source, field) =>
-          composeSliceTransform2(source) map {
-            _ deref field
-          }
+          composeSliceTransform2(source) map { _ deref field }
 
         case DerefObjectStatic(source, field) =>
-          composeSliceTransform2(source) map {
-            _ deref field
-          }
+          composeSliceTransform2(source) map { _ deref field }
 
         case DerefObjectDynamic(source, ref) =>
           val l0 = composeSliceTransform2(source)
@@ -676,15 +653,11 @@ trait SliceTransforms[M[+_]]
                 new DerefSlice(
                   slice,
                   { case row: Int if c.isDefinedAt(row) => CPathField(c(row)) })
-            } getOrElse {
-              slice
-            }
+            } getOrElse { slice }
           }
 
         case DerefArrayStatic(source, element) =>
-          composeSliceTransform2(source) map {
-            _ deref element
-          }
+          composeSliceTransform2(source) map { _ deref element }
 
         case DerefArrayDynamic(source, ref) =>
           val l0 = composeSliceTransform2(source)
@@ -716,15 +689,11 @@ trait SliceTransforms[M[+_]]
                     case row: Int if c.isDefinedAt(row) =>
                       CPathIndex(c(row).toInt)
                   })
-            } getOrElse {
-              slice
-            }
+            } getOrElse { slice }
           }
 
         case ArraySwap(source, index) =>
-          composeSliceTransform2(source) map {
-            _ arraySwap index
-          }
+          composeSliceTransform2(source) map { _ arraySwap index }
 
         case FilterDefined(source, definedFor, definedness) =>
           val sourceTransform = composeSliceTransform2(source)

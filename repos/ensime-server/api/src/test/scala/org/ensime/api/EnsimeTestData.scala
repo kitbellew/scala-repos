@@ -9,9 +9,7 @@ trait EnsimeTestData {
   private def canon(s: String) = {
     val file = new File(s)
     try file.getCanonicalFile
-    catch {
-      case t: Throwable => file.getAbsoluteFile
-    }
+    catch { case t: Throwable => file.getAbsoluteFile }
   }
 
   val typeInfo = new BasicTypeInfo(

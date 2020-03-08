@@ -48,18 +48,15 @@ object Promise {
     def detach(): Boolean = underlying.detach(this)
 
     // This is only called after the parent has been successfully satisfied
-    def apply(result: Try[A]): Unit = {
-      update(result)
-    }
+    def apply(result: Try[A]): Unit = { update(result) }
   }
 
   private class DetachableFuture[A] extends Promise[A] with Promise.Detachable {
     private[this] var detached: Boolean = false
 
     def detach(): Boolean = synchronized {
-      if (detached) {
-        false
-      } else {
+      if (detached) { false }
+      else {
         detached = true
         true
       }
@@ -524,15 +521,11 @@ class Promise[A]
     case Linked(p) => p.raise(intr)
     case s @ Interruptible(waitq, handler) =>
       if (!cas(s, Interrupted(waitq, intr))) raise(intr)
-      else {
-        handler.applyOrElse(intr, Promise.AlwaysUnit)
-      }
+      else { handler.applyOrElse(intr, Promise.AlwaysUnit) }
 
     case s @ Transforming(waitq, other) =>
       if (!cas(s, Interrupted(waitq, intr))) raise(intr)
-      else {
-        other.raise(intr)
-      }
+      else { other.raise(intr) }
 
     case s @ Interrupted(waitq, _) =>
       if (!cas(s, Interrupted(waitq, intr)))
@@ -759,9 +752,7 @@ class Promise[A]
     state match {
       case Done(v) =>
         Scheduler.submit(new Runnable {
-          def run() {
-            k(v)
-          }
+          def run() { k(v) }
         })
       case s @ Waiting(first, rest) if first == null =>
         if (!cas(s, Waiting(k, rest)))

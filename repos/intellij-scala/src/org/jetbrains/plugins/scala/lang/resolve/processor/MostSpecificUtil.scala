@@ -125,9 +125,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
           if (clauses.length > 0 && clauses(
                 0).parameters.length == 1 && clauses(0)
                 .parameters(0)
-                .isCallByNameParameter) {
-            callByName = true
-          }
+                .isCallByNameParameter) { callByName = true }
         }
         r.element match {
           case f: ScFunction => checkCallByName(f.paramClauses.clauses)

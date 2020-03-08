@@ -94,14 +94,11 @@ object ApplicationSecretGenerator {
         val applicationSecretValue = config.getValue("application.secret")
         val applicationSecretOrigin = applicationSecretValue.origin()
 
-        if (applicationSecretOrigin.lineNumber == -1) {
-          newLines
-        } else {
+        if (applicationSecretOrigin.lineNumber == -1) { newLines }
+        else {
           newLines.patch(applicationSecretOrigin.lineNumber() - 1, Nil, 1)
         }
-      } else {
-        newLines
-      }
+      } else { newLines }
     }
   }
 }

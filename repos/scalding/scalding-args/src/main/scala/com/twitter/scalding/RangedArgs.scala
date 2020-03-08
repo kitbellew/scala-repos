@@ -37,11 +37,8 @@ case class Range[T](lower: T, upper: T)(implicit ord: Ordering[T]) {
   }
 
   def mkString(sep: String) = {
-    if (ord.equiv(lower, upper)) {
-      lower.toString
-    } else {
-      lower.toString + sep + upper.toString
-    }
+    if (ord.equiv(lower, upper)) { lower.toString }
+    else { lower.toString + sep + upper.toString }
   }
 }
 

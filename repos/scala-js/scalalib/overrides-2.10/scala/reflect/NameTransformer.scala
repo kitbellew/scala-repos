@@ -76,9 +76,7 @@ object NameTransformer {
           buf.append(name.substring(0, i))
         }
         buf.append("$u%04X".format(c.toInt))
-      } else if (buf ne null) {
-        buf.append(c)
-      }
+      } else if (buf ne null) { buf.append(c) }
       i += 1
     }
     if (buf eq null) name else buf.toString()

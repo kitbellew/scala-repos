@@ -30,97 +30,153 @@ trait SE extends S {
 }
 
 class A extends S {
-  object O extends SE { def outer = A.this }
-  private[this] object Op extends SE { def outer = A.this }
+  object O extends SE {
+    def outer = A.this
+  }
+  private[this] object Op extends SE {
+    def outer = A.this
+  }
   def P: SE = Op
 
   object N extends S {
-    object O extends SE { def outer = N }
-    private[this] object Op extends SE { def outer = N }
+    object O extends SE {
+      def outer = N
+    }
+    private[this] object Op extends SE {
+      def outer = N
+    }
     def P: SE = Op
   }
 
   class A extends S {
-    object O extends SE { def outer = A.this }
-    private[this] object Op extends SE { def outer = A.this }
+    object O extends SE {
+      def outer = A.this
+    }
+    private[this] object Op extends SE {
+      def outer = A.this
+    }
     def P: SE = Op
   }
 
   trait T extends S {
-    object O extends SE { def outer = T.this }
-    private[this] object Op extends SE { def outer = T.this }
+    object O extends SE {
+      def outer = T.this
+    }
+    private[this] object Op extends SE {
+      def outer = T.this
+    }
     def P: SE = Op
   }
   class C extends T
 
   def u: SE = {
-    object O extends SE { def outer = A.this }
+    object O extends SE {
+      def outer = A.this
+    }
     O
   }
 
   val v: SE = {
-    object O extends SE { def outer = A.this }
+    object O extends SE {
+      def outer = A.this
+    }
     O
   }
 
   val f: () => SE = () => {
-    object O extends SE { def outer = A.this }
+    object O extends SE {
+      def outer = A.this
+    }
     O
   }
 
-  trait GetObj { def O: SE; def P: SE }
+  trait GetObj {
+    def O: SE; def P: SE
+  }
   val a: GetObj = new GetObj with S {
     def anonThis = this
-    object O extends SE { def outer = anonThis }
-    private[this] object Op extends SE { def outer = anonThis }
+    object O extends SE {
+      def outer = anonThis
+    }
+    private[this] object Op extends SE {
+      def outer = anonThis
+    }
     def P: SE = Op
   }
 }
 
 trait T extends S {
-  object O extends SE { def outer = T.this }
-  private[this] object Op extends SE { def outer = T.this }
+  object O extends SE {
+    def outer = T.this
+  }
+  private[this] object Op extends SE {
+    def outer = T.this
+  }
   def P: SE = Op
 
   object N extends S {
-    object O extends SE { def outer = N }
-    private[this] object Op extends SE { def outer = N }
+    object O extends SE {
+      def outer = N
+    }
+    private[this] object Op extends SE {
+      def outer = N
+    }
     def P: SE = Op
   }
 
   class A extends S {
-    object O extends SE { def outer = A.this }
-    private[this] object Op extends SE { def outer = A.this }
+    object O extends SE {
+      def outer = A.this
+    }
+    private[this] object Op extends SE {
+      def outer = A.this
+    }
     def P: SE = Op
   }
 
   trait T extends S {
-    object O extends SE { def outer = T.this }
-    private[this] object Op extends SE { def outer = T.this }
+    object O extends SE {
+      def outer = T.this
+    }
+    private[this] object Op extends SE {
+      def outer = T.this
+    }
     def P: SE = Op
   }
   class C extends T
 
   def u: SE = {
-    object O extends SE { def outer = T.this }
+    object O extends SE {
+      def outer = T.this
+    }
     O
   }
 
   val v: SE = {
-    object O extends SE { def outer = T.this }
+    object O extends SE {
+      def outer = T.this
+    }
     O
   }
 
   val f: () => SE = () => {
-    object O extends SE { def outer = T.this }
+    object O extends SE {
+      def outer = T.this
+    }
     O
   }
 
-  trait GetObj { def O: SE; def P: SE }
+  trait GetObj {
+    def O: SE; def P: SE
+  }
   val a: GetObj = new GetObj with S {
     def anonThis = this
-    object O extends SE { def outer = anonThis }
-    private[this] object Op extends SE { def outer = anonThis }
+    object O extends SE {
+      def outer = anonThis
+    }
+    private[this] object Op extends SE {
+      def outer = anonThis
+    }
     def P: SE = Op
   }
 }

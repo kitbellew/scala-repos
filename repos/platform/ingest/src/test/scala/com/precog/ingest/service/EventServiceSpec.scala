@@ -127,9 +127,7 @@ class EventServiceSpec
         Some(testAccount.apiKey),
         testAccount.rootPath,
         Some(testAccount.accountId),
-        batch = true) {
-        JArray(t1, t2, t3)
-      }
+        batch = true) { JArray(t1, t2, t3) }
 
       result.copoint must beLike {
         case (
@@ -150,9 +148,7 @@ class EventServiceSpec
         Some(testAccount.apiKey),
         testAccount.rootPath,
         Some(testAccount.accountId),
-        batch = true) {
-        arr
-      }
+        batch = true) { arr }
 
       result.copoint must beLike {
         case (
@@ -197,9 +193,7 @@ class EventServiceSpec
         testAccount.rootPath,
         Some(testAccount.accountId),
         sync = true,
-        batch = true) {
-        chunk("a,b,c\n1,2,3\n4, ,a", "\n6,7,8")
-      }
+        batch = true) { chunk("a,b,c\n1,2,3\n4, ,a", "\n6,7,8") }
 
       result.copoint must beLike {
         case (HttpResponse(HttpStatus(OK, _), _, Some(_), _), events) =>
@@ -227,9 +221,7 @@ class EventServiceSpec
         testAccount.rootPath,
         Some(testAccount.accountId),
         sync = true,
-        batch = true) {
-        chunk(data)
-      }
+        batch = true) { chunk(data) }
 
       result.copoint must beLike {
         case (HttpResponse(HttpStatus(OK, _), _, Some(_), _), events) =>
@@ -315,9 +307,7 @@ class EventServiceSpec
         testAccount.rootPath,
         Some(testAccount.accountId),
         sync = true,
-        batch = false) {
-        genObject(1025).sample.get: JValue
-      }
+        batch = false) { genObject(1025).sample.get: JValue }
 
       result.copoint must beLike {
         case (

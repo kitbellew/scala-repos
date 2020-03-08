@@ -63,9 +63,7 @@ trait ClassFinder {
         }
         je = jis.getNextJarEntry
       }
-    } finally {
-      jis.close()
-    }
+    } finally { jis.close() }
     classSet.toSet
   }
 }

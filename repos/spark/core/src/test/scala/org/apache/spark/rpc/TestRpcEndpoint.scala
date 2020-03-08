@@ -69,21 +69,13 @@ class TestRpcEndpoint extends ThreadSafeRpcEndpoint with TripleEquals {
 
   def numReceiveMessages: Int = receiveMessages.size
 
-  override def onStart(): Unit = {
-    started = true
-  }
+  override def onStart(): Unit = { started = true }
 
-  override def onStop(): Unit = {
-    stopped = true
-  }
+  override def onStop(): Unit = { stopped = true }
 
-  def verifyStarted(): Unit = {
-    assert(started, "RpcEndpoint is not started")
-  }
+  def verifyStarted(): Unit = { assert(started, "RpcEndpoint is not started") }
 
-  def verifyStopped(): Unit = {
-    assert(stopped, "RpcEndpoint is not stopped")
-  }
+  def verifyStopped(): Unit = { assert(stopped, "RpcEndpoint is not stopped") }
 
   def verifyReceiveMessages(expected: Seq[Any]): Unit = {
     assert(receiveMessages === expected)

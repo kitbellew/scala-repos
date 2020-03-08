@@ -188,13 +188,9 @@ final class KeyClientServerIntegrationSuite
     RedisTest) {
     withRedisClient { client =>
       val blankToDb = string2ChanBuf("")
-      intercept[ClientError] {
-        Await.result(client(Move(moo, blankToDb)))
-      }
+      intercept[ClientError] { Await.result(client(Move(moo, blankToDb))) }
       val nullToDb = null: ChannelBuffer
-      intercept[ClientError] {
-        Await.result(client(Move(moo, nullToDb)))
-      }
+      intercept[ClientError] { Await.result(client(Move(moo, nullToDb))) }
     }
   }
 
@@ -375,9 +371,7 @@ final class KeyClientServerIntegrationSuite
     withRedisClient { client =>
       val emptyKey = string2ChanBuf("")
 
-      intercept[ClientError] {
-        Await.result(client(Ttl(emptyKey)))
-      }
+      intercept[ClientError] { Await.result(client(Ttl(emptyKey))) }
     }
   }
 

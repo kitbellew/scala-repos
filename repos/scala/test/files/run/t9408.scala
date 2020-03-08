@@ -1,7 +1,5 @@
 class Outer {
-  def assertNoFields(c: Class[_]) {
-    assert(c.getDeclaredFields.isEmpty)
-  }
+  def assertNoFields(c: Class[_]) { assert(c.getDeclaredFields.isEmpty) }
   def assertHasOuter(c: Class[_]) {
     assert(c.getDeclaredFields.exists(_.getName.contains("outer")))
   }
@@ -55,7 +53,5 @@ class Outer {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
-    new Outer().test
-  }
+  def main(args: Array[String]): Unit = { new Outer().test }
 }

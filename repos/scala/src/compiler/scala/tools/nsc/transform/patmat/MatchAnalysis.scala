@@ -836,9 +836,7 @@ trait MatchAnalysis extends MatchApproximation {
       val groupedByVar: Map[Var, List[Sym]] =
         solution.unassigned.groupBy(_.variable)
 
-      val expanded = for {
-        (variable, syms) <- groupedByVar.toList
-      } yield {
+      val expanded = for { (variable, syms) <- groupedByVar.toList } yield {
 
         val (equal, notEqual) = varAssignment.getOrElse(variable, Nil -> Nil)
 
@@ -854,20 +852,15 @@ trait MatchAnalysis extends MatchApproximation {
         val allEqual = addVarAssignment(syms.map(_.const), Nil)
 
         if (equal.isEmpty) {
-          val oneHot = for {
-            s <- syms
-          } yield {
+          val oneHot = for { s <- syms } yield {
             addVarAssignment(List(s.const), syms.filterNot(_ == s).map(_.const))
           }
           allEqual :: allNotEqual :: oneHot
-        } else {
-          allEqual :: allNotEqual :: Nil
-        }
+        } else { allEqual :: allNotEqual :: Nil }
       }
 
-      if (expanded.isEmpty) {
-        List(varAssignment)
-      } else {
+      if (expanded.isEmpty) { List(varAssignment) }
+      else {
         // we need the cartesian product here,
         // since we want to report all missing cases
         // (i.e., combinations)
@@ -875,18 +868,12 @@ trait MatchAnalysis extends MatchApproximation {
           for {
             map1 <- xs
             map2 <- ys
-          } yield {
-            map1 ++ map2
-          })
+          } yield { map1 ++ map2 })
 
         // add expanded variables
         // note that we can just use `++`
         // since the Maps have disjoint keySets
-        for {
-          m <- cartesianProd
-        } yield {
-          varAssignment ++ m
-        }
+        for { m <- cartesianProd } yield { varAssignment ++ m }
       }
     }
 

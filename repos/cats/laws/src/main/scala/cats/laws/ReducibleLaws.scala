@@ -25,5 +25,7 @@ trait ReducibleLaws[F[_]] extends FoldableLaws[F] {
 
 object ReducibleLaws {
   def apply[F[_]](implicit ev: Reducible[F]): ReducibleLaws[F] =
-    new ReducibleLaws[F] { def F: Reducible[F] = ev }
+    new ReducibleLaws[F] {
+      def F: Reducible[F] = ev
+    }
 }

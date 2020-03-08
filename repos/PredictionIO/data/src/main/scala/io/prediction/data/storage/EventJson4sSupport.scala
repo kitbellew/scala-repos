@@ -58,9 +58,8 @@ object EventJson4sSupport {
         val eventTime = fields
           .getOpt[String]("eventTime")
           .map { s =>
-            try {
-              DataUtils.stringToDateTime(s)
-            } catch {
+            try { DataUtils.stringToDateTime(s) }
+            catch {
               case _: Exception =>
                 throw new MappingException(s"Fail to extract eventTime ${s}")
             }
@@ -98,9 +97,7 @@ object EventJson4sSupport {
         )
         EventValidation.validate(newEvent)
         newEvent
-      } catch {
-        case e: Exception => throw new MappingException(e.toString, e)
-      }
+      } catch { case e: Exception => throw new MappingException(e.toString, e) }
     }
   }
 
@@ -232,11 +229,8 @@ object BatchEventsJson4sSupport {
   def readJson: PartialFunction[JValue, Seq[Try[Event]]] = {
     case JArray(events) => {
       events.map { event =>
-        try {
-          Success(EventJson4sSupport.readJson(event))
-        } catch {
-          case e: Exception => Failure(e)
-        }
+        try { Success(EventJson4sSupport.readJson(event)) }
+        catch { case e: Exception => Failure(e) }
       }
     }
   }

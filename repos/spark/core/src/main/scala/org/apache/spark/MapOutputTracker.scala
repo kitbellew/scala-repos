@@ -69,9 +69,7 @@ private[spark] class MapOutputTrackerMasterEndpoint(
         val exception = new SparkException(msg)
         logError(msg, exception)
         context.sendFailure(exception)
-      } else {
-        context.reply(mapOutputStatuses)
-      }
+      } else { context.reply(mapOutputStatuses) }
 
     case StopMapOutputTracker =>
       logInfo("MapOutputTrackerMasterEndpoint stopped!")
@@ -118,9 +116,8 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
     * throw a SparkException if this fails.
     */
   protected def askTracker[T: ClassTag](message: Any): T = {
-    try {
-      trackerEndpoint.askWithRetry[T](message)
-    } catch {
+    try { trackerEndpoint.askWithRetry[T](message) }
+    catch {
       case e: Exception =>
         logError("Error communicating with MapOutputTracker", e)
         throw new SparkException("Error communicating with MapOutputTracker", e)
@@ -209,9 +206,8 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
       fetching.synchronized {
         // Someone else is fetching it; wait for them to be done
         while (fetching.contains(shuffleId)) {
-          try {
-            fetching.wait()
-          } catch {
+          try { fetching.wait() }
+          catch {
             case e: InterruptedException =>
           }
         }
@@ -247,26 +243,19 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
         s"Fetching map output statuses for shuffle $shuffleId took " +
           s"${System.currentTimeMillis - startTime} ms")
 
-      if (fetchedStatuses != null) {
-        return fetchedStatuses
-      } else {
+      if (fetchedStatuses != null) { return fetchedStatuses }
+      else {
         logError("Missing all output locations for shuffle " + shuffleId)
         throw new MetadataFetchFailedException(
           shuffleId,
           -1,
           "Missing all output locations for shuffle " + shuffleId)
       }
-    } else {
-      return statuses
-    }
+    } else { return statuses }
   }
 
   /** Called to get current epoch number. */
-  def getEpoch: Long = {
-    epochLock.synchronized {
-      return epoch
-    }
-  }
+  def getEpoch: Long = { epochLock.synchronized { return epoch } }
 
   /**
     * Called from executors to update the epoch number, potentially clearing old outputs
@@ -284,9 +273,7 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
   }
 
   /** Unregister shuffle data. */
-  def unregisterShuffle(shuffleId: Int) {
-    mapStatuses.remove(shuffleId)
-  }
+  def unregisterShuffle(shuffleId: Int) { mapStatuses.remove(shuffleId) }
 
   /** Stop the tracker. */
   def stop() {}
@@ -333,9 +320,7 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
 
   def registerMapOutput(shuffleId: Int, mapId: Int, status: MapStatus) {
     val array = mapStatuses(shuffleId)
-    array.synchronized {
-      array(mapId) = status
-    }
+    array.synchronized { array(mapId) = status }
   }
 
   /** Register multiple map output information for the given shuffle */
@@ -344,9 +329,7 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
       statuses: Array[MapStatus],
       changeEpoch: Boolean = false) {
     mapStatuses.put(shuffleId, Array[MapStatus]() ++ statuses)
-    if (changeEpoch) {
-      incrementEpoch()
-    }
+    if (changeEpoch) { incrementEpoch() }
   }
 
   /** Unregister map output information of the given shuffle, mapper and block manager */
@@ -399,14 +382,9 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
         partitionId,
         dep.partitioner.numPartitions,
         REDUCER_PREF_LOCS_FRACTION)
-      if (blockManagerIds.nonEmpty) {
-        blockManagerIds.get.map(_.host)
-      } else {
-        Nil
-      }
-    } else {
-      Nil
-    }
+      if (blockManagerIds.nonEmpty) { blockManagerIds.get.map(_.host) }
+      else { Nil }
+    } else { Nil }
   }
 
   /**
@@ -454,9 +432,7 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
               size.toDouble / totalOutputSize >= fractionThreshold
           }
           // Return if we have any locations which satisfy the required threshold
-          if (topLocs.nonEmpty) {
-            return Some(topLocs.keys.toArray)
-          }
+          if (topLocs.nonEmpty) { return Some(topLocs.keys.toArray) }
         }
       }
     }
@@ -494,9 +470,7 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
         .format(shuffleId, bytes.length))
     // Add them into the table only if the epoch hasn't changed while we were working
     epochLock.synchronized {
-      if (epoch == epochGotten) {
-        cachedSerializedStatuses(shuffleId) = bytes
-      }
+      if (epoch == epochGotten) { cachedSerializedStatuses(shuffleId) = bytes }
     }
     bytes
   }
@@ -531,12 +505,8 @@ private[spark] object MapOutputTracker extends Logging {
     val objOut = new ObjectOutputStream(new GZIPOutputStream(out))
     Utils.tryWithSafeFinally {
       // Since statuses can be modified in parallel, sync on it
-      statuses.synchronized {
-        objOut.writeObject(statuses)
-      }
-    } {
-      objOut.close()
-    }
+      statuses.synchronized { objOut.writeObject(statuses) }
+    } { objOut.close() }
     out.toByteArray
   }
 
@@ -546,9 +516,7 @@ private[spark] object MapOutputTracker extends Logging {
       new GZIPInputStream(new ByteArrayInputStream(bytes)))
     Utils.tryWithSafeFinally {
       objIn.readObject().asInstanceOf[Array[MapStatus]]
-    } {
-      objIn.close()
-    }
+    } { objIn.close() }
   }
 
   /**

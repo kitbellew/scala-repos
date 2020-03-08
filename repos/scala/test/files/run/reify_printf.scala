@@ -46,12 +46,8 @@ object Test extends App {
     val parsed = s_format.split("(?<=%[\\w%])|(?=%[\\w%])") map {
       case "%d" => createTempValDef(paramsStack.pop, typeOf[Int])
       case "%s" => createTempValDef(paramsStack.pop, typeOf[String])
-      case "%%" => {
-        (None: Option[Tree], Literal(Constant("%")))
-      }
-      case part => {
-        (None: Option[Tree], Literal(Constant(part)))
-      }
+      case "%%" => { (None: Option[Tree], Literal(Constant("%"))) }
+      case part => { (None: Option[Tree], Literal(Constant(part))) }
     }
 
     val evals =

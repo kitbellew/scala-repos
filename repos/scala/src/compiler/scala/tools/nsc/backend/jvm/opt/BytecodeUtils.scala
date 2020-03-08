@@ -335,9 +335,7 @@ object BytecodeUtils {
     methodNode.instructions
       .iterator()
       .asScala
-      .collect({
-        case labelNode: LabelNode => (labelNode, newLabelNode)
-      })
+      .collect({ case labelNode: LabelNode => (labelNode, newLabelNode) })
       .toMap
   }
 

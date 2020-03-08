@@ -39,9 +39,7 @@ object MarkovChain {
       next
     }
 
-    override def observe(x: T) = {
-      MarkovChain(x)(resample)
-    }
+    override def observe(x: T) = { MarkovChain(x)(resample) }
   }
 
   /**
@@ -270,13 +268,10 @@ object MarkovChain {
             var next = Double.NaN;
             while (!happy) {
               next = left + rand.uniform.draw * (right - left);
-              if (prop <= logMeasure(next)) {
-                happy = true;
-              } else if (next < last) { //close the window
+              if (prop <= logMeasure(next)) { happy = true; }
+              else if (next < last) { //close the window
                 left = next;
-              } else {
-                right = next;
-              }
+              } else { right = next; }
             }
             next;
           }

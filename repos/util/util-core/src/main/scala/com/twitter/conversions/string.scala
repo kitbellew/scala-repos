@@ -49,17 +49,13 @@ object string {
       val out = new StringBuilder()
 
       for (m <- re.findAllIn(wrapped).matchData) {
-        if (m.start > offset) {
-          out.append(wrapped.substring(offset, m.start))
-        }
+        if (m.start > offset) { out.append(wrapped.substring(offset, m.start)) }
 
         out.append(replace(m))
         offset = m.end
       }
 
-      if (offset < wrapped.length) {
-        out.append(wrapped.substring(offset))
-      }
+      if (offset < wrapped.length) { out.append(wrapped.substring(offset)) }
       out.toString
     }
 
@@ -84,11 +80,8 @@ object string {
           case '"'  => "\\\""
           case '\\' => "\\\\"
           case c =>
-            if (c <= 255) {
-              "\\x%02x".format(c.asInstanceOf[Int])
-            } else {
-              "\\u%04x" format c.asInstanceOf[Int]
-            }
+            if (c <= 255) { "\\x%02x".format(c.asInstanceOf[Int]) }
+            else { "\\u%04x" format c.asInstanceOf[Int] }
         }
       }
     }
@@ -150,9 +143,7 @@ object string {
     for (i <- from until to) {
       val b = array(i)
       val s = (b.toInt & 0xff).toHexString
-      if (s.length < 2) {
-        out append '0'
-      }
+      if (s.length < 2) { out append '0' }
       out append s
     }
     out.toString

@@ -93,11 +93,8 @@ private[spark] class CoarseMesosSchedulerBackend(
     * the real initial limit later.
     */
   private var executorLimitOption: Option[Int] = {
-    if (Utils.isDynamicAllocationEnabled(conf)) {
-      Some(0)
-    } else {
-      None
-    }
+    if (Utils.isDynamicAllocationEnabled(conf)) { Some(0) }
+    else { None }
   }
 
   /**
@@ -123,11 +120,8 @@ private[spark] class CoarseMesosSchedulerBackend(
 
   // A client for talking to the external shuffle service
   private val mesosExternalShuffleClient: Option[MesosExternalShuffleClient] = {
-    if (shuffleServiceEnabled) {
-      Some(getShuffleClient())
-    } else {
-      None
-    }
+    if (shuffleServiceEnabled) { Some(getShuffleClient()) }
+    else { None }
   }
 
   // This method is factored out for testability
@@ -249,9 +243,8 @@ private[spark] class CoarseMesosSchedulerBackend(
   }
 
   protected def driverURL: String = {
-    if (conf.contains("spark.testing")) {
-      "driverURL"
-    } else {
+    if (conf.contains("spark.testing")) { "driverURL" }
+    else {
       RpcEndpointAddress(
         conf.get("spark.driver.host"),
         conf.get("spark.driver.port").toInt,
@@ -571,9 +564,7 @@ private[spark] class CoarseMesosSchedulerBackend(
     // Close the mesos external shuffle client if used
     mesosExternalShuffleClient.foreach(_.close())
 
-    if (mesosDriver != null) {
-      mesosDriver.stop()
-    }
+    if (mesosDriver != null) { mesosDriver.stop() }
   }
 
   override def frameworkMessage(
@@ -639,9 +630,7 @@ private[spark] class CoarseMesosSchedulerBackend(
     }
   }
 
-  private def numExecutors(): Int = {
-    slaves.values.map(_.taskIDs.size).sum
-  }
+  private def numExecutors(): Int = { slaves.values.map(_.taskIDs.size).sum }
 }
 
 private class Slave(val hostname: String) {

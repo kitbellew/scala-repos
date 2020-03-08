@@ -276,15 +276,11 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
 
   // called before run
   // only override if you do not use flowDef
-  def validate {
-    FlowStateMap.validateSources(flowDef, mode)
-  }
+  def validate { FlowStateMap.validateSources(flowDef, mode) }
 
   // called after successfull run
   // only override if you do not use flowDef
-  def clear {
-    FlowStateMap.clear(flowDef)
-  }
+  def clear { FlowStateMap.clear(flowDef) }
 
   protected def handleStats(statsData: CascadingStats) {
     scaldingCascadingStats = Some(statsData)
@@ -384,9 +380,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     val f = timeoutExecutor.submit(new Callable[Option[T]] {
       def call(): Option[T] = Some(t)
     });
-    try {
-      f.get(timeout.toMillisecs, TimeUnit.MILLISECONDS)
-    } catch {
+    try { f.get(timeout.toMillisecs, TimeUnit.MILLISECONDS) }
+    catch {
       case _: TimeoutException =>
         f.cancel(true)
         None
@@ -566,9 +561,7 @@ trait CounterVerification extends Job {
   override def listeners: List[FlowListener] = {
     if (this.mode.isInstanceOf[TestMode] && !this.verifyCountersInTest) {
       super.listeners
-    } else {
-      super.listeners :+ new StatsFlowListener(this.verifyCounters)
-    }
+    } else { super.listeners :+ new StatsFlowListener(this.verifyCounters) }
   }
 }
 

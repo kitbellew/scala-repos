@@ -59,9 +59,7 @@ object SliceVector {
 
       override def mapActive(
           from: SliceVector[K, V],
-          fn: (Int, V) => V2): DenseVector[V2] = {
-        map(from, fn)
-      }
+          fn: (Int, V) => V2): DenseVector[V2] = { map(from, fn) }
     }
   }
 
@@ -93,9 +91,7 @@ object SliceVector {
 
       /** Iterates all key-value pairs from the given collection. */
       def traverse(from: SliceVector[K, V], fn: ValuesVisitor[V]): Unit = {
-        from.valuesIterator foreach {
-          fn.visit(_)
-        }
+        from.valuesIterator foreach { fn.visit(_) }
       }
 
     }
@@ -108,9 +104,7 @@ object SliceVector {
       override def traverse(
           from: SliceVector[K, V],
           fn: KeyValuePairsVisitor[Int, V]): Unit = {
-        from.iterator foreach {
-          case (k, v) => fn.visit(k, v)
-        }
+        from.iterator foreach { case (k, v) => fn.visit(k, v) }
 
       }
 
@@ -123,9 +117,7 @@ object SliceVector {
       : CanTransformValues[SliceVector[K, V], V] = {
     new CanTransformValues[SliceVector[K, V], V] {
       def transform(from: SliceVector[K, V], fn: (V) => V) {
-        for (i <- 0 until from.length) {
-          from(i) = fn(from(i))
-        }
+        for (i <- 0 until from.length) { from(i) = fn(from(i)) }
       }
 
       def transformActive(from: SliceVector[K, V], fn: (V) => V) {

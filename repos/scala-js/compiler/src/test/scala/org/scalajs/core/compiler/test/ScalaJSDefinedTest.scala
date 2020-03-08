@@ -19,9 +19,7 @@ class ScalaJSDefinedTest extends DirectTest with TestHelpers {
   def noSJSDefinedOnScalaEntity: Unit = {
     val objs = List("class", "trait", "object")
 
-    for {
-      obj <- objs
-    } {
+    for { obj <- objs } {
       s"""
       @ScalaJSDefined
       $obj A

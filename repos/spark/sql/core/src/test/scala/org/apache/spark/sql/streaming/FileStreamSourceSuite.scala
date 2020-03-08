@@ -71,9 +71,7 @@ class FileStreamSourceTest extends StreamTest with SharedSQLContext {
     val reader =
       if (schema.isDefined) {
         sqlContext.read.format(format).schema(schema.get)
-      } else {
-        sqlContext.read.format(format)
-      }
+      } else { sqlContext.read.format(format) }
     reader
       .stream(path)
       .queryExecution
@@ -97,11 +95,8 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     format.foreach(reader.format)
     schema.foreach(reader.schema)
     val df =
-      if (path.isDefined) {
-        reader.stream(path.get)
-      } else {
-        reader.stream()
-      }
+      if (path.isDefined) { reader.stream(path.get) }
+      else { reader.stream() }
     df.queryExecution.analyzed
       .collect { case StreamingRelation(s: FileStreamSource, _) => s }
       .head
@@ -424,9 +419,7 @@ class FileStreamSourceStressTestSuite
     val ds = textSource.toDS[String]().map(_.toInt + 1)
     runStressTest(
       ds,
-      data => {
-        AddTextFileData(textSource, data.mkString("\n"), src, tmp)
-      })
+      data => { AddTextFileData(textSource, data.mkString("\n"), src, tmp) })
 
     Utils.deleteRecursively(src)
     Utils.deleteRecursively(tmp)

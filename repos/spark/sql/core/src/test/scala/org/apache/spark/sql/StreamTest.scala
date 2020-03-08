@@ -109,9 +109,7 @@ trait StreamTest extends QueryTest with Timeouts {
       extends AddData {
     override def toString: String = s"AddData to $source: ${data.mkString(",")}"
 
-    override def addData(): Offset = {
-      source.addData(data)
-    }
+    override def addData(): Offset = { source.addData(data) }
   }
 
   /**
@@ -219,9 +217,7 @@ trait StreamTest extends QueryTest with Timeouts {
           case (a, i) =>
             if ((pos == i && startedManually) || (pos == (i + 1) && !startedManually)) {
               "=> " + a.toString
-            } else {
-              "   " + a.toString
-            }
+            } else { "   " + a.toString }
         }
         .mkString("\n")
 
@@ -253,20 +249,16 @@ trait StreamTest extends QueryTest with Timeouts {
          """.stripMargin
 
     def verify(condition: => Boolean, message: String): Unit = {
-      try {
-        Assertions.assert(condition)
-      } catch {
+      try { Assertions.assert(condition) }
+      catch {
         case NonFatal(e) =>
           failTest(message, e)
       }
     }
 
     def eventually[T](message: String)(func: => T): T = {
-      try {
-        Eventually.eventually(Timeout(streamingTimeout)) {
-          func
-        }
-      } catch {
+      try { Eventually.eventually(Timeout(streamingTimeout)) { func } }
+      catch {
         case NonFatal(e) =>
           failTest(message, e)
       }
@@ -282,9 +274,7 @@ trait StreamTest extends QueryTest with Timeouts {
           base + s"\n$prefix\tCaused by: " + exceptionToString(
             e.getCause,
             s"$prefix\t")
-        } else {
-          base
-        }
+        } else { base }
       }
       val c = Option(cause).map(exceptionToString(_))
       val m = if (message != null && message.size > 0) Some(message) else None
@@ -519,17 +509,13 @@ trait StreamTest extends QueryTest with Timeouts {
       expectedBehavior match {
         case ExpectNotBlocked =>
           withClue("Got blocked when expected non-blocking.") {
-            failAfter(testTimeout) {
-              awaitTermFunc()
-            }
+            failAfter(testTimeout) { awaitTermFunc() }
           }
 
         case ExpectBlocked =>
           withClue("Was not blocked when expected.") {
             intercept[TestFailedDueToTimeoutException] {
-              failAfter(testTimeout) {
-                awaitTermFunc()
-              }
+              failAfter(testTimeout) { awaitTermFunc() }
             }
           }
 
@@ -538,9 +524,7 @@ trait StreamTest extends QueryTest with Timeouts {
             withClue(
               s"Did not throw ${e.t.runtimeClass.getSimpleName} when expected.") {
               intercept[ContinuousQueryException] {
-                failAfter(testTimeout) {
-                  awaitTermFunc()
-                }
+                failAfter(testTimeout) { awaitTermFunc() }
               }
             }
           assert(

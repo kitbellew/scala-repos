@@ -103,9 +103,7 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
         {
           val removed = json remove typePredicate(x)
           val Diff(c, a, d) = json diff removed
-          val elemsLeft = removed filter {
-            case _ => true
-          }
+          val elemsLeft = removed filter { case _ => true }
           c == JNothing && a == JNothing && elemsLeft.forall(_.getClass != x)
         }
     }

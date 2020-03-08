@@ -83,9 +83,7 @@ case class PlayerAggregateAssessment(
   }
 
   def countAssessmentValue(assessment: GameAssessment) =
-    playerAssessments count {
-      _.assessment == assessment
-    }
+    playerAssessments count { _.assessment == assessment }
 
   val relatedCheatersCount = relatedCheaters.distinct.size
   val relatedUsersCount = relatedUsers.distinct.size

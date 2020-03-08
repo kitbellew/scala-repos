@@ -63,17 +63,15 @@ private[math] object Conversion {
     val radixOutOfBounds =
       radix < Character.MIN_RADIX || radix > Character.MAX_RADIX
 
-    if (sign == 0) {
-      "0"
-    } else if (numberLength == 1) {
+    if (sign == 0) { "0" }
+    else if (numberLength == 1) {
       val highDigit = digits(numberLength - 1)
       var v = highDigit & 0xFFFFFFFFL
       if (sign < 0)
         v = -v
       java.lang.Long.toString(v, radix)
-    } else if (radix == 10 || radixOutOfBounds) {
-      bi.toString
-    } else {
+    } else if (radix == 10 || radixOutOfBounds) { bi.toString }
+    else {
       var bitsForRadixDigit: Double = 0.0
       bitsForRadixDigit = Math.log(radix) / Math.log(2)
       val addForSign = if (sign < 0) 1 else 0
@@ -115,9 +113,7 @@ private[math] object Conversion {
             i += 1
           }
           i = tempLen - 1
-          while (i > 0 && temp(i) == 0) {
-            i -= 1
-          }
+          while (i > 0 && temp(i) == 0) { i -= 1 }
           tempLen = i + 1
           if (!(tempLen == 1 && temp(0) == 0))
             loop()
@@ -157,9 +153,8 @@ private[math] object Conversion {
     var resLengthInChars: Int = 0
     var currentChar: Int = 0
 
-    if (sign == 0) {
-      "0"
-    } else {
+    if (sign == 0) { "0" }
+    else {
       // one 32-bit unsigned value may contains 10 decimal digits
       // Explanation why +1+7:
       // +1 - one char for sign if needed.
@@ -230,9 +225,7 @@ private[math] object Conversion {
             i += 1
           }
           var j = tempLen - 1
-          while ((temp(j) == 0) && (j != 0)) {
-            j -= 1
-          }
+          while ((temp(j) == 0) && (j != 0)) { j -= 1 }
           tempLen = j + 1
           if (!(j == 0 && (temp(j) == 0))) loop
         }
@@ -293,9 +286,7 @@ private[math] object Conversion {
           result = result.substring(0, index) + "." + result.substring(index)
         } else {
           // special case 2
-          for (j <- 0 until -index) {
-            result = '0' + result
-          }
+          for (j <- 0 until -index) { result = '0' + result }
           result = "0." + result
         }
       } else if (scale != 0) {

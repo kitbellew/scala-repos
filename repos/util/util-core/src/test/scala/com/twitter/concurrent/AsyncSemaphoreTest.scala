@@ -41,13 +41,9 @@ class AsyncSemaphoreTest extends FunSpec {
     }
 
     it("should validate constructor parameters") { _ =>
-      intercept[IllegalArgumentException] {
-        new AsyncSemaphore(0)
-      }
+      intercept[IllegalArgumentException] { new AsyncSemaphore(0) }
 
-      intercept[IllegalArgumentException] {
-        new AsyncSemaphore(1, -1)
-      }
+      intercept[IllegalArgumentException] { new AsyncSemaphore(1, -1) }
     }
 
     it("should execute immediately while permits are available") { semHelper =>
@@ -105,9 +101,7 @@ class AsyncSemaphoreTest extends FunSpec {
       // The next acquire should be rejected.
       val permit = acquire(semHelper2)
       assert(semHelper2.sem.numWaiters == (3))
-      intercept[RejectedExecutionException] {
-        Await.result(permit)
-      }
+      intercept[RejectedExecutionException] { Await.result(permit) }
 
       // Waiting tasks should still execute once permits are available.
       semHelper2.permits.poll().release()
@@ -122,9 +116,7 @@ class AsyncSemaphoreTest extends FunSpec {
         val p3 = acquire(semHelper)
 
         p3.raise(new Exception("OK"))
-        val e = intercept[Exception] {
-          Await.result(p3)
-        }
+        val e = intercept[Exception] { Await.result(p3) }
         assert(e.getMessage == ("OK"))
 
         Await.result(p2).release()
@@ -232,9 +224,7 @@ class AsyncSemaphoreTest extends FunSpec {
           }
         }
         val badFunc = new (() => Int) {
-          def apply(): Int = {
-            throw new Exception("error!")
-          }
+          def apply(): Int = { throw new Exception("error!") }
         }
         assert(semHelper.sem.numPermitsAvailable == 2)
 

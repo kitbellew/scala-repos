@@ -70,9 +70,7 @@ final class Slave(
         sendOutboundRunnerMessage(messageQueue.dequeue)
 
       body
-    } finally {
-      canSendRunnerMessage = false
-    }
+    } finally { canSendRunnerMessage = false }
   }
 
   // Message handler methods

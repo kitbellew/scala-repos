@@ -357,9 +357,7 @@ case class Window(
             // the last sorter of this task will be cleaned up via task completion listener
             sorter.cleanupResources()
             sorter = null
-          } else {
-            rows.clear()
-          }
+          } else { rows.clear() }
 
           while (nextRowAvailable && nextGroup == currentGroup) {
             if (sorter == null) {
@@ -395,9 +393,7 @@ case class Window(
           }
           if (sorter != null) {
             rowBuffer = new ExternalRowBuffer(sorter, inputFields)
-          } else {
-            rowBuffer = new ArrayRowBuffer(rows)
-          }
+          } else { rowBuffer = new ArrayRowBuffer(rows) }
 
           // Setup the frames.
           var i = 0
@@ -421,9 +417,7 @@ case class Window(
         val join = new JoinedRow
         override final def next(): InternalRow = {
           // Load the next partition if we need to.
-          if (rowIndex >= rowsSize && nextRowAvailable) {
-            fetchNextPartition()
-          }
+          if (rowIndex >= rowsSize && nextRowAvailable) { fetchNextPartition() }
 
           if (rowIndex < rowsSize) {
             // Get the results for the window frames.
@@ -519,22 +513,15 @@ private[execution] class ArrayRowBuffer(buffer: ArrayBuffer[UnsafeRow])
   /** Return next row in the buffer, null if no more left. */
   def next(): InternalRow = {
     cursor += 1
-    if (cursor < buffer.length) {
-      buffer(cursor)
-    } else {
-      null
-    }
+    if (cursor < buffer.length) { buffer(cursor) }
+    else { null }
   }
 
   /** Skip the next `n` rows. */
-  def skip(n: Int): Unit = {
-    cursor += n
-  }
+  def skip(n: Int): Unit = { cursor += n }
 
   /** Return a new RowBuffer that has the same rows. */
-  def copy(): RowBuffer = {
-    new ArrayRowBuffer(buffer)
-  }
+  def copy(): RowBuffer = { new ArrayRowBuffer(buffer) }
 }
 
 /**
@@ -561,9 +548,7 @@ private[execution] class ExternalRowBuffer(
         iter.getBaseOffset,
         iter.getRecordLength)
       currentRow
-    } else {
-      null
-    }
+    } else { null }
   }
 
   /** Skip the next `n` rows. */
@@ -576,9 +561,7 @@ private[execution] class ExternalRowBuffer(
   }
 
   /** Return a new RowBuffer that has the same rows. */
-  def copy(): RowBuffer = {
-    new ExternalRowBuffer(sorter, numFields)
-  }
+  def copy(): RowBuffer = { new ExternalRowBuffer(sorter, numFields) }
 }
 
 /**
@@ -679,9 +662,7 @@ private[execution] final class OffsetWindowFunctionFrame(
     if (inputIndex >= 0 && inputIndex < input.size) {
       val r = input.next()
       join(r, current)
-    } else {
-      join(emptyRow, current)
-    }
+    } else { join(emptyRow, current) }
     projection(join)
     inputIndex += 1
   }
@@ -762,9 +743,7 @@ private[execution] final class SlidingWindowFunctionFrame(
     if (bufferUpdated) {
       processor.initialize(input.size)
       val iter = buffer.iterator()
-      while (iter.hasNext) {
-        processor.update(iter.next())
-      }
+      while (iter.hasNext) { processor.update(iter.next()) }
       processor.evaluate(target)
     }
   }
@@ -861,9 +840,7 @@ private[execution] final class UnboundedPrecedingWindowFunctionFrame(
     }
 
     // Only recalculate and update when the buffer changes.
-    if (bufferUpdated) {
-      processor.evaluate(target)
-    }
+    if (bufferUpdated) { processor.evaluate(target) }
   }
 }
 
@@ -1042,9 +1019,7 @@ private[execution] final class AggregateProcessor(
     // Some initialization expressions are dependent on the partition size so we have to
     // initialize the size before initializing all other fields, and we have to pass the buffer to
     // the initialization projection.
-    if (trackPartitionSize) {
-      buffer.setInt(0, size)
-    }
+    if (trackPartitionSize) { buffer.setInt(0, size) }
     initialProjection(buffer)
     var i = 0
     while (i < numImperatives) {

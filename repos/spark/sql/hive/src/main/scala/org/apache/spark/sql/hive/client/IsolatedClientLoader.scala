@@ -247,9 +247,7 @@ private[hive] class IsolatedClientLoader(
             }
           }
         }
-      } else {
-        baseClassLoader
-      }
+      } else { baseClassLoader }
     // Right now, we create a URLClassLoader that gives preference to isolatedClassLoader
     // over its own URLs when it loads classes and resources.
     // We may want to use ChildFirstURLClassLoader based on
@@ -293,12 +291,8 @@ private[hive] class IsolatedClientLoader(
             s"$cnf when creating Hive client using classpath: ${execJars.mkString(", ")}\n" +
               "Please make sure that jars for your version of hive and hadoop are included in the " +
               s"paths passed to ${HiveContext.HIVE_METASTORE_JARS}.")
-        } else {
-          throw e
-        }
-    } finally {
-      Thread.currentThread.setContextClassLoader(origLoader)
-    }
+        } else { throw e }
+    } finally { Thread.currentThread.setContextClassLoader(origLoader) }
   }
 
   /**

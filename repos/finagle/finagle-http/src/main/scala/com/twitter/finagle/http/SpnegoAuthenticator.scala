@@ -32,9 +32,8 @@ object SpnegoAuthenticator {
     def unapply(header: String): Option[Token] =
       // must be a valid Negotiate header, and have a token
       if (header.length <= SchemePrefixLength || !header.startsWith(
-            AuthScheme)) {
-        None
-      } else {
+            AuthScheme)) { None }
+      else {
         val tokenStr = header.substring(SchemePrefixLength)
         Some(Base64StringEncoder.decode(tokenStr))
       }
@@ -318,19 +317,16 @@ object SpnegoAuthenticator {
         authed: Service[Authenticated[Req], Rsp]): Future[Rsp] =
       reqs.authorizationHeader(req).collect {
         case AuthHeader(negotiation) =>
-          credSrc.load() flatMap {
-            credSrc.accept(_, negotiation)
-          } flatMap { negotiated =>
-            negotiated.established map { ctx =>
-              authed(reqs.authenticated(req, ctx))
-            } getOrElse {
-              Future value unauthorized(req)
-            } map { rsp =>
-              negotiated.wwwAuthenticate foreach {
-                rsps.wwwAuthenticateHeader(rsp, _)
+          credSrc.load() flatMap { credSrc.accept(_, negotiation) } flatMap {
+            negotiated =>
+              negotiated.established map { ctx =>
+                authed(reqs.authenticated(req, ctx))
+              } getOrElse { Future value unauthorized(req) } map { rsp =>
+                negotiated.wwwAuthenticate foreach {
+                  rsps.wwwAuthenticateHeader(rsp, _)
+                }
+                rsp
               }
-              rsp
-            }
           } handle {
             case e: GSSException => {
               log.error(e, "authenticating")

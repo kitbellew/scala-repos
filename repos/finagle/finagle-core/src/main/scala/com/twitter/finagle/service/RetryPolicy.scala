@@ -70,9 +70,7 @@ abstract class RetryPolicy[-A]
       if (!pred(e))
         None
       else {
-        this(e).map {
-          case (backoff, p2) => (backoff, p2.filterEach(pred))
-        }
+        this(e).map { case (backoff, p2) => (backoff, p2.filterEach(pred)) }
       }
     }
 
@@ -123,9 +121,7 @@ abstract class SimpleRetryPolicy[A](i: Int)
                   SimpleRetryPolicy.this.backoffAt(retry)
               }))
       }
-    } else {
-      None
-    }
+    } else { None }
   }
 
   override def andThen[B](
@@ -276,9 +272,7 @@ object RetryPolicy extends JavaSingleton {
           case _ =>
             None
         }
-      } else {
-        None
-      }
+      } else { None }
     }
   }
 

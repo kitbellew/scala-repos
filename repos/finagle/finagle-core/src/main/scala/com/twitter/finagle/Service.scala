@@ -13,11 +13,8 @@ object Service {
   def rescue[Req, Rep](service: Service[Req, Rep]) =
     new ServiceProxy[Req, Rep](service) {
       override def apply(request: Req): Future[Rep] = {
-        try {
-          service(request)
-        } catch {
-          case NonFatal(e) => Future.exception(e)
-        }
+        try { service(request) }
+        catch { case NonFatal(e) => Future.exception(e) }
       }
     }
 
@@ -274,9 +271,7 @@ object FactoryToService {
                 conn: ClientConnection): Future[ServiceProxy[Req, Rep]] =
               service
           }
-        } else {
-          next
-        }
+        } else { next }
       }
     }
 }
@@ -289,11 +284,7 @@ object FactoryToService {
 class FactoryToService[Req, Rep](factory: ServiceFactory[Req, Rep])
     extends Service[Req, Rep] {
   def apply(request: Req): Future[Rep] =
-    factory().flatMap { service =>
-      service(request).ensure {
-        service.close()
-      }
-    }
+    factory().flatMap { service => service(request).ensure { service.close() } }
 
   override def close(deadline: Time): Future[Unit] = factory.close(deadline)
   override def status: Status = factory.status

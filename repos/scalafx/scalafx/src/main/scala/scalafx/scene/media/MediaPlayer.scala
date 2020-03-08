@@ -142,9 +142,7 @@ object MediaPlayer {
   val Indefinite: Int = jfxsm.MediaPlayer.INDEFINITE
 
   private def runnable(op: => Unit): Runnable = new Runnable {
-    def run() {
-      op
-    }
+    def run() { op }
   }
 }
 
@@ -161,9 +159,7 @@ class MediaPlayer(override val delegate: jfxsm.MediaPlayer)
     */
   def audioSpectrumInterval: DoubleProperty =
     delegate.audioSpectrumIntervalProperty
-  def audioSpectrumInterval_=(v: Double) {
-    audioSpectrumInterval() = v
-  }
+  def audioSpectrumInterval_=(v: Double) { audioSpectrumInterval() = v }
 
   /**
     * A listener for audio spectrum updates.
@@ -179,34 +175,26 @@ class MediaPlayer(override val delegate: jfxsm.MediaPlayer)
     */
   def audioSpectrumNumBands: IntegerProperty =
     delegate.audioSpectrumNumBandsProperty
-  def audioSpectrumNumBands_=(v: Int) {
-    audioSpectrumNumBands() = v
-  }
+  def audioSpectrumNumBands_=(v: Int) { audioSpectrumNumBands() = v }
 
   /**
     * The sensitivity threshold in decibels; must be non-positive.
     */
   def audioSpectrumThreshold: IntegerProperty =
     delegate.audioSpectrumThresholdProperty
-  def audioSpectrumThreshold_=(v: Int) {
-    audioSpectrumThreshold() = v
-  }
+  def audioSpectrumThreshold_=(v: Int) { audioSpectrumThreshold() = v }
 
   /**
     * Whether playing should start as soon as possible.
     */
   def autoPlay: BooleanProperty = delegate.autoPlayProperty
-  def autoPlay_=(v: Boolean) {
-    autoPlay() = v
-  }
+  def autoPlay_=(v: Boolean) { autoPlay() = v }
 
   /**
     * The balance, or left-right setting, of the audio output.
     */
   def balance: DoubleProperty = delegate.balanceProperty
-  def balance_=(v: Double) {
-    balance() = v
-  }
+  def balance_=(v: Double) { balance() = v }
 
   /**
     * The current buffer position indicating how much media can be played without stalling the MediaPlayer.
@@ -234,9 +222,7 @@ class MediaPlayer(override val delegate: jfxsm.MediaPlayer)
     * The number of times the media will be played.
     */
   def cycleCount: IntegerProperty = delegate.cycleCountProperty
-  def cycleCount_=(v: Int) {
-    cycleCount() = v
-  }
+  def cycleCount_=(v: Int) { cycleCount() = v }
 
   /**
     * The amount of time between the startTime and stopTime of this player.
@@ -259,42 +245,28 @@ class MediaPlayer(override val delegate: jfxsm.MediaPlayer)
     * Whether the player audio is muted.
     */
   def mute: BooleanProperty = delegate.muteProperty
-  def mute_=(v: Boolean) {
-    mute() = v
-  }
+  def mute_=(v: Boolean) { mute() = v }
 
   /**
     * Event handler invoked when the player currentTime reaches stopTime and is not repeating.
     */
   def onEndOfMedia: ObjectProperty[Runnable] = delegate.onEndOfMediaProperty
-  def onEndOfMedia_=(v: Runnable) {
-    onEndOfMedia() = v
-  }
-  def onEndOfMedia_=(op: => Unit) {
-    onEndOfMedia() = MediaPlayer.runnable(op)
-  }
+  def onEndOfMedia_=(v: Runnable) { onEndOfMedia() = v }
+  def onEndOfMedia_=(op: => Unit) { onEndOfMedia() = MediaPlayer.runnable(op) }
 
   /**
     * Event handler invoked when an error occurs.
     */
   def onError: ObjectProperty[Runnable] = delegate.onErrorProperty
-  def onError_=(v: Runnable) {
-    onError() = v
-  }
-  def onError_=(op: => Unit) {
-    onError() = MediaPlayer.runnable(op)
-  }
+  def onError_=(v: Runnable) { onError() = v }
+  def onError_=(op: => Unit) { onError() = MediaPlayer.runnable(op) }
 
   /**
     * Event handler invoked when the status changes to HALTED.
     */
   def onHalted: ObjectProperty[Runnable] = delegate.onHaltedProperty
-  def onHalted_=(v: Runnable) {
-    onHalted() = v
-  }
-  def onHalted_=(op: => Unit) {
-    onHalted() = MediaPlayer.runnable(op)
-  }
+  def onHalted_=(v: Runnable) { onHalted() = v }
+  def onHalted_=(op: => Unit) { onHalted() = MediaPlayer.runnable(op) }
 
   /**
     * Event handler invoked when the player currentTime reaches a media marker.
@@ -308,83 +280,55 @@ class MediaPlayer(override val delegate: jfxsm.MediaPlayer)
     * Event handler invoked when the status changes to PAUSED.
     */
   def onPaused: ObjectProperty[Runnable] = delegate.onPausedProperty
-  def onPaused_=(v: Runnable) {
-    onPaused() = v
-  }
-  def onPaused_=(op: => Unit) {
-    onPaused() = MediaPlayer.runnable(op)
-  }
+  def onPaused_=(v: Runnable) { onPaused() = v }
+  def onPaused_=(op: => Unit) { onPaused() = MediaPlayer.runnable(op) }
 
   /**
     * Event handler invoked when the status changes to PLAYING.
     */
   def onPlaying: ObjectProperty[Runnable] = delegate.onPlayingProperty
-  def onPlaying_=(v: Runnable) {
-    onPlaying() = v
-  }
-  def onPlaying_=(op: => Unit) {
-    onPlaying() = MediaPlayer.runnable(op)
-  }
+  def onPlaying_=(v: Runnable) { onPlaying() = v }
+  def onPlaying_=(op: => Unit) { onPlaying() = MediaPlayer.runnable(op) }
 
   /**
     * Event handler invoked when the status changes to READY.
     */
   def onReady: ObjectProperty[Runnable] = delegate.onReadyProperty
-  def onReady_=(v: Runnable) {
-    onReady() = v
-  }
-  def onReady_=(op: => Unit) {
-    onReady() = MediaPlayer.runnable(op)
-  }
+  def onReady_=(v: Runnable) { onReady() = v }
+  def onReady_=(op: => Unit) { onReady() = MediaPlayer.runnable(op) }
 
   /**
     * Event handler invoked when the player currentTime reaches stopTime and will be repeating.
     */
   def onRepeat: ObjectProperty[Runnable] = delegate.onRepeatProperty
-  def onRepeat_=(v: Runnable) {
-    onRepeat() = v
-  }
-  def onRepeat_=(op: => Unit) {
-    onRepeat() = MediaPlayer.runnable(op)
-  }
+  def onRepeat_=(v: Runnable) { onRepeat() = v }
+  def onRepeat_=(op: => Unit) { onRepeat() = MediaPlayer.runnable(op) }
 
   /**
     * Event handler invoked when the status changes to STALLED.
     */
   def onStalled: ObjectProperty[Runnable] = delegate.onStalledProperty
-  def onStalled_=(v: Runnable) {
-    onStalled() = v
-  }
-  def onStalled_=(op: => Unit) {
-    onStalled() = MediaPlayer.runnable(op)
-  }
+  def onStalled_=(v: Runnable) { onStalled() = v }
+  def onStalled_=(op: => Unit) { onStalled() = MediaPlayer.runnable(op) }
 
   /**
     * Event handler invoked when the status changes to STOPPED.
     */
   def onStopped: ObjectProperty[Runnable] = delegate.onStoppedProperty
-  def onStopped_=(v: Runnable) {
-    onStopped() = v
-  }
-  def onStopped_=(op: => Unit) {
-    onStopped() = MediaPlayer.runnable(op)
-  }
+  def onStopped_=(v: Runnable) { onStopped() = v }
+  def onStopped_=(op: => Unit) { onStopped() = MediaPlayer.runnable(op) }
 
   /**
     * The rate at which the media should be played.
     */
   def rate: DoubleProperty = delegate.rateProperty
-  def rate_=(v: Double) {
-    rate() = v
-  }
+  def rate_=(v: Double) { rate() = v }
 
   /**
     * The time offset where media should start playing, or restart from when repeating.
     */
   def startTime: ObjectProperty[jfxu.Duration] = delegate.startTimeProperty
-  def startTime_=(v: Duration) {
-    startTime() = v
-  }
+  def startTime_=(v: Duration) { startTime() = v }
 
   /**
     * The current state of the MediaPlayer.
@@ -396,9 +340,7 @@ class MediaPlayer(override val delegate: jfxsm.MediaPlayer)
     * The time offset where media should stop playing or restart when repeating.
     */
   def stopTime: ObjectProperty[jfxu.Duration] = delegate.stopTimeProperty
-  def stopTime_=(v: Duration) {
-    stopTime() = v
-  }
+  def stopTime_=(v: Duration) { stopTime() = v }
 
   /**
     * The total amount of play time if allowed to play until finished.
@@ -410,7 +352,5 @@ class MediaPlayer(override val delegate: jfxsm.MediaPlayer)
     * The volume at which the media should be played.
     */
   def volume: DoubleProperty = delegate.volumeProperty
-  def volume_=(v: Double) {
-    volume() = v
-  }
+  def volume_=(v: Double) { volume() = v }
 }

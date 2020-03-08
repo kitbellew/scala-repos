@@ -122,9 +122,7 @@ case class StructType(fields: Array[StructField])
     *   .add(StructField("c", StringType, true))
     *}}}
     */
-  def add(field: StructField): StructType = {
-    StructType(fields :+ field)
-  }
+  def add(field: StructField): StructType = { StructType(fields :+ field) }
 
   /**
     * Creates a new [[StructType]] by adding a new nullable field with no metadata.
@@ -317,9 +315,7 @@ case class StructType(fields: Array[StructField])
     if (fields.length > 2) {
       if (fields.length - fieldTypes.length == 1) {
         builder.append(" ... 1 more field")
-      } else {
-        builder.append(" ... " + (fields.length - 2) + " more fields")
-      }
+      } else { builder.append(" ... " + (fields.length - 2) + " more fields") }
     }
     builder.append(">").toString()
   }

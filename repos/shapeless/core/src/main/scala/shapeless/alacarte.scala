@@ -158,7 +158,8 @@ trait DefaultCaseClassDefns
       extends ProductMethods
       with PolymorphicEqualityMethods
       with CopyMethods
-      with ToStringMethods { self: C => }
+      with ToStringMethods { self: C =>
+  }
 
   val ops: CaseClassOps
 

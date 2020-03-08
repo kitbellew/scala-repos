@@ -180,9 +180,7 @@ object MultilineStringUtil {
 
   def findParentMLString(element: PsiElement): Option[ScLiteral] = {
     (Iterator(element) ++ element.parentsInFile)
-      .collect {
-        case lit: ScLiteral if lit.isMultiLineString => lit
-      }
+      .collect { case lit: ScLiteral if lit.isMultiLineString => lit }
       .toStream
       .headOption
   }
@@ -311,9 +309,7 @@ class MultilineStringSettings(project: Project) {
     if (useTabs) {
       StringUtil
         .repeat("\t", count / tabSize) + StringUtil.repeat(" ", count % tabSize)
-    } else {
-      StringUtil.repeat(" ", count)
-    }
+    } else { StringUtil.repeat(" ", count) }
 
   def getSmartLength(line: String) =
     if (useTabs) line.length + line.count(_ == '\t') * (tabSize - 1)
@@ -323,9 +319,7 @@ class MultilineStringSettings(project: Project) {
     if (useTabs) {
       val tabsCount = line prefixLength (_ == '\t')
       tabsCount * tabSize + line.substring(tabsCount).prefixLength(_ == ' ')
-    } else {
-      line prefixLength (_ == ' ')
-    }
+    } else { line prefixLength (_ == ' ') }
 
   def getPrefix(line: String) = getSmartSpaces(prefixLength(line))
 }

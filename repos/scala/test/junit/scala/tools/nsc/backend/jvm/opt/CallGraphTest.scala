@@ -57,9 +57,7 @@ class CallGraphTest extends ClearAfterClass {
 
   def callsInMethod(methodNode: MethodNode): List[MethodInsnNode] =
     methodNode.instructions.iterator.asScala
-      .collect({
-        case call: MethodInsnNode => call
-      })
+      .collect({ case call: MethodInsnNode => call })
       .toList
 
   def checkCallsite(
@@ -82,9 +80,7 @@ class CallGraphTest extends ClearAfterClass {
       assert(callee.annotatedInline == atInline)
       assert(callee.annotatedNoInline == atNoInline)
       assert(callsite.argInfos == argInfos)
-    } catch {
-      case e: Throwable => println(callsite); throw e
-    }
+    } catch { case e: Throwable => println(callsite); throw e }
   }
 
   @Test

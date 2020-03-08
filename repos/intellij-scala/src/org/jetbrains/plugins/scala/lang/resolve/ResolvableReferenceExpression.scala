@@ -348,9 +348,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                   }
               val exprs = args.exprs
               var i = 0
-              def tail() {
-                if (methods.nonEmpty) methods.remove(0)
-              }
+              def tail() { if (methods.nonEmpty) methods.remove(0) }
               while (exprs(i) != assign) {
                 exprs(i) match {
                   case assignStmt: ScAssignStmt =>
@@ -509,9 +507,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       val actualClause = clauses.clauses(invocationCount - 1)
       val params = new ArrayBuffer[ScParameter] ++ actualClause.parameters
       var i = 0
-      def tail() {
-        if (params.nonEmpty) params.remove(0)
-      }
+      def tail() { if (params.nonEmpty) params.remove(0) }
       while (exprs(i) != assign) {
         exprs(i) match {
           case assignStmt: ScAssignStmt =>
@@ -555,11 +551,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     }
     //if it's ordinar case
     val result = e.getType(TypingContext.empty)
-    if (result.isDefined) {
-      processType(result.get, reference, e, processor)
-    } else {
-      processor
-    }
+    if (result.isDefined) { processType(result.get, reference, e, processor) }
+    else { processor }
   }
 
   private def processType(
@@ -678,9 +671,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
           newProcessor
         case _ => baseProcessor
       }
-    } else {
-      baseProcessor
-    }
+    } else { baseProcessor }
   }
 
   private def collectImplicits(

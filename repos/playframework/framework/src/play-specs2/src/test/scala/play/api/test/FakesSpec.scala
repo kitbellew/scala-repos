@@ -26,10 +26,7 @@ object FakesSpec extends PlaySpecification {
 
     "allow adding routes inline" in {
       running(_.routes {
-        case ("GET", "/inline") =>
-          Action {
-            Results.Ok("inline route")
-          }
+        case ("GET", "/inline") => Action { Results.Ok("inline route") }
       }) { app =>
         route(app, FakeRequest("GET", "/inline")) must beSome.which { result =>
           status(result) must equalTo(OK)

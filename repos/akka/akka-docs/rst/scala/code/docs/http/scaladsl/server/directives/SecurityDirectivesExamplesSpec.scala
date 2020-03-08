@@ -42,9 +42,7 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     val validCredentials = BasicHttpCredentials("John", "p4ssw0rd")
     Get("/secured") ~> addCredentials(
       validCredentials) ~> // adds Authorization header
-      route ~> check {
-      responseAs[String] shouldEqual "The user is 'John'"
-    }
+      route ~> check { responseAs[String] shouldEqual "The user is 'John'" }
 
     val invalidCredentials = BasicHttpCredentials("Peter", "pan")
     Get("/secured") ~>
@@ -85,9 +83,7 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     val validCredentials = BasicHttpCredentials("John", "p4ssw0rd")
     Get("/secured") ~> addCredentials(
       validCredentials) ~> // adds Authorization header
-      route ~> check {
-      responseAs[String] shouldEqual "The user is 'John'"
-    }
+      route ~> check { responseAs[String] shouldEqual "The user is 'John'" }
 
     val validAdminCredentials = BasicHttpCredentials("John", "p4ssw0rd-special")
     Get("/secured") ~> addCredentials(
@@ -142,9 +138,7 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     val validCredentials = BasicHttpCredentials("John", "p4ssw0rd")
     Get("/secured") ~> addCredentials(
       validCredentials) ~> // adds Authorization header
-      route ~> check {
-      responseAs[String] shouldEqual "The user is 'John'"
-    }
+      route ~> check { responseAs[String] shouldEqual "The user is 'John'" }
 
     val invalidCredentials = BasicHttpCredentials("Peter", "pan")
     Get("/secured") ~>
@@ -193,9 +187,7 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     val validCredentials = BasicHttpCredentials("John", "p4ssw0rd")
     Get("/secured") ~> addCredentials(
       validCredentials) ~> // adds Authorization header
-      route ~> check {
-      responseAs[String] shouldEqual "The user is 'John'"
-    }
+      route ~> check { responseAs[String] shouldEqual "The user is 'John'" }
 
     val invalidCredentials = BasicHttpCredentials("Peter", "pan")
     Get("/secured") ~>

@@ -134,11 +134,7 @@ class SizedSink private[events] (capacity: Int, milliTime: () => Long)
 
     0.until(capacity).foreach { i =>
       val ev = evs(i)
-      ev.synchronized {
-        if (ev.isDefined) {
-          out += ev.toEvent
-        }
-      }
+      ev.synchronized { if (ev.isDefined) { out += ev.toEvent } }
     }
     out.iterator
   }

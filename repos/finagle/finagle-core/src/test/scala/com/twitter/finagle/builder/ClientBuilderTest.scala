@@ -149,9 +149,7 @@ class ClientBuilderTest
       val svc =
         ClientBuilder().hostConnectionLimit(1).codec(m.codec).hosts("").build()
       val f = svc.close()
-      eventually {
-        f.isDefined
-      }
+      eventually { f.isDefined }
     }
   }
 

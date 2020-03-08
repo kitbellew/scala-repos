@@ -371,9 +371,7 @@ private[tournament] final class TournamentApi(
       userId: String,
       nb: Int): Fu[List[Pov]] =
     PairingRepo.recentIdsByTourAndUserId(tourId, userId, nb) flatMap { ids =>
-      GameRepo games ids map {
-        _.flatMap { Pov.ofUserId(_, userId) }
-      }
+      GameRepo games ids map { _.flatMap { Pov.ofUserId(_, userId) } }
     }
 
   private def sequence(tourId: String)(work: => Funit) {
@@ -391,9 +389,7 @@ private[tournament] final class TournamentApi(
     }
   }
 
-  private def socketReload(tourId: String) {
-    sendTo(tourId, Reload)
-  }
+  private def socketReload(tourId: String) { sendTo(tourId, Reload) }
 
   private object publish {
     private val debouncer = system.actorOf(
@@ -428,12 +424,8 @@ private[tournament] final class TournamentApi(
               roundSocketHub ! TellIds(ids, TournamentStanding(tourId))
             }
           })))
-    def apply(tour: Tournament) {
-      debouncer ! tour.id
-    }
+    def apply(tour: Tournament) { debouncer ! tour.id }
   }
 
-  private def sendTo(tourId: String, msg: Any) {
-    socketHub ! Tell(tourId, msg)
-  }
+  private def sendTo(tourId: String, msg: Any) { socketHub ! Tell(tourId, msg) }
 }

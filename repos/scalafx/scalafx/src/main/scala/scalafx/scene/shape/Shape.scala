@@ -86,17 +86,13 @@ abstract class Shape(override val delegate: jfxss.Shape)
     * Defines whether anti-aliasing hints are used or not for this Shape.
     */
   def smooth: BooleanProperty = delegate.smoothProperty
-  def smooth_=(v: Boolean) {
-    smooth() = v
-  }
+  def smooth_=(v: Boolean) { smooth() = v }
 
   /**
     * Defines a distance specified in user coordinates that represents an offset into the dashing pattern.
     */
   def strokeDashOffset: DoubleProperty = delegate.strokeDashOffsetProperty
-  def strokeDashOffset_=(v: Double) {
-    strokeDashOffset() = v
-  }
+  def strokeDashOffset_=(v: Double) { strokeDashOffset() = v }
 
   /**
     * The end cap style of this Shape as one of the following values that define possible end cap styles:
@@ -104,51 +100,39 @@ abstract class Shape(override val delegate: jfxss.Shape)
     */
   def strokeLineCap: ObjectProperty[jfxss.StrokeLineCap] =
     delegate.strokeLineCapProperty
-  def strokeLineCap_=(v: StrokeLineCap) {
-    strokeLineCap() = v
-  }
+  def strokeLineCap_=(v: StrokeLineCap) { strokeLineCap() = v }
 
   /**
     * Defines the decoration applied where path segments meet.
     */
   def strokeLineJoin: ObjectProperty[jfxss.StrokeLineJoin] =
     delegate.strokeLineJoinProperty
-  def strokeLineJoin_=(v: StrokeLineJoin) {
-    strokeLineJoin() = v
-  }
+  def strokeLineJoin_=(v: StrokeLineJoin) { strokeLineJoin() = v }
 
   /**
     * Defines the limit for the `StrokeLineJoin.MITER` line join style.
     */
   def strokeMiterLimit: DoubleProperty = delegate.strokeMiterLimitProperty
-  def strokeMiterLimit_=(v: Double) {
-    strokeMiterLimit() = v
-  }
+  def strokeMiterLimit_=(v: Double) { strokeMiterLimit() = v }
 
   /**
     * Defines parameters of a stroke that is drawn around the outline of a Shape using the settings of the specified
     * Paint.
     */
   def stroke: ObjectProperty[jfxsp.Paint] = delegate.strokeProperty
-  def stroke_=(v: Paint) {
-    stroke() = v.delegate
-  }
+  def stroke_=(v: Paint) { stroke() = v.delegate }
 
   /**
     * Defines the direction (inside, centered, or outside) that the strokeWidth is applied to the boundary of the shape.
     */
   def strokeType: ObjectProperty[jfxss.StrokeType] = delegate.strokeTypeProperty
-  def strokeType_=(v: StrokeType) {
-    strokeType() = v
-  }
+  def strokeType_=(v: StrokeType) { strokeType() = v }
 
   /**
     * Defines a square pen line width.
     */
   def strokeWidth: DoubleProperty = delegate.strokeWidthProperty
-  def strokeWidth_=(v: Double) {
-    strokeWidth() = v
-  }
+  def strokeWidth_=(v: Double) { strokeWidth() = v }
 
   /**
     * Defines the array representing the lengths of the dash segments.
@@ -163,10 +147,7 @@ abstract class Shape(override val delegate: jfxss.Shape)
     * @param c List of lengths of the dash segments to replace prior content.
     */
   def strokeDashArray_=(c: Iterable[java.lang.Double]) {
-    if (null == c) {
-      strokeDashArray.clear()
-    } else {
-      strokeDashArray.setAll(c)
-    }
+    if (null == c) { strokeDashArray.clear() }
+    else { strokeDashArray.setAll(c) }
   }
 }

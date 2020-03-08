@@ -66,14 +66,10 @@ object TypeDeconstructionProps
   }
 
   property("type select doesn't match term select") = test {
-    assertThrows[MatchError] {
-      val tq"$qual.$name" = q"foo.bar"
-    }
+    assertThrows[MatchError] { val tq"$qual.$name" = q"foo.bar" }
   }
 
   property("applied type doesn't match type appliction") = test {
-    assertThrows[MatchError] {
-      val tq"$tpt[..$tpts]" = q"foo[bar]"
-    }
+    assertThrows[MatchError] { val tq"$tpt[..$tpts]" = q"foo[bar]" }
   }
 }

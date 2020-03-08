@@ -267,11 +267,7 @@ trait ShardService
   }
 
   private def dataHandler[A](state: ShardState) = {
-    dataPath("/data/fs") {
-      get {
-        new DataServiceHandler[A](state.platform)
-      }
-    }
+    dataPath("/data/fs") { get { new DataServiceHandler[A](state.platform) } }
   }
 
   lazy val analyticsService = this.service("analytics", "2.0") {
@@ -288,9 +284,7 @@ trait ShardService
                 state) ~
                 ifRequest { _: HttpRequest[ByteChunk] =>
                   state.scheduler.enabled
-                } {
-                  scheduledHandler(state)
-                }
+                } { scheduledHandler(state) }
             }
           } ->
           stop { state: ShardState => state.stoppable }

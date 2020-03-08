@@ -551,9 +551,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       val gatewayFuture =
         cachedGateway(request, settings, connectionContext, log)
       gatewayFuture.flatMap(_(request))(fm.executionContext)
-    } catch {
-      case e: IllegalUriException ⇒ FastFuture.failed(e)
-    }
+    } catch { case e: IllegalUriException ⇒ FastFuture.failed(e) }
 
   /**
     * Constructs a [[akka.http.scaladsl.Http.WebSocketClientLayer]] stage using the configured default [[akka.http.scaladsl.settings.ClientConnectionSettings]],
@@ -658,9 +656,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     * If it is an instance of [[HttpsConnectionContext]] then the server will be bound using HTTPS.
     */
   def setDefaultClientHttpsContext(context: ConnectionContext): Unit =
-    synchronized {
-      _defaultServerConnectionContext = context
-    }
+    synchronized { _defaultServerConnectionContext = context }
 
   /**
     * Gets the current default client-side [[HttpsConnectionContext]].
@@ -681,9 +677,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     * Sets the default client-side [[HttpsConnectionContext]].
     */
   def setDefaultClientHttpsContext(context: HttpsConnectionContext): Unit =
-    synchronized {
-      _defaultClientHttpsConnectionContext = context
-    }
+    synchronized { _defaultClientHttpsConnectionContext = context }
 
   // every ActorSystem maintains its own connection pools
   private[http] val hostPoolCache =
@@ -896,8 +890,9 @@ object Http extends ExtensionId[HttpExt] with ExtensionIdProvider {
     * Represents a connection pool to a specific target host and pool configuration.
     */
   final case class HostConnectionPool private[http] (
-      setup: HostConnectionPoolSetup)(private[http] val gatewayFuture: Future[
-    PoolGateway]) { // enable test access
+      setup: HostConnectionPoolSetup)(
+      private[http] val gatewayFuture: Future[
+        PoolGateway]) { // enable test access
 
     /**
       * Asynchronously triggers the shutdown of the host connection pool.

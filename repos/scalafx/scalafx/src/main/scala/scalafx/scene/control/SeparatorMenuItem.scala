@@ -58,7 +58,5 @@ object SeparatorMenuItem {
 class SeparatorMenuItem(override val delegate: jfxsc.SeparatorMenuItem)
     extends CustomMenuItem(delegate)
     with SFXDelegate[jfxsc.SeparatorMenuItem] {
-  def this() = {
-    this(new jfxsc.SeparatorMenuItem)
-  }
+  def this() = { this(new jfxsc.SeparatorMenuItem) }
 }

@@ -88,9 +88,7 @@ trait CachedFacet extends ProductISOFacet {
     // and uncomment the method in CachedMethods
     //def apply(p: P): C = fromProduct(p)
     def unapply(c: C): Option[P] = {
-      val found = uncache.synchronized {
-        uncache.get(c)
-      }
+      val found = uncache.synchronized { uncache.get(c) }
       if (found != null) found.get
       else {
         val extracted = Some(toProduct(c))
@@ -151,7 +149,8 @@ trait CachedCaseClassDefns
       with ProductMethods
       with PolymorphicEqualityMethods
       with CopyMethods
-      with ToStringMethods { self: C => }
+      with ToStringMethods { self: C =>
+  }
 
   val ops: CaseClassOps
 

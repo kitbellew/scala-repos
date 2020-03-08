@@ -33,9 +33,7 @@ class HDFSModels(fs: FileSystem, config: StorageClientConfig, prefix: String)
       val fsdos = fs.create(new Path(s"$prefix${i.id}"))
       fsdos.write(i.models)
       fsdos.close
-    } catch {
-      case e: IOException => error(e.getMessage)
-    }
+    } catch { case e: IOException => error(e.getMessage) }
   }
 
   def get(id: String): Option[Model] = {

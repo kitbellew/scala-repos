@@ -8,7 +8,5 @@ class Arne[@specialized(Long) T](x: T) {
 object Test {
   val arne = new Arne(5L)
   def f = arne(_ + _)
-  def main(args: Array[String]): Unit = {
-    println(f)
-  }
+  def main(args: Array[String]): Unit = { println(f) }
 }

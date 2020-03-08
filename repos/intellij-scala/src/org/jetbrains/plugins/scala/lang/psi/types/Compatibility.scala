@@ -102,9 +102,7 @@ object Compatibility {
                           case Some(subst) =>
                             val rt = subst.subst(secondArg)
                             if (rt.isInstanceOf[ScUndefinedType]) defaultResult
-                            else {
-                              (Success(rt, Some(place)), res.importsUsed)
-                            }
+                            else { (Success(rt, Some(place)), res.importsUsed) }
                           case None => defaultResult
                         }
                       case _ => defaultResult
@@ -254,9 +252,8 @@ object Compatibility {
     var defaultParameterUsed = false
 
     def doNoNamed(expr: Expression): List[ApplicabilityProblem] = {
-      if (namedMode) {
-        List(new PositionalAfterNamedArgument(expr.expr))
-      } else {
+      if (namedMode) { List(new PositionalAfterNamedArgument(expr.expr)) }
+      else {
         val getIt = used.indexOf(false)
         used(getIt) = true
         val param: Parameter = parameters(getIt)
@@ -274,9 +271,8 @@ object Compatibility {
             Conformance.conforms(paramType, exprType, checkWeak = true)
           matched ::= (param, expr.expr)
           matchedTypes ::= (param, exprType)
-          if (!conforms) {
-            List(new TypeMismatch(expr.expr, paramType))
-          } else {
+          if (!conforms) { List(new TypeMismatch(expr.expr, paramType)) }
+          else {
             undefSubst += Conformance.undefinedSubst(
               paramType,
               exprType,
@@ -329,9 +325,7 @@ object Compatibility {
                   .undefinedSubst(tp, exprType, checkWeak = true)
               }
             }
-          } else {
-            problems :::= doNoNamed(Expression(expr)).reverse
-          }
+          } else { problems :::= doNoNamed(Expression(expr)).reverse }
         case Expression(assign @ NamedAssignStmt(name)) =>
           val index = parameters.indexWhere { p =>
             ScalaPsiUtil.memberNamesEquals(p.name, name) ||
@@ -354,9 +348,7 @@ object Compatibility {
                 matchedTypes)
             used(index) = true
             val param: Parameter = parameters(index)
-            if (index != k) {
-              namedMode = true
-            }
+            if (index != k) { namedMode = true }
             assign.getRExpression match {
               case Some(expr: ScExpression) =>
                 val paramType = param.paramType
@@ -369,9 +361,8 @@ object Compatibility {
                        .tr) {
                   val conforms =
                     Conformance.conforms(paramType, exprType, checkWeak = true)
-                  if (!conforms) {
-                    problems ::= TypeMismatch(expr, paramType)
-                  } else {
+                  if (!conforms) { problems ::= TypeMismatch(expr, paramType) }
+                  else {
                     matched ::= (param, expr)
                     matchedTypes ::= (param, exprType)
                     undefSubst += Conformance.undefinedSubst(

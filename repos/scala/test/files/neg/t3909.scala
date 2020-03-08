@@ -1,6 +1,8 @@
 object DO {
   class Extras {}
-  object Extras { val defaultValue = new Extras }
+  object Extras {
+    val defaultValue = new Extras
+  }
 
   def m1(str: String, extraStuff: Extras = Extras.defaultValue): Int =
     str.length

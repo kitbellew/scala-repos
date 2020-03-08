@@ -301,7 +301,9 @@ trait CforSyntax {
 trait LiteralsSyntax {
   implicit def literals(s: StringContext): Literals = new Literals(s)
 
-  object radix { implicit def radix(s: StringContext): Radix = new Radix(s) }
+  object radix {
+    implicit def radix(s: StringContext): Radix = new Radix(s)
+  }
   object si {
     implicit def siLiterals(s: StringContext): SiLiterals = new SiLiterals(s)
   }

@@ -76,9 +76,7 @@ abstract class Broadcast[T: ClassTag](val id: Long)
     * Asynchronously delete cached copies of this broadcast on the executors.
     * If the broadcast is used after this is called, it will need to be re-sent to each executor.
     */
-  def unpersist() {
-    unpersist(blocking = false)
-  }
+  def unpersist() { unpersist(blocking = false) }
 
   /**
     * Delete cached copies of this broadcast on the executors. If the broadcast is used after
@@ -95,9 +93,7 @@ abstract class Broadcast[T: ClassTag](val id: Long)
     * once a broadcast variable has been destroyed, it cannot be used again.
     * This method blocks until destroy has completed
     */
-  def destroy() {
-    destroy(blocking = true)
-  }
+  def destroy() { destroy(blocking = true) }
 
   /**
     * Destroy all data and metadata related to this broadcast variable. Use this with caution;
@@ -116,9 +112,7 @@ abstract class Broadcast[T: ClassTag](val id: Long)
     * Whether this Broadcast is actually usable. This should be false once persisted state is
     * removed from the driver.
     */
-  private[spark] def isValid: Boolean = {
-    _isValid
-  }
+  private[spark] def isValid: Boolean = { _isValid }
 
   /**
     * Actually get the broadcasted value. Concrete implementations of Broadcast class must

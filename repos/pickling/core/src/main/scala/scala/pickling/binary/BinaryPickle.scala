@@ -69,9 +69,8 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
     withHints { hints =>
       mkOutput(hints.knownSize)
 
-      if (picklee == null) {
-        output.putByte(NULL_TAG)
-      } else if (hints.isSharedReference) {
+      if (picklee == null) { output.putByte(NULL_TAG) }
+      else if (hints.isSharedReference) {
         output.putByte(REF_TAG)
         output.putInt(hints.oid)
         isIgnoringFields = true
@@ -161,9 +160,7 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
 
   @inline def endCollection(): Unit = {}
 
-  @inline def result() = {
-    BinaryPickle(output.result)
-  }
+  @inline def result() = { BinaryPickle(output.result) }
 
 }
 
@@ -191,9 +188,8 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
           case _        => in.setLookahead(lookahead); hints.elidedType.get
         }
       } else if (hints.isElidedType && primitives.contains(
-                   hints.elidedType.get.key)) {
-        hints.elidedType.get
-      } else {
+                   hints.elidedType.get.key)) { hints.elidedType.get }
+      else {
         val lookahead = in.getByte()
         lookahead match {
           case NULL_TAG =>
@@ -206,9 +202,8 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
           case _ =>
             // do not consume lookahead byte
             val res =
-              try {
-                in.getStringWithLookahead(lookahead)
-              } catch {
+              try { in.getStringWithLookahead(lookahead) }
+              catch {
                 case PicklingException(msg, cause) =>
                   throw PicklingException(
                     s"error decoding type string. debug info: $hints\ncause:$msg")

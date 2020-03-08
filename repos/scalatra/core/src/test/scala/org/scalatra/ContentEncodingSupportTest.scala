@@ -21,17 +21,11 @@ trait ContentEncodingSupportAppBase
     extends ScalatraBase
     with FutureSupport
     with ContentEncodingSupport {
-  get("/") {
-    Helper.body
-  }
+  get("/") { Helper.body }
 
-  post("/") {
-    request.body
-  }
+  post("/") { request.body }
 
-  get("/async") {
-    Future(Helper.body)
-  }
+  get("/async") { Future(Helper.body) }
 }
 
 /** Test suite for `deflate`. */
@@ -134,10 +128,7 @@ private object Helper {
     */
   private def convertStreamToString(is: InputStream): String = {
     val scanner = new java.util.Scanner(is, "UTF-8").useDelimiter("\\A")
-    if (scanner.hasNext) {
-      scanner.next()
-    } else {
-      ""
-    }
+    if (scanner.hasNext) { scanner.next() }
+    else { "" }
   }
 }

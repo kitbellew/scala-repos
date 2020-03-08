@@ -153,9 +153,7 @@ private[controllers] trait LilaController
   protected def Firewall[A <: Result](a: => Fu[A])(
       implicit ctx: Context): Fu[Result] =
     Env.security.firewall.accepts(ctx.req) flatMap {
-      _ fold (a, {
-        fuccess { Redirect(routes.Lobby.home()) }
-      })
+      _ fold (a, { fuccess { Redirect(routes.Lobby.home()) } })
     }
 
   protected def NoEngine[A <: Result](a: => Fu[A])(
@@ -249,15 +247,11 @@ private[controllers] trait LilaController
 
   protected def OptionFuRedirect[A](fua: Fu[Option[A]])(op: A => Fu[Call])(
       implicit ctx: Context) =
-    fua flatMap {
-      _.fold(notFound(ctx))(a => op(a) map { b => Redirect(b) })
-    }
+    fua flatMap { _.fold(notFound(ctx))(a => op(a) map { b => Redirect(b) }) }
 
   protected def OptionFuRedirectUrl[A](fua: Fu[Option[A]])(op: A => Fu[String])(
       implicit ctx: Context) =
-    fua flatMap {
-      _.fold(notFound(ctx))(a => op(a) map { b => Redirect(b) })
-    }
+    fua flatMap { _.fold(notFound(ctx))(a => op(a) map { b => Redirect(b) }) }
 
   protected def OptionResult[A](fua: Fu[Option[A]])(op: A => Result)(
       implicit ctx: Context) =

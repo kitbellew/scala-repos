@@ -65,9 +65,8 @@ object TaskStats {
   }
 
   def forSomeTasks(tasks: Iterable[TaskForStatistics]): Option[TaskStats] = {
-    if (tasks.isEmpty) {
-      None
-    } else {
+    if (tasks.isEmpty) { None }
+    else {
       Some(
         TaskStats(
           counts = TaskCounts(tasks),

@@ -108,12 +108,8 @@ class Figure(
 
   /** Redraws the figure */
   def refresh() = {
-    while (plots.length < rows * cols) {
-      plots += None
-    }
-    while (plots.length > rows * cols) {
-      plots.remove(plots.length - 1)
-    }
+    while (plots.length < rows * cols) { plots += None }
+    while (plots.length > rows * cols) { plots.remove(plots.length - 1) }
 
     SwingUtilities.invokeLater(new Runnable {
       def run() {
@@ -177,16 +173,12 @@ class Figure(
       plots += Some(new Plot)
       plots.last.get
     } else {
-      if (plots(i) == None) {
-        plots(i) = Some(new Plot)
-      }
+      if (plots(i) == None) { plots(i) = Some(new Plot) }
       plots(i).get
     }
 
     plot listen new Plot.Listener {
-      def refresh(pl: Plot) {
-        Figure.this.refresh()
-      }
+      def refresh(pl: Plot) { Figure.this.refresh() }
     }
 
     plot

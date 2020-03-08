@@ -39,21 +39,13 @@ abstract class ScalaStructureViewElement(
         val v = PsiTreeUtil.getParentOfType(myElement, classOf[ScVariable])
         if (myElement.textMatches(v.declaredElements.apply(0))) v
         else myElement
-      } else {
-        myElement
-      }
-    } else {
-      null;
-    }
+      } else { myElement }
+    } else { null; }
   }
 
-  def navigate(b: Boolean) {
-    myElement.asInstanceOf[Navigatable].navigate(b);
-  }
+  def navigate(b: Boolean) { myElement.asInstanceOf[Navigatable].navigate(b); }
 
-  def canNavigate: Boolean = {
-    myElement.asInstanceOf[Navigatable].canNavigate
-  }
+  def canNavigate: Boolean = { myElement.asInstanceOf[Navigatable].canNavigate }
 
   def canNavigateToSource: Boolean = {
     myElement.asInstanceOf[Navigatable].canNavigateToSource

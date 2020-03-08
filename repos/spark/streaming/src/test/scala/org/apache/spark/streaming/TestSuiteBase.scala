@@ -83,9 +83,7 @@ class TestInputStream[T: ClassTag](
     val selectedInput = if (index < input.size) input(index) else Seq[T]()
 
     // lets us test cases where RDDs are not created
-    if (selectedInput == null) {
-      return None
-    }
+    if (selectedInput == null) { return None }
 
     // Report the input data's information to InputInfoTracker for testing
     val inputInfo = StreamInputInfo(id, selectedInput.length.toLong)
@@ -181,13 +179,9 @@ class BatchCounter(ssc: StreamingContext) {
   }
   ssc.addStreamingListener(listener)
 
-  def getNumCompletedBatches: Int = this.synchronized {
-    numCompletedBatches
-  }
+  def getNumCompletedBatches: Int = this.synchronized { numCompletedBatches }
 
-  def getNumStartedBatches: Int = this.synchronized {
-    numStartedBatches
-  }
+  def getNumStartedBatches: Int = this.synchronized { numStartedBatches }
 
   def getLastCompletedBatchTime: Time = this.synchronized {
     lastCompletedBatchTime
@@ -295,9 +289,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
 
   // Default after function for any streaming test suite. Override this
   // if you want to add your stuff to "after" (i.e., don't call after { } )
-  def afterFunction() {
-    System.clearProperty("spark.streaming.clock")
-  }
+  def afterFunction() { System.clearProperty("spark.streaming.clock") }
 
   before(beforeFunction)
   after(afterFunction)
@@ -308,12 +300,10 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
     */
   def withStreamingContext[R](ssc: StreamingContext)(
       block: StreamingContext => R): R = {
-    try {
-      block(ssc)
-    } finally {
-      try {
-        ssc.stop(stopSparkContext = true)
-      } catch {
+    try { block(ssc) }
+    finally {
+      try { ssc.stop(stopSparkContext = true) }
+      catch {
         case e: Exception =>
           logError("Error stopping StreamingContext", e)
       }
@@ -325,12 +315,10 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
     * stop the server when the block completes or when an exception is thrown.
     */
   def withTestServer[R](testServer: TestServer)(block: TestServer => R): R = {
-    try {
-      block(testServer)
-    } finally {
-      try {
-        testServer.stop()
-      } catch {
+    try { block(testServer) }
+    finally {
+      try { testServer.stop() }
+      catch {
         case e: Exception =>
           logError("Error stopping TestServer", e)
       }
@@ -348,9 +336,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
   ): StreamingContext = {
     // Create StreamingContext
     val ssc = new StreamingContext(conf, batchDuration)
-    if (checkpointDir != null) {
-      ssc.checkpoint(checkpointDir)
-    }
+    if (checkpointDir != null) { ssc.checkpoint(checkpointDir) }
 
     // Setup the stream computation
     val inputStream = new TestInputStream(ssc, input, numPartitions)
@@ -373,9 +359,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
   ): StreamingContext = {
     // Create StreamingContext
     val ssc = new StreamingContext(conf, batchDuration)
-    if (checkpointDir != null) {
-      ssc.checkpoint(checkpointDir)
-    }
+    if (checkpointDir != null) { ssc.checkpoint(checkpointDir) }
 
     // Setup the stream computation
     val inputStream1 = new TestInputStream(ssc, input1, numInputPartitions)
@@ -447,9 +431,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
           clock.advance(batchDuration.milliseconds)
           Thread.sleep(batchDuration.milliseconds)
         }
-      } else {
-        clock.advance(numBatches * batchDuration.milliseconds)
-      }
+      } else { clock.advance(numBatches * batchDuration.milliseconds) }
       logInfo("Manual clock after advancing = " + clock.getTimeMillis())
 
       // Wait until expected number of output items have been generated
@@ -473,9 +455,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       Thread.sleep(
         100
       ) // Give some time for the forgetting old RDDs to complete
-    } finally {
-      ssc.stop(stopSparkContext = true)
-    }
+    } finally { ssc.stop(stopSparkContext = true) }
     output.asScala.toSeq
   }
 
@@ -528,9 +508,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       operation: DStream[U] => DStream[V],
       expectedOutput: Seq[Seq[V]],
       useSet: Boolean = false
-  ) {
-    testOperation[U, V](input, operation, expectedOutput, -1, useSet)
-  }
+  ) { testOperation[U, V](input, operation, expectedOutput, -1, useSet) }
 
   /**
     * Test unary DStream operation with a list of inputs

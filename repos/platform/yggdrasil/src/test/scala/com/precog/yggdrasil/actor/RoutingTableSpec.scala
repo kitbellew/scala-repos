@@ -32,7 +32,5 @@ import scala.collection.immutable.ListMap
 import scala.math.BigDecimal
 
 class RoutingTableSpec extends Specification {
-  "SinglePathProjectionRoutingTable" should {
-    "test something" in todo
-  }
+  "SinglePathProjectionRoutingTable" should { "test something" in todo }
 }

@@ -49,9 +49,7 @@ final class Class[A] private (data: ScalaJSClassData[A]) extends Object {
         else
           false
       }
-    } else {
-      this.isInstance(that.getFakeInstance())
-    }
+    } else { this.isInstance(that.getFakeInstance()) }
 
   private def getFakeInstance(): Object =
     data.getFakeInstance()

@@ -107,9 +107,7 @@ class ObservableBufferSpec[T]
     // Preparation
     val buffer = ObservableBuffer("a", "b", "c")
     var invalidateCount = 0
-    buffer onInvalidate {
-      invalidateCount += 1
-    }
+    buffer onInvalidate { invalidateCount += 1 }
 
     // Execution
     compareInstances(buffer += "d", buffer, true)
@@ -122,9 +120,7 @@ class ObservableBufferSpec[T]
     // Preparation
     val buffer = ObservableBuffer("a", "b", "c")
     var changeCount = 0
-    buffer onChange {
-      changeCount += 1
-    }
+    buffer onChange { changeCount += 1 }
 
     // Execution
     buffer += "d"
@@ -395,9 +391,7 @@ class ObservableBufferSpec[T]
           changeCount += 1
           start should equal(0)
           end should equal(6)
-          for (i <- 0 until 5) {
-            permutation(i) should equal(5 - i)
-          }
+          for (i <- 0 until 5) { permutation(i) should equal(5 - i) }
         case _ @otherChange => fail(otherChange.toString)
       }
     }
@@ -419,9 +413,7 @@ class ObservableBufferSpec[T]
           changeCount += 1
           start should equal(0)
           end should equal(6)
-          for (i <- 0 until 5) {
-            permutation(i) should equal(5 - i)
-          }
+          for (i <- 0 until 5) { permutation(i) should equal(5 - i) }
         case _ @otherChange => fail(otherChange.toString)
       }
     }
@@ -439,9 +431,7 @@ class ObservableBufferSpec[T]
     val buffer = ObservableBuffer(A(4), A(3), A(1), A(5), A(2))
 
     // Execution
-    intercept[IllegalStateException] {
-      buffer.sort
-    }
+    intercept[IllegalStateException] { buffer.sort }
   }
 
   it should "notify on a sort order change with a reorder from a member method with a comparison function" in {
@@ -454,9 +444,7 @@ class ObservableBufferSpec[T]
           changeCount += 1
           start should equal(0)
           end should equal(6)
-          for (i <- 0 until 5) {
-            permutation(i) should equal(i)
-          }
+          for (i <- 0 until 5) { permutation(i) should equal(i) }
         case _ @otherChange => fail(otherChange.toString)
       }
     }

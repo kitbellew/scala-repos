@@ -83,11 +83,8 @@ class MockServletContext(var target: String) extends ServletContext {
   def getResource(path: String): java.net.URL = null
   def getResourceAsStream(path: String): java.io.InputStream = {
     val file = new File(target + path)
-    if (file.exists) {
-      new FileInputStream(file)
-    } else {
-      null
-    }
+    if (file.exists) { new FileInputStream(file) }
+    else { null }
   }
 
   def getResourcePaths(path: String): java.util.Set[String] = null
@@ -206,9 +203,7 @@ class MockServletInputStream(is: InputStream) extends ServletInputStream {
   */
 class MockServletOutputStream(os: ByteArrayOutputStream)
     extends ServletOutputStream {
-  def write(b: Int) {
-    os.write(b)
-  }
+  def write(b: Int) { os.write(b) }
 
   def isReady(): Boolean = true
   def setWriteListener(x$1: javax.servlet.WriteListener): Unit = ()

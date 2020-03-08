@@ -9,18 +9,14 @@ class AsyncLatchTest extends FunSuite {
   test("when count=0, AsyncLatch should execute waiters immediately") {
     val latch = new AsyncLatch(0)
     var didCall = false
-    latch await {
-      didCall = true
-    }
+    latch await { didCall = true }
   }
 
   test(
     "when count>0, AsyncLatch should execute waiters when count has reached 0") {
     val latch = new AsyncLatch(1)
     var didCall = false
-    latch await {
-      didCall = true
-    }
+    latch await { didCall = true }
     assert(!didCall)
     latch.decr()
     assert(didCall)
@@ -31,18 +27,14 @@ class AsyncLatchTest extends FunSuite {
     val latch = new AsyncLatch(1)
     var count0 = 0
     var count1 = 0
-    latch await {
-      count0 += 1
-    }
+    latch await { count0 += 1 }
     assert(count0 == 0)
     latch.decr()
     assert(count0 == 1)
     assert(count1 == 0)
 
     latch.incr()
-    latch await {
-      count1 += 1
-    }
+    latch await { count1 += 1 }
     assert(count0 == 1)
     assert(count1 == 0)
 

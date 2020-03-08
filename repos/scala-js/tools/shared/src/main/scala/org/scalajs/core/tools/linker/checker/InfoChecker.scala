@@ -80,9 +80,7 @@ private final class InfoChecker(
     for {
       (id, actualMethodInfo) <- actualMethods
       expectedMethodInfo <- expectedMethods.get(id)
-    } {
-      checkMethodInfo(className, actualMethodInfo, expectedMethodInfo)
-    }
+    } { checkMethodInfo(className, actualMethodInfo, expectedMethodInfo) }
   }
 
   private def checkMethodInfo(
@@ -163,7 +161,5 @@ object InfoChecker {
     */
   def check(
       infoAndTrees: Traversable[(ClassInfo, ClassDef)],
-      logger: Logger): Int = {
-    new InfoChecker(infoAndTrees, logger).check()
-  }
+      logger: Logger): Int = { new InfoChecker(infoAndTrees, logger).check() }
 }

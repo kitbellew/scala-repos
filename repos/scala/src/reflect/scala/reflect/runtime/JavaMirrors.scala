@@ -181,10 +181,18 @@ private[scala] trait JavaMirrors
     private object toAnnotArg {
       val StringClass = classOf[String]
       val ClassClass = classOf[jClass[_]]
-      object PrimitiveClass { def unapply(x: jClass[_]) = x.isPrimitive }
-      object EnumClass { def unapply(x: jClass[_]) = x.isEnum }
-      object ArrayClass { def unapply(x: jClass[_]) = x.isArray }
-      object AnnotationClass { def unapply(x: jClass[_]) = x.isAnnotation }
+      object PrimitiveClass {
+        def unapply(x: jClass[_]) = x.isPrimitive
+      }
+      object EnumClass {
+        def unapply(x: jClass[_]) = x.isEnum
+      }
+      object ArrayClass {
+        def unapply(x: jClass[_]) = x.isArray
+      }
+      object AnnotationClass {
+        def unapply(x: jClass[_]) = x.isAnnotation
+      }
 
       object ConstantArg {
         def enumToSymbol(enum: Enum[_]): Symbol = {
@@ -302,9 +310,7 @@ private[scala] trait JavaMirrors
         val name = if (field.isAccessor) field.localName else field.name
         val field1 = (field.owner.info decl name).asTerm
         try fieldToJava(field1)
-        catch {
-          case _: NoSuchFieldException => ErrorNonExistentField(field1)
-        }
+        catch { case _: NoSuchFieldException => ErrorNonExistentField(field1) }
         new JavaFieldMirror(instance, field1)
       }
       def reflectMethod(method: MethodSymbol): MethodMirror = {
@@ -1017,9 +1023,7 @@ private[scala] trait JavaMirrors
             else
               (if (jsuperclazz == null) AnyTpe
                else typeToScala(jsuperclazz)) :: ifaces
-          } finally {
-            parentsLevel -= 1
-          }
+          } finally { parentsLevel -= 1 }
         clazz setInfo GenPolyType(
           tparams,
           new ClassInfoType(parents, newScope, clazz))
@@ -1204,9 +1208,7 @@ private[scala] trait JavaMirrors
       * The Scala package corresponding to given Java package
       */
     def packageToScala(jpkg: jPackage): ModuleSymbol =
-      packageCache.toScala(jpkg) {
-        makeScalaPackage(jpkg.getName)
-      }
+      packageCache.toScala(jpkg) { makeScalaPackage(jpkg.getName) }
 
     /**
       * The Scala package with given fully qualified name.

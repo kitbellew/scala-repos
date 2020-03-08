@@ -97,9 +97,7 @@ object BitOp {
         args.size == 3,
         "BITOP expected 3 elements when op is NOT, found %d".format(args.size))
       new BitOp(list(0), list(1), Seq(list(2)))
-    } else {
-      new BitOp(list(0), list(1), list.drop(2))
-    }
+    } else { new BitOp(list(0), list(1), list.drop(2)) }
   }
 }
 
@@ -134,9 +132,7 @@ object DecrBy {
     }
     new DecrBy(ChannelBuffers.wrappedBuffer(args(0)), amount)
   }
-  def apply(key: ChannelBuffer, amount: Long) = {
-    new DecrBy(key, amount)
-  }
+  def apply(key: ChannelBuffer, amount: Long) = { new DecrBy(key, amount) }
 }
 
 case class Get(key: ChannelBuffer) extends StrictKeyCommand {
@@ -234,9 +230,7 @@ object IncrBy {
   def apply(key: ChannelBuffer, amount: Long) = new IncrBy(key, amount)
   def apply(args: Seq[Array[Byte]]) = {
     val list = BytesToString.fromList(trimList(args, 2, "INCRBY"))
-    val amount = RequireClientProtocol.safe {
-      NumberFormat.toLong(list(1))
-    }
+    val amount = RequireClientProtocol.safe { NumberFormat.toLong(list(1)) }
     new IncrBy(ChannelBuffers.wrappedBuffer(args(0)), amount)
   }
 }

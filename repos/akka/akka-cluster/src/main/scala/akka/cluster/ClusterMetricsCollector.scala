@@ -581,9 +581,7 @@ object StandardMetrics {
       */
     def unapply(nodeMetrics: NodeMetrics)
         : Option[(Address, Long, Option[Double], Option[Double], Int)] = {
-      for {
-        processors ← nodeMetrics.metric(Processors)
-      } yield (
+      for { processors ← nodeMetrics.metric(Processors) } yield (
         nodeMetrics.address,
         nodeMetrics.timestamp,
         nodeMetrics.metric(SystemLoadAverage).map(_.smoothValue),

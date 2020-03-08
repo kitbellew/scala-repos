@@ -104,11 +104,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
     // but it is handled in "optimize" in general, so that (g^k)*something works
     assert(power > 0, "exponent must be >= 1")
     val literal = this.asInstanceOf[Matrix2[R, R, V]]
-    if (power == 1) {
-      literal
-    } else {
-      literal * (literal ^ (power - 1))
-    }
+    if (power == 1) { literal }
+    else { literal * (literal ^ (power - 1)) }
   }
 
   // TODO: complete the rest of the API to match the old Matrix API (many methods are effectively on the TypedPipe)
@@ -300,15 +297,11 @@ class DefaultMatrixJoiner(sizeRatioThreshold: Long) extends MatrixJoiner2 {
     // use block join on tall skinny times skinny tall (or skewed): the result really big,
     // but the direct approach can't get much parallelism.
     // https://github.com/twitter/scalding/issues/629
-    if (sizeOne / sizeTwo > sizeRatioThreshold) {
-      one.hashJoin(two)
-    } else if (sizeTwo / sizeOne > sizeRatioThreshold) {
+    if (sizeOne / sizeTwo > sizeRatioThreshold) { one.hashJoin(two) }
+    else if (sizeTwo / sizeOne > sizeRatioThreshold) {
       swapInner(two.hashJoin(one))
-    } else if (sizeOne > sizeTwo) {
-      one.join(two).toTypedPipe
-    } else {
-      swapInner(two.join(one).toTypedPipe)
-    }
+    } else if (sizeOne > sizeTwo) { one.join(two).toTypedPipe }
+    else { swapInner(two.join(one).toTypedPipe) }
   }
 }
 
@@ -399,9 +392,8 @@ case class Product[R, C, C2, V](
   // represents `\sum_{i j} M_{i j}` where `M_{i j}` is the Matrix with exactly one element at `row=i, col = j`.
   lazy val toOuterSum: TypedPipe[(R, C2, V)] = {
     if (optimal) {
-      if (isSpecialCase) {
-        specialCase
-      } else {
+      if (isSpecialCase) { specialCase }
+      else {
         implicit val ord: Ordering[C] = right.rowOrd
         val localRing = ring
         joiner
@@ -420,9 +412,8 @@ case class Product[R, C, C2, V](
 
   private def computePipe(
       joined: TypedPipe[(R, C2, V)] = toOuterSum): TypedPipe[(R, C2, V)] = {
-    if (isSpecialCase) {
-      joined
-    } else {
+    if (isSpecialCase) { joined }
+    else {
       val localRing = ring
       joined
         .groupBy(w => (w._1, w._2))
@@ -461,9 +452,7 @@ case class Product[R, C, C2, V](
     if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
           .getOrElse(BigInt(0L))) {
       Product(left, right.negate, ring, expressions)
-    } else {
-      Product(left.negate, right, ring, expressions)
-    }
+    } else { Product(left.negate, right, ring, expressions) }
   }
 
   /**
@@ -523,12 +512,8 @@ case class Sum[R, C, V](
       case Sum(l @ Sum(_, _, _), r, _) => {
         collectAddends(l) ++ List(getLiteral(r))
       }
-      case Sum(l, r @ Sum(_, _, _), _) => {
-        getLiteral(l) :: collectAddends(r)
-      }
-      case Sum(l, r, _) => {
-        List(getLiteral(l), getLiteral(r))
-      }
+      case Sum(l, r @ Sum(_, _, _), _) => { getLiteral(l) :: collectAddends(r) }
+      case Sum(l, r, _)                => { List(getLiteral(l), getLiteral(r)) }
     }
   }
 

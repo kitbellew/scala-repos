@@ -346,9 +346,8 @@ class ReassignPartitionsCommand(
     try {
       val validPartitions = partitions.filter(p =>
         validatePartition(zkUtils, p._1.topic, p._1.partition))
-      if (validPartitions.isEmpty) {
-        false
-      } else {
+      if (validPartitions.isEmpty) { false }
+      else {
         val jsonReassignmentData =
           zkUtils.getPartitionReassignmentZkData(validPartitions)
         zkUtils.createPersistentPath(
@@ -375,9 +374,8 @@ class ReassignPartitionsCommand(
     val partitionsOpt = zkUtils.getPartitionsForTopics(List(topic)).get(topic)
     partitionsOpt match {
       case Some(partitions) =>
-        if (partitions.contains(partition)) {
-          true
-        } else {
+        if (partitions.contains(partition)) { true }
+        else {
           error(
             "Skipping reassignment of partition [%s,%d] "
               .format(topic, partition) +
@@ -394,7 +392,15 @@ class ReassignPartitionsCommand(
   }
 }
 
-sealed trait ReassignmentStatus { def status: Int }
-case object ReassignmentCompleted extends ReassignmentStatus { val status = 1 }
-case object ReassignmentInProgress extends ReassignmentStatus { val status = 0 }
-case object ReassignmentFailed extends ReassignmentStatus { val status = -1 }
+sealed trait ReassignmentStatus {
+  def status: Int
+}
+case object ReassignmentCompleted extends ReassignmentStatus {
+  val status = 1
+}
+case object ReassignmentInProgress extends ReassignmentStatus {
+  val status = 0
+}
+case object ReassignmentFailed extends ReassignmentStatus {
+  val status = -1
+}

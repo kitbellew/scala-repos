@@ -26,12 +26,8 @@ class FutureDirectivesSpec extends RoutingSpec {
       var i = 0
       def nextNumber() = { i += 1; i }
       val route = onComplete(Future.successful(nextNumber())) { echoComplete }
-      Get() ~> route ~> check {
-        responseAs[String] shouldEqual "Success(1)"
-      }
-      Get() ~> route ~> check {
-        responseAs[String] shouldEqual "Success(2)"
-      }
+      Get() ~> route ~> check { responseAs[String] shouldEqual "Success(1)" }
+      Get() ~> route ~> check { responseAs[String] shouldEqual "Success(2)" }
     }
     "unwrap a Future in the failure case" in {
       Get() ~> onComplete(Future.failed[String](new RuntimeException("no"))) {
@@ -69,9 +65,7 @@ class FutureDirectivesSpec extends RoutingSpec {
       message = "XXX").intercept {
       Get() ~> onSuccess(Future.failed(TestException)) {
         echoComplete
-      } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-      }
+      } ~> check { status shouldEqual StatusCodes.InternalServerError }
     }
     "catch an exception in the success case" in {
       Get() ~> onSuccess(Future.successful("ok")) {
@@ -97,9 +91,7 @@ class FutureDirectivesSpec extends RoutingSpec {
     "complete the request with the Future's value if the future succeeds" in {
       Get() ~> completeOrRecoverWith(Future.successful("yes")) {
         echoComplete
-      } ~> check {
-        responseAs[String] shouldEqual "yes"
-      }
+      } ~> check { responseAs[String] shouldEqual "yes" }
     }
     "don't call the inner route if the Future succeeds" in {
       Get() ~> completeOrRecoverWith(Future.successful("ok")) {

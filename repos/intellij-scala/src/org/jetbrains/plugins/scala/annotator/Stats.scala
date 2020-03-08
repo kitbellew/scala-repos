@@ -8,8 +8,6 @@ object Stats {
     ServiceManager.getService(classOf[UsageTrigger]) != null
 
   def trigger(feature: String): Unit = {
-    if (enabled) {
-      UsageTrigger.trigger(feature)
-    }
+    if (enabled) { UsageTrigger.trigger(feature) }
   }
 }

@@ -155,9 +155,7 @@ private[http] final class BodyPartParser(
           lineEnd = headerParser.parseHeaderLine(input, lineStart)()
           headerParser.resultHeader
         } else BoundaryHeader
-      } catch {
-        case NotEnoughDataException ⇒ null
-      }
+      } catch { case NotEnoughDataException ⇒ null }
     resultHeader match {
       case null ⇒
         continue(input, lineStart)(

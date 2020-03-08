@@ -13,15 +13,11 @@ class SimpleStepping {
     noop(None) // line 13
   }
 
-  def mainTest() {
-    foo()
-  }
+  def mainTest() { foo() }
 }
 
 object SimpleStepping {
 
-  def main(args: Array[String]) {
-    new SimpleStepping().mainTest
-  }
+  def main(args: Array[String]) { new SimpleStepping().mainTest }
 
 }

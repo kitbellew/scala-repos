@@ -105,9 +105,7 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
 
       val count = 100
       (0 until count).foreach { n =>
-        {
-          client.set("foo" + n, Buf.Utf8("bar" + n))()
-        }
+        { client.set("foo" + n, Buf.Utf8("bar" + n))() }
       }
 
       (0 until count).foreach { n =>
@@ -139,9 +137,7 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
 
       val count = 100
       (0 until count).foreach { n =>
-        {
-          client.set("foo" + n, Buf.Utf8("bar" + n))()
-        }
+        { client.set("foo" + n, Buf.Utf8("bar" + n))() }
       }
 
       (0 until count).foreach { n =>

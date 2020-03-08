@@ -2,9 +2,7 @@
  * filter: It would fail on the following input
  */
 object Test extends App {
-  (true, true) match {
-    case (true, true) | (false, false) => 1
-  }
+  (true, true) match { case (true, true) | (false, false) => 1 }
 
   List(5) match {
     case 1 :: Nil | 2 :: Nil      => println("FAILED")

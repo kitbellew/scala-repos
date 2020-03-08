@@ -1,4 +1,6 @@
-trait Foo { def i: Int }
+trait Foo {
+  def i: Int
+}
 trait Bar
 
 case class Spam(i: Int) extends Foo with Bar
@@ -9,7 +11,5 @@ object Test {
     case _: Bar             => 2
     case _: Foo             => 3
   }
-  def main(args: Array[String]): Unit = {
-    println(matchParent(Spam(3)))
-  }
+  def main(args: Array[String]): Unit = { println(matchParent(Spam(3))) }
 }

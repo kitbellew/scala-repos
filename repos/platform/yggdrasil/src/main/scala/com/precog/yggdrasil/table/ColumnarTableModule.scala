@@ -559,9 +559,7 @@ trait ColumnarTableModule[M[+_]]
                       StreamT.Yield(s0, stream(nextState, sx))
                   }
                 }
-              } getOrElse {
-                M.point(StreamT.Done)
-              }
+              } getOrElse { M.point(StreamT.Done) }
             }
           } yield back
         )
@@ -765,11 +763,7 @@ trait ColumnarTableModule[M[+_]]
 
       Table(
         StreamT.unfoldM(values) { events =>
-          M.point {
-            (!events.isEmpty) option {
-              makeSlice(events.toStream)
-            }
-          }
+          M.point { (!events.isEmpty) option { makeSlice(events.toStream) } }
         },
         ExactSize(values.length)
       )
@@ -971,9 +965,7 @@ trait ColumnarTableModule[M[+_]]
           val slice = Slice.concat(slices)
           if (slices.size > (slice.size / yggConfig.smallSliceSize)) {
             slice.materialized // Deal w/ lots of small slices by materializing them.
-          } else {
-            slice
-          }
+          } else { slice }
       }
 
       def step(sliceSize: Int, acc: List[Slice], stream: StreamT[M, Slice])
@@ -1005,9 +997,7 @@ trait ColumnarTableModule[M[+_]]
           case None =>
             if (sliceSize > 0) {
               M.point(StreamT.Yield(concat(acc), StreamT.empty[M, Slice]))
-            } else {
-              M.point(StreamT.Done)
-            }
+            } else { M.point(StreamT.Done) }
         }
       }
 
@@ -1637,9 +1627,7 @@ trait ColumnarTableModule[M[+_]]
               } map { M point _ }
             }
 
-            optM map { m => m map { Some(_) } } getOrElse {
-              M.point(None)
-            }
+            optM map { m => m map { Some(_) } } getOrElse { M.point(None) }
           }
         } yield back
 
@@ -1741,9 +1729,7 @@ trait ColumnarTableModule[M[+_]]
                 case None =>
                   step(CrossState(state.a, state.position + 1, right))
               }
-            } else {
-              M.point(None)
-            }
+            } else { M.point(None) }
           }
 
           StreamT.unfoldM(CrossState(a0, 0, right))(step _)
@@ -1840,9 +1826,7 @@ trait ColumnarTableModule[M[+_]]
             StreamT.Skip(tail)
           }),
           newSize)
-      } else {
-        throw EnormousCartesianException(this.size, that.size)
-      }
+      } else { throw EnormousCartesianException(this.size, that.size) }
     }
 
     /**
@@ -1880,9 +1864,7 @@ trait ColumnarTableModule[M[+_]]
                         sx))
                   }
                 }
-              } getOrElse {
-                M.point(StreamT.Done)
-              }
+              } getOrElse { M.point(StreamT.Done) }
             }
           } yield back
         )
@@ -1954,26 +1936,16 @@ trait ColumnarTableModule[M[+_]]
         val minOrd = compare(imin)
         if (minOrd eq EQ) {
           val maxOrd = compare(imax)
-          if (maxOrd eq EQ) {
-            imax + 1
-          } else if (maxOrd eq LT) {
+          if (maxOrd eq EQ) { imax + 1 }
+          else if (maxOrd eq LT) {
             val imid = imin + ((imax - imin) / 2)
             val midOrd = compare(imid)
-            if (midOrd eq LT) {
-              findEnd(compare, imin, imid - 1)
-            } else if (midOrd eq EQ) {
-              findEnd(compare, imid, imax - 1)
-            } else {
-              sys.error("Inputs to partitionMerge not sorted.")
-            }
-          } else {
-            sys.error("Inputs to partitionMerge not sorted.")
-          }
-        } else if ((minOrd eq LT) && (compare(imax) eq LT)) {
-          imin
-        } else {
-          sys.error("Inputs to partitionMerge not sorted.")
-        }
+            if (midOrd eq LT) { findEnd(compare, imin, imid - 1) }
+            else if (midOrd eq EQ) { findEnd(compare, imid, imax - 1) }
+            else { sys.error("Inputs to partitionMerge not sorted.") }
+          } else { sys.error("Inputs to partitionMerge not sorted.") }
+        } else if ((minOrd eq LT) && (compare(imax) eq LT)) { imin }
+        else { sys.error("Inputs to partitionMerge not sorted.") }
       }
 
       def subTable(
@@ -2014,11 +1986,8 @@ trait ColumnarTableModule[M[+_]]
           case Some((head, tail)) =>
             val headComparator = comparatorGen(head)
             val spanEnd = findEnd(headComparator, spanStart, head.size - 1)
-            if (spanEnd < head.size) {
-              stepPartition(head, spanEnd, tail)
-            } else {
-              dropAndSplit(comparatorGen, tail, 0)
-            }
+            if (spanEnd < head.size) { stepPartition(head, spanEnd, tail) }
+            else { dropAndSplit(comparatorGen, tail, 0) }
 
           case None =>
             StreamT.empty[M, Slice]
@@ -2071,13 +2040,9 @@ trait ColumnarTableModule[M[+_]]
 
         @tailrec
         def equal(x: Array[Int], y: Array[Int], i: Int): Boolean =
-          if (i >= x.length) {
-            true
-          } else if (x(i) != y(i)) {
-            false
-          } else {
-            equal(x, y, i + 1)
-          }
+          if (i >= x.length) { true }
+          else if (x(i) != y(i)) { false }
+          else { equal(x, y, i + 1) }
 
         @tailrec
         def loop(xs: List[Array[Int]], y: Array[Int]): Boolean = xs match {
@@ -2091,13 +2056,9 @@ trait ColumnarTableModule[M[+_]]
 
       def isZero(x: Array[Int]): Boolean = {
         @tailrec def loop(i: Int): Boolean =
-          if (i < 0) {
-            true
-          } else if (x(i) != 0) {
-            false
-          } else {
-            loop(i - 1)
-          }
+          if (i < 0) { true }
+          else if (x(i) != 0) { false }
+          else { loop(i - 1) }
 
         loop(x.length - 1)
       }

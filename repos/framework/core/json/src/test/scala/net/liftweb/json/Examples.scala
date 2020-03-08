@@ -107,9 +107,7 @@ trait AbstractExamples extends Specification {
     print(nulls) mustEqual """{"f1":null,"f2":[null,"s"]}"""
   }
 
-  "Symbol example" in {
-    print(symbols) mustEqual """{"f1":"foo","f2":"bar"}"""
-  }
+  "Symbol example" in { print(symbols) mustEqual """{"f1":"foo","f2":"bar"}""" }
 
   "Unicode example" in {
     parse("[\" \\u00e4\\u00e4li\\u00f6t\"]") mustEqual JArray(

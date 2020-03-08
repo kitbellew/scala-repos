@@ -21,9 +21,8 @@ class HostMetricsExporter(val registry: Metrics)
   val pattern = "/admin/per_host_metrics.json"
 
   override def apply(request: Request): Future[Response] = {
-    if (perHostStats()) {
-      super.apply(request)
-    } else {
+    if (perHostStats()) { super.apply(request) }
+    else {
       val response = Response()
       response.contentType = MediaType.Json
       response.content = Buf.Utf8(s"""{

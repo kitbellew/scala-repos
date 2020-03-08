@@ -17,13 +17,9 @@ trait Scratch {
   import Implicits1.{TToInt, UToInt, VToInt}
   import Implicits2.{WToInt, XToInt}
 
-  def t: Int = {
-    return T
-  }
+  def t: Int = { return T }
 
-  def u: Int = {
-    U
-  }
+  def u: Int = { U }
 
   val v: Int = V
 

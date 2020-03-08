@@ -148,9 +148,7 @@ object Test {
   {
     class X() {
 
-      def foo = {
-        Console.println("X::foo");
-      }
+      def foo = { Console.println("X::foo"); }
 
     }
 

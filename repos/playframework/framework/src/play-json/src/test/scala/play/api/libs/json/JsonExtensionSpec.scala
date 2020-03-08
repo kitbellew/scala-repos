@@ -72,9 +72,7 @@ object Person {
   implicit val personWrites: OWrites[Person] = Json.writes[Person]
 }
 
-package foreign {
-  case class Foreigner(name: String)
-}
+package foreign { case class Foreigner(name: String) }
 object ForeignTest {
   implicit val foreignerReads: Reads[foreign.Foreigner] =
     Json.reads[foreign.Foreigner]

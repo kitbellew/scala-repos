@@ -59,9 +59,7 @@ class FatLazy[T](f: => T) {
   /**
     * Test whether the value of this class has been set or initialized from the default.
     */
-  def defined_? = synchronized {
-    value != None
-  }
+  def defined_? = synchronized { value != None }
 
   /**
     * Set the instance to a new value and return that value
@@ -78,9 +76,7 @@ class FatLazy[T](f: => T) {
   /**
     * Copy the value of the specified FatLazy into this FatLazy
     */
-  def setFrom(other: FatLazy[T]): Unit = synchronized {
-    value = other.value
-  }
+  def setFrom(other: FatLazy[T]): Unit = synchronized { value = other.value }
 
   /**
     * and the lazy() = foo style of assignment
@@ -150,9 +146,8 @@ class ThreadLazy[TheType](theFunc: => TheType) extends LoanWrapper {
   def apply[T](f: => T): T = {
     val old = value.value
     calced.set(false)
-    try {
-      f
-    } finally {
+    try { f }
+    finally {
       calced.set(false)
       value.set(old)
     }

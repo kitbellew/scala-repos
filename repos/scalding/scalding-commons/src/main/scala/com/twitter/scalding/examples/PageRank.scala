@@ -73,9 +73,7 @@ class PageRank(args: Args) extends Job(args) {
         if (error > convErr.toDouble || (JOB_COUNT % 2 == 1)) {
           //try again to get under the error
           Some(clone(nextArgs))
-        } else {
-          None
-        }
+        } else { None }
       }
   }
 

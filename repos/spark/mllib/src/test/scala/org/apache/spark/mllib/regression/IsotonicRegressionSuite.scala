@@ -29,9 +29,7 @@ class IsotonicRegressionSuite
     with MLlibTestSparkContext
     with Matchers {
 
-  private def round(d: Double) = {
-    math.round(d * 100).toDouble / 100
-  }
+  private def round(d: Double) = { math.round(d * 100).toDouble / 100 }
 
   private def generateIsotonicInput(
       labels: Seq[Double]): Seq[(Double, Double, Double)] = {
@@ -97,9 +95,7 @@ class IsotonicRegressionSuite
       assert(model.boundaries === sameModel.boundaries)
       assert(model.predictions === sameModel.predictions)
       assert(model.isotonic === model.isotonic)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally { Utils.deleteRecursively(tempDir) }
   }
 
   test("isotonic regression with size 0") {

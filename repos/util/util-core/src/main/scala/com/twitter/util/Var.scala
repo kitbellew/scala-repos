@@ -212,11 +212,7 @@ object Var {
   def patch[CC[_]: Diffable, T](diffs: Event[Diff[CC, T]]): Var[CC[T]] = {
     val v = Var(Diffable.empty[CC, T]: CC[T])
     Closable.closeOnCollect(
-      diffs.respond { diff =>
-        synchronized {
-          v() = diff.patch(v())
-        }
-      },
+      diffs.respond { diff => synchronized { v() = diff.patch(v()) } },
       v)
     v
   }

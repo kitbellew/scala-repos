@@ -46,9 +46,9 @@ object TypeCheckerWithExplicitTypes_Monadic {
           "if branches not the same type, got: " + (lt, rt))
       } yield res
     case Fun(arg, argType, body) =>
-      for {
-        t <- typeCheck(body, env + (arg -> argType))
-      } yield TyLam(argType, t)
+      for { t <- typeCheck(body, env + (arg -> argType)) } yield TyLam(
+        argType,
+        t)
     // make sure the first argument to function application is indeed a function
     // then make sure that the arguments match the explicit declarations
     case App(operator, operand) =>

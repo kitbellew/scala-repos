@@ -60,9 +60,7 @@ class ScalaTypeValidator(
 
     buf ++= getForbiddenNames(container, name)
 
-    if (buf.isEmpty) {
-      buf ++= getForbiddenNamesInBlock(container, name)
-    }
+    if (buf.isEmpty) { buf ++= getForbiddenNamesInBlock(container, name) }
 
     buf.toArray
   }

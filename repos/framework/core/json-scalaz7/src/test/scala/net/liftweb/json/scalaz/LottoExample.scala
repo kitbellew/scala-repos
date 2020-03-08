@@ -54,8 +54,6 @@ object LottoExample extends Specification {
     Winner(54, List(52, 3, 12, 11, 18, 22)))
   val lotto = Lotto(5, List(2, 45, 34, 23, 7, 5), winners, None)
 
-  "Parse Lotto" in {
-    fromJSON[Lotto](json) mustEqual Success(lotto)
-  }
+  "Parse Lotto" in { fromJSON[Lotto](json) mustEqual Success(lotto) }
 
 }

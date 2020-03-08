@@ -43,9 +43,7 @@ package object effect {
   /**
     * Type that indicates a JavaFX class that has the Property `inputProperty` of kind `ObjectProperty[Effect]`
     */
-  type Inputed = {
-    def inputProperty(): jfxbp.ObjectProperty[jfxse.Effect]
-  }
+  type Inputed = { def inputProperty(): jfxbp.ObjectProperty[jfxse.Effect] }
 
   /**
     * Trait that unifies all Effect subclasses whose Java counterpart have input Property. See type Inputed.
@@ -56,18 +54,14 @@ package object effect {
       * The input for this Effect.
       */
     def input: ObjectProperty[jfxse.Effect] = delegate.inputProperty()
-    def input_=(v: Effect) {
-      input() = v
-    }
+    def input_=(v: Effect) { input() = v }
 
   }
 
   /**
     * Type that indicates a JavaFX class that has the Property `colorProperty` of kind `ObjectProperty[Color]`
     */
-  type Colored = {
-    def colorProperty(): jfxbp.ObjectProperty[jfxsp.Color]
-  }
+  type Colored = { def colorProperty(): jfxbp.ObjectProperty[jfxsp.Color] }
 
   /**
     * Trait that unify all Effect subclasses whose Java counterpart have color Property. See type Colored.
@@ -78,9 +72,7 @@ package object effect {
       * The Effect's color.
       */
     def color: ObjectProperty[jfxsp.Color] = delegate.colorProperty()
-    def color_=(c: Color) {
-      color() = c
-    }
+    def color_=(c: Color) { color() = c }
 
   }
 

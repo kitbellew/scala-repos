@@ -40,11 +40,8 @@ import org.apache.spark.streaming.util.{
 class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
 
   override def afterAll(): Unit = {
-    try {
-      StreamingContext.getActive().map { _.stop() }
-    } finally {
-      super.afterAll()
-    }
+    try { StreamingContext.getActive().map { _.stop() } }
+    finally { super.afterAll() }
   }
 
   testWithoutWAL("createBlockRDD creates empty BlockRDD when no block info") {
@@ -130,16 +127,12 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
 
   private def testWithoutWAL(msg: String)(
       body: ReceiverInputDStream[_] => Unit): Unit = {
-    test(s"Without WAL enabled: $msg") {
-      runTest(enableWAL = false, body)
-    }
+    test(s"Without WAL enabled: $msg") { runTest(enableWAL = false, body) }
   }
 
   private def testWithWAL(msg: String)(
       body: ReceiverInputDStream[_] => Unit): Unit = {
-    test(s"With WAL enabled: $msg") {
-      runTest(enableWAL = true, body)
-    }
+    test(s"With WAL enabled: $msg") { runTest(enableWAL = true, body) }
   }
 
   private def runTest(
@@ -181,9 +174,7 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
         blockId,
         None,
         new WriteAheadLogRecordHandle {})
-    } else {
-      new BlockManagerBasedStoreResult(blockId, None)
-    }
+    } else { new BlockManagerBasedStoreResult(blockId, None) }
     new ReceivedBlockInfo(0, None, None, storeResult)
   }
 }

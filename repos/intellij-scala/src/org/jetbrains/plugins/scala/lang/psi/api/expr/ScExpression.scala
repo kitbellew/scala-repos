@@ -273,9 +273,8 @@ trait ScExpression
         }
         if (!isMethodInvocation()) { //it is not updated according to expected type, let's do it
           val oldRes = res
-          try {
-            tryUpdateRes(checkExpectedType = true)
-          } catch {
+          try { tryUpdateRes(checkExpectedType = true) }
+          catch {
             case _: SafeCheckException =>
               res = oldRes
               tryUpdateRes(checkExpectedType = false)

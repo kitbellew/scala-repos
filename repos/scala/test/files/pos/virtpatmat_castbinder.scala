@@ -7,9 +7,5 @@ trait IntMapIterator[V, T] {
   def pop: IntMap[V]
 
   def next: T =
-    pop match {
-      case Bin(t @ Tip(_)) => {
-        valueOf(t)
-      }
-    }
+    pop match { case Bin(t @ Tip(_)) => { valueOf(t) } }
 }

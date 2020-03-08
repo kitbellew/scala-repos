@@ -82,9 +82,7 @@ package reverse.controllers {
 
   class Application extends Controller {
 
-    def hello(name: String) = Action {
-      Ok("Hello " + name + "!")
-    }
+    def hello(name: String) = Action { Ok("Hello " + name + "!") }
 
   }
 // #reverse-controller
@@ -144,9 +142,7 @@ object ScalaRoutingSpec extends Specification {
       import Results.Redirect
       // #reverse-router
       // Redirect to /hello/Bob
-      def helloBob = Action {
-        Redirect(routes.Application.hello("Bob"))
-      }
+      def helloBob = Action { Redirect(routes.Application.hello("Bob")) }
       // #reverse-router
       val result = helloBob(FakeRequest())
       header(LOCATION, result) must beSome("/hello/Bob")

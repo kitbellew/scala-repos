@@ -34,9 +34,8 @@ class DataSource(val dsp: DataSourceParams)
       .map {
         case (entityId, properties) =>
           val user =
-            try {
-              User()
-            } catch {
+            try { User() }
+            catch {
               case e: Exception => {
                 logger.error(
                   s"Failed to get properties $properties of" +

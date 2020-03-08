@@ -106,9 +106,7 @@ class ParallelTransition(
     * This $ND is used in all child $TRS, that do not define a target `Node` themselves.
     */
   def node: ObjectProperty[jfxs.Node] = delegate.nodeProperty
-  def node_=(n: Node) {
-    node() = n
-  }
+  def node_=(n: Node) { node() = n }
 
   // METHODS
 
@@ -122,7 +120,5 @@ class ParallelTransition(
     *
     * @param c list of $ANS to replace prior content.
     */
-  def children_=(c: Iterable[Animation]) {
-    fillSFXCollection(this.children, c)
-  }
+  def children_=(c: Iterable[Animation]) { fillSFXCollection(this.children, c) }
 }

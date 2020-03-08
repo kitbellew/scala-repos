@@ -56,25 +56,19 @@ class TreeCell[T](
     */
   def disclosureNode: ObjectProperty[jfxs.Node] =
     delegate.disclosureNodeProperty
-  def disclosureNode_=(v: Node) {
-    disclosureNode() = v
-  }
+  def disclosureNode_=(v: Node) { disclosureNode() = v }
 
   /**
     * Each TreeCell represents at most a single `TreeItem`, which is represented by this property.
     */
   def treeItem: ReadOnlyObjectProperty[jfxsc.TreeItem[T]] =
     delegate.treeItemProperty
-  def treeItem_=(treeItem: TreeItem[T]) {
-    delegate.updateTreeItem(treeItem)
-  }
+  def treeItem_=(treeItem: TreeItem[T]) { delegate.updateTreeItem(treeItem) }
 
   /**
     * A TreeCell is explicitly linked to a single `TreeView` instance, which is represented by this property.
     */
   def treeView: ReadOnlyObjectProperty[jfxsc.TreeView[T]] =
     delegate.treeViewProperty
-  def treeView_=(tree: TreeView[T]) {
-    delegate.updateTreeView(tree)
-  }
+  def treeView_=(tree: TreeView[T]) { delegate.updateTreeView(tree) }
 }

@@ -58,9 +58,7 @@ class YarnSparkHadoopUtilSuite
         false
     }
 
-  if (!hasBash) {
-    logWarning("Cannot execute bash, skipping bash tests.")
-  }
+  if (!hasBash) { logWarning("Cannot execute bash, skipping bash tests.") }
 
   def bashTest(name: String)(fn: => Unit): Unit =
     if (hasBash) test(name)(fn) else ignore(name)(fn)
@@ -85,9 +83,7 @@ class YarnSparkHadoopUtilSuite
       val exitCode = proc.waitFor()
       exitCode should be(0)
       out should be(args.mkString(" "))
-    } finally {
-      scriptFile.delete()
-    }
+    } finally { scriptFile.delete() }
   }
 
   test("Yarn configuration override") {
@@ -119,18 +115,14 @@ class YarnSparkHadoopUtilSuite
         val aclSet = vacls.split(',').map(_.trim).toSet
         assert(aclSet.contains(System.getProperty("user.name", "invalid")))
       }
-      case None => {
-        fail()
-      }
+      case None => { fail() }
     }
     modifyAcls match {
       case Some(macls) => {
         val aclSet = macls.split(',').map(_.trim).toSet
         assert(aclSet.contains(System.getProperty("user.name", "invalid")))
       }
-      case None => {
-        fail()
-      }
+      case None => { fail() }
     }
   }
 
@@ -155,9 +147,7 @@ class YarnSparkHadoopUtilSuite
         assert(aclSet.contains("user2"))
         assert(aclSet.contains(System.getProperty("user.name", "invalid")))
       }
-      case None => {
-        fail()
-      }
+      case None => { fail() }
     }
     modifyAcls match {
       case Some(macls) => {
@@ -166,9 +156,7 @@ class YarnSparkHadoopUtilSuite
         assert(aclSet.contains("user4"))
         assert(aclSet.contains(System.getProperty("user.name", "invalid")))
       }
-      case None => {
-        fail()
-      }
+      case None => { fail() }
     }
 
   }
@@ -194,9 +182,7 @@ class YarnSparkHadoopUtilSuite
       YarnSparkHadoopUtil.getClassPathSeparator() should be("<CPS>")
     } else if (Utils.isWindows) {
       YarnSparkHadoopUtil.getClassPathSeparator() should be(";")
-    } else {
-      YarnSparkHadoopUtil.getClassPathSeparator() should be(":")
-    }
+    } else { YarnSparkHadoopUtil.getClassPathSeparator() should be(":") }
   }
 
   test("check access nns empty") {
@@ -255,9 +241,7 @@ class YarnSparkHadoopUtilSuite
     val hadoopConf = new Configuration()
     val util = new YarnSparkHadoopUtil
     val caught =
-      intercept[SparkException] {
-        util.getTokenRenewer(hadoopConf)
-      }
+      intercept[SparkException] { util.getTokenRenewer(hadoopConf) }
     assert(
       caught.getMessage === "Can't get Master Kerberos principal for use as renewer")
   }
@@ -268,9 +252,7 @@ class YarnSparkHadoopUtilSuite
       assert(SparkHadoopUtil.get.getClass === classOf[YarnSparkHadoopUtil])
       System.setProperty("SPARK_YARN_MODE", "false")
       assert(SparkHadoopUtil.get.getClass === classOf[SparkHadoopUtil])
-    } finally {
-      System.clearProperty("SPARK_YARN_MODE")
-    }
+    } finally { System.clearProperty("SPARK_YARN_MODE") }
   }
 
   test("Obtain tokens For HiveMetastore") {
@@ -290,9 +272,7 @@ class YarnSparkHadoopUtilSuite
   private def assertNestedHiveException(
       e: InvocationTargetException): Throwable = {
     val inner = e.getCause
-    if (inner == null) {
-      fail("No inner cause", e)
-    }
+    if (inner == null) { fail("No inner cause", e) }
     if (!inner.isInstanceOf[HiveException]) {
       fail("Not a hive exception", inner)
     }

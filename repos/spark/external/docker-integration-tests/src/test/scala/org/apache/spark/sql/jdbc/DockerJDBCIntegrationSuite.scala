@@ -77,18 +77,16 @@ abstract class DockerJDBCIntegrationSuite
     try {
       docker = DefaultDockerClient.fromEnv.build()
       // Check that Docker is actually up
-      try {
-        docker.ping()
-      } catch {
+      try { docker.ping() }
+      catch {
         case NonFatal(e) =>
           log.error(
             "Exception while connecting to Docker. Check whether Docker is running.")
           throw e
       }
       // Ensure that the Docker image is installed:
-      try {
-        docker.inspectImage(db.imageName)
-      } catch {
+      try { docker.inspectImage(db.imageName) }
+      catch {
         case e: ImageNotFoundException =>
           log.warn(
             s"Docker image ${db.imageName} not found; pulling image from registry")
@@ -127,18 +125,12 @@ abstract class DockerJDBCIntegrationSuite
       }
       // Run any setup queries:
       val conn: Connection = java.sql.DriverManager.getConnection(jdbcUrl)
-      try {
-        dataPreparation(conn)
-      } finally {
-        conn.close()
-      }
+      try { dataPreparation(conn) }
+      finally { conn.close() }
     } catch {
       case NonFatal(e) =>
-        try {
-          afterAll()
-        } finally {
-          throw e
-        }
+        try { afterAll() }
+        finally { throw e }
     }
   }
 
@@ -153,13 +145,9 @@ abstract class DockerJDBCIntegrationSuite
         } catch {
           case NonFatal(e) =>
             logWarning(s"Could not stop container $containerId", e)
-        } finally {
-          docker.close()
-        }
+        } finally { docker.close() }
       }
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   /**

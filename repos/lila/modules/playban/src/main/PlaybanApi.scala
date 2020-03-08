@@ -38,9 +38,7 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
       }
       else if (pov.game olderThan 15) none
       else pov.player.some map { Blame(_, Outcome.Abort) }
-    } ?? {
-      case Blame(player, outcome) => player.userId.??(save(outcome))
-    }
+    } ?? { case Blame(player, outcome) => player.userId.??(save(outcome)) }
 
   def rageQuit(game: Game, quitterColor: Color): Funit = blameable(game) ?? {
     game.player(quitterColor).userId ?? save(Outcome.RageQuit)
@@ -57,9 +55,7 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
         BSONDocument("_id" -> false, "b" -> BSONDocument("$slice" -> -1))
       )
       .one[BSONDocument]
-      .map {
-        _.flatMap(_.getAs[List[TempBan]]("b")).??(_.find(_.inEffect))
-      }
+      .map { _.flatMap(_.getAs[List[TempBan]]("b")).??(_.find(_.inEffect)) }
 
   def bans(userId: String): Fu[List[TempBan]] =
     coll
@@ -68,9 +64,7 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
         BSONDocument("_id" -> false, "b" -> true)
       )
       .one[BSONDocument]
-      .map {
-        ~_.flatMap(_.getAs[List[TempBan]]("b"))
-      }
+      .map { ~_.flatMap(_.getAs[List[TempBan]]("b")) }
 
   def bans(userIds: List[String]): Fu[Map[String, Int]] =
     coll

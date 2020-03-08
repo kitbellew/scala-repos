@@ -97,29 +97,20 @@ final class CategoricalSplit private[ml] (
 
   /** Set of categories determining the splitting rule, along with [[isLeft]]. */
   private val categories: Set[Double] = {
-    if (isLeft) {
-      _leftCategories.toSet
-    } else {
-      setComplement(_leftCategories.toSet)
-    }
+    if (isLeft) { _leftCategories.toSet }
+    else { setComplement(_leftCategories.toSet) }
   }
 
   override private[ml] def shouldGoLeft(features: Vector): Boolean = {
-    if (isLeft) {
-      categories.contains(features(featureIndex))
-    } else {
-      !categories.contains(features(featureIndex))
-    }
+    if (isLeft) { categories.contains(features(featureIndex)) }
+    else { !categories.contains(features(featureIndex)) }
   }
 
   override private[tree] def shouldGoLeft(
       binnedFeature: Int,
       splits: Array[Split]): Boolean = {
-    if (isLeft) {
-      categories.contains(binnedFeature.toDouble)
-    } else {
-      !categories.contains(binnedFeature.toDouble)
-    }
+    if (isLeft) { categories.contains(binnedFeature.toDouble) }
+    else { !categories.contains(binnedFeature.toDouble) }
   }
 
   override def equals(o: Any): Boolean = {
@@ -132,11 +123,8 @@ final class CategoricalSplit private[ml] (
   }
 
   override private[tree] def toOld: OldSplit = {
-    val oldCats = if (isLeft) {
-      categories
-    } else {
-      setComplement(categories)
-    }
+    val oldCats = if (isLeft) { categories }
+    else { setComplement(categories) }
     OldSplit(
       featureIndex,
       threshold = 0.0,

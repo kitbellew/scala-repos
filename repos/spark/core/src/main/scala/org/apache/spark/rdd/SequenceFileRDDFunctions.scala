@@ -44,17 +44,13 @@ class SequenceFileRDDFunctions[
     if (_keyWritableClass == null) {
       // pre 1.3.0, we need to use Reflection to get the Writable class
       getWritableClass[K]()
-    } else {
-      _keyWritableClass
-    }
+    } else { _keyWritableClass }
 
   private val valueWritableClass =
     if (_valueWritableClass == null) {
       // pre 1.3.0, we need to use Reflection to get the Writable class
       getWritableClass[V]()
-    } else {
-      _valueWritableClass
-    }
+    } else { _valueWritableClass }
 
   private def getWritableClass[T <% Writable: ClassTag]()
       : Class[_ <: Writable] = {

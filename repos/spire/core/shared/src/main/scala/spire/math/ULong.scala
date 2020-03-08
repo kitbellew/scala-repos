@@ -95,19 +95,13 @@ class ULong(val signed: Long) extends AnyVal {
     val n: Long = this.signed
     val d: Long = that.signed
 
-    if (d == 0) {
-      throw new java.lang.ArithmeticException("/ by zero")
-    } else if (d < 0) {
-      ULong(if (n >= 0 || n < d) 0 else 1)
-    } else if (n >= 0) {
-      ULong(n / d)
-    } else {
+    if (d == 0) { throw new java.lang.ArithmeticException("/ by zero") }
+    else if (d < 0) { ULong(if (n >= 0 || n < d) 0 else 1) }
+    else if (n >= 0) { ULong(n / d) }
+    else {
       val half = n >>> 1
-      if (half < d) {
-        ULong(1L)
-      } else {
-        ULong(((half / d) << 1) + (((half % d) << 1) + (n & 1)) / d)
-      }
+      if (half < d) { ULong(1L) }
+      else { ULong(((half / d) << 1) + (((half % d) << 1) + (n & 1)) / d) }
     }
   }
 

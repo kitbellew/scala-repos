@@ -131,7 +131,9 @@ object Directive {
     * Constructs a directive from a function literal.
     */
   def apply[T: Tuple](f: (T ⇒ Route) ⇒ Route): Directive[T] =
-    new Directive[T] { def tapply(inner: T ⇒ Route) = f(inner) }
+    new Directive[T] {
+      def tapply(inner: T ⇒ Route) = f(inner)
+    }
 
   /**
     * A Directive that always passes the request on to its inner route (i.e. does nothing).

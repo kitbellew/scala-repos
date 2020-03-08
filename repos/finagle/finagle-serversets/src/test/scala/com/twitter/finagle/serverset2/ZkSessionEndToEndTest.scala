@@ -38,9 +38,7 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
     inst.start()
   }
 
-  after {
-    inst.stop()
-  }
+  after { inst.stop() }
 
   // COORD-339
   if (!sys.props.contains("SKIP_FLAKY")) test("Session expiration 2") {

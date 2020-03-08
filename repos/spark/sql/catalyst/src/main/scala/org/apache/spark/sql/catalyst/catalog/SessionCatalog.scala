@@ -74,9 +74,7 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     externalCatalog.databaseExists(db)
   }
 
-  def listDatabases(): Seq[String] = {
-    externalCatalog.listDatabases()
-  }
+  def listDatabases(): Seq[String] = { externalCatalog.listDatabases() }
 
   def listDatabases(pattern: String): Seq[String] = {
     externalCatalog.listDatabases(pattern)
@@ -194,9 +192,7 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     val db = name.database.getOrElse(currentDb)
     if (name.database.isDefined || !tempTables.containsKey(name.table)) {
       externalCatalog.dropTable(db, name.table, ignoreIfNotExists)
-    } else {
-      tempTables.remove(name.table)
-    }
+    } else { tempTables.remove(name.table) }
   }
 
   /**
@@ -214,9 +210,7 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
       if (name.database.isDefined || !tempTables.containsKey(name.table)) {
         val metadata = externalCatalog.getTable(db, name.table)
         CatalogRelation(db, metadata, alias)
-      } else {
-        tempTables.get(name.table)
-      }
+      } else { tempTables.get(name.table) }
     val tableWithQualifiers = SubqueryAlias(name.table, relation)
     // If an alias was specified by the lookup, wrap the plan in a subquery so that
     // attributes are properly qualified with this alias.
@@ -473,9 +467,7 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     val db = name.database.getOrElse(currentDb)
     if (name.database.isDefined || !tempFunctions.containsKey(name.funcName)) {
       externalCatalog.getFunction(db, name.funcName)
-    } else {
-      tempFunctions.get(name.funcName)
-    }
+    } else { tempFunctions.get(name.funcName) }
   }
 
   // TODO: implement lookupFunction that returns something from the registry itself

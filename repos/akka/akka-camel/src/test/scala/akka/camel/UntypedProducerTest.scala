@@ -26,13 +26,9 @@ class UntypedProducerTest
     with GivenWhenThen {
   import UntypedProducerTest._
   val timeout = 1 second
-  override protected def beforeAll = {
-    camel.context.addRoutes(new TestRoute)
-  }
+  override protected def beforeAll = { camel.context.addRoutes(new TestRoute) }
 
-  override protected def afterEach = {
-    mockEndpoint.reset
-  }
+  override protected def afterEach = { mockEndpoint.reset }
 
   "An UntypedProducer producing a message to a sync Camel route" must {
 

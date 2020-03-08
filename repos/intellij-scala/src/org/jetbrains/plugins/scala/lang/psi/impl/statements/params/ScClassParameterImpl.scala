@@ -38,16 +38,12 @@ class ScClassParameterImpl private (
 
   override def isVal: Boolean = {
     val stub = getStub
-    if (stub != null) {
-      return stub.asInstanceOf[ScParameterStub].isVal
-    }
+    if (stub != null) { return stub.asInstanceOf[ScParameterStub].isVal }
     findChildByType[PsiElement](ScalaTokenTypes.kVAL) != null
   }
   override def isVar: Boolean = {
     val stub = getStub
-    if (stub != null) {
-      return stub.asInstanceOf[ScParameterStub].isVar
-    }
+    if (stub != null) { return stub.asInstanceOf[ScParameterStub].isVar }
     findChildByType[PsiElement](ScalaTokenTypes.kVAR) != null
   }
 
@@ -62,9 +58,7 @@ class ScClassParameterImpl private (
 
   override def isStable: Boolean = {
     val stub = getStub
-    if (stub != null) {
-      return stub.asInstanceOf[ScParameterStub].isStable
-    }
+    if (stub != null) { return stub.asInstanceOf[ScParameterStub].isStable }
     !isVar
   }
 

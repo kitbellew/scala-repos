@@ -122,9 +122,7 @@ object SbtProjectDataService {
           .filterNot(-1 == _)
           .flatMap(i => options.lift(i + 1))
 
-      if (contains("-g:none")) {
-        settings.DEBUGGING_INFO = false
-      }
+      if (contains("-g:none")) { settings.DEBUGGING_INFO = false }
 
       if (contains("-nowarn", "-Xlint:none")) {
         settings.GENERATE_NO_WARNINGS = true

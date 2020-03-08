@@ -99,9 +99,7 @@ class Jetty6AsyncProvider(req: HTTPRequest)
           case (r: Req, lr: LiftResponse) => Some(r -> lr)
           case _                          => None
         }
-      } catch {
-        case e: Exception => None
-      }
+      } catch { case e: Exception => None }
     }
 
   def suspend(timeout: Long): RetryState.Value = {

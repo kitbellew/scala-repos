@@ -30,9 +30,7 @@ object Route {
       exceptionHandler: ExceptionHandler = null): Route = {
     import directives.ExecutionDirectives._
     handleExceptions(ExceptionHandler.seal(exceptionHandler)) {
-      handleRejections(rejectionHandler.seal) {
-        route
-      }
+      handleRejections(rejectionHandler.seal) { route }
     }
   }
 

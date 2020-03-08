@@ -78,9 +78,7 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
       Option(el.getEnclosingElement)
         .flatMap(fqn(info, _))
         .map(_.copy(fieldOrMethod = Some(el.toString)))
-    } else {
-      parseFqnAsClass(el.toString)
-    }
+    } else { parseFqnAsClass(el.toString) }
   }
 
   def fqn(info: CompilationInfo, p: TreePath): Option[JavaFqn] = {
@@ -112,9 +110,7 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
       case tm: DeclaredType if tm.getKind == TypeKind.DECLARED => {
         tm.asElement match {
           case te: TypeElement => parseFqnAsClass(te.getQualifiedName.toString)
-          case _ => {
-            None
-          }
+          case _               => { None }
         }
       }
       case tm: PrimitiveType if tm.getKind.isPrimitive =>

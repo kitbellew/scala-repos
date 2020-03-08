@@ -65,9 +65,7 @@ object InterpreterBenchmark {
           if (idx < data.size) {
             push(out, data(idx))
             idx += 1
-          } else {
-            completeStage()
-          }
+          } else { completeStage() }
         }
         override def onDownstreamFinish(): Unit = completeStage()
       }

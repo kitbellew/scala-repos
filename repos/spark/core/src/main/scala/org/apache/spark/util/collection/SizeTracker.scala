@@ -66,9 +66,7 @@ private[spark] trait SizeTracker {
     */
   protected def afterUpdate(): Unit = {
     numUpdates += 1
-    if (nextSampleNum == numUpdates) {
-      takeSample()
-    }
+    if (nextSampleNum == numUpdates) { takeSample() }
   }
 
   /**
@@ -77,9 +75,7 @@ private[spark] trait SizeTracker {
   private def takeSample(): Unit = {
     samples.enqueue(Sample(SizeEstimator.estimate(this), numUpdates))
     // Only use the last two samples to extrapolate
-    if (samples.size > 2) {
-      samples.dequeue()
-    }
+    if (samples.size > 2) { samples.dequeue() }
     val bytesDelta = samples.toList.reverse match {
       case latest :: previous :: tail =>
         (latest.size - previous.size).toDouble / (latest.numUpdates - previous.numUpdates)

@@ -31,17 +31,16 @@ object Puzzle extends LilaController {
     }
 
   def daily = Open { implicit ctx =>
-    OptionFuResult(env.daily() flatMap {
-      _.map(_.id) ?? env.api.puzzle.find
-    }) { puzzle =>
-      negotiate(
-        html = (ctx.me ?? {
-          env.api.attempt.hasPlayed(_, puzzle) map (!_)
-        }) flatMap { asPlay =>
-          renderShow(puzzle, asPlay.fold("play", "try")) map { Ok(_) }
-        },
-        api = _ => puzzleJson(puzzle) map { Ok(_) }
-      ) map { NoCache(_) }
+    OptionFuResult(env.daily() flatMap { _.map(_.id) ?? env.api.puzzle.find }) {
+      puzzle =>
+        negotiate(
+          html = (ctx.me ?? {
+            env.api.attempt.hasPlayed(_, puzzle) map (!_)
+          }) flatMap { asPlay =>
+            renderShow(puzzle, asPlay.fold("play", "try")) map { Ok(_) }
+          },
+          api = _ => puzzleJson(puzzle) map { Ok(_) }
+        ) map { NoCache(_) }
     }
   }
 
@@ -62,9 +61,7 @@ object Puzzle extends LilaController {
   }
 
   def load(id: PuzzleId) = Open { implicit ctx =>
-    XhrOnly {
-      OptionFuOk(env.api.puzzle find id)(puzzleJson) map (_ as JSON)
-    }
+    XhrOnly { OptionFuOk(env.api.puzzle find id)(puzzleJson) map (_ as JSON) }
   }
 
   private def puzzleJson(puzzle: PuzzleModel)(implicit ctx: Context) =
@@ -81,13 +78,8 @@ object Puzzle extends LilaController {
   def history = Auth { implicit ctx => me =>
     env userInfos me flatMap { ui =>
       negotiate(
-        html = XhrOnly {
-          fuccess { Ok(views.html.puzzle.history(ui)) }
-        },
-        api = _ =>
-          fuccess {
-            Ok(JsData history ui)
-          }
+        html = XhrOnly { fuccess { Ok(views.html.puzzle.history(ui)) } },
+        api = _ => fuccess { Ok(JsData history ui) }
       )
     }
   }

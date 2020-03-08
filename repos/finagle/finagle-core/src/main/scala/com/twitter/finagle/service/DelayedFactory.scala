@@ -26,9 +26,7 @@ class DelayedFactory[Req, Rep](
   private[this] val q =
     new ConcurrentLinkedQueue[Promise[ServiceFactory[Req, Rep]]]()
 
-  underlyingF ensure {
-    q.clear()
-  }
+  underlyingF ensure { q.clear() }
 
   private[this] def safelyInterruptible(
       f: Future[ServiceFactory[Req, Rep]]

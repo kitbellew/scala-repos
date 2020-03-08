@@ -93,9 +93,7 @@ class MultilabelMetrics @Since("1.2.0") (
     case (predictions, labels) =>
       if (predictions.length > 0) {
         predictions.intersect(labels).length.toDouble / predictions.length
-      } else {
-        0
-      }
+      } else { 0 }
   }.sum / numDocs
 
   /**

@@ -81,18 +81,11 @@ class TaskInfo(
 
   def status: String = {
     if (running) {
-      if (gettingResult) {
-        "GET RESULT"
-      } else {
-        "RUNNING"
-      }
-    } else if (failed) {
-      "FAILED"
-    } else if (successful) {
-      "SUCCESS"
-    } else {
-      "UNKNOWN"
-    }
+      if (gettingResult) { "GET RESULT" }
+      else { "RUNNING" }
+    } else if (failed) { "FAILED" }
+    else if (successful) { "SUCCESS" }
+    else { "UNKNOWN" }
   }
 
   def id: String = s"$index.$attemptNumber"
@@ -101,9 +94,7 @@ class TaskInfo(
     if (!finished) {
       throw new UnsupportedOperationException(
         "duration() called on unfinished task")
-    } else {
-      finishTime - launchTime
-    }
+    } else { finishTime - launchTime }
   }
 
   private[spark] def timeRunning(currentTime: Long): Long =

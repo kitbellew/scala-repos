@@ -11,9 +11,7 @@ abstract class CachingMessageConsumer(var delegate: MessageConsumer)
   val messages = new java.util.concurrent.ConcurrentLinkedQueue[String]
 
   override def consume(message: String) {
-    synchronized {
-      messages.add(message)
-    }
+    synchronized { messages.add(message) }
     if (needFlush(message, messages.size)) flush()
   }
 

@@ -63,9 +63,7 @@ class DCTSuite
     val expectedResultBuffer = data.toArray.clone()
     if (inverse) {
       (new DoubleDCT_1D(data.size)).inverse(expectedResultBuffer, true)
-    } else {
-      (new DoubleDCT_1D(data.size)).forward(expectedResultBuffer, true)
-    }
+    } else { (new DoubleDCT_1D(data.size)).forward(expectedResultBuffer, true) }
     val expectedResult = Vectors.dense(expectedResultBuffer)
 
     val dataset = sqlContext.createDataFrame(

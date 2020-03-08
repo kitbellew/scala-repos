@@ -248,9 +248,7 @@ class RichPipe(val pipe: Pipe)
       // Cascading fails on self merge:
       // solution by Jack Guo
       new Merge(assignName(this.pipe), assignName(new Each(that, new Identity)))
-    } else {
-      new Merge(assignName(this.pipe), assignName(that))
-    }
+    } else { new Merge(assignName(this.pipe), assignName(that)) }
   }
 
   /**
@@ -700,11 +698,8 @@ class RichPipe(val pipe: Pipe)
     */
   def normalize(f: Fields, useTiny: Boolean = true): Pipe = {
     val total = groupAll { _.sum[Double](f -> '__total_for_normalize__) }
-    (if (useTiny) {
-       crossWithTiny(total)
-     } else {
-       crossWithSmaller(total)
-     })
+    (if (useTiny) { crossWithTiny(total) }
+     else { crossWithSmaller(total) })
       .map(Fields.merge(f, '__total_for_normalize__) -> f) {
         args: (Double, Double) => args._1 / args._2
       }
@@ -794,10 +789,7 @@ class RichPipe(val pipe: Pipe)
   private[scalding] def applyFlowConfigProperties(flowDef: FlowDef): Pipe = {
     case class ToVisit[T](queue: Queue[T], inQueue: Set[T]) {
       def maybeAdd(t: T): ToVisit[T] =
-        if (inQueue(t)) this
-        else {
-          ToVisit(queue :+ t, inQueue + t)
-        }
+        if (inQueue(t)) this else { ToVisit(queue :+ t, inQueue + t) }
       def next: Option[(T, ToVisit[T])] =
         if (inQueue.isEmpty) None
         else Some((queue.head, ToVisit(queue.tail, inQueue - queue.head)))

@@ -7,9 +7,7 @@
 // Since then, these have both become value classes, but seeing as
 // this happened simultaneously, we're still okay.
 object Test {
-  locally {
-    1: AnyRef
-  }
+  locally { 1: AnyRef }
 
   locally {
     // before this test case was added and ContextErrors was tweaked, this
@@ -17,15 +15,11 @@ object Test {
     (null: Any): AnyRef
   }
 
-  locally {
-    (0: AnyVal): AnyRef
-  }
+  locally { (0: AnyVal): AnyRef }
 
   class AV(val a: Int) extends AnyVal
 
-  locally {
-    new AV(0): AnyRef
-  }
+  locally { new AV(0): AnyRef }
 
   "": AnyVal
 

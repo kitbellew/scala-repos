@@ -42,7 +42,9 @@ object Buffer {
     require(
       cb.order == ByteOrder.LITTLE_ENDIAN,
       "Invalid ChannelBuffer ByteOrder")
-    new Buffer { val underlying = cb }
+    new Buffer {
+      val underlying = cb
+    }
   }
 }
 
@@ -305,9 +307,8 @@ trait BufferWriter extends Buffer {
     * more information.
     */
   def writeLengthCodedBinary(length: Long): BufferWriter = {
-    if (length < 251) {
-      writeByte(length.toInt)
-    } else if (length < 65536) {
+    if (length < 251) { writeByte(length.toInt) }
+    else if (length < 65536) {
       writeByte(252)
       writeShort(length.toInt)
     } else if (length < 16777216) {

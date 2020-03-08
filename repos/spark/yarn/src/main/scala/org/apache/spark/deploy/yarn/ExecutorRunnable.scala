@@ -129,9 +129,8 @@ private[yarn] class ExecutorRunnable(
     }
 
     // Send the start request to the ContainerManager
-    try {
-      nmClient.startContainer(container, ctx)
-    } catch {
+    try { nmClient.startContainer(container, ctx) }
+    catch {
       case ex: Exception =>
         throw new SparkException(
           s"Exception while starting container ${container.getId}" +
@@ -229,9 +228,7 @@ private[yarn] class ExecutorRunnable(
         val absPath =
           if (new File(uri.getPath()).isAbsolute()) {
             Client.getClusterPath(sparkConf, uri.getPath())
-          } else {
-            Client.buildPath(Environment.PWD.$(), uri.getPath())
-          }
+          } else { Client.buildPath(Environment.PWD.$(), uri.getPath()) }
         Seq("--user-class-path", "file:" + absPath)
       }
       .toSeq

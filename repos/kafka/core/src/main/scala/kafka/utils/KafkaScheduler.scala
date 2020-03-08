@@ -142,11 +142,7 @@ class KafkaScheduler(
     }
   }
 
-  def isStarted: Boolean = {
-    this synchronized {
-      executor != null
-    }
-  }
+  def isStarted: Boolean = { this synchronized { executor != null } }
 
   private def ensureRunning = {
     if (!isStarted)

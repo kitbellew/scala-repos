@@ -384,17 +384,13 @@ object Event {
     @tailrec
     private def casAdd(w: Witness[T]): Unit = {
       val current = witnesses.get
-      if (!witnesses.compareAndSet(current, current + w)) {
-        casAdd(w)
-      }
+      if (!witnesses.compareAndSet(current, current + w)) { casAdd(w) }
     }
 
     @tailrec
     private def casRemove(w: Witness[T]): Unit = {
       val current = witnesses.get
-      if (!witnesses.compareAndSet(current, current - w)) {
-        casRemove(w)
-      }
+      if (!witnesses.compareAndSet(current, current - w)) { casRemove(w) }
     }
   }
 }

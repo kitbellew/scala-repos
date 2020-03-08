@@ -77,9 +77,7 @@ class ApiController1()(implicit val swagger: Swagger)
     summary "Show all foos"
     notes "Shows all available foos.")
 
-  get("/", operation(listFoos)) {
-    List.empty[String]
-  }
+  get("/", operation(listFoos)) { List.empty[String] }
 
   val getFoo = (apiOperation[String]("getFoo")
     summary "Retrieve a single foo by id"
@@ -92,9 +90,7 @@ class ApiController1()(implicit val swagger: Swagger)
       ParamType.Path,
       required = true))
 
-  get("/:id", operation(getFoo)) {
-    "Foo!"
-  }
+  get("/:id", operation(getFoo)) { "Foo!" }
 
 }
 
@@ -110,9 +106,7 @@ class ApiController2()(implicit val swagger: Swagger)
     summary "Show all bars"
     notes "Shows all available bars.")
 
-  get("/", operation(listFoos)) {
-    List.empty[String]
-  }
+  get("/", operation(listFoos)) { List.empty[String] }
 
   val getBar = (apiOperation[String]("getBar")
     summary "Retrieve a single bar by id"
@@ -125,8 +119,6 @@ class ApiController2()(implicit val swagger: Swagger)
       ParamType.Path,
       required = true))
 
-  get("/:id", operation(getBar)) {
-    "Bar!"
-  }
+  get("/:id", operation(getBar)) { "Bar!" }
 
 }

@@ -28,11 +28,8 @@ sealed abstract class IoExceptionOr[A] {
 
 object IoExceptionOr {
   def apply[A](a: => A): IoExceptionOr[A] =
-    try {
-      ioExceptionOr(a)
-    } catch {
-      case e: java.io.IOException => ioException(e)
-    }
+    try { ioExceptionOr(a) }
+    catch { case e: java.io.IOException => ioException(e) }
   def unapply[A](ioExceptionOr: IoExceptionOr[A]) = ioExceptionOr.toOption
 
   type IoException =

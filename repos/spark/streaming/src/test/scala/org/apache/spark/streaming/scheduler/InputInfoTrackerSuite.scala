@@ -29,9 +29,7 @@ class InputInfoTrackerSuite extends SparkFunSuite with BeforeAndAfter {
   before {
     val conf =
       new SparkConf().setMaster("local[2]").setAppName("DirectStreamTacker")
-    if (ssc == null) {
-      ssc = new StreamingContext(conf, Duration(1000))
-    }
+    if (ssc == null) { ssc = new StreamingContext(conf, Duration(1000)) }
   }
 
   after {

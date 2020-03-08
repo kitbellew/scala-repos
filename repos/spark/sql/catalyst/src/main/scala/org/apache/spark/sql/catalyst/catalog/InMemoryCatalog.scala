@@ -109,9 +109,7 @@ class InMemoryCatalog extends ExternalCatalog {
         throw new AnalysisException(
           s"Database '${dbDefinition.name}' already exists.")
       }
-    } else {
-      catalog.put(dbDefinition.name, new DatabaseDesc(dbDefinition))
-    }
+    } else { catalog.put(dbDefinition.name, new DatabaseDesc(dbDefinition)) }
   }
 
   override def dropDatabase(
@@ -179,9 +177,7 @@ class InMemoryCatalog extends ExternalCatalog {
         throw new AnalysisException(
           s"Table '$table' already exists in database '$db'")
       }
-    } else {
-      catalog(db).tables.put(table, new TableDesc(tableDefinition))
-    }
+    } else { catalog(db).tables.put(table, new TableDesc(tableDefinition)) }
   }
 
   override def dropTable(
@@ -189,9 +185,8 @@ class InMemoryCatalog extends ExternalCatalog {
       table: String,
       ignoreIfNotExists: Boolean): Unit = synchronized {
     requireDbExists(db)
-    if (existsTable(db, table)) {
-      catalog(db).tables.remove(table)
-    } else {
+    if (existsTable(db, table)) { catalog(db).tables.remove(table) }
+    else {
       if (!ignoreIfNotExists) {
         throw new AnalysisException(
           s"Table '$table' does not exist in database '$db'")
@@ -330,9 +325,7 @@ class InMemoryCatalog extends ExternalCatalog {
       if (existsFunction(db, func.name.funcName)) {
         throw new AnalysisException(
           s"Function '$func' already exists in '$db' database")
-      } else {
-        catalog(db).functions.put(func.name.funcName, func)
-      }
+      } else { catalog(db).functions.put(func.name.funcName, func) }
     }
 
   override def dropFunction(db: String, funcName: String): Unit = synchronized {

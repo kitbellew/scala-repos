@@ -22,11 +22,8 @@ object GitSpecUtil {
       throw new java.io.IOException(
         "can't create folder " + folder.getAbsolutePath)
     }
-    try {
-      f(folder)
-    } finally {
-      FileUtils.deleteQuietly(folder)
-    }
+    try { f(folder) }
+    finally { FileUtils.deleteQuietly(folder) }
   }
   def withTestRepository[U](f: Git => U): U =
     withTestFolder(folder => using(Git.open(createTestRepository(folder)))(f))
@@ -103,14 +100,9 @@ object GitSpecUtil {
     val mergeBaseTip = repository.resolve(into)
     val mergeTip = repository.resolve(branch)
     val conflicted =
-      try {
-        !merger.merge(mergeBaseTip, mergeTip)
-      } catch {
-        case e: NoMergeBaseException => true
-      }
-    if (conflicted) {
-      throw new RuntimeException("conflict!")
-    }
+      try { !merger.merge(mergeBaseTip, mergeTip) }
+      catch { case e: NoMergeBaseException => true }
+    if (conflicted) { throw new RuntimeException("conflict!") }
     val mergeTipCommit = using(new RevWalk(repository))(_.parseCommit(mergeTip))
     val committer = mergeTipCommit.getCommitterIdent;
     // creates merge commit

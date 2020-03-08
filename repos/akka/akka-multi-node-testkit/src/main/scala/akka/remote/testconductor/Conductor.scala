@@ -564,9 +564,7 @@ private[akka] class Controller(
     case GetSockAddr ⇒ sender() ! connection.getLocalAddress
   }
 
-  override def postStop() {
-    RemoteConnection.shutdown(connection)
-  }
+  override def postStop() { RemoteConnection.shutdown(connection) }
 }
 
 /**
@@ -730,14 +728,11 @@ private[akka] class BarrierCoordinator
 
   def handleBarrier(data: Data): State = {
     log.debug("handleBarrier({})", data)
-    if (data.arrived.isEmpty) {
-      goto(Idle) using data.copy(barrier = "")
-    } else if ((data.clients.map(_.fsm) -- data.arrived).isEmpty) {
+    if (data.arrived.isEmpty) { goto(Idle) using data.copy(barrier = "") }
+    else if ((data.clients.map(_.fsm) -- data.arrived).isEmpty) {
       data.arrived foreach (_ ! ToClient(BarrierResult(data.barrier, true)))
       goto(Idle) using data.copy(barrier = "", arrived = Nil)
-    } else {
-      stay using data
-    }
+    } else { stay using data }
   }
 
   def getDeadline(timeout: Option[FiniteDuration]): Deadline = {

@@ -262,9 +262,7 @@ class CoarseMesosSchedulerBackendSuite
     if (filter) {
       verify(driver, times(1))
         .declineOffer(Matchers.eq(offerId), anyObject[Filters])
-    } else {
-      verify(driver, times(1)).declineOffer(Matchers.eq(offerId))
-    }
+    } else { verify(driver, times(1)).declineOffer(Matchers.eq(offerId)) }
   }
 
   private def offerResources(
@@ -391,9 +389,7 @@ class CoarseMesosSchedulerBackendSuite
       .set("spark.mesos.driver.webui.url", "http://webui")
 
     if (sparkConfVars != null) {
-      for (attr <- sparkConfVars) {
-        sparkConf.set(attr._1, attr._2)
-      }
+      for (attr <- sparkConfVars) { sparkConf.set(attr._1, attr._2) }
     }
 
     sc = new SparkContext(sparkConf)

@@ -55,9 +55,7 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
         x * x
       }
       .collect()
-    FailureSuiteState.synchronized {
-      assert(FailureSuiteState.tasksRun === 4)
-    }
+    FailureSuiteState.synchronized { assert(FailureSuiteState.tasksRun === 4) }
     assert(results.toList === List(1, 4, 9))
     FailureSuiteState.clear()
   }
@@ -81,9 +79,7 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
           (k, v.head * v.head)
       }
       .collect()
-    FailureSuiteState.synchronized {
-      assert(FailureSuiteState.tasksRun === 4)
-    }
+    FailureSuiteState.synchronized { assert(FailureSuiteState.tasksRun === 4) }
     assert(results.toSet === Set((1, 1), (2, 4), (3, 9)))
     FailureSuiteState.clear()
   }
@@ -93,22 +89,16 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext("local", "test")
     val data =
       sc.makeRDD(1 to 3).map(x => { throw new Exception; (x, x) }).groupByKey(3)
-    intercept[SparkException] {
-      data.collect()
-    }
+    intercept[SparkException] { data.collect() }
     // Make sure that running new jobs with the same map stage also fails
-    intercept[SparkException] {
-      data.collect()
-    }
+    intercept[SparkException] { data.collect() }
   }
 
   test("failure because task results are not serializable") {
     sc = new SparkContext("local[1,1]", "test")
     val results = sc.makeRDD(1 to 3).map(x => new NonSerializable)
 
-    val thrown = intercept[SparkException] {
-      results.collect()
-    }
+    val thrown = intercept[SparkException] { results.collect() }
     assert(thrown.getClass === classOf[SparkException])
     assert(
       thrown.getMessage.contains("serializable") ||
@@ -205,12 +195,8 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
       }
       x * x
     }
-    val thrown = intercept[SparkException] {
-      data.collect()
-    }
-    FailureSuiteState.synchronized {
-      assert(FailureSuiteState.tasksRun === 4)
-    }
+    val thrown = intercept[SparkException] { data.collect() }
+    FailureSuiteState.synchronized { assert(FailureSuiteState.tasksRun === 4) }
     assert(thrown.getClass === classOf[SparkException])
     assert(thrown.getCause.getClass === classOf[UserException])
     assert(thrown.getCause.getMessage === "oops")
@@ -261,9 +247,7 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
     }
     val dep = new ShuffleDependency[Int, Int, Int](rdd, new HashPartitioner(2))
     sc.submitMapStage(dep).get()
-    FailureSuiteState.synchronized {
-      assert(FailureSuiteState.tasksRun === 4)
-    }
+    FailureSuiteState.synchronized { assert(FailureSuiteState.tasksRun === 4) }
     FailureSuiteState.clear()
   }
 

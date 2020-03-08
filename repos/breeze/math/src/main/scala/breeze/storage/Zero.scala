@@ -86,9 +86,7 @@ object Zero extends ZeroLowPriority {
 }
 
 trait ZeroVeryLowPriority { this: Zero.type =>
-  implicit def ObjectZero[T <: AnyRef] = {
-    refDefault.asInstanceOf[Zero[T]]
-  }
+  implicit def ObjectZero[T <: AnyRef] = { refDefault.asInstanceOf[Zero[T]] }
 
   protected val refDefault = new Zero[AnyRef] {
     override def zero: AnyRef = null

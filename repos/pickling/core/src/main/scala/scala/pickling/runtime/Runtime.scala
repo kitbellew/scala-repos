@@ -234,9 +234,8 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
                 if (fstaticSym.isEffectivelyFinal)
                   freader.hintElidedType(fstaticTag)
                 val fdynamicTag =
-                  try {
-                    freader.beginEntry()
-                  } catch {
+                  try { freader.beginEntry() }
+                  catch {
                     case e @ PicklingException(msg, cause) =>
                       debug(
                         s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}
@@ -322,16 +321,14 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
       def unpickle(tagKey: String, reader: PReader): Any = {
         GRL.lock()
         try {
-          if (reader.atPrimitive) {
-            reader.readPrimitive()
-          } else if (tagKey.endsWith("$")) {
+          if (reader.atPrimitive) { reader.readPrimitive() }
+          else if (tagKey.endsWith("$")) {
             val c = Class.forName(tagKey)
             c.getField("MODULE$").get(c)
           } else {
             val pendingFields =
-              if (tagKey.contains("anonfun$")) {
-                List[FieldIR]()
-              } else {
+              if (tagKey.contains("anonfun$")) { List[FieldIR]() }
+              else {
                 cir.fields.filter(fir =>
                   fir.hasGetter || {
                     // exists as Java field
@@ -347,9 +344,8 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
                 if (fstaticSym.isEffectivelyFinal)
                   freader.hintElidedType(fstaticTag)
                 val fdynamicTag =
-                  try {
-                    freader.beginEntry()
-                  } catch {
+                  try { freader.beginEntry() }
+                  catch {
                     case e @ PicklingException(msg, cause) =>
                       debug(
                         s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}':

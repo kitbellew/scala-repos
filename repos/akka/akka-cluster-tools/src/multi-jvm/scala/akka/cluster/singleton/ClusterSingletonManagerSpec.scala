@@ -268,9 +268,7 @@ class ClusterSingletonManagerSpec
     }
 
     // expect a message on the oldest node
-    runOn(oldest) {
-      expectMsg(5.seconds, msg)
-    }
+    runOn(oldest) { expectMsg(5.seconds, msg) }
 
     enterBarrier("after-" + msg + "-proxy-verified")
   }
@@ -297,9 +295,7 @@ class ClusterSingletonManagerSpec
       // make sure it's not terminated, which would be wrong
       expectNoMsg(1 second)
     }
-    runOn(oldest) {
-      expectMsg(5.seconds, msg)
-    }
+    runOn(oldest) { expectMsg(5.seconds, msg) }
     runOn(roles.filterNot(r ⇒
       r == oldest || r == controller || r == observer): _*) {
       expectNoMsg(1 second)
@@ -392,9 +388,7 @@ class ClusterSingletonManagerSpec
       val leaveRole = first
       val newOldestRole = second
 
-      runOn(leaveRole) {
-        Cluster(system) leave node(leaveRole).address
-      }
+      runOn(leaveRole) { Cluster(system) leave node(leaveRole).address }
 
       verifyRegistration(second)
       verifyMsg(second, msg = msg())

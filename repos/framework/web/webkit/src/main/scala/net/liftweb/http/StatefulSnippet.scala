@@ -64,15 +64,9 @@ import xml.{NodeSeq, Elem}
   */
 trait StatefulSnippet extends DispatchSnippet {
   private[this] var _names: Set[String] = Set()
-  def addName(name: String) {
-    synchronized {
-      _names = _names + name
-    }
-  }
+  def addName(name: String) { synchronized { _names = _names + name } }
 
-  def names: Set[String] = synchronized {
-    _names
-  }
+  def names: Set[String] = synchronized { _names }
 
   def registerThisSnippet() =
     names.foreach(n => S.overrideSnippetForClass(n, this))
@@ -123,11 +117,8 @@ trait StatefulSnippet extends DispatchSnippet {
       import util.Helpers._
 
       ("form *" #> ((kids: NodeSeq) => toMerge ++ kids)).apply(res)
-    } else if (isForm) {
-      toMerge ++ res
-    } else {
-      res
-    }
+    } else if (isForm) { toMerge ++ res }
+    else { res }
   }
 
 }

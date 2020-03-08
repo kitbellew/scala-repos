@@ -84,11 +84,8 @@ class IDFSuite extends SparkFunSuite with MLlibTestSparkContext {
     val idf = new IDF(minDocFreq = 1)
     val model = idf.fit(termFrequencies)
     val expected = Vectors.dense(Array(0, 3, 1, 2).map { x =>
-      if (x > 0) {
-        math.log((m + 1.0) / (x + 1.0))
-      } else {
-        0
-      }
+      if (x > 0) { math.log((m + 1.0) / (x + 1.0)) }
+      else { 0 }
     })
     assert(model.idf ~== expected absTol 1e-12)
 

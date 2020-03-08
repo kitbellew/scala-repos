@@ -44,9 +44,7 @@ abstract class NodeLeavingAndExitingAndBeingRemovedSpec
       awaitClusterUp(first, second, third)
 
       within(30.seconds) {
-        runOn(first) {
-          cluster.leave(second)
-        }
+        runOn(first) { cluster.leave(second) }
         enterBarrier("second-left")
 
         runOn(first, third) {

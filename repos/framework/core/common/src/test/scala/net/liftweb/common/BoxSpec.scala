@@ -90,12 +90,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
   }
 
   "A Full Box" should {
-    "not beEmpty" in {
-      Full(1).isEmpty must beFalse
-    }
-    "be defined" in {
-      Full(1).isDefined must beTrue
-    }
+    "not beEmpty" in { Full(1).isEmpty must beFalse }
+    "be defined" in { Full(1).isDefined must beTrue }
     "return its value when opened" in {
       Full(1).openOrThrowException("This is a test") must_== 1
     }
@@ -230,12 +226,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
   }
 
   "An Empty Box" should {
-    "beEmpty" in {
-      Empty.isEmpty must beTrue
-    }
-    "not be defined" in {
-      Empty.isDefined must beFalse
-    }
+    "beEmpty" in { Empty.isEmpty must beTrue }
+    "not be defined" in { Empty.isDefined must beFalse }
     "throw an exception if opened" in {
       {
         Empty.openOrThrowException(
@@ -285,9 +277,7 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
     "define an 'elements' method returning an empty iterator" in {
       Empty.elements.hasNext must beFalse
     }
-    "define a 'toList' method returning Nil" in {
-      Empty.toList must_== Nil
-    }
+    "define a 'toList' method returning Nil" in { Empty.toList must_== Nil }
     "define a 'toOption' method returning None" in {
       Empty.toOption must_== None
     }

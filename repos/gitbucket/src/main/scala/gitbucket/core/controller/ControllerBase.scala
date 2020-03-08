@@ -34,9 +34,7 @@ abstract class ControllerBase
 
   implicit val jsonFormats = gitbucket.core.api.JsonFormat.jsonFormats
 
-  before("/api/v3/*") {
-    contentType = formats("json")
-  }
+  before("/api/v3/*") { contentType = formats("json") }
 
 // TODO Scala 2.11
 //  // Don't set content type via Accept header.
@@ -78,9 +76,7 @@ abstract class ControllerBase
         // Scalatra actions
         super.doFilter(request, response, chain)
       }
-    } finally {
-      contextCache.remove();
-    }
+    } finally { contextCache.remove(); }
 
   private val contextCache = new java.lang.ThreadLocal[Context]()
 
@@ -130,19 +126,15 @@ abstract class ControllerBase
     }
 
   protected def NotFound() =
-    if (request.hasAttribute(Keys.Request.Ajax)) {
-      org.scalatra.NotFound()
-    } else if (request.hasAttribute(Keys.Request.APIv3)) {
+    if (request.hasAttribute(Keys.Request.Ajax)) { org.scalatra.NotFound() }
+    else if (request.hasAttribute(Keys.Request.APIv3)) {
       contentType = formats("json")
       org.scalatra.NotFound(ApiError("Not Found"))
-    } else {
-      org.scalatra.NotFound(gitbucket.core.html.error("Not Found"))
-    }
+    } else { org.scalatra.NotFound(gitbucket.core.html.error("Not Found")) }
 
   protected def Unauthorized()(implicit context: Context) =
-    if (request.hasAttribute(Keys.Request.Ajax)) {
-      org.scalatra.Unauthorized()
-    } else if (request.hasAttribute(Keys.Request.APIv3)) {
+    if (request.hasAttribute(Keys.Request.Ajax)) { org.scalatra.Unauthorized() }
+    else if (request.hasAttribute(Keys.Request.APIv3)) {
       contentType = formats("json")
       org.scalatra.Unauthorized(ApiError("Requires authentication"))
     } else {
@@ -185,9 +177,7 @@ abstract class ControllerBase
   protected def RawData[T](contentType: String, rawData: T): T = {
     if (contentType.split(";").head.trim.toLowerCase.startsWith("text/html")) {
       this.contentType = "text/plain"
-    } else {
-      this.contentType = contentType
-    }
+    } else { this.contentType = contentType }
     response.addHeader("X-Content-Type-Options", "nosniff")
     rawData
   }

@@ -43,11 +43,8 @@ class TriangleCountSuite extends SparkFunSuite with LocalSparkContext {
       val verts = triangleCount.vertices
       verts.collect().foreach {
         case (vid, count) =>
-          if (vid == 0) {
-            assert(count === 2)
-          } else {
-            assert(count === 1)
-          }
+          if (vid == 0) { assert(count === 2) }
+          else { assert(count === 1) }
       }
     }
   }
@@ -64,11 +61,8 @@ class TriangleCountSuite extends SparkFunSuite with LocalSparkContext {
       val verts = triangleCount.vertices
       verts.collect().foreach {
         case (vid, count) =>
-          if (vid == 0) {
-            assert(count === 2)
-          } else {
-            assert(count === 1)
-          }
+          if (vid == 0) { assert(count === 2) }
+          else { assert(count === 1) }
       }
     }
   }

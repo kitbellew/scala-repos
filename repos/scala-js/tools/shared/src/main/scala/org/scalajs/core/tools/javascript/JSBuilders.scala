@@ -62,9 +62,7 @@ class JSFileBuilder(val name: String, protected val outputWriter: Writer)
 
   /** Closes the underlying writer(s).
     */
-  def closeWriters(): Unit = {
-    outputWriter.close()
-  }
+  def closeWriters(): Unit = { outputWriter.close() }
 }
 
 class JSFileBuilderWithSourceMapWriter(
@@ -95,9 +93,7 @@ class JSFileBuilderWithSourceMapWriter(
           offsets += selectedCount
           selectedLineLengths += line.length
           selectedCount += 1
-        } else {
-          offsets += NotSelected
-        }
+        } else { offsets += NotSelected }
         line = br.readLine()
       }
 
@@ -117,9 +113,7 @@ class JSFileBuilderWithSourceMapWriter(
           sourceMapWriter.nextLine()
         }
       }
-    } finally {
-      br.close()
-    }
+    } finally { br.close() }
   }
 
   override def addJSTree(tree: Trees.Tree): Unit = {

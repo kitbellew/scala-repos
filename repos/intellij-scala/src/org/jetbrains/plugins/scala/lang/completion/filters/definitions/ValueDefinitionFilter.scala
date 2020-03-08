@@ -38,12 +38,8 @@ class ValueDefinitionFilter extends ElementFilter {
     false
   }
 
-  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = {
-    true
-  }
+  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = { true }
 
   @NonNls
-  override def toString: String = {
-    "val keyword filter"
-  }
+  override def toString: String = { "val keyword filter" }
 }

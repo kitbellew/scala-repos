@@ -1,4 +1,6 @@
-class MyFunc[-A, +B] extends (A => B) { def apply(x: A): B = ??? }
+class MyFunc[-A, +B] extends (A => B) {
+  def apply(x: A): B = ???
+}
 
 class MyCollection[A] {
   def map[B](f: MyFunc[A, B]): MyCollection[B] = new MyCollection[B]

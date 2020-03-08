@@ -106,9 +106,8 @@ object TerminateJson {
           case c                    => true
         }
 
-        if (stack.isEmpty) {
-          anyValue()
-        } else {
+        if (stack.isEmpty) { anyValue() }
+        else {
           stack.head match {
             case SkipChar =>
               stack.pop()

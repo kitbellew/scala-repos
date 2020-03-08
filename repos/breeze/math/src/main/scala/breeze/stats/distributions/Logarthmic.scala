@@ -22,25 +22,18 @@ case class Logarthmic(p: Double)(implicit rand: RandBasis = Rand)
 
     val u2 = rand.uniform.draw()
 
-    if (u2 > p) {
-      1
-    } else {
+    if (u2 > p) { 1 }
+    else {
       val u1 = rand.uniform.draw()
       val q = -expm1(u1 * h)
-      if (u2 < q * q) {
-        round(1.0 + log(u2) / log(q)).toInt
-      } else if (u2 > q) {
-        1
-      } else {
-        2
-      }
+      if (u2 < q * q) { round(1.0 + log(u2) / log(q)).toInt }
+      else if (u2 > q) { 1 }
+      else { 2 }
     }
 
   }
 
-  def probabilityOf(x: Int) = {
-    -1.0 / log1p(-p) * math.pow(p, x) / x
-  }
+  def probabilityOf(x: Int) = { -1.0 / log1p(-p) * math.pow(p, x) / x }
 
   def mean = -1.0 / log1p(-p) * (p / (1 - p))
 

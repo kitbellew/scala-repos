@@ -282,9 +282,7 @@ trait DAG extends Instructions {
                       val split = Split(spec, child, id)(loc)
 
                       (Right(Right(split) :: tl), splitsTail)
-                    } else {
-                      (Left(MergeWithUnmatchedTails), splitsTail)
-                    }
+                    } else { (Left(MergeWithUnmatchedTails), splitsTail) }
                   }
 
                   case _ => (Left(StackUnderflow(Merge)), splitsTail)
@@ -320,9 +318,7 @@ trait DAG extends Instructions {
                 val roots2 = spanTail ::: spanInit.tail ::: (span.head :: rest)
                 loop(loc, roots2, splits, stream.tail)
               }
-            } else {
-              Left(NonPositiveSwapDepth(instr)).point[Trampoline]
-            }
+            } else { Left(NonPositiveSwapDepth(instr)).point[Trampoline] }
           }
 
           case Drop => {
@@ -404,9 +400,8 @@ trait DAG extends Instructions {
 
       tail getOrElse {
         {
-          if (!splits.isEmpty) {
-            Left(UnmatchedSplit)
-          } else {
+          if (!splits.isEmpty) { Left(UnmatchedSplit) }
+          else {
             roots match {
               case Right(hd) :: Nil => Right(hd)
               case Left(_) :: Nil   => Left(BucketAtEnd)
@@ -462,9 +457,8 @@ trait DAG extends Instructions {
       back getOrElse Left(EmptyStream)
     }
 
-    if (stream.isEmpty) {
-      Left(EmptyStream)
-    } else {
+    if (stream.isEmpty) { Left(EmptyStream) }
+    else {
       M.sequence(findFirstRoot(None, stream).right map {
           case (root, tail) => loop(root.loc, Right(root) :: Nil, Nil, tail)
         })

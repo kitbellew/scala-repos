@@ -94,9 +94,7 @@ trait CurlFormat {
     request.contentType
       .map { ct =>
         Option(HttpUtils.parseCharset(ct))
-          .getOrElse {
-            StandardCharsets.UTF_8
-          }
+          .getOrElse { StandardCharsets.UTF_8 }
           .name()
       }
       .getOrElse(HttpUtils.parseCharset("UTF-8").name())

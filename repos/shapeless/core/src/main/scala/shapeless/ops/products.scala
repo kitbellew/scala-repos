@@ -54,7 +54,9 @@ object product {
       }
   }
 
-  trait ToHList[P] extends DepFn1[P] { type Out <: HList }
+  trait ToHList[P] extends DepFn1[P] {
+    type Out <: HList
+  }
 
   object ToHList {
     def apply[P](implicit toHList: ToHList[P]): Aux[P, toHList.Out] = toHList
@@ -71,7 +73,9 @@ object product {
       }
   }
 
-  trait ToRecord[P] extends DepFn1[P] { type Out <: HList }
+  trait ToRecord[P] extends DepFn1[P] {
+    type Out <: HList
+  }
 
   object ToRecord {
     def apply[P](implicit toRecord: ToRecord[P]): Aux[P, toRecord.Out] =

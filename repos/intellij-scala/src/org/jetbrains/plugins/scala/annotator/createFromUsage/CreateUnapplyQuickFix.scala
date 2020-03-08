@@ -12,8 +12,9 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTypeDefinitio
   * 2014-08-01
   */
 class CreateUnapplyQuickFix(clazz: ScTypeDefinition, pattern: ScPattern)
-    extends { val getFamilyName = "Create 'unapply' method" }
-with CreateApplyOrUnapplyQuickFix(clazz) {
+    extends {
+  val getFamilyName = "Create 'unapply' method"
+} with CreateApplyOrUnapplyQuickFix(clazz) {
 
   override protected def methodType: Some[String] =
     Some(unapplyMethodTypeText(pattern))

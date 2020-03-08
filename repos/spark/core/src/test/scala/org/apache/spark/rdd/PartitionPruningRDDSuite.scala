@@ -36,9 +36,7 @@ class PartitionPruningRDDSuite extends SparkFunSuite with SharedSparkContext {
           new TestPartition(2, 1))
       }
 
-      def compute(split: Partition, context: TaskContext) = {
-        Iterator()
-      }
+      def compute(split: Partition, context: TaskContext) = { Iterator() }
     }
     val prunedRDD = PartitionPruningRDD.create(rdd, _ == 2)
     assert(prunedRDD.partitions.length == 1)

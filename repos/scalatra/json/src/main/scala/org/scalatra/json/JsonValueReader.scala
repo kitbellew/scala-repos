@@ -29,11 +29,8 @@ class JsonValueReader(val data: JValue)(implicit formats: Formats)
         if (rest.size > 1) rest.substring(2) else rest.substring(1)
       } else rest.substring(1)
     } else rest
-    if (realRest.isEmpty) {
-      get(part, subj)
-    } else {
-      get(part, subj) flatMap (readPath(realRest, _))
-    }
+    if (realRest.isEmpty) { get(part, subj) }
+    else { get(part, subj) flatMap (readPath(realRest, _)) }
   }
 
   protected def get(path: String, subj: JValue): Option[JValue] = {

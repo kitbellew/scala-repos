@@ -53,9 +53,7 @@ class MethodImplementationsSearch
              //to avoid duplicates with ScalaOverridingMemberSearcher
              if !namedElement.isInstanceOf[PsiMethod] || !implementation
                .isInstanceOf[PsiMethod]) {
-          if (!consumer.process(implementation)) {
-            return false
-          }
+          if (!consumer.process(implementation)) { return false }
         }
       case _ =>
     }
@@ -94,9 +92,7 @@ object ScalaOverridingMemberSearcher {
     inReadAction {
       for (psiMethod <- ScalaOverridingMemberSearcher.search(
              method,
-             deep = true)) {
-        result += psiMethod
-      }
+             deep = true)) { result += psiMethod }
     }
     result.toArray
   }
@@ -193,18 +189,14 @@ object ScalaOverridingMemberSearcher {
         .search(parentClass, scope, true)
         .toArray(PsiClass.EMPTY_ARRAY)
     }
-    for (clazz <- inheritors if !break) {
-      break = !process(clazz)
-    }
+    for (clazz <- inheritors if !break) { break = !process(clazz) }
 
     if (withSelfType) {
       val inheritors = ScalaStubsUtil.getSelfTypeInheritors(
         parentClass,
         parentClass.getResolveScope)
       break = false
-      for (clazz <- inheritors if !break) {
-        break = !process(clazz)
-      }
+      for (clazz <- inheritors if !break) { break = !process(clazz) }
     }
 
     buffer.toArray

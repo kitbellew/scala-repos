@@ -175,9 +175,7 @@ trait SetTest extends CollectionTest {
       assertFalse(hs.contains(null))
       assertTrue(hs.add(null))
       assertTrue(hs.contains(null))
-    } else {
-      expectThrows(classOf[Exception], hs.add(null))
-    }
+    } else { expectThrows(classOf[Exception], hs.add(null)) }
   }
 
   @Test def shouldPutAWholeCollectionInto(): Unit = {

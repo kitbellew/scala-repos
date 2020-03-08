@@ -86,9 +86,7 @@ object SampleData extends CValueGenerators {
           },
           Some((idCount, jschema))
         )
-      } catch {
-        case ex => println("depth: " + depth); throw ex
-      }
+      } catch { case ex => println("depth: " + depth); throw ex }
     }
   )
 
@@ -120,9 +118,7 @@ object SampleData extends CValueGenerators {
 
   def sort(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
     Arbitrary(
-      for {
-        sampleData <- arbitrary(sample)
-      } yield {
+      for { sampleData <- arbitrary(sample) } yield {
         SampleData(sampleData.data.sorted, sampleData.schema)
       }
     )
@@ -130,9 +126,7 @@ object SampleData extends CValueGenerators {
 
   def shuffle(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
     val gen =
-      for {
-        sampleData <- arbitrary(sample)
-      } yield {
+      for { sampleData <- arbitrary(sample) } yield {
         SampleData(Random.shuffle(sampleData.data), sampleData.schema)
       }
 
@@ -141,9 +135,7 @@ object SampleData extends CValueGenerators {
 
   def distinct(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
     Arbitrary(
-      for {
-        sampleData <- arbitrary(sample)
-      } yield {
+      for { sampleData <- arbitrary(sample) } yield {
         SampleData(sampleData.data.distinct, sampleData.schema)
       }
     )
@@ -151,9 +143,7 @@ object SampleData extends CValueGenerators {
 
   def distinctKeys(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
     Arbitrary(
-      for {
-        sampleData <- arbitrary(sample)
-      } yield {
+      for { sampleData <- arbitrary(sample) } yield {
         SampleData(distinctBy(sampleData.data)(_ \ "keys"), sampleData.schema)
       }
     )
@@ -161,9 +151,7 @@ object SampleData extends CValueGenerators {
 
   def distinctValues(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
     Arbitrary(
-      for {
-        sampleData <- arbitrary(sample)
-      } yield {
+      for { sampleData <- arbitrary(sample) } yield {
         SampleData(distinctBy(sampleData.data)(_ \ "value"), sampleData.schema)
       }
     )
@@ -171,9 +159,7 @@ object SampleData extends CValueGenerators {
 
   def duplicateRows(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
     val gen =
-      for {
-        sampleData <- arbitrary(sample)
-      } yield {
+      for { sampleData <- arbitrary(sample) } yield {
         val rows = sampleData.data
         val duplicates = randomSubset(rows, 0.25)
         SampleData(Random.shuffle(rows ++ duplicates), sampleData.schema)
@@ -184,9 +170,7 @@ object SampleData extends CValueGenerators {
 
   def undefineRows(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
     val gen =
-      for {
-        sampleData <- arbitrary(sample)
-      } yield {
+      for { sampleData <- arbitrary(sample) } yield {
         val rows =
           for (row <- sampleData.data)
             yield if (Random.nextDouble < 0.25) JUndefined else row
@@ -199,17 +183,12 @@ object SampleData extends CValueGenerators {
   def undefineRowsForColumn(
       sample: Arbitrary[SampleData],
       path: JPath): Arbitrary[SampleData] = {
-    val gen = for {
-      sampleData <- arbitrary(sample)
-    } yield {
+    val gen = for { sampleData <- arbitrary(sample) } yield {
       val rows = for (row <- sampleData.data) yield {
-        if (false && Random.nextDouble >= 0.25) {
-          row
-        } else if (row.get(path) != null && row.get(path) != JUndefined) {
+        if (false && Random.nextDouble >= 0.25) { row }
+        else if (row.get(path) != null && row.get(path) != JUndefined) {
           row.set(path, JUndefined)
-        } else {
-          row
-        }
+        } else { row }
       }
       SampleData(rows, sampleData.schema)
     }

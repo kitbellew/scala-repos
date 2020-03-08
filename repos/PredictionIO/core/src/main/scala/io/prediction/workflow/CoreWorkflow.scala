@@ -50,9 +50,7 @@ object CoreWorkflow {
 
     val batch = if (params.batch.nonEmpty) {
       s"{engineInstance.engineFactory} (${params.batch}})"
-    } else {
-      engineInstance.engineFactory
-    }
+    } else { engineInstance.engineFactory }
     val sc = WorkflowContext(batch, env, params.sparkEnv, mode.capitalize)
 
     try {
@@ -109,9 +107,7 @@ object CoreWorkflow {
 
     val batch = if (params.batch.nonEmpty) {
       s"{evaluation.getClass.getName} (${params.batch}})"
-    } else {
-      evaluation.getClass.getName
-    }
+    } else { evaluation.getClass.getName }
     val sc = WorkflowContext(batch, env, params.sparkEnv, mode.capitalize)
     val evaluationInstanceId = evaluationInstances.insert(evaluationInstance)
 

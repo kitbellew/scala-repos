@@ -87,9 +87,7 @@ class BlockingChannel(
             connectTimeoutMs
           ))
 
-      } catch {
-        case e: Throwable => disconnect()
-      }
+      } catch { case e: Throwable => disconnect() }
     }
   }
 

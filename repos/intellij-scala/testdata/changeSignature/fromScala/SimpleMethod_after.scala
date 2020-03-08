@@ -1,7 +1,5 @@
 class SimpleMethodScala {
-  def bar(ii: Int, b: Boolean): Unit = {
-    ii
-  }
+  def bar(ii: Int, b: Boolean): Unit = { ii }
 }
 
 class SimpleMethodChild extends SimpleMethodScala {

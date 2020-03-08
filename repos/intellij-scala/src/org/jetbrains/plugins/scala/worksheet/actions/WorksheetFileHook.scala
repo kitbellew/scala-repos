@@ -40,9 +40,7 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
   override def projectClosed() {
     ApplicationManager.getApplication.invokeAndWait(
       new Runnable {
-        def run() {
-          WorksheetViewerInfo.invalidate()
-        }
+        def run() { WorksheetViewerInfo.invalidate() }
       },
       ModalityState.any())
   }

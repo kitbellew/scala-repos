@@ -57,32 +57,24 @@ class Blend(override val delegate: jfxse.Blend = new jfxse.Blend)
     * The bottom input for this Blend operation.
     */
   def bottomInput: ObjectProperty[jfxse.Effect] = delegate.bottomInputProperty
-  def bottomInput_=(v: Effect) {
-    bottomInput() = v
-  }
+  def bottomInput_=(v: Effect) { bottomInput() = v }
 
   /**
     * The BlendMode used to blend the two inputs together.
     */
   def mode: ObjectProperty[jfxse.BlendMode] = delegate.modeProperty
-  def mode_=(v: BlendMode) {
-    mode() = v
-  }
+  def mode_=(v: BlendMode) { mode() = v }
 
   /**
     * The opacity value, which is modulated with the top input prior to blending.
     */
   def opacity: DoubleProperty = delegate.opacityProperty
-  def opacity_=(v: Double) {
-    opacity() = v
-  }
+  def opacity_=(v: Double) { opacity() = v }
 
   /**
     * The top input for this Blend operation.
     */
   def topInput: ObjectProperty[jfxse.Effect] = delegate.topInputProperty
-  def topInput_=(v: Effect) {
-    topInput() = v
-  }
+  def topInput_=(v: Effect) { topInput() = v }
 
 }

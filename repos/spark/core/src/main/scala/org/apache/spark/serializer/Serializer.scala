@@ -140,9 +140,7 @@ abstract class SerializationStream {
   def close(): Unit
 
   def writeAll[T: ClassTag](iter: Iterator[T]): SerializationStream = {
-    while (iter.hasNext) {
-      writeObject(iter.next())
-    }
+    while (iter.hasNext) { writeObject(iter.next()) }
     this
   }
 }
@@ -170,18 +168,15 @@ abstract class DeserializationStream {
     */
   def asIterator: Iterator[Any] = new NextIterator[Any] {
     override protected def getNext() = {
-      try {
-        readObject[Any]()
-      } catch {
+      try { readObject[Any]() }
+      catch {
         case eof: EOFException =>
           finished = true
           null
       }
     }
 
-    override protected def close() {
-      DeserializationStream.this.close()
-    }
+    override protected def close() { DeserializationStream.this.close() }
   }
 
   /**
@@ -190,9 +185,8 @@ abstract class DeserializationStream {
     */
   def asKeyValueIterator: Iterator[(Any, Any)] = new NextIterator[(Any, Any)] {
     override protected def getNext() = {
-      try {
-        (readKey[Any](), readValue[Any]())
-      } catch {
+      try { (readKey[Any](), readValue[Any]()) }
+      catch {
         case eof: EOFException => {
           finished = true
           null
@@ -200,8 +194,6 @@ abstract class DeserializationStream {
       }
     }
 
-    override protected def close() {
-      DeserializationStream.this.close()
-    }
+    override protected def close() { DeserializationStream.this.close() }
   }
 }

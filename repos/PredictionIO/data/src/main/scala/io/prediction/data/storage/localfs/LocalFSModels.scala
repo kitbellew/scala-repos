@@ -34,9 +34,7 @@ class LocalFSModels(f: File, config: StorageClientConfig, prefix: String)
       val fos = new FileOutputStream(new File(f, s"${prefix}${i.id}"))
       fos.write(i.models)
       fos.close
-    } catch {
-      case e: FileNotFoundException => error(e.getMessage)
-    }
+    } catch { case e: FileNotFoundException => error(e.getMessage) }
   }
 
   def get(id: String): Option[Model] = {

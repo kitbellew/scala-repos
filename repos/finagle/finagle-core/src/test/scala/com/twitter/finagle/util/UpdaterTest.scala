@@ -27,9 +27,7 @@ class UpdaterTest extends FunSuite {
 
     val w0 = Work(0)
     val thr = new Thread("Test-Updater") {
-      override def run() {
-        u(w0)
-      }
+      override def run() { u(w0) }
     }
 
     thr.start()

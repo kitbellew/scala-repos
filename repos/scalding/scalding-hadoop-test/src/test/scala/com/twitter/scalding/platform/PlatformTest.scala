@@ -269,9 +269,7 @@ class TypedPipeHashJoinWithCoGroupJob(args: Args) extends Job(args) {
     input
   }
 
-  val coGroupPipe = in0.coGroupBy('x0) {
-    _.coGroup('x1, in1, OuterJoinMode)
-  }
+  val coGroupPipe = in0.coGroupBy('x0) { _.coGroup('x1, in1, OuterJoinMode) }
 
   val coGroupTypedPipe =
     TypedPipe.from[(Int, Int, Int)](coGroupPipe, Fields.ALL)

@@ -350,9 +350,7 @@ private[internal] trait TypeMaps {
             existentialAbstraction(
               eparams,
               typeRef(apply(pre), sym, eparams map (_.tpe)))
-          } finally {
-            expanded -= sym
-          }
+          } finally { expanded -= sym }
       case _ =>
         mapOver(tp)
     }
@@ -1259,9 +1257,7 @@ private[internal] trait TypeMaps {
               devWarning(
                 s"adapt to new run failed: pre=$pre pre1=$pre1 sym=$sym")
               tp
-            } else {
-              copyTypeRef(tp, pre1, sym1, args1)
-            }
+            } else { copyTypeRef(tp, pre1, sym1, args1) }
           } catch {
             case ex: MissingAliasControl =>
               apply(tp.dealias)

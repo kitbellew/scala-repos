@@ -67,9 +67,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
         if (!map.contains(key)) {
           map(key) = value
           true
-        } else {
-          false
-        }
+        } else { false }
       }
     )
 
@@ -126,9 +124,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
         if (map.contains(key)) {
           map(key) = value
           true
-        } else {
-          false
-        }
+        } else { false }
       }
     )
 
@@ -164,9 +160,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
         if (map.contains(key)) {
           map.remove(key)
           true
-        } else {
-          false
-        }
+        } else { false }
       }
     )
 
@@ -199,14 +193,8 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
 
   def release() {}
 
-  override def toString = {
-    "MockClient(" + map.toString + ")"
-  }
+  override def toString = { "MockClient(" + map.toString + ")" }
 
   /** Returns an immutable copy of the current cache. */
-  def contents: Map[String, Buf] = {
-    map.synchronized {
-      Map(map.toSeq: _*)
-    }
-  }
+  def contents: Map[String, Buf] = { map.synchronized { Map(map.toSeq: _*) } }
 }

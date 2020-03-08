@@ -170,9 +170,7 @@ trait BaseReplState {
   /**
     * Sets the flow definition in implicit scope to an empty flow definition.
     */
-  def resetFlowDef() {
-    flowDef = getEmptyFlowDef
-  }
+  def resetFlowDef() { flowDef = getEmptyFlowDef }
 
   /**
     * Gets a new, empty, flow definition.
@@ -270,9 +268,7 @@ object ReplImplicits extends FieldConversions {
       setter: TupleSetter[T],
       converter: TupleConverter[T],
       flowDef: FlowDef,
-      mode: Mode): Pipe = {
-    iterableToSource(iterable)(setter, converter).read
-  }
+      mode: Mode): Pipe = { iterableToSource(iterable)(setter, converter).read }
 
   /**
     * Converts an iterable into a RichPipe with index (int-based) fields.

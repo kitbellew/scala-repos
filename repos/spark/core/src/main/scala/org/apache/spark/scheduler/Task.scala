@@ -80,12 +80,9 @@ private[spark] abstract class Task[T](
       initialAccumulators)
     TaskContext.setTaskContext(context)
     taskThread = Thread.currentThread()
-    if (_killed) {
-      kill(interruptThread = false)
-    }
-    try {
-      runTask(context)
-    } catch {
+    if (_killed) { kill(interruptThread = false) }
+    try { runTask(context) }
+    catch {
       case e: Throwable =>
         // Catch all errors; run task failure callbacks, and rethrow the exception.
         context.markTaskFailed(e)
@@ -104,9 +101,7 @@ private[spark] abstract class Task[T](
           val memoryManager = SparkEnv.get.memoryManager
           memoryManager.synchronized { memoryManager.notifyAll() }
         }
-      } finally {
-        TaskContext.unset()
-      }
+      } finally { TaskContext.unset() }
     }
   }
 
@@ -157,9 +152,7 @@ private[spark] abstract class Task[T](
       context.taskMetrics.accumulatorUpdates().filter { a =>
         !taskFailed || a.countFailedValues
       }
-    } else {
-      Seq.empty[AccumulableInfo]
-    }
+    } else { Seq.empty[AccumulableInfo] }
   }
 
   /**
@@ -170,12 +163,8 @@ private[spark] abstract class Task[T](
     */
   def kill(interruptThread: Boolean) {
     _killed = true
-    if (context != null) {
-      context.markInterrupted()
-    }
-    if (interruptThread && taskThread != null) {
-      taskThread.interrupt()
-    }
+    if (context != null) { context.markInterrupted() }
+    if (interruptThread && taskThread != null) { taskThread.interrupt() }
   }
 }
 

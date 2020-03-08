@@ -316,19 +316,13 @@ class VideoCube(val mediaPlayers: List[MediaPlayer], size: Double)
     }
 
     def preserveRatio = mediaView.preserveRatioProperty
-    def preserveRatio_=(v: Boolean) {
-      preserveRatio() = v
-    }
+    def preserveRatio_=(v: Boolean) { preserveRatio() = v }
 
     def smooth = mediaView.smoothProperty
-    def smooth_=(v: Boolean) {
-      smooth() = v
-    }
+    def smooth_=(v: Boolean) { smooth() = v }
 
     def text = debugText.text
-    def text_=(v: String) {
-      debugText.text = v
-    }
+    def text_=(v: String) { debugText.text = v }
 
   }
 

@@ -110,9 +110,7 @@ object FreeTest extends SpecLite {
       (1, Functor[Arbitrary].map(Arbitrary(g))(Free[F, A](_)).arbitrary)
     )
 
-  "Option" should {
-    checkAll(bindRec.laws[FreeOption])
-  }
+  "Option" should { checkAll(bindRec.laws[FreeOption]) }
 
   "foldMapRec is stack safe" ! {
     val n = 1000000
@@ -126,9 +124,7 @@ object FreeTest extends SpecLite {
       } yield z
 
     val runner = new (FTestApi ~> Id.Id) {
-      def apply[A](fa: FTestApi[A]) = fa match {
-        case TB(i) => i + 1
-      }
+      def apply[A](fa: FTestApi[A]) = fa match { case TB(i) => i + 1 }
     }
 
     a(0).foldMapRec(runner) must_=== n

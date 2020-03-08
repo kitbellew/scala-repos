@@ -66,9 +66,7 @@ final class OffsetRange private (
     case _ => false
   }
 
-  override def hashCode(): Int = {
-    toTuple.hashCode()
-  }
+  override def hashCode(): Int = { toTuple.hashCode() }
 
   override def toString(): String = {
     s"OffsetRange(topic: '$topic', partition: $partition, range: [$fromOffset -> $untilOffset])"

@@ -46,5 +46,7 @@ trait BitraverseTests[F[_, _]]
 
 object BitraverseTests {
   def apply[F[_, _]: Bitraverse]: BitraverseTests[F] =
-    new BitraverseTests[F] { def laws: BitraverseLaws[F] = BitraverseLaws[F] }
+    new BitraverseTests[F] {
+      def laws: BitraverseLaws[F] = BitraverseLaws[F]
+    }
 }

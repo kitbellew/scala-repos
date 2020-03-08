@@ -7,9 +7,7 @@ object Test extends App {
     def foo[W] = {
       type U = W
       type T = U
-      reify {
-        List[T](2)
-      }
+      reify { List[T](2) }
     }
     val code = foo[Int]
     println(code.tree.freeTypes)

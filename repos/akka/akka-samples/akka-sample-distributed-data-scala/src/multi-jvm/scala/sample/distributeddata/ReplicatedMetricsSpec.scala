@@ -44,9 +44,7 @@ class ReplicatedMetricsSpec
     system.actorOf(ReplicatedMetrics.props(1.second, 3.seconds))
 
   def join(from: RoleName, to: RoleName): Unit = {
-    runOn(from) {
-      cluster join node(to).address
-    }
+    runOn(from) { cluster join node(to).address }
     enterBarrier(from.name + "-joined")
   }
 
@@ -76,9 +74,7 @@ class ReplicatedMetricsSpec
 
     "cleanup removed node" in within(25.seconds) {
       val node3Address = node(node3).address
-      runOn(node1) {
-        cluster.leave(node3Address)
-      }
+      runOn(node1) { cluster.leave(node3Address) }
       runOn(node1, node2) {
         val probe = TestProbe()
         system.eventStream.subscribe(probe.ref, classOf[UsedHeap])

@@ -87,9 +87,7 @@ class HighlightingAdvisor(project: Project)
 
   def getState = settings
 
-  def loadState(state: HighlightingSettings) {
-    settings = state
-  }
+  def loadState(state: HighlightingSettings) { settings = state }
 
   private def configureWidget(bar: StatusBar) {
     (applicable, installed) match {
@@ -159,9 +157,7 @@ class HighlightingAdvisor(project: Project)
     "Scala type-aware highlighting: %s"
       .format(if (enabled) "enabled" else "disabled")
 
-  private def updateWidget(bar: StatusBar) {
-    bar.updateWidget(Widget.ID)
-  }
+  private def updateWidget(bar: StatusBar) { bar.updateWidget(Widget.ID) }
 
   private def reparseActiveFile() {
     val context = DataManager.getInstance.getDataContextFromFocus
@@ -199,9 +195,7 @@ class HighlightingAdvisor(project: Project)
           .format(status, if (enabled) "disable" else "enable")
 
       object ClickConsumer extends Consumer[MouseEvent] {
-        def consume(t: MouseEvent) {
-          toggle()
-        }
+        def consume(t: MouseEvent) { toggle() }
       }
     }
   }
@@ -210,9 +204,7 @@ class HighlightingAdvisor(project: Project)
     def onScalaProjectChanged() {
       statusBar.foreach { bar =>
         configureWidget(bar)
-        if (project.hasScala) {
-          notifyIfNeeded()
-        }
+        if (project.hasScala) { notifyIfNeeded() }
       }
     }
   }

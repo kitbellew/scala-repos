@@ -139,9 +139,7 @@ trait pinvLowPrio { this: pinv.type =>
       numericMulRes: MulRes => NumericOps[MulRes],
       solve: OpSolveMatrixBy.Impl2[MulRes, TransT, Result]): Impl[T, Result] = {
     new Impl[T, Result] {
-      def apply(X: T): Result = {
-        (X.t * X) \ X.t
-      }
+      def apply(X: T): Result = { (X.t * X) \ X.t }
     }
   }
 

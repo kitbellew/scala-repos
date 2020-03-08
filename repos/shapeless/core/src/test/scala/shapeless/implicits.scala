@@ -85,14 +85,10 @@ class CachedTest {
   import CachedTest._
 
   @Test
-  def testBasics {
-    assertTrue(CachedTest.i != null)
-  }
+  def testBasics { assertTrue(CachedTest.i != null) }
 
   @Test
-  def testLazy {
-    assertTrue(CachedTest.il != null)
-  }
+  def testLazy { assertTrue(CachedTest.il != null) }
 
   trait Foo[A]
   object Foo {
@@ -186,7 +182,5 @@ class CachedTest {
   }
 
   @Test
-  def testLazyRecursion {
-    assert(Wibble.eqw != null)
-  }
+  def testLazyRecursion { assert(Wibble.eqw != null) }
 }

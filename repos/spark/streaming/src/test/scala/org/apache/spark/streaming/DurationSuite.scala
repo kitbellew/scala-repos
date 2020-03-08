@@ -95,16 +95,10 @@ class DurationSuite extends TestSuiteBase {
     assert(!(new Duration(1).isZero))
   }
 
-  test("Milliseconds") {
-    assert(new Duration(100) == Milliseconds(100))
-  }
+  test("Milliseconds") { assert(new Duration(100) == Milliseconds(100)) }
 
-  test("Seconds") {
-    assert(new Duration(30 * 1000) == Seconds(30))
-  }
+  test("Seconds") { assert(new Duration(30 * 1000) == Seconds(30)) }
 
-  test("Minutes") {
-    assert(new Duration(2 * 60 * 1000) == Minutes(2))
-  }
+  test("Minutes") { assert(new Duration(2 * 60 * 1000) == Minutes(2)) }
 
 }

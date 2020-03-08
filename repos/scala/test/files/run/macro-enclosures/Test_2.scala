@@ -4,8 +4,6 @@ object Test extends App {
 
 package test {
   object Test {
-    def test = {
-      Macros.foo
-    }
+    def test = { Macros.foo }
   }
 }

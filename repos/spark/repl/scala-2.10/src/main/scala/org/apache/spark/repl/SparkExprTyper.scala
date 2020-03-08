@@ -24,8 +24,9 @@ private[repl] trait SparkExprTyper extends Logging {
   import syntaxAnalyzer.{UnitParser, UnitScanner, token2name}
   import naming.freshInternalVarName
 
-  object codeParser extends { val global: repl.global.type = repl.global }
-  with CodeHandlers[Tree] {
+  object codeParser extends {
+    val global: repl.global.type = repl.global
+  } with CodeHandlers[Tree] {
     def applyRule[T](code: String, rule: UnitParser => T): T = {
       reporter.reset()
       val scanner = newUnitParser(code)
@@ -49,13 +50,9 @@ private[repl] trait SparkExprTyper extends Logging {
       var isIncomplete = false
       reporter.withIncompleteHandler((_, _) => isIncomplete = true) {
         val trees = codeParser.stmts(line)
-        if (reporter.hasErrors) {
-          Some(Nil)
-        } else if (isIncomplete) {
-          None
-        } else {
-          Some(trees)
-        }
+        if (reporter.hasErrors) { Some(Nil) }
+        else if (isIncomplete) { None }
+        else { Some(trees) }
       }
     }
   // def parsesAsExpr(line: String) = {

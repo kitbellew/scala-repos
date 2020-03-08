@@ -6,13 +6,9 @@ class ApiFormatsServlet extends ScalatraServlet with ApiFormats {
   override protected implicit def string2RouteMatcher(
       path: String): RouteMatcher = RailsPathPatternParser(path)
 
-  get("/hello(.:format)") {
-    format
-  }
+  get("/hello(.:format)") { format }
 
-  get("/hi") {
-    format
-  }
+  get("/hi") { format }
 
 }
 

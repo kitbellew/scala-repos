@@ -112,13 +112,9 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
     if (checkedProbe == EmptyTree) {
       if (inst == EmptyTree) {
         c.abort(c.enclosingPosition, s"No derived instance $appTpe")
-      } else {
-        inst
-      }
+      } else { inst }
     } else {
-      val derived = checkedProbe match {
-        case b: Block => b.expr
-      }
+      val derived = checkedProbe match { case b: Block => b.expr }
 
       if (derived.equalsStructure(inst)) inst
       else if (inst == EmptyTree) derived

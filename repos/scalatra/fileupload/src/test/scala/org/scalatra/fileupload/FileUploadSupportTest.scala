@@ -37,9 +37,7 @@ class FileUploadSupportTestServlet
     params("utf8-string")
   }
 
-  post("/multipart-pass") {
-    pass()
-  }
+  post("/multipart-pass") { pass() }
 
   post("/multipart-param") {
     params.get("queryParam") foreach { p =>
@@ -48,9 +46,7 @@ class FileUploadSupportTestServlet
     pass()
   }
 
-  post("/echo") {
-    params.getOrElse("echo", "")
-  }
+  post("/echo") { params.getOrElse("echo", "") }
 }
 
 class MaxSizeTestServlet extends ScalatraServlet with FileUploadSupport {
@@ -85,9 +81,7 @@ class FileUploadSupportTest extends ScalatraFunSuite {
       path,
       headers = Map(
         "Content-Type" -> "multipart/form-data; boundary=%s".format(boundary)),
-      body = reqBody) {
-      response
-    }
+      body = reqBody) { response }
   }
 
   //  test("keeps input parameters on multipart request") {
@@ -136,9 +130,7 @@ class FileUploadSupportTest extends ScalatraFunSuite {
   }
 
   test("reads form params on non-multipart request") {
-    post("/echo", "echo" -> "foo") {
-      body should equal("foo")
-    }
+    post("/echo", "echo" -> "foo") { body should equal("foo") }
   }
 
   test("keeps query parameters") {

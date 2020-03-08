@@ -47,9 +47,8 @@ trait NIHDBSnapshot {
   val logger = LoggerFactory.getLogger("com.precog.niflheim.NIHDBSnapshot")
 
   protected[this] def findReader(id0: Option[Long]): Option[StorageReader] = {
-    if (readers.isEmpty) {
-      None
-    } else {
+    if (readers.isEmpty) { None }
+    else {
       val i = id0.map(Arrays.binarySearch(blockIds, _)) getOrElse 0
       if (i >= 0) Some(readers(i)) else None
     }
@@ -89,9 +88,7 @@ trait NIHDBSnapshot {
         snapshot
       }
       .orElse {
-        if (logger.isTraceEnabled) {
-          logger.trace("No block after " + id0)
-        }
+        if (logger.isTraceEnabled) { logger.trace("No block after " + id0) }
         None
       }
 
@@ -124,9 +121,7 @@ trait NIHDBSnapshot {
         val constraints = getConstraints(reader.structure, paths)
         val Block(_, cols, _) = reader.snapshot(Some(constraints.toSet))
         countSegments(cols)
-      } getOrElse {
-        reader.length
-      }
+      } getOrElse { reader.length }
     }
   }
 

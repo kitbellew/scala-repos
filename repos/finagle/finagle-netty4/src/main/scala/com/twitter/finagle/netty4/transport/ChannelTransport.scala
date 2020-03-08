@@ -130,9 +130,7 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
       new SimpleChannelInboundHandler[Out]() {
         override def channelRead0(
             ctx: ChannelHandlerContext,
-            msg: Out): Unit = {
-          queue.offer(msg)
-        }
+            msg: Out): Unit = { queue.offer(msg) }
 
         override def channelInactive(ctx: ChannelHandlerContext): Unit = {
           fail(new ChannelClosedException(remoteAddress))
@@ -140,9 +138,7 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
 
         override def exceptionCaught(
             ctx: ChannelHandlerContext,
-            e: Throwable): Unit = {
-          fail(ChannelException(e, remoteAddress))
-        }
+            e: Throwable): Unit = { fail(ChannelException(e, remoteAddress)) }
       }
     )
 }

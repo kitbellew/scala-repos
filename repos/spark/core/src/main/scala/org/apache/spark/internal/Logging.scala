@@ -50,9 +50,7 @@ private[spark] trait Logging {
   }
 
   // Log methods that take only a String
-  protected def logInfo(msg: => String) {
-    if (log.isInfoEnabled) log.info(msg)
-  }
+  protected def logInfo(msg: => String) { if (log.isInfoEnabled) log.info(msg) }
 
   protected def logDebug(msg: => String) {
     if (log.isDebugEnabled) log.debug(msg)
@@ -91,16 +89,12 @@ private[spark] trait Logging {
     if (log.isErrorEnabled) log.error(msg, throwable)
   }
 
-  protected def isTraceEnabled(): Boolean = {
-    log.isTraceEnabled
-  }
+  protected def isTraceEnabled(): Boolean = { log.isTraceEnabled }
 
   protected def initializeLogIfNecessary(isInterpreter: Boolean): Unit = {
     if (!Logging.initialized) {
       Logging.initLock.synchronized {
-        if (!Logging.initialized) {
-          initializeLogging(isInterpreter)
-        }
+        if (!Logging.initialized) { initializeLogging(isInterpreter) }
       }
     }
   }
@@ -162,9 +156,7 @@ private object Logging {
     bridgeClass.getMethod("removeHandlersForRootLogger").invoke(null)
     val installed =
       bridgeClass.getMethod("isInstalled").invoke(null).asInstanceOf[Boolean]
-    if (!installed) {
-      bridgeClass.getMethod("install").invoke(null)
-    }
+    if (!installed) { bridgeClass.getMethod("install").invoke(null) }
   } catch {
     case e: ClassNotFoundException => // can't log anything yet so just fail silently
   }

@@ -31,9 +31,7 @@ class ScalaCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
         new ScalaTabbedCodeStylePanel(getCurrentSettings, settings)
       }
 
-      def getHelpTopic: String = {
-        null
-      }
+      def getHelpTopic: String = { null }
     }
   }
 

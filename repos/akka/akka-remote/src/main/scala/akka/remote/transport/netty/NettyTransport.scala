@@ -55,8 +55,12 @@ import org.jboss.netty.util.HashedWheelTimer
 
 object NettyTransportSettings {
   sealed trait Mode
-  case object Tcp extends Mode { override def toString = "tcp" }
-  case object Udp extends Mode { override def toString = "udp" }
+  case object Tcp extends Mode {
+    override def toString = "tcp"
+  }
+  case object Udp extends Mode {
+    override def toString = "udp"
+  }
 }
 
 object NettyFutureBridge {

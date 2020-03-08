@@ -61,9 +61,7 @@ object Cached {
 
     annottees.toList match {
       case DefDef(mods, name, tpParams, paramss, retTp, rhs) :: Nil =>
-        if (retTp.isEmpty) {
-          abort("You must specify return type")
-        }
+        if (retTp.isEmpty) { abort("You must specify return type") }
         //generated names
         val cacheVarName = c.freshName(name)
         val modCountVarName = c.freshName(name)

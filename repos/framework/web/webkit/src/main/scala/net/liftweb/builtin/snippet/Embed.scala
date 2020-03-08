@@ -39,17 +39,13 @@ object Embed extends DispatchSnippet {
     def unapply(in: Elem): Option[(Elem, String)] = {
       if (in.prefix == "lift" && in.label == "bind-at") {
         in.attribute("name").map { nameNode => (in, nameNode.text) }
-      } else {
-        None
-      }
+      } else { None }
     }
   }
 
   private lazy val logger = Logger(this.getClass)
 
-  def dispatch: DispatchIt = {
-    case _ => render _
-  }
+  def dispatch: DispatchIt = { case _ => render _ }
 
   def render(kids: NodeSeq): NodeSeq = {
     for {
@@ -57,9 +53,7 @@ object Embed extends DispatchSnippet {
       what <- S.attr ~ ("what") ?~ ("FIX" + "ME The 'what' attribute not defined. In order to embed a template, the 'what' attribute must be specified")
       templateOpt <- ctx.findTemplate(
         what.text) ?~ ("FIX" + "ME trying to embed a template named '" + what + "', but the template was not found. ")
-    } yield {
-      (what, Templates.checkForContentId(templateOpt))
-    }
+    } yield { (what, Templates.checkForContentId(templateOpt)) }
   } match {
     case Full((templateName, template)) => {
       val bindings: Seq[CssSel] = kids.collect {

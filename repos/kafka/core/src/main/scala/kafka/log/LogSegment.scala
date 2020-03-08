@@ -269,9 +269,8 @@ class LogSegment(
   @threadsafe
   def nextOffset(): Long = {
     val ms = read(index.lastOffset, None, log.sizeInBytes)
-    if (ms == null) {
-      baseOffset
-    } else {
+    if (ms == null) { baseOffset }
+    else {
       ms.messageSet.lastOption match {
         case None       => baseOffset
         case Some(last) => last.nextOffset
@@ -302,15 +301,11 @@ class LogSegment(
 
     try log.renameTo(
       new File(CoreUtils.replaceSuffix(log.file.getPath, oldSuffix, newSuffix)))
-    catch {
-      case e: IOException => throw kafkaStorageException("log", e)
-    }
+    catch { case e: IOException => throw kafkaStorageException("log", e) }
     try index.renameTo(
       new File(
         CoreUtils.replaceSuffix(index.file.getPath, oldSuffix, newSuffix)))
-    catch {
-      case e: IOException => throw kafkaStorageException("index", e)
-    }
+    catch { case e: IOException => throw kafkaStorageException("index", e) }
   }
 
   /**

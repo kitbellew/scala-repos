@@ -62,11 +62,10 @@ object ServerSSLEngine {
     var noArgsConstructor: Constructor[_] = null
     for (constructor <- providerClass.getConstructors) {
       val parameterTypes = constructor.getParameterTypes
-      if (parameterTypes.length == 0) {
-        noArgsConstructor = constructor
-      } else if (parameterTypes.length == 1 && classOf[
-                   play.server.ApplicationProvider]
-                   .isAssignableFrom(parameterTypes(0))) {
+      if (parameterTypes.length == 0) { noArgsConstructor = constructor }
+      else if (parameterTypes.length == 1 && classOf[
+                 play.server.ApplicationProvider]
+                 .isAssignableFrom(parameterTypes(0))) {
         providerArgsConstructor = constructor
       } else if (parameterTypes.length == 2 &&
                  classOf[ServerConfig].isAssignableFrom(parameterTypes(0)) &&
@@ -134,9 +133,8 @@ object ServerSSLEngine {
         applicationProvider)
     } else if (providerArgsConstructor != null) {
       providerArgsConstructor.newInstance(applicationProvider)
-    } else if (noArgsConstructor != null) {
-      noArgsConstructor.newInstance()
-    } else {
+    } else if (noArgsConstructor != null) { noArgsConstructor.newInstance() }
+    else {
       throw new ClassCastException(
         "No constructor with (appProvider:play.core.ApplicationProvider) or no-args constructor defined!")
     }

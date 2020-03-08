@@ -36,9 +36,7 @@ trait DoubleTypedField extends NumericTypedField[Double] {
         setBox(Empty)
       else
         setBox(Failure(notOptionalErrorMessage))
-    } else {
-      setBox(tryo(java.lang.Double.parseDouble(s)))
-    }
+    } else { setBox(tryo(java.lang.Double.parseDouble(s))) }
 
   def defaultValue = 0.0
 

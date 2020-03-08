@@ -55,9 +55,7 @@ object ClearNodes extends Function1[NodeSeq, NodeSeq] {
 
 private final case class AggregatedCssBindFunc(binds: List[CssBind])
     extends CssSel {
-  private lazy val (good, bad) = binds.partition {
-    _.css.isDefined
-  }
+  private lazy val (good, bad) = binds.partition { _.css.isDefined }
   private lazy val selectorMap = new SelectorMap(good)
 
   def apply(in: NodeSeq): NodeSeq = bad match {
@@ -223,9 +221,8 @@ private class SelectorMap(binds: List[CssBind])
               case _                       => true
             }
 
-            val newAttr = if (calced.isEmpty) {
-              filtered
-            } else {
+            val newAttr = if (calced.isEmpty) { filtered }
+            else {
               val flat: NodeSeq = calced.flatMap(a => a)
               new UnprefixedAttribute(attr, flat, filtered)
             }
@@ -237,9 +234,8 @@ private class SelectorMap(binds: List[CssBind])
             val org: NodeSeq = elem.attribute(attr).getOrElse(NodeSeq.Empty)
             val calced = bind.calculate(elem).toList.map(findElemIfThereIsOne _)
 
-            if (calced.isEmpty) {
-              elem
-            } else {
+            if (calced.isEmpty) { elem }
+            else {
               val filtered = elem.attributes.filter {
                 case up: UnprefixedAttribute => up.key != attr
                 case _                       => true
@@ -254,9 +250,7 @@ private class SelectorMap(binds: List[CssBind])
                     calced.dropRight(1).flatMap(a => a ++ Text(" ")) ++
                     calced.takeRight(1).head
                 }
-              } else {
-                org ++ (calced.flatMap(a => a): NodeSeq)
-              }
+              } else { org ++ (calced.flatMap(a => a): NodeSeq) }
 
               val newAttr = new UnprefixedAttribute(attr, flat, filtered)
 
@@ -380,9 +374,7 @@ private class SelectorMap(binds: List[CssBind])
           pos = pos.next
         }
 
-        for {
-          (k, v) <- oldAttrs
-        } {
+        for { (k, v) <- oldAttrs } {
           import Helpers._
           k.charSplit(':') match {
             case p :: k :: _ =>
@@ -484,9 +476,7 @@ private class SelectorMap(binds: List[CssBind])
               val calcedList = calced.toList
               val availableIds = (attrs.get("id").toList ++
                 calcedList
-                  .collect({
-                    case e: Elem => e.attribute("id")
-                  })
+                  .collect({ case e: Elem => e.attribute("id") })
                   .flatten
                   .map(_.toString)).toSet
               val merged =
@@ -534,9 +524,7 @@ private class SelectorMap(binds: List[CssBind])
     }
 
     final def forElem(in: Elem, buff: ListBuffer[CssBind]) {
-      for {
-        bind <- elemMap.get(in.label)
-      } buff ++= bind
+      for { bind <- elemMap.get(in.label) } buff ++= bind
     }
 
     final def forStar(buff: ListBuffer[CssBind], depth: Int) {
@@ -692,9 +680,8 @@ private class SelectorMap(binds: List[CssBind])
 
   final def apply(in: NodeSeq): NodeSeq = selectThis match {
     case Full(_) => {
-      try {
-        run(in, true, 0)
-      } catch {
+      try { run(in, true, 0) }
+      catch {
         case RetryWithException(newElem) =>
           run(newElem, false, 0)
       }

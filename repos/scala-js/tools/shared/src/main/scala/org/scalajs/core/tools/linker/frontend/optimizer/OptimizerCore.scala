@@ -160,9 +160,8 @@ private[optimizer] abstract class OptimizerCore(
         Skip()
       case Block(stats) =>
         val (before, from) = stats.span(!_.isInstanceOf[StoreModule])
-        if (from.isEmpty) {
-          body
-        } else {
+        if (from.isEmpty) { body }
+        else {
           val after = from.tail
           val afterIsTrivial = after.forall {
             case Assign(Select(This(), Ident(_, _)), _: Literal | _: VarRef) =>
@@ -201,9 +200,8 @@ private[optimizer] abstract class OptimizerCore(
   private def freshNameGeneric(
       nameUsed: String => Boolean,
       base: String): String = {
-    if (!nameUsed(base) && !isReserved(base)) {
-      base
-    } else {
+    if (!nameUsed(base) && !isReserved(base)) { base }
+    else {
       var i = 1
       while (nameUsed(base + "$" + i))
         i += 1
@@ -216,9 +214,8 @@ private[optimizer] abstract class OptimizerCore(
 
   private def tryOrRollback(body: CancelFun => TailRec[Tree])(
       fallbackFun: () => TailRec[Tree]): TailRec[Tree] = {
-    if (disableOptimisticOptimizations) {
-      fallbackFun()
-    } else {
+    if (disableOptimisticOptimizations) { fallbackFun() }
+    else {
       val trampolineId = curTrampolineId
       val savedUsedLocalNames = usedLocalNames.toMap
       val savedUsedLabelNames = usedLabelNames.toSet
@@ -341,9 +338,7 @@ private[optimizer] abstract class OptimizerCore(
           case None =>
             scope.env.labelInfos.get("")
         }
-        optInfo.fold[Tree] {
-          Return(transformExpr(expr), None)
-        } { info =>
+        optInfo.fold[Tree] { Return(transformExpr(expr), None) } { info =>
           val newOptLabel = Some(Ident(info.newName, None))
           if (!info.acceptRecords) {
             val newExpr = transformExpr(expr)
@@ -552,9 +547,7 @@ private[optimizer] abstract class OptimizerCore(
         transformExpr(expr)
 
       case AsInstanceOf(expr, cls) =>
-        trampoline {
-          pretransformExpr(tree)(finishTransform(isStat))
-        }
+        trampoline { pretransformExpr(tree)(finishTransform(isStat)) }
 
       case Unbox(arg, charCode) =>
         trampoline {
@@ -640,9 +633,7 @@ private[optimizer] abstract class OptimizerCore(
       // Atomic expressions
 
       case _: VarRef | _: This =>
-        trampoline {
-          pretransformExpr(tree)(finishTransform(isStat))
-        }
+        trampoline { pretransformExpr(tree)(finishTransform(isStat)) }
 
       case Closure(captureParams, params, body, captureValues) =>
         transformClosureCommon(
@@ -1315,9 +1306,7 @@ private[optimizer] abstract class OptimizerCore(
                   target,
                   isStat,
                   usePreTransform)(cont)
-              } else {
-                treeNotInlined
-              }
+              } else { treeNotInlined }
             } else {
               if (impls.forall(_.isForwarder)) {
                 val reference = impls.head
@@ -1511,9 +1500,7 @@ private[optimizer] abstract class OptimizerCore(
               target,
               isStat,
               usePreTransform)(cont)
-          } else {
-            treeNotInlined0(targs.map(finishTransformExpr))
-          }
+          } else { treeNotInlined0(targs.map(finishTransformExpr)) }
         }
       }
     }
@@ -2026,9 +2013,7 @@ private[optimizer] abstract class OptimizerCore(
         (
           RecordType.Field(name, originalName, tpe, mutable),
           value) <- recordType.fields zip tinitialFieldValues
-      } yield {
-        Binding(name, originalName, tpe, mutable, value)
-      }
+      } yield { Binding(name, originalName, tpe, mutable, value) }
 
       withNewLocalDefs(initialFieldBindings) {
         (initialFieldLocalDefList, cont1) =>
@@ -2091,9 +2076,7 @@ private[optimizer] abstract class OptimizerCore(
       (
         ParamDef(Ident(name, originalName), tpe, mutable, _),
         arg) <- formals zip args
-    } yield {
-      Binding(name, originalName, tpe, mutable, arg)
-    }
+    } yield { Binding(name, originalName, tpe, mutable, arg) }
 
     withBindings(argsBindings) { (bodyScope, cont1) =>
       val thisLocalDef = LocalDef(
@@ -2392,9 +2375,7 @@ private[optimizer] abstract class OptimizerCore(
       case LongToInt =>
         trampoline {
           pretransformExpr(arg) { (targ) =>
-            TailCalls.done {
-              foldUnaryOp(op, finishTransformOptLongExpr(targ))
-            }
+            TailCalls.done { foldUnaryOp(op, finishTransformOptLongExpr(targ)) }
           }
         }
 
@@ -3509,9 +3490,7 @@ private[optimizer] abstract class OptimizerCore(
               val refinedOrigType =
                 origTypes.reduce(constrainedLub(_, _, resultType))
               actualTypes
-                .collectFirst {
-                  case actualType: RecordType => actualType
-                }
+                .collectFirst { case actualType: RecordType => actualType }
                 .fold[TailRec[Tree]] {
                   // None of the returned types are records
                   cont(
@@ -3627,9 +3606,7 @@ private[optimizer] abstract class OptimizerCore(
     withNewLocalDefs(bindings) { (localDefs, cont1) =>
       val newMappings = for {
         (binding, localDef) <- bindings zip localDefs
-      } yield {
-        binding.name -> localDef
-      }
+      } yield { binding.name -> localDef }
       buildInner(scope.withEnv(scope.env.withLocalDefs(newMappings)), cont1)
     }(cont)
   }
@@ -3684,9 +3661,8 @@ private[optimizer] abstract class OptimizerCore(
         buildInner(
           localDef,
           { tinner =>
-            if (used.value) {
-              cont(PreTransBlock(varDef :: Nil, tinner))
-            } else {
+            if (used.value) { cont(PreTransBlock(varDef :: Nil, tinner)) }
+            else {
               tinner match {
                 case PreTransLocalDef(`localDef`) =>
                   cont(value)
@@ -3746,9 +3722,8 @@ private[optimizer] abstract class OptimizerCore(
                 optValueTree.fold(valueTree)(_()))
             }(cont1)
           }
-          if (mutable) {
-            doDoBuildInner(None)(cont)
-          } else
+          if (mutable) { doDoBuildInner(None)(cont) }
+          else
             (valueTree match {
               case LongFromInt(arg) =>
                 withNewLocalDef(
@@ -3782,11 +3757,9 @@ private[optimizer] abstract class OptimizerCore(
       }
     }
 
-    if (value.tpe.isNothingType) {
-      cont(value)
-    } else if (mutable) {
-      withDedicatedVar(RefinedType(declaredType))
-    } else {
+    if (value.tpe.isNothingType) { cont(value) }
+    else if (mutable) { withDedicatedVar(RefinedType(declaredType)) }
+    else {
       val refinedType = value.tpe
       value match {
         case PreTransBlock(stats, result) =>
@@ -3864,9 +3837,8 @@ private[optimizer] abstract class OptimizerCore(
       var rec = () => tailrec
 
       while (true) {
-        try {
-          return rec().result
-        } catch {
+        try { return rec().result }
+        catch {
           case e: RollbackException if e.trampolineId == myTrampolineId =>
             rollbacksCount += 1
             if (rollbacksCount > MaxRollbacksPerMethod)
@@ -3884,9 +3856,7 @@ private[optimizer] abstract class OptimizerCore(
       }
 
       sys.error("Reached end of infinite loop")
-    } finally {
-      curTrampolineId -= 1
-    }
+    } finally { curTrampolineId -= 1 }
   }
 }
 

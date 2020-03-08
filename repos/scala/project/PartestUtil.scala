@@ -106,16 +106,12 @@ object PartestUtil {
                     .isDefined
                 }
             }
-          } catch {
-            case _: Throwable => Nil
-          }
+          } catch { case _: Throwable => Nil }
         val matchingFileName =
           try {
             val filter = GlobFilter("*" + x + "*")
             testFiles.allTestCases.filter(x => filter.accept(x._1.name))
-          } catch {
-            case t: Throwable => Nil
-          }
+          } catch { case t: Throwable => Nil }
         (matchingFileContent ++ matchingFileName).map(_._2).distinct.sorted
       }
 

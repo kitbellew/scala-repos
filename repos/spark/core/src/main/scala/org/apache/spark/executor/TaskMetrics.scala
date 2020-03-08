@@ -50,9 +50,7 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
   import InternalAccumulator._
 
   // Needed for Java tests
-  def this() {
-    this(InternalAccumulator.createAll())
-  }
+  def this() { this(InternalAccumulator.createAll()) }
 
   /**
     * All accumulators registered with this task.
@@ -213,9 +211,8 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
       // this task, we return a new dummy one to avoid clobbering the values of the old metrics.
       // In the future we should try to store input metrics from all different read methods at
       // the same time (SPARK-5225).
-      if (metrics.readMethod == readMethod) {
-        metrics
-      } else {
+      if (metrics.readMethod == readMethod) { metrics }
+      else {
         val m = new InputMetrics
         m.setReadMethod(readMethod)
         m
@@ -236,9 +233,7 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
   def outputMetrics: Option[OutputMetrics] = _outputMetrics
 
   @deprecated("setting OutputMetrics is for internal use only", "2.0.0")
-  def outputMetrics_=(om: Option[OutputMetrics]): Unit = {
-    _outputMetrics = om
-  }
+  def outputMetrics_=(om: Option[OutputMetrics]): Unit = { _outputMetrics = om }
 
   /**
     * Get or create a new [[OutputMetrics]] associated with this task.

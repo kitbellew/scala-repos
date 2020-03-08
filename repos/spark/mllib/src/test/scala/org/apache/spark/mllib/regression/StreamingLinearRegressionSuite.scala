@@ -34,9 +34,7 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
 
   override def afterFunction() {
     super.afterFunction()
-    if (ssc != null) {
-      ssc.stop()
-    }
+    if (ssc != null) { ssc.stop() }
   }
 
   // Assert that two values are equal within tolerance epsilon

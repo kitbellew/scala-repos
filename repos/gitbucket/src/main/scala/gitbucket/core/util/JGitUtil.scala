@@ -47,9 +47,7 @@ object JGitUtil {
       commitCount: Int,
       branchList: List[String],
       tags: List[TagInfo]) {
-    def this(owner: String, name: String) = {
-      this(owner, name, 0, Nil, Nil)
-    }
+    def this(owner: String, name: String) = { this(owner, name, 0, Nil, Nil) }
   }
 
   /**
@@ -118,9 +116,8 @@ object JGitUtil {
     val summary = getSummaryMessage(fullMessage, shortMessage)
 
     val description = defining(fullMessage.trim.indexOf("\n")) { i =>
-      if (i >= 0) {
-        Some(fullMessage.trim.substring(i).trim)
-      } else None
+      if (i >= 0) { Some(fullMessage.trim.substring(i).trim) }
+      else None
     }
 
     def isDifferentFromAuthor: Boolean =
@@ -303,9 +300,7 @@ object JGitUtil {
                     name + "/" + walk.getNameString,
                     None,
                     commit)).filterNot(_ => walk.next())
-              } else {
-                None
-              }
+              } else { None }
             }) match {
               case Some(child) => simplifyPath(child)
               case _           => tuple
@@ -327,9 +322,8 @@ object JGitUtil {
               Map[RevCommit, RevCommit])],
           revIterator: java.util.Iterator[RevCommit])
           : List[(ObjectId, FileMode, String, Option[String], RevCommit)] = {
-        if (restList.isEmpty) {
-          result
-        } else if (!revIterator.hasNext) { // maybe, revCommit has only 1 log. other case, restList be empty
+        if (restList.isEmpty) { result }
+        else if (!revIterator.hasNext) { // maybe, revCommit has only 1 log. other case, restList be empty
           result ++ restList.map {
             case (tuple, map) =>
               tupleAdd(tuple, map.values.headOption.getOrElse(revCommit))
@@ -356,9 +350,7 @@ object JGitUtil {
                   case (tuple, _) =>
                     if (newParentsMap.isEmpty) {
                       nextResult +:= tupleAdd(tuple, newCommit)
-                    } else {
-                      nextRest +:= tuple -> newParentsMap
-                    }
+                    } else { nextRest +:= tuple -> newParentsMap }
                 }
               }
             }
@@ -367,9 +359,7 @@ object JGitUtil {
                 val restParentsMap = parentsMap - newCommit
                 if (restParentsMap.isEmpty) {
                   nextResult +:= tupleAdd(tuple, parentsMap(newCommit))
-                } else {
-                  nextRest +:= tuple -> restParentsMap
-                }
+                } else { nextRest +:= tuple -> restParentsMap }
             }
             findLastCommits(nextResult, nextRest, revIterator)
           }
@@ -461,9 +451,7 @@ object JGitUtil {
         treeWalk.setRecursive(true)
         var ret: List[String] = Nil
         if (treeWalk != null) {
-          while (treeWalk.next()) {
-            ret +:= treeWalk.getPathString
-          }
+          while (treeWalk.next()) { ret +:= treeWalk.getPathString }
         }
         ret.reverse
       }
@@ -508,9 +496,8 @@ object JGitUtil {
 
     using(new RevWalk(git.getRepository)) { revWalk =>
       defining(git.getRepository.resolve(revision)) { objectId =>
-        if (objectId == null) {
-          Left(s"${revision} can't be resolved.")
-        } else {
+        if (objectId == null) { Left(s"${revision} can't be resolved.") }
+        else {
           revWalk.markStart(revWalk.parseCommit(objectId))
           if (path.nonEmpty) {
             revWalk.setTreeFilter(
@@ -537,9 +524,7 @@ object JGitUtil {
           val revCommit = i.next
           if (endCondition(revCommit)) {
             if (includesLastCommit) logs :+ new CommitInfo(revCommit) else logs
-          } else {
-            getCommitLog(i, logs :+ new CommitInfo(revCommit))
-          }
+          } else { getCommitLog(i, logs :+ new CommitInfo(revCommit)) }
         }
         case false => logs
       }
@@ -622,9 +607,7 @@ object JGitUtil {
         val oldCommit = if (revCommit.getParentCount >= 2) {
           // merge commit
           revCommit.getParents.head
-        } else {
-          commits(1)
-        }
+        } else { commits(1) }
         (
           getDiffs(git, oldCommit.getName, id, fetchContent),
           Some(oldCommit.getName))
@@ -876,9 +859,7 @@ object JGitUtil {
     newCommit.setCommitter(new PersonIdent(fullName, mailAddress))
     newCommit.setAuthor(new PersonIdent(fullName, mailAddress))
     newCommit.setMessage(message)
-    if (headId != null) {
-      newCommit.setParentIds(List(headId).asJava)
-    }
+    if (headId != null) { newCommit.setParentIds(List(headId).asJava) }
     newCommit.setTreeId(treeId)
 
     val newHeadId = inserter.insert(newCommit)
@@ -993,15 +974,10 @@ object JGitUtil {
       using(git.getRepository.getObjectDatabase) { db =>
         val loader = db.open(id)
         if (loader.isLarge || (fetchLargeFile == false && FileUtil.isLarge(
-              loader.getSize))) {
-          None
-        } else {
-          Some(loader.getBytes)
-        }
+              loader.getSize))) { None }
+        else { Some(loader.getBytes) }
       }
-    } catch {
-      case e: MissingObjectException => None
-    }
+    } catch { case e: MissingObjectException => None }
 
   /**
     * Get objectLoader of the given object id from the Git repository.
@@ -1015,22 +991,17 @@ object JGitUtil {
       f: ObjectLoader => A): Option[A] =
     try {
       using(git.getRepository.getObjectDatabase) { db => Some(f(db.open(id))) }
-    } catch {
-      case e: MissingObjectException => None
-    }
+    } catch { case e: MissingObjectException => None }
 
   /**
     * Returns all commit id in the specified repository.
     */
   def getAllCommitIds(git: Git): Seq[String] =
-    if (isEmpty(git)) {
-      Nil
-    } else {
+    if (isEmpty(git)) { Nil }
+    else {
       val existIds = new scala.collection.mutable.ListBuffer[String]()
       val i = git.log.all.call.iterator
-      while (i.hasNext) {
-        existIds += i.next.name
-      }
+      while (i.hasNext) { existIds += i.next.name }
       existIds.toSeq
     }
 
@@ -1141,26 +1112,20 @@ object JGitUtil {
       val defaultObject =
         if (repo.getAllRefs.keySet().contains(defaultBranch)) {
           repo.resolve(defaultBranch)
-        } else {
-          git.branchList().call().iterator().next().getObjectId
-        }
+        } else { git.branchList().call().iterator().next().getObjectId }
 
       git.branchList.call.asScala.map { ref =>
         val walk = new RevWalk(repo)
         try {
           val defaultCommit = walk.parseCommit(defaultObject)
           val branchName = ref.getName.stripPrefix("refs/heads/")
-          val branchCommit = if (branchName == defaultBranch) {
-            defaultCommit
-          } else {
-            walk.parseCommit(ref.getObjectId)
-          }
+          val branchCommit = if (branchName == defaultBranch) { defaultCommit }
+          else { walk.parseCommit(ref.getObjectId) }
           val when = branchCommit.getCommitterIdent.getWhen
           val committer = branchCommit.getCommitterIdent.getName
           val committerEmail = branchCommit.getCommitterIdent.getEmailAddress
-          val mergeInfo = if (origin && branchName == defaultBranch) {
-            None
-          } else {
+          val mergeInfo = if (origin && branchName == defaultBranch) { None }
+          else {
             walk.reset()
             walk.setRevFilter(RevFilter.MERGE_BASE)
             walk.markStart(branchCommit)
@@ -1182,9 +1147,7 @@ object JGitUtil {
             committerEmail,
             mergeInfo,
             ref.getObjectId.name)
-        } finally {
-          walk.dispose();
-        }
+        } finally { walk.dispose(); }
       }
     }
   }

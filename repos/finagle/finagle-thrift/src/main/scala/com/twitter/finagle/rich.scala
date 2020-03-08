@@ -41,32 +41,23 @@ private[twitter] object ThriftUtil {
 
   def findClass1(name: String): Option[Class[_]] =
     try Some(Class.forName(name))
-    catch {
-      case _: ClassNotFoundException => None
-    }
+    catch { case _: ClassNotFoundException => None }
 
   def findClass[A](name: String): Option[Class[A]] =
-    for {
-      cls <- findClass1(name)
-    } yield cls.asInstanceOf[Class[A]]
+    for { cls <- findClass1(name) } yield cls.asInstanceOf[Class[A]]
 
   def findConstructor[A](
       clz: Class[A],
       paramTypes: Class[_]*): Option[Constructor[A]] =
-    try {
-      Some(clz.getConstructor(paramTypes: _*))
-    } catch {
-      case _: NoSuchMethodException => None
-    }
+    try { Some(clz.getConstructor(paramTypes: _*)) }
+    catch { case _: NoSuchMethodException => None }
 
   def findMethod(
       clz: Class[_],
       name: String,
       params: Class[_]*): Option[Method] =
     try Some(clz.getMethod(name, params: _*))
-    catch {
-      case _: NoSuchMethodException => None
-    }
+    catch { case _: NoSuchMethodException => None }
 
   def findRootWithSuffix(str: String, suffix: String): Option[String] =
     if (str.endsWith(suffix))
@@ -82,9 +73,7 @@ private[twitter] object ThriftUtil {
       try {
         if (meth.invoke(null, k).asInstanceOf[Boolean]) Some(k)
         else None
-      } catch {
-        case NonFatal(_) => None
-      }
+      } catch { case NonFatal(_) => None }
     }
 
     f getOrElse Function.const(None)

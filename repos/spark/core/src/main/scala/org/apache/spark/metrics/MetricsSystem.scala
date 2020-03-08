@@ -106,17 +106,12 @@ private[spark] class MetricsSystem private (
   }
 
   def stop() {
-    if (running) {
-      sinks.foreach(_.stop)
-    } else {
-      logWarning("Stopping a MetricsSystem that is not running")
-    }
+    if (running) { sinks.foreach(_.stop) }
+    else { logWarning("Stopping a MetricsSystem that is not running") }
     running = false
   }
 
-  def report() {
-    sinks.foreach(_.report())
-  }
+  def report() { sinks.foreach(_.report()) }
 
   /**
     * Build a name that uniquely identifies each metric source.
@@ -208,9 +203,7 @@ private[spark] class MetricsSystem private (
             .newInstance(kv._2, registry, securityMgr)
           if (kv._1 == "servlet") {
             metricsServlet = Some(sink.asInstanceOf[MetricsServlet])
-          } else {
-            sinks += sink.asInstanceOf[Sink]
-          }
+          } else { sinks += sink.asInstanceOf[Sink] }
         } catch {
           case e: Exception => {
             logError("Sink class " + classPath + " cannot be instantiated")

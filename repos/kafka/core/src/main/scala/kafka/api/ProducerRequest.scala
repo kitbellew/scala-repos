@@ -139,9 +139,7 @@ case class ProducerRequest(
 
   def numPartitions = data.size
 
-  override def toString(): String = {
-    describe(true)
-  }
+  override def toString(): String = { describe(true) }
 
   override def handleError(
       e: Throwable,
@@ -182,7 +180,5 @@ case class ProducerRequest(
     producerRequest.toString()
   }
 
-  def emptyData() {
-    data.clear()
-  }
+  def emptyData() { data.clear() }
 }

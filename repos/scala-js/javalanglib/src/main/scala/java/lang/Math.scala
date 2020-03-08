@@ -39,9 +39,7 @@ object Math {
       // js.Math.round(a) rounds up but we have to round to even
       if (rounded % 2.0 == 0.0) rounded
       else rounded - 1.0
-    } else {
-      rounded
-    }
+    } else { rounded }
   }
 
   @inline def round(a: scala.Float): scala.Int = js.Math.round(a).toInt
@@ -83,9 +81,8 @@ object Math {
   }
 
   def cbrt(a: scala.Double): scala.Double = {
-    if (a == 0 || a.isNaN) {
-      a
-    } else {
+    if (a == 0 || a.isNaN) { a }
+    else {
       val sign = if (a < 0.0) -1.0 else 1.0
       val value = sign * a
 

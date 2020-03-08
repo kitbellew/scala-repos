@@ -1251,9 +1251,8 @@ private[remote] class EndpointReader(
 
   private def tryDecodeMessageAndAck(
       pdu: ByteString): (Option[Ack], Option[Message]) =
-    try {
-      codec.decodeMessage(pdu, provider, localAddress)
-    } catch {
+    try { codec.decodeMessage(pdu, provider, localAddress) }
+    catch {
       case NonFatal(e) ⇒
         throw new EndpointException("Error while decoding incoming Akka PDU", e)
     }

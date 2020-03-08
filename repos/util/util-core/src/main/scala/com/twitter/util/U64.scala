@@ -46,11 +46,8 @@ class RichU64Long(l64: Long) {
 
 class RichU64ByteArray(bytes: Array[Byte]) {
   private def deSign(b: Byte): Int = {
-    if (b < 0) {
-      b + 256
-    } else {
-      b
-    }
+    if (b < 0) { b + 256 }
+    else { b }
   }
 
   // Note: this is padded, so we have lexical ordering.
@@ -77,9 +74,7 @@ class RichU64String(string: String) {
 
   if (string.length > 16) {
     throw new NumberFormatException("Number longer than 16 hex characters")
-  } else if (string.isEmpty) {
-    throw new NumberFormatException("Empty string")
-  }
+  } else if (string.isEmpty) { throw new NumberFormatException("Empty string") }
   string.foreach(validateHexDigit)
 
   def toU64ByteArray: Array[Byte] = {

@@ -128,9 +128,7 @@ abstract class RemoteRestartedQuarantinedSpec
               .warning(
                 pattern = "The remote system has quarantined this system",
                 occurrences = 1)
-              .intercept {
-                ref ! "boo!"
-              }
+              .intercept { ref ! "boo!" }
           }
         }
 

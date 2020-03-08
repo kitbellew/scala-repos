@@ -16,9 +16,7 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
             'col1,
             'col2))
       } When { pipe: RichPipe =>
-        {
-          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
-        }
+        { pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" } }
       } Then { buffer: Buffer[(String, String, String)] =>
         {
           buffer.forall({
@@ -35,9 +33,7 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
             'col1,
             'col2))
       } When { pipe: Pipe =>
-        {
-          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
-        }
+        { pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" } }
       } Then { buffer: Buffer[(String, String, String)] =>
         {
           buffer.forall({
@@ -54,9 +50,7 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
             'col1,
             'col2))
       } When { pipe: RichPipe =>
-        {
-          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
-        }
+        { pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" } }
       } Then { buffer: Buffer[Tuple] =>
         {
           buffer.forall(tuple =>
@@ -66,12 +60,11 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
     }
 
     "work with input as simple type" in {
-      Given {
-        List("col1_1", "col1_2") withSchema ('col1)
-      } When { pipe: RichPipe =>
-        {
-          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
-        }
+      Given { List("col1_1", "col1_2") withSchema ('col1) } When {
+        pipe: RichPipe =>
+          {
+            pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
+          }
       } Then { buffer: Buffer[Tuple] =>
         {
           buffer.forall(tuple =>
@@ -86,9 +79,7 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
           new Tuple("col1_1", "col2_1"),
           new Tuple("col1_2", "col2_2")) withSchema (('col1, 'col2))
       } When { pipe: RichPipe =>
-        {
-          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
-        }
+        { pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" } }
       } Then { buffer: Buffer[Tuple] =>
         {
           buffer.forall(tuple =>

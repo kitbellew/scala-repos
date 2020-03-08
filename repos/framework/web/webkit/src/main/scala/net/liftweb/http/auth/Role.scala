@@ -127,9 +127,7 @@ trait Role {
 
   override def toString = {
     var str = "Role(" + name;
-    for (role <- childs) {
-      str = str + ", " + role.toString
-    }
+    for (role <- childs) { str = str + ", " + role.toString }
     str + ")"
   }
 }

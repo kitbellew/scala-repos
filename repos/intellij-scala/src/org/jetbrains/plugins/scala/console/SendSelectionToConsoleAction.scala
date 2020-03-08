@@ -61,9 +61,7 @@ class SendSelectionToConsoleAction extends AnAction {
         case _: ScalaFile => enable()
         case _            => disable()
       }
-    } catch {
-      case e: Exception => disable()
-    }
+    } catch { case e: Exception => disable() }
   }
 
   def actionPerformed(e: AnActionEvent) {

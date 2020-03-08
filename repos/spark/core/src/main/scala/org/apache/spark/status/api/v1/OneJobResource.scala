@@ -36,9 +36,7 @@ private[v1] class OneJobResource(ui: SparkUI) {
       .map { job =>
         AllJobsResource.convertJobData(job, ui.jobProgressListener, false)
       }
-      .getOrElse {
-        throw new NotFoundException("unknown job: " + jobId)
-      }
+      .getOrElse { throw new NotFoundException("unknown job: " + jobId) }
   }
 
 }

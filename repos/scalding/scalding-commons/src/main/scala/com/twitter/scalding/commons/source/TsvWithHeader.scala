@@ -50,11 +50,8 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
     new Fields(names: _*)
   }
 
-  override val fields = if (f == Fields.UNKNOWN) {
-    fieldsFromHeaderFile
-  } else {
-    f
-  }
+  override val fields = if (f == Fields.UNKNOWN) { fieldsFromHeaderFile }
+  else { f }
 
   // TODO: move this method to make it a util function.
   def readFromFile(filename: String)(implicit mode: Mode) = {
@@ -64,21 +61,12 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
           val pt = new Path(filename)
           val fs = pt.getFileSystem(conf)
           fs.open(pt).readUTF
-        } catch {
-          case e: IOException => {
-            throw new RuntimeException(e)
-          }
-        }
+        } catch { case e: IOException => { throw new RuntimeException(e) } }
       }
       // Local mode
       case _ => {
-        try {
-          Files.toString(new File(filename), Charsets.UTF_8)
-        } catch {
-          case e: IOException => {
-            throw new RuntimeException(e)
-          }
-        }
+        try { Files.toString(new File(filename), Charsets.UTF_8) }
+        catch { case e: IOException => { throw new RuntimeException(e) } }
       }
     }
   }
@@ -95,11 +83,7 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
 
           br.write(text)
           br.close()
-        } catch {
-          case e: IOException => {
-            throw new RuntimeException(e)
-          }
-        }
+        } catch { case e: IOException => { throw new RuntimeException(e) } }
       }
       // Local mode
       case _ => {
@@ -109,11 +93,7 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
 
           br.write(text)
           br.close()
-        } catch {
-          case e: IOException => {
-            throw new RuntimeException(e)
-          }
-        }
+        } catch { case e: IOException => { throw new RuntimeException(e) } }
       }
     }
   }

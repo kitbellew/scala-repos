@@ -12,9 +12,6 @@ object Test extends App {
   assert(matchWhatever(1) == 1)
   assert(matchWhatever("1") == "1")
 
-  try {
-    matchWhateverCCE("1"): Whatever.type
-  } catch {
-    case _: ClassCastException => println("whoops")
-  }
+  try { matchWhateverCCE("1"): Whatever.type }
+  catch { case _: ClassCastException => println("whoops") }
 }

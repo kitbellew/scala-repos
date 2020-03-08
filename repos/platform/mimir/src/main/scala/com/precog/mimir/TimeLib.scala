@@ -151,17 +151,15 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           case (c: StrColumn) =>
             new DateColumn {
               def isDefinedAt(row: Int): Boolean =
-                if (!c.isDefinedAt(row)) {
-                  false
-                } else {
+                if (!c.isDefinedAt(row)) { false }
+                else {
                   val s = c(row)
                   isValidISO(s) || isDateTimeFlexibly(s)
                 }
               def apply(row: Int) = {
                 val s = c(row)
-                try {
-                  parseDateTime(s, true)
-                } catch {
+                try { parseDateTime(s, true) }
+                catch {
                   case e: IllegalArgumentException =>
                     parseDateTimeFlexibly(s)
                 }

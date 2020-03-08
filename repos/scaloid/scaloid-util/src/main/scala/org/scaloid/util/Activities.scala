@@ -38,7 +38,5 @@ trait PreventRotateActivity extends SActivity {
       else SCREEN_ORIENTATION_LANDSCAPE)
   }
 
-  onPause {
-    setRequestedOrientation(SCREEN_ORIENTATION_UNSPECIFIED)
-  }
+  onPause { setRequestedOrientation(SCREEN_ORIENTATION_UNSPECIFIED) }
 }

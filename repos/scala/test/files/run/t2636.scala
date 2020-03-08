@@ -35,6 +35,11 @@ object Test {
     assert(arr.mkString == "bob")
     assert(alen() == 3)
     assert(arrApply(arr, 1) == "o")
-    assert(arrApply(new { def apply(x: Int) = "tom" }, -100) == "tom")
+    assert(
+      arrApply(
+        new {
+          def apply(x: Int) = "tom"
+        },
+        -100) == "tom")
   }
 }

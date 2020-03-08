@@ -33,9 +33,7 @@ object TxnLocal {
       set(v)
       oldV
     }
-    def transform(f: T => T)(implicit tx: ProcTxn) {
-      set(f(apply))
-    }
+    def transform(f: T => T)(implicit tx: ProcTxn) { set(f(apply)) }
   }
 }
 

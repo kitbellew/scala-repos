@@ -33,9 +33,7 @@ class PersonController @Inject() (
   /**
     * The index action.
     */
-  def index = Action {
-    Ok(views.html.index(personForm))
-  }
+  def index = Action { Ok(views.html.index(personForm)) }
 
   /**
     * The add person action.
@@ -48,9 +46,7 @@ class PersonController @Inject() (
       // The error function. We return the index page with the error form, which will render the errors.
       // We also wrap the result in a successful future, since this action is synchronous, but we're required to return
       // a future because the person creation function returns a future.
-      errorForm => {
-        Future.successful(Ok(views.html.index(errorForm)))
-      },
+      errorForm => { Future.successful(Ok(views.html.index(errorForm))) },
       // There were no errors in the from, so create the person.
       person => {
         repo.create(person.name, person.age).map { _ =>

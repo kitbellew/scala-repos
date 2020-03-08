@@ -36,9 +36,7 @@ import comet.AsyncRenderComet
   * on a different thread, which avoids blocking the page render.
   */
 object LazyLoad extends DispatchSnippet {
-  def dispatch: DispatchIt = {
-    case _ => render _
-  }
+  def dispatch: DispatchIt = { case _ => render _ }
 
   /**
     * If you need to provide a custom `renderer` function, perhaps because you
@@ -69,9 +67,7 @@ object LazyLoad extends DispatchSnippet {
             for {
               templatePath <- S.attr("template")
               renderedTemplate <- S.eval(<lift:embed what={templatePath} />)
-            } yield {
-              renderedTemplate
-            }
+            } yield { renderedTemplate }
           } openOr {
             <div><img src="/images/ajax-loader.gif" alt="Loading"/></div>
           }
@@ -109,9 +105,7 @@ object LazyLoad extends DispatchSnippet {
     render(Replace(_, xhtml), placeholderTemplate)
   }
 
-  def render(xhtml: NodeSeq): NodeSeq = {
-    render(xhtml, Empty)
-  }
+  def render(xhtml: NodeSeq): NodeSeq = { render(xhtml, Empty) }
 
   // Helper to deal with Boxed markup.
   private def handleMarkupBox(markup: Box[NodeSeq]): NodeSeq = {

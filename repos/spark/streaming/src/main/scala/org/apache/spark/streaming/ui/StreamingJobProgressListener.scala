@@ -173,9 +173,7 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
     }
   }
 
-  def numReceivers: Int = synchronized {
-    receiverInfos.size
-  }
+  def numReceivers: Int = synchronized { receiverInfos.size }
 
   def numActiveReceivers: Int = synchronized {
     receiverInfos.count(_._2.active)
@@ -185,17 +183,11 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
     ssc.graph.getReceiverInputStreams().length - numActiveReceivers
   }
 
-  def numTotalCompletedBatches: Long = synchronized {
-    totalCompletedBatches
-  }
+  def numTotalCompletedBatches: Long = synchronized { totalCompletedBatches }
 
-  def numTotalReceivedRecords: Long = synchronized {
-    totalReceivedRecords
-  }
+  def numTotalReceivedRecords: Long = synchronized { totalReceivedRecords }
 
-  def numTotalProcessedRecords: Long = synchronized {
-    totalProcessedRecords
-  }
+  def numTotalProcessedRecords: Long = synchronized { totalProcessedRecords }
 
   def numUnprocessedBatches: Long = synchronized {
     waitingBatchUIData.size + runningBatchUIData.size
@@ -253,9 +245,7 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
           (streamId, lastReceivedBlockInfo.getOrElse(streamId, 0L))
         }.toMap
       }
-      .getOrElse {
-        streamIds.map(streamId => (streamId, 0L)).toMap
-      }
+      .getOrElse { streamIds.map(streamId => (streamId, 0L)).toMap }
   }
 
   def receiverInfo(receiverId: Int): Option[ReceiverInfo] = synchronized {

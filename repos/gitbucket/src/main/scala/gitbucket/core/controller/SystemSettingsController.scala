@@ -181,9 +181,7 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     "removed" -> trim(label("Disable", boolean()))
   )(EditGroupForm.apply)
 
-  get("/admin/system")(adminOnly {
-    html.system(flash.get("info"))
-  })
+  get("/admin/system")(adminOnly { html.system(flash.get("info")) })
 
   post("/admin/system", form)(adminOnly { form =>
     saveSystemSettings(form)
@@ -216,9 +214,7 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     html.userlist(users, members, includeRemoved)
   })
 
-  get("/admin/users/_newuser")(adminOnly {
-    html.user(None)
-  })
+  get("/admin/users/_newuser")(adminOnly { html.user(None) })
 
   post("/admin/users/_newuser", newUserForm)(adminOnly { form =>
     createAccount(
@@ -269,9 +265,7 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     } getOrElse NotFound
   })
 
-  get("/admin/users/_newgroup")(adminOnly {
-    html.usergroup(None, Nil)
-  })
+  get("/admin/users/_newgroup")(adminOnly { html.usergroup(None, Nil) })
 
   post("/admin/users/_newgroup", newGroupForm)(adminOnly { form =>
     createGroup(form.groupName, form.url)

@@ -114,9 +114,7 @@ trait WebHookService {
       s: Session,
       c: JsonFormat.Context): Unit = {
     val webHooks = getWebHooksByEvent(owner, repository, event)
-    if (webHooks.nonEmpty) {
-      makePayload.map(callWebHook(event, webHooks, _))
-    }
+    if (webHooks.nonEmpty) { makePayload.map(callWebHook(event, webHooks, _)) }
   }
 
   def callWebHook(
@@ -178,9 +176,7 @@ trait WebHookService {
             res
           } catch {
             case e: Throwable => {
-              if (!reqPromise.isCompleted) {
-                reqPromise.failure(e)
-              }
+              if (!reqPromise.isCompleted) { reqPromise.failure(e) }
               throw e
             }
           }
@@ -194,9 +190,7 @@ trait WebHookService {
         }
         (webHook, json, reqPromise.future, f)
       }
-    } else {
-      Nil
-    }
+    } else { Nil }
     // logger.debug("end callWebHook")
   }
 }
@@ -300,9 +294,9 @@ trait WebHookPullRequestService extends WebHookService {
       wht <- WebHookEvents if wht.event === WebHook.PullRequest
         .asInstanceOf[WebHook.Event]
         .bind && wht.byWebHook(wh)
-    } yield {
-      ((is, iu, pr, bu, ru), wh)
-    }).list.groupBy(_._1).mapValues(_.map(_._2))
+    } yield { ((is, iu, pr, bu, ru), wh) }).list
+      .groupBy(_._1)
+      .mapValues(_.map(_._2))
 
   def callPullRequestWebHookByRequestBranch(
       action: String,

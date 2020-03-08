@@ -52,9 +52,7 @@ class HakkerStatusTest
   // Junit @Before and @After can be used as well
 
   @Before
-  def setupAkkaTestkit() {
-    testProbe = new TestProbe(actorSystem)
-  }
+  def setupAkkaTestkit() { testProbe = new TestProbe(actorSystem) }
 
   @Test
   def verifyObtainingAHakkerViaTheTheDiningHakkersService() {

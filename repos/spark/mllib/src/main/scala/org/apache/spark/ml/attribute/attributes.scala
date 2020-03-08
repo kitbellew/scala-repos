@@ -83,11 +83,8 @@ sealed abstract class Attribute extends Serializable {
     * attributes, the type info is included.
     */
   private[attribute] def toMetadataImpl(): Metadata = {
-    if (attrType == AttributeType.Numeric) {
-      toMetadataImpl(withType = false)
-    } else {
-      toMetadataImpl(withType = true)
-    }
+    if (attrType == AttributeType.Numeric) { toMetadataImpl(withType = false) }
+    else { toMetadataImpl(withType = true) }
   }
 
   /** Converts to ML metadata with some existing metadata. */
@@ -140,14 +137,9 @@ private[attribute] trait AttributeFactory {
     val mlAttr = AttributeKeys.ML_ATTR
     if (metadata.contains(mlAttr)) {
       val attr = fromMetadata(metadata.getMetadata(mlAttr))
-      if (preserveName) {
-        attr
-      } else {
-        attr.withName(field.name)
-      }
-    } else {
-      UnresolvedAttribute
-    }
+      if (preserveName) { attr }
+      else { attr.withName(field.name) }
+    } else { UnresolvedAttribute }
   }
 
   /**
@@ -166,23 +158,17 @@ object Attribute extends AttributeFactory {
   private[attribute] override def fromMetadata(
       metadata: Metadata): Attribute = {
     import org.apache.spark.ml.attribute.AttributeKeys._
-    val attrType = if (metadata.contains(TYPE)) {
-      metadata.getString(TYPE)
-    } else {
-      AttributeType.Numeric.name
-    }
+    val attrType = if (metadata.contains(TYPE)) { metadata.getString(TYPE) }
+    else { AttributeType.Numeric.name }
     getFactory(attrType).fromMetadata(metadata)
   }
 
   /** Gets the attribute factory given the attribute type name. */
   private def getFactory(attrType: String): AttributeFactory = {
-    if (attrType == AttributeType.Numeric.name) {
-      NumericAttribute
-    } else if (attrType == AttributeType.Nominal.name) {
-      NominalAttribute
-    } else if (attrType == AttributeType.Binary.name) {
-      BinaryAttribute
-    } else {
+    if (attrType == AttributeType.Numeric.name) { NumericAttribute }
+    else if (attrType == AttributeType.Nominal.name) { NominalAttribute }
+    else if (attrType == AttributeType.Binary.name) { BinaryAttribute }
+    else {
       throw new IllegalArgumentException(s"Cannot recognize type $attrType.")
     }
   }
@@ -378,9 +364,7 @@ class NominalAttribute private[ml] (
   }
 
   /** Index of a specific value. */
-  def indexOf(value: String): Int = {
-    valueToIndex(value)
-  }
+  def indexOf(value: String): Int = { valueToIndex(value) }
 
   /** Tests whether this attribute contains a specific value. */
   def hasValue(value: String): Boolean = valueToIndex.contains(value)
@@ -408,9 +392,7 @@ class NominalAttribute private[ml] (
   }
 
   /** Copy without the values. */
-  def withoutValues: NominalAttribute = {
-    copy(values = None)
-  }
+  def withoutValues: NominalAttribute = { copy(values = None) }
 
   /** Copy with a new `numValues` and empty `values`. */
   def withNumValues(numValues: Int): NominalAttribute = {
@@ -425,13 +407,9 @@ class NominalAttribute private[ml] (
     * Return None if unknown.
     */
   def getNumValues: Option[Int] = {
-    if (numValues.nonEmpty) {
-      numValues
-    } else if (values.nonEmpty) {
-      Some(values.get.length)
-    } else {
-      None
-    }
+    if (numValues.nonEmpty) { numValues }
+    else if (values.nonEmpty) { Some(values.get.length) }
+    else { None }
   }
 
   /** Creates a copy of this attribute with optional changes. */
@@ -641,9 +619,7 @@ object UnresolvedAttribute extends Attribute {
   override def name: Option[String] = None
 
   override private[attribute] def toMetadataImpl(
-      withType: Boolean): Metadata = {
-    Metadata.empty
-  }
+      withType: Boolean): Metadata = { Metadata.empty }
 
   override def withoutName: Attribute = this
 

@@ -41,13 +41,9 @@ trait OptimizeTestBaseTrait {
   }
 
   implicit val arbDoubleCounter: Arbitrary[Counter[String, Double]] = Arbitrary(
-    for {
-      v <- arbitrary[DenseVector[Double]]
-    } yield {
+    for { v <- arbitrary[DenseVector[Double]] } yield {
       val c = Counter[String, Double]()
-      for (i <- 0 until v.size) {
-        c(i + "") = v(i)
-      }
+      for (i <- 0 until v.size) { c(i + "") = v(i) }
       c
     })
 

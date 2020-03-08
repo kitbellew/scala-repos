@@ -148,11 +148,7 @@ private[streaming] object Checkpoint extends Logging {
     val bos = new ByteArrayOutputStream()
     val zos = compressionCodec.compressedOutputStream(bos)
     val oos = new ObjectOutputStream(zos)
-    Utils.tryWithSafeFinally {
-      oos.writeObject(checkpoint)
-    } {
-      oos.close()
-    }
+    Utils.tryWithSafeFinally { oos.writeObject(checkpoint) } { oos.close() }
     bos.toByteArray
   }
 
@@ -174,11 +170,7 @@ private[streaming] object Checkpoint extends Logging {
       val cp = ois.readObject.asInstanceOf[Checkpoint]
       cp.validate()
       cp
-    } {
-      if (ois != null) {
-        ois.close()
-      }
-    }
+    } { if (ois != null) { ois.close() } }
   }
 }
 
@@ -237,11 +229,7 @@ private[streaming] class CheckpointWriter(
             fs.delete(tempFile, true) // just in case it exists
           }
           val fos = fs.create(tempFile)
-          Utils.tryWithSafeFinally {
-            fos.write(bytes)
-          } {
-            fos.close()
-          }
+          Utils.tryWithSafeFinally { fos.write(bytes) } { fos.close() }
 
           // If the checkpoint file exists, back it up
           // If the backup exists as well, just delete it, otherwise rename will fail
@@ -320,9 +308,7 @@ private[streaming] class CheckpointWriter(
     val startTime = System.currentTimeMillis()
     val terminated =
       executor.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS)
-    if (!terminated) {
-      executor.shutdownNow()
-    }
+    if (!terminated) { executor.shutdownNow() }
     val endTime = System.currentTimeMillis()
     logInfo(
       "CheckpointWriter executor terminated ? " + terminated +
@@ -335,9 +321,7 @@ private[streaming] class CheckpointWriter(
     _fs
   }
 
-  private def reset() = synchronized {
-    _fs = null
-  }
+  private def reset() = synchronized { _fs = null }
 }
 
 private[streaming] object CheckpointReader extends Logging {
@@ -374,9 +358,7 @@ private[streaming] object CheckpointReader extends Logging {
     // Try to find the checkpoint files
     val checkpointFiles =
       Checkpoint.getCheckpointFiles(checkpointDir, Some(fs)).reverse
-    if (checkpointFiles.isEmpty) {
-      return None
-    }
+    if (checkpointFiles.isEmpty) { return None }
 
     // Try to read the checkpoint files in the order
     logInfo("Checkpoint files found: " + checkpointFiles.mkString(","))

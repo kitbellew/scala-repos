@@ -106,13 +106,9 @@ private[spark] class ZookeeperMesosClusterPersistenceEngine(
 
   SparkCuratorUtil.mkdir(zk, WORKING_DIR)
 
-  def path(name: String): String = {
-    WORKING_DIR + "/" + name
-  }
+  def path(name: String): String = { WORKING_DIR + "/" + name }
 
-  override def expunge(name: String): Unit = {
-    zk.delete().forPath(path(name))
-  }
+  override def expunge(name: String): Unit = { zk.delete().forPath(path(name)) }
 
   override def persist(name: String, obj: Object): Unit = {
     val serialized = Utils.serialize(obj)

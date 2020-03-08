@@ -153,11 +153,8 @@ sealed trait Schedule extends Loggable {
     synchronized {
       val r = new Runnable {
         def run() {
-          try {
-            f.apply()
-          } catch {
-            case e: Exception => logger.error(e)
-          }
+          try { f.apply() }
+          catch { case e: Exception => logger.error(e) }
         }
       }
 
@@ -166,9 +163,7 @@ sealed trait Schedule extends Loggable {
           try {
             Schedule.this.restart
             pool.execute(r)
-          } catch {
-            case e: Exception => logger.error(e)
-          }
+          } catch { case e: Exception => logger.error(e) }
         }
       }
 
@@ -205,9 +200,7 @@ private object TF extends ThreadFactory {
     d setName "Lift Scheduler"
     d setDaemon true
 
-    if (ThreadPoolRules.nullContextClassLoader) {
-      d setContextClassLoader null
-    }
+    if (ThreadPoolRules.nullContextClassLoader) { d setContextClassLoader null }
     d
   }
 }

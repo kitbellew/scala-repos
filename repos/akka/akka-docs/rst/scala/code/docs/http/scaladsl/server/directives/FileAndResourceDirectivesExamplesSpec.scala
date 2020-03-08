@@ -42,9 +42,7 @@ class FileAndResourceDirectivesExamplesSpec extends RoutingSpec {
   }
   "listDirectoryContents-examples" in compileOnlySpec {
     val route =
-      path("tmp") {
-        listDirectoryContents("/tmp")
-      } ~
+      path("tmp") { listDirectoryContents("/tmp") } ~
         path("custom") {
           val renderer = new DirectoryRenderer {
             override def marshaller(renderVanityFooter: Boolean)
@@ -60,31 +58,21 @@ class FileAndResourceDirectivesExamplesSpec extends RoutingSpec {
   }
   "getFromBrowseableDirectory-examples" in compileOnlySpec {
     val route =
-      path("tmp") {
-        getFromBrowseableDirectory("/tmp")
-      }
+      path("tmp") { getFromBrowseableDirectory("/tmp") }
 
     // tests:
-    Get("/tmp") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
-    }
+    Get("/tmp") ~> route ~> check { status shouldEqual StatusCodes.OK }
   }
   "getFromBrowseableDirectories-examples" in compileOnlySpec {
     val route =
-      path("tmp") {
-        getFromBrowseableDirectories("/main", "/backups")
-      }
+      path("tmp") { getFromBrowseableDirectories("/main", "/backups") }
 
     // tests:
-    Get("/tmp") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
-    }
+    Get("/tmp") ~> route ~> check { status shouldEqual StatusCodes.OK }
   }
   "getFromDirectory-examples" in compileOnlySpec {
     val route =
-      path("tmp") {
-        getFromDirectory("/tmp")
-      }
+      path("tmp") { getFromDirectory("/tmp") }
 
     // tests:
     Get("/tmp/example") ~> route ~> check {
@@ -93,9 +81,7 @@ class FileAndResourceDirectivesExamplesSpec extends RoutingSpec {
   }
   "getFromResourceDirectory-examples" in compileOnlySpec {
     val route =
-      path("examples") {
-        getFromResourceDirectory("/examples")
-      }
+      path("examples") { getFromResourceDirectory("/examples") }
 
     // tests:
     Get("/examples/example-1") ~> route ~> check {

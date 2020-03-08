@@ -64,8 +64,6 @@ object Env {
     getLightUser = lila.user.Env.current.lightUser,
     roundSocketHub = lila.hub.Env.current.socket.round,
     appleCertificate = path =>
-      lila.common.PlayApp.withApp {
-        _.classloader.getResourceAsStream(path)
-      },
+      lila.common.PlayApp.withApp { _.classloader.getResourceAsStream(path) },
     config = lila.common.PlayApp loadConfig "push")
 }

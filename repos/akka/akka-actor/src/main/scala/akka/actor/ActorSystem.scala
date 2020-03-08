@@ -619,9 +619,7 @@ private[akka] class ActorSystemImpl(
                 err.println("]")
                 cause.printStackTrace(System.err)
                 System.err.flush()
-              } finally {
-                System.exit(-1)
-              }
+              } finally { System.exit(-1) }
             } else {
               log.error(
                 cause,
@@ -783,7 +781,9 @@ private[akka] class ActorSystemImpl(
 
   def start(): this.type = _start
   def registerOnTermination[T](code: ⇒ T) {
-    registerOnTermination(new Runnable { def run = code })
+    registerOnTermination(new Runnable {
+      def run = code
+    })
   }
   def registerOnTermination(code: Runnable) { terminationCallbacks.add(code) }
   override def awaitTermination(timeout: Duration) {

@@ -693,9 +693,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
   }
 
   class Leaf extends Actor {
-    def receive = {
-      case (_: Int, job: SimpleJob) ⇒ sender() ! Ack(job.id)
-    }
+    def receive = { case (_: Int, job: SimpleJob) ⇒ sender() ! Ack(job.id) }
   }
 
   /**
@@ -736,9 +734,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     * Child of Supervisor for remote supervision testing
     */
   class RemoteChild extends Actor {
-    def receive = {
-      case e: Exception ⇒ throw e
-    }
+    def receive = { case e: Exception ⇒ throw e }
   }
 
   case object Begin
@@ -763,7 +759,9 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
   final case class StatsResult(from: Address, stats: CurrentInternalStats)
 
   type JobId = Int
-  trait Job { def id: JobId }
+  trait Job {
+    def id: JobId
+  }
   final case class SimpleJob(id: JobId, payload: Any) extends Job
   final case class TreeJob(
       id: JobId,
@@ -981,9 +979,7 @@ abstract class StressSpec
         includeInHistory = true)
       runOn(currentRoles: _*) {
         reportResult {
-          runOn(currentRoles.last) {
-            cluster.join(roles.head)
-          }
+          runOn(currentRoles.last) { cluster.join(roles.head) }
           awaitMembersUp(currentRoles.size, timeout = remainingOrDefault)
         }
 
@@ -1067,9 +1063,7 @@ abstract class StressSpec
 
       runOn(roles.head) {
         val expectedPath = RootActorPath(removeAddress) / "user" / "watchee"
-        expectMsgPF() {
-          case Terminated(a) if a.path == expectedPath ⇒ true
-        }
+        expectMsgPF() { case Terminated(a) if a.path == expectedPath ⇒ true }
       }
       enterBarrier("watch-verified-" + step)
 
@@ -1088,9 +1082,7 @@ abstract class StressSpec
         title,
         expectedResults = currentRoles.size,
         includeInHistory = true)
-      runOn(removeRoles: _*) {
-        if (!shutdown) cluster.leave(myself)
-      }
+      runOn(removeRoles: _*) { if (!shutdown) cluster.leave(myself) }
       runOn(currentRoles: _*) {
         reportResult {
           runOn(roles.head) {
@@ -1226,9 +1218,7 @@ abstract class StressSpec
             name = masterName)
           m ! Begin
           import system.dispatcher
-          system.scheduler.scheduleOnce(duration) {
-            m.tell(End, testActor)
-          }
+          system.scheduler.scheduleOnce(duration) { m.tell(End, testActor) }
           val workResult = awaitWorkResult(m)
           workResult.sendCount should be > (0L)
           workResult.ackCount should be > (0L)
@@ -1239,9 +1229,7 @@ abstract class StressSpec
         }
       }
       runOn(otherRoles: _*) {
-        reportResult {
-          enterBarrier("routers-done-" + step)
-        }
+        reportResult { enterBarrier("routers-done-" + step) }
       }
 
       awaitClusterResult()
@@ -1309,9 +1297,7 @@ abstract class StressSpec
         }
 
         runOn(otherRoles: _*) {
-          reportResult {
-            enterBarrier("supervision-done-" + step)
-          }
+          reportResult { enterBarrier("supervision-done-" + step) }
         }
 
         awaitClusterResult()
@@ -1337,9 +1323,7 @@ abstract class StressSpec
     "log settings" taggedAs LongRunningTest in {
       if (infolog) {
         log.info("StressSpec JVM:\n{}", jvmInfo)
-        runOn(roles.head) {
-          log.info("StressSpec settings:\n{}", settings)
-        }
+        runOn(roles.head) { log.info("StressSpec settings:\n{}", settings) }
       }
       enterBarrier("after-" + step)
     }
@@ -1550,9 +1534,7 @@ abstract class StressSpec
     }
 
     "log jvm info" taggedAs LongRunningTest in {
-      if (infolog) {
-        log.info("StressSpec JVM:\n{}", jvmInfo)
-      }
+      if (infolog) { log.info("StressSpec JVM:\n{}", jvmInfo) }
       enterBarrier("after-" + step)
     }
   }

@@ -76,9 +76,7 @@ object DesktopIngestShardServer
           val precogMenu = new JMenu("Precog for Desktop")
           val quitItem = new JMenuItem("Quit", KeyEvent.VK_Q)
           quitItem.addActionListener(new ActionListener {
-            def actionPerformed(ev: ActionEvent) = {
-              System.exit(0)
-            }
+            def actionPerformed(ev: ActionEvent) = { System.exit(0) }
           })
 
           precogMenu.add(quitItem)
@@ -101,9 +99,7 @@ object DesktopIngestShardServer
           appFrame.setJMenuBar(menubar)
 
           appFrame.addWindowListener(new WindowAdapter {
-            override def windowClosed(ev: WindowEvent) = {
-              System.exit(0)
-            }
+            override def windowClosed(ev: WindowEvent) = { System.exit(0) }
           })
 
           notifyArea.setEditable(false)
@@ -124,9 +120,7 @@ object DesktopIngestShardServer
 
       Some({ (msg: String) =>
         EventQueue.invokeLater(new Runnable {
-          def run() {
-            notifyArea.append(msg + "\n")
-          }
+          def run() { notifyArea.append(msg + "\n") }
         })
       })
     } else {
@@ -243,9 +237,7 @@ object DesktopIngestShardServer
     val central = new KafkaServerStartable(new KafkaConfig(centralProps))
 
     (new Thread {
-      override def run() = {
-        central.startup
-      }
+      override def run() = { central.startup }
     }).start()
 
     central
@@ -263,9 +255,7 @@ object DesktopIngestShardServer
     val server = new EmbeddedZK
 
     (new Thread {
-      override def run() = {
-        server.runFromConfig(serverConfig)
-      }
+      override def run() = { server.runFromConfig(serverConfig) }
     }).start()
 
     server
@@ -299,9 +289,7 @@ object LaunchLabcoat {
             .map {
               _.map { _ => launchBrowser(config); println("Launch complete") }
             }
-            .getOrElse {
-              sys.error("Failed to start bifrost!")
-            }
+            .getOrElse { sys.error("Failed to start bifrost!") }
         }
       }
       .getOrElse {
@@ -346,10 +334,7 @@ object LaunchLabcoat {
       }
     }
 
-    if (Desktop.isDesktopSupported) {
-      doLaunch()
-    } else {
-      sys.error("Browser open on non-desktop system")
-    }
+    if (Desktop.isDesktopSupported) { doLaunch() }
+    else { sys.error("Browser open on non-desktop system") }
   }
 }

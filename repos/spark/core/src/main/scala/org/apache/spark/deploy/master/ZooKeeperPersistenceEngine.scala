@@ -58,9 +58,7 @@ private[master] class ZooKeeperPersistenceEngine(
       .flatMap(deserializeFromFile[T])
   }
 
-  override def close() {
-    zk.close()
-  }
+  override def close() { zk.close() }
 
   private def serializeIntoFile(path: String, value: AnyRef) {
     val serialized = serializer.newInstance().serialize(value)

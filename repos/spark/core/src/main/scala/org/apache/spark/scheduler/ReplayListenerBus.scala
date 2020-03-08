@@ -54,14 +54,12 @@ private[spark] class ReplayListenerBus extends SparkListenerBus with Logging {
       val lines = Source.fromInputStream(logData).getLines()
       while (lines.hasNext) {
         currentLine = lines.next()
-        try {
-          postToAll(JsonProtocol.sparkEventFromJson(parse(currentLine)))
-        } catch {
+        try { postToAll(JsonProtocol.sparkEventFromJson(parse(currentLine))) }
+        catch {
           case jpe: JsonParseException =>
             // We can only ignore exception from last line of the file that might be truncated
-            if (!maybeTruncated || lines.hasNext) {
-              throw jpe
-            } else {
+            if (!maybeTruncated || lines.hasNext) { throw jpe }
+            else {
               logWarning(s"Got JsonParseException from log file $sourceName" +
                 s" at line $lineNumber, the file might not have finished writing cleanly.")
             }

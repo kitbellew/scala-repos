@@ -183,11 +183,8 @@ object helpers
     Html(convertRefsLinks(value, repository))
 
   def cut(value: String, length: Int): String =
-    if (value.length > length) {
-      value.substring(0, length) + "..."
-    } else {
-      value
-    }
+    if (value.length > length) { value.substring(0, length) + "..." }
+    else { value }
 
   import scala.util.matching.Regex._
   implicit class RegexReplaceString(s: String) {
@@ -301,11 +298,8 @@ object helpers
       userName: String,
       mailAddress: String = "",
       styleClass: String = "")(content: Html)(implicit context: Context): Html =
-    (if (mailAddress.isEmpty) {
-       getAccountByUserName(userName)
-     } else {
-       getAccountByMailAddress(mailAddress)
-     }).map { account =>
+    (if (mailAddress.isEmpty) { getAccountByUserName(userName) }
+     else { getAccountByMailAddress(mailAddress) }).map { account =>
       Html(s"""<a href="${url(
         account.userName)}" class="${styleClass}">${content}</a>""")
     } getOrElse content

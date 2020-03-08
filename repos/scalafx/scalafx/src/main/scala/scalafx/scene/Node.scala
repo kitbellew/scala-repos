@@ -152,9 +152,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * The BlendMode used to blend this individual node into the scene behind it.
     */
   def blendMode: ObjectProperty[jfxse.BlendMode] = delegate.blendModeProperty
-  def blendMode_=(v: BlendMode) {
-    blendMode() = v
-  }
+  def blendMode_=(v: BlendMode) { blendMode() = v }
 
   /**
     * The rectangular bounds of this Node in the node's untransformed local coordinate space.
@@ -172,25 +170,19 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * Additional hint for controlling bitmap caching.
     */
   def cacheHint: ObjectProperty[jfxs.CacheHint] = delegate.cacheHintProperty
-  def cacheHint_=(v: CacheHint) {
-    cacheHint() = v
-  }
+  def cacheHint_=(v: CacheHint) { cacheHint() = v }
 
   /**
     * A performance hint to the system to indicate that this Node should be cached as a bitmap.
     */
   def cache: BooleanProperty = delegate.cacheProperty
-  def cache_=(v: Boolean) {
-    cache() = v
-  }
+  def cache_=(v: Boolean) { cache() = v }
 
   /**
     * Specifies a Node to use to define the the clipping shape for this Node.
     */
   def clip: ObjectProperty[jfxs.Node] = delegate.clipProperty
-  def clip_=(v: Node) {
-    clip() = v
-  }
+  def clip_=(v: Node) { clip() = v }
 
   /**
     * Returns the orientation of a node's resizing bias for layout purposes.
@@ -208,17 +200,13 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * Defines the mouse cursor for this Node and subnodes.
     */
   def cursor: ObjectProperty[jfxs.Cursor] = delegate.cursorProperty
-  def cursor_=(v: Cursor) {
-    cursor() = v
-  }
+  def cursor_=(v: Cursor) { cursor() = v }
 
   /**
     * Indicates whether depth testing is used when rendering this node.
     */
   def depthTest: ObjectProperty[jfxs.DepthTest] = delegate.depthTestProperty
-  def depthTest_=(v: DepthTest) {
-    depthTest() = v
-  }
+  def depthTest_=(v: DepthTest) { depthTest() = v }
 
   /**
     * Indicates whether or not this Node is disabled.
@@ -229,9 +217,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * Sets the individual disabled state of this Node.
     */
   def disable: BooleanProperty = delegate.disableProperty
-  def disable_=(v: Boolean) {
-    disable() = v
-  }
+  def disable_=(v: Boolean) { disable() = v }
 
   /**
     * Specifies an effect to apply to this Node.
@@ -246,9 +232,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def eventDispatcher: ObjectProperty[jfxe.EventDispatcher] =
     delegate.eventDispatcherProperty
-  def eventDispatcher_=(v: jfxe.EventDispatcher) {
-    eventDispatcher() = v
-  }
+  def eventDispatcher_=(v: jfxe.EventDispatcher) { eventDispatcher() = v }
 
   /**
     * Indicates whether this Node currently has the input focus.
@@ -259,9 +243,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * Specifies whether this Node should be a part of focus traversal cycle.
     */
   def focusTraversable: BooleanProperty = delegate.focusTraversableProperty
-  def focusTraversable_=(v: Boolean) {
-    focusTraversable() = v
-  }
+  def focusTraversable_=(v: Boolean) { focusTraversable() = v }
 
   /**
     * Whether or not this Node is being hovered over.
@@ -272,9 +254,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * The id of this Node.
     */
   def id: StringProperty = delegate.idProperty
-  def id_=(v: String) {
-    id() = v
-  }
+  def id_=(v: String) { id() = v }
 
   /**
     * Property holding InputMethodRequests.
@@ -296,9 +276,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * purpose of layout.
     */
   def layoutX: DoubleProperty = delegate.layoutXProperty
-  def layoutX_=(v: Double) {
-    layoutX() = v
-  }
+  def layoutX_=(v: Double) { layoutX() = v }
 
   /**
     * Defines the y coordinate of the translation that is added to this Node's transform for the
@@ -306,27 +284,21 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def layoutY: DoubleProperty = delegate.layoutYProperty
 
-  def layoutY_=(v: Double) {
-    layoutY() = v
-  }
+  def layoutY_=(v: Double) { layoutY() = v }
 
   /**
     * Defines whether or not this node's layout will be managed by it's parent.
     */
   def managed: BooleanProperty = delegate.managedProperty
 
-  def managed_=(v: Boolean) {
-    managed() = v
-  }
+  def managed_=(v: Boolean) { managed() = v }
 
   /**
     * If true, this node (together with all its children) is completely transparent to mouse events.
     */
   def mouseTransparent: BooleanProperty = delegate.mouseTransparentProperty
 
-  def mouseTransparent_=(v: Boolean) {
-    mouseTransparent() = v
-  }
+  def mouseTransparent_=(v: Boolean) { mouseTransparent() = v }
 
   /**
     * Node orientation describes the flow of visual data within a node.
@@ -562,9 +534,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def opacity: DoubleProperty = delegate.opacityProperty
 
-  def opacity_=(v: Double) {
-    opacity() = v
-  }
+  def opacity_=(v: Double) { opacity() = v }
 
   /**
     * The parent of this Node.
@@ -577,9 +547,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def pickOnBounds: BooleanProperty = delegate.pickOnBoundsProperty
 
-  def pickOnBounds_=(v: Boolean) {
-    pickOnBounds() = v
-  }
+  def pickOnBounds_=(v: Boolean) { pickOnBounds() = v }
 
   /**
     * Whether or not the Node is pressed.
@@ -591,18 +559,14 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def rotate: DoubleProperty = delegate.rotateProperty
 
-  def rotate_=(v: Double) {
-    rotate() = v
-  }
+  def rotate_=(v: Double) { rotate() = v }
 
   /**
     * Defines the axis of rotation of this Node.
     */
   def rotationAxis: ObjectProperty[jfxg.Point3D] = delegate.rotationAxisProperty
 
-  def rotationAxis_=(v: Point3D) {
-    rotationAxis() = v
-  }
+  def rotationAxis_=(v: Point3D) { rotationAxis() = v }
 
   /**
     * Defines the factor by which coordinates are scaled about the center of the object along
@@ -610,9 +574,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def scaleX: DoubleProperty = delegate.scaleXProperty
 
-  def scaleX_=(v: Double) {
-    scaleX() = v
-  }
+  def scaleX_=(v: Double) { scaleX() = v }
 
   /**
     * Defines the factor by which coordinates are scaled about the center of the object along the
@@ -620,9 +582,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def scaleY: DoubleProperty = delegate.scaleYProperty
 
-  def scaleY_=(v: Double) {
-    scaleY() = v
-  }
+  def scaleY_=(v: Double) { scaleY() = v }
 
   /**
     * Defines the factor by which coordinates are scaled about the center of the object along the
@@ -630,9 +590,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def scaleZ: DoubleProperty = delegate.scaleZProperty
 
-  def scaleZ_=(v: Double) {
-    scaleZ() = v
-  }
+  def scaleZ_=(v: Double) { scaleZ() = v }
 
   /**
     * The Scene that this Node is part of.
@@ -644,9 +602,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def style: StringProperty = delegate.styleProperty
 
-  def style_=(v: String) {
-    style() = v
-  }
+  def style_=(v: String) { style() = v }
 
   /**
     * Sets the list of CSS styles classes, replacing the prior content. If you want append to current content, use `add`
@@ -654,9 +610,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     *
     * @param c list of CSS styles classes to replace prior content.
     */
-  def styleClass_=(c: Iterable[String]) {
-    fillCollection(styleClass, c)
-  }
+  def styleClass_=(c: Iterable[String]) { fillCollection(styleClass, c) }
 
   /**
     * Defines the ObservableList of Transform objects to be applied to this Node.
@@ -669,27 +623,21 @@ abstract class Node protected (override val delegate: jfxs.Node)
     *
     * @param c list of transforms to replace prior content.
     */
-  def transforms_=(c: Iterable[Transform]) {
-    fillSFXCollection(transforms, c)
-  }
+  def transforms_=(c: Iterable[Transform]) { fillSFXCollection(transforms, c) }
 
   /**
     * Defines the x coordinate of the translation that is added to this Node's transform.
     */
   def translateX: DoubleProperty = delegate.translateXProperty
 
-  def translateX_=(v: Double) {
-    translateX() = v
-  }
+  def translateX_=(v: Double) { translateX() = v }
 
   /**
     * Defines the y coordinate of the translation that is added to this Node's transform.
     */
   def translateY: DoubleProperty = delegate.translateYProperty
 
-  def translateY_=(v: Double) {
-    translateY() = v
-  }
+  def translateY_=(v: Double) { translateY() = v }
 
   /**
     * Defines the Z coordinate of the translation that is added to the transformed coordinates of
@@ -697,9 +645,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def translateZ: DoubleProperty = delegate.translateZProperty
 
-  def translateZ_=(v: Double) {
-    translateZ() = v
-  }
+  def translateZ_=(v: Double) { translateZ() = v }
 
   /**
     * Returns a previously set Object property, or null if no such property has been set using the
@@ -707,18 +653,14 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def userData = delegate.getUserData
 
-  def userData_=(v: AnyRef) {
-    delegate.setUserData(v)
-  }
+  def userData_=(v: AnyRef) { delegate.setUserData(v) }
 
   /**
     * Specifies whether this Node and any subnodes should be rendered as part of the scene graph.
     */
   def visible: BooleanProperty = delegate.visibleProperty
 
-  def visible_=(v: Boolean) {
-    visible() = v
-  }
+  def visible_=(v: Boolean) { visible() = v }
 
   // layout pseudo-properties:
 
@@ -839,9 +781,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
   /**
     * If the node is resizable, will set its layout bounds to its current preferred width and height.
     */
-  def autosize() {
-    delegate.autosize()
-  }
+  def autosize() { delegate.autosize() }
 
   /**
     * Returns true if the given point (specified in the local coordinate space of this Node) is
@@ -859,9 +799,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
   /**
     * Fires the specified event.
     */
-  def fireEvent(event: Event) {
-    delegate.fireEvent(event)
-  }
+  def fireEvent(event: Event) { delegate.fireEvent(event) }
 
   /**
     * The 'alphabetic' (or 'roman') baseline offset from the node's layoutBounds.minY location
@@ -977,24 +915,18 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * Sets the node's layoutX and layoutY translation properties in order to relocate this node
     * to the x,y location in the parent.
     */
-  def relocate(x: Double, y: Double) {
-    delegate.relocate(x, y)
-  }
+  def relocate(x: Double, y: Double) { delegate.relocate(x, y) }
 
   /**
     * Requests that this Node get the input focus, and that this Node's top-level ancestor become
     * the focused window.
     */
-  def requestFocus() {
-    delegate.requestFocus()
-  }
+  def requestFocus() { delegate.requestFocus() }
 
   /**
     * If the node is resizable, will set its layout bounds to the specified width and height.
     */
-  def resize(width: Double, height: Double) {
-    delegate.resize(width, height)
-  }
+  def resize(width: Double, height: Double) { delegate.resize(width, height) }
 
   /**
     * If the node is resizable, will set its layout bounds to the specified width and height.
@@ -1056,23 +988,17 @@ abstract class Node protected (override val delegate: jfxs.Node)
   /**
     * Starts a full press-drag-release gesture with this node as gesture source.
     */
-  def startFullDrag() {
-    delegate.startFullDrag()
-  }
+  def startFullDrag() { delegate.startFullDrag() }
 
   /**
     * Moves this Node to the back of its sibling nodes in terms of z-order.
     */
-  def toBack() {
-    delegate.toBack()
-  }
+  def toBack() { delegate.toBack() }
 
   /**
     * Moves this Node to the front of its sibling nodes in terms of z-order.
     */
-  def toFront() {
-    delegate.toFront()
-  }
+  def toFront() { delegate.toFront() }
 
   /**
     * An affine transform that holds the computed local-to-parent transform.
@@ -1187,9 +1113,7 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * @since 2.2
     */
   def onZoom = delegate.onZoomProperty()
-  def onZoom_=(v: jfxe.EventHandler[_ >: jfxsi.ZoomEvent]) {
-    onZoom() = v
-  }
+  def onZoom_=(v: jfxe.EventHandler[_ >: jfxsi.ZoomEvent]) { onZoom() = v }
 
   /**
     * Defines a function to be called when a Zoom gesture ends.

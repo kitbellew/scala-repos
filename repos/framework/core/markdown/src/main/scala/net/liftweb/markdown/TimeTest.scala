@@ -97,9 +97,7 @@ object TimeTest {
     }
 
     def runParser(s: String, p: Parser[String], iterations: Int) {
-      for (i <- 0 until iterations) {
-        apply(p, s)
-      }
+      for (i <- 0 until iterations) { apply(p, s) }
     }
   }
 

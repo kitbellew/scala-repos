@@ -4,9 +4,7 @@ package org.jetbrains.plugins.scala.lang.resolve2
   * Pavel.Fatin, 02.02.2010
   */
 class PredefElementTest extends ResolveTestBase {
-  override def folderPath: String = {
-    super.folderPath + "predef/element/"
-  }
+  override def folderPath: String = { super.folderPath + "predef/element/" }
 
   def testClass() = doTest()
   //TODO getClass

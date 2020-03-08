@@ -43,9 +43,7 @@ object LiftJavaScript {
 
       suffixedPath match {
         case LiftPath :: "page" :: renderVersion(version) :: Nil =>
-          RenderVersion.doWith(version) {
-            pageScript.is.toOption
-          }
+          RenderVersion.doWith(version) { pageScript.is.toOption }
         case other =>
           None
       }

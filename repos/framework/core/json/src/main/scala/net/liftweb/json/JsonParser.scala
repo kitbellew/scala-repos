@@ -80,9 +80,8 @@ object JsonParser {
     p(new Parser(new Buffer(s, false)))
 
   private def parse(buf: Buffer): JValue = {
-    try {
-      astParser(new Parser(buf))
-    } catch {
+    try { astParser(new Parser(buf)) }
+    catch {
       case e: ParseException => throw e
       case e: Exception      => throw new ParseException("parsing failed", e)
     } finally { buf.release }
@@ -250,9 +249,8 @@ object JsonParser {
         c == ' ' || c == '\n' || c == ',' || c == '\r' || c == '\t' || c == '}' || c == ']'
 
       def parseString: String =
-        try {
-          unquote(buf)
-        } catch {
+        try { unquote(buf) }
+        catch {
           case p: ParseException => throw p
           case _: Exception      => fail("unexpected string end")
         }
@@ -264,9 +262,8 @@ object JsonParser {
         s.append(first)
         while (wasInt) {
           val c = buf.next
-          if (c == EOF) {
-            wasInt = false
-          } else if (c == '.' || c == 'e' || c == 'E') {
+          if (c == EOF) { wasInt = false }
+          else if (c == '.' || c == 'e' || c == 'E') {
             doubleVal = true
             s.append(c)
           } else if (!(Character.isDigit(

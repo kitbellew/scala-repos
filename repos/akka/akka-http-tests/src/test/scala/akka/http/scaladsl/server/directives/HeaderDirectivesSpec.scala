@@ -19,9 +19,7 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
     "extract the respective header value if a matching request header is present" in {
       Get("/abc") ~> addHeader(Connection("close")) ~> myHeaderValue {
         echoComplete
-      } ~> check {
-        responseAs[String] shouldEqual "close"
-      }
+      } ~> check { responseAs[String] shouldEqual "close" }
     }
 
     "reject with an empty rejection set if no matching request header is present" in {
@@ -143,9 +141,7 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
     "extract the respective header value if a matching request header is present" in {
       Get("/abc") ~> addHeader(Connection("close")) ~> myHeaderValue {
         echoComplete
-      } ~> check {
-        responseAs[String] shouldEqual "Some(close)"
-      }
+      } ~> check { responseAs[String] shouldEqual "Some(close)" }
     }
 
     "extract None if no matching request header is present" in {

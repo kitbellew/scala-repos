@@ -66,9 +66,7 @@ class ScArgumentExprListImpl(node: ASTNode)
     getContext match {
       case call: ScMethodCall => call.matchedParameters
       case constr: ScConstructor =>
-        constr.matchedParameters.filter {
-          case (e, p) => this.isAncestorOf(e)
-        }
+        constr.matchedParameters.filter { case (e, p) => this.isAncestorOf(e) }
       case _ => Seq.empty
     }
   }
@@ -90,9 +88,7 @@ class ScArgumentExprListImpl(node: ASTNode)
         super.addAfter(par, comma)
         super.addAfter(par, element)
       }
-    } else {
-      super.addBefore(element, anchor)
-    }
+    } else { super.addBefore(element, anchor) }
   }
 
   def addExpr(expr: ScExpression): ScArgumentExprList = {

@@ -125,9 +125,7 @@ object Docs {
       val version = Keys.version.value
       val sourceTree = if (version.endsWith("-SNAPSHOT")) {
         BuildSettings.snapshotBranch
-      } else {
-        version
-      }
+      } else { version }
 
       val scalaCache = new File(targetDir, "scalaapidocs.cache")
       val javaCache = new File(targetDir, "javaapidocs.cache")

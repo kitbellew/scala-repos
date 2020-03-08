@@ -34,29 +34,17 @@ class KeyHasherTest extends WordSpec {
   }
 
   "KeyHasher" should {
-    "correctly hash fnv1_32" in {
-      testHasher("fnv1_32", KeyHasher.FNV1_32)
-    }
+    "correctly hash fnv1_32" in { testHasher("fnv1_32", KeyHasher.FNV1_32) }
 
-    "correctly hash fnv1_64" in {
-      testHasher("fnv1_64", KeyHasher.FNV1_64)
-    }
+    "correctly hash fnv1_64" in { testHasher("fnv1_64", KeyHasher.FNV1_64) }
 
-    "correctly hash fnv1a_32" in {
-      testHasher("fnv1a_32", KeyHasher.FNV1A_32)
-    }
+    "correctly hash fnv1a_32" in { testHasher("fnv1a_32", KeyHasher.FNV1A_32) }
 
-    "correctly hash fnv1a_64" in {
-      testHasher("fnv1a_64", KeyHasher.FNV1A_64)
-    }
+    "correctly hash fnv1a_64" in { testHasher("fnv1a_64", KeyHasher.FNV1A_64) }
 
-    "correctly hash jenkins" in {
-      testHasher("jenkins", KeyHasher.JENKINS)
-    }
+    "correctly hash jenkins" in { testHasher("jenkins", KeyHasher.JENKINS) }
 
-    "correctly hash crc32 itu" in {
-      testHasher("crc32", KeyHasher.CRC32_ITU)
-    }
+    "correctly hash crc32 itu" in { testHasher("crc32", KeyHasher.CRC32_ITU) }
 
   }
 }

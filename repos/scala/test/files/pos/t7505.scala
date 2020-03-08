@@ -3,9 +3,7 @@ import scala.language.reflectiveCalls
 case class ContextProperty(value: Any) {
   type HasToInt = { def toInt: Int }
 
-  def toInt: Int = value match {
-    case n: HasToInt => n.toInt
-  }
+  def toInt: Int = value match { case n: HasToInt => n.toInt }
 }
 
 // was:

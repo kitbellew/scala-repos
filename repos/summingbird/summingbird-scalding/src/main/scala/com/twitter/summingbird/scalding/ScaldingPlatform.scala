@@ -850,14 +850,11 @@ class Scalding(
         case (ts, pipe) =>
           // Now we have a populated flowDef, time to let Cascading do it's thing:
           try {
-            if (flowDef.getSinks.isEmpty) {
-              Right((ts, None))
-            } else {
+            if (flowDef.getSinks.isEmpty) { Right((ts, None)) }
+            else {
               Right((ts, Some(mode.newFlowConnector(config).connect(flowDef))))
             }
-          } catch {
-            case NonFatal(e) => toTry(e)
-          }
+          } catch { case NonFatal(e) => toTry(e) }
       }
   }
 
@@ -917,9 +914,7 @@ class Scalding(
                   else
                     throw new Exception("Flow did not complete.")
               }
-            } catch {
-              case NonFatal(e) => runningState.fail(e)
-            }
+            } catch { case NonFatal(e) => runningState.fail(e) }
           case Left(waitingState) => waitingState
         }
     }

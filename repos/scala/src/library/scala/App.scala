@@ -60,9 +60,7 @@ trait App extends DelayedInit {
     *  @param body the initialization code to be stored for later execution
     */
   @deprecated("The delayedInit mechanism will disappear.", "2.11.0")
-  override def delayedInit(body: => Unit) {
-    initCode += (() => body)
-  }
+  override def delayedInit(body: => Unit) { initCode += (() => body) }
 
   /** The main method.
     *  This stores all arguments so that they can be retrieved with `args`

@@ -82,11 +82,8 @@ class YarnAllocatorSuite
   }
 
   override def afterEach() {
-    try {
-      rmClient.stop()
-    } finally {
-      super.afterEach()
-    }
+    try { rmClient.stop() }
+    finally { super.afterEach() }
   }
 
   class MockSplitInfo(host: String)

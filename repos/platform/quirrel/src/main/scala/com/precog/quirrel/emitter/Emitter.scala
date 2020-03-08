@@ -332,9 +332,7 @@ trait Emitter
         val state = if (e.groups contains where) {
           val id = e.groups(where)
           emitOrDup(MarkGroup(where))(emitInstr(PushGroup(id)))
-        } else {
-          emitFilter(left, right, dispatches)
-        }
+        } else { emitFilter(left, right, dispatches) }
 
         state(e)
       }
@@ -437,9 +435,7 @@ trait Emitter
             _._2
           }) == dtracePrefix
         } getOrElse Nil
-      } else {
-        Nil
-      }
+      } else { Nil }
     }
 
     def prepareContext(

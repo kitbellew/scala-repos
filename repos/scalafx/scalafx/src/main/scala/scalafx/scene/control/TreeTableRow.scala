@@ -83,9 +83,7 @@ class TreeTableRow[T](
     */
   def disclosureNode: ObjectProperty[jfxs.Node] =
     delegate.disclosureNodeProperty
-  def disclosureNode_=(node: Node) {
-    disclosureNode() = node
-  }
+  def disclosureNode_=(node: Node) { disclosureNode() = node }
 
   /**
     * Each TreeTableCell represents at most a single TreeItem, which is represented by this property.

@@ -22,9 +22,7 @@ class WebJarServlet extends HttpServlet {
         resp.setContentLength(stream.available())
         resp.setStatus(200)
         IO.transfer(stream, resp.getOutputStream)
-      } getOrElse {
-        resp.sendError(404)
-      }
+      } getOrElse { resp.sendError(404) }
     }
 
     def sendResourceNormalized(resourceURI: String, mime: String): Unit = {

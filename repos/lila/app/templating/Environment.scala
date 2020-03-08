@@ -71,9 +71,7 @@ object Environment
   val nonPuzzlePerfTypeNameIcons = {
     import play.api.libs.json.Json
     Html {
-      Json stringify {
-        Json toJson lila.rating.PerfType.nonPuzzleIconByName
-      }
+      Json stringify { Json toJson lila.rating.PerfType.nonPuzzleIconByName }
     }
   }
 

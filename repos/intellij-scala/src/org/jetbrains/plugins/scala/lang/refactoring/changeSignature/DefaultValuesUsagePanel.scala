@@ -34,9 +34,7 @@ class DefaultValuesUsagePanel(labelText: String = "Default values:")
     Seq(myRbAddDefaultArg, myRbModifyCalls).foreach(bg.add)
 
     val listener = new ItemListener {
-      def itemStateChanged(e: ItemEvent) {
-        stateModified()
-      }
+      def itemStateChanged(e: ItemEvent) { stateModified() }
     }
     myRbModifyCalls.addItemListener(listener)
     myRbAddDefaultArg.addItemListener(listener)

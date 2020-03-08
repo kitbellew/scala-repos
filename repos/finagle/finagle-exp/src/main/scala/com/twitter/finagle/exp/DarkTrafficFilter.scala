@@ -37,9 +37,7 @@ class DarkTrafficFilter[Req, Rep](
 
   override def apply(request: Req, service: Service[Req, Rep]): Future[Rep] = {
     if (forwardAfterService) {
-      service(request).ensure {
-        darkRequest(request)
-      }
+      service(request).ensure { darkRequest(request) }
     } else {
       val rep = service(request)
       darkRequest(request)
@@ -56,8 +54,6 @@ class DarkTrafficFilter[Req, Rep](
 
         log.error(t, t.getMessage)
       }
-    } else {
-      requestsSkippedCounter.incr()
-    }
+    } else { requestsSkippedCounter.incr() }
   }
 }

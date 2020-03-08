@@ -43,15 +43,11 @@ final class Live(roundMap: ActorRef) {
                     roundMap ! Tell(game.id, Resign(game.whitePlayer.id))
                   }
                 case "1/2-1/2" =>
-                  fuccess {
-                    roundMap ! Tell(game.id, DrawForce)
-                  }
+                  fuccess { roundMap ! Tell(game.id, DrawForce) }
                 case m => fufail("Importer invalid move: " + m)
               }
             case Some(uci) =>
-              fuccess {
-                applyMove(Pov(game, game.player.color), uci)
-              }
+              fuccess { applyMove(Pov(game, game.player.color), uci) }
           }
       }
     }

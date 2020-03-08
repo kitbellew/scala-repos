@@ -20,9 +20,7 @@ case class Analysis(
   lazy val infoAdvices: InfoAdvices = {
     (Info.start(startPly) :: infos) sliding 2 collect {
       case List(prev, info) =>
-        info -> {
-          info.hasVariation ?? Advice(prev, info)
-        }
+        info -> { info.hasVariation ?? Advice(prev, info) }
     }
   }.toList
 

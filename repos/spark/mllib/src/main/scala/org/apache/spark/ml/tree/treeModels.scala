@@ -38,17 +38,13 @@ private[ml] trait DecisionTreeModel {
   def rootNode: Node
 
   /** Number of nodes in tree, including leaf nodes. */
-  def numNodes: Int = {
-    1 + rootNode.numDescendants
-  }
+  def numNodes: Int = { 1 + rootNode.numDescendants }
 
   /**
     * Depth of the tree.
     * E.g.: Depth 0 means 1 leaf node.  Depth 1 means 1 internal node and 2 leaf nodes.
     */
-  lazy val depth: Int = {
-    rootNode.subtreeDepth
-  }
+  lazy val depth: Int = { rootNode.subtreeDepth }
 
   /** Summary of the model */
   override def toString: String = {
@@ -265,9 +261,7 @@ private[ml] object DecisionTreeModelReadWrite {
             rightChild,
             n.split.getSplit,
             impurityStats)
-        } else {
-          new LeafNode(n.prediction, n.impurity, impurityStats)
-        }
+        } else { new LeafNode(n.prediction, n.impurity, impurityStats) }
         finalNodes(n.id) = node
     }
     // Return the root node

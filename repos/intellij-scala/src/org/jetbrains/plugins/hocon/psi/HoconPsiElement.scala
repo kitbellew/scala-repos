@@ -81,9 +81,7 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
         .contains(ch.getNode.getElementType))
 
   def findChildren[T <: HoconPsiElement: ClassTag] =
-    allChildren.collect {
-      case t: T => t
-    }
+    allChildren.collect { case t: T => t }
 }
 
 sealed trait HInnerElement extends HoconPsiElement {

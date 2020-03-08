@@ -101,9 +101,7 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
       if (currentRun.uncurryPhase != NoPhase &&
           isAtPhaseAfter(currentRun.uncurryPhase)) {
         enteringPhase(currentRun.uncurryPhase)(op)
-      } else {
-        op
-      }
+      } else { op }
     }
 
     /** has this symbol to be translated into a JS getter (both directions)? */
@@ -147,9 +145,7 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
       assert(sym.isClass, s"fullJSNameOf called for non-class symbol $sym")
       sym
         .getAnnotation(JSFullNameAnnotation)
-        .flatMap(_.stringArg(0)) getOrElse {
-        jsNameOf(sym)
-      }
+        .flatMap(_.stringArg(0)) getOrElse { jsNameOf(sym) }
     }
 
   }

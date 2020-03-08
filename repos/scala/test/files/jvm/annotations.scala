@@ -225,9 +225,7 @@ object Test6 {
     println(c.getText())
     val d = new D(true)
     d.setProp(false)
-    if (!d.isProp()) {
-      println(new D(false).getM())
-    }
+    if (!d.isProp()) { println(new D(false).getM()) }
   }
 }
 

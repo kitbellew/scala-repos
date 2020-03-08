@@ -43,9 +43,7 @@ abstract class AbstractFormatConversionIntention(
   override def isAvailable(
       project: Project,
       editor: Editor,
-      element: PsiElement): Boolean = {
-    findTargetIn(element).isDefined
-  }
+      element: PsiElement): Boolean = { findTargetIn(element).isDefined }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val Some((target, parts)) = findTargetIn(element)

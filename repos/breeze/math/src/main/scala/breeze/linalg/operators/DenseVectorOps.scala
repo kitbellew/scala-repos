@@ -112,9 +112,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         val ad = a.data
         var aoff = a.offset
 
-        for ((i, v) <- b.activeIterator) {
-          a(i) = op(a(i), v)
-        }
+        for ((i, v) <- b.activeIterator) { a(i) = op(a(i), v) }
       }
       implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]]
         .register(this)
@@ -347,13 +345,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         val length = a.length
 
         // ABCE branching
-        if (aoff == 0 && stride == 1) {
-          fastPath(b, ad, length)
-        } else if (stride == 1) {
-          medPath(ad, aoff, b, length)
-        } else {
-          slowPath(ad, aoff, stride, b, length)
-        }
+        if (aoff == 0 && stride == 1) { fastPath(b, ad, length) }
+        else if (stride == 1) { medPath(ad, aoff, b, length) }
+        else { slowPath(ad, aoff, stride, b, length) }
 
       }
 
@@ -469,9 +463,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
                 cforRange(0 until v1.length) { i =>
                   fn(data1(offset1 + i), data2(offset2 + i))
                 }
-              } else {
-                slowPath(fn)
-              }
+              } else { slowPath(fn) }
             }
 
             def slowPath(fn: (T, T) => Unit): Unit = {
@@ -534,9 +526,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           val ad = x.data
           val bd = y.data
           cforRange(0 until x.length) { i => bd(i) += ad(i) * s }
-        } else {
-          cforRange(0 until x.length) { i => y(i) += x(i) * s }
-        }
+        } else { cforRange(0 until x.length) { i => y(i) += x(i) * s } }
       }
       implicitly[TernaryUpdateRegistry[Vector[V], V, Vector[V], scaleAdd.type]]
         .register(this)
@@ -688,9 +678,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
     new OpMulInner.Impl2[DenseVector[T], DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]): T = {
         var acc = field.zero
-        for (i <- 0 until v.length) {
-          acc = field.+(acc, field.*(v(i), v2(i)))
-        }
+        for (i <- 0 until v.length) { acc = field.+(acc, field.*(v(i), v2(i))) }
         acc
       }
     }
@@ -731,9 +719,7 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
 
         cforRange(0 until x.length) { i => bd(i) += ad(i) * a }
 
-      } else {
-        slowPath(y, a, x)
-      }
+      } else { slowPath(y, a, x) }
     }
 
     private def slowPath(
@@ -750,9 +736,7 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
   implicit val canAddF: OpAdd.Impl2[
     DenseVector[Float],
     DenseVector[Float],
-    DenseVector[Float]] = {
-    pureFromUpdate_Float(canAddIntoF)
-  }
+    DenseVector[Float]] = { pureFromUpdate_Float(canAddIntoF) }
   implicitly[
     BinaryRegistry[Vector[Float], Vector[Float], OpAdd.type, Vector[Float]]]
     .register(canAddF)
@@ -771,9 +755,7 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
   implicit val canSubF: OpSub.Impl2[
     DenseVector[Float],
     DenseVector[Float],
-    DenseVector[Float]] = {
-    pureFromUpdate_Float(canSubIntoF)
-  }
+    DenseVector[Float]] = { pureFromUpdate_Float(canSubIntoF) }
 
   implicit val canDot_DV_DV_Float: breeze.linalg.operators.OpMulInner.Impl2[
     DenseVector[Float],
@@ -790,9 +772,7 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
             a.data,
             b.data,
             a.length)
-        } else {
-          blasPath(a, b)
-        }
+        } else { blasPath(a, b) }
       }
 
       val UNROLL_FACTOR = 6
@@ -977,9 +957,8 @@ trait DenseVector_GenericOps { this: DenseVector.type =>
     new OpSet.InPlaceImpl2[DenseVector[V], V] {
       def apply(a: DenseVector[V], b: V): Unit = {
         val ad: Array[V] = a.data
-        if (a.stride == 1) {
-          ArrayUtil.fill(ad, a.offset, a.length, b)
-        } else {
+        if (a.stride == 1) { ArrayUtil.fill(ad, a.offset, a.length, b) }
+        else {
           var i = 0
           var aoff = a.offset
           while (i < a.length) {

@@ -53,9 +53,7 @@ package processtest {
       }
   }
   object echo {
-    def main(args: Array[String]) {
-      System.out.println(args.mkString(" "))
-    }
+    def main(args: Array[String]) { System.out.println(args.mkString(" ")) }
   }
 }
 

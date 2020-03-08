@@ -77,9 +77,7 @@ class HelpersSpec extends Specification {
           97,
           98,
           99)
-      } finally {
-        system.terminate()
-      }
+      } finally { system.terminate() }
     }
 
     "extract the content from Content as Bytes" in {

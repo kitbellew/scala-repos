@@ -99,7 +99,5 @@ trait FakeRun extends Evaluation with EngineParamsGenerator {
   }
 
   def func: (SparkContext => Unit) = { (sc: SparkContext) => Unit }
-  def func_=(f: SparkContext => Unit) {
-    runner = new FakeRunner(f)
-  }
+  def func_=(f: SparkContext => Unit) { runner = new FakeRunner(f) }
 }

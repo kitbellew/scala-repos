@@ -32,9 +32,7 @@ class ScEnumeratorsImpl(node: ASTNode)
          if c.isInstanceOf[ScGenerator] || c.isInstanceOf[ScEnumerator])
       yield c.asInstanceOf[ScPatterned]
 
-  type Patterned = {
-    def pattern: ScPattern
-  }
+  type Patterned = { def pattern: ScPattern }
 
   override def processDeclarations(
       processor: PsiScopeProcessor,

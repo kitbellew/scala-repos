@@ -64,9 +64,7 @@ case class MemoryStream[A: Encoder](id: Int, sqlContext: SQLContext)
     Dataset.newDataFrame(sqlContext, logicalPlan)
   }
 
-  def addData(data: A*): Offset = {
-    addData(data.toTraversable)
-  }
+  def addData(data: A*): Offset = { addData(data.toTraversable) }
 
   def addData(data: TraversableOnce[A]): Offset = {
     import sqlContext.implicits._
@@ -98,9 +96,7 @@ case class MemoryStream[A: Encoder](id: Int, sqlContext: SQLContext)
           .getOrElse(sqlContext.emptyDataFrame)
 
         Some(new Batch(currentOffset, df))
-      } else {
-        None
-      }
+      } else { None }
     }
 
   override def toString: String = s"MemoryStream[${output.mkString(",")}]"
@@ -141,18 +137,14 @@ class MemorySink(schema: StructType) extends Sink with Logging {
     * corresponding point in the input. This function can be used when testing to simulate data
     * that has been lost due to buffering.
     */
-  def dropBatches(num: Int): Unit = synchronized {
-    batches.dropRight(num)
-  }
+  def dropBatches(num: Int): Unit = synchronized { batches.dropRight(num) }
 
   def toDebugString: String = synchronized {
     batches
       .map { b =>
         val dataStr =
           try b.data.collect().mkString(" ")
-          catch {
-            case NonFatal(e) => "[Error converting to string]"
-          }
+          catch { case NonFatal(e) => "[Error converting to string]" }
         s"${b.end}: $dataStr"
       }
       .mkString("\n")

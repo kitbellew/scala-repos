@@ -573,9 +573,7 @@ class GetResultHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
               HttpResponse[ByteChunk](OK, headers, Some(Right(data)))
           }
       }
-    } getOrElse {
-      Future(HttpResponse[ByteChunk](BadRequest))
-    })
+    } getOrElse { Future(HttpResponse[ByteChunk](BadRequest)) })
   }
 
   val metadata = AboutMetadata(

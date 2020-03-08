@@ -49,9 +49,7 @@ class RelationalGroupedDataset protected[sql] (
   private[this] def toDF(aggExprs: Seq[Expression]): DataFrame = {
     val aggregates = if (df.sqlContext.conf.dataFrameRetainGroupColumns) {
       groupingExprs ++ aggExprs
-    } else {
-      aggExprs
-    }
+    } else { aggExprs }
 
     val aliasedAgg = aggregates.map(alias)
 

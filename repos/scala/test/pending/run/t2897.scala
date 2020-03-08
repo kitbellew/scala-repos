@@ -4,9 +4,7 @@ class A {
       def xs = Nil map (_ => t)
     }
   }
-  def f2(t: String) = {
-    def xs = Nil map (_ => t)
-  }
+  def f2(t: String) = { def xs = Nil map (_ => t) }
   def f3(t: String) = {
     var t1 = 5
     trait T {

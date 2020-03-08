@@ -167,9 +167,8 @@ object ScalaReflection extends ScalaReflection {
       /** Returns the current path or `BoundReference`. */
       def getPath: Expression = {
         val dataType = schemaFor(tpe).dataType
-        if (path.isDefined) {
-          path.get
-        } else {
+        if (path.isDefined) { path.get }
+        else {
           upCastToExpectedType(
             BoundReference(0, dataType, true),
             dataType,
@@ -314,11 +313,8 @@ object ScalaReflection extends ScalaReflection {
 
           val mapFunction: Expression => Expression = p => {
             val converter = constructorFor(elementType, Some(p), newTypePath)
-            if (nullable) {
-              converter
-            } else {
-              AssertNotNull(converter, newTypePath)
-            }
+            if (nullable) { converter }
+            else { AssertNotNull(converter, newTypePath) }
           }
 
           val array = Invoke(
@@ -392,11 +388,8 @@ object ScalaReflection extends ScalaReflection {
                   Some(addToPath(fieldName, dataType, newTypePath)),
                   newTypePath)
 
-                if (!nullable) {
-                  AssertNotNull(constructor, newTypePath)
-                } else {
-                  constructor
-                }
+                if (!nullable) { AssertNotNull(constructor, newTypePath) }
+                else { constructor }
               }
           }
 
@@ -409,9 +402,7 @@ object ScalaReflection extends ScalaReflection {
               expressions.Literal.create(null, ObjectType(cls)),
               newInstance
             )
-          } else {
-            newInstance
-          }
+          } else { newInstance }
 
         case t
             if Utils.classIsLoadable(className) &&
@@ -486,9 +477,8 @@ object ScalaReflection extends ScalaReflection {
         }
       }
 
-      if (!inputObject.dataType.isInstanceOf[ObjectType]) {
-        inputObject
-      } else {
+      if (!inputObject.dataType.isInstanceOf[ObjectType]) { inputObject }
+      else {
         val className = getClassNameFromType(tpe)
         tpe match {
           case t if t <:< localTypeOf[Option[_]] =>
@@ -880,9 +870,8 @@ trait ScalaReflection {
     * `NullType` silently instead.
     */
   def silentSchemaFor(tpe: `Type`): Schema =
-    try {
-      schemaFor(tpe)
-    } catch {
+    try { schemaFor(tpe) }
+    catch {
       case _: UnsupportedOperationException => Schema(NullType, nullable = true)
     }
 
@@ -937,9 +926,7 @@ trait ScalaReflection {
       if (primaryConstructorSymbol.isEmpty) {
         sys.error(
           "Internal SQL error: Product object did not have a primary constructor.")
-      } else {
-        primaryConstructorSymbol.get.asMethod.paramss
-      }
+      } else { primaryConstructorSymbol.get.asMethod.paramss }
     }
     params.flatten
   }

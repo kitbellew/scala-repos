@@ -92,9 +92,8 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
                     def loop(i: Int, len: Int): Int =
                       if (i < slice.size) {
                         // `k` is a number between 0 and number of rows we've seen
-                        if (!defined(i)) {
-                          loop(i + 1, len)
-                        } else if (len < sampleSize) {
+                        if (!defined(i)) { loop(i + 1, len) }
+                        else if (len < sampleSize) {
                           inserter.insert(src = i, dest = len)
                           loop(i + 1, len + 1)
                         } else {
@@ -123,9 +122,7 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
                   inserter map { _.toSlice(len) } map { slice =>
                     Table(slice :: StreamT.empty[M, Slice], ExactSize(len))
                       .paged(yggConfig.maxSliceSize)
-                  } getOrElse {
-                    Table(StreamT.empty[M, Slice], ExactSize(0))
-                  }
+                  } getOrElse { Table(StreamT.empty[M, Slice], ExactSize(0)) }
               }
             }
         }
@@ -262,19 +259,13 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
       protected def unsafeMove(fromRow: Int, toRow: Int): Unit
 
       final def insert(srcRow: Int, destRow: Int) {
-        if (src.isDefinedAt(srcRow)) {
-          unsafeInsert(srcRow, destRow)
-        } else {
-          dest.defined.clear(destRow)
-        }
+        if (src.isDefinedAt(srcRow)) { unsafeInsert(srcRow, destRow) }
+        else { dest.defined.clear(destRow) }
       }
 
       final def move(from: Int, to: Int) {
-        if (dest.isDefinedAt(from)) {
-          unsafeMove(from, to)
-        } else {
-          dest.defined.clear(to)
-        }
+        if (dest.isDefinedAt(from)) { unsafeMove(from, to) }
+        else { dest.defined.clear(to) }
       }
     }
   }

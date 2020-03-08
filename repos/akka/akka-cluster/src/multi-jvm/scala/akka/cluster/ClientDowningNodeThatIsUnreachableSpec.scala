@@ -77,9 +77,7 @@ abstract class ClientDowningNodeThatIsUnreachableSpec(
         clusterView.members.exists(_.address == thirdAddress) should ===(false)
       }
 
-      runOn(third) {
-        enterBarrier("down-third-node")
-      }
+      runOn(third) { enterBarrier("down-third-node") }
 
       runOn(second, fourth) {
         enterBarrier("down-third-node")

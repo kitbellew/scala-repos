@@ -252,9 +252,7 @@ package play.api.mvc {
       }
     }
 
-    override def toString = {
-      method + " " + uri
-    }
+    override def toString = { method + " " + uri }
 
   }
 
@@ -622,13 +620,10 @@ package play.api.mvc {
       // This method intentionally runs in constant time if the two strings have the same length.
       // If it didn't, it would be vulnerable to a timing attack.
       def safeEquals(a: String, b: String) = {
-        if (a.length != b.length) {
-          false
-        } else {
+        if (a.length != b.length) { false }
+        else {
           var equal = 0
-          for (i <- Array.range(0, a.length)) {
-            equal |= a(i) ^ b(i)
-          }
+          for (i <- Array.range(0, a.length)) { equal |= a(i) ^ b(i) }
           equal == 0
         }
       }
@@ -672,9 +667,7 @@ package play.api.mvc {
         val extractedCookie: Cookie = cookie.get
         if (extractedCookie.name != COOKIE_NAME)
           emptyCookie /* can this happen? */
-        else {
-          deserialize(decode(extractedCookie.value))
-        }
+        else { deserialize(decode(extractedCookie.value)) }
       }
 
     def discard = DiscardingCookie(COOKIE_NAME, path, domain, secure)
@@ -947,9 +940,7 @@ package play.api.mvc {
       def get(name: String) = cookies.get(name)
       override def toString = cookies.toString
 
-      def foreach[U](f: (Cookie) => U) {
-        cookies.values.foreach(f)
-      }
+      def foreach[U](f: (Cookie) => U) { cookies.values.foreach(f) }
     }
 
     /**

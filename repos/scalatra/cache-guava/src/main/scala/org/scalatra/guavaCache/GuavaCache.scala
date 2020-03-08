@@ -20,9 +20,7 @@ object GuavaCache extends Cache {
         if (e.isExpired) {
           remove(key)
           None
-        } else {
-          Some(e.value)
-        })
+        } else { Some(e.value) })
 
   override def put[V](key: String, value: V, ttl: Option[Duration]): V = {
     cache.put(

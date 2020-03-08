@@ -77,9 +77,7 @@ class TaskContextSuite
       rdd.partitions(0),
       Seq.empty,
       0)
-    intercept[RuntimeException] {
-      task.run(0, 0, null)
-    }
+    intercept[RuntimeException] { task.run(0, 0, null) }
     assert(TaskContextSuite.completed === true)
   }
 
@@ -105,9 +103,7 @@ class TaskContextSuite
       rdd.partitions(0),
       Seq.empty,
       0)
-    intercept[RuntimeException] {
-      task.run(0, 0, null)
-    }
+    intercept[RuntimeException] { task.run(0, 0, null) }
     assert(TaskContextSuite.lastError.getMessage == "damn error")
   }
 
@@ -118,9 +114,7 @@ class TaskContextSuite
     context.addTaskCompletionListener(listener)
     context.addTaskCompletionListener(_ => throw new Exception("blah"))
 
-    intercept[TaskCompletionListenerException] {
-      context.markTaskCompleted()
-    }
+    intercept[TaskCompletionListenerException] { context.markTaskCompleted() }
 
     verify(listener, times(1)).onTaskCompletion(any())
   }
@@ -149,11 +143,10 @@ class TaskContextSuite
 
   test(
     "TaskContext.attemptNumber should return attempt number, not task id (SPARK-4014)") {
-    sc =
-      new SparkContext(
-        "local[1,2]",
-        "test"
-      ) // use maxRetries = 2 because we test failed tasks
+    sc = new SparkContext(
+      "local[1,2]",
+      "test"
+    ) // use maxRetries = 2 because we test failed tasks
     // Check that attemptIds are 0 for all tasks' initial attempts
     val attemptIds = sc
       .parallelize(Seq(1, 2), 2)
@@ -199,9 +192,7 @@ class TaskContextSuite
         acc2 += 1
         if (TaskContext.get.attemptNumber() <= 2) {
           throw new Exception("you did something wrong")
-        } else {
-          0
-        }
+        } else { 0 }
       }
       .count()
     // The one that counts failed values should be 4x the one that didn't,

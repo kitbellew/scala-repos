@@ -231,9 +231,7 @@ object TypeCheckToMatchUtil {
       else {
         //deleting unnecessary val declaration
         val patternDef = definition.get
-        inWriteAction {
-          patternDef.delete()
-        }
+        inWriteAction { patternDef.delete() }
         val name = definedName.get
         val newExpr = ScalaPsiElementFactory.createExpressionFromText(
           name,
@@ -323,9 +321,7 @@ object TypeCheckToMatchUtil {
         isInstOf(index),
         index,
         renameData)
-    } {
-      builder.append(text)
-    }
+    } { builder.append(text) }
 
     if (ifStmts != Nil) {
       val lastElse = ifStmts.last.elseBranch
@@ -397,9 +393,7 @@ object TypeCheckToMatchUtil {
           if isAsInstOfCall(call)
           if equalTypes(call, isInstOfCall)
           if equiv(base1, base2)
-        } {
-          result += call
-        }
+        } { result += call }
         super.visitGenericCallExpression(call)
       }
     }

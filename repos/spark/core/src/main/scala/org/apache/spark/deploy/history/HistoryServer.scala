@@ -149,9 +149,7 @@ class HistoryServer(
   }
 
   /** Bind to the HTTP server behind this web interface. */
-  override def bind() {
-    super.bind()
-  }
+  override def bind() { super.bind() }
 
   /** Stop the server and close the file system. */
   override def stop() {

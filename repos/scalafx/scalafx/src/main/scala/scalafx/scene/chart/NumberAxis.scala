@@ -49,7 +49,9 @@ object NumberAxis {
     new NumberAxis(
       new jfxsc.NumberAxis(axisLabel, lowerBound, upperBound, tickUnit))
 
-  def apply(axisLabel: String) = new NumberAxis { label = axisLabel }
+  def apply(axisLabel: String) = new NumberAxis {
+    label = axisLabel
+  }
 
   def apply() = new NumberAxis()
 
@@ -95,16 +97,12 @@ class NumberAxis(override val delegate: jfxsc.NumberAxis = new jfxsc.NumberAxis)
     * When `true` zero is always included in the visible range.
     */
   def forceZeroInRange: BooleanProperty = delegate.forceZeroInRangeProperty
-  def forceZeroInRange_=(v: Boolean) {
-    forceZeroInRange() = v
-  }
+  def forceZeroInRange_=(v: Boolean) { forceZeroInRange() = v }
 
   /**
     * The value between each major tick mark in data units.
     */
   def tickUnit: DoubleProperty = delegate.tickUnitProperty
-  def tickUnit_=(v: Double) {
-    tickUnit() = v
-  }
+  def tickUnit_=(v: Double) { tickUnit() = v }
 
 }

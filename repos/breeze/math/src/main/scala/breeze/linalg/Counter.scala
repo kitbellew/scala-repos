@@ -49,9 +49,7 @@ trait CounterLike[
 
   def contains(k: K) = data.contains(k)
 
-  override def apply(k: K) = {
-    data.get(k) getOrElse default
-  }
+  override def apply(k: K) = { data.get(k) getOrElse default }
 
   def update(k: K, v: V) { data(k) = v }
 
@@ -125,9 +123,7 @@ object Counter extends CounterOps {
     new CanMapValues[Counter[K, V], V, RV, Counter[K, RV]] {
       override def apply(from: Counter[K, V], fn: (V => RV)) = {
         val rv = Counter[K, RV]()
-        for ((k, v) <- from.iterator) {
-          rv(k) = fn(from.data(k))
-        }
+        for ((k, v) <- from.iterator) { rv(k) = fn(from.data(k)) }
         rv
       }
     }
@@ -138,9 +134,7 @@ object Counter extends CounterOps {
     new CanMapActiveValues[Counter[K, V], V, RV, Counter[K, RV]] {
       override def apply(from: Counter[K, V], fn: (V => RV)) = {
         val rv = Counter[K, RV]()
-        for ((k, v) <- from.activeIterator) {
-          rv(k) = fn(from.data(k))
-        }
+        for ((k, v) <- from.activeIterator) { rv(k) = fn(from.data(k)) }
         rv
       }
     }
@@ -153,9 +147,7 @@ object Counter extends CounterOps {
 
       /** Iterates all values from the given collection. */
       def traverse(from: Counter[K, V], fn: ValuesVisitor[V]): Unit = {
-        for (v <- from.valuesIterator) {
-          fn.visit(v)
-        }
+        for (v <- from.valuesIterator) { fn.visit(v) }
       }
 
     }
@@ -170,9 +162,7 @@ object Counter extends CounterOps {
       override def traverse(
           from: Counter[K, V],
           fn: KeyValuePairsVisitor[K, V]): Unit = {
-        for ((k, v) <- from.activeIterator) {
-          fn.visit(k, v)
-        }
+        for ((k, v) <- from.activeIterator) { fn.visit(k, v) }
       }
 
       override def isTraversableAgain(from: Counter[K, V]): Boolean = true
@@ -196,9 +186,7 @@ object Counter extends CounterOps {
       // Shouldn't need to supply a key value here, but it really mixes up the
       // VectorSpace hierarchy since it would require separate types for
       // implicitly full-domain spaces (like Counter), and finite domain spaces, like Vector
-      def apply(d: K): Counter[K, V] = {
-        Counter()
-      }
+      def apply(d: K): Counter[K, V] = { Counter() }
     }
   }
 
@@ -211,9 +199,7 @@ object Counter extends CounterOps {
       def apply(d: Counter[K, V]): Counter[K, V] = {
         val r = Counter[K, V]()
         val z = implicitly[Zero[V]].zero
-        for ((k, v) <- d.iterator) {
-          r(k) = z
-        }
+        for ((k, v) <- d.iterator) { r(k) = z }
         r
       }
     }

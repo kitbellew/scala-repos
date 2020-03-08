@@ -22,9 +22,7 @@ class EventRecorder(
   def record(e: AnyRef) = events.add(e)
 
   /** Pull the next event, waiting up to `nextTimeout`. */
-  def next(): AnyRef = {
-    events.poll(nextTimeout.length, nextTimeout.unit)
-  }
+  def next(): AnyRef = { events.poll(nextTimeout.length, nextTimeout.unit) }
 
   /** Wait for `isEmptyDelay` then check if the event queue is empty. */
   def isEmptyAfterDelay(waitMillis: Long = 50): Boolean = {

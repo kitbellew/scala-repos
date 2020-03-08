@@ -17,11 +17,8 @@ object PlayMagicForJava {
   implicit def javaOptionToScala[T](x: Optional[T]): Option[T] = x.asScala
 
   implicit def implicitJavaLang: play.api.i18n.Lang = {
-    try {
-      play.mvc.Http.Context.Implicit.lang.asInstanceOf[play.api.i18n.Lang]
-    } catch {
-      case NonFatal(_) => play.api.i18n.Lang.defaultLang
-    }
+    try { play.mvc.Http.Context.Implicit.lang.asInstanceOf[play.api.i18n.Lang] }
+    catch { case NonFatal(_) => play.api.i18n.Lang.defaultLang }
   }
 
   /**

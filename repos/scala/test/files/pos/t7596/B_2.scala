@@ -1,7 +1,5 @@
 object Test {
-  locally {
-    Sites: Config.driver.Table
-  }
+  locally { Sites: Config.driver.Table }
 }
 
 // Under separate compilation, the pickler is foiled by the

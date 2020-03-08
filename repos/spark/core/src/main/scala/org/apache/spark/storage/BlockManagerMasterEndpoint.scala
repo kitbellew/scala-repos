@@ -141,9 +141,7 @@ private[spark] class BlockManagerMasterEndpoint(
           if (blockManagerInfo.contains(bm)) {
             val bmInfo = blockManagerInfo(bm)
             context.reply(bmInfo.cachedBlocks.nonEmpty)
-          } else {
-            context.reply(false)
-          }
+          } else { context.reply(false) }
         case None => context.reply(false)
       }
   }
@@ -215,9 +213,7 @@ private[spark] class BlockManagerMasterEndpoint(
       val blockId = iterator.next
       val locations = blockLocations.get(blockId)
       locations -= blockManagerId
-      if (locations.size == 0) {
-        blockLocations.remove(blockId)
-      }
+      if (locations.size == 0) { blockLocations.remove(blockId) }
     }
     listenerBus.post(
       SparkListenerBlockManagerRemoved(
@@ -297,9 +293,7 @@ private[spark] class BlockManagerMasterEndpoint(
       val blockStatusFuture =
         if (askSlaves) {
           info.slaveEndpoint.ask[Option[BlockStatus]](getBlockStatus)
-        } else {
-          Future { info.getStatus(blockId) }
-        }
+        } else { Future { info.getStatus(blockId) } }
       (info.blockManagerId, blockStatusFuture)
     }.toMap
   }
@@ -322,9 +316,7 @@ private[spark] class BlockManagerMasterEndpoint(
           val future =
             if (askSlaves) {
               info.slaveEndpoint.ask[Seq[BlockId]](getMatchingBlockIds)
-            } else {
-              Future { info.blocks.asScala.keys.filter(filter).toSeq }
-            }
+            } else { Future { info.blocks.asScala.keys.filter(filter).toSeq } }
           future
         }
       )
@@ -373,9 +365,7 @@ private[spark] class BlockManagerMasterEndpoint(
         // We intentionally do not register the master (except in local mode),
         // so we should not indicate failure.
         return true
-      } else {
-        return false
-      }
+      } else { return false }
     }
 
     if (blockId == null) {
@@ -397,16 +387,11 @@ private[spark] class BlockManagerMasterEndpoint(
       blockLocations.put(blockId, locations)
     }
 
-    if (storageLevel.isValid) {
-      locations.add(blockManagerId)
-    } else {
-      locations.remove(blockManagerId)
-    }
+    if (storageLevel.isValid) { locations.add(blockManagerId) }
+    else { locations.remove(blockManagerId) }
 
     // Remove the block from master tracking if it has been removed on all slaves.
-    if (locations.size == 0) {
-      blockLocations.remove(blockId)
-    }
+    if (locations.size == 0) { blockLocations.remove(blockId) }
     true
   }
 
@@ -428,9 +413,7 @@ private[spark] class BlockManagerMasterEndpoint(
         .filterNot { _.isDriver }
         .filterNot { _ == blockManagerId }
         .toSeq
-    } else {
-      Seq.empty
-    }
+    } else { Seq.empty }
   }
 
   /**
@@ -444,9 +427,7 @@ private[spark] class BlockManagerMasterEndpoint(
     }
   }
 
-  override def onStop(): Unit = {
-    askThreadPool.shutdownNow()
-  }
+  override def onStop(): Unit = { askThreadPool.shutdownNow() }
 }
 
 @DeveloperApi
@@ -482,9 +463,7 @@ private[spark] class BlockManagerInfo(
   def getStatus(blockId: BlockId): Option[BlockStatus] =
     Option(_blocks.get(blockId))
 
-  def updateLastSeenMs() {
-    _lastSeenMs = System.currentTimeMillis()
-  }
+  def updateLastSeenMs() { _lastSeenMs = System.currentTimeMillis() }
 
   def updateBlockInfo(
       blockId: BlockId,
@@ -500,9 +479,7 @@ private[spark] class BlockManagerInfo(
       val originalLevel: StorageLevel = blockStatus.storageLevel
       val originalMemSize: Long = blockStatus.memSize
 
-      if (originalLevel.useMemory) {
-        _remainingMem += originalMemSize
-      }
+      if (originalLevel.useMemory) { _remainingMem += originalMemSize }
     }
 
     if (storageLevel.isValid) {
@@ -580,7 +557,5 @@ private[spark] class BlockManagerInfo(
   override def toString: String =
     "BlockManagerInfo " + timeMs + " " + _remainingMem
 
-  def clear() {
-    _blocks.clear()
-  }
+  def clear() { _blocks.clear() }
 }

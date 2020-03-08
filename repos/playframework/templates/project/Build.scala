@@ -133,9 +133,7 @@ object Templates {
           val newContents = allParams.foldLeft(contents) { (str, param) =>
             str.replace("%" + param._1 + "%", param._2)
           }
-          if (newContents != contents) {
-            IO.write(file, newContents)
-          }
+          if (newContents != contents) { IO.write(file, newContents) }
         case _ =>
       }
 

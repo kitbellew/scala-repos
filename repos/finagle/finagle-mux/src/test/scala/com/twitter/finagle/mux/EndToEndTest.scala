@@ -35,9 +35,7 @@ class EndToEndTest
     Dtab.base = Dtab.read("/foo=>/bar; /baz=>/biz")
   }
 
-  after {
-    Dtab.base = saveBase
-  }
+  after { Dtab.base = saveBase }
 
   // turn off failure detector since we don't need it for these tests.
   override def test(testName: String, testTags: Tag*)(f: => Unit) {
@@ -228,9 +226,7 @@ class EndToEndTest
     try {
       s.bind(new InetSocketAddress(0))
       s.getLocalPort()
-    } finally {
-      s.close()
-    }
+    } finally { s.close() }
   }
 
   // This is marked FLAKY because it allocates a nonephemeral port;
@@ -301,9 +297,7 @@ EOF
       class FakeLessor extends Lessor {
         var list: List[Lessee] = Nil
 
-        def register(lessee: Lessee): Unit = {
-          list ::= lessee
-        }
+        def register(lessee: Lessee): Unit = { list ::= lessee }
 
         def unregister(lessee: Lessee): Unit = ()
 

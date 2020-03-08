@@ -86,16 +86,12 @@ private[mllib] class PeriodicGraphCheckpointer[VD, ED](
     data.isCheckpointed
 
   override protected def persist(data: Graph[VD, ED]): Unit = {
-    if (data.vertices.getStorageLevel == StorageLevel.NONE) {
-      data.persist()
-    }
+    if (data.vertices.getStorageLevel == StorageLevel.NONE) { data.persist() }
   }
 
   override protected def unpersist(data: Graph[VD, ED]): Unit =
     data.unpersist(blocking = false)
 
   override protected def getCheckpointFiles(
-      data: Graph[VD, ED]): Iterable[String] = {
-    data.getCheckpointFiles
-  }
+      data: Graph[VD, ED]): Iterable[String] = { data.getCheckpointFiles }
 }

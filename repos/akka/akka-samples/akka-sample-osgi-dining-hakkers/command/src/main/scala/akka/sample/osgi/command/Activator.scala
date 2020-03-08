@@ -39,7 +39,5 @@ class Activator extends BundleActivator {
     hakker = Some(service.getHakker(name, 4))
   }
 
-  def stop(context: BundleContext) {
-    hakker.foreach(_ ! PoisonPill)
-  }
+  def stop(context: BundleContext) { hakker.foreach(_ ! PoisonPill) }
 }

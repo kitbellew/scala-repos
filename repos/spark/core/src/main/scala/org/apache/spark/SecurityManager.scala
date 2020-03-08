@@ -259,9 +259,7 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
             TrustManagerFactory.getDefaultAlgorithm)
           tmf.init(ks)
           tmf.getTrustManagers
-        } finally {
-          input.close()
-        }
+        } finally { input.close() }
       }
 
     lazy val credulousTrustStoreManagers = Array({
@@ -291,9 +289,7 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     }
 
     (Some(sslContext.getSocketFactory), Some(hostVerifier))
-  } else {
-    (None, None)
-  }
+  } else { (None, None) }
 
   def getSSLOptions(module: String): SSLOptions = {
     val opts =
@@ -326,11 +322,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     * Checking the existence of "*" is necessary as YARN can't recognize the "*" in "defaultuser,*"
     */
   def getViewAcls: String = {
-    if (viewAcls.contains("*")) {
-      "*"
-    } else {
-      viewAcls.mkString(",")
-    }
+    if (viewAcls.contains("*")) { "*" }
+    else { viewAcls.mkString(",") }
   }
 
   /**
@@ -346,11 +339,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     * Checking the existence of "*" is necessary as YARN can't recognize the "*" in "defaultuser,*"
     */
   def getModifyAcls: String = {
-    if (modifyAcls.contains("*")) {
-      "*"
-    } else {
-      modifyAcls.mkString(",")
-    }
+    if (modifyAcls.contains("*")) { "*" }
+    else { modifyAcls.mkString(",") }
   }
 
   /**
@@ -377,9 +367,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     * we throw an exception.
     */
   private def generateSecretKey(): String = {
-    if (!isAuthenticationEnabled) {
-      null
-    } else if (SparkHadoopUtil.get.isYarnMode) {
+    if (!isAuthenticationEnabled) { null }
+    else if (SparkHadoopUtil.get.isYarnMode) {
       // In YARN mode, the secure cookie will be created by the driver and stashed in the
       // user's credentials, where executors can get it. The check for an array of size 0
       // is because of the test code in YarnSparkHadoopUtilSuite.
@@ -399,9 +388,7 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
         SparkHadoopUtil.get
           .addSecretKeyToUserCredentials(SECRET_LOOKUP_KEY, cookie)
         cookie
-      } else {
-        new Text(secretKey).toString
-      }
+      } else { new Text(secretKey).toString }
     } else {
       // user must have set spark.authenticate.secret config
       // For Master/Worker, auth secret is in conf; for Executors, it is in env variable

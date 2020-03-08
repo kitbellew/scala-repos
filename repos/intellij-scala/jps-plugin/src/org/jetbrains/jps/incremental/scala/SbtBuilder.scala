@@ -90,9 +90,8 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
         client.error(error)
         ExitCode.ABORT
       case Right(code) =>
-        if (client.hasReportedErrors || client.isCanceled) {
-          ExitCode.ABORT
-        } else {
+        if (client.hasReportedErrors || client.isCanceled) { ExitCode.ABORT }
+        else {
           client.progress("Compilation completed", Some(1.0f))
           code
         }
@@ -173,9 +172,7 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
           val thatTimestamp = timestamps.get(dependency)
           thatTimestamp.map(_ > thisTimestamp).getOrElse(true)
         }
-      } getOrElse {
-        dependencies.nonEmpty
-      }
+      } getOrElse { dependencies.nonEmpty }
     }
 
     if (!hasDirtyDependencies && !dirtyFilesHolder.hasDirtyFiles && !dirtyFilesHolder.hasRemovedFiles) {

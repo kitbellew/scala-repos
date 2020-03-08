@@ -37,9 +37,7 @@ trait ScalatraFilter extends Filter with ServletBase {
     val httpRequest = request.asInstanceOf[HttpServletRequest]
     val httpResponse = response.asInstanceOf[HttpServletResponse]
 
-    _filterChain.withValue(chain) {
-      handle(httpRequest, httpResponse)
-    }
+    _filterChain.withValue(chain) { handle(httpRequest, httpResponse) }
   }
 
   // What goes in servletPath and what goes in pathInfo depends on how the underlying servlet is mapped.
@@ -50,9 +48,8 @@ trait ScalatraFilter extends Filter with ServletBase {
         var uri = requestURI
         if (request.getContextPath.length > 0)
           uri = uri.substring(request.getContextPath.length)
-        if (uri.length == 0) {
-          uri = "/"
-        } else {
+        if (uri.length == 0) { uri = "/" }
+        else {
           val pos = uri.indexOf(';')
           if (pos >= 0) uri = uri.substring(0, pos)
         }
@@ -87,12 +84,8 @@ trait ScalatraFilter extends Filter with ServletBase {
   type ConfigT = FilterConfig
 
   // see Initializable.initialize for why
-  def init(filterConfig: FilterConfig): Unit = {
-    initialize(filterConfig)
-  }
+  def init(filterConfig: FilterConfig): Unit = { initialize(filterConfig) }
 
-  def destroy: Unit = {
-    shutdown()
-  }
+  def destroy: Unit = { shutdown() }
 
 }

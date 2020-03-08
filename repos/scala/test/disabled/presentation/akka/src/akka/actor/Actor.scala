@@ -19,7 +19,8 @@ import java.lang.reflect.InvocationTargetException
 sealed trait LifeCycleMessage extends Serializable
 
 /* Marker trait to show which Messages are automatically handled by Akka */
-sealed trait AutoReceivedMessage { self: LifeCycleMessage => }
+sealed trait AutoReceivedMessage { self: LifeCycleMessage =>
+}
 
 case class HotSwap(code: ActorRef => Actor.Receive, discardOld: Boolean = true)
     extends AutoReceivedMessage
@@ -456,9 +457,7 @@ trait Actor {
     *  Is called when a message isn't handled by the current behavior of the actor
     *  by default it throws an UnhandledMessageException
     */
-  def unhandled(msg: Any) {
-    throw new UnhandledMessageException(msg, self)
-  }
+  def unhandled(msg: Any) { throw new UnhandledMessageException(msg, self) }
 
   /** Is the actor able to handle the message passed in as arguments?
     */

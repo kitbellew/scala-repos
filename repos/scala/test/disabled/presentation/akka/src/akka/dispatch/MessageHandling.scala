@@ -29,9 +29,8 @@ final case class MessageInvocation(
     throw new IllegalArgumentException("Receiver can't be null")
 
   def invoke =
-    try {
-      receiver.invoke(this)
-    } catch {
+    try { receiver.invoke(this) }
+    catch {
       case e: NullPointerException =>
         throw new ActorInitializationException(
           "Don't call 'self ! message' in the Actor's constructor (in Scala this means in the body of the class).")
@@ -44,15 +43,12 @@ final case class FutureInvocation[T](
     cleanup: () => Unit)
     extends Runnable {
   def run = {
-    future complete (try {
-      Right(function())
-    } catch {
+    future complete (try { Right(function()) }
+    catch {
       case e =>
         EventHandler.error(e, this, e.getMessage)
         Left(e)
-    } finally {
-      cleanup()
-    })
+    } finally { cleanup() })
   }
 }
 
@@ -144,11 +140,7 @@ trait MessageDispatcher {
       actorRef.mailbox = createMailbox(actorRef)
 
     uuids add actorRef.uuid
-    if (active.isOff) {
-      active.switchOn {
-        start
-      }
-    }
+    if (active.isOff) { active.switchOn { start } }
   }
 
   private[akka] def unregister(actorRef: ActorRef) = {

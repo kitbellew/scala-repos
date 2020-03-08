@@ -18,7 +18,9 @@ class C(init: Int) extends M {
 object Main {
   def main(argv: Array[String]) {
     class Bip {
-      class Foo { override def toString() = "foo" }
+      class Foo {
+        override def toString() = "foo"
+      }
       object Main extends App {
         val cbn = new Foo()
       }

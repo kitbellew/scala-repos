@@ -55,9 +55,7 @@ trait FutureTimeoutSupport {
               if (ex != null) p.completeExceptionally(ex)
             }
           })
-        } catch {
-          case NonFatal(ex) ⇒ p.completeExceptionally(ex)
-        }
+        } catch { case NonFatal(ex) ⇒ p.completeExceptionally(ex) }
       }
       p
     }

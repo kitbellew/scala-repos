@@ -144,9 +144,8 @@ class MutableSettings(val errorFn: String => Unit)
     // the entire arg is consumed, so return None for failure
     // any non-Nil return value means failure and we return s unmodified
     def parseColonArg(s: String): Option[List[String]] =
-      if (s endsWith ":") {
-        clearIfExists(s.init)
-      } else {
+      if (s endsWith ":") { clearIfExists(s.init) }
+      else {
         for {
           (p, args) <- StringOps.splitWhere(s, _ == ':', doDropIndex = true)
           rest <- tryToSetIfExists(
@@ -342,9 +341,7 @@ class MutableSettings(val errorFn: String => Unit)
     /** Set the single output directory. From now on, all files will
       *  be dumped in there, regardless of previous calls to 'add'.
       */
-    def setSingleOutput(dir: AbstractFile) {
-      singleOutDir = Some(dir)
-    }
+    def setSingleOutput(dir: AbstractFile) { singleOutDir = Some(dir) }
 
     def add(src: AbstractFile, dst: AbstractFile) {
       singleOutDir = None
@@ -826,9 +823,7 @@ class MutableSettings(val errorFn: String => Unit)
         case Some(defaults) => defaults foreach add
         case None           => errorFn(s"'$name' requires an option. See '$name:help'.")
       }
-      else {
-        added foreach add
-      }
+      else { added foreach add }
 
       Some(rest)
     }
@@ -978,9 +973,7 @@ class MutableSettings(val errorFn: String => Unit)
     private def numericValues = _numbs
     private def stringValues = _names
     private def phaseIdTest(i: Int): Boolean =
-      numericValues exists (_ match {
-        case (min, max) => min <= i && i <= max
-      })
+      numericValues exists (_ match { case (min, max) => min <= i && i <= max })
 
     def tryToSet(args: List[String]) =
       if (default == "") errorAndValue("missing phase", None)

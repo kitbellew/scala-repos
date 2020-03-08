@@ -36,9 +36,7 @@ import Helpers._
   * </pre>
   */
 object WithResourceId extends DispatchSnippet {
-  def dispatch: DispatchIt = {
-    case _ => render
-  }
+  def dispatch: DispatchIt = { case _ => render }
 
   import Helpers._
 

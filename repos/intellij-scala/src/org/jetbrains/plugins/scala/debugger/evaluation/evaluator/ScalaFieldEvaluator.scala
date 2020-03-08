@@ -35,9 +35,7 @@ case class ScalaFieldEvaluator(
       }
     }
     var field = t.fieldByName(fieldName)
-    if (field != null) {
-      return field
-    }
+    if (field != null) { return field }
     for (i <- 1 to 3) {
       field = t.fieldByName(fieldName + "$" + i)
       if (field != null) return field
@@ -58,9 +56,7 @@ case class ScalaFieldEvaluator(
         import scala.collection.JavaConversions._
         for (interfaceType <- cls.interfaces) {
           val field: Field = findField(interfaceType, context)
-          if (field != null) {
-            return field
-          }
+          if (field != null) { return field }
         }
         return findField(cls.superclass, context)
       case iface: InterfaceType =>
@@ -70,9 +66,7 @@ case class ScalaFieldEvaluator(
         import scala.collection.JavaConversions._
         for (interfaceType <- iface.superinterfaces) {
           val field: Field = findField(interfaceType, context)
-          if (field != null) {
-            return field
-          }
+          if (field != null) { return field }
         }
       case _ =>
     }
@@ -122,9 +116,7 @@ case class ScalaFieldEvaluator(
           case _ =>
         }
         var field: Field = findField(refType, context)
-        if (field == null) {
-          field = refType.fieldByName(fieldName)
-        }
+        if (field == null) { field = refType.fieldByName(fieldName) }
         if (field == null) {
           throw EvaluationException(
             DebuggerBundle
@@ -151,9 +143,7 @@ case class ScalaFieldEvaluator(
           myEvaluatedQualifier.isInstanceOf[ObjectReference]
         }
 
-        def canSetValue: Boolean = {
-          true
-        }
+        def canSetValue: Boolean = { true }
 
         def setValue(value: Value) {
           if (myEvaluatedQualifier.isInstanceOf[ReferenceType]) {
@@ -167,9 +157,7 @@ case class ScalaFieldEvaluator(
           }
         }
 
-        def getExpectedType: Type = {
-          myEvaluatedField.`type`
-        }
+        def getExpectedType: Type = { myEvaluatedField.`type` }
 
         def getInspectItem(project: Project): NodeDescriptorImpl = {
           myEvaluatedQualifier match {

@@ -152,9 +152,7 @@ private[http] abstract class HttpMessageParser[
         try {
           lineEnd = headerParser.parseHeaderLine(input, lineStart)()
           headerParser.resultHeader
-        } catch {
-          case NotEnoughDataException ⇒ null
-        }
+        } catch { case NotEnoughDataException ⇒ null }
       resultHeader match {
         case null ⇒
           continue(input, lineStart)(

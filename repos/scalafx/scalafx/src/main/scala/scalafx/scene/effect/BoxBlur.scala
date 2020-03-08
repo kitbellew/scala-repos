@@ -57,8 +57,6 @@ class BoxBlur(override val delegate: jfxse.BoxBlur = new jfxse.BoxBlur)
     * The number of times to iterate the blur effect to improve its "quality" or "smoothness".
     */
   def iterations: IntegerProperty = delegate.iterationsProperty
-  def iterations_=(v: Int) {
-    iterations() = v
-  }
+  def iterations_=(v: Int) { iterations() = v }
 
 }

@@ -103,16 +103,12 @@ class GraphStageDocSpec extends AkkaSpec {
         setHandler(
           in,
           new InHandler {
-            override def onPush(): Unit = {
-              push(out, f(grab(in)))
-            }
+            override def onPush(): Unit = { push(out, f(grab(in))) }
           })
         setHandler(
           out,
           new OutHandler {
-            override def onPull(): Unit = {
-              pull(in)
-            }
+            override def onPull(): Unit = { pull(in) }
           })
       }
   }
@@ -152,9 +148,7 @@ class GraphStageDocSpec extends AkkaSpec {
         setHandler(
           out,
           new OutHandler {
-            override def onPull(): Unit = {
-              pull(in)
-            }
+            override def onPull(): Unit = { pull(in) }
           })
       }
   }
@@ -210,9 +204,7 @@ class GraphStageDocSpec extends AkkaSpec {
               if (lastElem.isDefined) {
                 push(out, lastElem.get)
                 lastElem = None
-              } else {
-                pull(in)
-              }
+              } else { pull(in) }
             }
           })
       }
@@ -258,9 +250,7 @@ class GraphStageDocSpec extends AkkaSpec {
           setHandler(
             out,
             new OutHandler {
-              override def onPull(): Unit = {
-                pull(in)
-              }
+              override def onPull(): Unit = { pull(in) }
             })
         }
     }
@@ -395,9 +385,7 @@ class GraphStageDocSpec extends AkkaSpec {
               override def onPull(): Unit = { pull(in) }
             })
 
-          override protected def onTimer(timerKey: Any): Unit = {
-            open = false
-          }
+          override protected def onTimer(timerKey: Any): Unit = { open = false }
         }
     }
     //#timed
@@ -440,9 +428,7 @@ class GraphStageDocSpec extends AkkaSpec {
                 setHandler(
                   in,
                   new InHandler {
-                    override def onPush(): Unit = {
-                      push(out, grab(in))
-                    }
+                    override def onPush(): Unit = { push(out, grab(in)) }
                   })
               }
             }
@@ -451,9 +437,7 @@ class GraphStageDocSpec extends AkkaSpec {
           setHandler(
             out,
             new OutHandler {
-              override def onPull(): Unit = {
-                pull(in)
-              }
+              override def onPull(): Unit = { pull(in) }
             })
 
         }
@@ -509,9 +493,7 @@ class GraphStageDocSpec extends AkkaSpec {
                   val bufferedElem = buffer.dequeue()
                   push(out, bufferedElem)
                 }
-                if (!bufferFull) {
-                  pull(in)
-                }
+                if (!bufferFull) { pull(in) }
               }
 
               override def onUpstreamFinish(): Unit = {
@@ -528,15 +510,12 @@ class GraphStageDocSpec extends AkkaSpec {
             out,
             new OutHandler {
               override def onPull(): Unit = {
-                if (buffer.isEmpty) {
-                  downstreamWaiting = true
-                } else {
+                if (buffer.isEmpty) { downstreamWaiting = true }
+                else {
                   val elem = buffer.dequeue
                   push(out, elem)
                 }
-                if (!bufferFull && !hasBeenPulled(in)) {
-                  pull(in)
-                }
+                if (!bufferFull && !hasBeenPulled(in)) { pull(in) }
               }
             }
           )

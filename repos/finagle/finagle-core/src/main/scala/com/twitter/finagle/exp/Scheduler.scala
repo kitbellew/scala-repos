@@ -29,11 +29,8 @@ private[finagle] object FinagleScheduler {
 
   private object Integer {
     def unapply(str: String): Option[Int] = {
-      try {
-        Some(str.toInt)
-      } catch {
-        case _: java.lang.NumberFormatException => None
-      }
+      try { Some(str.toInt) }
+      catch { case _: java.lang.NumberFormatException => None }
     }
   }
 

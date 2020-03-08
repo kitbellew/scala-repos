@@ -23,9 +23,7 @@ final class ShutupApi(
     coll
       .find(BSONDocument("_id" -> userId), BSONDocument("pub" -> 1))
       .one[BSONDocument]
-      .map {
-        ~_.flatMap(_.getAs[List[String]]("pub"))
-      }
+      .map { ~_.flatMap(_.getAs[List[String]]("pub")) }
 
   def publicForumMessage(userId: String, text: String) =
     record(userId, text, TextType.PublicForumMessage)
@@ -35,9 +33,7 @@ final class ShutupApi(
     record(userId, text, TextType.PublicChat)
 
   def privateChat(chatId: String, userId: String, text: String) =
-    GameRepo.getUserIds(chatId) map {
-      _ find (userId !=)
-    } flatMap {
+    GameRepo.getUserIds(chatId) map { _ find (userId !=) } flatMap {
       record(userId, text, TextType.PrivateChat, _)
     }
 

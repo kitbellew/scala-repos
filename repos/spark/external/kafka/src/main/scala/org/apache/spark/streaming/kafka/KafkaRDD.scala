@@ -89,9 +89,7 @@ private[kafka] class KafkaRDD[
       .map(_.asInstanceOf[KafkaRDDPartition])
       .filter(_.count > 0)
 
-    if (num < 1 || nonEmptyPartitions.isEmpty) {
-      return new Array[R](0)
-    }
+    if (num < 1 || nonEmptyPartitions.isEmpty) { return new Array[R](0) }
 
     // Determine in advance how many messages need to be taken from each partition
     val parts = nonEmptyPartitions.foldLeft(Map[Int, Int]()) { (result, part) =>
@@ -99,9 +97,7 @@ private[kafka] class KafkaRDD[
       if (remain > 0) {
         val taken = Math.min(remain, part.count)
         result + (part.index -> taken.toInt)
-      } else {
-        result
-      }
+      } else { result }
     }
 
     val buf = new ArrayBuffer[R]
@@ -147,9 +143,7 @@ private[kafka] class KafkaRDD[
         s"Beginning offset ${part.fromOffset} is the same as ending offset " +
           s"skipping ${part.topic} ${part.partition}")
       Iterator.empty
-    } else {
-      new KafkaRDDIterator(part, context)
-    }
+    } else { new KafkaRDDIterator(part, context) }
   }
 
   private class KafkaRDDIterator(part: KafkaRDDPartition, context: TaskContext)
@@ -186,9 +180,7 @@ private[kafka] class KafkaRDD[
                   errs.mkString("\n")),
             consumer => consumer
           )
-      } else {
-        kc.connect(part.host, part.port)
-      }
+      } else { kc.connect(part.host, part.port) }
     }
 
     private def handleFetchErr(resp: FetchResponse) {
@@ -223,16 +215,10 @@ private[kafka] class KafkaRDD[
         .dropWhile(_.offset < requestOffset)
     }
 
-    override def close(): Unit = {
-      if (consumer != null) {
-        consumer.close()
-      }
-    }
+    override def close(): Unit = { if (consumer != null) { consumer.close() } }
 
     override def getNext(): R = {
-      if (iter == null || !iter.hasNext) {
-        iter = fetchBatch
-      }
+      if (iter == null || !iter.hasNext) { iter = fetchBatch }
       if (!iter.hasNext) {
         assert(requestOffset == part.untilOffset, errRanOutBeforeEnd(part))
         finished = true

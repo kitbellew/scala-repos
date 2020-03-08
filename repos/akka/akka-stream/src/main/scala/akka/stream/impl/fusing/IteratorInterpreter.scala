@@ -67,9 +67,7 @@ private[akka] object IteratorInterpreter {
           needsPull = false
         }
 
-        override def onUpstreamFinish(): Unit = {
-          done = true
-        }
+        override def onUpstreamFinish(): Unit = { done = true }
 
         override def onUpstreamFailure(cause: Throwable): Unit = {
           done = true

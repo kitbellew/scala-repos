@@ -36,9 +36,7 @@ object RoutesCompiler {
 
       val lines: Array[String] = if (file.exists) {
         FileUtils.readFileToString(file, implicitly[Codec].name).split('\n')
-      } else {
-        Array.empty[String]
-      }
+      } else { Array.empty[String] }
 
       if (lines.contains("// @GENERATOR:play-routes-compiler")) {
         Some(new GeneratedSource {
@@ -53,9 +51,7 @@ object RoutesCompiler {
             }
           }
         })
-      } else {
-        None
-      }
+      } else { None }
     }
 
   }

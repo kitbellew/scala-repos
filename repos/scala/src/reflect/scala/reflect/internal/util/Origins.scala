@@ -76,9 +76,7 @@ object Origins {
   private val counters = mutable.HashMap[String, Origins]()
   private val thisClass = this.getClass.getName
 
-  locally {
-    sys.addShutdownHook(counters.values foreach (_.purge()))
-  }
+  locally { sys.addShutdownHook(counters.values foreach (_.purge())) }
 
   case class OriginId(className: String, methodName: String) {
     def matches(el: StackTraceElement) = (

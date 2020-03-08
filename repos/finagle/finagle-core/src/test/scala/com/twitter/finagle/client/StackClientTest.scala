@@ -73,9 +73,7 @@ class StackClientTest
       .configured(param.Stats(sr))
   }
 
-  after {
-    NameInterpreter.global = DefaultInterpreter
-  }
+  after { NameInterpreter.global = DefaultInterpreter }
 
   test("client stats are scoped to label")(new Ctx {
     // use dest when no label is set
@@ -443,9 +441,7 @@ class StackClientTest
             param.Stats(sr) +
             BindingFactory.BaseDtab(() => baseDtab)))
 
-    intercept[ChannelWriteException] {
-      Await.result(service(()), 5.seconds)
-    }
+    intercept[ChannelWriteException] { Await.result(service(()), 5.seconds) }
 
     val requeues = sr.counters(Seq("retries", "requeues"))
 
@@ -544,9 +540,7 @@ class StackClientTest
             if (first) {
               first = false
               Future.value(endpoint1)
-            } else {
-              Future.value(endpoint2)
-            }
+            } else { Future.value(endpoint2) }
 
           def close(deadline: Time): Future[Unit] = Future.Done
         }

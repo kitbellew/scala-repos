@@ -81,9 +81,7 @@ trait IssuesControllerBase extends ControllerBase {
       redirect(
         s"/${repository.owner}/${repository.name}/pulls?q=" + StringUtil
           .urlEncode(q))
-    } else {
-      searchIssues(repository)
-    }
+    } else { searchIssues(repository) }
   })
 
   get("/:owner/:repository/issues/:id")(referrersOnly { repository =>
@@ -234,46 +232,40 @@ trait IssuesControllerBase extends ControllerBase {
   post("/:owner/:repository/issue_comments/new", commentForm)(
     readableUsersOnly { (form, repository) =>
       getIssue(repository.owner, repository.name, form.issueId.toString)
-        .flatMap {
-          issue =>
-            val actionOpt = params
-              .get("action")
-              .filter(_ =>
-                isEditable(
-                  issue.userName,
-                  issue.repositoryName,
-                  issue.openedUserName))
-            handleComment(
-              issue,
-              Some(form.content),
-              repository,
-              actionOpt) map {
-              case (issue, id) =>
-                redirect(
-                  s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
-                  else "issues"}/${form.issueId}#comment-${id}")
-            }
+        .flatMap { issue =>
+          val actionOpt = params
+            .get("action")
+            .filter(_ =>
+              isEditable(
+                issue.userName,
+                issue.repositoryName,
+                issue.openedUserName))
+          handleComment(issue, Some(form.content), repository, actionOpt) map {
+            case (issue, id) =>
+              redirect(
+                s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
+                else "issues"}/${form.issueId}#comment-${id}")
+          }
         } getOrElse NotFound
     })
 
   post("/:owner/:repository/issue_comments/state", issueStateForm)(
     readableUsersOnly { (form, repository) =>
       getIssue(repository.owner, repository.name, form.issueId.toString)
-        .flatMap {
-          issue =>
-            val actionOpt = params
-              .get("action")
-              .filter(_ =>
-                isEditable(
-                  issue.userName,
-                  issue.repositoryName,
-                  issue.openedUserName))
-            handleComment(issue, form.content, repository, actionOpt) map {
-              case (issue, id) =>
-                redirect(
-                  s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
-                  else "issues"}/${form.issueId}#comment-${id}")
-            }
+        .flatMap { issue =>
+          val actionOpt = params
+            .get("action")
+            .filter(_ =>
+              isEditable(
+                issue.userName,
+                issue.repositoryName,
+                issue.openedUserName))
+          handleComment(issue, form.content, repository, actionOpt) map {
+            case (issue, id) =>
+              redirect(
+                s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
+                else "issues"}/${form.issueId}#comment-${id}")
+          }
         } getOrElse NotFound
     })
 
@@ -539,9 +531,8 @@ trait IssuesControllerBase extends ControllerBase {
           sessionKey,
           if (request.hasQueryString) {
             val q = request.getParameter("q")
-            if (q == null || q.trim.isEmpty) {
-              IssueSearchCondition(request)
-            } else {
+            if (q == null || q.trim.isEmpty) { IssueSearchCondition(request) }
+            else {
               IssueSearchCondition(
                 q,
                 getMilestones(owner, repoName)
@@ -565,9 +556,7 @@ trait IssuesControllerBase extends ControllerBase {
           page,
           if (!getAccountByUserName(owner).exists(_.isGroupAccount)) {
             (getCollaborators(owner, repoName) :+ owner).sorted
-          } else {
-            getCollaborators(owner, repoName)
-          },
+          } else { getCollaborators(owner, repoName) },
           getMilestones(owner, repoName),
           getLabels(owner, repoName),
           countIssue(condition.copy(state = "open"), false, owner -> repoName),

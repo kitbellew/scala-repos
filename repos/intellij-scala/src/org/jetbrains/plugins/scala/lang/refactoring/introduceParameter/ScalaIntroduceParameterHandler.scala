@@ -214,9 +214,7 @@ class ScalaIntroduceParameterHandler
       }
 
       Some((exprWithTypes, elems))
-    } catch {
-      case _: IntroduceException => None
-    }
+    } catch { case _: IntroduceException => None }
   }
 
   def collectData(
@@ -314,9 +312,7 @@ class ScalaIntroduceParameterHandler
   def invoke(
       project: Project,
       elements: Array[PsiElement],
-      dataContext: DataContext) {
-    /*do nothing*/
-  }
+      dataContext: DataContext) { /*do nothing*/ }
 
   private def getEnclosingMethods(expr: PsiElement): Seq[ScMethodLike] = {
     var enclosingMethods = new ArrayBuffer[ScMethodLike]

@@ -32,9 +32,7 @@ class DefaultSSLEngineProvider(
 
   val sslContext: SSLContext = createSSLContext(appProvider)
 
-  override def createSSLEngine: SSLEngine = {
-    sslContext.createSSLEngine()
-  }
+  override def createSSLEngine: SSLEngine = { sslContext.createSSLEngine() }
 
   def createSSLContext(applicationProvider: ApplicationProvider): SSLContext = {
     val httpsConfig =
@@ -65,9 +63,7 @@ class DefaultSSLEngineProvider(
                 "Error loading HTTPS keystore from " + file.getAbsolutePath,
                 e)
             }
-          } finally {
-            PlayIO.closeQuietly(in)
-          }
+          } finally { PlayIO.closeQuietly(in) }
         } else {
           throw new Exception(
             "Unable to find HTTPS keystore at \"" + file.getAbsolutePath + "\"")

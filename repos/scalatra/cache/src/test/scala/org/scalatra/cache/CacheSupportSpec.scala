@@ -9,11 +9,7 @@ class CacheSupportSpec extends ScalatraFlatSpec {
   class TestServlet extends ScalatraServlet with CacheSupport {
     implicit val cacheBackend = new MapCache
 
-    get("/") {
-      cached(None) {
-        <html><body>test</body></html>
-      }
-    }
+    get("/") { cached(None) { <html><body>test</body></html> } }
   }
 
   addServlet(new TestServlet, "/")
@@ -34,8 +30,6 @@ class CacheSupportSpec extends ScalatraFlatSpec {
       etag = response.getHeader("ETag")
     }
 
-    get("/", Map(), Map("ETag" -> etag)) {
-      status should equal(304)
-    }
+    get("/", Map(), Map("ETag" -> etag)) { status should equal(304) }
   }
 }

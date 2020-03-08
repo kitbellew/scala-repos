@@ -43,9 +43,8 @@ class CollectionsTest extends CollectionsTestBase {
     }
     assertFalse(coll.removeAll(List.empty[E]))
 
-    if (coll.nonEmpty) {
-      expectThrows(classOf[Throwable], coll.clear())
-    } else {
+    if (coll.nonEmpty) { expectThrows(classOf[Throwable], coll.clear()) }
+    else {
       coll.clear() // Should not throw
     }
   }

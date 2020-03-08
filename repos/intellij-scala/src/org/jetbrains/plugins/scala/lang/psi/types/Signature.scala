@@ -207,9 +207,7 @@ class Signature(
         if (!t._1 && tp2.equiv(AnyRef) && other.isJava) {
           t = Equivalence.equivInner(Any, tp1, undefSubst, falseUndef)
         }
-        if (!t._1) {
-          return (false, undefSubst)
-        }
+        if (!t._1) { return (false, undefSubst) }
         undefSubst = t._2
       }
     }
@@ -229,17 +227,13 @@ class Signature(
     }
   }
 
-  override def hashCode: Int = {
-    simpleHashCode * 31 + parameterlessKind
-  }
+  override def hashCode: Int = { simpleHashCode * 31 + parameterlessKind }
 
   /**
     * Use it, while building class hierarchy.
     * Because for class hierarch def foo(): Int is the same thing as def foo: Int and val foo: Int.
     */
-  def simpleHashCode: Int = {
-    ScalaPsiUtil.convertMemberName(name).hashCode
-  }
+  def simpleHashCode: Int = { ScalaPsiUtil.convertMemberName(name).hashCode }
 
   def isJava: Boolean = false
 

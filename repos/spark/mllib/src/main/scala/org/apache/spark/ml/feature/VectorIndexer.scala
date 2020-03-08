@@ -229,9 +229,7 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
               featureValues.iterator.filter(_ != 0.0).toArray.sorted
             val zeroExists =
               sortedFeatureValues.length + 1 == featureValues.size
-            if (zeroExists) {
-              sortedFeatureValues = 0.0 +: sortedFeatureValues
-            }
+            if (zeroExists) { sortedFeatureValues = 0.0 +: sortedFeatureValues }
             val categoryMap: Map[Double, Int] =
               sortedFeatureValues.zipWithIndex.toMap
             (featureIndex, categoryMap)
@@ -260,9 +258,7 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
           if (k < sv.indices.length && vecIndex == sv.indices(k)) {
             k += 1
             sv.values(k - 1)
-          } else {
-            0.0
-          }
+          } else { 0.0 }
         if (featureValueSets(vecIndex).size <= maxCategories) {
           featureValueSets(vecIndex).add(featureValue)
         }
@@ -376,11 +372,9 @@ class VectorIndexerModel private[ml] (
           var k = 0 // index into non-zero elements of sparse vector
           while (catFeatureIdx < sortedCatFeatureIndices.length && k < tmpv.indices.length) {
             val featureIndex = sortedCatFeatureIndices(catFeatureIdx)
-            if (featureIndex < tmpv.indices(k)) {
-              catFeatureIdx += 1
-            } else if (featureIndex > tmpv.indices(k)) {
-              k += 1
-            } else {
+            if (featureIndex < tmpv.indices(k)) { catFeatureIdx += 1 }
+            else if (featureIndex > tmpv.indices(k)) { k += 1 }
+            else {
               tmpv.values(k) = localVectorMap(featureIndex)(tmpv.values(k))
               catFeatureIdx += 1
               k += 1
@@ -420,9 +414,7 @@ class VectorIndexerModel private[ml] (
     val origAttrGroup = AttributeGroup.fromStructField(schema($(inputCol)))
     val origNumFeatures: Option[Int] = if (origAttrGroup.attributes.nonEmpty) {
       Some(origAttrGroup.attributes.get.length)
-    } else {
-      origAttrGroup.numAttributes
-    }
+    } else { origAttrGroup.numAttributes }
     require(
       origNumFeatures.forall(_ == numFeatures),
       "VectorIndexerModel expected" +
@@ -448,25 +440,17 @@ class VectorIndexerModel private[ml] (
         val origAttrs: Array[Attribute] = origAttrGroup.attributes.get
         origAttrs.zip(partialFeatureAttributes).map {
           case (origAttr: Attribute, featAttr: BinaryAttribute) =>
-            if (origAttr.name.nonEmpty) {
-              featAttr.withName(origAttr.name.get)
-            } else {
-              featAttr
-            }
+            if (origAttr.name.nonEmpty) { featAttr.withName(origAttr.name.get) }
+            else { featAttr }
           case (origAttr: Attribute, featAttr: NominalAttribute) =>
-            if (origAttr.name.nonEmpty) {
-              featAttr.withName(origAttr.name.get)
-            } else {
-              featAttr
-            }
+            if (origAttr.name.nonEmpty) { featAttr.withName(origAttr.name.get) }
+            else { featAttr }
           case (origAttr: Attribute, featAttr: NumericAttribute) =>
             origAttr.withIndex(featAttr.index.get)
           case (origAttr: Attribute, _) =>
             origAttr
         }
-      } else {
-        partialFeatureAttributes
-      }
+      } else { partialFeatureAttributes }
     val newAttributeGroup = new AttributeGroup($(outputCol), featureAttributes)
     newAttributeGroup.toStructField()
   }

@@ -204,16 +204,10 @@ private[shared] object SharedParamsCodeGen {
          |""".stripMargin
       }
       .getOrElse("")
-    val isValid = if (param.isValid != "") {
-      ", " + param.isValid
-    } else {
-      ""
-    }
-    val methodStr = if (param.finalMethods) {
-      "final def"
-    } else {
-      "def"
-    }
+    val isValid = if (param.isValid != "") { ", " + param.isValid }
+    else { "" }
+    val methodStr = if (param.finalMethods) { "final def" }
+    else { "def" }
 
     s"""
       |/**

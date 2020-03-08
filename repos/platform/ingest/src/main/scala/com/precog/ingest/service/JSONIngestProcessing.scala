@@ -127,9 +127,7 @@ final class JSONIngestProcessing(
                   state.update(updatedParser, ingestSize),
                   records ++ parsed.values,
                   rest)
-              } else {
-                IngestReport(0, errors).point[Future]
-              }
+              } else { IngestReport(0, errors).point[Future] }
 
             case None =>
               val (parsed, finalParser) = state.parser(Done)
@@ -155,9 +153,7 @@ final class JSONIngestProcessing(
                     _ => IngestReport(completedRecords.size, Nil)
                   )
                 }
-              } else {
-                IngestReport(0, errors).point[Future]
-              }
+              } else { IngestReport(0, errors).point[Future] }
           }
         }
 

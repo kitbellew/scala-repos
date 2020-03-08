@@ -5,11 +5,8 @@ object Test extends AnyRef with App {
     Console.print("1 + 1 = ");
     Console.println(
       1 + (
-        try {
-          x;
-        } catch {
-          case _: Error => 1;
-        }
+        try { x; }
+        catch { case _: Error => 1; }
       ));
   }
 
@@ -17,14 +14,10 @@ object Test extends AnyRef with App {
     Console.print("1 + 1 = ");
     Console.println(
       (try { x }
-      catch {
-        case _: Error => 1;
-      })
+      catch { case _: Error => 1; })
         +
           (try { x }
-          catch {
-            case _: Error => 1;
-          })
+          catch { case _: Error => 1; })
     );
   }
 
@@ -34,14 +27,10 @@ object Test extends AnyRef with App {
     Console.print("1 + 1 = ");
     val x =
       try { 1 }
-      catch {
-        case e: Error => 1;
-      }
+      catch { case e: Error => 1; }
     this.n =
       try { 1 }
-      catch {
-        case e: Error => 1;
-      }
+      catch { case e: Error => 1; }
     Console.println(x + n);
   }
 
@@ -79,17 +68,13 @@ object Test extends AnyRef with App {
           sys.error("for good");
       }
       Console.println("a");
-    } catch {
-      case _: Throwable => ();
-    }
+    } catch { case _: Throwable => (); }
 
   class A {
     private val result = {
       val y =
         try { x }
-        catch {
-          case _: Error => 1;
-        };
+        catch { case _: Error => 1; };
       x + y
     }
     Console.print("1 + 1 = ");
@@ -103,11 +88,8 @@ object Test extends AnyRef with App {
     }
 
     var sekw: SekwencjaArray =
-      try {
-        null
-      } catch {
-        case _: Throwable => null
-      }
+      try { null }
+      catch { case _: Throwable => null }
 
     new AnyRef {
       def getValueAt(row: Int, col: Int) = sekw.get

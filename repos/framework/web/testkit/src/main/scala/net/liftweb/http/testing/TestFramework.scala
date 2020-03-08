@@ -70,9 +70,7 @@ trait ToResponse {
         }
       } catch {
         case e: IOException => new CompleteFailure(baseUrl + fullUrl, Full(e))
-      } finally {
-        getter.releaseConnection
-      }
+      } finally { getter.releaseConnection }
 
     ret
   }
@@ -108,9 +106,7 @@ trait ToBoxTheResponse {
         }
       } catch {
         case e: IOException => Failure(baseUrl + fullUrl, Full(e), Empty)
-      } finally {
-        getter.releaseConnection
-      }
+      } finally { getter.releaseConnection }
 
     ret
   }
@@ -222,9 +218,7 @@ trait BaseGetPoster {
 
       def isRepeatable() = true
 
-      def writeRequest(out: OutputStream) {
-        out.write(bytes)
-      }
+      def writeRequest(out: OutputStream) { out.write(bytes) }
     }
 
   implicit def jsonToRequestEntity(body: JValue): RequestEntity =
@@ -237,9 +231,7 @@ trait BaseGetPoster {
 
       def isRepeatable() = true
 
-      def writeRequest(out: OutputStream) {
-        out.write(bytes)
-      }
+      def writeRequest(out: OutputStream) { out.write(bytes) }
     }
 
   /**
@@ -292,9 +284,7 @@ trait BaseGetPoster {
 
       def isRepeatable() = true
 
-      def writeRequest(out: OutputStream) {
-        out.write(bytes)
-      }
+      def writeRequest(out: OutputStream) { out.write(bytes) }
     })
     capture(url, httpClient, poster)
   }
@@ -365,9 +355,7 @@ trait BaseGetPoster {
 
       def isRepeatable() = true
 
-      def writeRequest(out: OutputStream) {
-        out.write(bytes)
-      }
+      def writeRequest(out: OutputStream) { out.write(bytes) }
     })
 
     capture(url, httpClient, poster)
@@ -549,7 +537,9 @@ trait TestFramework extends TestKit {
 
   def fork(cnt: Int)(f: Int => Any) {
     val threads = for (t <- (1 to cnt).toList) yield {
-      val th = new Thread(new Runnable { def run { f(t) } })
+      val th = new Thread(new Runnable {
+        def run { f(t) }
+      })
       th.start
       th
     }
@@ -603,9 +593,7 @@ object TestHelpers {
       _ = println("Does match: " + p2.matcher(it).find);
       q = new REMatcher(it, p2);
       em <- q.eachFound
-    } yield {
-      (em(1), em(2))
-    }
+    } yield { (em(1), em(2)) }
   }
 
   /**
@@ -929,9 +917,7 @@ abstract class BaseResponse(
     * The response body as a UTF-8 encoded String
     */
   lazy val bodyAsString =
-    for {
-      b <- body
-    } yield new String(b, "UTF-8")
+    for { b <- body } yield new String(b, "UTF-8")
 
   def !@(msg: => String)(implicit errorFunc: ReportFailure): SelfType =
     if (code == 200) this.asInstanceOf[SelfType] else { errorFunc.fail(msg) }

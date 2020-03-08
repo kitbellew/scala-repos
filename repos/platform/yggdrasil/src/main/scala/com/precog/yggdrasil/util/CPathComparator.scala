@@ -40,10 +40,18 @@ sealed abstract class MaybeOrdering(val toInt: Int) {
 }
 
 object MaybeOrdering {
-  case object Lt extends MaybeOrdering(-1) { def complement = Gt }
-  case object Gt extends MaybeOrdering(1) { def complement = Lt }
-  case object Eq extends MaybeOrdering(0) { def complement = Eq }
-  case object NoComp extends MaybeOrdering(0) { def complement = NoComp }
+  case object Lt extends MaybeOrdering(-1) {
+    def complement = Gt
+  }
+  case object Gt extends MaybeOrdering(1) {
+    def complement = Lt
+  }
+  case object Eq extends MaybeOrdering(0) {
+    def complement = Eq
+  }
+  case object NoComp extends MaybeOrdering(0) {
+    def complement = NoComp
+  }
 
   def fromInt(n: Int): MaybeOrdering = if (n < 0) Lt else if (n == 0) Eq else Gt
 }
@@ -164,15 +172,10 @@ object CPathComparator {
           def compare(r1: Int, r2: Int, indices: Array[Int]): MaybeOrdering = {
             val lPluckable = lSelector.canPluck(lCol(r1), indices, lMask)
             val rPluckable = rSelector.canPluck(rCol(r2), indices, rMask)
-            if (lPluckable && rPluckable) {
-              ordering
-            } else if (lPluckable) {
-              Gt
-            } else if (rPluckable) {
-              Lt
-            } else {
-              Eq
-            }
+            if (lPluckable && rPluckable) { ordering }
+            else if (lPluckable) { Gt }
+            else if (rPluckable) { Lt }
+            else { Eq }
           }
         }
     }
@@ -218,9 +221,8 @@ object CPathComparator {
           val mask = makeMask(lPath)
           val selector = new ArraySelector()(tpe1.manifest)
           def compare(r1: Int, r2: Int, indices: Array[Int]): MaybeOrdering = {
-            if (selector.canPluck(lCol(r1), indices, mask)) {
-              ordering
-            } else Lt
+            if (selector.canPluck(lCol(r1), indices, mask)) { ordering }
+            else Lt
           }
         }
     }
@@ -272,9 +274,7 @@ private[yggdrasil] final class HalfArrayCPathComparator[
       val a = lSelector.pluck(left, indices, lMask)
       val cmp = ho.compare(a, rCol(r2))
       if (cmp < 0) Lt else if (cmp == 0) Eq else Gt
-    } else {
-      Lt
-    }
+    } else { Lt }
   }
 }
 
@@ -318,14 +318,9 @@ private[yggdrasil] final class ArrayCPathComparator[
         val b = rSelector.pluck(right, indices, rMask)
         val cmp = ho.compare(a, b)
         if (cmp < 0) Lt else if (cmp == 0) Eq else Gt
-      } else {
-        Gt
-      }
-    } else if (rPluckable) {
-      Lt
-    } else {
-      NoComp
-    }
+      } else { Gt }
+    } else if (rPluckable) { Lt }
+    else { NoComp }
   }
 }
 
@@ -345,14 +340,11 @@ private[yggdrasil] final class ArraySelector[@spec(Boolean, Long, Double) A](
     var i = 0
     while (i < mask.length) {
       if (mask(i)) {
-        if (am.erasure.isInstance(arr)) {
-          return indices(i) < arr.length
-        } else {
+        if (am.erasure.isInstance(arr)) { return indices(i) < arr.length }
+        else {
           if (indices(i) < arr.length) {
             arr = arr(indices(i)).asInstanceOf[Array[_]]
-          } else {
-            return false
-          }
+          } else { return false }
         }
       }
 
@@ -371,9 +363,7 @@ private[yggdrasil] final class ArraySelector[@spec(Boolean, Long, Double) A](
         if (am.erasure.isInstance(arr)) {
           val sarr = arr.asInstanceOf[Array[A]]
           return sarr(indices(i))
-        } else {
-          arr = arr(indices(i)).asInstanceOf[Array[_]]
-        }
+        } else { arr = arr(indices(i)).asInstanceOf[Array[_]] }
       }
 
       i += 1

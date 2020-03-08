@@ -56,7 +56,5 @@ class Main extends Serializable {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    (new Main).main(Array[String]())
-  }
+  def main(args: Array[String]) { (new Main).main(Array[String]()) }
 }

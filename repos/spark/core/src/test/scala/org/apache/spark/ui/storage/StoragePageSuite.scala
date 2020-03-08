@@ -98,9 +98,7 @@ class StoragePageSuite extends SparkFunSuite {
         Some("http://localhost:4040/storage/rdd?id=3"))
   }
 
-  test("empty rddTable") {
-    assert(storagePage.rddTable(Seq.empty).isEmpty)
-  }
+  test("empty rddTable") { assert(storagePage.rddTable(Seq.empty).isEmpty) }
 
   test("streamBlockStorageLevelDescriptionAndSize") {
     val memoryBlock = BlockUIData(

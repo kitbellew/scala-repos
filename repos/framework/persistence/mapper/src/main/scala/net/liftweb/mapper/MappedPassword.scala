@@ -222,13 +222,9 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
   override protected def formInputType = "password"
 
   def jdbcFriendly(columnName: String) = {
-    if (columnName.endsWith("_slt")) {
-      salt_i.get
-    } else if (columnName.endsWith("_pw")) {
-      password.get
-    } else {
-      null
-    }
+    if (columnName.endsWith("_slt")) { salt_i.get }
+    else if (columnName.endsWith("_pw")) { password.get }
+    else { null }
   }
 
   def buildSetLongValue(
@@ -248,9 +244,7 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
           tv.password() = if (isNull) null else v.toString
         }
       }
-    } else {
-      null
-    }
+    } else { null }
   }
   def buildSetStringValue(
       accessor: Method,
@@ -269,20 +263,14 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
           tv.password() = v
         }
       }
-    } else {
-      null
-    }
+    } else { null }
   }
   def buildSetDateValue(
       accessor: Method,
-      columnName: String): (T, Date) => Unit = {
-    null
-  }
+      columnName: String): (T, Date) => Unit = { null }
   def buildSetBooleanValue(
       accessor: Method,
-      columnName: String): (T, Boolean, Boolean) => Unit = {
-    null
-  }
+      columnName: String): (T, Boolean, Boolean) => Unit = { null }
 
   def buildSetActualValue(
       accessor: Method,
@@ -309,9 +297,7 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         }
       }
 
-    } else {
-      null
-    }
+    } else { null }
   }
 
   /**

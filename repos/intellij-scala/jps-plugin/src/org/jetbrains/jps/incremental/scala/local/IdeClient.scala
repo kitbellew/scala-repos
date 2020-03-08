@@ -33,9 +33,7 @@ abstract class IdeClient(
       source: Option[File],
       line: Option[Long],
       column: Option[Long]) {
-    if (kind == Kind.ERROR) {
-      hasErrors = true
-    }
+    if (kind == Kind.ERROR) { hasErrors = true }
 
     val name = if (source.isEmpty) compilerName else ""
 
@@ -43,9 +41,8 @@ abstract class IdeClient(
 
     context.getProjectDescriptor.getProject.getName
     if (kind == Kind.WARNING && ScalaReflectMacroExpansionParser.isMacroMessage(
-          text)) {
-      ScalaReflectMacroExpansionParser.processMessage(text)
-    } else {
+          text)) { ScalaReflectMacroExpansionParser.processMessage(text) }
+    else {
       val withoutPointer =
         if (sourcePath.isDefined && line.isDefined && column.isDefined) {
           val lines = text.split('\n')
@@ -84,9 +81,7 @@ abstract class IdeClient(
       new ProgressMessage(formattedText, done.getOrElse(-1.0f)))
   }
 
-  def debug(text: String) {
-    ScalaBuilder.Log.info(text)
-  }
+  def debug(text: String) { ScalaBuilder.Log.info(text) }
 
   def deleted(module: File) {
     val paths =

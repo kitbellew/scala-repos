@@ -123,7 +123,5 @@ object GlobalRegistry {
     * [[com.twitter.util.Future]].
     */
   def withRegistry[A](replacement: Registry)(fn: => A): A =
-    localRegistry.let(replacement) {
-      fn
-    }
+    localRegistry.let(replacement) { fn }
 }

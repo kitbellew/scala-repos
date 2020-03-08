@@ -93,23 +93,17 @@ object Test {
   def main(args: Array[String]) = {
     {
       var t: Tree[String] = Empty
-      for (s <- args) {
-        t = t insert s
-      }
+      for (s <- args) { t = t insert s }
       Console.println(t.elements)
     }
     {
       var t: Tree[Str] = Empty
-      for (s <- args) {
-        t = t insert Str(s)
-      }
+      for (s <- args) { t = t insert Str(s) }
       Console.println(t.elements)
     }
     {
       var t: Tree[List[Char]] = Empty
-      for (s <- args) {
-        t = t insert toCharList(s)
-      }
+      for (s <- args) { t = t insert toCharList(s) }
       Console.println(t.elements)
     }
   }

@@ -38,9 +38,7 @@ object ClusterShardingGracefulShutdownSpec {
   }
 
   val extractShardId: ShardRegion.ExtractShardId = msg ⇒
-    msg match {
-      case id: Int ⇒ id.toString
-    }
+    msg match { case id: Int ⇒ id.toString }
 
   //#graceful-shutdown
   class IllustrateGracefulShutdown extends Actor {
@@ -175,9 +173,7 @@ abstract class ClusterShardingGracefulShutdownSpec(
     "setup shared journal" in {
       // start the Persistence extension
       Persistence(system)
-      runOn(first) {
-        system.actorOf(Props[SharedLeveldbStore], "store")
-      }
+      runOn(first) { system.actorOf(Props[SharedLeveldbStore], "store") }
       enterBarrier("peristence-started")
 
       runOn(first, second) {
@@ -206,9 +202,7 @@ abstract class ClusterShardingGracefulShutdownSpec(
     }
 
     "gracefully shutdown a region" in within(30.seconds) {
-      runOn(second) {
-        region ! ShardRegion.GracefulShutdown
-      }
+      runOn(second) { region ! ShardRegion.GracefulShutdown }
 
       runOn(first) {
         awaitAssert {

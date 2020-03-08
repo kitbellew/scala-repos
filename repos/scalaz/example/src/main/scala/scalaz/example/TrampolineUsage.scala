@@ -7,9 +7,7 @@ object TrampolineUsage extends App {
   def quickSort[F[_]: Applicative, T: Order](xs: List[T]): Free[F, List[T]] = {
     xs match {
       case Nil =>
-        return_ {
-          Nil
-        }
+        return_ { Nil }
       case x :: tail =>
         suspend {
           val (left, right) = tail.partition(_ < x)

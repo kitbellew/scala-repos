@@ -92,9 +92,8 @@ private[hive] class SparkSQLDriver(
   }
 
   override def getResults(res: JList[_]): Boolean = {
-    if (hiveResponse == null) {
-      false
-    } else {
+    if (hiveResponse == null) { false }
+    else {
       res.asInstanceOf[JArrayList[String]].addAll(hiveResponse.asJava)
       hiveResponse = null
       true

@@ -125,9 +125,7 @@ class KMeans private (
   @deprecated(
     "Support for runs is deprecated. This param will have no effect in 2.0.0.",
     "1.6.0")
-  def setRuns(runs: Int): this.type = {
-    internalSetRuns(runs)
-  }
+  def setRuns(runs: Int): this.type = { internalSetRuns(runs) }
 
   // Internal version of setRuns for Python API, this should be removed at the same time as setRuns
   // this is done to avoid deprecation warnings in our build.
@@ -257,20 +255,15 @@ class KMeans private (
         logWarning(
           "Ignoring runs; one run is allowed when initialModel is given.")
       1
-    } else {
-      runs
-    }
+    } else { runs }
 
     val centers = initialModel match {
       case Some(kMeansCenters) => {
         Array(kMeansCenters.clusterCenters.map(s => new VectorWithNorm(s)))
       }
       case None => {
-        if (initializationMode == KMeans.RANDOM) {
-          initRandom(data)
-        } else {
-          initKMeansParallel(data)
-        }
+        if (initializationMode == KMeans.RANDOM) { initRandom(data) }
+        else { initKMeansParallel(data) }
       }
     }
     val initTimeInSeconds = (System.nanoTime() - initStartTime) / 1e9
@@ -343,9 +336,7 @@ class KMeans private (
             val newCenter = new VectorWithNorm(sum)
             if (KMeans.fastSquaredDistance(
                   newCenter,
-                  centers(run)(j)) > epsilon * epsilon) {
-              changed = true
-            }
+                  centers(run)(j)) > epsilon * epsilon) { changed = true }
             centers(run)(j) = newCenter
           }
           j += 1
@@ -368,9 +359,7 @@ class KMeans private (
 
     if (iteration == maxIterations) {
       logInfo(s"KMeans reached the max number of iterations: $maxIterations.")
-    } else {
-      logInfo(s"KMeans converged in $iteration iterations.")
-    }
+    } else { logInfo(s"KMeans converged in $iteration iterations.") }
 
     val (minCost, bestRun) = costs.zipWithIndex.min
 

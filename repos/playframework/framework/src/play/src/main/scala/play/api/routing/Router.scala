@@ -125,9 +125,8 @@ object Router {
 trait SimpleRouter extends Router { self =>
   def documentation: Seq[(String, String, String)] = Seq.empty
   def withPrefix(prefix: String): Router = {
-    if (prefix == "/") {
-      self
-    } else {
+    if (prefix == "/") { self }
+    else {
       new Router {
         def routes = {
           val p = if (prefix.endsWith("/")) prefix else prefix + "/"

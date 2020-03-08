@@ -104,9 +104,7 @@ private[ui] abstract class BatchTableBase(
     </table>
   }
 
-  def toNodeSeq: Seq[Node] = {
-    batchTable
-  }
+  def toNodeSeq: Seq[Node] = { batchTable }
 
   protected def createOutputOperationProgressBar(
       batch: BatchUIData): Seq[Node] = {
@@ -139,11 +137,8 @@ private[ui] class ActiveBatchTable(
   override protected def columns: Seq[Node] = super.columns ++ {
     <th>Output Ops: Succeeded/Total</th>
       <th>Status</th> ++ {
-      if (firstFailureReason.nonEmpty) {
-        <th>Error</th>
-      } else {
-        Nil
-      }
+      if (firstFailureReason.nonEmpty) { <th>Error</th> }
+      else { Nil }
     }
   }
 
@@ -157,11 +152,8 @@ private[ui] class ActiveBatchTable(
   private def runningBatchRow(batch: BatchUIData): Seq[Node] = {
     baseRow(batch) ++ createOutputOperationProgressBar(
       batch) ++ <td>processing</td> ++ {
-      if (firstFailureReason.nonEmpty) {
-        getFirstFailureTableCell(batch)
-      } else {
-        Nil
-      }
+      if (firstFailureReason.nonEmpty) { getFirstFailureTableCell(batch) }
+      else { Nil }
     }
   }
 
@@ -171,9 +163,7 @@ private[ui] class ActiveBatchTable(
       if (firstFailureReason.nonEmpty) {
         // Waiting batches have not run yet, so must have no failure reasons.
         <td>-</td>
-      } else {
-        Nil
-      }
+      } else { Nil }
     }
   }
 }
@@ -190,11 +180,8 @@ private[ui] class CompletedBatchTable(
       SparkUIUtils.tooltip("Total time taken to handle a batch", "top")
     }</th>
       <th>Output Ops: Succeeded/Total</th> ++ {
-      if (firstFailureReason.nonEmpty) {
-        <th>Error</th>
-      } else {
-        Nil
-      }
+      if (firstFailureReason.nonEmpty) { <th>Error</th> }
+      else { Nil }
     }
   }
 
@@ -212,11 +199,8 @@ private[ui] class CompletedBatchTable(
         {formattedTotalDelay}
       </td>
     } ++ createOutputOperationProgressBar(batch) ++ {
-      if (firstFailureReason.nonEmpty) {
-        getFirstFailureTableCell(batch)
-      } else {
-        Nil
-      }
+      if (firstFailureReason.nonEmpty) { getFirstFailureTableCell(batch) }
+      else { Nil }
     }
   }
 }

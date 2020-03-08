@@ -73,26 +73,20 @@ class ChoiceBox[J <: Any](
     */
   def converter: ObjectProperty[jfxu.StringConverter[J]] =
     delegate.converterProperty
-  def converter_=(v: StringConverter[J]) {
-    converter() = v
-  }
+  def converter_=(v: StringConverter[J]) { converter() = v }
 
   /**
     * The items to display in the choice box.
     */
   def items = delegate.itemsProperty
-  def items_=(v: ObservableBuffer[J]) {
-    items() = v
-  }
+  def items_=(v: ObservableBuffer[J]) { items() = v }
 
   /**
     * The selection model for the ChoiceBox.
     */
   def selectionModel: ObjectProperty[jfxsc.SingleSelectionModel[J]] =
     delegate.selectionModelProperty
-  def selectionModel_=(v: SingleSelectionModel[J]) {
-    selectionModel() = v
-  }
+  def selectionModel_=(v: SingleSelectionModel[J]) { selectionModel() = v }
 
   /**
     * Indicates whether the drop down is displaying the list of choices to the
@@ -111,9 +105,7 @@ class ChoiceBox[J <: Any](
     *
     */
   def value: ObjectProperty[J] = delegate.valueProperty
-  def value_=(v: J) {
-    value() = v
-  }
+  def value_=(v: J) { value() = v }
 
   /**
     * The ChoiceBox action, which is invoked whenever the ChoiceBox value property is changed.
@@ -135,9 +127,7 @@ class ChoiceBox[J <: Any](
     * Called just after the ChoiceBox popup is shown.
     */
   def onShown = delegate.onShownProperty
-  def onShown_=(implicit aeh: jfxe.EventHandler[jfxe.Event]) {
-    onShown() = aeh
-  }
+  def onShown_=(implicit aeh: jfxe.EventHandler[jfxe.Event]) { onShown() = aeh }
 
   /**
     * Called just prior to the ChoiceBox popup being hidden.

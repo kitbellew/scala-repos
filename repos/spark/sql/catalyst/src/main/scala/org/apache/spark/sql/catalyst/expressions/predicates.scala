@@ -73,9 +73,7 @@ trait PredicateHelper {
   protected def replaceAlias(
       condition: Expression,
       aliases: AttributeMap[Expression]): Expression = {
-    condition.transform {
-      case a: Attribute => aliases.getOrElse(a, a)
-    }
+    condition.transform { case a: Attribute => aliases.getOrElse(a, a) }
   }
 
   /**
@@ -126,9 +124,7 @@ case class In(value: Expression, list: Seq[Expression])
   override def checkInputDataTypes(): TypeCheckResult = {
     if (list.exists(l => l.dataType != value.dataType)) {
       TypeCheckResult.TypeCheckFailure("Arguments must be same type")
-    } else {
-      TypeCheckResult.TypeCheckSuccess
-    }
+    } else { TypeCheckResult.TypeCheckSuccess }
   }
 
   override def children: Seq[Expression] = value +: list
@@ -140,23 +136,16 @@ case class In(value: Expression, list: Seq[Expression])
 
   override def eval(input: InternalRow): Any = {
     val evaluatedValue = value.eval(input)
-    if (evaluatedValue == null) {
-      null
-    } else {
+    if (evaluatedValue == null) { null }
+    else {
       var hasNull = false
       list.foreach { e =>
         val v = e.eval(input)
-        if (v == evaluatedValue) {
-          return true
-        } else if (v == null) {
-          hasNull = true
-        }
+        if (v == evaluatedValue) { return true }
+        else if (v == null) { hasNull = true }
       }
-      if (hasNull) {
-        null
-      } else {
-        false
-      }
+      if (hasNull) { null }
+      else { false }
     }
   }
 
@@ -210,13 +199,9 @@ case class InSet(child: Expression, hset: Set[Any])
   override def nullable: Boolean = child.nullable || hasNull
 
   protected override def nullSafeEval(value: Any): Any = {
-    if (hset.contains(value)) {
-      true
-    } else if (hasNull) {
-      null
-    } else {
-      false
-    }
+    if (hset.contains(value)) { true }
+    else if (hasNull) { null }
+    else { false }
   }
 
   def getHSet(): Set[Any] = hset
@@ -268,18 +253,13 @@ case class And(left: Expression, right: Expression)
 
   override def eval(input: InternalRow): Any = {
     val input1 = left.eval(input)
-    if (input1 == false) {
-      false
-    } else {
+    if (input1 == false) { false }
+    else {
       val input2 = right.eval(input)
-      if (input2 == false) {
-        false
-      } else {
-        if (input1 != null && input2 != null) {
-          true
-        } else {
-          null
-        }
+      if (input2 == false) { false }
+      else {
+        if (input1 != null && input2 != null) { true }
+        else { null }
       }
     }
   }
@@ -320,18 +300,13 @@ case class Or(left: Expression, right: Expression)
 
   override def eval(input: InternalRow): Any = {
     val input1 = left.eval(input)
-    if (input1 == true) {
-      true
-    } else {
+    if (input1 == true) { true }
+    else {
       val input2 = right.eval(input)
-      if (input2 == true) {
-        true
-      } else {
-        if (input1 != null && input2 != null) {
-          false
-        } else {
-          null
-        }
+      if (input2 == true) { true }
+      else {
+        if (input1 != null && input2 != null) { false }
+        else { null }
       }
     }
   }
@@ -408,9 +383,8 @@ case class EqualTo(left: Expression, right: Expression)
       Utils.nanSafeCompareDoubles(
         input1.asInstanceOf[Double],
         input2.asInstanceOf[Double]) == 0
-    } else if (left.dataType != BinaryType) {
-      input1 == input2
-    } else {
+    } else if (left.dataType != BinaryType) { input1 == input2 }
+    else {
       java.util.Arrays.equals(
         input1.asInstanceOf[Array[Byte]],
         input2.asInstanceOf[Array[Byte]])
@@ -434,11 +408,9 @@ case class EqualNullSafe(left: Expression, right: Expression)
   override def eval(input: InternalRow): Any = {
     val input1 = left.eval(input)
     val input2 = right.eval(input)
-    if (input1 == null && input2 == null) {
-      true
-    } else if (input1 == null || input2 == null) {
-      false
-    } else {
+    if (input1 == null && input2 == null) { true }
+    else if (input1 == null || input2 == null) { false }
+    else {
       if (left.dataType == FloatType) {
         Utils.nanSafeCompareFloats(
           input1.asInstanceOf[Float],
@@ -447,9 +419,8 @@ case class EqualNullSafe(left: Expression, right: Expression)
         Utils.nanSafeCompareDoubles(
           input1.asInstanceOf[Double],
           input2.asInstanceOf[Double]) == 0
-      } else if (left.dataType != BinaryType) {
-        input1 == input2
-      } else {
+      } else if (left.dataType != BinaryType) { input1 == input2 }
+      else {
         java.util.Arrays.equals(
           input1.asInstanceOf[Array[Byte]],
           input2.asInstanceOf[Array[Byte]])

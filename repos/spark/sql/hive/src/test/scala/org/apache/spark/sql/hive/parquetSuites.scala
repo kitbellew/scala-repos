@@ -401,12 +401,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
   def collectHadoopFsRelation(df: DataFrame): HadoopFsRelation = {
     val plan = df.queryExecution.analyzed
     plan
-      .collectFirst {
-        case LogicalRelation(r: HadoopFsRelation, _, _) => r
-      }
-      .getOrElse {
-        fail(s"Expecting a HadoopFsRelation 2, but got:\n$plan")
-      }
+      .collectFirst { case LogicalRelation(r: HadoopFsRelation, _, _) => r }
+      .getOrElse { fail(s"Expecting a HadoopFsRelation 2, but got:\n$plan") }
   }
 
   test(
@@ -933,9 +929,7 @@ abstract class ParquetPartitioningTest
       checkAnswer(
         sql(s"SELECT concat(stringField, stringField) FROM $table"),
         sql(s"SELECT stringField FROM $table").rdd
-          .map {
-            case Row(s: String) => Row(s + s)
-          }
+          .map { case Row(s: String) => Row(s + s) }
           .collect()
           .toSeq
       )

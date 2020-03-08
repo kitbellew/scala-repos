@@ -24,9 +24,8 @@ trait AuthResource extends RestResource {
     val maybeIdentity = result(authenticator.authenticate(requestWrapper))
     maybeIdentity
       .map { identity =>
-        try {
-          fn(identity)
-        } catch {
+        try { fn(identity) }
+        catch {
           case e: AccessDeniedException =>
             withResponseFacade(authorizer.handleNotAuthorized(identity, _))
         }

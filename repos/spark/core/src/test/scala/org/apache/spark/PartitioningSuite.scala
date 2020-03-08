@@ -88,9 +88,7 @@ class PartitioningSuite
               if (partition > 0) {
                 assert(element > rangeBounds(partition - 1))
               }
-            } else {
-              assert(partition === 0)
-            }
+            } else { assert(partition === 0) }
           }
         }
     }

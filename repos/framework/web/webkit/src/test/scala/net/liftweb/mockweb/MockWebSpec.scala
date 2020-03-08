@@ -49,18 +49,14 @@ object MockWebSpec extends Specification {
       case RewriteRequest(
           ParsePath(List("test", "stateless"), _, _, _),
           _,
-          _) => {
-        RewriteResponse(List("stateless", "works"))
-      }
+          _) => { RewriteResponse(List("stateless", "works")) }
     }
 
     LiftRules.statefulRewrite.append {
       case RewriteRequest(
           ParsePath(List("test", "stateful"), _, _, _),
           _,
-          _) => {
-        RewriteResponse(List("stateful", "works"))
-      }
+          _) => { RewriteResponse(List("stateful", "works")) }
     }
 
     LiftRules.early.append { req =>
@@ -179,9 +175,7 @@ object MockWebSpec extends Specification {
       }
 
       // A second test
-      testS("http://foo.com/test2", session) {
-        testVar.is must_== "Foo!"
-      }
+      testS("http://foo.com/test2", session) { testVar.is must_== "Foo!" }
     }
 
   }

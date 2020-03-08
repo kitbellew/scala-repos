@@ -70,13 +70,9 @@ class FloatPropertySpec extends FlatSpec with BeforeAndAfterEach {
     floatProperty() should equal(500)
   }
 
-  it should "know its name" in {
-    floatProperty.name should equal("Test Float")
-  }
+  it should "know its name" in { floatProperty.name should equal("Test Float") }
 
-  it should "know its bean" in {
-    floatProperty.bean should equal(bean)
-  }
+  it should "know its bean" in { floatProperty.bean should equal(bean) }
 
   it should "be bindable to another Float Property" in {
     floatProperty <== floatProperty2
@@ -316,12 +312,8 @@ class FloatPropertySpec extends FlatSpec with BeforeAndAfterEach {
     var invalidateCount = 0
     var changeCount = 0
     val binding = floatProperty * floatProperty2
-    binding onInvalidate {
-      invalidateCount += 1
-    }
-    binding onChange {
-      changeCount += 1
-    }
+    binding onInvalidate { invalidateCount += 1 }
+    binding onChange { changeCount += 1 }
     floatProperty() = 1
     invalidateCount should equal(1)
     changeCount should equal(0)

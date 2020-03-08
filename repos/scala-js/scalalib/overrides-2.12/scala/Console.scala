@@ -136,9 +136,7 @@ object Console extends DeprecatedConsole with AnsiColor {
     *
     *  @param obj the object to print; may be null.
     */
-  def print(obj: Any) {
-    out.print(if (null == obj) "null" else obj.toString())
-  }
+  def print(obj: Any) { out.print(if (null == obj) "null" else obj.toString()) }
 
   /** Flushes the output stream. This function is required when partial
     *  output (i.e. output not terminated by a newline character) has

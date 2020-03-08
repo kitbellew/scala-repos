@@ -31,9 +31,7 @@ object Refinement {
         refineMarker.rollbackTo
         return false
     }
-    def foo() {
-      RefineStatSeq parse builder
-    }
+    def foo() { RefineStatSeq parse builder }
     ParserUtils.parseLoopUntilRBrace(builder, foo)
     builder.restoreNewlinesState
     refineMarker.done(ScalaElementTypes.REFINEMENT)

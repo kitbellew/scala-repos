@@ -90,9 +90,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         case cd @ ClassDef(mods0, name0, tparams0, impl0)
             if !isPrimitiveValueClass(
               cd.symbol) && cd.symbol.primaryConstructor != NoSymbol =>
-          if (cd.symbol eq AnyValClass) {
-            cd
-          } else {
+          if (cd.symbol eq AnyValClass) { cd }
+          else {
             checkUninitializedReads(cd)
             val tplTransformer = new TemplateTransformer(unit, impl0)
             treeCopy.ClassDef(
@@ -530,9 +529,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         case dd @ DefDef(_, _, _, vps :: Nil, _, rhs: Block)
             if dd.symbol.isPrimaryConstructor || dd.symbol.isMixinConstructor =>
           (dd, vps map (_.symbol), rhs)
-      } getOrElse {
-        abort("no constructor in template: impl = " + impl)
-      }
+      } getOrElse { abort("no constructor in template: impl = " + impl) }
 
     def primaryConstrParams = _primaryConstrParams
     def usesSpecializedField = intoConstructor.usesSpecializedField
@@ -611,9 +608,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
 
         case Select(_, _)
             if guardSpecializedFieldInit => // reasoning behind this guard in the docu of `usesSpecializedField`
-          if (possiblySpecialized(tree.symbol)) {
-            usesSpecializedField = true
-          }
+          if (possiblySpecialized(tree.symbol)) { usesSpecializedField = true }
           super.transform(tree)
 
         case _ =>
@@ -628,9 +623,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
 
     // Create an assignment to class field `to` with rhs `from`
     def mkAssign(to: Symbol, from: Tree): Tree =
-      localTyper.typedPos(to.pos) {
-        Assign(Select(This(clazz), to), from)
-      }
+      localTyper.typedPos(to.pos) { Assign(Select(This(clazz), to), from) }
 
     // Create code to copy parameter to parameter accessor field.
     // If parameter is $outer, check that it is not null so that we NPE

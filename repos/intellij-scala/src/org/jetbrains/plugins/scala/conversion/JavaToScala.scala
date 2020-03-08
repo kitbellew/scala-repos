@@ -694,20 +694,17 @@ object JavaToScala {
       var forClass = new ArrayBuffer[PsiMember]()
       var forObject = new ArrayBuffer[PsiMember]()
       for (method <- inClass.getMethods) {
-        if (method.hasModifierProperty("static")) {
-          forObject += method
-        } else forClass += method
+        if (method.hasModifierProperty("static")) { forObject += method }
+        else forClass += method
       }
       val serialVersionUID = serialVersion(inClass)
       for (field <- inClass.getFields if !serialVersionUID.contains(field)) {
-        if (field.hasModifierProperty("static")) {
-          forObject += field
-        } else forClass += field
+        if (field.hasModifierProperty("static")) { forObject += field }
+        else forClass += field
       }
       for (clazz <- inClass.getInnerClasses) {
-        if (clazz.hasModifierProperty("static")) {
-          forObject += clazz
-        } else forClass += clazz
+        if (clazz.hasModifierProperty("static")) { forObject += clazz }
+        else forClass += clazz
       }
 
       forClass = forClass.sortBy(_.getTextOffset)
@@ -757,12 +754,8 @@ object JavaToScala {
             handleAsEnum(updatedModifiers)
           else
             handleAsObject(updatedModifiers)
-        } finally {
-          context.get().pop()
-        }
-      } else {
-        EmptyConstruction()
-      }
+        } finally { context.get().pop() }
+      } else { EmptyConstruction() }
     }
 
     def handleAsClass(
@@ -798,11 +791,8 @@ object JavaToScala {
               false // right constructor must be upper then left
             } else {
               val leftFromMap = targetMap.get(right)
-              if (leftFromMap.isDefined && leftFromMap.get == left) {
-                true
-              } else {
-                compareByOrder(right, left)
-              }
+              if (leftFromMap.isDefined && leftFromMap.get == left) { true }
+              else { compareByOrder(right, left) }
             }
           }
 
@@ -818,9 +808,7 @@ object JavaToScala {
                 compareAsConstructors(
                   left.asInstanceOf[PsiMethod],
                   right.asInstanceOf[PsiMethod])
-              } else {
-                compareByOrder(right, left)
-              }
+              } else { compareByOrder(right, left) }
             }
         }
 
@@ -834,9 +822,7 @@ object JavaToScala {
         val sortedMembers = sortMembers()
         val updatedMembers = if (dropMembes.isDefined) {
           sortedMembers.filter(!dropMembes.get.contains(_))
-        } else {
-          sortedMembers
-        }
+        } else { sortedMembers }
         updatedMembers.map(convertPsiToIntermdeiate(_, externalProperties))
       }
 
@@ -870,12 +856,8 @@ object JavaToScala {
                     convertPsiToIntermdeiate(_, externalProperties)))
               )
           }
-        } finally {
-          context.get().pop()
-        }
-      } else {
-        companionObject
-      }
+        } finally { context.get().pop() }
+      } else { companionObject }
     }
 
     val (classMembers, objectMembers) = collectClassObjectMembers()
@@ -955,9 +937,7 @@ object JavaToScala {
         if (isSuper.isDefined) {
           dropStatements += firstStatement.get
           convertPsiToIntermdeiate(isSuper.get.getArgumentList, null)
-        } else {
-          null
-        }
+        } else { null }
       }
 
       def getCorrespondedFieldInfo(
@@ -1106,9 +1086,7 @@ object JavaToScala {
         optValue = Option(a.getQualifiedName)
           .map(annotationDropList.contains(_))
         if optValue.isDefined && !optValue.get
-      } {
-        annotations.append(convertPsiToIntermdeiate(a, null))
-      }
+      } { annotations.append(convertPsiToIntermdeiate(a, null)) }
       annotations
     }
 
@@ -1207,9 +1185,8 @@ object JavaToScala {
           PsiType.LONG) &&
         serialField.hasModifierProperty("static") && serialField
           .hasModifierProperty("final") &&
-        serialField.hasInitializer) {
-      Some(serialField)
-    } else None
+        serialField.hasInitializer) { Some(serialField) }
+    else None
   }
 
   /**

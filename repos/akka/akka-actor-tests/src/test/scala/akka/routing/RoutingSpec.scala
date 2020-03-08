@@ -39,9 +39,7 @@ object RoutingSpec {
   }
 
   class Echo extends Actor {
-    def receive = {
-      case _ ⇒ sender() ! self
-    }
+    def receive = { case _ ⇒ sender() ! self }
   }
 
 }
@@ -192,9 +190,7 @@ class RoutingSpec
       }
       val supervisor = system.actorOf(Props(new Supervisor(restarter)))
       supervisor ! RoundRobinPool(3).props(routeeProps = Props(new Actor {
-        def receive = {
-          case x: String ⇒ throw new Exception(x)
-        }
+        def receive = { case x: String ⇒ throw new Exception(x) }
         override def postRestart(reason: Throwable): Unit =
           testActor ! "restarted"
       }))
@@ -227,9 +223,7 @@ class RoutingSpec
 
     "send message to connection" in {
       class Actor1 extends Actor {
-        def receive = {
-          case msg ⇒ testActor forward msg
-        }
+        def receive = { case msg ⇒ testActor forward msg }
       }
 
       val routedActor =
@@ -260,9 +254,7 @@ class RoutingSpec
           .withFallback(system.settings.config))
       try {
         sys.actorOf(FromConfig.props(routeeProps = Props[TestActor]), "routed")
-      } finally {
-        shutdown(sys)
-      }
+      } finally { shutdown(sys) }
     }
 
   }

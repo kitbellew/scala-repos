@@ -71,9 +71,7 @@ class TreeNodeSuite extends SparkFunSuite {
     before
       .map(identity[Expression])
       .zip(after.map(identity[Expression]))
-      .foreach {
-        case (b, a) => assert(b eq a)
-      }
+      .foreach { case (b, a) => assert(b eq a) }
   }
 
   test("collect") {
@@ -132,9 +130,7 @@ class TreeNodeSuite extends SparkFunSuite {
     val add = Add(Literal(1), Literal(1))
     CurrentOrigin.reset()
 
-    val transformed = add transform {
-      case Literal(1, _) => Literal(2)
-    }
+    val transformed = add transform { case Literal(1, _) => Literal(2) }
 
     assert(transformed.origin.line.isDefined)
     assert(transformed.origin.startPosition.isDefined)
@@ -205,9 +201,7 @@ class TreeNodeSuite extends SparkFunSuite {
 
     // Collect the top node.
     {
-      val actual = expression.collectFirst {
-        case add: Add => add
-      }
+      val actual = expression.collectFirst { case add: Add => add }
       val expected =
         Some(
           Add(
@@ -227,9 +221,7 @@ class TreeNodeSuite extends SparkFunSuite {
 
     // Collect an internal node (Subtract).
     {
-      val actual = expression.collectFirst {
-        case sub: Subtract => sub
-      }
+      val actual = expression.collectFirst { case sub: Subtract => sub }
       val expected = Some(Subtract(Literal(3), Literal(4)))
       assert(expected === actual)
     }

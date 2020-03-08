@@ -24,9 +24,7 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
   /**Current hostname so we know which machine executed the tests*/
   val hostname =
     try InetAddress.getLocalHost.getHostName
-    catch {
-      case x: IOException => "localhost"
-    }
+    catch { case x: IOException => "localhost" }
 
   /**The dir in which we put all result files. Is equal to the given dir + "/test-reports"*/
   val targetDir = new File(outputDir + "/test-reports/")
@@ -93,9 +91,7 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
             e.throwable.get.printStackTrace(writer)
             writer.flush()
             stringWriter.toString
-          } else {
-            ""
-          }
+          } else { "" }
           e.status match {
             case TStatus.Error if (e.throwable.isDefined) =>
               <error message={e.throwable.get.getMessage} type={

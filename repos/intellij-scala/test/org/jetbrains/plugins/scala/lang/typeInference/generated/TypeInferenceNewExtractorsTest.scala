@@ -14,9 +14,7 @@ class TypeInferenceNewExtractorsTest extends TypeInferenceTestBase {
   protected override def getDefaultScalaSDKVersion: ScalaSdkVersion =
     ScalaSdkVersion._2_11
 
-  protected override def setUp() {
-    super.setUp()
-  }
+  protected override def setUp() { super.setUp() }
 
   def testUnapply() { doTest() }
   def testUnapply2() { doTest() }

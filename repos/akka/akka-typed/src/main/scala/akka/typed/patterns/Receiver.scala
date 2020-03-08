@@ -58,9 +58,7 @@ object Receiver {
       SynchronousSelf { syncself ⇒
         Or(
           empty(ctx).widen { case c: Command[t] ⇒ c.asInstanceOf[Command[T]] },
-          Static[Any] {
-            case msg ⇒ syncself ! Enqueue(msg)
-          })
+          Static[Any] { case msg ⇒ syncself ! Enqueue(msg) })
       }
     }.narrow
 

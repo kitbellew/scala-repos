@@ -72,13 +72,9 @@ trait PerfTestSuite extends Logging {
     collect(f)(kids => Tree.node(RunConcurrent, kids.toStream))
   }
 
-  def query(q: String) {
-    tests = Tree.leaf[PerfTest](RunQuery(q)) :: tests
-  }
+  def query(q: String) { tests = Tree.leaf[PerfTest](RunQuery(q)) :: tests }
 
-  def include(suite: PerfTestSuite) {
-    tests = suite.test :: tests
-  }
+  def include(suite: PerfTestSuite) { tests = suite.test :: tests }
 
   def select(
       pred: (List[String], PerfTest) => Boolean): Option[Tree[PerfTest]] =
@@ -137,9 +133,7 @@ trait PerfTestSuite extends Logging {
             val result = f(out)
             out.close()
             result
-          } getOrElse {
-            f(System.out)
-          }
+          } getOrElse { f(System.out) }
         }
 
         config.baseline match {

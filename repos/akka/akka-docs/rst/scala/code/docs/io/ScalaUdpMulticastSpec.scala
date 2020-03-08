@@ -62,9 +62,7 @@ class ScalaUdpMulticastSpec
     }
   }
 
-  def afterAll(): Unit = {
-    TestKit.shutdownActorSystem(system)
-  }
+  def afterAll(): Unit = { TestKit.shutdownActorSystem(system) }
 
 }
 

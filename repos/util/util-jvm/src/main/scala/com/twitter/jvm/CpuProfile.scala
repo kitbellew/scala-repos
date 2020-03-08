@@ -40,9 +40,7 @@ case class CpuProfile(
       out.write(word.array())
     }
 
-    def putString(s: String) {
-      out.write(s.getBytes)
-    }
+    def putString(s: String) { out.write(s.getBytes) }
 
     putString("--- symbol\nbinary=%s\n".format(Jvm().mainClassName))
     for ((stack, _) <- counts; frame <- stack if !uniq.contains(frame)) {
@@ -170,9 +168,7 @@ object CpuProfile {
       state: Thread.State): Future[CpuProfile] = {
     val p = new Promise[CpuProfile]
     val thr = new Thread("CpuProfile") {
-      override def run() {
-        p.setValue(record(howlong, frequency, state))
-      }
+      override def run() { p.setValue(record(howlong, frequency, state)) }
     }
     thr.start()
     p

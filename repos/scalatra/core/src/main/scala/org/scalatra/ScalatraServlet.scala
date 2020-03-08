@@ -63,9 +63,7 @@ trait ScalatraServlet extends HttpServlet with ServletBase with Initializable {
 
   override def service(
       request: HttpServletRequest,
-      response: HttpServletResponse): Unit = {
-    handle(request, response)
-  }
+      response: HttpServletResponse): Unit = { handle(request, response) }
 
   /**
     * Defines the request path to be matched by routers.  The default

@@ -67,9 +67,7 @@ trait Downloader {
         "-jar",
         launcher.getAbsolutePath,
         "< " + file.getAbsolutePath)
-    } else {
-      throw new FileNotFoundException(launcher.getPath)
-    }
+    } else { throw new FileNotFoundException(launcher.getPath) }
   }
 }
 

@@ -12,7 +12,9 @@ abstract class AbsCell {
 
 object inner {
   def main(args: Array[String]) {
-    val cell = new AbsCell { val init = new Node() }
+    val cell = new AbsCell {
+      val init = new Node()
+    }
     cell.set(new cell.type#T()) // nullpointer exception
   }
 }

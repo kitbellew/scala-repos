@@ -214,9 +214,7 @@ class SQLContext private[sql] (
   /**
     * Add a jar to SQLContext
     */
-  protected[sql] def addJar(path: String): Unit = {
-    sparkContext.addJar(path)
-  }
+  protected[sql] def addJar(path: String): Unit = { sparkContext.addJar(path) }
 
   {
     // We extract spark sql settings from SparkContext's conf and put them to
@@ -238,9 +236,7 @@ class SQLContext private[sql] (
     conf.setConf(properties)
     // After we have populated SQLConf, we call setConf to populate other confs in the subclass
     // (e.g. hiveconf in HiveContext).
-    properties.asScala.foreach {
-      case (key, value) => setConf(key, value)
-    }
+    properties.asScala.foreach { case (key, value) => setConf(key, value) }
   }
 
   /**
@@ -365,9 +361,7 @@ class SQLContext private[sql] (
       */
     // This must live here to preserve binary compatibility with Spark < 1.5.
     implicit class StringToColumn(val sc: StringContext) {
-      def $(args: Any*): ColumnName = {
-        new ColumnName(sc.s(args: _*))
-      }
+      def $(args: Any*): ColumnName = { new ColumnName(sc.s(args: _*)) }
     }
   }
   // scalastyle:on
@@ -463,9 +457,7 @@ class SQLContext private[sql] (
     val catalystRows = if (needsConversion) {
       val converter = CatalystTypeConverters.createToCatalystConverter(schema)
       rowRDD.map(converter(_).asInstanceOf[InternalRow])
-    } else {
-      rowRDD.map { r: Row => InternalRow.fromSeq(r.toSeq) }
-    }
+    } else { rowRDD.map { r: Row => InternalRow.fromSeq(r.toSeq) } }
     val logicalPlan = LogicalRDD(schema.toAttributes, catalystRows)(self)
     Dataset.newDataFrame(this, logicalPlan)
   }
@@ -879,9 +871,7 @@ class SQLContext private[sql] (
   def tableNames(): Array[String] = {
     sessionState.catalog
       .getTables(None)
-      .map {
-        case (tableName, _) => tableName
-      }
+      .map { case (tableName, _) => tableName }
       .toArray
   }
 
@@ -894,9 +884,7 @@ class SQLContext private[sql] (
   def tableNames(databaseName: String): Array[String] = {
     sessionState.catalog
       .getTables(Some(databaseName))
-      .map {
-        case (tableName, _) => tableName
-      }
+      .map { case (tableName, _) => tableName }
       .toArray
   }
 
@@ -995,17 +983,13 @@ object SQLContext {
     */
   def getOrCreate(sparkContext: SparkContext): SQLContext = {
     val ctx = activeContext.get()
-    if (ctx != null && !ctx.sparkContext.isStopped) {
-      return ctx
-    }
+    if (ctx != null && !ctx.sparkContext.isStopped) { return ctx }
 
     synchronized {
       val ctx = instantiatedContext.get()
       if (ctx == null || ctx.sparkContext.isStopped) {
         new SQLContext(sparkContext)
-      } else {
-        ctx
-      }
+      } else { ctx }
     }
   }
 
@@ -1026,9 +1010,7 @@ object SQLContext {
     Option(instantiatedContext.get())
   }
 
-  private[sql] def clearSqlListener(): Unit = {
-    sqlListener.set(null)
-  }
+  private[sql] def clearSqlListener(): Unit = { sqlListener.set(null) }
 
   /**
     * Changes the SQLContext that will be returned in this thread and its children when
@@ -1047,9 +1029,7 @@ object SQLContext {
     *
     * @since 1.6.0
     */
-  def clearActive(): Unit = {
-    activeContext.remove()
-  }
+  def clearActive(): Unit = { activeContext.remove() }
 
   private[sql] def getActive(): Option[SQLContext] = {
     Option(activeContext.get())

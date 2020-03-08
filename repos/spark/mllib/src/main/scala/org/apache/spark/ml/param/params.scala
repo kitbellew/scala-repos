@@ -337,9 +337,7 @@ class IntParam(
   /** Creates a param pair with the given value (for Java). */
   override def w(value: Int): ParamPair[Int] = super.w(value)
 
-  override def jsonEncode(value: Int): String = {
-    compact(render(JInt(value)))
-  }
+  override def jsonEncode(value: Int): String = { compact(render(JInt(value))) }
 
   override def jsonDecode(json: String): Int = {
     implicit val formats = DefaultFormats
@@ -647,9 +645,7 @@ trait Params extends Identifiable with Serializable {
       val defaultValueStr = getDefault(param).map("default: " + _)
       val currentValueStr = get(param).map("current: " + _)
       (defaultValueStr ++ currentValueStr).mkString("(", ", ", ")")
-    } else {
-      "(undefined)"
-    }
+    } else { "(undefined)" }
     s"${param.name}: ${param.doc} $valueStr"
   }
 
@@ -657,9 +653,7 @@ trait Params extends Identifiable with Serializable {
     * Explains all params of this instance.
     * @see [[explainParam()]]
     */
-  def explainParams(): String = {
-    params.map(explainParam).mkString("\n")
-  }
+  def explainParams(): String = { params.map(explainParam).mkString("\n") }
 
   /** Checks whether a param is explicitly set. */
   final def isSet(param: Param[_]): Boolean = {
@@ -818,9 +812,7 @@ trait Params extends Identifiable with Serializable {
   /**
     * [[extractParamMap]] with no extra values.
     */
-  final def extractParamMap(): ParamMap = {
-    extractParamMap(ParamMap.empty)
-  }
+  final def extractParamMap(): ParamMap = { extractParamMap(ParamMap.empty) }
 
   /** Internal param map for user-supplied values. */
   private val paramMap: ParamMap = ParamMap.empty

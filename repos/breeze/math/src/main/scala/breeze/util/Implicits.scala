@@ -17,9 +17,7 @@ object Implicits extends DoubleImplicits with IteratorImplicits {
         val r = cbf(__this); result.update(a, r); r
       }
 
-      for ((a, b) <- view(__this)) {
-        result(a) += b
-      }
+      for ((a, b) <- view(__this)) { result(a) += b }
 
       result.mapValues(_.result()).toMap
     }
@@ -33,9 +31,7 @@ object Implicits extends DoubleImplicits with IteratorImplicits {
         val r = cbf(__this); result.update(a, r); r
       }
 
-      for ((a, b) <- __this) {
-        result(a) += b
-      }
+      for ((a, b) <- __this) { result(a) += b }
 
       result.mapValues(_.result()).toMap
     }
@@ -64,9 +60,7 @@ trait IteratorImplicits {
         n
       }
 
-      def hasNext = {
-        iter.hasNext;
-      }
+      def hasNext = { iter.hasNext; }
     }
 
     def takeUpToWhere(f: T => Boolean): Iterator[T] = new Iterator[T] {
@@ -78,16 +72,12 @@ trait IteratorImplicits {
         n
       }
 
-      def hasNext = {
-        !done && iter.hasNext;
-      }
+      def hasNext = { !done && iter.hasNext; }
     }
 
     def last = {
       var x = iter.next()
-      while (iter.hasNext) {
-        x = iter.next()
-      }
+      while (iter.hasNext) { x = iter.next() }
       x
     }
   }

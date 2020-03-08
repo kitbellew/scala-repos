@@ -62,9 +62,8 @@ final class MarsagliaGaussian[
         val x = u(gen)
         val y = u(gen)
         val s = x * x + y * y
-        if (s >= Field[A].one || s === Field[A].zero) {
-          loop()
-        } else {
+        if (s >= Field[A].one || s === Field[A].zero) { loop() }
+        else {
           val scale = stdDev * (-2 * s.log / s).sqrt
           x * scale + mean // Dropped: y * scale + mean
         }

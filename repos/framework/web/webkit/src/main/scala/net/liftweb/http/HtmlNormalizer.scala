@@ -53,17 +53,13 @@ case class NodesAndEventJs(nodes: NodeSeq, js: JsCmd) {
   def append(newNode: Node): NodesAndEventJs = {
     this.copy(nodes = nodes :+ newNode)
   }
-  def append(newJs: JsCmd): NodesAndEventJs = {
-    this.copy(js = js & newJs)
-  }
+  def append(newJs: JsCmd): NodesAndEventJs = { this.copy(js = js & newJs) }
   def append(newNode: Node, newJs: JsCmd): NodesAndEventJs = {
     this.copy(nodes = nodes :+ newNode, js = js & newJs)
   }
 }
 private[http] case class NodeAndEventJs(node: Node, js: JsCmd) {
-  def append(newJs: JsCmd): NodeAndEventJs = {
-    this.copy(js = js & newJs)
-  }
+  def append(newJs: JsCmd): NodeAndEventJs = { this.copy(js = js & newJs) }
 }
 
 /**
@@ -90,9 +86,8 @@ private[http] final object HtmlNormalizer {
       shouldRewriteUrl: Boolean, // whether to apply URLRewrite.rewriteFunc
       eventAttributes: List[EventAttribute] = Nil
   ): (Option[String], MetaData, List[EventAttribute]) = {
-    if (attributes == Null) {
-      (None, Null, eventAttributes)
-    } else {
+    if (attributes == Null) { (None, Null, eventAttributes) }
+    else {
       // Note: we don't do this tail-recursively because we have to preserve
       // attribute order!
       val (id, normalizedRemainingAttributes, remainingEventAttributes) =
@@ -119,9 +114,8 @@ private[http] final object HtmlNormalizer {
               else
                 base
 
-            if (strippedJs.trim.isEmpty) {
-              Nil
-            } else {
+            if (strippedJs.trim.isEmpty) { Nil }
+            else {
               // When using javascript:-style URIs, event.preventDefault is implied.
               List(strippedJs + "; event.preventDefault()")
             }
@@ -323,9 +317,7 @@ private[http] final object HtmlNormalizer {
 
           case node =>
             soFar.append(node)
-        } getOrElse {
-          soFar
-        }
+        } getOrElse { soFar }
     }
   }
 }

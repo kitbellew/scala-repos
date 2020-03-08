@@ -293,9 +293,8 @@ trait ScReferenceElement
     val prefixImport = ScalaCodeStyleSettings
       .getInstance(getProject)
       .hasImportWithPrefix(qualName)
-    if (!prefixImport && checkForPredefinedTypes()) {
-      simpleImport
-    } else {
+    if (!prefixImport && checkForPredefinedTypes()) { simpleImport }
+    else {
       if (qualName.contains(".")) {
         var index =
           if (ScalaCodeStyleSettings

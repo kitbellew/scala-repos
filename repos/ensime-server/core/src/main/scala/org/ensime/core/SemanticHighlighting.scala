@@ -42,24 +42,19 @@ class SemanticHighlighting(val global: RichPresentationCompiler)
       }
 
       def qualifySymbol(sym: Symbol): Boolean = {
-        if (sym == NoSymbol) {
-          false
-        } else if (sym.isCaseApplyOrUnapply) {
+        if (sym == NoSymbol) { false }
+        else if (sym.isCaseApplyOrUnapply) {
           val owner = sym.owner
           val start = treeP.startOrCursor
           val end = start + owner.name.length
           addAt(start, end, ObjectSymbol)
         } else if (sym.isConstructor) {
           addAt(treeP.startOrCursor, treeP.endOrCursor, ConstructorSymbol)
-        } else if (sym.isTypeParameterOrSkolem) {
-          add(TypeParamSymbol)
-        } else if (sym.hasFlag(PARAM)) {
-          add(ParamSymbol)
-        } else {
+        } else if (sym.isTypeParameterOrSkolem) { add(TypeParamSymbol) }
+        else if (sym.hasFlag(PARAM)) { add(ParamSymbol) }
+        else {
 
-          if (sym.ownerChain.exists(_.isDeprecated)) {
-            add(DeprecatedSymbol)
-          }
+          if (sym.ownerChain.exists(_.isDeprecated)) { add(DeprecatedSymbol) }
 
           if (sym.ownerChain.exists(_.annotations.exists(
                 _.atp.toString().endsWith("deprecating")))) {
@@ -70,38 +65,22 @@ class SemanticHighlighting(val global: RichPresentationCompiler)
             val under = sym.accessed
             // The compiler mis-reports lazy val fields
             // as variables. Lazy can only be a val anyway.
-            if (sym.hasFlag(LAZY)) {
-              add(ValFieldSymbol)
-            } else if (under.isVariable) {
-              add(VarFieldSymbol)
-            } else if (under.isValue) {
-              add(ValFieldSymbol)
-            } else {
-              false
-            }
+            if (sym.hasFlag(LAZY)) { add(ValFieldSymbol) }
+            else if (under.isVariable) { add(VarFieldSymbol) }
+            else if (under.isValue) { add(ValFieldSymbol) }
+            else { false }
           } else if (sym.isMethod) {
             if (sym.nameString == "apply" || sym.nameString == "update") {
               true
-            } else if (sym.name.isOperatorName) {
-              add(OperatorFieldSymbol)
-            } else {
-              add(FunctionCallSymbol)
-            }
-          } else if (sym.isVariable && sym.isLocalToBlock) {
-            add(VarSymbol)
-          } else if (sym.isValue && sym.isLocalToBlock) {
-            add(ValSymbol)
-          } else if (sym.hasPackageFlag) {
-            add(PackageSymbol)
-          } else if (sym.isTrait) {
-            add(TraitSymbol)
-          } else if (sym.isClass) {
-            add(ClassSymbol)
-          } else if (sym.isModule) {
-            add(ObjectSymbol)
-          } else {
-            false
-          }
+            } else if (sym.name.isOperatorName) { add(OperatorFieldSymbol) }
+            else { add(FunctionCallSymbol) }
+          } else if (sym.isVariable && sym.isLocalToBlock) { add(VarSymbol) }
+          else if (sym.isValue && sym.isLocalToBlock) { add(ValSymbol) }
+          else if (sym.hasPackageFlag) { add(PackageSymbol) }
+          else if (sym.isTrait) { add(TraitSymbol) }
+          else if (sym.isClass) { add(ClassSymbol) }
+          else if (sym.isModule) { add(ObjectSymbol) }
+          else { false }
         }
       }
 
@@ -124,24 +103,17 @@ class SemanticHighlighting(val global: RichPresentationCompiler)
               if (sym != NoSymbol) {
                 val isField = sym.owner.isType || sym.owner.isModule
 
-                if (mods.hasFlag(PARAM)) {
-                  add(ParamSymbol)
-                } else if (mods.hasFlag(MUTABLE) && !isField) {
-                  add(VarSymbol)
-                } else if (!isField) {
-                  add(ValSymbol)
-                } else if (mods.hasFlag(MUTABLE) && isField) {
+                if (mods.hasFlag(PARAM)) { add(ParamSymbol) }
+                else if (mods.hasFlag(MUTABLE) && !isField) { add(VarSymbol) }
+                else if (!isField) { add(ValSymbol) }
+                else if (mods.hasFlag(MUTABLE) && isField) {
                   add(VarFieldSymbol)
-                } else if (isField) {
-                  add(ValFieldSymbol)
-                }
+                } else if (isField) { add(ValFieldSymbol) }
               }
 
             case TypeDef(mods, name, params, rhs) =>
               if (sym != NoSymbol) {
-                if (mods.hasFlag(PARAM)) {
-                  add(TypeParamSymbol)
-                }
+                if (mods.hasFlag(PARAM)) { add(TypeParamSymbol) }
               }
 
             case t: ApplyImplicitView   => add(ImplicitConversionSymbol)

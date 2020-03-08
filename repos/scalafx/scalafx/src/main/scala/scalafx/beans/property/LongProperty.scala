@@ -56,10 +56,6 @@ class LongProperty(
   def this(bean: Object, name: String, initialValue: Long) =
     this(new jfxbp.SimpleLongProperty(bean, name, initialValue))
 
-  def value_=(v: Long) {
-    delegate.set(v)
-  }
-  def value_=(v: Number) {
-    delegate.set(v.longValue)
-  }
+  def value_=(v: Long) { delegate.set(v) }
+  def value_=(v: Number) { delegate.set(v.longValue) }
 }

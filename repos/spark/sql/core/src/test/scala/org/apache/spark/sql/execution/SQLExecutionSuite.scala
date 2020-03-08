@@ -36,17 +36,12 @@ class SQLExecutionSuite extends SparkFunSuite {
     } catch {
       case e: IllegalArgumentException =>
         assert(e.getMessage.contains(SQLExecution.EXECUTION_ID_KEY))
-    } finally {
-      badSparkContext.stop()
-    }
+    } finally { badSparkContext.stop() }
 
     // Verify that the issue is fixed with the latest SparkContext
     val goodSparkContext = new SparkContext(conf)
-    try {
-      testConcurrentQueryExecution(goodSparkContext)
-    } finally {
-      goodSparkContext.stop()
-    }
+    try { testConcurrentQueryExecution(goodSparkContext) }
+    finally { goodSparkContext.stop() }
   }
 
   test("concurrent query execution with fork-join pool (SPARK-13747)") {
@@ -58,9 +53,7 @@ class SQLExecutionSuite extends SparkFunSuite {
       (1 to 100).par.foreach { _ =>
         sc.parallelize(1 to 5).map { i => (i, i) }.toDF("a", "b").count()
       }
-    } finally {
-      sc.stop()
-    }
+    } finally { sc.stop() }
   }
 
   /**

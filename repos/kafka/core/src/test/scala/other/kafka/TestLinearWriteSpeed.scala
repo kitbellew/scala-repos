@@ -216,9 +216,7 @@ object TestLinearWriteSpeed {
       content.rewind()
       content.limit
     }
-    def close() {
-      raf.close()
-    }
+    def close() { raf.close() }
   }
 
   class ChannelWritable(val file: File, val content: ByteBuffer)
@@ -231,9 +229,7 @@ object TestLinearWriteSpeed {
       content.rewind()
       content.limit
     }
-    def close() {
-      raf.close()
-    }
+    def close() { raf.close() }
   }
 
   class LogWritable(

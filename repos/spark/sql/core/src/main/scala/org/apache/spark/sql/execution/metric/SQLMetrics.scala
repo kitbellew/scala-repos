@@ -51,9 +51,7 @@ private[sql] abstract class SQLMetric[R <: SQLMetricValue[T], T](
       Some(SQLMetrics.ACCUM_IDENTIFIER))
   }
 
-  def reset(): Unit = {
-    this.value = param.zero
-  }
+  def reset(): Unit = { this.value = param.zero }
 }
 
 /**
@@ -115,13 +113,9 @@ private[sql] class LongSQLMetric private[metric] (
     param: LongSQLMetricParam)
     extends SQLMetric[LongSQLMetricValue, Long](name, param) {
 
-  override def +=(term: Long): Unit = {
-    localValue.add(term)
-  }
+  override def +=(term: Long): Unit = { localValue.add(term) }
 
-  override def add(term: Long): Unit = {
-    localValue.add(term)
-  }
+  override def add(term: Long): Unit = { localValue.add(term) }
 }
 
 private class LongSQLMetricParam(
@@ -153,9 +147,8 @@ private object StaticsLongSQLMetricParam
         // it at the end of task and the value will be at least 0.
         val validValues = values.filter(_ >= 0)
         val Seq(sum, min, med, max) = {
-          val metric = if (validValues.length == 0) {
-            Seq.fill(4)(0L)
-          } else {
+          val metric = if (validValues.length == 0) { Seq.fill(4)(0L) }
+          else {
             val sorted = validValues.sorted
             Seq(
               sorted.sum,

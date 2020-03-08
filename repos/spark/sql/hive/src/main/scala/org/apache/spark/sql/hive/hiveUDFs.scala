@@ -53,9 +53,7 @@ private[hive] class HiveFunctionRegistry(
   def getFunctionInfo(name: String): FunctionInfo = {
     // Hive Registry need current database to lookup function
     // TODO: the current database of executionHive should be consistent with metadataHive
-    executionHive.withHiveState {
-      FunctionRegistry.getFunctionInfo(name)
-    }
+    executionHive.withHiveState { FunctionRegistry.getFunctionInfo(name) }
   }
 
   override def lookupFunction(
@@ -262,9 +260,7 @@ private[hive] class DeferredObjectAdapter(
     with HiveInspectors {
 
   private var func: () => Any = _
-  def set(func: () => Any): Unit = {
-    this.func = func
-  }
+  def set(func: () => Any): Unit = { this.func = func }
   override def prepare(i: Int): Unit = {}
   override def get(): AnyRef = wrap(func(), oi, dataType)
 }
@@ -321,9 +317,7 @@ private[hive] case class HiveGenericUDF(
       val idx = i
       deferredObjects(i)
         .asInstanceOf[DeferredObjectAdapter]
-        .set(() => {
-          children(idx).eval(input)
-        })
+        .set(() => { children(idx).eval(input) })
       i += 1
     }
     unwrap(function.evaluate(deferredObjects), returnInspector)
@@ -453,9 +447,7 @@ private[hive] case class HiveUDAFFunction(
   private lazy val resolver =
     if (isUDAFBridgeRequired) {
       new GenericUDAFBridge(funcWrapper.createFunction[UDAF]())
-    } else {
-      funcWrapper.createFunction[AbstractGenericUDAFResolver]()
-    }
+    } else { funcWrapper.createFunction[AbstractGenericUDAFResolver]() }
 
   @transient
   private lazy val inspectors = children.map(toInspector).toArray

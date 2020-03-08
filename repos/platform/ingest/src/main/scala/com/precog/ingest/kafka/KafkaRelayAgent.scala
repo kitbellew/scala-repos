@@ -160,9 +160,7 @@ final class KafkaRelayAgent(
             "Kafka consumer batch size: %d offset: %d)"
               .format(messages.size, o))
           (o, 0L)
-        } else {
-          (offset, waitCount + 1)
-        }
+        } else { (offset, waitCount + 1) }
 
         Thread.sleep(newDelay)
 
@@ -202,9 +200,7 @@ final class KafkaRelayAgent(
       val boundedWaitCount =
         if (waitCount > waitCountFactor) waitCountFactor else waitCount
       (maxDelay * boundedWaitCount / waitCountFactor).toLong
-    } else {
-      (maxDelay * (1.0 - messageBytes.toDouble / bufferSize)).toLong
-    }
+    } else { (maxDelay * (1.0 - messageBytes.toDouble / bufferSize)).toLong }
   }
 
   private case class Authorized(
@@ -232,9 +228,8 @@ final class KafkaRelayAgent(
             def encodeIngestMessages(ev: List[IngestMessage]): List[Message] = {
               val messages = ev.map(centralCodec.toMessage)
 
-              if (messages.forall(_.size <= maxMessageSize)) {
-                messages
-              } else {
+              if (messages.forall(_.size <= maxMessageSize)) { messages }
+              else {
                 if (ev.size == data.length) {
                   logger.error(
                     "Failed to reach reasonable message size after splitting IngestRecords to individual relays!")

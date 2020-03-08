@@ -33,15 +33,11 @@ trait Importer {
       var n = 0
       while (n >= 0) {
         n = reader.read(buffer, 0, buffer.length)
-        if (n >= 0) {
-          sb.appendAll(buffer, 0, n)
-        }
+        if (n >= 0) { sb.appendAll(buffer, 0, n) }
       }
       in.close()
       sb.toString
-    } catch {
-      case x => throw new ConfigurationException(x.toString)
-    }
+    } catch { case x => throw new ConfigurationException(x.toString) }
   }
 }
 

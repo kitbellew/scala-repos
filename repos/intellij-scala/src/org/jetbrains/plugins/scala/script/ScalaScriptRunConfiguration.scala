@@ -54,21 +54,11 @@ class ScalaScriptRunConfiguration(
   def getJavaOptions = javaOptions
   def getConsoleArgs = consoleArgs
   def getWorkingDirectory: String = workingDirectory
-  def setScriptPath(s: String) {
-    scriptPath = s
-  }
-  def setScriptArgs(s: String) {
-    scriptArgs = s
-  }
-  def setJavaOptions(s: String) {
-    javaOptions = s
-  }
-  def setConsoleArgs(s: String) {
-    consoleArgs = s
-  }
-  def setWorkingDirectory(s: String) {
-    workingDirectory = s
-  }
+  def setScriptPath(s: String) { scriptPath = s }
+  def setScriptArgs(s: String) { scriptArgs = s }
+  def setJavaOptions(s: String) { javaOptions = s }
+  def setConsoleArgs(s: String) { consoleArgs = s }
+  def setWorkingDirectory(s: String) { workingDirectory = s }
 
   def apply(params: ScalaScriptRunConfigurationForm) {
     setScriptArgs(params.getScriptArgs)
@@ -90,9 +80,7 @@ class ScalaScriptRunConfiguration(
         case f: ScalaFile if f.isScriptFile() && !f.isWorksheetFile =>
         case _                                                      => fileNotFoundError()
       }
-    } catch {
-      case e: Exception => fileNotFoundError()
-    }
+    } catch { case e: Exception => fileNotFoundError() }
 
     val module = getModule
     if (module == null) throw new ExecutionException("Module is not specified")
@@ -192,9 +180,7 @@ class ScalaScriptRunConfiguration(
             val hyperlink =
               new OpenFileHyperlinkInfo(getProject, file, lineNumber - 1)
             new Result(start, end, hyperlink)
-          } catch {
-            case _: Exception => return null
-          }
+          } catch { case _: Exception => return null }
         } else null
       }
     }
@@ -216,9 +202,7 @@ class ScalaScriptRunConfiguration(
         //todo this method does not called when undo of moving action executed
         def undoElementMovedOrRenamed(
             newElement: PsiElement,
-            oldQualifiedName: String) {
-          setScriptPath(oldQualifiedName)
-        }
+            oldQualifiedName: String) { setScriptPath(oldQualifiedName) }
       }
     case _ => RefactoringElementListener.DEAF
   }

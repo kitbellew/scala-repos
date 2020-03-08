@@ -34,15 +34,11 @@ private[serverset2] object Selector {
       try {
         val (host, port) = parseHostPorts(arg).head
         Some(Host(host, port))
-      } catch {
-        case NonFatal(_) => None
-      }
+      } catch { case NonFatal(_) => None }
     case Array("member", which) => Some(Member(which))
     case Array("shard", which) =>
       try Some(Shard(which.toInt))
-      catch {
-        case NonFatal(_) => None
-      }
+      catch { case NonFatal(_) => None }
     case _ => None
   }
 }

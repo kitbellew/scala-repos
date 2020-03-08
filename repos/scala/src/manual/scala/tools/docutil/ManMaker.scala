@@ -28,13 +28,9 @@ class ManMaker extends Task {
     }
   }
 
-  def setHtmlout(input: File) {
-    htmlout = Some(input)
-  }
+  def setHtmlout(input: File) { htmlout = Some(input) }
 
-  def setManout(input: File) {
-    manout = Some(input)
-  }
+  def setManout(input: File) { manout = Some(input) }
 
   override def execute() {
     if (command.isEmpty) sys.error("Attribute 'command' is not set.")

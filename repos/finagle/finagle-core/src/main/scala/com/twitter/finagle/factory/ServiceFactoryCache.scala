@@ -108,9 +108,7 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
     try {
       if (cache contains key)
         return cache(key).apply(conn)
-    } finally {
-      readLock.unlock()
-    }
+    } finally { readLock.unlock() }
 
     miss(key, conn)
   }
@@ -123,11 +121,8 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
     if (cache contains key) {
       readLock.lock()
       writeLock.unlock()
-      try {
-        return cache(key).apply(conn)
-      } finally {
-        readLock.unlock()
-      }
+      try { return cache(key).apply(conn) }
+      finally { readLock.unlock() }
     }
 
     val svc =
@@ -151,9 +146,7 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
               oneshot(factory, conn)
           }
         }
-      } finally {
-        writeLock.unlock()
-      }
+      } finally { writeLock.unlock() }
 
     svc
   }
@@ -188,9 +181,7 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
     try {
       if (cache.contains(key))
         return cache(key).status
-    } finally {
-      readLock.unlock()
-    }
+    } finally { readLock.unlock() }
 
     // This is somewhat dubious, as the status is outdated
     // pretty much right after we query it.

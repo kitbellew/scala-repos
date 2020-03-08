@@ -98,9 +98,7 @@ class ApplyUnapplyForBindingSearcher
         name,
         UsageSearchContext.IN_CODE,
         true)
-    } catch {
-      case ignore: IndexNotReadyException => true
-    }
+    } catch { case ignore: IndexNotReadyException => true }
   }
 
   private class Unapply(binding: ScBindingPattern) {

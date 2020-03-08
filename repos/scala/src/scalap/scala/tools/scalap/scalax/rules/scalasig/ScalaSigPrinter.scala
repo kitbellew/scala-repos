@@ -51,9 +51,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
             if (o.name == "package") {
               // print package object
               printPackageObject(level, o)
-            } else {
-              printObject(level, o)
-            }
+            } else { printObject(level, o) }
           }
         case c: ClassSymbol if !refinementClass(c) && !c.isModule =>
           indent
@@ -255,9 +253,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         x.isInstanceOf[MethodSymbol] &&
           x.asInstanceOf[MethodSymbol].name == n + "_$eq")
       print(if (indexOfSetter > 0) "var " else "val ")
-    } else {
-      print("def ")
-    }
+    } else { print("def ") }
     n match {
       case CONSTRUCTOR_NAME =>
         print("this")
@@ -404,9 +400,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         typeParamString(symbols) + toString(typeRef, sep)
       case PolyTypeWithCons(typeRef, symbols, cons) =>
         typeParamString(symbols) + processName(cons) + toString(typeRef, sep)
-      case AnnotatedType(typeRef, attribTreeRefs) => {
-        toString(typeRef, sep)
-      }
+      case AnnotatedType(typeRef, attribTreeRefs) => { toString(typeRef, sep) }
       case AnnotatedWithSelfType(typeRef, symbol, attribTreeRefs) =>
         toString(typeRef, sep)
       case ExistentialType(typeRef, symbols) => {

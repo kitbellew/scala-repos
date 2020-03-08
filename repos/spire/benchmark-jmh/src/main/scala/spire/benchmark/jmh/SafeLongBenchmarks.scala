@@ -72,9 +72,7 @@ class SafeLongMultiplyBenchmark {
   }
 
   @Benchmark
-  def multiply(x: Blackhole): Unit = {
-    x.consume(a * b)
-  }
+  def multiply(x: Blackhole): Unit = { x.consume(a * b) }
 }
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -120,13 +118,9 @@ class SafeLongAddSubtractBenchmark {
   }
 
   @Benchmark
-  def add(x: Blackhole): Unit = {
-    x.consume(a + b)
-  }
+  def add(x: Blackhole): Unit = { x.consume(a + b) }
 
-  def subtract(x: Blackhole): Unit = {
-    x.consume(a - c)
-  }
+  def subtract(x: Blackhole): Unit = { x.consume(a - c) }
 }
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -154,7 +148,5 @@ class SafeLongCompareBenchmark {
   }
 
   @Benchmark
-  def compare(x: Blackhole): Unit = {
-    x.consume(a compare b)
-  }
+  def compare(x: Blackhole): Unit = { x.consume(a compare b) }
 }

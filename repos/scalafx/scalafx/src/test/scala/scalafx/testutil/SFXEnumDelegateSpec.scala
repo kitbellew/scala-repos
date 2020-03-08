@@ -81,9 +81,7 @@ abstract class SFXEnumDelegateSpec[
     try {
       val scalaEnum = companion(name)
       true
-    } catch {
-      case e: IllegalArgumentException => false
-    }
+    } catch { case e: IllegalArgumentException => false }
   }
 
   private def assertScalaEnumWithOrdinal(s: S, index: Int) {
@@ -135,15 +133,11 @@ abstract class SFXEnumDelegateSpec[
   }
 
   it should "not find a non registered name among enum constants" in {
-    intercept[IllegalArgumentException] {
-      companion("!@#$%")
-    }
+    intercept[IllegalArgumentException] { companion("!@#$%") }
   }
 
   it should "throw `IllegalArgumentException` if the argument is `null`" in {
-    intercept[IllegalArgumentException] {
-      companion(null)
-    }
+    intercept[IllegalArgumentException] { companion(null) }
   }
 
   it should "presents its values at same order as its JavaFX enum ordinal" in {

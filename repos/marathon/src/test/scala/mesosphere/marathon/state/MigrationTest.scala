@@ -124,9 +124,7 @@ class MigrationTest
           bytes = unsupportedVersion.toByteArray)))
 
     When("A migration is approached for that version")
-    val ex = intercept[RuntimeException] {
-      f.migration.migrate()
-    }
+    val ex = intercept[RuntimeException] { f.migration.migrate() }
 
     Then("Migration exits with a readable error message")
     ex.getMessage should equal(

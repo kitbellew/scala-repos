@@ -12,9 +12,7 @@ object Global extends GlobalSettings {
     lila.app.Env.current
   }
 
-  override def onStop(app: Application) {
-    kamon.Kamon.shutdown()
-  }
+  override def onStop(app: Application) { kamon.Kamon.shutdown() }
 
   override def onRouteRequest(req: RequestHeader): Option[Handler] = {
     lila.mon.http.request.all()

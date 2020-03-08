@@ -225,9 +225,7 @@ class ScExtendsBlockImpl private (
   @CachedInsidePsiElement(this, ModCount.getBlockModificationCount)
   def supers: Seq[PsiClass] = {
     val buffer = new ListBuffer[PsiClass]
-    def addClass(t: PsiClass) {
-      buffer += t
-    }
+    def addClass(t: PsiClass) { buffer += t }
     templateParents match {
       case Some(parents: ScTemplateParents) =>
         parents.supers foreach { t => addClass(t) }

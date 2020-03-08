@@ -48,9 +48,7 @@ class TryTests extends MinimalScalaTest {
       }
       "when there is a fatal exception" in {
         val e3 = new ThreadDeath
-        intercept[ThreadDeath] {
-          Success(1) map (_ => throw e3)
-        }
+        intercept[ThreadDeath] { Success(1) map (_ => throw e3) }
       }
     }
 
@@ -68,9 +66,7 @@ class TryTests extends MinimalScalaTest {
       }
       "when there is a fatal exception" in {
         val e3 = new ThreadDeath
-        intercept[ThreadDeath] {
-          Success(1).flatMap[Int](_ => throw e3)
-        }
+        intercept[ThreadDeath] { Success(1).flatMap[Int](_ => throw e3) }
       }
     }
 

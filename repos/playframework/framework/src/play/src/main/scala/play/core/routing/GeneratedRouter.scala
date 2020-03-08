@@ -29,9 +29,7 @@ object Route {
         pathPattern(request.path).map { groups =>
           RouteParams(groups, request.queryString)
         }
-      } else {
-        None
-      }
+      } else { None }
     }
 
   }
@@ -111,9 +109,7 @@ abstract class GeneratedRouter extends Router {
     errorHandler.onClientError(request, play.api.http.Status.BAD_REQUEST, error)
   }
 
-  def call(generator: => Handler): Handler = {
-    generator
-  }
+  def call(generator: => Handler): Handler = { generator }
 
   def call[P](pa: Param[P])(generator: (P) => Handler): Handler = {
     pa.value.fold(badRequest, generator)

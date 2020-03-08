@@ -32,9 +32,7 @@ object InteriorPoint {
     val n = A.cols
     val x = DenseVector.zeros[Double](n)
     x += x0
-    if ((A * x0 - b).values.exists(_ > 0)) {
-      x := phase1(A, b, c, x0)
-    }
+    if ((A * x0 - b).values.exists(_ > 0)) { x := phase1(A, b, c, x0) }
 //    assert((A * x0 - b).valuesIterator.forall(_ <= 0))
     val s = DenseVector.ones[Double](m)
     val z = DenseVector.ones[Double](m)
@@ -66,13 +64,9 @@ object InteriorPoint {
 
         val gap = (c dot x) + (b dot z)
         converged = gap.abs < tol
-        if (gap > lastGap) {
-          axpy(-(.99 * scaleXF), dx, x)
-        }
+        if (gap > lastGap) { axpy(-(.99 * scaleXF), dx, x) }
         lastGap = gap
-      } catch {
-        case m: MatrixSingularException => converged = true
-      }
+      } catch { case m: MatrixSingularException => converged = true }
 //      assert(gap > -1E-3,gap)
     }
 

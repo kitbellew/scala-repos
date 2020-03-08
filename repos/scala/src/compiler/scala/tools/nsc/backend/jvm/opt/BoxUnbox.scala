@@ -367,9 +367,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
                         resultSlot) :: extraction.postExtractionAdaptationOps(
                         tp)
                       new VarInsnNode(tp.getOpcode(ISTORE), resultSlot)
-                    } else {
-                      getPop(tp.getSize)
-                    }
+                    } else { getPop(tp.getSize) }
                 }
                 consumeStack ::: loadOps
               }
@@ -582,9 +580,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         if (copyOp.getOpcode == DUP && valueTypes.lengthCompare(1) == 0) {
           if (valueTypes.head.getSize == 2)
             replacements += copyOp -> List(new InsnNode(DUP2))
-        } else {
-          replaceOK = false
-        }
+        } else { replaceOK = false }
     }
     if (replaceOK) Some((replacements, nextCopyOpLocal, reTypedLocals))
     else None
@@ -696,9 +692,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
                 prodCons.consumersOfValueAt(afterInit, stackTopAfterInit)
               if (initializedInstanceCons == dupConsWithoutInit && prodCons
                     .producersForValueAt(afterInit, stackTopAfterInit) == Set(
-                    dupOp)) {
-                return Some((dupOp, initCall))
-              }
+                    dupOp)) { return Some((dupOp, initCall)) }
             }
           }
         }

@@ -232,9 +232,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
     // we don't get in the way of the request body reactive streams,
     // which will be using channel read complete and read to implement
     // their own back pressure
-    if (requestsInFlight.get() == 0) {
-      ctx.read()
-    } else {
+    if (requestsInFlight.get() == 0) { ctx.read() }
+    else {
       // otherwise forward it, so that any handler publishers downstream
       // can handle it
       ctx.fireChannelReadComplete()

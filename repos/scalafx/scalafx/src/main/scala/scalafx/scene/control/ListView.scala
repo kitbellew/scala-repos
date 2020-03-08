@@ -138,9 +138,7 @@ class ListView[T](
   def cellFactory = delegate.cellFactoryProperty
   def cellFactory_=(v: (ListView[T] => ListCell[T])) {
     cellFactory() = new jfxu.Callback[jfxsc.ListView[T], jfxsc.ListCell[T]] {
-      def call(lv: jfxsc.ListView[T]) = {
-        v(lv)
-      }
+      def call(lv: jfxsc.ListView[T]) = { v(lv) }
     }
   }
 
@@ -149,9 +147,7 @@ class ListView[T](
     * it are both editable will a ListCell be able to go into their editing state.
     */
   def editable: BooleanProperty = delegate.editableProperty
-  def editable_=(v: Boolean) {
-    editable() = v
-  }
+  def editable_=(v: Boolean) { editable() = v }
 
   /**
     * A property used to represent the index of the item currently being edited in the ListView,
@@ -161,9 +157,7 @@ class ListView[T](
 
   /** Specifies whether this control has cells that are a fixed height (of the specified value). */
   def fixedCellSize: DoubleProperty = delegate.fixedCellSizeProperty
-  def fixedCellSize_=(v: Double) {
-    fixedCellSize() = v
-  }
+  def fixedCellSize_=(v: Double) { fixedCellSize() = v }
 
   /**
     * The FocusModel provides the API through which it is possible to both get and set the focus on
@@ -171,17 +165,13 @@ class ListView[T](
     */
   def focusModel: ObjectProperty[jfxsc.FocusModel[T]] =
     delegate.focusModelProperty
-  def focusModel_=(v: FocusModel[T]) {
-    focusModel() = v
-  }
+  def focusModel_=(v: FocusModel[T]) { focusModel() = v }
 
   /**
     * The underlying data model for the ListView.
     */
   def items = delegate.itemsProperty
-  def items_=(v: ObservableBuffer[T]) {
-    items() = v
-  }
+  def items_=(v: ObservableBuffer[T]) { items() = v }
 
   /**
     * This event handler will be fired when the user cancels editing a cell.
@@ -213,9 +203,7 @@ class ListView[T](
     */
   def orientation: ObjectProperty[jfxg.Orientation] =
     delegate.orientationProperty
-  def orientation_=(v: Orientation) {
-    orientation() = v
-  }
+  def orientation_=(v: Orientation) { orientation() = v }
 
   /** This Node is shown to the user when the listview has no content to show. */
   def placeholder: ObjectProperty[jfxs.Node] = delegate.placeholderProperty
@@ -229,17 +217,13 @@ class ListView[T](
     */
   def selectionModel: ObjectProperty[jfxsc.MultipleSelectionModel[T]] =
     delegate.selectionModelProperty
-  def selectionModel_=(v: MultipleSelectionModel[T]) {
-    selectionModel() = v
-  }
+  def selectionModel_=(v: MultipleSelectionModel[T]) { selectionModel() = v }
 
   /**
     * Instructs the ListView to begin editing the item in the given index, if the ListView is
     * editable.
     */
-  def edit(itemIndex: Int) {
-    delegate.edit(itemIndex)
-  }
+  def edit(itemIndex: Int) { delegate.edit(itemIndex) }
 
   /**
     * Called when there's a request to scroll an index into view using scrollTo(int) or #scrollTo(S)
@@ -257,12 +241,8 @@ class ListView[T](
   /**
     * Scrolls the ListView such that the item in the given index is visible to the end user.
     */
-  def scrollTo(index: Int) {
-    delegate.scrollTo(index)
-  }
+  def scrollTo(index: Int) { delegate.scrollTo(index) }
 
   /** Scrolls the TableView so that the given object is visible within the viewport. */
-  def scrollTo(o: T) {
-    delegate.scrollTo(o)
-  }
+  def scrollTo(o: T) { delegate.scrollTo(o) }
 }

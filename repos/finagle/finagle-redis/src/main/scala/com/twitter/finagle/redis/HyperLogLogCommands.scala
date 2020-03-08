@@ -35,9 +35,7 @@ trait HyperLogLogs { self: BaseClient =>
     * @see http://redis.io/commands/pfcount
     */
   def pfCount(keys: Seq[ChannelBuffer]): Future[JLong] =
-    doRequest(PFCount(keys)) {
-      case IntegerReply(n) => Future.value(n)
-    }
+    doRequest(PFCount(keys)) { case IntegerReply(n) => Future.value(n) }
 
   /**
     * Merge HyperLogLogs at srcKeys to create a new HyperLogLog at destKey
@@ -48,8 +46,6 @@ trait HyperLogLogs { self: BaseClient =>
   def pfMerge(
       destKey: ChannelBuffer,
       srcKeys: Seq[ChannelBuffer]): Future[Unit] =
-    doRequest(PFMerge(destKey, srcKeys)) {
-      case StatusReply(_) => Future.Unit
-    }
+    doRequest(PFMerge(destKey, srcKeys)) { case StatusReply(_) => Future.Unit }
 
 }

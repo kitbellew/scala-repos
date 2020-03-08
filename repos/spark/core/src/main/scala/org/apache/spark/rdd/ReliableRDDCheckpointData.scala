@@ -48,11 +48,8 @@ private[spark] class ReliableRDDCheckpointData[T: ClassTag](
     * If the RDD is not checkpointed yet, return None.
     */
   def getCheckpointDir: Option[String] = RDDCheckpointData.synchronized {
-    if (isCheckpointed) {
-      Some(cpDir.toString)
-    } else {
-      None
-    }
+    if (isCheckpointed) { Some(cpDir.toString) }
+    else { None }
   }
 
   /**

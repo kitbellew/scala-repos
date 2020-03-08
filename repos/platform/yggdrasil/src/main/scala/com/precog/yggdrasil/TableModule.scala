@@ -104,7 +104,9 @@ object TableModule {
     def isAscending: Boolean
   }
 
-  case object SortAscending extends DesiredSortOrder { val isAscending = true }
+  case object SortAscending extends DesiredSortOrder {
+    val isAscending = true
+  }
   case object SortDescending extends DesiredSortOrder {
     val isAscending = false
   }
@@ -341,9 +343,7 @@ trait TableModule[M[+_]] extends TransSpecModule {
       for {
         t <- table.sort(
           trans.DerefObjectStatic(trans.Leaf(trans.Source), CPathField("key")))
-      } yield {
-        GroupingSource(t, idTrans, targetTrans, groupId, groupKeySpec)
-      }
+      } yield { GroupingSource(t, idTrans, targetTrans, groupId, groupKeySpec) }
   }
 
   final case class GroupingAlignment(

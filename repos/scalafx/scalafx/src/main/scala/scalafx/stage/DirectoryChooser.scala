@@ -49,17 +49,13 @@ class DirectoryChooser(
     * The initial directory for the displayed dialog.
     */
   def initialDirectory: ObjectProperty[File] = delegate.initialDirectoryProperty
-  def initialDirectory_=(v: File) {
-    initialDirectory() = v
-  }
+  def initialDirectory_=(v: File) { initialDirectory() = v }
 
   /**
     * The title of the displayed dialog.
     */
   def title: StringProperty = delegate.titleProperty
-  def title_=(v: String) {
-    title() = v
-  }
+  def title_=(v: String) { title() = v }
 
   /**
     * Shows a new directory selection dialog.

@@ -1188,9 +1188,7 @@ trait EvaluatorSpecs[M[+_]]
       val input = dag.Reduce(Count, dag.IUI(true, clicksP, clicksP)(line))(line)
 
       testEval(input) { resultE =>
-        val result = resultE collect {
-          case (ids, SDecimal(d)) => d
-        }
+        val result = resultE collect { case (ids, SDecimal(d)) => d }
 
         result must contain(100)
       }
@@ -1212,9 +1210,7 @@ trait EvaluatorSpecs[M[+_]]
         dag.Reduce(Count, dag.IUI(false, clicksP, clicksP)(line))(line)
 
       testEval(input) { resultE =>
-        val result = resultE collect {
-          case (ids, SDecimal(d)) => d
-        }
+        val result = resultE collect { case (ids, SDecimal(d)) => d }
 
         result must contain(100)
       }
@@ -1364,17 +1360,13 @@ trait EvaluatorSpecs[M[+_]]
         val optObj = result find {
           case (ids, SObject(_)) if ids.isEmpty => true
           case _                                => false
-        } collect {
-          case (_, SObject(obj)) => obj
-        }
+        } collect { case (_, SObject(obj))      => obj }
 
         optObj must beSome
         val obj = optObj.get
 
         obj must haveKey("answer")
-        obj("answer") must beLike {
-          case SDecimal(d) => d mustEqual 42
-        }
+        obj("answer") must beLike { case SDecimal(d) => d mustEqual 42 }
       }
     }
 
@@ -1397,9 +1389,7 @@ trait EvaluatorSpecs[M[+_]]
         val optObj = result find {
           case (ids, SObject(_)) if ids.isEmpty => true
           case _                                => false
-        } collect {
-          case (_, SObject(obj)) => obj
-        }
+        } collect { case (_, SObject(obj))      => obj }
 
         optObj must beSome
         val obj = optObj.get
@@ -1451,17 +1441,13 @@ trait EvaluatorSpecs[M[+_]]
         val optArr = result find {
           case (ids, SArray(_)) if ids.isEmpty => true
           case _                               => false
-        } collect {
-          case (_, SArray(arr)) => arr
-        }
+        } collect { case (_, SArray(arr))      => arr }
 
         optArr must beSome
         val arr = optArr.get
 
         arr must haveSize(1)
-        arr.head must beLike {
-          case SDecimal(d) => d mustEqual 42
-        }
+        arr.head must beLike { case SDecimal(d) => d mustEqual 42 }
       }
     }
 
@@ -1476,9 +1462,7 @@ trait EvaluatorSpecs[M[+_]]
         val optArr = result find {
           case (ids, SArray(_)) if ids.isEmpty => true
           case _                               => false
-        } collect {
-          case (_, SArray(arr)) => arr
-        }
+        } collect { case (_, SArray(arr))      => arr }
 
         optArr must beSome
         val arr = optArr.get
@@ -1512,17 +1496,13 @@ trait EvaluatorSpecs[M[+_]]
         val optObj = result find {
           case (ids, SObject(_)) if ids.isEmpty => true
           case _                                => false
-        } collect {
-          case (_, SObject(obj)) => obj
-        }
+        } collect { case (_, SObject(obj))      => obj }
 
         optObj must beSome
         val obj = optObj.get
 
         obj must haveKey("answer")
-        obj("answer") must beLike {
-          case SDecimal(d) => d mustEqual 42
-        }
+        obj("answer") must beLike { case SDecimal(d) => d mustEqual 42 }
 
         obj must haveKey("question")
         obj("question") must beLike {
@@ -1546,9 +1526,7 @@ trait EvaluatorSpecs[M[+_]]
         val optArr = result find {
           case (ids, SArray(_)) if ids.isEmpty => true
           case _                               => false
-        } collect {
-          case (_, SArray(arr)) => arr
-        }
+        } collect { case (_, SArray(arr))      => arr }
 
         optArr must beSome
         val arr = optArr.get
@@ -1583,9 +1561,7 @@ trait EvaluatorSpecs[M[+_]]
         val optArr = result find {
           case (ids, SArray(_)) if ids.isEmpty => true
           case _                               => false
-        } collect {
-          case (_, SArray(arr)) => arr
-        }
+        } collect { case (_, SArray(arr))      => arr }
 
         optArr must beSome
         val arr = optArr.get
@@ -1626,9 +1602,7 @@ trait EvaluatorSpecs[M[+_]]
           val optArr = result find {
             case (ids, SArray(_)) if ids.isEmpty => true
             case _                               => false
-          } collect {
-            case (_, SArray(arr)) => arr
-          }
+          } collect { case (_, SArray(arr))      => arr }
 
           optArr must beSome
           val arr = optArr.get
@@ -1668,9 +1642,7 @@ trait EvaluatorSpecs[M[+_]]
           val optArr = result find {
             case (ids, SArray(_)) if ids.isEmpty => true
             case _                               => false
-          } collect {
-            case (_, SArray(arr)) => arr
-          }
+          } collect { case (_, SArray(arr))      => arr }
 
           optArr must beSome
           val arr = optArr.get
@@ -2080,9 +2052,7 @@ trait EvaluatorSpecs[M[+_]]
         }
         result2 must contain(42, 12, 77, 1, 13, 14, -1, 0)
 
-        val result3 = result collect {
-          case (ids, _) => ids
-        }
+        val result3 = result collect { case (ids, _) => ids }
         result3 must haveSize(10)
       }
     }
@@ -3943,18 +3913,14 @@ trait EvaluatorSpecs[M[+_]]
           for {
             x <- decimalValues
             y <- decimalValues
-          } yield {
-            (x, y)
-          }
+          } yield { (x, y) }
 
         val expectedResult = cross collect { case (x, y) if x == y => x + y }
 
         testEval(input) { result =>
           result must haveSize(expectedResult.size)
 
-          val decis = result.toList collect {
-            case (_, SDecimal(d)) => d
-          }
+          val decis = result.toList collect { case (_, SDecimal(d)) => d }
           decis.sorted mustEqual expectedResult.sorted
 
           result must haveAllElementsLike {
@@ -4030,9 +3996,7 @@ trait EvaluatorSpecs[M[+_]]
           for {
             x <- decimalValues
             y <- decimalValues
-          } yield {
-            (x, y)
-          }
+          } yield { (x, y) }
 
         val expectedResult = cross collect {
           case (x, y) if x > 500 && x == y => x
@@ -4041,9 +4005,7 @@ trait EvaluatorSpecs[M[+_]]
         testEval(input) { result =>
           result must haveSize(expectedResult.size)
 
-          val decis = result.toList collect {
-            case (_, SDecimal(d)) => d
-          }
+          val decis = result.toList collect { case (_, SDecimal(d)) => d }
           decis.sorted mustEqual expectedResult.sorted
 
           result must haveAllElementsLike {

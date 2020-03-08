@@ -53,9 +53,7 @@ trait AskParse extends AskCommand {
   private def askParse(
       src: SourceFile,
       keepLoaded: Boolean = true): Response[Tree] = {
-    ask {
-      compiler.askParsedEntered(src, keepLoaded, _)
-    }
+    ask { compiler.askParsedEntered(src, keepLoaded, _) }
   }
 }
 
@@ -68,9 +66,7 @@ trait AskReload extends AskCommand {
     val sortedSources = (sources map (_.file.name)).sorted
     reporter.println("reload: " + sortedSources.mkString(", "))
 
-    ask {
-      compiler.askReload(sources.toList, _)
-    }
+    ask { compiler.askReload(sources.toList, _) }
   }
 }
 
@@ -86,9 +82,7 @@ trait AskTypeCompletionAt extends AskCommand {
           pos.line,
           pos.column)))
 
-    ask {
-      compiler.askTypeCompletion(pos, _)
-    }
+    ask { compiler.askTypeCompletion(pos, _) }
   }
 }
 
@@ -104,9 +98,7 @@ trait AskScopeCompletionAt extends AskCommand {
           pos.line,
           pos.column)))
 
-    ask {
-      compiler.askScopeCompletion(pos, _)
-    }
+    ask { compiler.askScopeCompletion(pos, _) }
   }
 }
 
@@ -119,9 +111,7 @@ trait AskTypeAt extends AskCommand {
     reporter.println(
       "\naskType at " + pos.source.file.name + ((pos.line, pos.column)))
 
-    ask {
-      compiler.askTypeAt(pos, _)
-    }
+    ask { compiler.askTypeAt(pos, _) }
   }
 }
 
@@ -130,9 +120,7 @@ trait AskLoadedTyped extends AskCommand {
 
   protected def askLoadedTyped(source: SourceFile, keepLoaded: Boolean = false)(
       implicit reporter: Reporter): Response[Tree] = {
-    ask {
-      compiler.askLoadedTyped(source, keepLoaded, _)
-    }
+    ask { compiler.askLoadedTyped(source, keepLoaded, _) }
   }
 
 }

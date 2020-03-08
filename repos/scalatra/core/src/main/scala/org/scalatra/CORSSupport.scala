@@ -127,9 +127,7 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
           allowedOrigins mkString ", ",
           allowedMethods mkString ", ",
           allowedHeaders mkString ", ")
-    } else {
-      logger debug "Cors support is disabled"
-    }
+    } else { logger debug "Cors support is disabled" }
   }
 
   protected def handlePreflightRequest(): Unit = {
@@ -270,9 +268,7 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
     if (corsConfig.enabled) {
       withRequestResponse(req, res) {
         request.requestMethod match {
-          case Options if isPreflightRequest ⇒ {
-            handlePreflightRequest()
-          }
+          case Options if isPreflightRequest ⇒ { handlePreflightRequest() }
           case Get | Post | Head if isSimpleRequest ⇒ {
             augmentSimpleRequest()
             super.handle(req, res)
@@ -284,9 +280,7 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
           case _ ⇒ super.handle(req, res)
         }
       }
-    } else {
-      super.handle(req, res)
-    }
+    } else { super.handle(req, res) }
   }
 
 }

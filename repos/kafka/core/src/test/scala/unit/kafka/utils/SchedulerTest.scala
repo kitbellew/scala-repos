@@ -29,14 +29,10 @@ class SchedulerTest {
   val counter2 = new AtomicInteger(0)
 
   @Before
-  def setup() {
-    scheduler.startup()
-  }
+  def setup() { scheduler.startup() }
 
   @After
-  def teardown() {
-    scheduler.shutdown()
-  }
+  def teardown() { scheduler.shutdown() }
 
   @Test
   def testMockSchedulerNonPeriodicTask() {
@@ -104,9 +100,7 @@ class SchedulerTest {
   @Test
   def testNonPeriodicTask() {
     scheduler.schedule("test", counter1.getAndIncrement, delay = 0)
-    retry(30000) {
-      assertEquals(counter1.get, 1)
-    }
+    retry(30000) { assertEquals(counter1.get, 1) }
     Thread.sleep(5)
     assertEquals("Should only run once", 1, counter1.get)
   }
@@ -114,9 +108,7 @@ class SchedulerTest {
   @Test
   def testPeriodicTask() {
     scheduler.schedule("test", counter1.getAndIncrement, delay = 0, period = 5)
-    retry(30000) {
-      assertTrue("Should count to 20", counter1.get >= 20)
-    }
+    retry(30000) { assertTrue("Should count to 20", counter1.get >= 20) }
   }
 
   @Test

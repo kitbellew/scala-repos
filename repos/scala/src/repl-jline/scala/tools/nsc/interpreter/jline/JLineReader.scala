@@ -115,9 +115,7 @@ private class JLineConsoleReader
 
   def eraseLine() = resetPromptLine("", "", 0)
 
-  def redrawLineAndFlush(): Unit = {
-    flush(); drawLine(); flush()
-  }
+  def redrawLineAndFlush(): Unit = { flush(); drawLine(); flush() }
 
   // A hook for running code after the repl is done initializing.
   def initCompletion(completion: Completion): Unit = {
@@ -158,9 +156,8 @@ private class JLineConsoleReader
           consoleReader: ConsoleReader,
           list: JList[CharSequence],
           i: Int): Boolean = {
-        try {
-          handler.complete(consoleReader, list, i)
-        } finally if (getCursorBuffer.cursor != getCursorBuffer.length()) {
+        try { handler.complete(consoleReader, list, i) }
+        finally if (getCursorBuffer.cursor != getCursorBuffer.length()) {
           print(" ")
           getCursorBuffer.write(' ')
           backspace()

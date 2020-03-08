@@ -60,8 +60,6 @@ class TypedActorRemoteDeploySpec extends AkkaSpec(conf) {
 
   }
 
-  override def afterTermination() {
-    shutdown(remoteSystem)
-  }
+  override def afterTermination() { shutdown(remoteSystem) }
 
 }

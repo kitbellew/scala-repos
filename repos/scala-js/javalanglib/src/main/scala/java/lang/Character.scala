@@ -536,9 +536,7 @@ object Character {
       val high = 0xD800 | ((cpPrime >> 10) & 0x3FF)
       val low = 0xDC00 | (cpPrime & 0x3FF)
       Array(high.toChar, low.toChar)
-    } else {
-      Array(codePoint.toChar)
-    }
+    } else { Array(codePoint.toChar) }
   }
 
   @inline def toString(c: scala.Char): String =

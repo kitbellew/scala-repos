@@ -366,9 +366,7 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
       var s = 0
       while (i < N) {
         key.setInt(0, i % 1000)
-        if (key.equals(value)) {
-          s += 1
-        }
+        if (key.equals(value)) { s += 1 }
         i += 1
       }
     }
@@ -389,9 +387,7 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
       var s = 0
       i = 0
       while (i < N) {
-        if (map.get(i % 100000) != null) {
-          s += 1
-        }
+        if (map.get(i % 100000) != null) { s += 1 }
         i += 1
       }
     }
@@ -414,9 +410,7 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
       while (i < N) {
         val key =
           ((i & 100000).toLong << 32) + Integer.rotateRight(i & 100000, 15)
-        if (map.get(key) != null) {
-          s += 1
-        }
+        if (map.get(key) != null) { s += 1 }
         i += 1
       }
     }
@@ -441,9 +435,7 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
       i = 0
       while (i < N) {
         key.setInt(0, i % 100000)
-        if (map.get(key) != null) {
-          s += 1
-        }
+        if (map.get(key) != null) { s += 1 }
         i += 1
       }
     }

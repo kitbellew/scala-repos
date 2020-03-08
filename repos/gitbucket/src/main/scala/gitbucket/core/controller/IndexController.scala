@@ -128,13 +128,9 @@ trait IndexControllerBase extends ControllerBase {
       .map { redirectUrl =>
         if (redirectUrl.stripSuffix("/") == request.getContextPath) {
           redirect("/")
-        } else {
-          redirect(redirectUrl)
-        }
+        } else { redirect(redirectUrl) }
       }
-      .getOrElse {
-        redirect("/")
-      }
+      .getOrElse { redirect("/") }
   }
 
   /**
@@ -172,9 +168,7 @@ trait IndexControllerBase extends ControllerBase {
           try {
             val i = params.getOrElse("page", "1").toInt
             if (i <= 0) 1 else i
-          } catch {
-            case e: NumberFormatException => 1
-          }
+          } catch { case e: NumberFormatException => 1 }
 
         target.toLowerCase match {
           case "issue" =>

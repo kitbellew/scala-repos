@@ -17,7 +17,5 @@ class B extends A {
 }
 
 object Test {
-  def main(args: Array[String]) {
-    new B().run
-  }
+  def main(args: Array[String]) { new B().run }
 }

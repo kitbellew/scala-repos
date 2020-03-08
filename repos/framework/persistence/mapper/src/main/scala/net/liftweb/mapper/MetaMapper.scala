@@ -185,9 +185,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     */
   def validation: List[A => List[FieldError]] = Nil
 
-  private def clearPostCommit(in: A) {
-    in.addedPostCommit = false
-  }
+  private def clearPostCommit(in: A) { in.addedPostCommit = false }
 
   private def clearPCFunc: A => Unit = clearPostCommit _
 
@@ -377,9 +375,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
         val field: MappedForeignKey[FT, A, _] =
           getActualField(i, j.field).asInstanceOf[MappedForeignKey[FT, A, _]]
 
-        map.get(field.get) match {
-          case v => field._primeObj(Box(v))
-        }
+        map.get(field.get) match { case v => field._primeObj(Box(v)) }
         //field.primeObj(Box(map.get(field.get).map(_.asInstanceOf[QQ])))
       }
     }
@@ -671,9 +667,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
               conn)
         }
       }
-      case _ :: xs => {
-        setStatementFields(st, xs, curPos, conn)
-      }
+      case _ :: xs => { setStatementFields(st, xs, curPos, conn) }
     }
   }
 
@@ -988,11 +982,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   private def objectSetterFor(field: BaseMappedField) = {
     (st: PreparedStatement, index: Int, value: AnyRef, columnType: Int) =>
       {
-        if (field.dbIgnoreSQLType_?) {
-          st.setObject(index, value)
-        } else {
-          st.setObject(index, value, columnType)
-        }
+        if (field.dbIgnoreSQLType_?) { st.setObject(index, value) }
+        else { st.setObject(index, value, columnType) }
       }
   }
 
@@ -1024,9 +1015,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
               }
               !rs.next
             } else false
-          } finally {
-            rs.close
-          }
+          } finally { rs.close }
         }
 
         /**
@@ -1036,9 +1025,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
           try {
             val firstRow = rs.next
             (firstRow && !rs.next)
-          } finally {
-            rs.close
-          }
+          } finally { rs.close }
         }
 
         if (saved_?(toSave) && clean_?(toSave)) true
@@ -1185,9 +1172,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     val max = omax openOr java.lang.Long.MAX_VALUE
 
     while (pos < max && rs.next()) {
-      if (pos >= 0L) {
-        f(createInstance(dbId, rs, bm)).foreach(v => ret += v)
-      }
+      if (pos >= 0L) { f(createInstance(dbId, rs, bm)).foreach(v => ret += v) }
       pos = pos + 1L
     }
 
@@ -1289,9 +1274,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       inst: AnyRef /*, clz : Class*/ ): (A, AnyRef) => Unit = {
     val accessor =
       mappedColumns.get(name) orElse mappedColumns.get(name.toLowerCase)
-    if ((accessor eq null) || accessor == None) {
-      null
-    } else {
+    if ((accessor eq null) || accessor == None) { null }
+    else {
       (accessor.get
         .invoke(this)
         .asInstanceOf[MappedField[AnyRef, A]])
@@ -2223,7 +2207,8 @@ object NotNullRef {
 }
 
 trait LongKeyedMetaMapper[A <: LongKeyedMapper[A]]
-    extends KeyedMetaMapper[Long, A] { self: A => }
+    extends KeyedMetaMapper[Long, A] { self: A =>
+}
 
 trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
     extends MetaMapper[A]
@@ -2412,9 +2397,7 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
   }
 
   override def afterSchemifier {
-    if (crudSnippets_?) {
-      LiftRules.snippets.append(crudSnippets)
-    }
+    if (crudSnippets_?) { LiftRules.snippets.append(crudSnippets) }
   }
 
   /**
@@ -2452,9 +2435,7 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
   def formSnippet(html: NodeSeq, obj: A, cleanup: (A => Unit)): NodeSeq = {
     val name = internal_dbTableName
 
-    def callback() {
-      cleanup(obj)
-    }
+    def callback() { cleanup(obj) }
 
     val submitTransform: (NodeSeq) => NodeSeq =
       "type=submit" #> SHtml.onSubmitUnit(callback _)
@@ -2528,9 +2509,7 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
     *
     * @return new mapped object
     */
-  def addSnippetSetup: A = {
-    this.create
-  }
+  def addSnippetSetup: A = { this.create }
 
   /**
     * Default setup behavior for the edit snippet. BROKEN! MUST OVERRIDE IF
@@ -2608,9 +2587,7 @@ class KeyObfuscator {
   }
 
   def apply[KeyType, MetaType <: KeyedMapper[KeyType, MetaType]](
-      what: KeyedMapper[KeyType, MetaType]): String = {
-    obscure(what)
-  }
+      what: KeyedMapper[KeyType, MetaType]): String = { obscure(what) }
 
   def recover[KeyType, MetaType <: KeyedMapper[KeyType, MetaType]](
       theType: KeyedMetaMapper[KeyType, MetaType],

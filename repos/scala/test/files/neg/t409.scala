@@ -12,7 +12,5 @@ object Main {
     case Case3(x) => x
   }
 
-  def main(args: Array[String]): Unit = {
-    Console.println(f(new Toto));
-  }
+  def main(args: Array[String]): Unit = { Console.println(f(new Toto)); }
 }

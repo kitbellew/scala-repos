@@ -96,7 +96,9 @@ trait Cluster[T] { self =>
 }
 
 object Cluster {
-  sealed abstract trait Change[T] { def value: T }
+  sealed abstract trait Change[T] {
+    def value: T
+  }
   case class Add[T](value: T) extends Change[T]
   case class Rem[T](value: T) extends Change[T]
 }

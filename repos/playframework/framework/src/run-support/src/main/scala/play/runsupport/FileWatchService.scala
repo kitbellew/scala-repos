@@ -193,9 +193,8 @@ private object JNotifyFileWatchService {
         .asInstanceOf[Int]
     }
     def removeWatch(id: Int): Unit = {
-      try {
-        removeWatchMethod.invoke(null, id.asInstanceOf[AnyRef])
-      } catch {
+      try { removeWatchMethod.invoke(null, id.asInstanceOf[AnyRef]) }
+      catch {
         case _: Throwable =>
         // Ignore, if we fail to remove a watch it's not the end of the world.
         // http://sourceforge.net/p/jnotify/bugs/12/
@@ -319,9 +318,8 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
 
   def watch(filesToWatch: Seq[File], onChange: () => Unit) = {
     val dirsToWatch = filesToWatch.filter { file =>
-      if (file.isDirectory) {
-        true
-      } else if (file.isFile) {
+      if (file.isDirectory) { true }
+      else if (file.isFile) {
         // JDK7 WatchService can't watch files
         logger.warn(
           "JDK7 WatchService only supports watching directories, but an attempt has been made to watch the file: " + file.getCanonicalPath)
@@ -390,9 +388,7 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
     thread.start()
 
     new FileWatcher {
-      def stop() = {
-        watcher.close()
-      }
+      def stop() = { watcher.close() }
     }
 
   }
@@ -467,9 +463,8 @@ private[runsupport] object GlobalStaticVar {
         "get",
         Array.empty,
         Array.empty)
-      if (ct.runtimeClass.isInstance(value)) {
-        Some(value.asInstanceOf[T])
-      } else {
+      if (ct.runtimeClass.isInstance(value)) { Some(value.asInstanceOf[T]) }
+      else {
         throw new ClassCastException(
           s"Global static var $name is not an instance of ${ct.runtimeClass}, but is actually a ${Option(
             value).fold("null")(_.getClass.getName)}")

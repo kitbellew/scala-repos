@@ -34,11 +34,8 @@ class AssertThrowsTest {
 
   @Test
   def errorIfNoThrow: Unit = {
-    try {
-      assertThrows[Foo] { () }
-    } catch {
-      case e: AssertionError => return
-    }
+    try { assertThrows[Foo] { () } }
+    catch { case e: AssertionError => return }
     fail(
       "assertThrows should error if the tested expression does not throw anything")
   }

@@ -28,8 +28,6 @@ class RetryStream(underlying: Stream[Duration]) {
     }
   }
 
-  def reset() = synchronized {
-    currentStream = underlying
-  }
+  def reset() = synchronized { currentStream = underlying }
 
 }

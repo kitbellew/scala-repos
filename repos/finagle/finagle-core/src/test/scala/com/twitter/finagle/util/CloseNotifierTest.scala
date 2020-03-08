@@ -14,11 +14,7 @@ class CloseNotifierTest extends FunSuite {
     val notifier = CloseNotifier.makeLifo(closing)
     var invocations: List[Int] = Nil
 
-    (1 to 10).foreach { i =>
-      notifier.onClose {
-        invocations ::= i
-      }
-    }
+    (1 to 10).foreach { i => notifier.onClose { invocations ::= i } }
 
     closing.setDone()
     assert(invocations == (1 to 10).toList)
@@ -31,9 +27,7 @@ class CloseNotifierTest extends FunSuite {
 
     closing.setDone()
     var invoked = false
-    notifier.onClose {
-      invoked = true
-    }
+    notifier.onClose { invoked = true }
 
     assert(invoked)
   }

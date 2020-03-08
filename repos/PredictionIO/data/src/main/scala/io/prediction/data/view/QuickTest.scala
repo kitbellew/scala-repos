@@ -47,9 +47,7 @@ class TestSource(val appId: Int) {
   @transient lazy val logger = Logger[this.type]
   @transient lazy val batchView = new LBatchView(appId, None, None)
 
-  def run(): Unit = {
-    println(batchView.events)
-  }
+  def run(): Unit = { println(batchView.events) }
 }
 
 object QuickTest {

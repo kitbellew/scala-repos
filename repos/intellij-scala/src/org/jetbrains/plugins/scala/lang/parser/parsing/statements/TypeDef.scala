@@ -31,9 +31,8 @@ object TypeDef {
         faultMarker.rollbackTo
         return false
     }
-    val isTypeParamClause = if (TypeParamClause parse builder) {
-      true
-    } else false
+    val isTypeParamClause = if (TypeParamClause parse builder) { true }
+    else false
     builder.getTokenType match {
       case ScalaTokenTypes.tASSIGN =>
         builder.advanceLexer //Ate =

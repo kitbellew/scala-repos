@@ -1,1 +1,3 @@
-object S { J.j }
+object S {
+  J.j
+}

@@ -26,9 +26,7 @@ object JDBCUtil {
       execute(sql, params: _*) { stmt =>
         using(stmt.executeQuery()) { rs =>
           val list = new ListBuffer[T]
-          while (rs.next) {
-            list += f(rs)
-          }
+          while (rs.next) { list += f(rs) }
           list.toSeq
         }
       }

@@ -106,11 +106,8 @@ private[clustering] trait LDAParams
 
   /** Get docConcentration used by spark.mllib LDA */
   protected def getOldDocConcentration: Vector = {
-    if (isSet(docConcentration)) {
-      Vectors.dense(getDocConcentration)
-    } else {
-      Vectors.dense(-1.0)
-    }
+    if (isSet(docConcentration)) { Vectors.dense(getDocConcentration) }
+    else { Vectors.dense(-1.0) }
   }
 
   /**
@@ -150,11 +147,8 @@ private[clustering] trait LDAParams
 
   /** Get topicConcentration used by spark.mllib LDA */
   protected def getOldTopicConcentration: Double = {
-    if (isSet(topicConcentration)) {
-      getTopicConcentration
-    } else {
-      -1.0
-    }
+    if (isSet(topicConcentration)) { getTopicConcentration }
+    else { -1.0 }
   }
 
   /** Supported values for Param [[optimizer]]. */

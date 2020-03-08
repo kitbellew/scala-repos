@@ -47,9 +47,7 @@ object ClusterSingletonManagerLeaveSpec extends MultiNodeConfig {
     * The singleton actor
     */
   class Echo(testActor: ActorRef) extends Actor {
-    override def postStop(): Unit = {
-      testActor ! "stopped"
-    }
+    override def postStop(): Unit = { testActor ! "stopped" }
 
     def receive = {
       case _ ⇒
@@ -119,13 +117,9 @@ class ClusterSingletonManagerLeaveSpec
       }
       enterBarrier("all-up")
 
-      runOn(second) {
-        cluster.leave(node(first).address)
-      }
+      runOn(second) { cluster.leave(node(first).address) }
 
-      runOn(first) {
-        expectMsg(10.seconds, "stopped")
-      }
+      runOn(first) { expectMsg(10.seconds, "stopped") }
       enterBarrier("first-stopped")
 
       runOn(second, third) {

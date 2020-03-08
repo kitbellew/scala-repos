@@ -1062,9 +1062,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
             val youngest = localGossip.youngestMember
             upNumber = 1 + (if (youngest.upNumber == Int.MaxValue) 0
                             else youngest.upNumber)
-          } else {
-            upNumber += 1
-          }
+          } else { upNumber += 1 }
           m.copyUp(upNumber)
 
         case m if m.status == Leaving ⇒
@@ -1476,9 +1474,7 @@ private[cluster] class OnMemberStatusChangedListener(
           "[{}] callback failed with [{}]",
           s"On${to.getSimpleName}",
           e.getMessage)
-    } finally {
-      context stop self
-    }
+    } finally { context stop self }
   }
 
   private def isTriggered(m: Member): Boolean =

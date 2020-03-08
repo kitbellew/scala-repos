@@ -55,9 +55,7 @@ import xml.Text
   */
 object Msgs extends DispatchSnippet {
   // Dispatch to the render method no matter how we're called
-  def dispatch: DispatchIt = {
-    case _ => render
-  }
+  def dispatch: DispatchIt = { case _ => render }
 
   /**
     * This method performs extraction of custom formatting and then
@@ -112,11 +110,8 @@ object Msgs extends DispatchSnippet {
   def renderNotices(): NodeSeq = {
     // Determine which formatting function to use based on tag usage
     val f =
-      if (ShowAll.is) {
-        S.messages _
-      } else {
-        S.noIdMessages _
-      }
+      if (ShowAll.is) { S.messages _ }
+      else { S.noIdMessages _ }
 
     // Compute the formatted set of messages for a given input
     def computeMessageDiv(

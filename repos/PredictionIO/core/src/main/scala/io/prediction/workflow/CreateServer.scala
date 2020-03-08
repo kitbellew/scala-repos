@@ -191,12 +191,8 @@ object CreateServer extends Logging {
           implicit val timeout = Timeout(5.seconds)
           master ? StartServer()
           actorSystem.awaitTermination
-        } getOrElse {
-          error(s"Invalid engine ID or version. Aborting server.")
-        }
-      } getOrElse {
-        error(s"Invalid engine instance ID. Aborting server.")
-      }
+        } getOrElse { error(s"Invalid engine ID or version. Aborting server.") }
+      } getOrElse { error(s"Invalid engine instance ID. Aborting server.") }
     }
   }
 
@@ -220,9 +216,7 @@ object CreateServer extends Logging {
 
     val batch = if (engineInstance.batch.nonEmpty) {
       s"${engineInstance.engineFactory} (${engineInstance.batch})"
-    } else {
-      engineInstance.engineFactory
-    }
+    } else { engineInstance.engineFactory }
 
     val sparkContext = WorkflowContext(
       batch = batch,
@@ -337,18 +331,14 @@ class MasterActor(
           interface = sc.ip,
           port = sc.port,
           settings = Some(settings.copy(sslEncryption = true)))
-      } getOrElse {
-        log.error("Cannot bind a non-existing server backend.")
-      }
+      } getOrElse { log.error("Cannot bind a non-existing server backend.") }
     case x: StopServer =>
       log.info(s"Stop server command received.")
       sprayHttpListener.map { l =>
         log.info("Server is shutting down.")
         l ! Http.Unbind(5.seconds)
         system.shutdown
-      } getOrElse {
-        log.warning("No active server is running.")
-      }
+      } getOrElse { log.warning("No active server is running.") }
     case x: ReloadServer =>
       log.info("Reload server command received.")
       val latestEngineInstance =
@@ -385,9 +375,7 @@ class MasterActor(
       if (retry > 0) {
         retry -= 1
         log.error(s"Bind failed. Retrying... ($retry more trial(s))")
-        context.system.scheduler.scheduleOnce(1.seconds) {
-          self ! BindServer()
-        }
+        context.system.scheduler.scheduleOnce(1.seconds) { self ! BindServer() }
       } else {
         log.error("Bind failed. Shutting down.")
         system.shutdown
@@ -459,9 +447,7 @@ class ServerActor[Q, P](
     if (args.accessKey.isEmpty) {
       log.error("Feedback loop cannot be enabled because accessKey is empty.")
       false
-    } else {
-      true
-    }
+    } else { true }
   } else false
 
   def remoteLog(logUrl: String, logPrefix: String, message: String): Unit = {
@@ -566,9 +552,7 @@ class ServerActor[Q, P](
                   implicit val formats =
                     algorithms.headOption map { alg =>
                       alg.querySerializer
-                    } getOrElse {
-                      Utils.json4sDefaultFormats
-                    }
+                    } getOrElse { Utils.json4sDefaultFormats }
                   // val genPrId = Random.alphanumeric.take(64).mkString
                   def genPrId: String = Random.alphanumeric.take(64).mkString
                   val newPrId = prediction match {
@@ -626,9 +610,7 @@ class ServerActor[Q, P](
                   // - if it is not WithPrId, no prId injection
                   if (prediction.isInstanceOf[WithPrId]) {
                     predictionJValue merge parse(s"""{"prId" : "$newPrId"}""")
-                  } else {
-                    predictionJValue
-                  }
+                  } else { predictionJValue }
                 } else predictionJValue
 
                 val pluginResult =
@@ -696,9 +678,7 @@ class ServerActor[Q, P](
           }
         }
       } ~
-      pathPrefix("assets") {
-        getFromResourceDirectory("assets")
-      } ~
+      pathPrefix("assets") { getFromResourceDirectory("assets") } ~
       path("plugins.json") {
         import EngineServerJson4sSupport._
         get {
@@ -738,9 +718,7 @@ class ServerActor[Q, P](
                 case EngineServerPlugin.outputSniffer =>
                   pluginsActorRef ? PluginsActor.HandleREST(
                     pluginName = pluginName,
-                    pluginArgs = pluginArgs) map {
-                    _.asInstanceOf[String]
-                  }
+                    pluginArgs = pluginArgs) map { _.asInstanceOf[String] }
               }
             }
           }

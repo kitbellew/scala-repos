@@ -52,9 +52,7 @@ abstract class SunnyWeatherSpec
 
       // start some
       awaitClusterUp(first, second, third)
-      runOn(first, second, third) {
-        log.debug("3 joined")
-      }
+      runOn(first, second, third) { log.debug("3 joined") }
 
       // add a few more
       awaitClusterUp(roles: _*)

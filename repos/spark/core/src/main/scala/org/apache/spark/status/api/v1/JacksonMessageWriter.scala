@@ -56,9 +56,7 @@ private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object] {
       aClass: Class[_],
       `type`: Type,
       annotations: Array[Annotation],
-      mediaType: MediaType): Boolean = {
-    true
-  }
+      mediaType: MediaType): Boolean = { true }
 
   override def writeTo(
       t: Object,
@@ -80,9 +78,7 @@ private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object] {
       aClass: Class[_],
       `type`: Type,
       annotations: Array[Annotation],
-      mediaType: MediaType): Long = {
-    -1L
-  }
+      mediaType: MediaType): Long = { -1L }
 }
 
 private[spark] object JacksonMessageWriter {

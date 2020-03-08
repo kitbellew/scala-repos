@@ -54,9 +54,7 @@ class ServiceTest extends FunSuite with MockitoSugar {
     val service2 = Service.mk[String, String] { _ => throw fatalExc }
     val rescuedService2 = Service.rescue(service2)
 
-    intercept[InterruptedException] {
-      rescuedService2("fatal")
-    }
+    intercept[InterruptedException] { rescuedService2("fatal") }
   }
 
   test(

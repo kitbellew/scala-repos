@@ -54,9 +54,8 @@ object JoinsUnions extends App {
   println(monadicInnerJoin.result.statements.head)
 
   //#explicit
-  val crossJoin = for {
-    (c, s) <- coffees join suppliers
-  } yield (c.name, s.name)
+  val crossJoin =
+    for { (c, s) <- coffees join suppliers } yield (c.name, s.name)
   // compiles to SQL (simplified):
   //   select x2."COF_NAME", x3."SUP_NAME" from "COFFEES" x2
   //     inner join "SUPPLIERS" x3
@@ -100,9 +99,8 @@ object JoinsUnions extends App {
   println(fullOuterJoin.result.statements.head)
 
   //#zip
-  val zipJoinQuery = for {
-    (c, s) <- coffees zip suppliers
-  } yield (c.name, s.name)
+  val zipJoinQuery =
+    for { (c, s) <- coffees zip suppliers } yield (c.name, s.name)
 
   val zipWithJoin = for {
     res <- coffees.zipWith(
@@ -114,9 +112,8 @@ object JoinsUnions extends App {
   //println(zipWithJoin.result.statements.head)
 
   //#zipWithIndex
-  val zipWithIndexJoin = for {
-    (c, idx) <- coffees.zipWithIndex
-  } yield (c.name, idx)
+  val zipWithIndexJoin =
+    for { (c, idx) <- coffees.zipWithIndex } yield (c.name, idx)
   //#zipWithIndex
   //println(zipWithIndexJoin.result.statements.head)
 

@@ -18,9 +18,7 @@ object TempDirectory {
       Runtime
         .getRuntime()
         .addShutdownHook(new Thread {
-          override def run() {
-            Files.delete(path.toFile)
-          }
+          override def run() { Files.delete(path.toFile) }
         })
 
     path.toFile

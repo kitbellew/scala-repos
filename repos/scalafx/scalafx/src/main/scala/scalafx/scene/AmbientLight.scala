@@ -44,7 +44,5 @@ class AmbientLight(
     with SFXDelegate[jfxs.AmbientLight] {
 
   /** Creates a new instance of `AmbientLight` class using the specified color. */
-  def this(color: Color) {
-    this(new jfxs.AmbientLight(color))
-  }
+  def this(color: Color) { this(new jfxs.AmbientLight(color)) }
 }

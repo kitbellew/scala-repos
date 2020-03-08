@@ -72,12 +72,8 @@ object WebSocketFlowHandler {
                   push(remoteOut, close)
                   // If appOut is closed, then we may need to do our own pull so that we can get the ack
                   if (isClosed(appOut) && !isClosed(remoteIn) && !hasBeenPulled(
-                        remoteIn)) {
-                    pull(remoteIn)
-                  }
-                } else {
-                  state = ServerInitiatingClose(close)
-                }
+                        remoteIn)) { pull(remoteIn) }
+                } else { state = ServerInitiatingClose(close) }
               } else {
                 // Initiating close when we've already sent a close message means we must have encountered an error in
                 // processing the handshake, just complete.
@@ -146,9 +142,7 @@ object WebSocketFlowHandler {
                 override def onPull() = {
                   // We always pull from the remote in when the app pulls, even if closing, since if we get a message from
                   // the client and we're still open, we still want to send it.
-                  if (!hasBeenPulled(remoteIn)) {
-                    pull(remoteIn)
-                  }
+                  if (!hasBeenPulled(remoteIn)) { pull(remoteIn) }
                 }
 
                 override def onDownstreamFinish() = {
@@ -177,9 +171,8 @@ object WebSocketFlowHandler {
                           case close: CloseMessage =>
                             completeStage()
                           case other =>
-                            if (!isClosed(appOut)) {
-                              push(appOut, other)
-                            } else {
+                            if (!isClosed(appOut)) { push(appOut, other) }
+                            else {
                               // appIn is closed, we're ignoring the message and it's not going to pull, so we need to pull
                               pull(remoteIn)
                             }
@@ -221,11 +214,7 @@ object WebSocketFlowHandler {
 
                         }
                     }
-                  } else {
-                    if (!isClosed(remoteIn)) {
-                      pull(remoteIn)
-                    }
-                  }
+                  } else { if (!isClosed(remoteIn)) { pull(remoteIn) } }
                 }
               }
             )
@@ -240,11 +229,8 @@ object WebSocketFlowHandler {
                         serverInitiatedClose(close)
                         cancel(appIn)
                       case other =>
-                        if (isAvailable(remoteOut)) {
-                          push(remoteOut, other)
-                        } else {
-                          messageToSend = other
-                        }
+                        if (isAvailable(remoteOut)) { push(remoteOut, other) }
+                        else { messageToSend = other }
                     }
                   } else {
                     // We're closed, ignore
@@ -286,9 +272,7 @@ object WebSocketFlowHandler {
                       if (messageToSend != null) {
                         push(remoteOut, messageToSend)
                         messageToSend = null
-                      } else {
-                        serverInitiatedClose(close)
-                      }
+                      } else { serverInitiatedClose(close) }
                     case ServerInitiatedClose =>
                     // Ignore, we've sent a close message, we're not allowed to send anything else
                     case Open =>
@@ -302,9 +286,7 @@ object WebSocketFlowHandler {
                         pongToSend = null
                       } else {
                         // Nothing to send, pull from app if not already pulled
-                        if (!hasBeenPulled(appIn)) {
-                          pull(appIn)
-                        }
+                        if (!hasBeenPulled(appIn)) { pull(appIn) }
                       }
                   }
                 }
@@ -346,9 +328,7 @@ object WebSocketFlowHandler {
       CloseMessage(Some(code), message)
     } else if (data.length == 1) {
       invalid("close code must be length 2 but was 1")
-    } else {
-      CloseMessage()
-    }
+    } else { CloseMessage() }
   }
 
 }

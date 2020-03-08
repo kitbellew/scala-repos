@@ -31,9 +31,7 @@ final class NullResult[A, B] private (_apply: A => Option[B]) {
     } yield (b, c)
 
   def ***[C, D](x: C =>? D): (A, C) =>? (B, D) =
-    NullResult {
-      case (a, c) => apply(a) flatMap (b => x(c) map (d => (b, d)))
-    }
+    NullResult { case (a, c) => apply(a) flatMap (b => x(c) map (d => (b, d))) }
 
   def +++[C, D](x: C =>? D): (A \/ C) =>? (B \/ D) =
     NullResult {
@@ -42,14 +40,10 @@ final class NullResult[A, B] private (_apply: A => Option[B]) {
     }
 
   def first[C]: (A, C) =>? (B, C) =
-    NullResult {
-      case (a, c) => apply(a) map (b => (b, c))
-    }
+    NullResult { case (a, c) => apply(a) map (b => (b, c)) }
 
   def second[C]: (C, A) =>? (C, B) =
-    NullResult {
-      case (c, a) => apply(a) map (b => (c, b))
-    }
+    NullResult { case (c, a) => apply(a) map (b => (c, b)) }
 
   def left[C]: (A \/ C) =>? (B \/ C) =
     NullResult {

@@ -76,18 +76,14 @@ case class ScalaUDF(
   private[this] val f = children.size match {
     case 0 =>
       val func = function.asInstanceOf[() => Any]
-      (input: InternalRow) => {
-        func()
-      }
+      (input: InternalRow) => { func() }
 
     case 1 =>
       val func = function.asInstanceOf[(Any) => Any]
       val child0 = children(0)
       lazy val converter0 =
         CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      (input: InternalRow) => {
-        func(converter0(child0.eval(input)))
-      }
+      (input: InternalRow) => { func(converter0(child0.eval(input))) }
 
     case 2 =>
       val func = function.asInstanceOf[(Any, Any) => Any]

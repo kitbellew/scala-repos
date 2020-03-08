@@ -22,11 +22,8 @@ object Stat {
     */
   def time[A](stat: Stat, unit: TimeUnit)(f: => A): A = {
     val elapsed = Stopwatch.start()
-    try {
-      f
-    } finally {
-      stat.add(elapsed().inUnit(unit))
-    }
+    try { f }
+    finally { stat.add(elapsed().inUnit(unit)) }
   }
 
   /**
@@ -39,9 +36,8 @@ object Stat {
     */
   def timeFuture[A](stat: Stat, unit: TimeUnit)(f: => Future[A]): Future[A] = {
     val elapsed = Stopwatch.start()
-    try {
-      f.ensure { stat.add(elapsed().inUnit(unit)) }
-    } catch {
+    try { f.ensure { stat.add(elapsed().inUnit(unit)) } }
+    catch {
       case NonFatal(e) =>
         stat.add(elapsed().inUnit(unit))
         Future.exception(e)

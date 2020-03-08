@@ -37,9 +37,7 @@ class Breakpoints {
 
 object Breakpoints {
 
-  def main(args: Array[String]) {
-    new Breakpoints().mainTest
-  }
+  def main(args: Array[String]) { new Breakpoints().mainTest }
 
 }
 
@@ -47,8 +45,6 @@ object Helper {
 
   def noop(a: Any) {}
 
-  def ret[B](a: B): B = {
-    a
-  }
+  def ret[B](a: B): B = { a }
 
 }

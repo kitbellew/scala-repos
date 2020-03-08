@@ -165,9 +165,7 @@ class BisectingKMeans private (
     logInfo(s"Initial cost: ${rootSummary.cost}.")
     val minSize = if (minDivisibleClusterSize >= 1.0) {
       math.ceil(minDivisibleClusterSize).toLong
-    } else {
-      math.ceil(minDivisibleClusterSize * n).toLong
-    }
+    } else { math.ceil(minDivisibleClusterSize * n).toLong }
     logInfo(s"The minimum number of points of a divisible cluster is $minSize.")
     var inactiveClusters = mutable.Seq.empty[(Long, ClusterSummary)]
     val random = new Random(seed)
@@ -270,9 +268,7 @@ private object BisectingKMeans extends Serializable {
   }
 
   /** Returns the parent index of the given node index, or 0 if the input is 1 (root). */
-  private def parentIndex(index: Long): Long = {
-    index / 2
-  }
+  private def parentIndex(index: Long): Long = { index / 2 }
 
   /**
     * Summarizes data by each cluster as Map.
@@ -322,9 +318,7 @@ private object BisectingKMeans extends Serializable {
     /** Returns the summary. */
     def summary: ClusterSummary = {
       val mean = sum.copy
-      if (n > 0L) {
-        BLAS.scal(1.0 / n, mean)
-      }
+      if (n > 0L) { BLAS.scal(1.0 / n, mean) }
       val center = new VectorWithNorm(mean)
       val cost = math.max(sumSq - n * center.norm * center.norm, 0.0)
       new ClusterSummary(n, center, cost)
@@ -372,9 +366,7 @@ private object BisectingKMeans extends Serializable {
             KMeans.fastSquaredDistance(newClusterCenters(child), v)
           }
           (selected, v)
-        } else {
-          (index, v)
-        }
+        } else { (index, v) }
     }
   }
 
@@ -482,9 +474,8 @@ private[clustering] class ClusteringTreeNode private[clustering] (
   /** Returns the full prediction path from root to leaf. */
   private def predictPath(
       pointWithNorm: VectorWithNorm): List[ClusteringTreeNode] = {
-    if (isLeaf) {
-      this :: Nil
-    } else {
+    if (isLeaf) { this :: Nil }
+    else {
       val selected = children.minBy { child =>
         KMeans.fastSquaredDistance(child.centerWithNorm, pointWithNorm)
       }
@@ -519,9 +510,8 @@ private[clustering] class ClusteringTreeNode private[clustering] (
   private def predict(
       pointWithNorm: VectorWithNorm,
       cost: Double): (Int, Double) = {
-    if (isLeaf) {
-      (index, cost)
-    } else {
+    if (isLeaf) { (index, cost) }
+    else {
       val (selectedChild, minCost) = children
         .map { child =>
           (
@@ -537,10 +527,7 @@ private[clustering] class ClusteringTreeNode private[clustering] (
     * Returns all leaf nodes from this node.
     */
   def leafNodes: Array[ClusteringTreeNode] = {
-    if (isLeaf) {
-      Array(this)
-    } else {
-      children.flatMap(_.leafNodes)
-    }
+    if (isLeaf) { Array(this) }
+    else { children.flatMap(_.leafNodes) }
   }
 }

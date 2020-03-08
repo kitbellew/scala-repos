@@ -207,9 +207,7 @@ private[simul] final class SimulApi(
       finding: Simul.ID => Fu[Option[Simul]],
       simulId: Simul.ID)(updating: Simul => Simul) {
     Sequence(simulId) {
-      finding(simulId) flatMap {
-        _ ?? { simul => update(updating(simul)) }
-      }
+      finding(simulId) flatMap { _ ?? { simul => update(updating(simul)) } }
     }
   }
 

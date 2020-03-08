@@ -67,9 +67,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         exp <- jsInterop.registeredExportsOf(ctor)
       } yield (exp, ctor)
 
-      if (ctorExports.isEmpty) {
-        Nil
-      } else {
+      if (ctorExports.isEmpty) { Nil }
+      else {
         val exports = for {
           (jsName, specs) <- ctorExports.groupBy(
             _._1.jsName
@@ -78,9 +77,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           val (namedExports, normalExports) = specs.partition(_._1.isNamed)
 
           val normalCtors = normalExports.map(s => ExportedSymbol(s._2))
-          val namedCtors = for {
-            (exp, ctor) <- namedExports
-          } yield {
+          val namedCtors = for { (exp, ctor) <- namedExports } yield {
             implicit val pos = exp.pos
             ExportedBody(
               List(JSAnyTpe),
@@ -104,9 +101,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
     }
 
     def genJSClassExports(classSym: Symbol): List[js.JSClassExportDef] = {
-      for {
-        exp <- jsInterop.registeredExportsOf(classSym)
-      } yield {
+      for { exp <- jsInterop.registeredExportsOf(classSym) } yield {
         implicit val pos = exp.pos
         assert(!exp.isNamed, "Class cannot be exported named")
         js.JSClassExportDef(exp.jsName)
@@ -114,9 +109,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
     }
 
     def genModuleAccessorExports(classSym: Symbol): List[js.ModuleExportDef] = {
-      for {
-        exp <- jsInterop.registeredExportsOf(classSym)
-      } yield {
+      for { exp <- jsInterop.registeredExportsOf(classSym) } yield {
         implicit val pos = exp.pos
         assert(!exp.isNamed, "Module cannot be exported named")
         js.ModuleExportDef(exp.jsName)
@@ -552,9 +545,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         lazy val isRepeatedUncurry = paramsUncurry.map(isRepeated)
 
         lazy val paramsPosterasure =
-          enteringPhase(currentRun.posterasurePhase) {
-            alt.paramss.flatten
-          }
+          enteringPhase(currentRun.posterasurePhase) { alt.paramss.flatten }
         def paramTypePosterasure = enteringPhase(currentRun.posterasurePhase) {
           paramsPosterasure.apply(paramIndex).tpe
         }
@@ -565,9 +556,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
                 paramIndex)) {
             assert(isRepeatedUncurry.last)
             repeatedToSingle(paramsTypesUncurry.last)
-          } else {
-            paramTypePosterasure
-          }
+          } else { paramTypePosterasure }
         } else {
           // Compute the number of captured parameters that are added to the front
           val paramsNamesUncurry = paramsUncurry.map(_.name)
@@ -585,9 +574,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
                 isRepeatedUncurry(paramIndexNoCaptures)) {
               assert(isRepeatedUncurry.last)
               repeatedToSingle(paramsTypesUncurry.last)
-            } else {
-              paramsTypesUncurry(paramIndexNoCaptures)
-            }
+            } else { paramsTypesUncurry(paramIndexNoCaptures) }
           }
         }
       }
@@ -605,9 +592,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       if (isScalaJSDefinedJSClass(currentClassSym) &&
           sym.owner != currentClassSym.get) {
         genApplyForSymJSSuperCall(minArgc, hasRestParam, sym)
-      } else {
-        genApplyForSymNonJSSuperCall(minArgc, sym)
-      }
+      } else { genApplyForSymNonJSSuperCall(minArgc, sym) }
     }
 
     private def genApplyForSymJSSuperCall(
@@ -635,9 +620,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         js.Assign(
           js.JSSuperBracketSelect(cls, receiver, nameString),
           allArgs.head)
-      } else {
-        js.JSSuperBracketCall(cls, receiver, nameString, allArgs)
-      }
+      } else { js.JSSuperBracketCall(cls, receiver, nameString, allArgs) }
     }
 
     private def genApplyForSymNonJSSuperCall(
@@ -695,9 +678,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
        */
       val params = paramsPosterasure ++ paramsNow.drop(paramsPosterasure.size)
 
-      for {
-        (jsArg, (param, i)) <- jsArgs zip params.zipWithIndex
-      } yield {
+      for { (jsArg, (param, i)) <- jsArgs zip params.zipWithIndex } yield {
         // Unboxed argument (if it is defined)
         val unboxedArg =
           fromAny(jsArg, enteringPhase(currentRun.posterasurePhase)(param.tpe))
@@ -716,9 +697,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
                     sym.owner.companionModule
                   }
                   companionModule.moduleClass
-                } else {
-                  sym.owner
-                }
+                } else { sym.owner }
               }
               val defaultGetter =
                 trgSym.tpe.member(nme.defaultGetterName(sym.name, i + 1))
@@ -948,9 +927,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
   }
 
   private def genThrowTypeError(msg: String = "No matching overload")(
-      implicit pos: Position): js.Tree = {
-    js.Throw(js.StringLiteral(msg))
-  }
+      implicit pos: Position): js.Tree = { js.Throw(js.StringLiteral(msg)) }
 
   private def genFormalArgs(minArgc: Int, needsRestParam: Boolean)(
       implicit pos: Position): List[js.ParamDef] = {

@@ -24,9 +24,7 @@ class StringReaderTest {
   @Test def should_provide_read()(): Unit = {
     val r = newReader
 
-    for (c <- str) {
-      assertEquals(c, r.read().toChar)
-    }
+    for (c <- str) { assertEquals(c, r.read().toChar) }
 
     assertEquals(-1, r.read())
   }
@@ -77,16 +75,12 @@ class StringReaderTest {
     val r = newReader
     r.mark(str.length)
 
-    for (c <- str) {
-      assertEquals(c, r.read().toChar)
-    }
+    for (c <- str) { assertEquals(c, r.read().toChar) }
     assertEquals(-1, r.read())
 
     r.reset()
 
-    for (c <- str) {
-      assertEquals(c, r.read().toChar)
-    }
+    for (c <- str) { assertEquals(c, r.read().toChar) }
     assertEquals(-1, r.read())
   }
 
@@ -120,9 +114,7 @@ class BufferedReaderTest {
   @Test def should_provide_read()(): Unit = {
     val r = newReader
 
-    for (c <- str) {
-      assertEquals(c, r.read().toChar)
-    }
+    for (c <- str) { assertEquals(c, r.read().toChar) }
     assertEquals(-1, r.read())
   }
 
@@ -168,15 +160,11 @@ class BufferedReaderTest {
     // force moving and resizing buffer
     r.mark(10)
 
-    for (i <- 0 until 10) {
-      assertEquals(str.charAt(i + 1): Int, r.read())
-    }
+    for (i <- 0 until 10) { assertEquals(str.charAt(i + 1): Int, r.read()) }
 
     r.reset()
 
-    for (i <- 1 until str.length) {
-      assertEquals(str.charAt(i): Int, r.read())
-    }
+    for (i <- 1 until str.length) { assertEquals(str.charAt(i): Int, r.read()) }
   }
 
   @Test def should_provide_readLine(): Unit = {

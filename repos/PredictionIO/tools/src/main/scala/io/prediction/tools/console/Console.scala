@@ -162,11 +162,8 @@ object Console extends Logging {
       opt[File]("sbt") action { (x, c) =>
         c.copy(build = c.build.copy(sbt = Some(x)))
       } validate { x =>
-        if (x.exists) {
-          success
-        } else {
-          failure(s"${x.getCanonicalPath} does not exist.")
-        }
+        if (x.exists) { success }
+        else { failure(s"${x.getCanonicalPath} does not exist.") }
       } text ("Path to sbt. Default: sbt")
       opt[Unit]("verbose") action { (x, c) =>
         c.copy(common = c.common.copy(verbose = true))
@@ -632,17 +629,13 @@ object Console extends Logging {
 
     val separatorIndex = args.indexWhere(_ == "--")
     val (consoleArgs, theRest) =
-      if (separatorIndex == -1) {
-        (args, Array[String]())
-      } else {
-        args.splitAt(separatorIndex)
-      }
+      if (separatorIndex == -1) { (args, Array[String]()) }
+      else { args.splitAt(separatorIndex) }
     val allPassThroughArgs = theRest.drop(1)
     val secondSepIdx = allPassThroughArgs.indexWhere(_ == "--")
     val (sparkPassThroughArgs, driverPassThroughArgs) =
-      if (secondSepIdx == -1) {
-        (allPassThroughArgs, Array[String]())
-      } else {
+      if (secondSepIdx == -1) { (allPassThroughArgs, Array[String]()) }
+      else {
         val t = allPassThroughArgs.splitAt(secondSepIdx)
         (t._1, t._2.drop(1))
       }
@@ -733,9 +726,8 @@ object Console extends Logging {
   }
 
   def help(commands: Seq[String] = Seq()): String = {
-    if (commands.isEmpty) {
-      mainHelp
-    } else {
+    if (commands.isEmpty) { mainHelp }
+    else {
       val stripped =
         (if (commands.head == "help") commands.drop(1) else commands)
           .mkString("-")
@@ -905,18 +897,14 @@ object Console extends Logging {
         (parse(Source.fromFile("engine.json").mkString) \ "engineFactory")
           .extract[String]
       WorkflowUtils.checkUpgrade("build", engineFactory)
-    } catch {
-      case e: Throwable => WorkflowUtils.checkUpgrade("build")
-    }
+    } catch { case e: Throwable => WorkflowUtils.checkUpgrade("build") }
     val sbt = detectSbt(ca)
     info(s"Using command '${sbt}' at the current working directory to build.")
     info("If the path above is incorrect, this process will fail.")
     val asm =
       if (ca.build.sbtAssemblyPackageDependency) {
         " assemblyPackageDependency"
-      } else {
-        ""
-      }
+      } else { "" }
     val clean = if (ca.build.sbtClean) " clean" else ""
     val buildCmd = s"${sbt} ${ca.build.sbtExtra.getOrElse("")}${clean} " +
       (if (ca.build.uberJar) "assembly" else s"package${asm}")
@@ -975,11 +963,8 @@ object Console extends Logging {
     val allJarFiles = jarFiles.map(_.getCanonicalPath)
     val cmd = s"${getSparkHome(ca.common.sparkHome)}/bin/spark-submit --jars " +
       s"${allJarFiles.mkString(",")} " +
-      (if (extraFiles.size > 0) {
-         s"--files ${extraFiles.mkString(",")} "
-       } else {
-         ""
-       }) +
+      (if (extraFiles.size > 0) { s"--files ${extraFiles.mkString(",")} " }
+       else { "" }) +
       "--class " +
       s"${ca.mainClass.get} ${ca.common.sparkPassThrough.mkString(" ")} " +
       coreAssembly(ca.common.pioHome.get) + " " +
@@ -1051,9 +1036,8 @@ object Console extends Logging {
       return 1
     }
     info("Inspecting storage backend connections...")
-    try {
-      storage.Storage.verifyAllDataObjects()
-    } catch {
+    try { storage.Storage.verifyAllDataObjects() }
+    catch {
       case e: Throwable =>
         error(
           "Unable to connect to all storage backends successfully. The " +
@@ -1069,9 +1053,7 @@ object Console extends Logging {
                 s"Source Name: $s; Type: ${p.getOrElse("type", "(error)")}; " +
                   s"Configuration: ${p.getOrElse("config", "(error)")}")
           }
-        } getOrElse {
-          error("No properly configured storage backend sources.")
-        }
+        } getOrElse { error("No properly configured storage backend sources.") }
         return 1
     }
     info("(sleeping 5 seconds for all messages to show up...)")
@@ -1097,13 +1079,10 @@ object Console extends Logging {
     val coreDir =
       if (new File(pioHome + File.separator + "RELEASE").exists) {
         new File(pioHome + File.separator + "lib")
-      } else {
-        new File(pioHome + File.separator + "assembly")
-      }
+      } else { new File(pioHome + File.separator + "assembly") }
     val coreFile = new File(coreDir, core)
-    if (coreFile.exists) {
-      coreFile
-    } else {
+    if (coreFile.exists) { coreFile }
+    else {
       error(
         s"PredictionIO Core Assembly (${coreFile.getCanonicalPath}) does " +
           "not exist. Aborting.")
@@ -1133,9 +1112,7 @@ object Console extends Logging {
       } else {
         info(s"Using existing engine manifest JSON at ${json.getCanonicalPath}")
       }
-    } else {
-      generateManifestJson(json)
-    }
+    } else { generateManifestJson(json) }
   }
 
   def generateManifestJson(json: File): Unit = {
@@ -1155,9 +1132,8 @@ object Console extends Logging {
       description = Some(manifestAutogenTag),
       files = Seq(),
       engineFactory = "")
-    try {
-      FileUtils.writeStringToFile(json, write(em), "ISO-8859-1")
-    } catch {
+    try { FileUtils.writeStringToFile(json, write(em), "ISO-8859-1") }
+    catch {
       case e: java.io.IOException =>
         error(
           s"Cannot generate ${json} automatically (${e.getMessage}). " +
@@ -1169,9 +1145,8 @@ object Console extends Logging {
   def readManifestJson(json: File): EngineManifest = {
     implicit val formats = Utils.json4sDefaultFormats +
       new EngineManifestSerializer
-    try {
-      read[EngineManifest](Source.fromFile(json).mkString)
-    } catch {
+    try { read[EngineManifest](Source.fromFile(json).mkString) }
+    catch {
       case e: java.io.FileNotFoundException =>
         error(s"${json.getCanonicalPath} does not exist. Aborting.")
         sys.exit(1)
@@ -1228,25 +1203,19 @@ object Console extends Logging {
   }
 
   def getSparkHome(sparkHome: Option[String]): String = {
-    sparkHome getOrElse {
-      sys.env.getOrElse("SPARK_HOME", ".")
-    }
+    sparkHome getOrElse { sys.env.getOrElse("SPARK_HOME", ".") }
   }
 
   def versionNoPatch(fullVersion: String): String = {
     val v = """^(\d+\.\d+)""".r
-    val versionNoPatch = for {
-      v(np) <- v findFirstIn fullVersion
-    } yield np
+    val versionNoPatch = for { v(np) <- v findFirstIn fullVersion } yield np
     versionNoPatch.getOrElse(fullVersion)
   }
 
   def scalaVersionNoPatch: String = versionNoPatch(BuildInfo.scalaVersion)
 
   def detectSbt(ca: ConsoleArgs): String = {
-    ca.build.sbt map {
-      _.getCanonicalPath
-    } getOrElse {
+    ca.build.sbt map { _.getCanonicalPath } getOrElse {
       val f = new File(
         Seq(ca.common.pioHome.get, "sbt", "sbt").mkString(File.separator))
       if (f.exists) f.getCanonicalPath else "sbt"

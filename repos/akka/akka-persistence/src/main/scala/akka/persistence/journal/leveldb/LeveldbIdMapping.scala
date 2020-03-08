@@ -39,9 +39,7 @@ private[persistence] trait LeveldbIdMapping extends Actor { this: LeveldbStore â
     !idMap.contains(id)
   }
 
-  def allPersistenceIds: Set[String] = idMapLock.synchronized {
-    idMap.keySet
-  }
+  def allPersistenceIds: Set[String] = idMapLock.synchronized { idMap.keySet }
 
   private def readIdMap(): Map[String, Int] = withIterator { iter â‡’
     iter.seek(keyToBytes(mappingKey(idOffset)))

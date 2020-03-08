@@ -149,9 +149,7 @@ class BlockManagerSuite
       rpcEnv.awaitTermination()
       rpcEnv = null
       master = null
-    } finally {
-      super.afterEach()
-    }
+    } finally { super.afterEach() }
   }
 
   test("StorageLevel object caching") {
@@ -515,9 +513,7 @@ class BlockManagerSuite
         }
       }
       val t3 = new Thread {
-        override def run() {
-          store.reregister()
-        }
+        override def run() { store.reregister() }
       }
 
       t1.start()
@@ -621,9 +617,7 @@ class BlockManagerSuite
     store3.stop()
     store3 = null
     // exception throw because there is no locations
-    intercept[BlockFetchException] {
-      store.getRemoteBytes("list1")
-    }
+    intercept[BlockFetchException] { store.getRemoteBytes("list1") }
   }
 
   test("in-memory LRU storage") {
@@ -759,9 +753,8 @@ class BlockManagerSuite
     assert(accessMethod("a3").isDefined, "a3 was not in store")
     assert(accessMethod("a1").isDefined, "a1 was not in store")
     val dataShouldHaveBeenCachedBackIntoMemory = {
-      if (storageLevel.deserialized) {
-        !getAsBytes
-      } else {
+      if (storageLevel.deserialized) { !getAsBytes }
+      else {
         // If the block's storage level is serialized, then always cache the bytes in memory, even
         // if the caller requested values.
         true
@@ -1056,9 +1049,7 @@ class BlockManagerSuite
       try {
         TaskContext.setTaskContext(context)
         task
-      } finally {
-        TaskContext.unset()
-      }
+      } finally { TaskContext.unset() }
       context.taskMetrics.updatedBlockStatuses
     }
 
@@ -1615,9 +1606,7 @@ class BlockManagerSuite
       "executor1",
       transferService = Option(mockBlockTransferService))
     store.putSingle("item", 999L, StorageLevel.MEMORY_ONLY, tellMaster = true)
-    intercept[BlockFetchException] {
-      store.getRemoteBytes("item")
-    }
+    intercept[BlockFetchException] { store.getRemoteBytes("item") }
   }
 
   test(
@@ -1718,9 +1707,7 @@ private object BlockManagerSuite {
     private def wrapGet[T](f: BlockId => Option[T]): BlockId => Option[T] =
       (blockId: BlockId) => {
         val result = f(blockId)
-        if (result.isDefined) {
-          store.releaseLock(blockId)
-        }
+        if (result.isDefined) { store.releaseLock(blockId) }
         result
       }
 

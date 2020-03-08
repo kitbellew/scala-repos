@@ -51,17 +51,11 @@ class Label(override val delegate: jfxsc.Label = new jfxsc.Label)
     with SFXDelegate[jfxsc.Label] {
 
   /** Creates Label with supplied text. */
-  def this(text: String) {
-    this(new jfxsc.Label(text))
-  }
+  def this(text: String) { this(new jfxsc.Label(text)) }
 
   /** Creates a Label with the supplied text and graphic. */
-  def this(text: String, graphic: Node) {
-    this(new jfxsc.Label(text, graphic))
-  }
+  def this(text: String, graphic: Node) { this(new jfxsc.Label(text, graphic)) }
 
   def labelFor: ObjectProperty[jfxs.Node] = delegate.labelForProperty
-  def labelFor_=(v: Node) {
-    labelFor() = v
-  }
+  def labelFor_=(v: Node) { labelFor() = v }
 }

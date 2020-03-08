@@ -50,9 +50,7 @@ object XmlParserSpec extends Specification with XmlMatchers {
   }
 
   "XML can contain PCData" in {
-    val data = <foo>{
-      PCData("Hello Yak")
-    }</foo>
+    val data = <foo>{PCData("Hello Yak")}</foo>
 
     val str = AltXML.toXML(data, false, true)
 
@@ -60,9 +58,7 @@ object XmlParserSpec extends Specification with XmlMatchers {
   }
 
   "XML can contain Unparsed" in {
-    val data = <foo>{
-      Unparsed("Hello & goodbye > <yak Yak")
-    }</foo>
+    val data = <foo>{Unparsed("Hello & goodbye > <yak Yak")}</foo>
 
     val str = AltXML.toXML(data, false, true)
 
@@ -72,15 +68,9 @@ object XmlParserSpec extends Specification with XmlMatchers {
   "XML cannot contain Control characters" in {
     val data =
       <foo>
-      {
-        '\u0085'
-      }{
-        Text("hello \u0000 \u0085 \u0080")
-      }{
+      {'\u0085'}{Text("hello \u0000 \u0085 \u0080")}{
         "hello \u0000 \u0003 \u0085 \u0080"
-      }{
-        '\u0003'
-      }
+      }{'\u0003'}
     </foo>
 
     val str = AltXML.toXML(data, false, true)

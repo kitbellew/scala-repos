@@ -91,9 +91,7 @@ private[spark] class TimeStampedHashMap[A, B](
     this
   }
 
-  override def update(key: A, value: B) {
-    this += ((key, value))
-  }
+  override def update(key: A, value: B) { this += ((key, value)) }
 
   override def apply(key: A): B = {
     get(key).getOrElse { throw new NoSuchElementException() }
@@ -124,9 +122,7 @@ private[spark] class TimeStampedHashMap[A, B](
     Option(prev).map(_.value)
   }
 
-  def putAll(map: Map[A, B]) {
-    map.foreach { case (k, v) => update(k, v) }
-  }
+  def putAll(map: Map[A, B]) { map.foreach { case (k, v) => update(k, v) } }
 
   def toMap: Map[A, B] = iterator.toMap
 

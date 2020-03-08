@@ -100,9 +100,7 @@ private[spark] abstract class BlockTransferService
       new BlockFetchingListener {
         override def onBlockFetchFailure(
             blockId: String,
-            exception: Throwable): Unit = {
-          result.failure(exception)
-        }
+            exception: Throwable): Unit = { result.failure(exception) }
         override def onBlockFetchSuccess(
             blockId: String,
             data: ManagedBuffer): Unit = {

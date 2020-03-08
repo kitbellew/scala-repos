@@ -48,9 +48,7 @@ trait ScTypeElement extends ScalaPsiElement with TypingContextOwner {
     _analog
   }
 
-  def analog_=(te: ScTypeElement) {
-    _analog = Some(te)
-  }
+  def analog_=(te: ScTypeElement) { _analog = Some(te) }
 
   /**
     * If the reference is in a type parameter, first compute the effective parameters clauses

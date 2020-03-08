@@ -63,9 +63,7 @@ final class Env(
 
   lazy val jsonView = new JsonView(lightUser)
 
-  scheduler.future(3 seconds, "sweep challenges") {
-    api.sweep
-  }
+  scheduler.future(3 seconds, "sweep challenges") { api.sweep }
 }
 
 object Env {

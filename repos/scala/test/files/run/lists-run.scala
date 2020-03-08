@@ -159,9 +159,8 @@ object Test2 {
 
 object Test3 {
   def run() {
-    try {
-      List.range(1, 10, 0)
-    } catch {
+    try { List.range(1, 10, 0) }
+    catch {
       case e: IllegalArgumentException => ()
       case _: Throwable                => throw new Error("List.range(1, 10, 0)")
     }

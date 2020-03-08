@@ -47,9 +47,7 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     try {
       ssc.stop(stopSparkContext = true)
       ssc = null
-    } finally {
-      super.afterAll()
-    }
+    } finally { super.afterAll() }
   }
 
   test("user provided closures are actually cleaned") {
@@ -83,9 +81,8 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     * We expect closure cleaner to find the return statements in the user provided closures.
     */
   private def expectCorrectException(body: => Unit): Unit = {
-    try {
-      body
-    } catch {
+    try { body }
+    catch {
       case rse: ReturnStatementInClosureException => // Success!
       case e @ (_: NotSerializableException | _: SparkException) =>
         throw new TestException(
@@ -210,13 +207,9 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     }
   }
   private def testMapValues(ds: DStream[(Int, Int)]): Unit =
-    expectCorrectException {
-      ds.mapValues { _ => return; 1 }
-    }
+    expectCorrectException { ds.mapValues { _ => return; 1 } }
   private def testFlatMapValues(ds: DStream[(Int, Int)]): Unit =
-    expectCorrectException {
-      ds.flatMapValues { _ => return; Seq.empty }
-    }
+    expectCorrectException { ds.flatMapValues { _ => return; Seq.empty } }
 
   // StreamingContext operations
   private def testTransform2(ssc: StreamingContext, ds: DStream[Int]): Unit = {

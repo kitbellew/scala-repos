@@ -63,8 +63,6 @@ class ScalaDocDeleteUnknownTagInspection(unknownTag: ScDocTag)
 
   def doApplyFix(project: Project) {
     val tag = getElement
-    if (tag.isValid) {
-      tag.delete()
-    }
+    if (tag.isValid) { tag.delete() }
   }
 }

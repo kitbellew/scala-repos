@@ -2,9 +2,8 @@
 
 object Test extends App {
   def bad() {
-    try {
-      1
-    } catch {
+    try { 1 }
+    catch {
       case e: Throwable =>
     } finally {
       try {} catch {

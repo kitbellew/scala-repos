@@ -230,13 +230,9 @@ class FileSourceStrategySuite
   /** Plans the query and calls the provided validation function with the planned partitioning. */
   def checkScan(df: DataFrame)(func: Seq[FilePartition] => Unit): Unit = {
     val fileScan = df.queryExecution.executedPlan
-      .collect {
-        case DataSourceScan(_, scan: FileScanRDD, _, _) => scan
-      }
+      .collect { case DataSourceScan(_, scan: FileScanRDD, _, _) => scan }
       .headOption
-      .getOrElse {
-        fail(s"No FileScan in query\n${df.queryExecution}")
-      }
+      .getOrElse { fail(s"No FileScan in query\n${df.queryExecution}") }
 
     func(fileScan.filePartitions)
   }
@@ -270,9 +266,7 @@ class FileSourceStrategySuite
             Some(BucketSpec(numBuckets = buckets, "c1" :: Nil, Nil))))
       }
       Dataset.newDataFrame(sqlContext, bucketed)
-    } else {
-      df
-    }
+    } else { df }
   }
 }
 

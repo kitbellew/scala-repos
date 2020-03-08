@@ -53,12 +53,8 @@ class IndexedRowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("empty rows") {
     val rows = sc.parallelize(Seq[IndexedRow](), 1)
     val mat = new IndexedRowMatrix(rows)
-    intercept[RuntimeException] {
-      mat.numRows()
-    }
-    intercept[RuntimeException] {
-      mat.numCols()
-    }
+    intercept[RuntimeException] { mat.numRows() }
+    intercept[RuntimeException] { mat.numCols() }
   }
 
   test("toBreeze") {
@@ -91,12 +87,8 @@ class IndexedRowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(blockMat.numCols() === n)
     assert(blockMat.toBreeze() === idxRowMat.toBreeze())
 
-    intercept[IllegalArgumentException] {
-      idxRowMat.toBlockMatrix(-1, 2)
-    }
-    intercept[IllegalArgumentException] {
-      idxRowMat.toBlockMatrix(2, 0)
-    }
+    intercept[IllegalArgumentException] { idxRowMat.toBlockMatrix(-1, 2) }
+    intercept[IllegalArgumentException] { idxRowMat.toBlockMatrix(2, 0) }
   }
 
   test("multiply a local matrix") {
@@ -143,9 +135,7 @@ class IndexedRowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("validate k in svd") {
     val A = new IndexedRowMatrix(indexedRows)
-    intercept[IllegalArgumentException] {
-      A.computeSVD(-1)
-    }
+    intercept[IllegalArgumentException] { A.computeSVD(-1) }
   }
 
   test("similar columns") {

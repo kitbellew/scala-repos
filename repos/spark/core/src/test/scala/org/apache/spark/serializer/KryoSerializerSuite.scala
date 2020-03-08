@@ -563,8 +563,6 @@ object KryoTest {
   }
 
   class RegistratorWithoutAutoReset extends KryoRegistrator {
-    override def registerClasses(k: Kryo) {
-      k.setAutoReset(false)
-    }
+    override def registerClasses(k: Kryo) { k.setAutoReset(false) }
   }
 }

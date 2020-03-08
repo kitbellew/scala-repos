@@ -115,9 +115,7 @@ class ScalaGlobalMembersCompletionContributor
         val qualifiedName = containingClass.qualifiedName + "." + member.name
         for (excluded <- CodeInsightSettings.getInstance.EXCLUDED_PACKAGES) {
           if (qualifiedName == excluded || qualifiedName.startsWith(
-                excluded + ".")) {
-            return false
-          }
+                excluded + ".")) { return false }
         }
         containingClass match {
           case o: ScObject if o.isStatic =>
@@ -140,9 +138,7 @@ class ScalaGlobalMembersCompletionContributor
     val file = ref.getContainingFile
 
     val elemsSet = new mutable.HashSet[PsiNamedElement]
-    def addElemToSet(elem: PsiNamedElement) {
-      elemsSet += elem
-    }
+    def addElemToSet(elem: PsiNamedElement) { elemsSet += elem }
 
     def elemsSetContains(elem: PsiNamedElement): Boolean = {
       if (elem.getContainingFile == originalFile) {
@@ -166,9 +162,7 @@ class ScalaGlobalMembersCompletionContributor
           if cClass != null
           if cClass.qualifiedName != null
           if cClass.qualifiedName == qualName
-        } {
-          return true
-        }
+        } { return true }
         false
       } else elemsSet.contains(elem)
     }
@@ -261,9 +255,7 @@ class ScalaGlobalMembersCompletionContributor
     }
 
     val elemsSet = new mutable.HashSet[PsiNamedElement]
-    def addElemToSet(elem: PsiNamedElement) {
-      elemsSet += elem
-    }
+    def addElemToSet(elem: PsiNamedElement) { elemsSet += elem }
 
     def elemsSetContains(elem: PsiNamedElement): Boolean = {
       if (elem.getContainingFile == originalFile) {
@@ -287,9 +279,7 @@ class ScalaGlobalMembersCompletionContributor
           if cClass != null
           if cClass.qualifiedName != null
           if cClass.qualifiedName == qualName
-        } {
-          return true
-        }
+        } { return true }
         false
       } else elemsSet.contains(elem)
     }

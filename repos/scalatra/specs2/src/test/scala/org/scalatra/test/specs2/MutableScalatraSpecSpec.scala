@@ -17,9 +17,7 @@ class MutableScalatraSpecSpec extends MutableScalatraSpec {
 
   "get" should {
     "be able to verify the response body" in {
-      get("/") {
-        body must_== "Hello, world."
-      }
+      get("/") { body must_== "Hello, world." }
     }
   }
 }

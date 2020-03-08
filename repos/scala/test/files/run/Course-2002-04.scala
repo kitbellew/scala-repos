@@ -157,9 +157,7 @@ object M3 {
 
   def matrixTimesVector(
       m: List[List[Double]],
-      v: List[Double]): List[Double] = {
-    m.map(row => dotproduct(row, v))
-  }
+      v: List[Double]): List[Double] = { m.map(row => dotproduct(row, v)) }
 
   def transpose(m: List[List[Double]]): List[List[Double]] = {
     if (m.isEmpty || m.head.isEmpty)

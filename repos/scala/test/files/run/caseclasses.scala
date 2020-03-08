@@ -18,9 +18,7 @@ object M {
 object Test extends App {
 
   def Abs(x: Int) = new Abs(x * 2) {}
-  (Abs(2): @unchecked) match {
-    case Abs(4) => ;
-  }
+  (Abs(2): @unchecked) match { case Abs(4) => ; }
 
   def fn[a, b](x: a => b) = x;
   val f = fn(Foo(1))

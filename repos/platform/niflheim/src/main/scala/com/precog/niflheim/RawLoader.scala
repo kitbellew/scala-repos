@@ -80,9 +80,8 @@ private[niflheim] object RawLoader {
         try {
           val eventid = line.substring(8).toLong
           val count = loadEvents1(reader, eventid, rows)
-          if (count < 0) {
-            ok = false
-          } else {
+          if (count < 0) { ok = false }
+          else {
             events.append((eventid, count))
             line = reader.readLine()
           }
@@ -90,9 +89,7 @@ private[niflheim] object RawLoader {
           case _: Exception =>
             ok = false
         }
-      } else {
-        ok = false
-      }
+      } else { ok = false }
     }
     if (!ok) recover1(id, f, rows, events)
     (rows, events.map(_._1), ok)
@@ -143,11 +140,8 @@ private[niflheim] object RawLoader {
   }
 
   def isValidEnd1(line: String, eventid: Long): Boolean =
-    try {
-      line.substring(6).toLong == eventid
-    } catch {
-      case _: Exception => false
-    }
+    try { line.substring(6).toLong == eventid }
+    catch { case _: Exception => false }
 
   def loadEvents1(
       reader: BufferedReader,
@@ -178,9 +172,7 @@ private[niflheim] object RawLoader {
     if (ok) {
       rows ++= sofar
       count
-    } else {
-      -1
-    }
+    } else { -1 }
   }
 
   def load(id: Long, f: File): (Seq[JValue], Seq[Long], Boolean) = {
@@ -194,8 +186,6 @@ private[niflheim] object RawLoader {
         load1(id, f, reader)
       else
         sys.error("unsupported header: %s" format header)
-    } finally {
-      reader.close()
-    }
+    } finally { reader.close() }
   }
 }

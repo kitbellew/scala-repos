@@ -33,9 +33,7 @@ class SbtCompiler(
 
     val analysisStore = fileToStore(compilationData.cacheFile)
     val (previousAnalysis, previousSetup) = {
-      analysisStore.get().map {
-        case (a, s) => (a, Some(s))
-      } getOrElse {
+      analysisStore.get().map { case (a, s) => (a, Some(s)) } getOrElse {
         (Analysis.Empty, None)
       }
     }

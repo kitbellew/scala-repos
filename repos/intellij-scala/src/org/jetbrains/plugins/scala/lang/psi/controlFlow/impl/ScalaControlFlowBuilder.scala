@@ -65,9 +65,7 @@ class ScalaControlFlowBuilder(
       super.visitElement(element)
   }
 
-  def emptyNode() {
-    startNode(None) { _ => }
-  }
+  def emptyNode() { startNode(None) { _ => } }
 
   def startNode(element: Option[ScalaPsiElement])(
       body: InstructionImpl => Unit) {
@@ -138,18 +136,12 @@ class ScalaControlFlowBuilder(
     for {
       ((instr, scope), idx) <- myPending.zipWithIndex
       if scope != null && PsiTreeUtil.isAncestor(fromScope, scope, false)
-    } {
-      myPending.update(idx, (instr, toScope))
-    }
+    } { myPending.update(idx, (instr, toScope)) }
   }
 
-  private def interruptFlow() {
-    myHead = null
-  }
+  private def interruptFlow() { myHead = null }
 
-  private def moveHead(instr: InstructionImpl) {
-    myHead = instr
-  }
+  private def moveHead(instr: InstructionImpl) { myHead = instr }
 
   /**************************************
     * VISITOR METHODS
@@ -275,19 +267,13 @@ class ScalaControlFlowBuilder(
         ScFunctionType.isFunctionType(p.paramType))
     }
     val receiver = call.getInvokedExpr
-    if (receiver != null) {
-      receiver.accept(this)
-    }
+    if (receiver != null) { receiver.accept(this) }
     val head = myHead
     if (head != null)
       checkPendingEdges(head)
-    for {
-      arg <- call.argumentExpressions
-    } {
+    for { arg <- call.argumentExpressions } {
       arg.accept(this)
-      if (myHead == null && isByNameOrFunction(arg)) {
-        moveHead(head)
-      }
+      if (myHead == null && isByNameOrFunction(arg)) { moveHead(head) }
     }
   }
 
@@ -527,9 +513,7 @@ class ScalaControlFlowBuilder(
         tb.accept(this)
         val head = Option(myHead).getOrElse(tryStmtInstr)
         advancePendingEdges(tb, tryStmt)
-        tryStmt.finallyBlock.fold {
-          addPendingEdge(tryStmt, head)
-        } { fblock =>
+        tryStmt.finallyBlock.fold { addPendingEdge(tryStmt, head) } { fblock =>
           myTransitionInstructions += ((head, FinallyInfo(fblock)))
         }
       }
@@ -546,9 +530,7 @@ class ScalaControlFlowBuilder(
               if (fin == null) {
                 advancePendingEdges(cc, tryStmt)
                 addPendingEdge(tryStmt, myHead)
-              } else {
-                addEdge(myHead, fin)
-              }
+              } else { addEdge(myHead, fin) }
               myHead = null
             }
           case _ =>
@@ -558,17 +540,14 @@ class ScalaControlFlowBuilder(
               if (fin == null) {
                 advancePendingEdges(cc, tryStmt)
                 addPendingEdge(tryStmt, myHead)
-              } else {
-                addEdge(myHead, fin)
-              }
+              } else { addEdge(myHead, fin) }
               myHead = null
             }
         }
       }
 
-      if (fBlock == null) {
-        processCatch((null))
-      } else {
+      if (fBlock == null) { processCatch((null)) }
+      else {
         startNode(Some(fBlock)) { finInstr =>
           for (p @ (instr, info) <- myTransitionInstructions;
                if info.elem eq fBlock) {

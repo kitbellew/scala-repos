@@ -19,9 +19,8 @@ object RoutesCompilerSpec extends Specification with FileMatchers {
       val tmp = File.createTempFile("RoutesCompilerSpec", "")
       tmp.delete()
       tmp.mkdir()
-      try {
-        block(tmp)
-      } finally {
+      try { block(tmp) }
+      finally {
         def rm(file: File): Unit = file match {
           case dir if dir.isDirectory =>
             dir.listFiles().foreach(rm)

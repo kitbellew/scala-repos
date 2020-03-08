@@ -10,18 +10,13 @@ object Importer extends LilaController {
   private def env = Env.importer
 
   def importGame = Open { implicit ctx =>
-    fuccess {
-      Ok(html.game.importGame(env.forms.importForm))
-    }
+    fuccess { Ok(html.game.importGame(env.forms.importForm)) }
   }
 
   def sendGame = OpenBody { implicit ctx =>
     implicit def req = ctx.body
     env.forms.importForm.bindFromRequest.fold(
-      failure =>
-        fuccess {
-          Ok(html.game.importGame(failure))
-        },
+      failure => fuccess { Ok(html.game.importGame(failure)) },
       data =>
         env.importer(data, ctx.userId) flatMap { game =>
           (data.analyse.isDefined && game.analysable) ?? {

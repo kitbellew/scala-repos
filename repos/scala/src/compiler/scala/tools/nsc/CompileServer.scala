@@ -146,9 +146,7 @@ class StandardCompileServer(fixPort: Int = 0) extends SocketServer(fixPort) {
         info("[Reusing existing Global instance.]")
         compiler.currentSettings = newSettings
         compiler.reporter = reporter
-      } else {
-        compiler = newGlobal(newSettings, reporter)
-      }
+      } else { compiler = newGlobal(newSettings, reporter) }
       val c = compiler
       try new c.Run() compile command.files
       catch {

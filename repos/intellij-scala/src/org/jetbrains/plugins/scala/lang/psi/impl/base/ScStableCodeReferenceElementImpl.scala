@@ -158,9 +158,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
     else {
       val aliasedRef: Option[ScReferenceElement] =
         ScalaPsiUtil.importAliasFor(element, this)
-      if (aliasedRef.isDefined) {
-        this.replace(aliasedRef.get)
-      } else {
+      if (aliasedRef.isDefined) { this.replace(aliasedRef.get) }
+      else {
         def bindToType(c: ScalaImportTypeFix.TypeToImport): PsiElement = {
           val suitableKinds = getKinds(incomplete = false)
           if (!ResolveUtils.kindMatches(element, suitableKinds))

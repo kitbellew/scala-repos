@@ -11,9 +11,7 @@ abstract sealed class ValueUsed(val e: PsiNamedElement) {
 }
 
 object ValueUsed {
-  def unapply(v: ValueUsed): Option[PsiNamedElement] = {
-    Some(v.e)
-  }
+  def unapply(v: ValueUsed): Option[PsiNamedElement] = { Some(v.e) }
 }
 
 case class ReadValueUsed(override val e: PsiNamedElement) extends ValueUsed(e) {

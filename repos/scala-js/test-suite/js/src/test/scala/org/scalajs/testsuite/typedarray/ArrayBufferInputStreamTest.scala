@@ -125,9 +125,7 @@ trait ArrayBufferInputStreamTest {
     assertEquals(0L, stream.skip(30))
   }
 
-  @Test def markSupported(): Unit = {
-    assertTrue(newStream.markSupported)
-  }
+  @Test def markSupported(): Unit = { assertTrue(newStream.markSupported) }
 
   @Test def close(): Unit = {
     val stream = newStream

@@ -14,8 +14,6 @@ class Plugin(val global: Global) extends NscPlugin {
 
   object MacroPlugin extends MacroPlugin {
     override def pluginsMacroRuntime(expandee: Tree): Option[MacroRuntime] =
-      Some({
-        case MacroArgs(_, List(msg)) => q"""println("hijacked")"""
-      })
+      Some({ case MacroArgs(_, List(msg)) => q"""println("hijacked")""" })
   }
 }

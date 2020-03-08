@@ -156,34 +156,26 @@ abstract class PopupWindow(override val delegate: jfxs.PopupWindow)
     * such that it doesn't end up positioned off the screen.
     */
   def autoFix: BooleanProperty = delegate.autoFixProperty
-  def autoFix_=(v: Boolean) {
-    autoFix() = v
-  }
+  def autoFix_=(v: Boolean) { autoFix() = v }
 
   /**
     * Specifies whether Popups should auto hide.
     */
   def autoHide: BooleanProperty = delegate.autoHideProperty
-  def autoHide_=(v: Boolean) {
-    autoHide() = v
-  }
+  def autoHide_=(v: Boolean) { autoHide() = v }
 
   /**
     * Specifies whether the PopupWindow should be hidden when an unhandled escape key is pressed while the popup has
     * focus.
     */
   def hideOnEscape: BooleanProperty = delegate.hideOnEscapeProperty
-  def hideOnEscape_=(v: Boolean) {
-    hideOnEscape() = v
-  }
+  def hideOnEscape_=(v: Boolean) { hideOnEscape() = v }
 
   /**
     * Called after autoHide is run.
     */
   def onAutoHide = delegate.onAutoHideProperty
-  def onAutoHide_=(v: jfxe.EventHandler[jfxe.Event]) {
-    onAutoHide() = v
-  }
+  def onAutoHide_=(v: jfxe.EventHandler[jfxe.Event]) { onAutoHide() = v }
 
   /**
     * The window which is the parent of this popup.
@@ -208,9 +200,7 @@ abstract class PopupWindow(override val delegate: jfxs.PopupWindow)
   /**
     * Show the popup.
     */
-  def show(owner: Window) {
-    delegate.show(owner)
-  }
+  def show(owner: Window) { delegate.show(owner) }
 
   /**
     * Show the Popup at the specified x,y location relative to the screen
@@ -225,8 +215,6 @@ abstract class PopupWindow(override val delegate: jfxs.PopupWindow)
     */
   def consumeAutoHidingEvents: BooleanProperty =
     delegate.consumeAutoHidingEventsProperty
-  def consumeAutoHidingEvents_=(v: Boolean) {
-    consumeAutoHidingEvents() = v
-  }
+  def consumeAutoHidingEvents_=(v: Boolean) { consumeAutoHidingEvents() = v }
 
 }

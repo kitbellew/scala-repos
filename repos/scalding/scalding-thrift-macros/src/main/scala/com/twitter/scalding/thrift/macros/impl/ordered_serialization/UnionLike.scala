@@ -244,9 +244,7 @@ object UnionLike {
             ${tBuf.get(inputStream)}
           """
             }
-            .getOrElse {
-              q"""(new Object).asInstanceOf[$tpe]"""
-            }
+            .getOrElse { q"""(new Object).asInstanceOf[$tpe]""" }
 
           existing match {
             case Some(t) =>

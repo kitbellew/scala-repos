@@ -160,9 +160,7 @@ abstract class ClusterShardingFailureSpec(
     "setup shared journal" in {
       // start the Persistence extension
       Persistence(system)
-      runOn(controller) {
-        system.actorOf(Props[SharedLeveldbStore], "store")
-      }
+      runOn(controller) { system.actorOf(Props[SharedLeveldbStore], "store") }
       enterBarrier("peristence-started")
 
       runOn(first, second) {

@@ -375,9 +375,8 @@ trait DebugTestUtils {
     project ! DebugClearBreakReq(resolvedFile, breakLine)
     expectMsg(TrueResponse)
 
-    try {
-      f(resolvedFile)
-    } finally {
+    try { f(resolvedFile) }
+    finally {
       project ! DebugClearAllBreaksReq
       expectMsg(TrueResponse)
 

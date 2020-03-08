@@ -40,9 +40,7 @@ object IntroduceImplicitParameterIntention {
             case p: ScParameter if fun.parameters.contains(p) =>
               if (!map.keySet.contains(expr.getText)) {
                 map.put(expr.getText, expr.getTextRange.getStartOffset)
-              } else {
-                clearMap = true
-              }
+              } else { clearMap = true }
             case _ =>
           }
           super.visitReferenceExpression(expr)

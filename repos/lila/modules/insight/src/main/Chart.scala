@@ -102,9 +102,7 @@ object Chart {
                 }
             }
         }
-        .map {
-          case (_, serie) => serie.copy(data = serie.data.reverse)
-        }
+        .map { case (_, serie) => serie.copy(data = serie.data.reverse) }
         .toList
 
     def sortedSeries = answer.clusters.headOption.fold(series) {

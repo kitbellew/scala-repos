@@ -62,9 +62,7 @@ private[io] trait WithUdpSend {
             }
           case None ⇒
         }
-      } else {
-        doSend(registration)
-      }
+      } else { doSend(registration) }
 
     case ChannelWritable ⇒ if (hasWritePending) doSend(registration)
   }
@@ -95,8 +93,6 @@ private[io] trait WithUdpSend {
         pendingSend = null
         pendingCommander = null
       }
-    } finally {
-      udp.bufferPool.release(buffer)
-    }
+    } finally { udp.bufferPool.release(buffer) }
   }
 }

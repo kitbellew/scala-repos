@@ -21,9 +21,7 @@ object SerializersSpec extends Specification with PicklingTestUtils {
 
   "serializers" should {
 
-    "roundtrip tuple2" in {
-      roundTrip("a" -> 42)
-    }
+    "roundtrip tuple2" in { roundTrip("a" -> 42) }
 
     "roundtrip watch services" in {
       roundTrip(ForkConfig.DefaultWatchService)

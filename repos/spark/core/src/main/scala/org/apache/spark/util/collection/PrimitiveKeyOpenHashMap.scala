@@ -49,9 +49,7 @@ private[spark] class PrimitiveKeyOpenHashMap[@specialized(
   override def size: Int = _keySet.size
 
   /** Tests whether this map contains a binding for a key. */
-  def contains(k: K): Boolean = {
-    _keySet.getPos(k) != OpenHashSet.INVALID_POS
-  }
+  def contains(k: K): Boolean = { _keySet.getPos(k) != OpenHashSet.INVALID_POS }
 
   /** Get the value for a given key */
   def apply(k: K): V = {
@@ -103,9 +101,7 @@ private[spark] class PrimitiveKeyOpenHashMap[@specialized(
         val ret = (_keySet.getValue(pos), _values(pos))
         pos += 1
         ret
-      } else {
-        null
-      }
+      } else { null }
     }
 
     def hasNext: Boolean = nextPair != null

@@ -107,9 +107,7 @@ object ThriftMuxResponseClassifier {
       reqRep.response match {
         case Return(rep: mux.Response) =>
           try classifier.isDefinedAt(deserialized(deserCtx, rep.body))
-          catch {
-            case _: Throwable => false
-          }
+          catch { case _: Throwable => false }
         case _ => false
       }
     }
@@ -121,11 +119,8 @@ object ThriftMuxResponseClassifier {
             Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
           if (deserCtx eq NoDeserializeCtx)
             throw new MatchError("No DeserializeCtx found")
-          try {
-            classifier(deserialized(deserCtx, rep.body))
-          } catch {
-            case NonFatal(e) => throw new MatchError(e)
-          }
+          try { classifier(deserialized(deserCtx, rep.body)) }
+          catch { case NonFatal(e) => throw new MatchError(e) }
         case e => throw new MatchError(e)
       }
   }

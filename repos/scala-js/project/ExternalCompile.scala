@@ -92,9 +92,7 @@ object ExternalCompile {
               IO.writeLines(sourceListFile, sourcesArgs)
               doCompile(List("@" + sourceListFile.getAbsolutePath()))
             }
-          } else {
-            doCompile(sourcesArgs)
-          }
+          } else { doCompile(sourcesArgs) }
 
           // Output is all files in classesDirectory
           (classesDirectory ** AllPassFilter).get.toSet

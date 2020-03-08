@@ -90,11 +90,8 @@ class FloatTest {
       assertEquals(v, new JFloat(s).floatValue(), 0.01f)
     }
 
-    if (executingInJVM) {
-      test("0.0", 0.0f)
-    } else {
-      test("0", 0.0f)
-    }
+    if (executingInJVM) { test("0.0", 0.0f) }
+    else { test("0", 0.0f) }
     test("5.3", 5.3f)
     test("127e2", 12700.0f)
     test("127E-2", 1.27f)

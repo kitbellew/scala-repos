@@ -127,9 +127,7 @@ object UnresolvedAttribute {
         if (char == '`') {
           inBacktick = false
           if (i + 1 < name.length && name(i + 1) != '.') throw e
-        } else {
-          tmp += char
-        }
+        } else { tmp += char }
       } else {
         if (char == '`') {
           if (tmp.nonEmpty) throw e
@@ -138,9 +136,7 @@ object UnresolvedAttribute {
           if (name(i - 1) == '.' || i == name.length - 1) throw e
           nameParts += tmp.mkString
           tmp.clear()
-        } else {
-          tmp += char
-        }
+        } else { tmp += char }
       }
       i += 1
     }
@@ -219,9 +215,7 @@ case class UnresolvedStar(target: Option[Seq[String]])
       case Some(t) =>
         if (t.size == 1) {
           input.output.filter(_.qualifiers.exists(resolver(_, t.head)))
-        } else {
-          List()
-        }
+        } else { List() }
     }
     if (expandedAttributes.nonEmpty) return expandedAttributes
 

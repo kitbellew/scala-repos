@@ -45,7 +45,9 @@ object SerializationTests {
       no: String,
       street: String,
       city: String,
-      zip: String) { def this() = this("", "", "", "") }
+      zip: String) {
+    def this() = this("", "", "", "")
+  }
   @BeanInfo
   final case class Person(name: String, age: Int, address: Address) {
     def this() = this("", 0, null)
@@ -85,9 +87,7 @@ object SerializationTests {
   """
 
   class FooActor extends Actor {
-    def receive = {
-      case s: String ⇒ sender() ! s
-    }
+    def receive = { case s: String ⇒ sender() ! s }
   }
 
   class FooUntypedActor extends UntypedActor {
@@ -95,9 +95,7 @@ object SerializationTests {
   }
 
   class NonSerializableActor(system: ActorSystem) extends Actor {
-    def receive = {
-      case s: String ⇒ sender() ! s
-    }
+    def receive = { case s: String ⇒ sender() ! s }
   }
 
   def mostlyReferenceSystem: ActorSystem = {
@@ -201,9 +199,7 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
           val deadLetters = in.readObject().asInstanceOf[DeadLetterActorRef]
           (deadLetters eq a.deadLetters) should ===(true)
         }
-      } finally {
-        shutdown(a)
-      }
+      } finally { shutdown(a) }
     }
 
     "resolve serializer by direct interface" in {
@@ -505,9 +501,7 @@ protected[akka] class TestSerializer extends Serializer {
 
   def identifier = 9999
 
-  def toBinary(o: AnyRef): Array[Byte] = {
-    Array.empty[Byte]
-  }
+  def toBinary(o: AnyRef): Array[Byte] = { Array.empty[Byte] }
 
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
 }

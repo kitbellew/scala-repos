@@ -14,9 +14,7 @@ import scala.language.postfixOps
 class AppRepositoryTest extends MarathonSpec {
   var metrics: Metrics = _
 
-  before {
-    metrics = new Metrics(new MetricRegistry)
-  }
+  before { metrics = new Metrics(new MetricRegistry) }
 
   test("App") {
     val path = "testApp".toRootPath

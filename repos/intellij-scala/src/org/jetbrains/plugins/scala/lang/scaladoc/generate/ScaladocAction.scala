@@ -37,9 +37,7 @@ class ScaladocAction
     extends BaseAnalysisAction("Generate Scaladoc", "Scaladoc") {
   private var configurationDialog: ScaladocConsoleRunConfigurationForm = null
 
-  private def disposeForm() {
-    configurationDialog = null
-  }
+  private def disposeForm() { configurationDialog = null }
 
   def analyze(project: Project, scope: AnalysisScope) {
     var config: ScaladocConfiguration = null
@@ -69,9 +67,7 @@ class ScaladocAction
         case e: ExecutionException =>
           ExecutionErrorDialog.show(e, CommonBundle.getErrorTitle, project)
       }
-    } finally {
-      disposeForm()
-    }
+    } finally { disposeForm() }
   }
 
   override def canceled() {
@@ -85,9 +81,7 @@ class ScaladocAction
     configurationDialog = new ScaladocConsoleRunConfigurationForm(project)
     configurationDialog.getOutputDirChooser.getDocument
       .addDocumentListener(new DocumentAdapter() {
-        def textChanged(e: DocumentEvent) {
-          updateAvailability(dialog)
-        }
+        def textChanged(e: DocumentEvent) { updateAvailability(dialog) }
       })
     updateAvailability(dialog)
     configurationDialog.createCenterPanel()

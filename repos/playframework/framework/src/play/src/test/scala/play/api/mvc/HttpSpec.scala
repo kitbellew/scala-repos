@@ -58,9 +58,7 @@ object HttpSpec extends Specification {
       headers.getAll("z") must beEmpty
     }
 
-    "should return all keys" in {
-      headers.keys must be_==(Set("a", "b", "c"))
-    }
+    "should return all keys" in { headers.keys must be_==(Set("a", "b", "c")) }
 
     "should return a simple map" in {
       headers.toSimpleMap must be_==(Map("a" -> "a1", "b" -> "b1", "c" -> "c1"))

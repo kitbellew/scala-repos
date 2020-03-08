@@ -42,9 +42,7 @@ object BasicAuthExample {
       (new ScentryConfig {}).asInstanceOf[ScentryConfiguration]
 
     override protected def configureScentry = {
-      scentry.unauthenticated {
-        scentry.strategies("Basic").unauthenticated()
-      }
+      scentry.unauthenticated { scentry.strategies("Basic").unauthenticated() }
     }
 
     override protected def registerAuthStrategies = {

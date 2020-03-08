@@ -119,9 +119,7 @@ class XmlRenameHandler extends RenameHandler {
                     new TemplateEditingAdapter {
                       override def templateFinished(
                           template: Template,
-                          brokenOff: Boolean) {
-                        templateCancelled(template)
-                      }
+                          brokenOff: Boolean) { templateCancelled(template) }
 
                       override def templateCancelled(template: Template) {
                         val highlightManager =

@@ -54,20 +54,12 @@ final private[streaming] class DStreamGraph extends Serializable with Logging {
     }
   }
 
-  def restart(time: Time) {
-    this.synchronized { startTime = time }
-  }
+  def restart(time: Time) { this.synchronized { startTime = time } }
 
-  def stop() {
-    this.synchronized {
-      inputStreams.par.foreach(_.stop())
-    }
-  }
+  def stop() { this.synchronized { inputStreams.par.foreach(_.stop()) } }
 
   def setContext(ssc: StreamingContext) {
-    this.synchronized {
-      outputStreams.foreach(_.setContext(ssc))
-    }
+    this.synchronized { outputStreams.foreach(_.setContext(ssc)) }
   }
 
   def setBatchDuration(duration: Duration) {
@@ -137,33 +129,25 @@ final private[streaming] class DStreamGraph extends Serializable with Logging {
 
   def clearMetadata(time: Time) {
     logDebug("Clearing metadata for time " + time)
-    this.synchronized {
-      outputStreams.foreach(_.clearMetadata(time))
-    }
+    this.synchronized { outputStreams.foreach(_.clearMetadata(time)) }
     logDebug("Cleared old metadata for time " + time)
   }
 
   def updateCheckpointData(time: Time) {
     logInfo("Updating checkpoint data for time " + time)
-    this.synchronized {
-      outputStreams.foreach(_.updateCheckpointData(time))
-    }
+    this.synchronized { outputStreams.foreach(_.updateCheckpointData(time)) }
     logInfo("Updated checkpoint data for time " + time)
   }
 
   def clearCheckpointData(time: Time) {
     logInfo("Clearing checkpoint data for time " + time)
-    this.synchronized {
-      outputStreams.foreach(_.clearCheckpointData(time))
-    }
+    this.synchronized { outputStreams.foreach(_.clearCheckpointData(time)) }
     logInfo("Cleared checkpoint data for time " + time)
   }
 
   def restoreCheckpointData() {
     logInfo("Restoring checkpoint data")
-    this.synchronized {
-      outputStreams.foreach(_.restoreCheckpointData())
-    }
+    this.synchronized { outputStreams.foreach(_.restoreCheckpointData()) }
     logInfo("Restored checkpoint data")
   }
 

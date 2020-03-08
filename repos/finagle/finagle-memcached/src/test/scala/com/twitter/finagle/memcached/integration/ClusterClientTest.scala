@@ -193,9 +193,8 @@ class ClusterClientTest
           currentSize = 5,
           expectedPoolSize = -1,
           expectedAdd = -1,
-          expectedRem = -1) {
-          additionalServers = addMoreServers(5)
-        }.get(2.seconds)()
+          expectedRem = -1) { additionalServers = addMoreServers(5) }
+          .get(2.seconds)()
       }
 
       // update config data node, which triggers the pool update
@@ -206,9 +205,7 @@ class ClusterClientTest
           currentSize = 5,
           expectedPoolSize = 10,
           expectedAdd = 5,
-          expectedRem = 0) {
-          updateCachePoolConfigData(10)
-        }.get(10.seconds)()
+          expectedRem = 0) { updateCachePoolConfigData(10) }.get(10.seconds)()
       } catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       /***** remove 2 servers from the zk serverset ******/
@@ -233,9 +230,7 @@ class ClusterClientTest
           currentSize = 10,
           expectedPoolSize = 8,
           expectedAdd = 0,
-          expectedRem = 2) {
-          updateCachePoolConfigData(8)
-        }.get(10.seconds)()
+          expectedRem = 2) { updateCachePoolConfigData(8) }.get(10.seconds)()
       } catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       /***** remove 2 more then add 3 ******/
@@ -261,9 +256,7 @@ class ClusterClientTest
           currentSize = 8,
           expectedPoolSize = 9,
           expectedAdd = 3,
-          expectedRem = 2) {
-          updateCachePoolConfigData(9)
-        }.get(10.seconds)()
+          expectedRem = 2) { updateCachePoolConfigData(9) }.get(10.seconds)()
       } catch { case _: Exception => fail("it shouldn't trown an exception") }
     }
 
@@ -338,9 +331,7 @@ class ClusterClientTest
           currentSize = 2,
           expectedPoolSize = 5,
           expectedAdd = 5,
-          expectedRem = 2) {
-          zookeeperServer.startNetwork
-        }.get(10.seconds)()
+          expectedRem = 2) { zookeeperServer.startNetwork }.get(10.seconds)()
       } catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       /***** start 5 more memcached servers and join the cluster ******/
@@ -585,9 +576,8 @@ class ClusterClientTest
           currentSize = 5,
           expectedPoolSize = 9,
           expectedAdd = 4,
-          expectedRem = 0) {
-          additionalServers = addMoreServers(4)
-        }.get(10.seconds)()
+          expectedRem = 0) { additionalServers = addMoreServers(4) }
+          .get(10.seconds)()
       } catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       eventually { assert(trackCacheShards(client).size == 9) }

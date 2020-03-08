@@ -88,9 +88,8 @@ object Double {
     if (isNaN(a)) {
       if (isNaN(b)) 0
       else 1
-    } else if (isNaN(b)) {
-      -1
-    } else {
+    } else if (isNaN(b)) { -1 }
+    else {
       if (a == b) {
         // -0.0 must be smaller than 0.0
         if (a == 0.0) {
@@ -98,9 +97,7 @@ object Double {
           if (ainf == 1.0 / b) 0
           else if (ainf < 0) -1
           else 1
-        } else {
-          0
-        }
+        } else { 0 }
       } else {
         if (a < b) -1
         else 1

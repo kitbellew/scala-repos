@@ -149,8 +149,6 @@ class ConstructorResolveProcessor(
             fromType = constr.fromType,
             isAccessible = constr.isAccessible))
       }
-    } else {
-      super.candidatesS
-    }
+    } else { super.candidatesS }
   }
 }

@@ -79,9 +79,7 @@ class SizeEstimatorSuite
     System.setProperty("spark.test.useCompressedOops", "true")
   }
 
-  override def afterEach(): Unit = {
-    super.afterEach()
-  }
+  override def afterEach(): Unit = { super.afterEach() }
 
   test("simple classes") {
     assertResult(16)(SizeEstimator.estimate(new DummyClass1))
@@ -151,14 +149,10 @@ class SizeEstimatorSuite
       SizeEstimator.estimate(Array.fill(10000)(new DummyString(arr))))
 
     val buf = new ArrayBuffer[DummyString]()
-    for (i <- 0 until 5000) {
-      buf.append(new DummyString(new Array[Char](10)))
-    }
+    for (i <- 0 until 5000) { buf.append(new DummyString(new Array[Char](10))) }
     assertResult(340016)(SizeEstimator.estimate(buf.toArray))
 
-    for (i <- 0 until 5000) {
-      buf.append(new DummyString(arr))
-    }
+    for (i <- 0 until 5000) { buf.append(new DummyString(arr)) }
     assertResult(683912)(SizeEstimator.estimate(buf.toArray))
 
     // If an array contains the *same* element many times, we should only count it once.

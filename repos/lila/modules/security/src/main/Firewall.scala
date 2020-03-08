@@ -58,9 +58,7 @@ final class Firewall(
 
   def blocksIp(ip: String): Fu[Boolean] = ips contains ip
 
-  private def refresh {
-    ips.clear
-  }
+  private def refresh { ips.clear }
 
   private def formatReq(req: RequestHeader) =
     "%s %s %s".format(

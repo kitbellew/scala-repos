@@ -36,9 +36,7 @@ trait MongoDocument[BaseDocument] extends JsonObject[BaseDocument] {
 
   def meta: MongoDocumentMeta[BaseDocument]
 
-  def delete {
-    meta.delete("_id", _id)
-  }
+  def delete { meta.delete("_id", _id) }
 
   def save = meta.save(this)
 
@@ -82,9 +80,7 @@ trait MongoDocumentMeta[BaseDocument]
     MongoDB.useCollection(connectionIdentifier, collectionName)(coll =>
       coll.findOne(qry) match {
         case null => None
-        case dbo => {
-          Some(create(dbo))
-        }
+        case dbo  => { Some(create(dbo)) }
       })
   }
 
@@ -215,9 +211,7 @@ trait MongoDocumentMeta[BaseDocument]
    * Save a document to the db
    */
   def save(in: BaseDocument) {
-    MongoDB.use(connectionIdentifier)(db => {
-      save(in, db)
-    })
+    MongoDB.use(connectionIdentifier)(db => { save(in, db) })
   }
 
   /*

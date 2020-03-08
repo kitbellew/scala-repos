@@ -1,9 +1,7 @@
 object X {
   val /*caret*/ a = 1
 
-  def foo() = {
-    a + a
-  }
+  def foo() = { a + a }
 
   val b = a
 }

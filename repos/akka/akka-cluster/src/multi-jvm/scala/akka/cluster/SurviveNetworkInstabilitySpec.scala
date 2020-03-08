@@ -45,9 +45,7 @@ object SurviveNetworkInstabilityMultiJvmSpec extends MultiNodeConfig {
   testTransport(on = true)
 
   class Echo extends Actor {
-    def receive = {
-      case m ⇒ sender ! m
-    }
+    def receive = { case m ⇒ sender ! m }
   }
 
   case class Targets(refs: Set[ActorRef])
@@ -109,9 +107,7 @@ abstract class SurviveNetworkInstabilitySpec
   system.actorOf(Props[Echo], "echo")
 
   def assertCanTalk(alive: RoleName*): Unit = {
-    runOn(alive: _*) {
-      awaitAllReachable
-    }
+    runOn(alive: _*) { awaitAllReachable }
     enterBarrier("reachable-ok")
 
     runOn(alive: _*) {
@@ -146,9 +142,7 @@ abstract class SurviveNetworkInstabilitySpec
 
       runOn(first) { assertUnreachable(second) }
       runOn(second) { assertUnreachable(first) }
-      runOn(third, fourth, fifth) {
-        assertUnreachable(first, second)
-      }
+      runOn(third, fourth, fifth) { assertUnreachable(first, second) }
 
       enterBarrier("unreachable-2")
 
@@ -177,9 +171,7 @@ abstract class SurviveNetworkInstabilitySpec
       enterBarrier("blackhole-3")
 
       runOn(first) { assertUnreachable(others: _*) }
-      runOn(others: _*) {
-        assertUnreachable(first)
-      }
+      runOn(others: _*) { assertUnreachable(first) }
 
       enterBarrier("unreachable-3")
 
@@ -203,12 +195,8 @@ abstract class SurviveNetworkInstabilitySpec
       }
       enterBarrier("blackhole-4")
 
-      runOn(island1: _*) {
-        assertUnreachable(island2: _*)
-      }
-      runOn(island2: _*) {
-        assertUnreachable(island1: _*)
-      }
+      runOn(island1: _*) { assertUnreachable(island2: _*) }
+      runOn(island2: _*) { assertUnreachable(island1: _*) }
 
       enterBarrier("unreachable-4")
 
@@ -340,14 +328,8 @@ abstract class SurviveNetworkInstabilitySpec
 
       enterBarrier("unreachable-7")
 
-      runOn(eighth) {
-        cluster.join(third)
-      }
-      runOn(fourth) {
-        for (role2 ← side2) {
-          cluster.down(role2)
-        }
-      }
+      runOn(eighth) { cluster.join(third) }
+      runOn(fourth) { for (role2 ← side2) { cluster.down(role2) } }
 
       enterBarrier("downed-7")
 

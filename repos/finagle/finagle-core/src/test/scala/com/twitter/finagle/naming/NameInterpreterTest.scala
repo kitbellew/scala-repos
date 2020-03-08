@@ -12,9 +12,7 @@ class NameInterpreterTest extends FunSuite with BeforeAndAfter {
   val dtab = Dtab.read("/test=>/$/inet/some-host/1234")
   val name = Path.read("/test")
 
-  after {
-    NameInterpreter.global = DefaultInterpreter
-  }
+  after { NameInterpreter.global = DefaultInterpreter }
 
   // CSL-2175
   ignore("NameInterpreter uses dtab when interpreter is not set") {

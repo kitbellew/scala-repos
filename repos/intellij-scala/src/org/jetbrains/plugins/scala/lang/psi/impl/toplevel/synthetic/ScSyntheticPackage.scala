@@ -111,9 +111,7 @@ object ScSyntheticPackage {
           classOf[PsiClass]
         )
         .toSeq
-        .find(pc => {
-          pc.qualifiedName == fqn
-        }) match {
+        .find(pc => { pc.qualifiedName == fqn }) match {
         case Some(obj) =>
           val pname = if (i < 0) "" else fqn.substring(0, i)
           new ScSyntheticPackage(name, PsiManager.getInstance(project)) {

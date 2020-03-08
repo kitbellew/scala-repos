@@ -31,9 +31,7 @@ import org.apache.spark.SparkException
 
 object AvroConversionUtil extends Serializable {
   def fromAvro(obj: Any, schema: Schema): Any = {
-    if (obj == null) {
-      return null
-    }
+    if (obj == null) { return null }
     schema.getType match {
       case UNION   => unpackUnion(obj, schema)
       case ARRAY   => unpackArray(obj, schema)
@@ -130,9 +128,7 @@ object AvroConversionUtil extends Serializable {
 class IndexedRecordToJavaConverter
     extends Converter[IndexedRecord, JMap[String, Any]] {
   override def convert(record: IndexedRecord): JMap[String, Any] = {
-    if (record == null) {
-      return null
-    }
+    if (record == null) { return null }
     val map = new java.util.HashMap[String, Any]
     AvroConversionUtil.unpackRecord(record)
   }
@@ -145,9 +141,7 @@ class IndexedRecordToJavaConverter
   */
 class AvroWrapperToJavaConverter extends Converter[Any, Any] {
   override def convert(obj: Any): Any = {
-    if (obj == null) {
-      return null
-    }
+    if (obj == null) { return null }
     obj.asInstanceOf[AvroWrapper[_]].datum() match {
       case null                  => null
       case record: IndexedRecord => AvroConversionUtil.unpackRecord(record)

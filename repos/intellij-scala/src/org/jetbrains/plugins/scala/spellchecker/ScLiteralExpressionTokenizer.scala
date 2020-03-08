@@ -43,17 +43,11 @@ class ScLiteralExpressionTokenizer extends Tokenizer[ScLiteral] {
           listOwner,
           Collections.singleton(AnnotationUtil.NON_NLS),
           false,
-          false)) {
-      return
-    }
+          false)) { return }
     val text: String = element.getText
-    if (text == null) {
-      return
-    }
+    if (text == null) { return }
     if (!text.contains("\\")) {
       consumer.consumeToken(element, PlainTextSplitter.getInstance)
-    } else {
-      processTextWithEscapeSequences(element, text, consumer)
-    }
+    } else { processTextWithEscapeSequences(element, text, consumer) }
   }
 }

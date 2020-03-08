@@ -28,9 +28,8 @@ case class MediaType(
             if (MediaRangeParser
                   .token(new CharSequenceReader(value))
                   .next
-                  .atEnd) {
-              "=" + value
-            } else {
+                  .atEnd) { "=" + value }
+            else {
               "=\"" + value
                 .replaceAll("\\\\", "\\\\\\\\")
                 .replaceAll("\"", "\\\\\"") + "\""
@@ -264,9 +263,7 @@ object MediaRange {
           if (qbd > 1) {
             logger.debug("Invalid q value: " + q)
             None
-          } else {
-            Some(BigDecimal(q))
-          }
+          } else { Some(BigDecimal(q)) }
         } catch {
           case _: NumberFormatException =>
             logger.debug("Invalid q value: " + q)

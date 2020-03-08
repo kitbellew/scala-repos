@@ -73,9 +73,7 @@ private[graphx] object BytecodeUtils {
       for (classMethod <- finder.methodsInvoked) {
         if (classMethod._1 == targetClass && classMethod._2 == targetMethod) {
           return true
-        } else if (!seen.contains(classMethod)) {
-          stack = classMethod :: stack
-        }
+        } else if (!seen.contains(classMethod)) { stack = classMethod :: stack }
       }
     }
     return false
@@ -141,9 +139,7 @@ private[graphx] object BytecodeUtils {
             }
           }
         }
-      } else {
-        null
-      }
+      } else { null }
     }
   }
 }

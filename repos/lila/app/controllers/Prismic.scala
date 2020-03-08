@@ -39,9 +39,7 @@ object Prismic {
         .forms("everything")
         .query(s"""[[:d = at(document.id, "$id")]]""")
         .ref(api.master.ref)
-        .submit() map {
-        _.results.headOption
-      }
+        .submit() map { _.results.headOption }
   }
 
   def getBookmark(name: String) =
@@ -60,8 +58,6 @@ object Prismic {
       .forms("variant")
       .query(s"""[[:d = at(my.variant.key, "${variant.key}")]]""")
       .ref(api.master.ref)
-      .submit() map {
-      _.results.headOption map (_ -> makeLinkResolver(api))
-    }
+      .submit() map { _.results.headOption map (_ -> makeLinkResolver(api)) }
   }
 }

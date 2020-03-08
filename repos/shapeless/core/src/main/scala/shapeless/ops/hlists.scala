@@ -81,12 +81,16 @@ object hlist {
 
     implicit def hlistMapped1[H, T <: HList, F[_], OutM <: HList](
         implicit mt: Mapped.Aux[T, F, OutM]): Aux[H :: T, F, F[H] :: OutM] =
-      new Mapped[H :: T, F] { type Out = F[H] :: OutM }
+      new Mapped[H :: T, F] {
+        type Out = F[H] :: OutM
+      }
 
     implicit def hlistMapped2[H, T <: HList, F, OutM <: HList](
         implicit mt: Mapped.Aux[T, Const[F]#λ, OutM])
         : Aux[H :: T, Const[F]#λ, F :: OutM] =
-      new Mapped[H :: T, Const[F]#λ] { type Out = F :: OutM }
+      new Mapped[H :: T, Const[F]#λ] {
+        type Out = F :: OutM
+      }
   }
 
   /**
@@ -101,7 +105,9 @@ object hlist {
       type Out = Out0
     }
     implicit def hlistIdComapped[L <: HList]: Aux[L, Id, L] =
-      new Comapped[L, Id] { type Out = L }
+      new Comapped[L, Id] {
+        type Out = L
+      }
   }
 
   object Comapped extends LowPriorityComapped {
@@ -109,11 +115,15 @@ object hlist {
         implicit comapped: Comapped[L, F]): Aux[L, F, comapped.Out] = comapped
 
     implicit def hnilComapped[F[_]]: Aux[HNil, F, HNil] =
-      new Comapped[HNil, F] { type Out = HNil }
+      new Comapped[HNil, F] {
+        type Out = HNil
+      }
 
     implicit def hlistComapped[H, T <: HList, F[_]](
         implicit mt: Comapped[T, F]): Aux[F[H] :: T, F, H :: mt.Out] =
-      new Comapped[F[H] :: T, F] { type Out = H :: mt.Out }
+      new Comapped[F[H] :: T, F] {
+        type Out = H :: mt.Out
+      }
   }
 
   /**
@@ -233,7 +243,9 @@ object hlist {
     def apply[L <: HList](l: L)(implicit mk: HKernelAux[L]): mk.Out = mk()
   }
 
-  trait HKernelAux[L <: HList] extends DepFn0 { type Out <: HKernel }
+  trait HKernelAux[L <: HList] extends DepFn0 {
+    type Out <: HKernel
+  }
 
   object HKernelAux {
     implicit def mkHNilHKernel = new HKernelAux[HNil] {
@@ -253,7 +265,9 @@ object hlist {
     *
     * @author Miles Sabin
     */
-  trait ToCoproduct[L <: HList] extends Serializable { type Out <: Coproduct }
+  trait ToCoproduct[L <: HList] extends Serializable {
+    type Out <: Coproduct
+  }
 
   object ToCoproduct {
     def apply[L <: HList](implicit tcp: ToCoproduct[L]): Aux[L, tcp.Out] = tcp
@@ -311,7 +325,9 @@ object hlist {
     *
     * @author Miles Sabin
     */
-  trait Length[L <: HList] extends DepFn0 with Serializable { type Out <: Nat }
+  trait Length[L <: HList] extends DepFn0 with Serializable {
+    type Out <: Nat
+  }
 
   object Length {
     def apply[L <: HList](implicit length: Length[L]): Aux[L, length.Out] =
@@ -710,9 +726,7 @@ object hlist {
         def append[LLub](
             l: T :: HNil,
             b: mutable.Builder[LLub, M[LLub]],
-            f: Lub0 => LLub) = {
-          b += f(l.head)
-        }
+            f: Lub0 => LLub) = { b += f(l.head) }
       }
 
     implicit def hlistToTraversable[H1, H2, T <: HList, LubT, Lub0, M[_]](
@@ -1282,9 +1296,7 @@ object hlist {
     ): Aux[L, N, Step, Pad, grouper.Out] = grouper
 
     type Aux[L <: HList, N <: Nat, Step <: Nat, Pad <: HList, Out0] =
-      PaddedGrouper[L, N, Step, Pad] {
-        type Out = Out0
-      }
+      PaddedGrouper[L, N, Step, Pad] { type Out = Out0 }
 
     implicit def defaultPaddedGrouper[
         L <: HList,
@@ -3208,7 +3220,9 @@ object hlist {
     *
     * @author Alexandre Archambault
     */
-  trait Fill[N, A] extends DepFn1[A] with Serializable { type Out <: HList }
+  trait Fill[N, A] extends DepFn1[A] with Serializable {
+    type Out <: HList
+  }
 
   object Fill {
     def apply[N, A](implicit fill: Fill[N, A]): Aux[N, A, fill.Out] = fill

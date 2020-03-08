@@ -23,11 +23,9 @@ abstract class InterruptReq {
 
   /** To be called from interrupted server to execute demanded task */
   def execute(): Unit = synchronized {
-    try {
-      result = Some(Left(todo()))
-    } catch {
-      case t: Throwable => result = Some(Right(t))
-    } finally {
+    try { result = Some(Left(todo())) }
+    catch { case t: Throwable => result = Some(Right(t)) }
+    finally {
       notify()
       for (k <- waiting.reverse) k(result.get)
     }
@@ -36,9 +34,8 @@ abstract class InterruptReq {
   /** To be called from interrupting client to get result for interrupt */
   def getResult(): R = synchronized {
     while (result.isEmpty) {
-      try {
-        wait()
-      } catch { case _: InterruptedException => () }
+      try { wait() }
+      catch { case _: InterruptedException => () }
     }
 
     result.get match {

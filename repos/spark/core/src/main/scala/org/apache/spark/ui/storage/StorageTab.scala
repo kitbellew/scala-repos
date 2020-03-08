@@ -94,7 +94,5 @@ class StorageListener(storageStatusListener: StorageStatusListener)
   }
 
   override def onUnpersistRDD(unpersistRDD: SparkListenerUnpersistRDD): Unit =
-    synchronized {
-      _rddInfoMap.remove(unpersistRDD.rddId)
-    }
+    synchronized { _rddInfoMap.remove(unpersistRDD.rddId) }
 }

@@ -228,9 +228,7 @@ private[orc] class OrcOutputWriter(
   }
 
   override def close(): Unit = {
-    if (recordWriterInstantiated) {
-      recordWriter.close(Reporter.NULL)
-    }
+    if (recordWriterInstantiated) { recordWriter.close(Reporter.NULL) }
   }
 }
 
@@ -279,19 +277,14 @@ private[orc] case class OrcTableScan(
           var i = 0
           while (i < fieldRefs.length) {
             val fieldValue = soi.getStructFieldData(raw, fieldRefs(i))
-            if (fieldValue == null) {
-              mutableRow.setNullAt(fieldOrdinals(i))
-            } else {
-              unwrappers(i)(fieldValue, mutableRow, fieldOrdinals(i))
-            }
+            if (fieldValue == null) { mutableRow.setNullAt(fieldOrdinals(i)) }
+            else { unwrappers(i)(fieldValue, mutableRow, fieldOrdinals(i)) }
             i += 1
           }
           unsafeProjection(mutableRow)
         }
       }
-      .getOrElse {
-        Iterator.empty
-      }
+      .getOrElse { Iterator.empty }
   }
 
   def execute(): RDD[InternalRow] = {

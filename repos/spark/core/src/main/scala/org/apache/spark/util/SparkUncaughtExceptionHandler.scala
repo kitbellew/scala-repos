@@ -42,9 +42,7 @@ private[spark] object SparkUncaughtExceptionHandler
       if (!ShutdownHookManager.inShutdown()) {
         if (exception.isInstanceOf[OutOfMemoryError]) {
           System.exit(SparkExitCode.OOM)
-        } else {
-          System.exit(SparkExitCode.UNCAUGHT_EXCEPTION)
-        }
+        } else { System.exit(SparkExitCode.UNCAUGHT_EXCEPTION) }
       }
     } catch {
       case oom: OutOfMemoryError => Runtime.getRuntime.halt(SparkExitCode.OOM)

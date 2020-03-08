@@ -21,11 +21,7 @@ object Bar {
 object Test {
   def nameBased: Unit = {
     val x: AnyRef = new Foo(new Bar(Some(1), Some(2)))
-    x match {
-      case Foo(Bar(x1, x2)) => println(x1)
-    }
+    x match { case Foo(Bar(x1, x2)) => println(x1) }
   }
-  def main(args: Array[String]): Unit = {
-    nameBased
-  }
+  def main(args: Array[String]): Unit = { nameBased }
 }

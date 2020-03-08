@@ -42,9 +42,7 @@ object BuildSettings {
         // not on a branch, get the hash
         "git rev-parse HEAD".!!.trim
       } else branch
-    } catch {
-      case NonFatal(_) => "unknown"
-    }
+    } catch { case NonFatal(_) => "unknown" }
   }
 
   /**
@@ -78,9 +76,7 @@ object BuildSettings {
         if (crossPaths.value) {
           Set(
             organization.value % s"${moduleName.value}_${scalaBinaryVersion.value}" % previousVersion)
-        } else {
-          Set(organization.value % moduleName.value % previousVersion)
-        }
+        } else { Set(organization.value % moduleName.value % previousVersion) }
       },
       Docs.apiDocsInclude := true
     )

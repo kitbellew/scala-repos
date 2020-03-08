@@ -117,9 +117,7 @@ class StringOrderedSerialization extends OrderedSerialization[String] {
       seekingLeft.seekToPosition(leftStart + leftSize)
       seekingRight.seekToPosition(rightStart + rightSize)
       res
-    } catch {
-      case NonFatal(e) => OrderedSerialization.CompareFailure(e)
-    }
+    } catch { case NonFatal(e) => OrderedSerialization.CompareFailure(e) }
 
   /**
     * generally there is no way to see how big a utf-8 string is without serializing.

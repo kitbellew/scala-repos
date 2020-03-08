@@ -56,9 +56,7 @@ class JsonSupportTestServlet extends ScalatraServlet with NativeJsonSupport {
     BadRequest(JsonResult(("error" -> "message")))
   }
 
-  get("/nulls") {
-    JNull
-  }
+  get("/nulls") { JNull }
 
   implicit protected def jsonFormats: Formats = DefaultFormats
 }

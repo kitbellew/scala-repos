@@ -120,9 +120,7 @@ trait AkkaGuiceSupport {
 
   private def accessBinder: Binder = {
     val method: Method = classOf[AbstractModule].getDeclaredMethod("binder")
-    if (!method.isAccessible) {
-      method.setAccessible(true)
-    }
+    if (!method.isAccessible) { method.setAccessible(true) }
     method.invoke(this).asInstanceOf[Binder]
   }
 
@@ -337,9 +335,8 @@ object ActorSystemProvider {
 
       config.get[Duration]("play.akka.shutdown-timeout") match {
         case timeout: FiniteDuration =>
-          try {
-            Await.result(system.whenTerminated, timeout)
-          } catch {
+          try { Await.result(system.whenTerminated, timeout) }
+          catch {
             case te: TimeoutException =>
               // oh well.  We tried to be nice.
               logger.info(

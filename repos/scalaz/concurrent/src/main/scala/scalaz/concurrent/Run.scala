@@ -29,9 +29,7 @@ object Run {
 
       def strategy: Strategy = r.strategy
 
-      def run(a: B) {
-        r.run(f(a))
-      }
+      def run(a: B) { r.run(f(a)) }
     }
   }
 

@@ -292,9 +292,7 @@ case class HyperLogLogPlusPlus(
       while (idx < m && i < REGISTERS_PER_WORD) {
         val Midx = (word >>> shift) & REGISTER_WORD_MASK
         zInverse += 1.0 / (1 << Midx)
-        if (Midx == 0) {
-          V += 1.0d
-        }
+        if (Midx == 0) { V += 1.0d }
         shift += REGISTER_SIZE
         i += 1
         idx += 1
@@ -315,14 +313,9 @@ case class HyperLogLogPlusPlus(
     val estimate = if (V > 0) {
       // Use linear counting for small cardinality estimates.
       val H = m * Math.log(m / V)
-      if (H <= THRESHOLDS(p - 4)) {
-        H
-      } else {
-        EBiasCorrected
-      }
-    } else {
-      EBiasCorrected
-    }
+      if (H <= THRESHOLDS(p - 4)) { H }
+      else { EBiasCorrected }
+    } else { EBiasCorrected }
 
     // Round to the nearest long value.
     Math.round(estimate)

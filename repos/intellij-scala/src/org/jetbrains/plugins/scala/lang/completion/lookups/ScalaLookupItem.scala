@@ -183,11 +183,8 @@ class ScalaLookupItem(
           presentationString(
             param.getRealParameterType(TypingContext.empty).getOrAny,
             substitutor)
-        if (isNamedParameter) {
-          presentation.setTailText(" = " + str)
-        } else {
-          presentation.setTypeText(str)
-        }
+        if (isNamedParameter) { presentation.setTailText(" = " + str) }
+        else { presentation.setTypeText(str) }
       case clazz: PsiClass =>
         val location: String = clazz.getPresentation.getLocationString
         presentation.setTailText(tailText + " " + location, true)
@@ -209,9 +206,8 @@ class ScalaLookupItem(
           presentationString(alias.aliasedType.getOrAny, substitutor))
       case method: PsiMethod =>
         val str: String = presentationString(method.getReturnType, substitutor)
-        if (isNamedParameter) {
-          presentation.setTailText(" = " + str)
-        } else {
+        if (isNamedParameter) { presentation.setTailText(" = " + str) }
+        else {
           presentation.setTypeText(str)
           val params =
             if (!isOverloadedForClassName)

@@ -76,9 +76,7 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
   private var httpClient: HttpClient = null
   initClient()
 
-  def getHttpClient: HttpClient = {
-    httpClient
-  }
+  def getHttpClient: HttpClient = { httpClient }
 
   /**
     * Makes an http fetch to go retrieve the HTML from a url, store it to disk and pass it off
@@ -139,9 +137,7 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
         var encodingType: String = "UTF-8"
         try {
           encodingType = EntityUtils.getContentCharSet(entity)
-          if (encodingType == null) {
-            encodingType = "UTF-8"
-          }
+          if (encodingType == null) { encodingType = "UTF-8" }
         } catch {
           case e: Exception => {
             if (logger.isDebugEnabled) {
@@ -154,12 +150,8 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
           htmlResult = HtmlFetcher
             .convertStreamToString(instream, 15728640, encodingType)
             .trim
-        } finally {
-          EntityUtils.consume(entity)
-        }
-      } else {
-        trace("Unable to fetch URL Properly: " + cleanUrl)
-      }
+        } finally { EntityUtils.consume(entity) }
+      } else { trace("Unable to fetch URL Properly: " + cleanUrl) }
     } catch {
       case e: NullPointerException => {
         logger.warn(
@@ -172,9 +164,7 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
       case e: SocketException => {
         logger.warn(e.getMessage + " Caught for URL: " + cleanUrl)
       }
-      case e: SocketTimeoutException => {
-        trace(e.toString)
-      }
+      case e: SocketTimeoutException => { trace(e.toString) }
       case e: LoggableException => {
         logger.warn(e.getMessage)
         return None
@@ -185,9 +175,8 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
       }
     } finally {
       if (instream != null) {
-        try {
-          instream.close()
-        } catch {
+        try { instream.close() }
+        catch {
           case e: Exception => {
             logger.warn(e.getMessage + " Caught for URL: " + cleanUrl)
           }
@@ -197,18 +186,12 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
         try {
           httpget.abort()
           entity = null
-        } catch {
-          case e: Exception => {}
-        }
+        } catch { case e: Exception => {} }
       }
     }
-    if (logger.isDebugEnabled) {
-      logger.debug("starting...")
-    }
+    if (logger.isDebugEnabled) { logger.debug("starting...") }
     if (htmlResult == null || htmlResult.length < 1) {
-      if (logger.isDebugEnabled) {
-        logger.debug("HTMLRESULT is empty or null")
-      }
+      if (logger.isDebugEnabled) { logger.debug("HTMLRESULT is empty or null") }
       throw new NotHtmlException(cleanUrl)
     }
     var is: InputStream = null
@@ -221,15 +204,11 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
           return Some(htmlResult)
         } else {
           if (htmlResult.contains("<title>") == true && htmlResult.contains(
-                "<p>") == true) {
-            return Some(htmlResult)
-          }
+                "<p>") == true) { return Some(htmlResult) }
           trace("GRVBIGFAIL: " + mimeType + " - " + cleanUrl)
           throw new NotHtmlException(cleanUrl)
         }
-      } else {
-        throw new NotHtmlException(cleanUrl)
-      }
+      } else { throw new NotHtmlException(cleanUrl) }
     } catch {
       case e: UnsupportedEncodingException => {
         logger.warn(e.getMessage + " Caught for URL: " + cleanUrl)
@@ -252,13 +231,9 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
     emptyCookieStore = new CookieStore {
       def addCookie(cookie: Cookie) {}
 
-      def getCookies: List[Cookie] = {
-        emptyList
-      }
+      def getCookies: List[Cookie] = { emptyList }
 
-      def clearExpired(date: Date): Boolean = {
-        false
-      }
+      def clearExpired(date: Date): Boolean = { false }
 
       def clear() {}
 
@@ -313,9 +288,7 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
       var bytesRead: Int = 2048
       var inLoop = true
       while (inLoop) {
-        if (bytesRead >= maxBytes) {
-          throw new MaxBytesException
-        }
+        if (bytesRead >= maxBytes) { throw new MaxBytesException }
         var n: Int = r.read(buf)
         bytesRead += 2048
 
@@ -330,16 +303,11 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
       case e: UnsupportedEncodingException => {
         logger.warn(e.toString + " Encoding: " + encodingType)
       }
-      case e: IOException => {
-        logger.warn(e.toString + " " + e.getMessage)
-      }
+      case e: IOException => { logger.warn(e.toString + " " + e.getMessage) }
     } finally {
       if (r != null) {
-        try {
-          r.close()
-        } catch {
-          case e: Exception => {}
-        }
+        try { r.close() }
+        catch { case e: Exception => {} }
       }
     }
     null

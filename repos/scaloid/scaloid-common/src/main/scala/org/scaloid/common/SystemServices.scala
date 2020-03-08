@@ -163,9 +163,7 @@ trait SystemServices {
   def onCallForwardingIndicatorChanged(
       fun: Boolean => Any)(implicit ctx: Context, reg: Registerable) {
     val callStateListener = new PhoneStateListener() {
-      override def onCallForwardingIndicatorChanged(cfi: Boolean) {
-        fun(cfi)
-      }
+      override def onCallForwardingIndicatorChanged(cfi: Boolean) { fun(cfi) }
     }
     reg.onRegister {
       telephonyManager.listen(

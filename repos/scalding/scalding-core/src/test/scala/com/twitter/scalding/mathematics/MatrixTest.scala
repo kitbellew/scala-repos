@@ -622,9 +622,7 @@ class MatrixTest extends WordSpec with Matchers {
           Tsv("mat1", ('x1, 'y1, 'v1)),
           List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[Double](Tsv("vctProd")) { ob =>
-          "correctly compute vector inner products" in {
-            ob(0) shouldBe 17.0
-          }
+          "correctly compute vector inner products" in { ob(0) shouldBe 17.0 }
         }
         .run
         .finish
@@ -734,9 +732,7 @@ class MatrixTest extends WordSpec with Matchers {
           }
         }
         .sink[(Int, Double)](Tsv("diag-col")) { ob =>
-          "correctly compute diag * col" in {
-            ob.toMap shouldBe Map(1 -> 1.0)
-          }
+          "correctly compute diag * col" in { ob.toMap shouldBe Map(1 -> 1.0) }
         }
         .sink[(Int, Double)](Tsv("row-diag")) { ob =>
           "correctly compute row * diag" in {
@@ -789,9 +785,7 @@ class MatrixTest extends WordSpec with Matchers {
         TypedTsv[(Int, Double)]("row"),
         List((0, 1.0), (1, 2.0), (2, 4.0)))
       .sink[(Int, Double)](Tsv("first")) { ob =>
-        "correctly mapWithIndex on Row" in {
-          ob.toMap shouldBe Map(0 -> 1.0)
-        }
+        "correctly mapWithIndex on Row" in { ob.toMap shouldBe Map(0 -> 1.0) }
       }
       .sink[(Int, Int, Int)](Tsv("diag")) { ob =>
         "correctly mapWithIndex on Matrix" in {

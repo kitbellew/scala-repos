@@ -54,9 +54,7 @@ class ExtensionServiceIntegrationSuite
 
   test("Instantiate") {
     val services = new SchedulerExtensionServices()
-    assertResult(Nil, "non-nil service list") {
-      services.getServices
-    }
+    assertResult(Nil, "non-nil service list") { services.getServices }
     services.start(SchedulerExtensionServiceBinding(sc, applicationId))
     services.stop()
   }
@@ -72,8 +70,6 @@ class ExtensionServiceIntegrationSuite
       assert(simpleService.started.get, "service not started")
       services.stop()
       assert(!simpleService.started.get, "service not stopped")
-    } finally {
-      services.stop()
-    }
+    } finally { services.stop() }
   }
 }

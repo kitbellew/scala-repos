@@ -276,9 +276,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         )
     }
 
-    def genLoad(tree: Tree) {
-      genLoad(tree, tpeTK(tree))
-    }
+    def genLoad(tree: Tree) { genLoad(tree, tpeTK(tree)) }
 
     /* Generate code for trees that produce values on the stack */
     def genLoad(tree: Tree, expectedType: BType) {
@@ -440,9 +438,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       }
 
       // emit conversion
-      if (generatedType != expectedType) {
-        adapt(generatedType, expectedType)
-      }
+      if (generatedType != expectedType) { adapt(generatedType, expectedType) }
 
     } // end of GenBCode.genLoad()
 
@@ -629,9 +625,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                   jlClassCastExceptionRef.internalName)
                 bc dup ObjectRef
                 emit(asm.Opcodes.ATHROW)
-              } else {
-                bc boolconst false
-              }
+              } else { bc boolconst false }
             } else if (r.isPrimitive && cast) {
               abort(
                 s"Erasure should have added an unboxing operation to prevent this cast. Tree: $app")
@@ -739,10 +733,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             mname,
             methodType.descriptor,
             app.pos)
-          generatedType =
-            boxResultType(
-              fun.symbol
-            ) // was typeToBType(fun.symbol.tpe.resultType)
+          generatedType = boxResultType(
+            fun.symbol
+          ) // was typeToBType(fun.symbol.tpe.resultType)
 
         case Apply(fun @ _, List(expr))
             if currentRun.runDefinitions.isUnbox(fun.symbol) =>
@@ -778,9 +771,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                   InvokeStyle.Special
                 else InvokeStyle.Virtual
 
-              if (invokeStyle.hasInstance) {
-                genLoadQualifier(fun)
-              }
+              if (invokeStyle.hasInstance) { genLoadQualifier(fun) }
 
               genLoadArguments(args, paramTKs(app))
 

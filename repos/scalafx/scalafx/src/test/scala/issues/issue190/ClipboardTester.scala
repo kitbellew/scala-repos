@@ -65,9 +65,7 @@ object ClipboardTester extends JFXApp {
           },
           new Button {
             text = "Clear clipboard"
-            onAction = handle {
-              Clipboard.systemClipboard.clear()
-            }
+            onAction = handle { Clipboard.systemClipboard.clear() }
           },
           new Button {
             text = "Add file content (1)"

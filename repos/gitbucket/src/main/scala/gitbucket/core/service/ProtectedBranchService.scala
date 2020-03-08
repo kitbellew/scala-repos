@@ -90,9 +90,7 @@ object ProtectedBranchService {
           receivePack.isAllowNonFastForwards,
           command,
           pusher)
-      } else {
-        None
-      }
+      } else { None }
     }
   }
 
@@ -150,15 +148,12 @@ object ProtectedBranchService {
             Some("Cannot delete a protected branch")
           case _ => None
         }
-      } else {
-        None
-      }
+      } else { None }
     }
     def unSuccessedContexts(sha1: String)(
         implicit session: Session): Set[String] =
-      if (contexts.isEmpty) {
-        Set.empty
-      } else {
+      if (contexts.isEmpty) { Set.empty }
+      else {
         contexts.toSet -- getCommitStatues(owner, repository, sha1)
           .filter(_.state == CommitState.SUCCESS)
           .map(_.context)

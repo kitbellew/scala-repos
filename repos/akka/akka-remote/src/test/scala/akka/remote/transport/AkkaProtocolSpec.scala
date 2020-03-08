@@ -198,9 +198,7 @@ class AkkaProtocolSpec
 
       reader ! testPayload
 
-      expectMsgPF() {
-        case InboundPayload(p) ⇒ p should ===(testEnvelope)
-      }
+      expectMsgPF() { case InboundPayload(p) ⇒ p should ===(testEnvelope) }
     }
 
     "in inbound mode disassociate when an unexpected message arrives instead of Associate" in {

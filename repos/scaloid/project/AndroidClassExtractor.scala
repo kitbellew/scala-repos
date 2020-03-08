@@ -76,9 +76,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
 
     val superMethods: Set[String] =
       superClass
-        .map {
-          _.getMethods.map(methodSignature).toSet
-        }
+        .map { _.getMethods.map(methodSignature).toSet }
         .getOrElse(Set())
 
     def toAndroidMethod(m: Method): AndroidMethod = {
@@ -159,9 +157,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         .map {
           case (name, methods) =>
             val (_setters, _getters) = methods
-              .filter {
-                !_.toGenericString.contains("static")
-              }
+              .filter { !_.toGenericString.contains("static") }
               .partition(_.getName.startsWith("set"))
             val setters =
               _setters.map(toAndroidMethod).sortBy(_.argTypes.head.name).toList
@@ -316,9 +312,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       constructorNames
         .find {
           case (key, _) =>
-            types.zip(key).forall {
-              case (t, k) => t.endsWith(k)
-            }
+            types.zip(key).forall { case (t, k) => t.endsWith(k) }
         }
         .map(_._2)
 
@@ -326,9 +320,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
 
       val isVarArgs = cons.isVarArgs
 
-      def isImplicit(a: Argument) = {
-        a.tpe.simpleName == "Context"
-      }
+      def isImplicit(a: Argument) = { a.tpe.simpleName == "Context" }
 
       val javaTypes = cons.getGenericParameterTypes.toList
       val typeStrs = javaTypes.reverse match {
@@ -347,9 +339,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           }
           val types = javaTypes.map(toScalaType)
 
-          paramNames.zip(types).map {
-            case (n, t) => Argument(n, t)
-          }
+          paramNames.zip(types).map { case (n, t) => Argument(n, t) }
       }
 
       val (implicits, explicits) = args.partition(isImplicit)

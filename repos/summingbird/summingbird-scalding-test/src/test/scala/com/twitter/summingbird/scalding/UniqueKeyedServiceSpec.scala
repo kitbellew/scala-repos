@@ -22,10 +22,7 @@ class UniqueKeyJoinJob(args: Args) extends Job(args) {
   val uniqueKeyJoiner =
     UniqueKeyedService.fromAndThen[(Int, String), Int, String](
       dr => versionedSource,
-      pipe =>
-        pipe.map {
-          case (key, value) => (key, value)
-        },
+      pipe => pipe.map { case (key, value) => (key, value) },
       inputReducers = Some(1),
       requireFullySatisfiable = false
     )

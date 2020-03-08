@@ -466,9 +466,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
           case Library.SilentCast(ch) => b"$ch"
           case Apply(sym: Library.SqlOperator, ch) =>
             b"\("
-            if (ch.length == 1) {
-              b"${sym.name} ${ch.head}"
-            } else b.sep(ch, " " + sym.name + " ")(expr(_))
+            if (ch.length == 1) { b"${sym.name} ${ch.head}" }
+            else b.sep(ch, " " + sym.name + " ")(expr(_))
             b"\)"
           case Apply(sym: Library.JdbcFunction, ch) =>
             val quote = quotedJdbcFns.map(_.contains(sym)).getOrElse(true)

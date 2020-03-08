@@ -14,9 +14,7 @@ class StateMachineTest extends WordSpec {
         state = State1()
 
         def command1() {
-          transition("command1") {
-            case State1() => state = State2()
-          }
+          transition("command1") { case State1() => state = State2() }
         }
       }
 
@@ -35,9 +33,7 @@ class StateMachineTest extends WordSpec {
       import h._
 
       stateMachine.command1()
-      intercept[StateMachine.InvalidStateTransition] {
-        stateMachine.command1()
-      }
+      intercept[StateMachine.InvalidStateTransition] { stateMachine.command1() }
     }
   }
 }

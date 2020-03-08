@@ -58,9 +58,7 @@ class HiveTypeCoercionSuite extends HiveComparisonTest {
       .sql(q)
       .queryExecution
       .sparkPlan
-      .collect {
-        case e: Project => e
-      }
+      .collect { case e: Project => e }
       .head
 
     // No cast expression introduced

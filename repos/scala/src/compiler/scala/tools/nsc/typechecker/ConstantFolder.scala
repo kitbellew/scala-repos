@@ -175,8 +175,6 @@ abstract class ConstantFolder {
       case DoubleTag                             => foldDoubleOp(op, x, y)
       case StringTag if op == nme.ADD            => Constant(x.stringValue + y.stringValue)
       case _                                     => null
-    } catch {
-      case _: ArithmeticException => null
-    }
+    } catch { case _: ArithmeticException => null }
   }
 }

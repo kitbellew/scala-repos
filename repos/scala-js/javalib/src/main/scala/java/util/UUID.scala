@@ -114,17 +114,11 @@ final class UUID private (
   }
 
   def compareTo(that: UUID): Int = {
-    if (this.i1 != that.i1) {
-      if (this.i1 > that.i1) 1 else -1
-    } else if (this.i2 != that.i2) {
-      if (this.i2 > that.i2) 1 else -1
-    } else if (this.i3 != that.i3) {
-      if (this.i3 > that.i3) 1 else -1
-    } else if (this.i4 != that.i4) {
-      if (this.i4 > that.i4) 1 else -1
-    } else {
-      0
-    }
+    if (this.i1 != that.i1) { if (this.i1 > that.i1) 1 else -1 }
+    else if (this.i2 != that.i2) { if (this.i2 > that.i2) 1 else -1 }
+    else if (this.i3 != that.i3) { if (this.i3 > that.i3) 1 else -1 }
+    else if (this.i4 != that.i4) { if (this.i4 > that.i4) 1 else -1 }
+    else { 0 }
   }
 }
 
@@ -167,8 +161,6 @@ object UUID {
       val i3 = parseHex8(name.substring(19, 23), name.substring(24, 28))
       val i4 = parseHex8(name.substring(28, 32), name.substring(32, 36))
       new UUID(i1, i2, i3, i4, null, null)
-    } catch {
-      case _: NumberFormatException => fail()
-    }
+    } catch { case _: NumberFormatException => fail() }
   }
 }

@@ -12,57 +12,33 @@ import org.scalatra.test.scalatest.ScalatraFunSuite
  */
 
 class ScalatraFilterTestFilter extends ScalatraFilter {
-  get("/path-mapped/filtered") {
-    "filter"
-  }
+  get("/path-mapped/filtered") { "filter" }
 
-  get("/filtered.do") {
-    "filter"
-  }
+  get("/filtered.do") { "filter" }
 
-  get("/filtered") {
-    "filter"
-  }
+  get("/filtered") { "filter" }
 
-  get("/exact-match/filtered") {
-    "filter"
-  }
+  get("/exact-match/filtered") { "filter" }
 
-  get("/status-202") {
-    status = 202
-  }
+  get("/status-202") { status = 202 }
 
-  get("/init-param/:name") {
-    initParameter(params("name")).toString
-  }
+  get("/init-param/:name") { initParameter(params("name")).toString }
 
-  get("/encoded-uri/:name") {
-    params("name")
-  }
+  get("/encoded-uri/:name") { params("name") }
 
-  get("/encoded-uri-2/中国话不用彁字。") {
-    "中国话不用彁字。"
-  }
+  get("/encoded-uri-2/中国话不用彁字。") { "中国话不用彁字。" }
 }
 
 class ScalatraFilterTestPathMappedServlet extends ScalatraServlet {
-  get("/filtered") {
-    "path-mapped"
-  }
+  get("/filtered") { "path-mapped" }
 
-  get("/unfiltered") {
-    "path-mapped"
-  }
+  get("/unfiltered") { "path-mapped" }
 }
 
 class ScalatraFilterTestExtensionMappedServlet extends ScalatraServlet {
-  get("/filtered.do") {
-    "extension-mapped"
-  }
+  get("/filtered.do") { "extension-mapped" }
 
-  get("/unfiltered.do") {
-    "extension-mapped"
-  }
+  get("/unfiltered.do") { "extension-mapped" }
 
   // Non path-mapped servlets need this to work
   override def requestPath(implicit request: HttpServletRequest) =
@@ -70,13 +46,9 @@ class ScalatraFilterTestExtensionMappedServlet extends ScalatraServlet {
 }
 
 class ScalatraFilterTestDefaultServlet extends ScalatraServlet {
-  get("/filtered") {
-    "default"
-  }
+  get("/filtered") { "default" }
 
-  get("/unfiltered") {
-    "default"
-  }
+  get("/unfiltered") { "default" }
 
   // Non path-mapped servlets need this to work
   override def requestPath(implicit request: HttpServletRequest) =
@@ -84,13 +56,9 @@ class ScalatraFilterTestDefaultServlet extends ScalatraServlet {
 }
 
 class ScalatraFilterTestExactMatchServlet extends ScalatraServlet {
-  get("/exact-match/filtered") {
-    "exact match"
-  }
+  get("/exact-match/filtered") { "exact match" }
 
-  get("/exact-match/unfiltered") {
-    "exact match"
-  }
+  get("/exact-match/unfiltered") { "exact match" }
 
   // Non path-mapped servlets need this to work
   override def requestPath(implicit request: HttpServletRequest) =
@@ -115,69 +83,47 @@ class ScalatraFilterTest extends ScalatraFunSuite {
   addServlet(classOf[ScalatraFilterTestDefaultServlet], "/")
 
   test("should filter matching request to path-mapped servlet") {
-    get("/path-mapped/filtered") {
-      body should equal("filter")
-    }
+    get("/path-mapped/filtered") { body should equal("filter") }
   }
 
   test("should pass through unmatched request to path-mapped servlet") {
-    get("/path-mapped/unfiltered") {
-      body should equal("path-mapped")
-    }
+    get("/path-mapped/unfiltered") { body should equal("path-mapped") }
   }
 
   test("should filter matching request to extension-mapped servlet") {
-    get("/filtered.do") {
-      body should equal("filter")
-    }
+    get("/filtered.do") { body should equal("filter") }
   }
 
   test("should pass through unmatched request to extension-mapped servlet") {
-    get("/unfiltered.do") {
-      body should equal("extension-mapped")
-    }
+    get("/unfiltered.do") { body should equal("extension-mapped") }
   }
 
   test("should filter matching request to default servlet") {
-    get("/filtered") {
-      body should equal("filter")
-    }
+    get("/filtered") { body should equal("filter") }
   }
 
   test("should pass through unmatched request to default servlet") {
-    get("/unfiltered") {
-      body should equal("default")
-    }
+    get("/unfiltered") { body should equal("default") }
   }
 
   test("should filter matching request to exact-match-mapped servlet") {
-    get("/exact-match/filtered") {
-      body should equal("filter")
-    }
+    get("/exact-match/filtered") { body should equal("filter") }
   }
 
   test("should pass through unmatched request to exact-match-mapped servlet") {
-    get("/exact-match/unfiltered") {
-      body should equal("exact match")
-    }
+    get("/exact-match/unfiltered") { body should equal("exact match") }
   }
 
   test("init parameter returns Some if set") {
-    get("/init-param/cat-who-is-biting-me") {
-      body should equal("Some(Pete)")
-    }
+    get("/init-param/cat-who-is-biting-me") { body should equal("Some(Pete)") }
   }
 
   test("init parameter returns None if not set") {
-    get("/init-param/derp") {
-      body should equal("None")
-    }
+    get("/init-param/derp") { body should equal("None") }
   }
 
   test("handles encoded characters in uri") {
-    get("/encoded-uri/ac/dc") {
-      status should equal(404)
-    }
+    get("/encoded-uri/ac/dc") { status should equal(404) }
 
     get("/encoded-uri/ac%2Fdc") {
       status should equal(200)
@@ -199,9 +145,7 @@ class ScalatraFilterTest extends ScalatraFunSuite {
       body should equal("Fußgängerübergänge/?#")
     }
 
-    get("/encoded-uri-2/中国话不用彁字。") {
-      status should equal(200)
-    }
+    get("/encoded-uri-2/中国话不用彁字。") { status should equal(200) }
 
     get(
       "/encoded-uri-2/%E4%B8%AD%E5%9B%BD%E8%AF%9D%E4%B8%8D%E7%94%A8%E5%BD%81%E5%AD%97%E3%80%82") {
@@ -222,8 +166,6 @@ class ScalatraFilterWithoutServletMappingTest extends ScalatraFunSuite {
   // Based on http://gist.github.com/519565, http://gist.github.com/519566.
   // Was instead giving a 404.
   test("should match even when no servlet is mapped") {
-    get("/status-202") {
-      status should equal(202)
-    }
+    get("/status-202") { status should equal(202) }
   }
 }

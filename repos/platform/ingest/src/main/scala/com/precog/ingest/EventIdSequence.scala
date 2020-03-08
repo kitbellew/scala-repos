@@ -42,9 +42,7 @@ class SystemEventIdSequence private (
   import SystemEventIdSequence.InternalState
 
   def next(offset: Long) = {
-    if (state.isEmpty) {
-      state = refill(offset)
-    }
+    if (state.isEmpty) { state = refill(offset) }
     state.next()
   }
 
@@ -74,9 +72,7 @@ class SystemEventIdSequence private (
     PrecogUnit
   }
 
-  def getLastOffset(): Long = {
-    state.lastOffset
-  }
+  def getLastOffset(): Long = { state.lastOffset }
 }
 
 object SystemEventIdSequence {

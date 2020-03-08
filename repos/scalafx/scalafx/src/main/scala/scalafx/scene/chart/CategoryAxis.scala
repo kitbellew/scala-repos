@@ -63,19 +63,13 @@ class CategoryAxis(
   def categorySpacing: ReadOnlyDoubleProperty = delegate.categorySpacingProperty
 
   def endMargin: DoubleProperty = delegate.endMarginProperty
-  def endMargin_=(v: Double) {
-    endMargin() = v
-  }
+  def endMargin_=(v: Double) { endMargin() = v }
 
   def gapStartAndEnd: BooleanProperty = delegate.gapStartAndEndProperty
-  def gapStartAndEnd_=(v: Boolean) {
-    gapStartAndEnd() = v
-  }
+  def gapStartAndEnd_=(v: Boolean) { gapStartAndEnd() = v }
 
   def startMargin: DoubleProperty = delegate.startMarginProperty
-  def startMargin_=(v: Double) {
-    startMargin() = v
-  }
+  def startMargin_=(v: Double) { startMargin() = v }
 
   def categories = delegate.getCategories
   def categories_=(value: ObservableBuffer[String]) {

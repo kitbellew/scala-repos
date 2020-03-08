@@ -93,9 +93,7 @@ class MongoJobManagerSpec extends Specification with RealMongoSpecSupport {
   var actorSystem: ActorSystem = _
   implicit def executionContext = actorSystem.dispatcher
 
-  step {
-    actorSystem = ActorSystem("mongo-job-manager-spec")
-  }
+  step { actorSystem = ActorSystem("mongo-job-manager-spec") }
 
   include(new JobManagerSpec[Future] {
     val validAPIKey = "Anything should work!"
@@ -107,9 +105,7 @@ class MongoJobManagerSpec extends Specification with RealMongoSpecSupport {
       new InMemoryFileStorage[Future])
   })
 
-  step {
-    actorSystem.shutdown()
-  }
+  step { actorSystem.shutdown() }
 }
 
 trait JobManagerSpec[M[+_]] extends Specification {

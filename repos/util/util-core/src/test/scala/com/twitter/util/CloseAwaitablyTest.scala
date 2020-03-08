@@ -34,9 +34,7 @@ class CloseAwaitablyTest extends FunSuite {
     val c = make()
     val t = new Thread {
       start()
-      override def run() {
-        Await.ready(c)
-      }
+      override def run() { Await.ready(c) }
     }
 
     c.close(Time.now)

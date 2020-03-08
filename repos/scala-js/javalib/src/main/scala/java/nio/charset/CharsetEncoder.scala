@@ -57,11 +57,8 @@ abstract class CharsetEncoder protected (
     def loop(outBufSize: Int): Boolean = {
       val result =
         decoder.decode(replBuf, CharBuffer.allocate(outBufSize), true)
-      if (result.isOverflow) {
-        loop(outBufSize * 2)
-      } else {
-        !replBuf.hasRemaining
-      }
+      if (result.isOverflow) { loop(outBufSize * 2) }
+      else { !replBuf.hasRemaining }
     }
 
     loop(2)
@@ -111,9 +108,8 @@ abstract class CharsetEncoder protected (
     @tailrec
     def loop(): CoderResult = {
       val result1 =
-        try {
-          encodeLoop(in, out)
-        } catch {
+        try { encodeLoop(in, out) }
+        catch {
           case ex: BufferOverflowException =>
             throw new CoderMalfunctionError(ex)
           case ex: BufferUnderflowException =>
@@ -126,22 +122,18 @@ abstract class CharsetEncoder protected (
           CoderResult.malformedForLength(remaining)
         else
           result1
-      } else {
-        result1
-      }
+      } else { result1 }
 
-      if (result2.isUnderflow || result2.isOverflow) {
-        result2
-      } else {
+      if (result2.isUnderflow || result2.isOverflow) { result2 }
+      else {
         val action =
           if (result2.isUnmappable) unmappableCharacterAction
           else malformedInputAction
 
         action match {
           case CodingErrorAction.REPLACE =>
-            if (out.remaining < replacement.length) {
-              CoderResult.OVERFLOW
-            } else {
+            if (out.remaining < replacement.length) { CoderResult.OVERFLOW }
+            else {
               out.put(replacement)
               in.position(in.position + result2.length)
               loop()
@@ -187,9 +179,8 @@ abstract class CharsetEncoder protected (
 
   final def encode(in: CharBuffer): ByteBuffer = {
     def grow(out: ByteBuffer): ByteBuffer = {
-      if (out.capacity == 0) {
-        ByteBuffer.allocate(1)
-      } else {
+      if (out.capacity == 0) { ByteBuffer.allocate(1) }
+      else {
         val result = ByteBuffer.allocate(out.capacity * 2)
         out.flip()
         result.put(out)
@@ -197,9 +188,8 @@ abstract class CharsetEncoder protected (
       }
     }
 
-    if (in.remaining == 0) {
-      ByteBuffer.allocate(0)
-    } else {
+    if (in.remaining == 0) { ByteBuffer.allocate(0) }
+    else {
       @inline
       @tailrec
       def loopEncode(out: ByteBuffer): ByteBuffer = {
@@ -207,9 +197,8 @@ abstract class CharsetEncoder protected (
         if (result.isUnderflow) {
           assert(!in.hasRemaining)
           out
-        } else if (result.isOverflow) {
-          loopEncode(grow(out))
-        } else {
+        } else if (result.isOverflow) { loopEncode(grow(out)) }
+        else {
           result.throwException()
           throw new AssertionError("should not get here")
         }
@@ -219,11 +208,9 @@ abstract class CharsetEncoder protected (
       @tailrec
       def loopFlush(out: ByteBuffer): ByteBuffer = {
         val result = flush(out)
-        if (result.isUnderflow) {
-          out
-        } else if (result.isOverflow) {
-          loopFlush(grow(out))
-        } else {
+        if (result.isUnderflow) { out }
+        else if (result.isOverflow) { loopFlush(grow(out)) }
+        else {
           result.throwException()
           throw new AssertionError("should not get here")
         }

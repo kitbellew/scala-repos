@@ -62,9 +62,7 @@ private[spark] class FixedLengthBinaryInputFormat
     if (recordLength <= 0) {
       logDebug("record length is less than 0, file cannot be split")
       false
-    } else {
-      true
-    }
+    } else { true }
   }
 
   /**
@@ -81,11 +79,8 @@ private[spark] class FixedLengthBinaryInputFormat
     // Otherwise, make sure the split size is as close to possible as the default size,
     // but still contains a complete set of records, with the first record
     // starting at the first byte in the split and the last record ending with the last byte
-    if (defaultSize < recordLength) {
-      recordLength.toLong
-    } else {
-      (Math.floor(defaultSize / recordLength) * recordLength).toLong
-    }
+    if (defaultSize < recordLength) { recordLength.toLong }
+    else { (Math.floor(defaultSize / recordLength) * recordLength).toLong }
   }
 
   /**

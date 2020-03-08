@@ -95,9 +95,7 @@ class FutureBenchmark extends StdBenchAnnotations {
 
   @Benchmark
   def monitored(): String = {
-    val f = Future.monitored {
-      StringFuture
-    }
+    val f = Future.monitored { StringFuture }
     Await.result(f)
   }
 

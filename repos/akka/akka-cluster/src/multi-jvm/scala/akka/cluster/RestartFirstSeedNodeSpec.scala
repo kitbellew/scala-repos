@@ -113,9 +113,7 @@ abstract class RestartFirstSeedNodeSpec
       enterBarrier("started")
 
       // shutdown seed1System
-      runOn(seed1) {
-        shutdown(seed1System, remainingOrDefault)
-      }
+      runOn(seed1) { shutdown(seed1System, remainingOrDefault) }
       enterBarrier("seed1-shutdown")
 
       // then start restartedSeed1System, which has the same address as seed1System
@@ -129,9 +127,7 @@ abstract class RestartFirstSeedNodeSpec
               .map(_.status) should ===(Set(Up)))
         }
       }
-      runOn(seed2, seed3) {
-        awaitMembersUp(3)
-      }
+      runOn(seed2, seed3) { awaitMembersUp(3) }
       enterBarrier("seed1-restarted")
 
     }

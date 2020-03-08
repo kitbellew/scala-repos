@@ -172,9 +172,7 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         Language("es"))
     }
 
-    "Age" in {
-      "Age: 3600" =!= Age(3600)
-    }
+    "Age" in { "Age: 3600" =!= Age(3600) }
 
     "Allow" in {
       "Allow: " =!= Allow()
@@ -400,9 +398,7 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
       """ETag: W/"938fz3f83z3z38z"""" =!= ETag("938fz3f83z3z38z", weak = true)
     }
 
-    "Expect" in {
-      "Expect: 100-continue" =!= Expect.`100-continue`
-    }
+    "Expect" in { "Expect: 100-continue" =!= Expect.`100-continue` }
 
     "Expires" in {
       "Expires: Wed, 13 Jul 2011 08:12:31 GMT" =!= Expires(

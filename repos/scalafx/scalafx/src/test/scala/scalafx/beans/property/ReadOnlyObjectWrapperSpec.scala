@@ -89,9 +89,7 @@ class ReadOnlyObjectWrapperSpec
     objectProperty.name should equal("Test Object")
   }
 
-  it should "know its bean" in {
-    objectProperty.bean should equal(bean)
-  }
+  it should "know its bean" in { objectProperty.bean should equal(bean) }
 
   it should "be bindable to another Object Property" in {
     objectProperty <== objectProperty2
@@ -193,12 +191,8 @@ class ReadOnlyObjectWrapperSpec
     var invalidateCount = 0
     var changeCount = 0
     val binding = objectProperty === objectProperty2
-    binding onInvalidate {
-      invalidateCount += 1
-    }
-    binding onChange {
-      changeCount += 1
-    }
+    binding onInvalidate { invalidateCount += 1 }
+    binding onChange { changeCount += 1 }
     objectProperty() = "new value"
     invalidateCount should equal(1)
     changeCount should equal(1)

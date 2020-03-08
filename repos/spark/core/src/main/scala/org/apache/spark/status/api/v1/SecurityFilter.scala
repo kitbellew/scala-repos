@@ -26,9 +26,8 @@ private[v1] class SecurityFilter
     with UIRootFromServletContext {
   def filter(req: ContainerRequest): ContainerRequest = {
     val user = Option(req.getUserPrincipal).map { _.getName }.orNull
-    if (uiRoot.securityManager.checkUIViewPermissions(user)) {
-      req
-    } else {
+    if (uiRoot.securityManager.checkUIViewPermissions(user)) { req }
+    else {
       throw new WebApplicationException(
         Response
           .status(Response.Status.FORBIDDEN)

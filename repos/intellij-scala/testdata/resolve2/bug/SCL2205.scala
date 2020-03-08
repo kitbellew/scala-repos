@@ -9,5 +9,7 @@ object O extends Application {
   /* line: 6 */
   m(new C) // error: type mismatch
   /* line: 6 */
-  m(new C { override def doSmth(p: Int) = 1 }) // ok
+  m(new C {
+    override def doSmth(p: Int) = 1
+  }) // ok
 }

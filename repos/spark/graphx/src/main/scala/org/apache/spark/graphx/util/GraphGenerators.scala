@@ -157,9 +157,7 @@ object GraphGenerators extends Logging {
     }
     var edges: Set[Edge[Int]] = Set()
     while (edges.size < numEdges) {
-      if (edges.size % 100 == 0) {
-        logDebug(edges.size + " edges")
-      }
+      if (edges.size % 100 == 0) { logDebug(edges.size + " edges") }
       edges += addEdge(numVertices)
     }
     outDegreeFromEdges(sc.parallelize(edges.toList))
@@ -220,9 +218,8 @@ object GraphGenerators extends Logging {
     */
   @tailrec
   private def chooseCell(x: Int, y: Int, t: Int): (Int, Int) = {
-    if (t <= 1) {
-      (x, y)
-    } else {
+    if (t <= 1) { (x, y) }
+    else {
       val newT = math.round(t.toFloat / 2.0).toInt
       pickQuadrant(RMATa, RMATb, RMATc, RMATd) match {
         case 0 => chooseCell(x, y, newT)

@@ -1,4 +1,6 @@
-object t extends Enumeration { val a, b = Value }
+object t extends Enumeration {
+  val a, b = Value
+}
 
 object Test extends App {
   println(t.values)

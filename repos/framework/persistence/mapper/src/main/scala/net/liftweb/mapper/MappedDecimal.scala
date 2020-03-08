@@ -147,9 +147,7 @@ abstract class MappedDecimal[T <: Mapper[T]](
   protected def i_is_! = data
   protected def i_was_! = orgData
 
-  override def doneWithSave() {
-    orgData = data
-  }
+  override def doneWithSave() { orgData = data }
 
   override def readPermission_? = true
   override def writePermission_? = true
@@ -258,11 +256,8 @@ abstract class MappedDecimal[T <: Mapper[T]](
     * top of the page concerning default precision.
     */
   def fieldCreatorString(dbType: DriverType, colName: String): String = {
-    val suffix = if (context.getPrecision == 0) {
-      ""
-    } else {
-      "(" + context.getPrecision + "," + scale + ")"
-    }
+    val suffix = if (context.getPrecision == 0) { "" }
+    else { "(" + context.getPrecision + "," + scale + ")" }
 
     colName + " DECIMAL" + suffix + notNullAppender()
   }

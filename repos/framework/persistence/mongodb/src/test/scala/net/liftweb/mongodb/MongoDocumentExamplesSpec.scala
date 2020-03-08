@@ -259,9 +259,7 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
     pFromDb.isEmpty must_== true
     pFromDbViaJson.isEmpty must_== true
 
-    if (!debug) {
-      SimplePerson.drop
-    }
+    if (!debug) { SimplePerson.drop }
 
     success
   }
@@ -449,9 +447,7 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
     }
 
     // insert multiple documents
-    for (i <- List.range(1, 101)) {
-      IDoc(ObjectId.get, i).save
-    }
+    for (i <- List.range(1, 101)) { IDoc(ObjectId.get, i).save }
 
     // count the docs
     IDoc.count must_== 100

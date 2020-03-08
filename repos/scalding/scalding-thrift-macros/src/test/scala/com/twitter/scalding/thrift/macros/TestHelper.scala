@@ -36,9 +36,7 @@ object TestHelper extends Matchers {
   }
 
   def oBufCompare[T](a: T, b: T)(
-      implicit obuf: OrderedSerialization[T]): Int = {
-    obuf.compare(a, b)
-  }
+      implicit obuf: OrderedSerialization[T]): Int = { obuf.compare(a, b) }
 
   def deserializeSeq[T](items: Int, buf: InputStream)(
       implicit orderedBuffer: OrderedSerialization[T]): Seq[T] = {

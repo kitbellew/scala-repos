@@ -24,15 +24,9 @@ class AkkaSupportAfterFilterServlet extends ScalatraServlet with FutureSupport {
     "async-two-afters"
   }
 
-  get("/sync") {
-    "sync"
-  }
+  get("/sync") { "sync" }
 
-  get("/future") {
-    Future({
-      "future"
-    })
-  }
+  get("/future") { Future({ "future" }) }
 
   after() {
     afterCount += 1
@@ -67,33 +61,25 @@ class AkkaSupportAfterFilterSpec extends MutableScalatraSpec {
     "run after the action" in {
       servlet.reset()
 
-      get("/async") {
-        servlet.afterTime must beGreaterThan(servlet.actionTime)
-      }
+      get("/async") { servlet.afterTime must beGreaterThan(servlet.actionTime) }
     }
 
     "run only once" in {
       servlet.reset()
 
-      get("/async") {
-        servlet.afterCount mustEqual 1
-      }
+      get("/async") { servlet.afterCount mustEqual 1 }
     }
 
     "all execute" in {
       servlet.reset()
 
-      get("/async-two-afters") {
-        servlet.afterCount mustEqual 2
-      }
+      get("/async-two-afters") { servlet.afterCount mustEqual 2 }
     }
 
     "work when contextPath != /" in {
       servlet.reset()
 
-      get("/foo/async-two-afters") {
-        servlet.afterCount mustEqual 2
-      }
+      get("/foo/async-two-afters") { servlet.afterCount mustEqual 2 }
     }
   }
 
@@ -109,9 +95,7 @@ class AkkaSupportAfterFilterSpec extends MutableScalatraSpec {
     "run only once" in {
       servlet.reset()
 
-      get("/future") {
-        servlet.afterCount mustEqual 1
-      }
+      get("/future") { servlet.afterCount mustEqual 1 }
     }
   }
 
@@ -119,9 +103,7 @@ class AkkaSupportAfterFilterSpec extends MutableScalatraSpec {
     "run normally" in {
       servlet.reset()
 
-      get("/sync") {
-        servlet.afterCount mustEqual 1
-      }
+      get("/sync") { servlet.afterCount mustEqual 1 }
     }
   }
 }

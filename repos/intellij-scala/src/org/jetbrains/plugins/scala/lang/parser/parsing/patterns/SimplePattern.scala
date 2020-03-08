@@ -151,9 +151,7 @@ object SimplePattern extends ParserNode {
                 wild.rollbackTo()
                 false
               }
-            } else {
-              false
-            }
+            } else { false }
           }
 
           def parseSeqWildcardBinding(withComma: Boolean): Boolean = {

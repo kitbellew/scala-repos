@@ -23,9 +23,7 @@ class Bar extends Foo with Serializable {
 
   def checkMember { if (first == null) print("") }
 
-  private def writeObject(out: java.io.ObjectOutputStream) {
-    serializeTo(out)
-  }
+  private def writeObject(out: java.io.ObjectOutputStream) { serializeTo(out) }
 
   private def readObject(in: java.io.ObjectInputStream) {
     first = null

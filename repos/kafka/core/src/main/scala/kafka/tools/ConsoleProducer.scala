@@ -43,14 +43,10 @@ object ConsoleProducer {
       val producer =
         if (config.useOldProducer) {
           new OldProducer(getOldProducerProps(config))
-        } else {
-          new NewShinyProducer(getNewProducerProps(config))
-        }
+        } else { new NewShinyProducer(getNewProducerProps(config)) }
 
       Runtime.getRuntime.addShutdownHook(new Thread() {
-        override def run() {
-          producer.close()
-        }
+        override def run() { producer.close() }
       })
 
       var message: ProducerRecord[Array[Byte], Array[Byte]] = null

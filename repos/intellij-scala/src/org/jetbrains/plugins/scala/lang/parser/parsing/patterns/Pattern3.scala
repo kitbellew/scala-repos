@@ -72,9 +72,7 @@ object Pattern3 {
       }
       //infixMarker.done(ScalaElementTypes.INFIX_PATTERN)
     } else {
-      while (markerStack.nonEmpty) {
-        markerStack.pop().drop()
-      }
+      while (markerStack.nonEmpty) { markerStack.pop().drop() }
       //infixMarker.drop
     }
     true

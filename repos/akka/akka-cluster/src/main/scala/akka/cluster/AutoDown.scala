@@ -124,9 +124,8 @@ private[cluster] abstract class AutoDownBase(
       scheduleUnreachable(m.uniqueAddress)
 
   def scheduleUnreachable(node: UniqueAddress): Unit = {
-    if (autoDownUnreachableAfter == Duration.Zero) {
-      downOrAddPending(node)
-    } else {
+    if (autoDownUnreachableAfter == Duration.Zero) { downOrAddPending(node) }
+    else {
       val task = scheduler.scheduleOnce(
         autoDownUnreachableAfter,
         self,
@@ -136,9 +135,8 @@ private[cluster] abstract class AutoDownBase(
   }
 
   def downOrAddPending(node: UniqueAddress): Unit = {
-    if (leader) {
-      down(node.address)
-    } else {
+    if (leader) { down(node.address) }
+    else {
       // it's supposed to be downed by another node, current leader, but if that crash
       // a new leader must pick up these
       pendingUnreachable += node

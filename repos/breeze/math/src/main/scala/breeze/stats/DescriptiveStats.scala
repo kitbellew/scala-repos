@@ -142,11 +142,8 @@ trait DescriptiveStats {
           }
           iter.traverse(v, visit)
           import visit._
-          if (n > 1) {
-            MeanAndVariance(mu, s / (n - 1), n)
-          } else {
-            MeanAndVariance(mu, 0, n)
-          }
+          if (n > 1) { MeanAndVariance(mu, s / (n - 1), n) }
+          else { MeanAndVariance(mu, 0, n) }
         }
       }
   }
@@ -184,9 +181,8 @@ trait DescriptiveStats {
         : Impl[DenseVector[T], T] =
       new Impl[DenseVector[T], T] {
         def apply(v: DenseVector[T]): T = {
-          if (isOdd(v.length)) {
-            quickSelect(v.toArray, (v.length - 1) / 2)
-          } else {
+          if (isOdd(v.length)) { quickSelect(v.toArray, (v.length - 1) / 2) }
+          else {
             val tempArray: Array[T] = v.toArray.clone()
             val secondMedianPosition = v.length / 2
             //quickSelectImpl does not clone the array, allowing us to access intermediate semi-sorted results for reuse in the second calculation
@@ -279,11 +275,8 @@ trait DescriptiveStats {
 
         cfor(0)(i => i < covariance.rows, i => i + 1)(i => {
           cfor(0)(j => j < covariance.rows, j => j + 1)(j => {
-            if (i != j) {
-              covariance(i, j) /= (d(i) * d(j))
-            } else {
-              covariance(i, j) = 1.0
-            }
+            if (i != j) { covariance(i, j) /= (d(i) * d(j)) }
+            else { covariance(i, j) = 1.0 }
           })
         })
         covariance
@@ -368,11 +361,8 @@ trait DescriptiveStats {
             result(i) = bins.length
             var j = bins.length - 1
             while (j >= 0) {
-              if (x(i) <= bins(j)) {
-                result(i) = j
-              } else {
-                j = -1
-              }
+              if (x(i) <= bins(j)) { result(i) = j }
+              else { j = -1 }
               j -= 1
             }
           })
@@ -509,9 +499,7 @@ object DescriptiveStats {
     val i = f.toInt
     if (i == 0) arr.head
     else if (i >= arr.length) arr.last
-    else {
-      arr(i - 1) + (f - i) * (arr(i) - arr(i - 1))
-    }
+    else { arr(i - 1) + (f - i) * (arr(i) - arr(i - 1)) }
   }
 
   /**

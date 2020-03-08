@@ -84,9 +84,8 @@ package object linalg {
       mat.takeWhile(line =>
         line.length != 0 && line.head.nonEmpty) // empty lines at the end
     input.close()
-    if (mat.length == 0) {
-      DenseMatrix.zeros[Double](0, 0)
-    } else {
+    if (mat.length == 0) { DenseMatrix.zeros[Double](0, 0) }
+    else {
       DenseMatrix.tabulate(mat.length, mat.head.length)((i, j) =>
         mat(i)(j).toDouble)
     }
@@ -194,9 +193,7 @@ package object linalg {
       // count number of tied values at rank i
       var numTiedValuesAtI = 1
       while (i + numTiedValuesAtI < as.length && a(
-               as(i + numTiedValuesAtI)) == a(as(i))) {
-        numTiedValuesAtI += 1
-      }
+               as(i + numTiedValuesAtI)) == a(as(i))) { numTiedValuesAtI += 1 }
 
       // set return value for next numTiedValuesAtI indexes in as
       val rank = 1 + i + (numTiedValuesAtI - 1) / 2.0

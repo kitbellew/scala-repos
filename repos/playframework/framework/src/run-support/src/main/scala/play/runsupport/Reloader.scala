@@ -46,9 +46,7 @@ object Reloader {
           try {
             thread.setContextClassLoader(classOf[Reloader].getClassLoader)
             f
-          } finally {
-            thread.setContextClassLoader(oldLoader)
-          }
+          } finally { thread.setContextClassLoader(oldLoader) }
         }
       },
       accessControlContext
@@ -64,9 +62,8 @@ object Reloader {
   }
 
   def parsePort(portString: String): Int = {
-    try {
-      Integer.parseInt(portString)
-    } catch {
+    try { Integer.parseInt(portString) }
+    catch {
       case e: NumberFormatException =>
         sys.error("Invalid port argument: " + portString)
     }
@@ -340,18 +337,15 @@ object Reloader {
           runHooks.run(_.afterStopped())
 
           // Remove Java properties
-          properties.foreach {
-            case (key, _) => System.clearProperty(key)
-          }
+          properties.foreach { case (key, _) => System.clearProperty(key) }
         }
       }
     } catch {
       case e: Throwable =>
         // Let hooks clean up
         runHooks.foreach { hook =>
-          try {
-            hook.onError()
-          } catch {
+          try { hook.onError() }
+          catch {
             case e: Throwable => // Swallow any exceptions so that all `onError`s get called.
           }
         }
@@ -398,11 +392,8 @@ class Reloader(
   @volatile private var watchState: WatchState = WatchState.empty
 
   // Create the watcher, updates the changed boolean when a file has changed.
-  private val watcher = fileWatchService.watch(
-    monitoredFiles,
-    () => {
-      changed = true
-    })
+  private val watcher =
+    fileWatchService.watch(monitoredFiles, () => { changed = true })
   private val classLoaderVersion =
     new java.util.concurrent.atomic.AtomicInteger(0)
 
@@ -474,9 +465,7 @@ class Reloader(
     devSettings.toMap.asJava
   }
 
-  def forceReload() {
-    forceReloadNextTime = true
-  }
+  def forceReload() { forceReloadNextTime = true }
 
   def findSource(
       className: String,

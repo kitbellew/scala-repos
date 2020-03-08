@@ -137,18 +137,11 @@ private[sql] object SparkPlanGraph {
           planInfo.simpleString,
           planInfo.metadata,
           metrics)
-        if (subgraph == null) {
-          nodes += node
-        } else {
-          subgraph.nodes += node
-        }
-        if (name.contains("Exchange")) {
-          exchanges += planInfo -> node
-        }
+        if (subgraph == null) { nodes += node }
+        else { subgraph.nodes += node }
+        if (name.contains("Exchange")) { exchanges += planInfo -> node }
 
-        if (parent != null) {
-          edges += SparkPlanGraphEdge(node.id, parent.id)
-        }
+        if (parent != null) { edges += SparkPlanGraphEdge(node.id, parent.id) }
         planInfo.children.foreach(
           buildSparkPlanGraphNode(
             _,
@@ -182,9 +175,7 @@ private[ui] class SparkPlanGraphNode(
     val values = for {
       metric <- metrics
       value <- metricsValue.get(metric.accumulatorId)
-    } yield {
-      metric.name + ": " + value
-    }
+    } yield { metric.name + ": " + value }
 
     if (values.nonEmpty) {
       // If there are metrics, display each entry in a separate line.

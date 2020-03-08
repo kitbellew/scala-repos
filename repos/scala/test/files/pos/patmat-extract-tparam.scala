@@ -1,4 +1,6 @@
-trait Bip[T] { def h: T }
+trait Bip[T] {
+  def h: T
+}
 trait BoolBip extends Bip[Boolean]
 
 class A {

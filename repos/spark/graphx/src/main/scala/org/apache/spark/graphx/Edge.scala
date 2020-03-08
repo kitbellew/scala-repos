@@ -85,18 +85,14 @@ object Edge {
           src: Array[Edge[ED]],
           srcPos: Int,
           dst: Array[Edge[ED]],
-          dstPos: Int) {
-        dst(dstPos) = src(srcPos)
-      }
+          dstPos: Int) { dst(dstPos) = src(srcPos) }
 
       override def copyRange(
           src: Array[Edge[ED]],
           srcPos: Int,
           dst: Array[Edge[ED]],
           dstPos: Int,
-          length: Int) {
-        System.arraycopy(src, srcPos, dst, dstPos, length)
-      }
+          length: Int) { System.arraycopy(src, srcPos, dst, dstPos, length) }
 
       override def allocate(length: Int): Array[Edge[ED]] = {
         new Array[Edge[ED]](length)

@@ -63,9 +63,7 @@ object AdaptiveGradientDescent {
       if (oldState.iter > maxAge) {
         newG *= 1 / maxAge
         axpy((maxAge - 1) / maxAge, oldHistory.sumOfSquaredGradients, newG)
-      } else {
-        newG += oldHistory.sumOfSquaredGradients
-      }
+      } else { newG += oldHistory.sumOfSquaredGradients }
       new History(newG)
     }
 
@@ -83,9 +81,7 @@ object AdaptiveGradientDescent {
     override def determineStepSize(
         state: State,
         f: StochasticDiffFunction[T],
-        dir: T) = {
-      defaultStepSize
-    }
+        dir: T) = { defaultStepSize }
 
     override protected def adjust(newX: T, newGrad: T, newVal: Double) = {
       val av = newVal + (newX dot newX) * regularizationConstant / 2.0
@@ -137,9 +133,7 @@ object AdaptiveGradientDescent {
       if (oldState.iter > maxAge) {
         newG *= (1 / maxAge)
         axpy((maxAge - 1) / maxAge, oldHistory.sumOfSquaredGradients, newG)
-      } else {
-        newG += oldHistory.sumOfSquaredGradients
-      }
+      } else { newG += oldHistory.sumOfSquaredGradients }
       new History(newG)
     }
 
@@ -154,20 +148,15 @@ object AdaptiveGradientDescent {
         s,
         {
           case (x_half, s_i) =>
-            if (x_half.abs < tlambda / s_i) {
-              0.0
-            } else {
-              (x_half - math.signum(x_half) * tlambda / s_i)
-            }
+            if (x_half.abs < tlambda / s_i) { 0.0 }
+            else { (x_half - math.signum(x_half) * tlambda / s_i) }
         })
     }
 
     override def determineStepSize(
         state: State,
         f: StochasticDiffFunction[T],
-        dir: T) = {
-      defaultStepSize
-    }
+        dir: T) = { defaultStepSize }
 
     override protected def adjust(newX: T, newGrad: T, newVal: Double) = {
       val av = newVal + norm(newX, 1.0) * lambda

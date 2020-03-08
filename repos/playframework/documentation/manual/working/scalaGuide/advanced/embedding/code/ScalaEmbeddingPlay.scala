@@ -20,16 +20,12 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
       import play.api.mvc._
 
       val server = NettyServer.fromRouter() {
-        case GET(p"/hello/$to") =>
-          Action {
-            Results.Ok(s"Hello $to")
-          }
+        case GET(p"/hello/$to") => Action { Results.Ok(s"Hello $to") }
       }
       //#simple
 
-      try {
-        testRequest(9000)
-      } finally {
+      try { testRequest(9000) }
+      finally {
         //#stop
         server.stop()
         //#stop
@@ -46,19 +42,11 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
         ServerConfig(
           port = Some(19000),
           address = "127.0.0.1"
-        )) {
-        case GET(p"/hello/$to") =>
-          Action {
-            Results.Ok(s"Hello $to")
-          }
-      }
+        )) { case GET(p"/hello/$to") => Action { Results.Ok(s"Hello $to") } }
       //#config
 
-      try {
-        testRequest(19000)
-      } finally {
-        server.stop()
-      }
+      try { testRequest(19000) }
+      finally { server.stop() }
     }
 
     "allow overriding components" in {
@@ -74,10 +62,7 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
       val components = new NettyServerComponents with BuiltInComponents {
 
         lazy val router = Router.from {
-          case GET(p"/hello/$to") =>
-            Action {
-              Results.Ok(s"Hello $to")
-            }
+          case GET(p"/hello/$to") => Action { Results.Ok(s"Hello $to") }
         }
 
         override lazy val httpErrorHandler = new DefaultHttpErrorHandler(
@@ -96,11 +81,8 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
       val server = components.server
       //#components
 
-      try {
-        testRequest(9000)
-      } finally {
-        server.stop()
-      }
+      try { testRequest(9000) }
+      finally { server.stop() }
     }
 
   }

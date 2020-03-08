@@ -23,9 +23,7 @@ class BasicRouteSpecs extends RoutingSpec {
       } ~> check { responseAs[String] shouldEqual "second" }
     }
     "collect rejections from both sub routes" in {
-      Delete() ~> {
-        get { completeOk } ~ put { completeOk }
-      } ~> check {
+      Delete() ~> { get { completeOk } ~ put { completeOk } } ~> check {
         rejections shouldEqual Seq(MethodRejection(GET), MethodRejection(PUT))
       }
     }
@@ -76,28 +74,16 @@ class BasicRouteSpecs extends RoutingSpec {
   }
   "Route disjunction" should {
     "work in the happy case" in {
-      val route = Route.seal((path("abc") | path("def")) {
-        completeOk
-      })
+      val route = Route.seal((path("abc") | path("def")) { completeOk })
 
-      Get("/abc") ~> route ~> check {
-        status shouldEqual StatusCodes.OK
-      }
-      Get("/def") ~> route ~> check {
-        status shouldEqual StatusCodes.OK
-      }
-      Get("/ghi") ~> route ~> check {
-        status shouldEqual StatusCodes.NotFound
-      }
+      Get("/abc") ~> route ~> check { status shouldEqual StatusCodes.OK }
+      Get("/def") ~> route ~> check { status shouldEqual StatusCodes.OK }
+      Get("/ghi") ~> route ~> check { status shouldEqual StatusCodes.NotFound }
     }
     "don't apply alternative if inner route rejects" in {
       object MyRejection extends Rejection
-      val route = (path("abc") | post) {
-        reject(MyRejection)
-      }
-      Get("/abc") ~> route ~> check {
-        rejection shouldEqual MyRejection
-      }
+      val route = (path("abc") | post) { reject(MyRejection) }
+      Get("/abc") ~> route ~> check { rejection shouldEqual MyRejection }
     }
   }
   "Case class extraction with Directive.as" should {
@@ -151,30 +137,20 @@ class BasicRouteSpecs extends RoutingSpec {
   "Route sealing" should {
     "catch route execution exceptions" in EventFilter[MyException.type](
       occurrences = 1).intercept {
-      Get("/abc") ~> Route.seal {
-        get { ctx ⇒ throw MyException }
-      } ~> check {
+      Get("/abc") ~> Route.seal { get { ctx ⇒ throw MyException } } ~> check {
         status shouldEqual StatusCodes.InternalServerError
       }
     }
     "catch route building exceptions" in EventFilter[MyException.type](
       occurrences = 1).intercept {
-      Get("/abc") ~> Route.seal {
-        get {
-          throw MyException
-        }
-      } ~> check {
+      Get("/abc") ~> Route.seal { get { throw MyException } } ~> check {
         status shouldEqual StatusCodes.InternalServerError
       }
     }
     "convert all rejections to responses" in EventFilter[RuntimeException](
       occurrences = 1).intercept {
       object MyRejection extends Rejection
-      Get("/abc") ~> Route.seal {
-        get {
-          reject(MyRejection)
-        }
-      } ~> check {
+      Get("/abc") ~> Route.seal { get { reject(MyRejection) } } ~> check {
         status shouldEqual StatusCodes.InternalServerError
       }
     }

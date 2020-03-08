@@ -89,9 +89,7 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
       return new Iterator[U] {
         def next(): U = {
           val obj = _nextObj
-          if (hasNext) {
-            _nextObj = read()
-          }
+          if (hasNext) { _nextObj = read() }
           obj
         }
 
@@ -99,9 +97,7 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
 
         def hasNext(): Boolean = {
           val hasMore = (_nextObj != null)
-          if (!hasMore) {
-            dataStream.close()
-          }
+          if (!hasMore) { dataStream.close() }
           hasMore
         }
       }
@@ -154,11 +150,8 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
 
           dataOut.writeInt(numPartitions)
 
-          if (!iter.hasNext) {
-            dataOut.writeInt(0)
-          } else {
-            dataOut.writeInt(1)
-          }
+          if (!iter.hasNext) { dataOut.writeInt(0) }
+          else { dataOut.writeInt(1) }
 
           val printOut = new PrintStream(stream)
 
@@ -191,9 +184,7 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
           // TODO: We should propogate this error to the task thread
           case e: Exception =>
             logError("R Writer thread got an exception", e)
-        } finally {
-          Try(output.close())
-        }
+        } finally { Try(output.close()) }
       }
     }.start()
   }
@@ -383,9 +374,8 @@ private[r] object RRDD {
       .setSparkHome(sparkHome)
 
     // Override `master` if we have a user-specified value
-    if (master != "") {
-      sparkConf.setMaster(master)
-    } else {
+    if (master != "") { sparkConf.setMaster(master) }
+    else {
       // If conf has no master set it to "local" to maintain
       // backwards compatibility
       sparkConf.setIfMissing("spark.master", "local")
@@ -478,9 +468,7 @@ private[r] object RRDD {
         }
         errThread
       }
-    } else {
-      createRProcess(port, "worker.R")
-    }
+    } else { createRProcess(port, "worker.R") }
   }
 
   /**

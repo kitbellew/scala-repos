@@ -66,9 +66,7 @@ private[testadapter] object ComUtils {
 
     def throwable = {
       try fromJSON[RemoteException](readJSON(data))
-      catch {
-        case t: Throwable => badResponse(t)
-      }
+      catch { case t: Throwable => badResponse(t) }
     }
 
     def onFail = status match {
@@ -84,17 +82,13 @@ private[testadapter] object ComUtils {
 
     val result = {
       try handler.lift((status, data))
-      catch {
-        case t: Throwable => badResponse(t)
-      }
+      catch { case t: Throwable => badResponse(t) }
     }
 
     result.getOrElse(onFail)
   }
 
-  val doneHandler: LoopHandler[Unit] = {
-    case ("ok", "") => Some(())
-  }
+  val doneHandler: LoopHandler[Unit] = { case ("ok", "") => Some(()) }
 
   val okHandler: Handler[Unit] = {
     case ("ok", "") =>

@@ -35,9 +35,7 @@ class ScalaTypeDefinitionUsagesDialog(
   private var myCbImplementingTypeDefinitions: StateRestoringCheckBox = _
   private var myCbCompanionModule: StateRestoringCheckBox = _
 
-  override def getPreferredFocusedControl: JComponent = {
-    myCbUsages
-  }
+  override def getPreferredFocusedControl: JComponent = { myCbUsages }
 
   import com.intellij.find.findUsages.AbstractFindUsagesDialog.{
     isSelected,
@@ -47,9 +45,7 @@ class ScalaTypeDefinitionUsagesDialog(
   override def calcFindUsagesOptions(
       options: ScalaTypeDefinitionFindUsagesOptions) {
     super.calcFindUsagesOptions(options)
-    if (isToChange(myCbUsages)) {
-      options.isUsages = isSelected(myCbUsages)
-    }
+    if (isToChange(myCbUsages)) { options.isUsages = isSelected(myCbUsages) }
     if (isToChange(myCbMembersUsages)) {
       options.isMembersUsages = isSelected(myCbMembersUsages)
     }
@@ -100,16 +96,11 @@ class ScalaTypeDefinitionUsagesDialog(
     if (myCbToSearchForTextOccurrences != null) {
       if (isSelected(myCbUsages)) {
         myCbToSearchForTextOccurrences.makeSelectable()
-      } else {
-        myCbToSearchForTextOccurrences.makeUnselectable(false)
-      }
+      } else { myCbToSearchForTextOccurrences.makeUnselectable(false) }
     }
     if (myCbCompanionModule != null) {
-      if (isSelected(myCbUsages)) {
-        myCbCompanionModule.makeSelectable()
-      } else {
-        myCbCompanionModule.makeUnselectable(false)
-      }
+      if (isSelected(myCbUsages)) { myCbCompanionModule.makeSelectable() }
+      else { myCbCompanionModule.makeUnselectable(false) }
     }
     val hasSelected: Boolean =
       isSelected(myCbUsages) || isSelected(myCbMembersUsages) ||

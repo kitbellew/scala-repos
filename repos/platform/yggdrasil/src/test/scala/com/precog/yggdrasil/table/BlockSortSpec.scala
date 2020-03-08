@@ -78,17 +78,13 @@ trait BlockSortSpec[M[+_]]
         .unzip
         ._2
         .toStream
-    } else {
-      sample.data
-    }
+    } else { sample.data }
 
     // We have to add in and then later remove the global Id (insert
     // order) to match real sort semantics for disambiguation of equal
     // values
     val sorted = original.zipWithIndex
-      .map {
-        case (jv, i) => JValue.unsafeInsert(jv, globalIdPath, JNum(i))
-      }
+      .map { case (jv, i) => JValue.unsafeInsert(jv, globalIdPath, JNum(i)) }
       .sortBy { v =>
         JArray(
           sortKeys.map(_.extract(v \ "value")).toList ::: List(v \ "globalId"))

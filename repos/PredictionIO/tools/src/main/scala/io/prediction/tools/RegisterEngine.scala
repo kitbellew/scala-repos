@@ -37,9 +37,8 @@ object RegisterEngine extends Logging {
       engineFiles: Seq[File],
       copyLocal: Boolean = false): Unit = {
     val jsonString =
-      try {
-        Source.fromFile(jsonManifest).mkString
-      } catch {
+      try { Source.fromFile(jsonManifest).mkString }
+      catch {
         case e: java.io.FileNotFoundException =>
           error(s"Engine manifest file not found: ${e.getMessage}. Aborting.")
           sys.exit(1)
@@ -54,9 +53,8 @@ object RegisterEngine extends Logging {
 
   def unregisterEngine(jsonManifest: File): Unit = {
     val jsonString =
-      try {
-        Source.fromFile(jsonManifest).mkString
-      } catch {
+      try { Source.fromFile(jsonManifest).mkString }
+      catch {
         case e: java.io.FileNotFoundException =>
           error(s"Engine manifest file not found: ${e.getMessage}. Aborting.")
           sys.exit(1)

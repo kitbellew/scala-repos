@@ -8,9 +8,7 @@ import scalaz.{Monoid, StateT}
   * @see [[http://www.comlab.ox.ac.uk/jeremy.gibbons/publications/iterator.pdf]]
   */
 object WordCount {
-  def main(args: Array[String]) = {
-    wordCount
-  }
+  def main(args: Array[String]) = { wordCount }
 
   def wordCount {
     import scalaz.State

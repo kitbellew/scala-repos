@@ -38,9 +38,7 @@ object CanIHaarTr {
                   List((e._1 + e._2) * nFactor, (e._1 - e._2) * nFactor))
                 .flatten
                 .toArray)
-          } else {
-            v
-          }
+          } else { v }
         }
         _ifht(v.copy)
       }

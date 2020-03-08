@@ -11,7 +11,5 @@ class C extends A {
 }
 
 object Program {
-  def main(args: Array[String]) {
-    (new B: A).f(new C)
-  }
+  def main(args: Array[String]) { (new B: A).f(new C) }
 }

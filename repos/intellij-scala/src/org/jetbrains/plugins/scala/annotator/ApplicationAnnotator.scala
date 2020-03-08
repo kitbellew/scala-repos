@@ -44,9 +44,7 @@ trait ApplicationAnnotator {
       result <- reference.multiResolve(false)
       r = result.asInstanceOf[ScalaResolveResult]
     } {
-      if (r.isAssignment) {
-        annotateAssignmentReference(reference, holder)
-      }
+      if (r.isAssignment) { annotateAssignmentReference(reference, holder) }
       if (!r.isApplicable()) {
         r.element match {
           case f @ (_: ScFunction | _: PsiMethod | _: ScSyntheticFunction) =>
