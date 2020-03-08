@@ -273,20 +273,24 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
       val doc = in.flushDoc
       if ((doc ne null) && doc.raw.length > 0) {
         log(s"joinComment(doc=$doc)")
-        val joined = trees map { t =>
-          DocDef(doc, t) setPos {
-            if (t.pos.isDefined) {
-              val pos = doc.pos.withEnd(t.pos.end)
-              // always make the position transparent
-              pos.makeTransparent
-            } else {
-              t.pos
+        val joined = trees map {
+          t =>
+            DocDef(doc, t) setPos {
+              if (t.pos.isDefined) {
+                val pos = doc.pos.withEnd(t.pos.end)
+                // always make the position transparent
+                pos.makeTransparent
+              } else {
+                t.pos
+              }
             }
-          }
         }
-        joined.find(_.pos.isOpaqueRange) foreach { main =>
-          val mains = List(main)
-          joined foreach { t => if (t ne main) ensureNonOverlapping(t, mains) }
+        joined.find(_.pos.isOpaqueRange) foreach {
+          main =>
+            val mains = List(main)
+            joined foreach { t =>
+              if (t ne main) ensureNonOverlapping(t, mains)
+            }
         }
         joined
       } else trees

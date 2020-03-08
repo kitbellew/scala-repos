@@ -269,19 +269,20 @@ private[spark] object StratifiedSamplingUtils extends Logging {
           }
         }
       }
-    } else { (idx: Int, iter: Iterator[(K, V)]) =>
-      {
-        val rng = new RandomDataGenerator()
-        rng.reSeed(seed + idx)
-        iter.flatMap { item =>
-          val count = rng.nextPoisson(fractions(item._1))
-          if (count == 0) {
-            Iterator.empty
-          } else {
-            Iterator.fill(count)(item)
+    } else {
+      (idx: Int, iter: Iterator[(K, V)]) =>
+        {
+          val rng = new RandomDataGenerator()
+          rng.reSeed(seed + idx)
+          iter.flatMap { item =>
+            val count = rng.nextPoisson(fractions(item._1))
+            if (count == 0) {
+              Iterator.empty
+            } else {
+              Iterator.fill(count)(item)
+            }
           }
         }
-      }
     }
   }
 

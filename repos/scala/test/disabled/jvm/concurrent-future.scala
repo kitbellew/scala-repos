@@ -12,80 +12,85 @@ object Test extends App {
     println("test" + num + ": " + msg)
   }
 
-  def testOnSuccess(): Unit = once { done =>
-    val f = future {
-      output(1, "hai world")
-    }
-    f onSuccess {
-      case _ =>
-        output(1, "kthxbye")
-        done()
-    }
-  }
-
-  def testOnSuccessWhenCompleted(): Unit = once { done =>
-    val f = future {
-      output(2, "hai world")
-    }
-    f onSuccess {
-      case _ =>
-        output(2, "awsum thx")
-        f onSuccess {
-          case _ =>
-            output(2, "kthxbye")
-            done()
-        }
-    }
-  }
-
-  def testOnSuccessWhenFailed(): Unit = once { done =>
-    val f = future[Unit] {
-      output(3, "hai world")
-      done()
-      throw new Exception
-    }
-    f onSuccess {
-      case _ =>
-        output(3, "onoes")
-    }
-  }
-
-  def testOnFailure(): Unit = once { done =>
-    val f = future[Unit] {
-      output(4, "hai world")
-      throw new Exception
-    }
-    f onSuccess {
-      case _ =>
-        output(4, "onoes")
-        done()
-    }
-    f onFailure {
-      case _ =>
-        output(4, "kthxbye")
-        done()
-    }
-  }
-
-  def testOnFailureWhenSpecialThrowable(num: Int, cause: Throwable): Unit =
-    once { done =>
-      val f = future[Unit] {
-        output(num, "hai world")
-        throw cause
+  def testOnSuccess(): Unit = once {
+    done =>
+      val f = future {
+        output(1, "hai world")
       }
       f onSuccess {
         case _ =>
-          output(num, "onoes")
+          output(1, "kthxbye")
+          done()
+      }
+  }
+
+  def testOnSuccessWhenCompleted(): Unit = once {
+    done =>
+      val f = future {
+        output(2, "hai world")
+      }
+      f onSuccess {
+        case _ =>
+          output(2, "awsum thx")
+          f onSuccess {
+            case _ =>
+              output(2, "kthxbye")
+              done()
+          }
+      }
+  }
+
+  def testOnSuccessWhenFailed(): Unit = once {
+    done =>
+      val f = future[Unit] {
+        output(3, "hai world")
+        done()
+        throw new Exception
+      }
+      f onSuccess {
+        case _ =>
+          output(3, "onoes")
+      }
+  }
+
+  def testOnFailure(): Unit = once {
+    done =>
+      val f = future[Unit] {
+        output(4, "hai world")
+        throw new Exception
+      }
+      f onSuccess {
+        case _ =>
+          output(4, "onoes")
           done()
       }
       f onFailure {
-        case e: ExecutionException if (e.getCause == cause) =>
-          output(num, "kthxbye")
-          done()
         case _ =>
-          output(num, "onoes")
+          output(4, "kthxbye")
           done()
       }
+  }
+
+  def testOnFailureWhenSpecialThrowable(num: Int, cause: Throwable): Unit =
+    once {
+      done =>
+        val f = future[Unit] {
+          output(num, "hai world")
+          throw cause
+        }
+        f onSuccess {
+          case _ =>
+            output(num, "onoes")
+            done()
+        }
+        f onFailure {
+          case e: ExecutionException if (e.getCause == cause) =>
+            output(num, "kthxbye")
+            done()
+          case _ =>
+            output(num, "onoes")
+            done()
+        }
     }
 
   // def testOnFailureWhenFutureTimeoutException(): Unit = once {

@@ -80,7 +80,9 @@ case class AddOneTsv(p: String)
     TupleConverter.asSuperConverter[(Int, String, String), U](
       implicitly[TupleConverter[(Int, String, String)]])
   override def transformForRead(p: Pipe) = {
-    p.mapTo((0, 1) -> ('one, 'two, 'three)) { t: (Int, String) => t :+ "1" }
+    p.mapTo((0, 1) -> ('one, 'two, 'three)) {
+      t: (Int, String) => t :+ "1"
+    }
   }
 }
 
@@ -95,8 +97,8 @@ case class RemoveOneTsv(p: String)
     TupleConverter.asSuperConverter[(Int, String, String), U](
       implicitly[TupleConverter[(Int, String, String)]])
   override def transformForWrite(p: Pipe) = {
-    p.mapTo(('one, 'two, 'three) -> (0, 1)) { t: (Int, String, String) =>
-      (t._1, t._2)
+    p.mapTo(('one, 'two, 'three) -> (0, 1)) {
+      t: (Int, String, String) => (t._1, t._2)
     }
   }
 }

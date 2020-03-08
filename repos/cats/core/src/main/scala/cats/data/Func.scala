@@ -92,8 +92,8 @@ sealed abstract class AppFunc[F[_], A, B] extends Func[F, A, B] { self =>
       g: AppFunc[G, A, B]): AppFunc[Lambda[X => Prod[F, G, X]], A, B] = {
     implicit val FF: Applicative[F] = self.F
     implicit val GG: Applicative[G] = g.F
-    Func.appFunc[Lambda[X => Prod[F, G, X]], A, B] { a: A =>
-      Prod(self.run(a), g.run(a))
+    Func.appFunc[Lambda[X => Prod[F, G, X]], A, B] {
+      a: A => Prod(self.run(a), g.run(a))
     }
   }
 
@@ -102,8 +102,8 @@ sealed abstract class AppFunc[F[_], A, B] extends Func[F, A, B] { self =>
     implicit val FF: Applicative[F] = self.F
     implicit val GG: Applicative[G] = g.F
     implicit val GGFF: Applicative[Lambda[X => G[F[X]]]] = GG.compose(FF)
-    Func.appFunc[Lambda[X => G[F[X]]], C, B]({ c: C =>
-      GG.map(g.run(c))(self.run)
+    Func.appFunc[Lambda[X => G[F[X]]], C, B]({
+      c: C => GG.map(g.run(c))(self.run)
     })
   }
 

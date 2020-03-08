@@ -133,8 +133,8 @@ sealed abstract class IterateeT[E, F[_], A] {
     val M0 = IterateeT.IterateeTMonad[E, F]
     def check: StepT[I, F, B] => IterateeT[E, F, B] = _.fold(
       cont = k =>
-        k(eofInput) >>== { s =>
-          s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
+        k(eofInput) >>== {
+          s => s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
         },
       done = (a, _) => M0.point(a)
     )
@@ -153,9 +153,10 @@ sealed abstract class IterateeT[E, F[_], A] {
         def checkEof: (
             Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =
           k =>
-            isEof[E, F] flatMap { eof =>
-              if (eof) done(scont(k), eofInput)
-              else step(k)
+            isEof[E, F] flatMap {
+              eof =>
+                if (eof) done(scont(k), eofInput)
+                else step(k)
             }
         def step: (
             Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =

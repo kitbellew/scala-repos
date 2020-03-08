@@ -26,14 +26,15 @@ object PortDefinitions {
   }
 
   implicit val portDefinitionsValidator: Validator[Seq[PortDefinition]] =
-    validator[Seq[PortDefinition]] { portDefinitions =>
-      portDefinitions is every(valid)
-      portDefinitions is elementsAreUniqueByOptional(
-        _.name,
-        "Port names must be unique.")
-      portDefinitions is elementsAreUniqueBy(
-        _.port,
-        "Ports must be unique.",
-        filter = { port: Int => port != AppDefinition.RandomPortValue })
+    validator[Seq[PortDefinition]] {
+      portDefinitions =>
+        portDefinitions is every(valid)
+        portDefinitions is elementsAreUniqueByOptional(
+          _.name,
+          "Port names must be unique.")
+        portDefinitions is elementsAreUniqueBy(
+          _.port,
+          "Ports must be unique.",
+          filter = { port: Int => port != AppDefinition.RandomPortValue })
     }
 }

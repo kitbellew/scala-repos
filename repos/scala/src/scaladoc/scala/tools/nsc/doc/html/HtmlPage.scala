@@ -268,8 +268,8 @@ abstract class HtmlPage extends Page { thisPage =>
       }
 
     val image = entityToImage(ety)
-    val companionImage = ety.companion filter { e =>
-      e.visibility.isPublic && !e.inSource.isEmpty
+    val companionImage = ety.companion filter {
+      e => e.visibility.isPublic && !e.inSource.isEmpty
     } map { entityToImage }
 
     (image, companionImage) match {

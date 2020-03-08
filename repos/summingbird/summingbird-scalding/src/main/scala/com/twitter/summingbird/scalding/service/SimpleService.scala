@@ -52,17 +52,18 @@ trait SimpleService[K, V] extends ExternalService[K, V] {
           .right
           .flatMap(satisfiable(_, mode))
           .right
-          .flatMap { dr =>
-            val ts = dr.as[Interval[Timestamp]]
-            getKeys((ts, mode)).right
-              .map {
-                case ((avail, m), getFlow) =>
-                  val rdr = Reader({ implicit fdM: (FlowDef, Mode) =>
-                    // This get can't fail because it came from a DateRange initially
-                    serve(avail.as[Option[DateRange]].get, getFlow(fdM))
-                  })
-                  ((avail, m), rdr)
-              }
+          .flatMap {
+            dr =>
+              val ts = dr.as[Interval[Timestamp]]
+              getKeys((ts, mode)).right
+                .map {
+                  case ((avail, m), getFlow) =>
+                    val rdr = Reader({ implicit fdM: (FlowDef, Mode) =>
+                      // This get can't fail because it came from a DateRange initially
+                      serve(avail.as[Option[DateRange]].get, getFlow(fdM))
+                    })
+                    ((avail, m), rdr)
+                }
           }
     })
 }

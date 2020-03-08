@@ -125,10 +125,11 @@ class GraphMatValueSpec extends AkkaSpec {
 
         "work also when the source’s module is copied" in {
           val foldFlow: Flow[Int, Int, Future[Int]] =
-            Flow.fromGraph(GraphDSL.create(foldSink) { implicit builder ⇒ fold ⇒
-              FlowShape(
-                fold.in,
-                builder.materializedValue.mapAsync(4)(identity).outlet)
+            Flow.fromGraph(GraphDSL.create(foldSink) {
+              implicit builder ⇒ fold ⇒
+                FlowShape(
+                  fold.in,
+                  builder.materializedValue.mapAsync(4)(identity).outlet)
             })
 
           Await.result(
@@ -138,10 +139,11 @@ class GraphMatValueSpec extends AkkaSpec {
 
         "work also when the source’s module is copied and the graph is extended before using the matValSrc" in {
           val foldFlow: Flow[Int, Int, Future[Int]] =
-            Flow.fromGraph(GraphDSL.create(foldSink) { implicit builder ⇒ fold ⇒
-              val map = builder.add(Flow[Future[Int]].mapAsync(4)(identity))
-              builder.materializedValue ~> map
-              FlowShape(fold.in, map.outlet)
+            Flow.fromGraph(GraphDSL.create(foldSink) {
+              implicit builder ⇒ fold ⇒
+                val map = builder.add(Flow[Future[Int]].mapAsync(4)(identity))
+                builder.materializedValue ~> map
+                FlowShape(fold.in, map.outlet)
             })
 
           Await.result(

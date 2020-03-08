@@ -130,9 +130,10 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
         "bifrost-query",
         data,
         Some(yggConfig.clock.now()))
-      .onComplete { _ =>
-        logger.debug(
-          "Job created in %d ms".format(System.currentTimeMillis - start))
+      .onComplete {
+        _ =>
+          logger.debug(
+            "Job created in %d ms".format(System.currentTimeMillis - start))
       }
     for {
       job <- futureJob map { job => Some(job) } recover { case _ => None }
@@ -277,9 +278,10 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
 
     def stop(): Unit = lock.synchronized {
       logger.debug("Stopping scheduled poll for " + jobId)
-      poller foreach { c =>
-        c.cancel();
-        logger.debug("Cancelled %s: %s".format(jobId, c.isCancelled))
+      poller foreach {
+        c =>
+          c.cancel();
+          logger.debug("Cancelled %s: %s".format(jobId, c.isCancelled))
       }
       poller = None
     }

@@ -91,17 +91,18 @@ object BundleBuilder {
           }
 
           def choose(lst: List[(EntryInfo, NodeSeq)]): NodeSeq =
-            lst.reduceLeft { (a, b) =>
-              {
-                val ap = points(a._1)
-                val bp = points(b._1)
-                if (ap > bp) {
-                  a
-                } else if (bp > ap) {
-                  b
-                } else if (a._1.default) a
-                else b
-              }
+            lst.reduceLeft {
+              (a, b) =>
+                {
+                  val ap = points(a._1)
+                  val bp = points(b._1)
+                  if (ap > bp) {
+                    a
+                  } else if (bp > ap) {
+                    b
+                  } else if (a._1.default) a
+                  else b
+                }
             }._2
 
           val res: Map[String, NodeSeq] = Map(map.map {

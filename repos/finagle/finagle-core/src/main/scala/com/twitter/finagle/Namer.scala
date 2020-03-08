@@ -223,12 +223,13 @@ object Namer {
         case Leaf(bound @ Name.Bound(addr)) =>
           // Add the weight of the parent to the addr's metadata
           // Note: this assumes a single level of tree weights
-          val addrWithWeight = addr.map { addr =>
-            (addr, weight) match {
-              case (Addr.Bound(addrs, metadata), Some(weight)) =>
-                Addr.Bound(addrs, metadata + ((AddrWeightKey, weight)))
-              case _ => addr
-            }
+          val addrWithWeight = addr.map {
+            addr =>
+              (addr, weight) match {
+                case (Addr.Bound(addrs, metadata), Some(weight)) =>
+                  Addr.Bound(addrs, metadata + ((AddrWeightKey, weight)))
+                case _ => addr
+              }
           }
           Activity.value(Leaf(Name.Bound(addrWithWeight, bound.id, bound.path)))
 

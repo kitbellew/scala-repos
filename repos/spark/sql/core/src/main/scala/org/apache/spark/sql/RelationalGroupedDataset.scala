@@ -107,23 +107,24 @@ class RelationalGroupedDataset protected[sql] (
   }
 
   private[this] def strToExpr(expr: String): (Expression => Expression) = {
-    val exprToFunc: (Expression => Expression) = { (inputExpr: Expression) =>
-      expr.toLowerCase match {
-        // We special handle a few cases that have alias that are not in function registry.
-        case "avg" | "average" | "mean" =>
-          UnresolvedFunction("avg", inputExpr :: Nil, isDistinct = false)
-        case "stddev" | "std" =>
-          UnresolvedFunction("stddev", inputExpr :: Nil, isDistinct = false)
-        // Also special handle count because we need to take care count(*).
-        case "count" | "size" =>
-          // Turn count(*) into count(1)
-          inputExpr match {
-            case s: Star => Count(Literal(1)).toAggregateExpression()
-            case _       => Count(inputExpr).toAggregateExpression()
-          }
-        case name =>
-          UnresolvedFunction(name, inputExpr :: Nil, isDistinct = false)
-      }
+    val exprToFunc: (Expression => Expression) = {
+      (inputExpr: Expression) =>
+        expr.toLowerCase match {
+          // We special handle a few cases that have alias that are not in function registry.
+          case "avg" | "average" | "mean" =>
+            UnresolvedFunction("avg", inputExpr :: Nil, isDistinct = false)
+          case "stddev" | "std" =>
+            UnresolvedFunction("stddev", inputExpr :: Nil, isDistinct = false)
+          // Also special handle count because we need to take care count(*).
+          case "count" | "size" =>
+            // Turn count(*) into count(1)
+            inputExpr match {
+              case s: Star => Count(Literal(1)).toAggregateExpression()
+              case _       => Count(inputExpr).toAggregateExpression()
+            }
+          case name =>
+            UnresolvedFunction(name, inputExpr :: Nil, isDistinct = false)
+        }
     }
     (inputExpr: Expression) => exprToFunc(inputExpr)
   }

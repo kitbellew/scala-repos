@@ -327,8 +327,9 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     // that the body method signature is exactly (capturedParams + instantiatedMethodType).
     val lambdaBodyMethodDescWithoutCaptures =
       closureInit.lambdaMetaFactoryCall.instantiatedMethodType.getDescriptor
-    if (invokeDesc == lambdaBodyMethodDescWithoutCaptures) { _ => None }
-    else {
+    if (invokeDesc == lambdaBodyMethodDescWithoutCaptures) {
+      _ => None
+    } else {
       val invokeArgTypes = Type.getArgumentTypes(invokeDesc)
       val implMethodArgTypes =
         Type.getArgumentTypes(lambdaBodyMethodDescWithoutCaptures)

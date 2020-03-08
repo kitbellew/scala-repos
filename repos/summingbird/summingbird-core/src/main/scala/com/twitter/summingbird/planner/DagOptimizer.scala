@@ -29,8 +29,8 @@ trait DagOptimizer[P <: Platform[P]] {
     * in converting from an AlsoProducer to a Literal[T, Prod] below, it is
     * not actually dangerous because we always use it in a safe position.
     */
-  protected def mkAlso[T, U]: (Prod[T], Prod[U]) => Prod[U] = { (left, right) =>
-    AlsoProducer(left.asInstanceOf[TailProducer[P, T]], right)
+  protected def mkAlso[T, U]: (Prod[T], Prod[U]) => Prod[U] = {
+    (left, right) => AlsoProducer(left.asInstanceOf[TailProducer[P, T]], right)
   }
   protected def mkAlsoTail[T, U]: (Prod[T], Prod[U]) => Prod[U] = {
     (left, right) =>
@@ -38,32 +38,32 @@ trait DagOptimizer[P <: Platform[P]] {
         left.asInstanceOf[TailProducer[P, T]],
         right.asInstanceOf[TailProducer[P, U]])
   }
-  protected def mkMerge[T]: (Prod[T], Prod[T]) => Prod[T] = { (left, right) =>
-    MergedProducer(left, right)
+  protected def mkMerge[T]: (Prod[T], Prod[T]) => Prod[T] = {
+    (left, right) => MergedProducer(left, right)
   }
-  protected def mkNamed[T](name: String): (Prod[T] => Prod[T]) = { prod =>
-    NamedProducer(prod, name)
+  protected def mkNamed[T](name: String): (Prod[T] => Prod[T]) = {
+    prod => NamedProducer(prod, name)
   }
-  protected def mkTPNamed[T](name: String): (Prod[T] => Prod[T]) = { prod =>
-    new TPNamedProducer(prod.asInstanceOf[TailProducer[P, T]], name)
+  protected def mkTPNamed[T](name: String): (Prod[T] => Prod[T]) = {
+    prod => new TPNamedProducer(prod.asInstanceOf[TailProducer[P, T]], name)
   }
-  protected def mkIdentKey[K, V]: (Prod[(K, V)] => Prod[(K, V)]) = { prod =>
-    IdentityKeyedProducer(prod)
+  protected def mkIdentKey[K, V]: (Prod[(K, V)] => Prod[(K, V)]) = {
+    prod => IdentityKeyedProducer(prod)
   }
   protected def mkOptMap[T, U](fn: T => Option[U]): (Prod[T] => Prod[U]) = {
     prod => OptionMappedProducer(prod, fn)
   }
   protected def mkFlatMapped[T, U](
-      fn: T => TraversableOnce[U]): (Prod[T] => Prod[U]) = { prod =>
-    FlatMappedProducer(prod, fn)
+      fn: T => TraversableOnce[U]): (Prod[T] => Prod[U]) = {
+    prod => FlatMappedProducer(prod, fn)
   }
   protected def mkKeyFM[T, U, V](
-      fn: T => TraversableOnce[U]): (Prod[(T, V)] => Prod[(U, V)]) = { prod =>
-    KeyFlatMappedProducer(prod, fn)
+      fn: T => TraversableOnce[U]): (Prod[(T, V)] => Prod[(U, V)]) = {
+    prod => KeyFlatMappedProducer(prod, fn)
   }
   protected def mkValueFM[K, U, V](
-      fn: U => TraversableOnce[V]): (Prod[(K, U)] => Prod[(K, V)]) = { prod =>
-    ValueFlatMappedProducer(prod, fn)
+      fn: U => TraversableOnce[V]): (Prod[(K, U)] => Prod[(K, V)]) = {
+    prod => ValueFlatMappedProducer(prod, fn)
   }
   protected def mkWritten[T, U >: T](sink: P#Sink[U]): (Prod[T] => Prod[T]) = {
     prod => WrittenProducer[P, T, U](prod, sink)
@@ -74,8 +74,8 @@ trait DagOptimizer[P <: Platform[P]] {
   }
   protected def mkSum[K, V](
       store: P#Store[K, V],
-      sg: Semigroup[V]): (Prod[(K, V)] => Prod[(K, (Option[V], V))]) = { prod =>
-    Summer(prod, store, sg)
+      sg: Semigroup[V]): (Prod[(K, V)] => Prod[(K, (Option[V], V))]) = {
+    prod => Summer(prod, store, sg)
   }
 
   type LitProd[T] = Literal[T, Prod]

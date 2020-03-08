@@ -391,8 +391,8 @@ case class JsonTuple(children: Seq[Expression])
     }
 
     try {
-      Utils.tryWithResource(jsonFactory.createParser(json.getBytes)) { parser =>
-        parseRow(parser, input)
+      Utils.tryWithResource(jsonFactory.createParser(json.getBytes)) {
+        parser => parseRow(parser, input)
       }
     } catch {
       case _: JsonProcessingException =>

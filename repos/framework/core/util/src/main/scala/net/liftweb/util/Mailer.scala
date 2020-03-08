@@ -296,9 +296,10 @@ trait Mailer extends SimpleInjector {
 
       case _ =>
         val multiPart = new MimeMultipart("alternative")
-        bodyTypes.foreach { tab =>
-          val bp = buildMailBody(tab)
-          multiPart.addBodyPart(bp)
+        bodyTypes.foreach {
+          tab =>
+            val bp = buildMailBody(tab)
+            multiPart.addBodyPart(bp)
         }
         message.setContent(multiPart);
     }

@@ -63,8 +63,8 @@ trait ArbitrarySexp {
     nonEmptyListOf(genSexp(level + 1)).map(SexpList(_))
 
   def genSexpData(level: Int): Gen[Sexp] =
-    mapOfN(2, zip(genSexpKey, genSexp(level + 1))).map { kvs =>
-      SexpData(kvs.toList)
+    mapOfN(2, zip(genSexpKey, genSexp(level + 1))).map {
+      kvs => SexpData(kvs.toList)
     }
 
   // our parser is soooo slow for deep trees

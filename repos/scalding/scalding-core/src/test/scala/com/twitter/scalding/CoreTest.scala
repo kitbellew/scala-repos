@@ -1167,7 +1167,8 @@ class PivotTest extends WordSpec with Matchers with FieldConversions {
           outBuf.toList.sorted shouldBe (input.sorted)
         }
       }
-      .sink[(String, String, String, String, Double)](Tsv("pivot_with_default")) {
+      .sink[(String, String, String, String, Double)](
+        Tsv("pivot_with_default")) {
         outBuf =>
           "pivot back to the original with the missing column replace by the specified default" in {
             outBuf should have size 2
@@ -1606,8 +1607,8 @@ class GroupAllToListTestJob(args: Args) extends Job(args) {
     .groupAll {
       _.toList[(Long, Map[String, Double])](('a, 'b) -> 'abList)
     }
-    .map('abList -> 'abMap) { list: List[(Long, Map[String, Double])] =>
-      list.toMap
+    .map('abList -> 'abMap) {
+      list: List[(Long, Map[String, Double])] => list.toMap
     }
     .project('abMap)
     .map('abMap -> 'abMap) { x: AnyRef => x.toString }
@@ -1755,8 +1756,12 @@ class SampleWithReplacementTest extends WordSpec with Matchers {
   import com.twitter.scalding.mathematics.Poisson
 
   val p = new Poisson(1.0, 0)
-  val simulated =
-    (1 to 100).map { i => i -> p.nextInt }.filterNot(_._2 == 0).toSet
+  val simulated = (1 to 100)
+    .map {
+      i => i -> p.nextInt
+    }
+    .filterNot(_._2 == 0)
+    .toSet
 
   "A SampleWithReplacementJob" should {
     JobTest(new SampleWithReplacementJob(_))
@@ -1938,9 +1943,10 @@ class CounterJob(args: Args) extends Job(args) {
         name.split(" ").head
     }
     .groupAll {
-      _.reduce('age -> 'sum_of_ages) { (acc: Int, age: Int) =>
-        reduce_hit.inc
-        acc + age
+      _.reduce('age -> 'sum_of_ages) {
+        (acc: Int, age: Int) =>
+          reduce_hit.inc
+          acc + age
       }
     }
     .write(Tsv("output"))

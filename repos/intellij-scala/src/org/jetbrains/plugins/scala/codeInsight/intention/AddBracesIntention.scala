@@ -77,28 +77,30 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
         doStmt.getExprBody.filter(isAncestorOfElement)
       case _ => None
     }
-    val oneLinerExpr: Option[ScExpression] = expr.filter { x =>
-      val startLine =
-        editor.getDocument.getLineNumber(x.getTextRange.getStartOffset)
-      val endLine =
-        editor.getDocument.getLineNumber(x.getTextRange.getEndOffset)
-      val isBlock = x match {
-        case _: ScBlockExpr => true
-        case _              => false
+    val oneLinerExpr: Option[ScExpression] = expr.filter {
+      x =>
+        val startLine =
+          editor.getDocument.getLineNumber(x.getTextRange.getStartOffset)
+        val endLine =
+          editor.getDocument.getLineNumber(x.getTextRange.getEndOffset)
+        val isBlock = x match {
+          case _: ScBlockExpr => true
+          case _              => false
 
-      }
-      startLine == endLine && !isBlock
+        }
+        startLine == endLine && !isBlock
     }
-    oneLinerExpr.map { expr => () =>
-      {
-        val replacement = ScalaPsiElementFactory.createExpressionFromText(
-          "{\n%s}".format(expr.getText),
-          expr.getManager)
-        CodeEditUtil.replaceChild(
-          expr.getParent.getNode,
-          expr.getNode,
-          replacement.getNode)
-      }
+    oneLinerExpr.map {
+      expr => () =>
+        {
+          val replacement = ScalaPsiElementFactory.createExpressionFromText(
+            "{\n%s}".format(expr.getText),
+            expr.getManager)
+          CodeEditUtil.replaceChild(
+            expr.getParent.getNode,
+            expr.getNode,
+            replacement.getNode)
+        }
     }
   }
 }

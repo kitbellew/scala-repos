@@ -99,8 +99,8 @@ object BasicCommands {
       runCompletions(state))
   }
   def runCompletions(state: State)(input: String): State = {
-    Parser.completions(state.combinedParser, input, 9).get map { c =>
-      if (c.isEmpty) input else input + c.append
+    Parser.completions(state.combinedParser, input, 9).get map {
+      c => if (c.isEmpty) input else input + c.append
     } foreach { c =>
       System.out.println("[completions] " + c.replaceAll("\n", " "))
     }

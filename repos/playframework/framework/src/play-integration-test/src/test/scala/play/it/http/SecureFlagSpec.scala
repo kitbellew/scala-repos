@@ -31,8 +31,8 @@ trait SecureFlagSpec
   sequential
 
   /** An action whose result is just "true" or "false" depending on the value of result.secure */
-  val secureFlagAction = Action { request =>
-    Results.Ok(request.secure.toString)
+  val secureFlagAction = Action {
+    request => Results.Ok(request.secure.toString)
   }
 
   // this step seems necessary to allow the generated keystore to be written

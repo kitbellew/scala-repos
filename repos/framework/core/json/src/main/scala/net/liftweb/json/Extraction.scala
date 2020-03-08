@@ -159,10 +159,11 @@ object Extraction {
             case 0 => Map(path -> "[]")
             case _ =>
               arr
-                .foldLeft((Map[String, String](), 0)) { (tuple, value) =>
-                  (
-                    tuple._1 ++ flatten0(path + "[" + tuple._2 + "]", value),
-                    tuple._2 + 1)
+                .foldLeft((Map[String, String](), 0)) {
+                  (tuple, value) =>
+                    (
+                      tuple._1 ++ flatten0(path + "[" + tuple._2 + "]", value),
+                      tuple._2 + 1)
                 }
                 ._1
           }
@@ -206,13 +207,14 @@ object Extraction {
     val OtherProp = new Regex("""^(\.([^\.\[]+)).*$""")
 
     val uniquePaths = map.keys
-      .foldLeft[Set[String]](Set()) { (set, key) =>
-        key match {
-          case ArrayProp(p, f, i) => set + p
-          case OtherProp(p, f)    => set + p
-          case ArrayElem(p, i)    => set + p
-          case x @ _              => set + x
-        }
+      .foldLeft[Set[String]](Set()) {
+        (set, key) =>
+          key match {
+            case ArrayProp(p, f, i) => set + p
+            case OtherProp(p, f)    => set + p
+            case ArrayElem(p, i)    => set + p
+            case x @ _              => set + x
+          }
       }
       .toList
       .sortWith(_ < _) // Sort is necessary to get array order right

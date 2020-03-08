@@ -192,9 +192,10 @@ object WorksheetSourceProcessor {
         case _                                             => 1
       }
 
-      ifDocument map { document =>
-        document.getLineNumber(range.getEndOffset) - document.getLineNumber(
-          range.getStartOffset) + (1 - backOffset)
+      ifDocument map {
+        document =>
+          document.getLineNumber(range.getEndOffset) - document.getLineNumber(
+            range.getStartOffset) + (1 - backOffset)
       } map {
         case differ =>
           for (_ <- 0 until differ)

@@ -26,8 +26,9 @@ import S._
 import Helpers._
 
 trait TextareaTypedField extends StringTypedField {
-  private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
-    <textarea name={funcName}
+  private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) {
+    funcName =>
+      <textarea name={funcName}
       rows={textareaRows.toString}
       cols={textareaCols.toString}
       tabindex={tabIndex.toString}>{valueBox openOr ""}</textarea>

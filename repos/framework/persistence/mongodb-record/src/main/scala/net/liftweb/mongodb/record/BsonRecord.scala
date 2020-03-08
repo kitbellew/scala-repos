@@ -105,12 +105,12 @@ trait BsonMetaRecord[BaseRecord <: BsonRecord[BaseRecord]]
       case field if (field.optional_? && field.valueBox.isEmpty) =>
         Empty // don't add to DBObject
       case field: EnumTypedField[_] =>
-        field.asInstanceOf[EnumTypedField[Enumeration]].valueBox map { v =>
-          v.id
+        field.asInstanceOf[EnumTypedField[Enumeration]].valueBox map {
+          v => v.id
         }
       case field: EnumNameTypedField[_] =>
-        field.asInstanceOf[EnumNameTypedField[Enumeration]].valueBox map { v =>
-          v.toString
+        field.asInstanceOf[EnumNameTypedField[Enumeration]].valueBox map {
+          v => v.toString
         }
       case field: MongoFieldFlavor[_] =>
         Full(field.asInstanceOf[MongoFieldFlavor[Any]].asDBObject)

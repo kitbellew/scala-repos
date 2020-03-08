@@ -70,13 +70,15 @@ object PresentationUtil {
           case tp: ScType =>
             paramText = paramText + " <: " + presentationString(tp, substitutor)
         }
-        param.viewBound foreach { (tp: ScType) =>
-          paramText = paramText + " <% " + presentationString(tp, substitutor)
+        param.viewBound foreach {
+          (tp: ScType) =>
+            paramText = paramText + " <% " + presentationString(tp, substitutor)
         }
-        param.contextBound foreach { (tp: ScType) =>
-          paramText = paramText + " : " + presentationString(
-            ScTypeUtil.stripTypeArgs(substitutor.subst(tp)),
-            substitutor)
+        param.contextBound foreach {
+          (tp: ScType) =>
+            paramText = paramText + " : " + presentationString(
+              ScTypeUtil.stripTypeArgs(substitutor.subst(tp)),
+              substitutor)
         }
         paramText
       case param: PsiTypeParameter =>

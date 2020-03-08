@@ -377,11 +377,12 @@ private class TestMasterInfo(
         workers.children.filter(w => (w \ "state").extract[String] == "ALIVE")
       // Extract the worker IP from "webuiaddress" (rather than "host") because the host name
       // on containers is a weird hash instead of the actual IP address.
-      liveWorkerIPs = liveWorkers.map { w =>
-        (w \ "webuiaddress")
-          .extract[String]
-          .stripPrefix("http://")
-          .stripSuffix(":8081")
+      liveWorkerIPs = liveWorkers.map {
+        w =>
+          (w \ "webuiaddress")
+            .extract[String]
+            .stripPrefix("http://")
+            .stripSuffix(":8081")
       }
 
       numLiveApps = (json \ "activeapps").children.size

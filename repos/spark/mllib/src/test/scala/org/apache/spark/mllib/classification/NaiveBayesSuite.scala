@@ -349,18 +349,19 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     Seq(
       NaiveBayesSuite.binaryBernoulliModel,
-      NaiveBayesSuite.binaryMultinomialModel).map { model =>
-      // Save model, load it back, and compare.
-      try {
-        model.save(sc, path)
-        val sameModel = NaiveBayesModel.load(sc, path)
-        assert(model.labels === sameModel.labels)
-        assert(model.pi === sameModel.pi)
-        assert(model.theta === sameModel.theta)
-        assert(model.modelType === sameModel.modelType)
-      } finally {
-        Utils.deleteRecursively(tempDir)
-      }
+      NaiveBayesSuite.binaryMultinomialModel).map {
+      model =>
+        // Save model, load it back, and compare.
+        try {
+          model.save(sc, path)
+          val sameModel = NaiveBayesModel.load(sc, path)
+          assert(model.labels === sameModel.labels)
+          assert(model.pi === sameModel.pi)
+          assert(model.theta === sameModel.theta)
+          assert(model.modelType === sameModel.modelType)
+        } finally {
+          Utils.deleteRecursively(tempDir)
+        }
     }
   }
 

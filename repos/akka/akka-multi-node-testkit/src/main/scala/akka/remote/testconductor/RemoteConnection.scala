@@ -79,8 +79,9 @@ private[akka] class TestConductorPipelineFactory(
       new ProtobufDecoder(TestConductorProtocol.Wrapper.getDefaultInstance))
     val msg = List(new MsgEncoder, new MsgDecoder)
     (encap ::: proto ::: msg ::: handler :: Nil)
-      .foldLeft(new DefaultChannelPipeline) { (pipe, handler) ⇒
-        pipe.addLast(Logging.simpleName(handler.getClass), handler); pipe
+      .foldLeft(new DefaultChannelPipeline) {
+        (pipe, handler) ⇒
+          pipe.addLast(Logging.simpleName(handler.getClass), handler); pipe
       }
   }
 }

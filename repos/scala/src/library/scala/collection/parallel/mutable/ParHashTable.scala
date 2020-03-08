@@ -64,22 +64,23 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
     def remaining = totalsize - traversed
 
     private[parallel] override def debugInformation = {
-      buildString { append =>
-        append("/--------------------\\")
-        append("Parallel hash table entry iterator")
-        append("total hash table elements: " + tableSize)
-        append("pos: " + idx)
-        append("until: " + until)
-        append("traversed: " + traversed)
-        append("totalsize: " + totalsize)
-        append("current entry: " + es)
-        append("underlying from " + idx + " until " + until)
-        append(
-          itertable
-            .slice(idx, until)
-            .map(x => if (x != null) x.toString else "n/a")
-            .mkString(" | "))
-        append("\\--------------------/")
+      buildString {
+        append =>
+          append("/--------------------\\")
+          append("Parallel hash table entry iterator")
+          append("total hash table elements: " + tableSize)
+          append("pos: " + idx)
+          append("until: " + until)
+          append("traversed: " + traversed)
+          append("totalsize: " + totalsize)
+          append("current entry: " + es)
+          append("underlying from " + idx + " until " + until)
+          append(
+            itertable
+              .slice(idx, until)
+              .map(x => if (x != null) x.toString else "n/a")
+              .mkString(" | "))
+          append("\\--------------------/")
       }
     }
 

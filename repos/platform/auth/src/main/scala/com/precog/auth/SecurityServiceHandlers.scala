@@ -340,8 +340,8 @@ class SecurityServiceHandlers(
     val service = (request: HttpRequest[Future[JValue]]) =>
       Success {
         request.parameters.get('grantId) map { grantId =>
-          apiKeyManager.findGrantChildren(grantId) map { grants =>
-            ok(Some(grants map grantDetails))
+          apiKeyManager.findGrantChildren(grantId) map {
+            grants => ok(Some(grants map grantDetails))
           }
         } getOrElse {
           Promise successful badRequest("Missing grant ID from request URL.")

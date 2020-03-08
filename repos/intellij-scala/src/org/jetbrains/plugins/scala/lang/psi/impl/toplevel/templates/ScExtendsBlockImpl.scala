@@ -82,8 +82,11 @@ class ScExtendsBlockImpl private (
   def empty = getNode.getFirstChildNode == null
 
   def selfType = {
-    val res = wrap(selfTypeElement) flatMap { ste =>
-      wrap(ste.typeElement) flatMap { te => te.getType(TypingContext.empty) }
+    val res = wrap(selfTypeElement) flatMap {
+      ste =>
+        wrap(ste.typeElement) flatMap {
+          te => te.getType(TypingContext.empty)
+        }
     } match {
       case Success(t, _) => Some(t)
       case _             => None

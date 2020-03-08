@@ -330,15 +330,16 @@ object CrossValidator extends MLReadable[CrossValidator] {
       val estimatorParamMaps: Array[ParamMap] =
         (metadata.params \ "estimatorParamMaps")
           .extract[Seq[Seq[Map[String, String]]]]
-          .map { pMap =>
-            val paramPairs = pMap.map {
-              case pInfo: Map[String, String] =>
-                val est = uidToParams(pInfo("parent"))
-                val param = est.getParam(pInfo("name"))
-                val value = param.jsonDecode(pInfo("value"))
-                param -> value
-            }
-            ParamMap(paramPairs: _*)
+          .map {
+            pMap =>
+              val paramPairs = pMap.map {
+                case pInfo: Map[String, String] =>
+                  val est = uidToParams(pInfo("parent"))
+                  val param = est.getParam(pInfo("name"))
+                  val value = param.jsonDecode(pInfo("value"))
+                  param -> value
+              }
+              ParamMap(paramPairs: _*)
           }
           .toArray
       (metadata, estimator, evaluator, estimatorParamMaps, numFolds)

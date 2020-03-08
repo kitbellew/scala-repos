@@ -305,11 +305,12 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
       val (deterministic, nondeterministic) =
         partitionByDeterministic(condition)
       val newFirstChild = Filter(deterministic, children.head)
-      val newOtherChildren = children.tail.map { child =>
-        {
-          val rewrites = buildRewrites(children.head, child)
-          Filter(pushToRight(deterministic, rewrites), child)
-        }
+      val newOtherChildren = children.tail.map {
+        child =>
+          {
+            val rewrites = buildRewrites(children.head, child)
+            Filter(pushToRight(deterministic, rewrites), child)
+          }
       }
       Filter(nondeterministic, Union(newFirstChild +: newOtherChildren))
 

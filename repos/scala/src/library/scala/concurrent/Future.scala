@@ -364,12 +364,13 @@ trait Future[+T] extends Awaitable[T] {
     */
   def collect[S](pf: PartialFunction[T, S])(
       implicit executor: ExecutionContext): Future[S] =
-    map { r =>
-      pf.applyOrElse(
-        r,
-        (t: T) =>
-          throw new NoSuchElementException(
-            "Future.collect partial function is not defined at: " + t))
+    map {
+      r =>
+        pf.applyOrElse(
+          r,
+          (t: T) =>
+            throw new NoSuchElementException(
+              "Future.collect partial function is not defined at: " + t))
     }
 
   /** Creates a new future that will handle any matching throwable that this
@@ -524,11 +525,12 @@ trait Future[+T] extends Awaitable[T] {
     */
   def andThen[U](pf: PartialFunction[Try[T], U])(
       implicit executor: ExecutionContext): Future[T] =
-    transform { result =>
-      try pf.applyOrElse[Try[T], Any](result, Predef.conforms[Try[T]])
-      catch { case NonFatal(t) => executor reportFailure t }
+    transform {
+      result =>
+        try pf.applyOrElse[Try[T], Any](result, Predef.conforms[Try[T]])
+        catch { case NonFatal(t) => executor reportFailure t }
 
-      result
+        result
     }
 }
 
@@ -674,8 +676,8 @@ object Future {
   def sequence[A, M[X] <: TraversableOnce[X]](in: M[Future[A]])(implicit
       cbf: CanBuildFrom[M[Future[A]], A, M[A]],
       executor: ExecutionContext): Future[M[A]] = {
-    in.foldLeft(successful(cbf(in))) { (fr, fa) =>
-        for (r <- fr; a <- fa) yield (r += a)
+    in.foldLeft(successful(cbf(in))) {
+        (fr, fa) => for (r <- fr; a <- fa) yield (r += a)
       }
       .map(_.result())(InternalCallbackExecutor)
   }
@@ -915,4 +917,6 @@ object Future {
   * All callbacks provided to a `Future` end up going through `onComplete`, so this allows an
   * `ExecutionContext` to special-case callbacks that were executed by `Future` if desired.
   */
-trait OnCompleteRunnable { self: Runnable => }
+trait OnCompleteRunnable {
+  self: Runnable =>
+}

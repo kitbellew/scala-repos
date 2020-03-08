@@ -158,8 +158,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
       mapWithErrorMessage(metricNamesMapping, name, "address")
 
     def ewmaToProto(ewma: Option[EWMA]): Option[cm.NodeMetrics.EWMA.Builder] =
-      ewma.map { x ⇒
-        cm.NodeMetrics.EWMA.newBuilder().setValue(x.value).setAlpha(x.alpha)
+      ewma.map {
+        x ⇒ cm.NodeMetrics.EWMA.newBuilder().setValue(x.value).setAlpha(x.alpha)
       }
 
     def numberToProto(number: Number): cm.NodeMetrics.Number.Builder = {

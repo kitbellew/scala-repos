@@ -659,9 +659,10 @@ trait MatchAnalysis extends MatchApproximation {
 
             val scrutVar = Var(prevBinderTree)
             val counterExamples = {
-              matchFailModels.flatMap { model =>
-                val varAssignments = expandModel(model)
-                varAssignments.flatMap(modelToCounterExample(scrutVar) _)
+              matchFailModels.flatMap {
+                model =>
+                  val varAssignments = expandModel(model)
+                  varAssignments.flatMap(modelToCounterExample(scrutVar) _)
               }
             }
 

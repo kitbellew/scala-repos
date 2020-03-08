@@ -147,8 +147,8 @@ trait HtmlHelpers extends CssBindImplicits {
     * Given an id value, find the Elem with the specified id
     */
   def findId(nodes: Seq[Node], id: String): Option[Elem] = {
-    findOption(nodes) { e =>
-      e.attribute("id").filter(_.text == id).map(i => e)
+    findOption(nodes) {
+      e => e.attribute("id").filter(_.text == id).map(i => e)
     }
   }
 

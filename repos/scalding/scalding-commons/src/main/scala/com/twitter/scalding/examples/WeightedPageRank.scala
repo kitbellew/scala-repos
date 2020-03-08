@@ -77,8 +77,8 @@ class WeightedPageRank(args: Args) extends Job(args) {
 
   def getInputPagerank(fileName: String) = {
     Tsv(fileName).read
-      .mapTo((0, 1) -> ('src_id_input, 'mass_input)) { input: (Int, Double) =>
-        input
+      .mapTo((0, 1) -> ('src_id_input, 'mass_input)) {
+        input: (Int, Double) => input
       }
   }
 

@@ -120,12 +120,13 @@ class ScalaByNameWeigher extends CompletionWeigher {
       def oneSymbolText(elementText: String, text: String): Boolean =
         elementText.charAt(0) == text.charAt(0).toUpper
 
-      extractVariableNameFromPosition.flatMap { text =>
-        text.length match {
-          case 0                                         => None
-          case 1 if oneSymbolText(element.getName, text) => Some(0)
-          case _                                         => computeDistance(element, text)
-        }
+      extractVariableNameFromPosition.flatMap {
+        text =>
+          text.length match {
+            case 0                                         => None
+            case 1 if oneSymbolText(element.getName, text) => Some(0)
+            case _                                         => computeDistance(element, text)
+          }
       }
     }
 

@@ -265,15 +265,16 @@ class SupervisorSpec
 
       filterEvents(
         EventFilter[RuntimeException]("Expected", occurrences = restarts + 1)) {
-        (1 to restarts) foreach { i ⇒
-          master ! "crash"
-          expectMsg("crashed")
+        (1 to restarts) foreach {
+          i ⇒
+            master ! "crash"
+            expectMsg("crashed")
 
-          expectMsg("preRestart" + i)
-          expectMsg("postRestart" + i)
+            expectMsg("preRestart" + i)
+            expectMsg("postRestart" + i)
 
-          master ! "ping"
-          expectMsg("pong")
+            master ! "ping"
+            expectMsg("pong")
         }
         master ! "crash"
         expectMsg("crashed")

@@ -59,18 +59,19 @@ object Ensemble extends JFXApp {
     id = "page-tree"
   }
   controlsView.selectionModel().selectionMode = SelectionMode.SINGLE
-  controlsView.selectionModel().selectedItem.onChange { (_, _, newItem) =>
-    {
-      val pageCode = (newItem.isLeaf, Option(newItem.getParent)) match {
-        case (true, Some(parent)) =>
-          parent.getValue.toLowerCase + " > " + newItem.getValue
-        case (false, Some(_)) => "dashBoard - " + newItem.getValue
-        case (_, _)           => "dashBoard"
+  controlsView.selectionModel().selectedItem.onChange {
+    (_, _, newItem) =>
+      {
+        val pageCode = (newItem.isLeaf, Option(newItem.getParent)) match {
+          case (true, Some(parent)) =>
+            parent.getValue.toLowerCase + " > " + newItem.getValue
+          case (false, Some(_)) => "dashBoard - " + newItem.getValue
+          case (_, _)           => "dashBoard"
+        }
+        centerPane = PageDisplayer.choosePage(pageCode)
+        splitPane.items.remove(1)
+        splitPane.items.add(1, centerPane)
       }
-      centerPane = PageDisplayer.choosePage(pageCode)
-      splitPane.items.remove(1)
-      splitPane.items.add(1, centerPane)
-    }
   }
 
   val scrollPane = new ScrollPane {

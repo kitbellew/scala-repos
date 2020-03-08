@@ -76,13 +76,14 @@ class AlgorithmChecker(
       s"checkSignatureAlgorithms: sigAlgName = $sigAlgName, sigAlgName = $sigAlgName, sigAlgorithms = $sigAlgorithms")
 
     for (a <- sigAlgorithms) {
-      findSignatureConstraint(a).map { constraint =>
-        if (constraint.matches(a)) {
-          logger.debug(
-            s"checkSignatureAlgorithms: x509Cert = $x509Cert failed on constraint $constraint")
-          val msg = s"Certificate failed: $a matched constraint $constraint"
-          throw new CertPathValidatorException(msg)
-        }
+      findSignatureConstraint(a).map {
+        constraint =>
+          if (constraint.matches(a)) {
+            logger.debug(
+              s"checkSignatureAlgorithms: x509Cert = $x509Cert failed on constraint $constraint")
+            val msg = s"Certificate failed: $a matched constraint $constraint"
+            throw new CertPathValidatorException(msg)
+          }
       }
     }
   }
@@ -103,16 +104,17 @@ class AlgorithmChecker(
       s"checkKeyAlgorithms: keyAlgorithmName = $keyAlgorithmName, keySize = $keySize, keyAlgorithms = $keyAlgorithms")
 
     for (a <- keyAlgorithms) {
-      findKeyConstraint(a).map { constraint =>
-        if (constraint.matches(a, keySize)) {
-          val certName = x509Cert.getSubjectX500Principal.getName
-          logger.debug(
-            s"""checkKeyAlgorithms: cert = "$certName" failed on constraint $constraint, algorithm = $a, keySize = $keySize""")
+      findKeyConstraint(a).map {
+        constraint =>
+          if (constraint.matches(a, keySize)) {
+            val certName = x509Cert.getSubjectX500Principal.getName
+            logger.debug(
+              s"""checkKeyAlgorithms: cert = "$certName" failed on constraint $constraint, algorithm = $a, keySize = $keySize""")
 
-          val msg =
-            s"""Certificate failed: cert = "$certName" failed on constraint $constraint, algorithm = $a, keySize = $keySize"""
-          throw new CertPathValidatorException(msg)
-        }
+            val msg =
+              s"""Certificate failed: cert = "$certName" failed on constraint $constraint, algorithm = $a, keySize = $keySize"""
+            throw new CertPathValidatorException(msg)
+          }
       }
     }
   }

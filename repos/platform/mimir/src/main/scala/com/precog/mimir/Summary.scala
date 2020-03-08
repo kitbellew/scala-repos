@@ -181,8 +181,8 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         val spec = OuterObjectConcat(Leaf(SourceLeft), Leaf(SourceRight))
 
         val res = objectTables map {
-          _.reduceOption { (tl, tr) =>
-            tl.cross(tr)(spec)
+          _.reduceOption {
+            (tl, tr) => tl.cross(tr)(spec)
           } getOrElse Table.empty
         }
 

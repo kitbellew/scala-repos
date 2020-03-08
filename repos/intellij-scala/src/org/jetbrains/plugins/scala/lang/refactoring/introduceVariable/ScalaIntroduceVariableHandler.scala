@@ -121,9 +121,10 @@ class ScalaIntroduceVariableHandler
           file,
           dataContext,
           typeElement.get,
-          INTRODUCE_TYPEALIAS_REFACTORING_NAME) { typeElement =>
-          ScalaRefactoringUtil.trimSpacesAndComments(editor, file)
-          invokeTypeElement(project, editor, file, typeElement)
+          INTRODUCE_TYPEALIAS_REFACTORING_NAME) {
+          typeElement =>
+            ScalaRefactoringUtil.trimSpacesAndComments(editor, file)
+            invokeTypeElement(project, editor, file, typeElement)
         }
       }
     } else {

@@ -101,8 +101,9 @@ object StreamTest extends SpecLite {
     F.zipL(infinite, finite).takeWhile(_._2.isDefined).length must_=== (size)
   }
 
-  "filter" ! forAll { (xs: Stream[Int], p: Int => Boolean) =>
-    MonadPlus[Stream].filter(xs)(p) must_=== xs.filter(p)
+  "filter" ! forAll {
+    (xs: Stream[Int], p: Int => Boolean) =>
+      MonadPlus[Stream].filter(xs)(p) must_=== xs.filter(p)
   }
 
   object instances {

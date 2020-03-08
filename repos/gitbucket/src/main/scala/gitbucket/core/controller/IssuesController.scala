@@ -337,36 +337,37 @@ trait IssuesControllerBase extends ControllerBase {
 
   ajaxGet("/:owner/:repository/issue_comments/_data/:id")(readableUsersOnly {
     repository =>
-      getComment(repository.owner, repository.name, params("id")) map { x =>
-        if (isEditable(x.userName, x.repositoryName, x.commentedUserName)) {
-          params.get("dataType") collect {
-            case t if t == "html" =>
-              html.editcomment(
-                x.content,
-                x.commentId,
-                x.userName,
-                x.repositoryName)
-          } getOrElse {
-            contentType = formats("json")
-            org.json4s.jackson.Serialization.write(
-              Map(
-                "content" -> view.Markdown.toHtml(
-                  markdown = x.content,
-                  repository = repository,
-                  enableWikiLink = false,
-                  enableRefsLink = true,
-                  enableAnchor = true,
-                  enableLineBreaks = true,
-                  enableTaskList = true,
-                  hasWritePermission = isEditable(
-                    x.userName,
-                    x.repositoryName,
-                    x.commentedUserName)
+      getComment(repository.owner, repository.name, params("id")) map {
+        x =>
+          if (isEditable(x.userName, x.repositoryName, x.commentedUserName)) {
+            params.get("dataType") collect {
+              case t if t == "html" =>
+                html.editcomment(
+                  x.content,
+                  x.commentId,
+                  x.userName,
+                  x.repositoryName)
+            } getOrElse {
+              contentType = formats("json")
+              org.json4s.jackson.Serialization.write(
+                Map(
+                  "content" -> view.Markdown.toHtml(
+                    markdown = x.content,
+                    repository = repository,
+                    enableWikiLink = false,
+                    enableRefsLink = true,
+                    enableAnchor = true,
+                    enableLineBreaks = true,
+                    enableTaskList = true,
+                    hasWritePermission = isEditable(
+                      x.userName,
+                      x.repositoryName,
+                      x.commentedUserName)
+                  )
                 )
               )
-            )
-          }
-        } else Unauthorized
+            }
+          } else Unauthorized
       } getOrElse NotFound
   })
 
@@ -435,24 +436,25 @@ trait IssuesControllerBase extends ControllerBase {
 
   post("/:owner/:repository/issues/batchedit/state")(collaboratorsOnly {
     repository =>
-      defining(params.get("value")) { action =>
-        action match {
-          case Some("open") =>
-            executeBatch(repository) { issueId =>
-              getIssue(repository.owner, repository.name, issueId.toString)
-                .foreach { issue =>
-                  handleComment(issue, None, repository, Some("reopen"))
-                }
-            }
-          case Some("close") =>
-            executeBatch(repository) { issueId =>
-              getIssue(repository.owner, repository.name, issueId.toString)
-                .foreach { issue =>
-                  handleComment(issue, None, repository, Some("close"))
-                }
-            }
-          case _ => // TODO BadRequest
-        }
+      defining(params.get("value")) {
+        action =>
+          action match {
+            case Some("open") =>
+              executeBatch(repository) { issueId =>
+                getIssue(repository.owner, repository.name, issueId.toString)
+                  .foreach { issue =>
+                    handleComment(issue, None, repository, Some("reopen"))
+                  }
+              }
+            case Some("close") =>
+              executeBatch(repository) { issueId =>
+                getIssue(repository.owner, repository.name, issueId.toString)
+                  .foreach { issue =>
+                    handleComment(issue, None, repository, Some("close"))
+                  }
+              }
+            case _ => // TODO BadRequest
+          }
       }
   })
 

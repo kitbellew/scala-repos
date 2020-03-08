@@ -70,8 +70,8 @@ class DatabaseService(dir: File) extends SLF4JLogging {
       fileChecks.filter(_.filename inSetBind restrict).delete
     }
 
-  private val timestampsQuery = Compiled { filename: Rep[String] =>
-    fileChecks.filter(_.filename === filename).take(1)
+  private val timestampsQuery = Compiled {
+    filename: Rep[String] => fileChecks.filter(_.filename === filename).take(1)
   }
 
   def outOfDate(f: FileObject)(implicit
@@ -93,8 +93,8 @@ class DatabaseService(dir: File) extends SLF4JLogging {
       (fileChecksCompiled += check) andThen (fqnSymbolsCompiled ++= symbols)
     )
 
-  private val findCompiled = Compiled { fqn: Rep[String] =>
-    fqnSymbols.filter(_.fqn === fqn).take(1)
+  private val findCompiled = Compiled {
+    fqn: Rep[String] => fqnSymbols.filter(_.fqn === fqn).take(1)
   }
 
   def find(fqn: String): Future[Option[FqnSymbol]] = db.run(

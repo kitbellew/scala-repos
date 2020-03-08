@@ -837,8 +837,8 @@ abstract class GenJSCode
         jsInterop.isExport(s)
       }
 
-      val proxies = candidates filter { c =>
-        candidates.find(weakMatch(c) _).get == c
+      val proxies = candidates filter {
+        c => candidates.find(weakMatch(c) _).get == c
       }
 
       proxies.map(genReflCallProxy _).toList
@@ -1293,8 +1293,9 @@ abstract class GenJSCode
          * plugins (see for example #1148).
          */
         case LabelDef(labelName, labelParams, rhs) =>
-          val labelParamSyms = labelParams.map(_.symbol) map { s =>
-            if (s == fakeTailJumpParamRepl._1) fakeTailJumpParamRepl._2 else s
+          val labelParamSyms = labelParams.map(_.symbol) map {
+            s =>
+              if (s == fakeTailJumpParamRepl._1) fakeTailJumpParamRepl._2 else s
           }
 
           withScopedVars(
@@ -3104,12 +3105,13 @@ abstract class GenJSCode
               val jsArity =
                 if (isThisFunction) arity - 1
                 else arity
-              val jsParams = (1 to jsArity).toList map { x =>
-                js.ParamDef(
-                  js.Ident("arg" + x),
-                  jstpe.AnyType,
-                  mutable = false,
-                  rest = false)
+              val jsParams = (1 to jsArity).toList map {
+                x =>
+                  js.ParamDef(
+                    js.Ident("arg" + x),
+                    jstpe.AnyType,
+                    mutable = false,
+                    rest = false)
               }
               js.Closure(
                 List(fCaptureParam),

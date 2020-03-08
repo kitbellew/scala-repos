@@ -65,8 +65,8 @@ trait EnumeratorT[E, F[_]] { self =>
       def apply[A] = (step: StepT[B, F, A]) => {
         def check(s: StepT[E, F, B]): IterateeT[B, F, A] = s.fold(
           cont = k =>
-            k(eofInput) >>== { s =>
-              s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
+            k(eofInput) >>== {
+              s => s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
             },
           done = (a, _) => step.mapCont(f => f(elInput(a)))
         )
@@ -229,10 +229,11 @@ trait EnumeratorTFunctions {
     new EnumeratorT[E, F] {
       private val limit = max.map(_ min (a.length)).getOrElse(a.length)
       def apply[A] = {
-        def loop(pos: Int): StepT[E, F, A] => IterateeT[E, F, A] = { s =>
-          s.mapCont(k =>
-            if (limit > pos) k(elInput(a(pos))) >>== loop(pos + 1)
-            else s.pointI)
+        def loop(pos: Int): StepT[E, F, A] => IterateeT[E, F, A] = {
+          s =>
+            s.mapCont(k =>
+              if (limit > pos) k(elInput(a(pos))) >>== loop(pos + 1)
+              else s.pointI)
         }
         loop(min)
       }
@@ -263,8 +264,8 @@ trait EnumeratorTFunctions {
             z: (E => (StepM => IterateeM)) => E => (
                 Input[E] => IterateeM) => IterateeM,
             lastState: E): (StepM => IterateeM) = {
-          def step: E => (StepM => IterateeM) = { state =>
-            _.mapCont(k => z(step)(state)(k))
+          def step: E => (StepM => IterateeM) = {
+            state => _.mapCont(k => z(step)(state)(k))
           }
 
           step(lastState)

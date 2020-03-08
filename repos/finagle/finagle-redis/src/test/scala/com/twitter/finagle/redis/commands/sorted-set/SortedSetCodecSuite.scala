@@ -422,9 +422,10 @@ final class SortedSetCodecSuite extends RedisRequestTest {
           cmd,
           "myzset",
           ZInterval.exclusive(1),
-          ZInterval.exclusive(2)) { (s, l) =>
-          assert(s == None)
-          assert(l == None)
+          ZInterval.exclusive(2)) {
+          (s, l) =>
+            assert(s == None)
+            assert(l == None)
         }
       }
     }
@@ -529,10 +530,11 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       "%s key start",
       "%s key 1",
       "%s key 1 stop",
-      "%s key start 2").foreach { b =>
-      intercept[ClientError] {
-        codec(wrap("%s\r\n".format(b.format("ZREMRANGEBYRANK"))))
-      }
+      "%s key start 2").foreach {
+      b =>
+        intercept[ClientError] {
+          codec(wrap("%s\r\n".format(b.format("ZREMRANGEBYRANK"))))
+        }
     }
   }
 
@@ -554,10 +556,11 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       "%s key min",
       "%s key min max",
       "%s key ( 1",
-      "%s key (1 max").foreach { b =>
-      intercept[ClientError] {
-        codec(wrap("%s\r\n".format(b.format("ZREMRANGEBYSCORE"))))
-      }
+      "%s key (1 max").foreach {
+      b =>
+        intercept[ClientError] {
+          codec(wrap("%s\r\n".format(b.format("ZREMRANGEBYSCORE"))))
+        }
     }
   }
 

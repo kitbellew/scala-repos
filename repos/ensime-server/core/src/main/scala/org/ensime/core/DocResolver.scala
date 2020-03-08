@@ -154,7 +154,9 @@ class DocResolver(
         else if (rawVersion.startsWith("1.7")) "7"
         else "6"
       val anchor = sig.java.member
-        .map { m => "#" + { if (version == "8") toJava8Anchor(m) else m } }
+        .map {
+          m => "#" + { if (version == "8") toJava8Anchor(m) else m }
+        }
         .getOrElse("")
       Some(s"http://docs.oracle.com/javase/$version/docs/api/$path$anchor")
 

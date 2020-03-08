@@ -133,7 +133,9 @@ abstract class MongoAccountManager(
 
         database(
           insert(account0.serialize.asInstanceOf[JObject])
-            .into(settings.accounts)) map { _ => account0 }
+            .into(settings.accounts)) map {
+          _ => account0
+        }
       }
     } yield account
   }
@@ -190,8 +192,10 @@ abstract class MongoAccountManager(
     database(
       update(settings.resetTokens)
         .set("usedAt" set (new DateTime).serialize)
-        .where("tokenId" === tokenId)).map { _ =>
-      logger.debug("Reset token %s marked as used".format(tokenId)); PrecogUnit
+        .where("tokenId" === tokenId)).map {
+      _ =>
+        logger.debug("Reset token %s marked as used".format(tokenId));
+        PrecogUnit
     }
   }
 
@@ -218,7 +222,9 @@ abstract class MongoAccountManager(
           update(settings.accounts)
             .set(updateObj)
             .where("accountId" === account.accountId)
-        } map { _ => true }
+        } map {
+          _ => true
+        }
 
       case None =>
         M.point(false)

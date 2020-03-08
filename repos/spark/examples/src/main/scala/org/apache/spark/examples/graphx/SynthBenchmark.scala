@@ -48,11 +48,13 @@ object SynthBenchmark {
     *   -seed seed to use for RNGs (Default: -1, picks seed randomly)
     */
   def main(args: Array[String]) {
-    val options = args.map { arg =>
-      arg.dropWhile(_ == '-').split('=') match {
-        case Array(opt, v) => (opt -> v)
-        case _             => throw new IllegalArgumentException("Invalid argument: " + arg)
-      }
+    val options = args.map {
+      arg =>
+        arg.dropWhile(_ == '-').split('=') match {
+          case Array(opt, v) => (opt -> v)
+          case _ =>
+            throw new IllegalArgumentException("Invalid argument: " + arg)
+        }
     }
 
     var app = "pagerank"

@@ -71,11 +71,12 @@ object Unidoc extends Plugin {
       unidocSources,
       unidocDirectory,
       scalacOptions in doc,
-      streams) map { (compilers, sources, target, options, s) =>
-      {
-        Doc.scaladoc("Scalatra", s.cacheDirectory, compilers.scalac, options)
-        target
-      }
+      streams) map {
+      (compilers, sources, target, options, s) =>
+        {
+          Doc.scaladoc("Scalatra", s.cacheDirectory, compilers.scalac, options)
+          target
+        }
     }
   }
 }

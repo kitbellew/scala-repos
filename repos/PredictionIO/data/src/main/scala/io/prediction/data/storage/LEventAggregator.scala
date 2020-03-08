@@ -92,46 +92,48 @@ object LEventAggregator {
   val eventNames = List("$set", "$unset", "$delete")
 
   private def dataMapAggregator
-      : ((Option[DataMap], Event) => Option[DataMap]) = { (p, e) =>
-    {
-      e.event match {
-        case "$set" => {
-          if (p == None) {
-            Some(e.properties)
-          } else {
-            p.map(_ ++ e.properties)
+      : ((Option[DataMap], Event) => Option[DataMap]) = {
+    (p, e) =>
+      {
+        e.event match {
+          case "$set" => {
+            if (p == None) {
+              Some(e.properties)
+            } else {
+              p.map(_ ++ e.properties)
+            }
           }
-        }
-        case "$unset" => {
-          if (p == None) {
-            None
-          } else {
-            p.map(_ -- e.properties.keySet)
+          case "$unset" => {
+            if (p == None) {
+              None
+            } else {
+              p.map(_ -- e.properties.keySet)
+            }
           }
+          case "$delete" => None
+          case _         => p // do nothing for others
         }
-        case "$delete" => None
-        case _         => p // do nothing for others
       }
-    }
   }
 
-  private def propAggregator: ((Prop, Event) => Prop) = { (p, e) =>
-    {
-      e.event match {
-        case "$set" | "$unset" | "$delete" => {
-          Prop(
-            dm = dataMapAggregator(p.dm, e),
-            firstUpdated = p.firstUpdated
-              .map { t => first(t, e.eventTime) }
-              .orElse(Some(e.eventTime)),
-            lastUpdated = p.lastUpdated
-              .map { t => last(t, e.eventTime) }
-              .orElse(Some(e.eventTime))
-          )
+  private def propAggregator: ((Prop, Event) => Prop) = {
+    (p, e) =>
+      {
+        e.event match {
+          case "$set" | "$unset" | "$delete" => {
+            Prop(
+              dm = dataMapAggregator(p.dm, e),
+              firstUpdated = p.firstUpdated
+                .map { t => first(t, e.eventTime) }
+                .orElse(Some(e.eventTime)),
+              lastUpdated = p.lastUpdated
+                .map { t => last(t, e.eventTime) }
+                .orElse(Some(e.eventTime))
+            )
+          }
+          case _ => p // do nothing for others
         }
-        case _ => p // do nothing for others
       }
-    }
   }
 
   private def first(a: DateTime, b: DateTime): DateTime =

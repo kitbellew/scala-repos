@@ -433,23 +433,26 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
     * as there's a great chance the check-and-set won't succeed.
     */
   def getsResult(keys: Iterable[String]): Future[GetsResult] =
-    underlyingClient.getsAll(keys) map { resultsMap =>
-      val getsResultSeq = resultsMap map {
-        case (key, ConsistentReplication(Some((value, RCasUnique(uniques))))) =>
-          val newCas = uniques map { case Buf.Utf8(s) => s } mkString ("|")
-          val newValue = Value(Buf.Utf8(key), value, Some(Buf.Utf8(newCas)))
-          GetsResult(GetResult(hits = Map(key -> newValue)))
-        case (key, ConsistentReplication(None)) =>
-          GetsResult(GetResult(misses = Set(key)))
-        case (key, InconsistentReplication(resultsSeq))
-            if resultsSeq.forall(_.isReturn) =>
-          GetsResult(GetResult(misses = Set(key)))
-        case (key, _) =>
-          GetsResult(
-            GetResult(failures = Map(key -> SimpleReplicationFailure(
-              "One or more underlying replica failed gets"))))
-      }
-      GetResult.merged(getsResultSeq.toSeq)
+    underlyingClient.getsAll(keys) map {
+      resultsMap =>
+        val getsResultSeq = resultsMap map {
+          case (
+              key,
+              ConsistentReplication(Some((value, RCasUnique(uniques))))) =>
+            val newCas = uniques map { case Buf.Utf8(s) => s } mkString ("|")
+            val newValue = Value(Buf.Utf8(key), value, Some(Buf.Utf8(newCas)))
+            GetsResult(GetResult(hits = Map(key -> newValue)))
+          case (key, ConsistentReplication(None)) =>
+            GetsResult(GetResult(misses = Set(key)))
+          case (key, InconsistentReplication(resultsSeq))
+              if resultsSeq.forall(_.isReturn) =>
+            GetsResult(GetResult(misses = Set(key)))
+          case (key, _) =>
+            GetsResult(
+              GetResult(failures = Map(key -> SimpleReplicationFailure(
+                "One or more underlying replica failed gets"))))
+        }
+        GetResult.merged(getsResultSeq.toSeq)
     }
 
   /**

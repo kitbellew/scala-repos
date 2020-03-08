@@ -59,8 +59,8 @@ object ScalaFX_Properties_And_Binding_05 {
 
     val total = Bindings.add(bill1.amountDue, bill2.amountDue, bill3.amountDue)
 
-    total onInvalidate { observable =>
-      println("the total double binding has been invalidated")
+    total onInvalidate {
+      observable => println("the total double binding has been invalidated")
     }
 
     bill1.amountDue() = 100.0

@@ -536,24 +536,25 @@ trait LinearRegressionLibModule[M[+_]]
           // this could be remedied in the future by smarter choice of `sliceSize`
           // though do we really want to allow people to run regression on >`sliceSize` columns?
           val sliceSize = 10000
-          val tableReducer: (Table, JType) => M[Table] = { (table, jtype) =>
-            {
-              val arrayTable = table
-                .canonicalize(sliceSize, Some(sliceSize * 2))
-                .toArray[Double]
+          val tableReducer: (Table, JType) => M[Table] = {
+            (table, jtype) =>
+              {
+                val arrayTable = table
+                  .canonicalize(sliceSize, Some(sliceSize * 2))
+                  .toArray[Double]
 
-              val coeffs0 = arrayTable.reduce(coefficientReducer)
-              val errors0 = coeffs0 flatMap { acc =>
-                arrayTable.reduce(stdErrorReducer(acc))
-              }
+                val coeffs0 = arrayTable.reduce(coefficientReducer)
+                val errors0 = coeffs0 flatMap { acc =>
+                  arrayTable.reduce(stdErrorReducer(acc))
+                }
 
-              for {
-                coeffs <- coeffs0
-                errors <- errors0
-              } yield {
-                extract(coeffs, errors, jtype)
+                for {
+                  coeffs <- coeffs0
+                  errors <- errors0
+                } yield {
+                  extract(coeffs, errors, jtype)
+                }
               }
-            }
           }
 
           val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
@@ -576,8 +577,8 @@ trait LinearRegressionLibModule[M[+_]]
             DerefObjectStatic(Leaf(SourceRight), paths.Value))
 
           objectTables map {
-            _.reduceOption { (tl, tr) =>
-              tl.cross(tr)(buildConstantWrapSpec(spec))
+            _.reduceOption {
+              (tl, tr) => tl.cross(tr)(buildConstantWrapSpec(spec))
             } getOrElse Table.empty
           }
         }

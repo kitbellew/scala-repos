@@ -23,8 +23,9 @@ object LazyEitherTest extends SpecLite {
     val times = 10000
 
     val result =
-      BindRec[LazyEither[Int, ?]].tailrecM[Int, Int] { i =>
-        LazyEither.lazyRight(if (i < 10000) \/.left(i + 1) else \/.right(i))
+      BindRec[LazyEither[Int, ?]].tailrecM[Int, Int] {
+        i =>
+          LazyEither.lazyRight(if (i < 10000) \/.left(i + 1) else \/.right(i))
       }(0)
     result.getOrElse(0) must_=== times
   }

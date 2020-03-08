@@ -124,7 +124,9 @@ trait HashJoin {
     newPredicate(
       condition.getOrElse(Literal(true)),
       left.output ++ right.output)
-  } else { (r: InternalRow) => true }
+  } else {
+    (r: InternalRow) => true
+  }
 
   protected def createResultProjection: (InternalRow) => InternalRow =
     UnsafeProjection.create(self.schema)
@@ -282,8 +284,8 @@ trait HashJoin {
       lazy val rowBuffer = hashedRelation.get(key)
       val r =
         !key.anyNull && rowBuffer != null && (condition.isEmpty || rowBuffer
-          .exists { (row: InternalRow) =>
-            boundCondition(joinedRow(current, row))
+          .exists {
+            (row: InternalRow) => boundCondition(joinedRow(current, row))
           })
       if (r) numOutputRows += 1
       r

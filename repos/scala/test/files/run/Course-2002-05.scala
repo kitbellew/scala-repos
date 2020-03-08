@@ -55,8 +55,8 @@ object M1 {
   def partition[a](
       xs: List[a],
       pred: a => Boolean): Tuple2[List[a], List[a]] = {
-    xs.foldRight[Tuple2[List[a], List[a]]]((List(), List())) { (x, p) =>
-      if (pred(x)) (x :: p._1, p._2) else (p._1, x :: p._2)
+    xs.foldRight[Tuple2[List[a], List[a]]]((List(), List())) {
+      (x, p) => if (pred(x)) (x :: p._1, p._2) else (p._1, x :: p._2)
     }
   }
 
@@ -134,9 +134,10 @@ object M3 {
         List(List())
       else {
         def isSafe(column: Int, placement: Placement): Boolean =
-          placement forall { pos =>
-            (pos._2 != column &&
-            abs(pos._2 - column) != row - pos._1)
+          placement forall {
+            pos =>
+              (pos._2 != column &&
+              abs(pos._2 - column) != row - pos._1)
           }
 
         def adjoinRow(placement: Placement): List[Placement] =

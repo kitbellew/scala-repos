@@ -83,11 +83,15 @@ case class ProjectSoc() extends Proximal {
 
     if (nx > x(0)) {
       if (nx <= -x(0)) {
-        cforRange(0 until n) { i => x(i) = 0 }
+        cforRange(0 until n) {
+          i => x(i) = 0
+        }
       } else {
         val alpha = 0.5 * (1 + x(0) / nx)
         x.update(0, alpha * nx)
-        cforRange(1 until n) { i => x.update(i, alpha * x(i)) }
+        cforRange(1 until n) {
+          i => x.update(i, alpha * x(i))
+        }
       }
     }
   }

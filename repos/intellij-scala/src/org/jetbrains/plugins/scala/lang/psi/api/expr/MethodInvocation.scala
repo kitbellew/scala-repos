@@ -324,43 +324,44 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
         if (includeUpdateCall) argumentExpressionsIncludeUpdateCall
         else argumentExpressions
       if (isNamedDynamic) {
-        default.map { expr =>
-          val actualExpr = expr match {
-            case a: ScAssignStmt =>
-              a.getLExpression match {
-                case ref: ScReferenceExpression if ref.qualifier.isEmpty =>
-                  a.getRExpression.getOrElse(expr)
-                case _ => expr
-              }
-            case _ => expr
-          }
-          new Expression(actualExpr) {
-            override def getTypeAfterImplicitConversion(
-                checkImplicits: Boolean,
-                isShape: Boolean,
-                _expectedOption: Option[ScType])
-                : (TypeResult[ScType], collection.Set[ImportUsed]) = {
-              val expectedOption = _expectedOption.map {
-                case ScTupleType(comps) if comps.length == 2 => comps(1)
-                case t                                       => t
-              }
-              val (res, imports) = super.getTypeAfterImplicitConversion(
-                checkImplicits,
-                isShape,
-                expectedOption)
-              val str = ScalaPsiManager
-                .instance(getProject)
-                .getCachedClass(getResolveScope, "java.lang.String")
-              val stringType =
-                str.map(ScType.designator(_)).getOrElse(types.Any)
-              (
-                res.map(tp =>
-                  ScTupleType(Seq(stringType, tp))(
-                    getProject,
-                    getResolveScope)),
-                imports)
+        default.map {
+          expr =>
+            val actualExpr = expr match {
+              case a: ScAssignStmt =>
+                a.getLExpression match {
+                  case ref: ScReferenceExpression if ref.qualifier.isEmpty =>
+                    a.getRExpression.getOrElse(expr)
+                  case _ => expr
+                }
+              case _ => expr
             }
-          }
+            new Expression(actualExpr) {
+              override def getTypeAfterImplicitConversion(
+                  checkImplicits: Boolean,
+                  isShape: Boolean,
+                  _expectedOption: Option[ScType])
+                  : (TypeResult[ScType], collection.Set[ImportUsed]) = {
+                val expectedOption = _expectedOption.map {
+                  case ScTupleType(comps) if comps.length == 2 => comps(1)
+                  case t                                       => t
+                }
+                val (res, imports) = super.getTypeAfterImplicitConversion(
+                  checkImplicits,
+                  isShape,
+                  expectedOption)
+                val str = ScalaPsiManager
+                  .instance(getProject)
+                  .getCachedClass(getResolveScope, "java.lang.String")
+                val stringType =
+                  str.map(ScType.designator(_)).getOrElse(types.Any)
+                (
+                  res.map(tp =>
+                    ScTupleType(Seq(stringType, tp))(
+                      getProject,
+                      getResolveScope)),
+                  imports)
+              }
+            }
         }
       } else default
     }

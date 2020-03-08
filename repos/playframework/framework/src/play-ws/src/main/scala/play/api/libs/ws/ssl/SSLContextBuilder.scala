@@ -155,8 +155,8 @@ class ConfigSSLContextBuilder(
   def buildCompositeKeyManager(
       keyManagerConfig: KeyManagerConfig,
       algorithmChecker: AlgorithmChecker) = {
-    val keyManagers = keyManagerConfig.keyStoreConfigs.map { ksc =>
-      buildKeyManager(ksc, algorithmChecker)
+    val keyManagers = keyManagerConfig.keyStoreConfigs.map {
+      ksc => buildKeyManager(ksc, algorithmChecker)
     }
     new CompositeX509KeyManager(keyManagers)
   }
@@ -167,12 +167,13 @@ class ConfigSSLContextBuilder(
       revocationLists: Option[Seq[CRL]],
       algorithmChecker: AlgorithmChecker) = {
 
-    val trustManagers = trustManagerInfo.trustStoreConfigs.map { tsc =>
-      buildTrustManager(
-        tsc,
-        revocationEnabled,
-        revocationLists,
-        algorithmChecker)
+    val trustManagers = trustManagerInfo.trustStoreConfigs.map {
+      tsc =>
+        buildTrustManager(
+          tsc,
+          revocationEnabled,
+          revocationLists,
+          algorithmChecker)
     }
     new CompositeX509TrustManager(trustManagers, algorithmChecker)
   }
@@ -281,7 +282,9 @@ class ConfigSSLContextBuilder(
   // Should anyone have any interest in implementing this feature at all, they can implement this method and
   // submit a patch.
   def certificateRevocationList(sslConfig: SSLConfig): Option[Seq[CRL]] = {
-    sslConfig.revocationLists.map { urls => urls.map(generateCRLFromURL) }
+    sslConfig.revocationLists.map {
+      urls => urls.map(generateCRLFromURL)
+    }
   }
 
   def generateCRL(inputStream: InputStream): CRL = {
@@ -324,12 +327,13 @@ class ConfigSSLContextBuilder(
     pkixParameters.setRevocationEnabled(revocationEnabled)
 
     // For the sake of completeness, set the static revocation list if it exists...
-    revocationLists.map { crlList =>
-      import scala.collection.JavaConverters._
-      pkixParameters.addCertStore(
-        CertStore.getInstance(
-          "Collection",
-          new CollectionCertStoreParameters(crlList.asJavaCollection)))
+    revocationLists.map {
+      crlList =>
+        import scala.collection.JavaConverters._
+        pkixParameters.addCertStore(
+          CertStore.getInstance(
+            "Collection",
+            new CollectionCertStoreParameters(crlList.asJavaCollection)))
     }
 
     // Add the algorithm checker in here to check the certification path sequence (not including trust anchor)...
@@ -408,21 +412,23 @@ class ConfigSSLContextBuilder(
     logger.debug(
       s"validateStore: type = ${store.getType}, size = ${store.size}")
 
-    store.aliases().asScala.foreach { alias =>
-      Option(store.getCertificate(alias)).map { c =>
-        try {
-          algorithmChecker.checkKeyAlgorithms(c)
-        } catch {
-          case e: CertPathValidatorException =>
-            logger.warn(
-              s"validateStore: Skipping certificate with weak key size in $alias: " + e.getMessage)
-            store.deleteEntry(alias)
-          case e: Exception =>
-            logger.warn(
-              s"validateStore: Skipping unknown exception $alias: " + e.getMessage)
-            store.deleteEntry(alias)
+    store.aliases().asScala.foreach {
+      alias =>
+        Option(store.getCertificate(alias)).map {
+          c =>
+            try {
+              algorithmChecker.checkKeyAlgorithms(c)
+            } catch {
+              case e: CertPathValidatorException =>
+                logger.warn(
+                  s"validateStore: Skipping certificate with weak key size in $alias: " + e.getMessage)
+                store.deleteEntry(alias)
+              case e: Exception =>
+                logger.warn(
+                  s"validateStore: Skipping unknown exception $alias: " + e.getMessage)
+                store.deleteEntry(alias)
+            }
         }
-      }
     }
   }
 

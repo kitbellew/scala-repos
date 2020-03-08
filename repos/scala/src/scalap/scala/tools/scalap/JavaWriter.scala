@@ -161,7 +161,9 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       if (cf.pool(cf.superclass) != null)
         print(" extends " + nameToClass0(getName(cf.superclass)))
     }
-    cf.interfaces foreach { n => print(" with " + getClassName(n)) }
+    cf.interfaces foreach {
+      n => print(" with " + getClassName(n))
+    }
   }
 
   def printClass() {

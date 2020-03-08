@@ -58,8 +58,8 @@ class NullableColumnBuilderSuite extends SparkFunSuite {
     ARRAY(ArrayType(IntegerType)),
     MAP(MapType(IntegerType, StringType))
   ).foreach {
-      testNullableColumnBuilder(_)
-    }
+    testNullableColumnBuilder(_)
+  }
 
   def testNullableColumnBuilder[JvmType](
       columnType: ColumnType[JvmType]): Unit = {

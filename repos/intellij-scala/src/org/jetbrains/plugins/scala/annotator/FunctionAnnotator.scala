@@ -69,16 +69,17 @@ trait FunctionAnnotator {
           annotation.registerFix(
             new RemoveElementQuickFix(it, "Remove @tailrec annotation"))
         } else {
-          recursiveReferences.filter(!_.isTailCall).foreach { ref =>
-            val target = ref.element.getParent match {
-              case call: ScMethodCall => call
-              case _                  => ref.element
-            }
-            val annotation = holder.createErrorAnnotation(
-              target,
-              "Recursive call not in tail position (in @tailrec annotated method)")
-            annotation.registerFix(
-              new RemoveElementQuickFix(it, "Remove @tailrec annotation"))
+          recursiveReferences.filter(!_.isTailCall).foreach {
+            ref =>
+              val target = ref.element.getParent match {
+                case call: ScMethodCall => call
+                case _                  => ref.element
+              }
+              val annotation = holder.createErrorAnnotation(
+                target,
+                "Recursive call not in tail position (in @tailrec annotated method)")
+              annotation.registerFix(
+                new RemoveElementQuickFix(it, "Remove @tailrec annotation"))
           }
         }
       }

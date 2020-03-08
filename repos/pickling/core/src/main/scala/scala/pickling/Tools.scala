@@ -56,14 +56,15 @@ class Tools[C <: Context](val c: C) {
             if annotation.tpe == typeOf[scala.pickling.directSubclasses] =>
           annotation
       })
-      .headOption map { annotation =>
-      annotation.javaArgs(newTermName("value")) match {
-        case ArrayArgument(klasses) =>
-          klasses.toList map {
-            case LiteralArgument(constant) =>
-              constant.value.asInstanceOf[Type].typeSymbol.asType
-          }
-      }
+      .headOption map {
+      annotation =>
+        annotation.javaArgs(newTermName("value")) match {
+          case ArrayArgument(klasses) =>
+            klasses.toList map {
+              case LiteralArgument(constant) =>
+                constant.value.asInstanceOf[Type].typeSymbol.asType
+            }
+        }
     }
 
     annotatedSubclasses

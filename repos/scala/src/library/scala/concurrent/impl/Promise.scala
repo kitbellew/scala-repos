@@ -47,13 +47,14 @@ private[concurrent] trait Promise[T]
   override def transformWith[S](f: Try[T] => Future[S])(
       implicit executor: ExecutionContext): Future[S] = {
     val p = new DefaultPromise[S]()
-    onComplete { v =>
-      try f(v) match {
-        case fut if fut eq this => p complete v.asInstanceOf[Try[S]]
-        case dp: DefaultPromise[_] =>
-          dp.asInstanceOf[DefaultPromise[S]].linkRootOf(p)
-        case fut => p completeWith fut
-      } catch { case NonFatal(t) => p failure t }
+    onComplete {
+      v =>
+        try f(v) match {
+          case fut if fut eq this => p complete v.asInstanceOf[Try[S]]
+          case dp: DefaultPromise[_] =>
+            dp.asInstanceOf[DefaultPromise[S]].linkRootOf(p)
+          case fut => p completeWith fut
+        } catch { case NonFatal(t) => p failure t }
     }
     p.future
   }

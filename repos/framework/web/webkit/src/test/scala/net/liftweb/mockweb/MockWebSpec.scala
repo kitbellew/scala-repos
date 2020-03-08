@@ -63,26 +63,28 @@ object MockWebSpec extends Specification {
       }
     }
 
-    LiftRules.early.append { req =>
-      req match {
-        case httpReq: HTTPRequestServlet => {
-          httpReq.req match {
-            case mocked: MockHttpServletRequest => {
-              mocked.remoteAddr = "1.2.3.4"
+    LiftRules.early.append {
+      req =>
+        req match {
+          case httpReq: HTTPRequestServlet => {
+            httpReq.req match {
+              case mocked: MockHttpServletRequest => {
+                mocked.remoteAddr = "1.2.3.4"
+              }
+              case _ => println("Not a mocked request?")
             }
-            case _ => println("Not a mocked request?")
           }
+          case _ => println("Not a servlet request?")
         }
-        case _ => println("Not a servlet request?")
-      }
     }
   }
 
   "MockWeb" should {
     "provide a Req corresponding to a string url" in {
-      testReq("http://foo.com/test/this?a=b&a=c", "/test") { req =>
-        req.uri must_== "/this"
-        req.params("a") must_== List("b", "c")
+      testReq("http://foo.com/test/this?a=b&a=c", "/test") {
+        req =>
+          req.uri must_== "/this"
+          req.params("a") must_== List("b", "c")
       }
     }
 
@@ -96,14 +98,16 @@ object MockWebSpec extends Specification {
 
       mockReq.body = ("name" -> "joe") ~ ("age" -> 35)
 
-      testReq(mockReq) { req => req.json_? must_== true }
+      testReq(mockReq) {
+        req => req.json_? must_== true
+      }
     }
 
     "process LiftRules.early when configured" in {
       LiftRulesMocker.devTestLiftRulesInstance.doWith(mockLiftRules) {
         useLiftRules.doWith(true) {
-          testReq("http://foo.com/test/this") { req =>
-            req.remoteAddr must_== "1.2.3.4"
+          testReq("http://foo.com/test/this") {
+            req => req.remoteAddr must_== "1.2.3.4"
           }
         }
       }
@@ -112,8 +116,8 @@ object MockWebSpec extends Specification {
     "process LiftRules stateless rewrites when configured" in {
       LiftRulesMocker.devTestLiftRulesInstance.doWith(mockLiftRules) {
         useLiftRules.doWith(true) {
-          testReq("http://foo.com/test/stateless") { req =>
-            req.path.partPath must_== List("stateless", "works")
+          testReq("http://foo.com/test/stateless") {
+            req => req.path.partPath must_== List("stateless", "works")
           }
         }
       }

@@ -39,8 +39,8 @@ class DataSource
         readTraining(sc),
         new EmptyEvaluationInfo(),
         sc.parallelize(
-            (0 until 20)
-              .map { i => (Query(i), new ActualResult()) }))
+          (0 until 20)
+            .map { i => (Query(i), new ActualResult()) }))
     }
   }
 }

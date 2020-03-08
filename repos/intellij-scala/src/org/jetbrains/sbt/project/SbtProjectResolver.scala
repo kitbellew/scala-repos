@@ -365,8 +365,8 @@ class SbtProjectResolver
 
     if (isRelevant(project.target)) {
       // If we can't exclude the target directory, go one level deeper (which may hit resolution-cache and streams)
-      Option(project.target.listFiles()).toList.flatten.filter { child =>
-        child.isDirectory && !isRelevant(child)
+      Option(project.target.listFiles()).toList.flatten.filter {
+        child => child.isDirectory && !isRelevant(child)
       }
     } else List(project.target)
   }

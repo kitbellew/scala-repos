@@ -91,8 +91,9 @@ class ScalaTestLocationProvider extends SMTestLocator {
             }
             if (res.isEmpty && methodOwner.isDefined) {
               val methods = methodOwner.get.findMethodsByName(methodName, false)
-              methods.foreach { method =>
-                res.add(new PsiLocationWithName(project, method, testName))
+              methods.foreach {
+                method =>
+                  res.add(new PsiLocationWithName(project, method, testName))
               }
             }
           case ScalaTestLineInFinePattern(

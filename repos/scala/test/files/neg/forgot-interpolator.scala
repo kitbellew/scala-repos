@@ -63,14 +63,16 @@ package inf1 {
   import scala.annotation.implicitNotFound
 
   @implicitNotFound(
-    msg = "Cannot construct a collection of type ${To} with elements of type ${Elem} based on a collection of type ${From}."
+    msg =
+      "Cannot construct a collection of type ${To} with elements of type ${Elem} based on a collection of type ${From}."
   ) // no warn
   trait CannotBuildFrom[-From, -Elem, +To]
 }
 
 package inf2 {
   @scala.annotation.implicitNotFound(
-    msg = "Cannot construct a collection of type ${To} with elements of type ${Elem} based on a collection of type ${From}."
+    msg =
+      "Cannot construct a collection of type ${To} with elements of type ${Elem} based on a collection of type ${From}."
   ) // no warn
   trait CannotBuildFrom[-From, -Elem, +To]
 }

@@ -104,18 +104,20 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
       Thread.sleep(5000)
 
       val count = 100
-      (0 until count).foreach { n =>
-        {
-          client.set("foo" + n, Buf.Utf8("bar" + n))()
-        }
+      (0 until count).foreach {
+        n =>
+          {
+            client.set("foo" + n, Buf.Utf8("bar" + n))()
+          }
       }
 
-      (0 until count).foreach { n =>
-        {
-          val c = client.clientOf("foo" + n)
-          val Buf.Utf8(res) = c.get("foo" + n)().get
-          assert(res == "bar" + n)
-        }
+      (0 until count).foreach {
+        n =>
+          {
+            val c = client.clientOf("foo" + n)
+            val Buf.Utf8(res) = c.get("foo" + n)().get
+            assert(res == "bar" + n)
+          }
       }
     }
   }
@@ -138,18 +140,20 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
       assert(res == "bar")
 
       val count = 100
-      (0 until count).foreach { n =>
-        {
-          client.set("foo" + n, Buf.Utf8("bar" + n))()
-        }
+      (0 until count).foreach {
+        n =>
+          {
+            client.set("foo" + n, Buf.Utf8("bar" + n))()
+          }
       }
 
-      (0 until count).foreach { n =>
-        {
-          val c = client.clientOf("foo" + n)
-          val Buf.Utf8(res) = c.get("foo" + n)().get
-          assert(res == "bar" + n)
-        }
+      (0 until count).foreach {
+        n =>
+          {
+            val c = client.clientOf("foo" + n)
+            val Buf.Utf8(res) = c.get("foo" + n)().get
+            assert(res == "bar" + n)
+          }
       }
     }
 

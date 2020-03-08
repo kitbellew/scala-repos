@@ -160,8 +160,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
                           queryLogger,
                           "[QID:" + qid + "]",
                           "begin result stream",
-                          "end result stream") { slice =>
-                          "size: " + slice.size
+                          "end result stream") {
+                          slice => "size: " + slice.size
                         }
                       }
                     } else {

@@ -17,11 +17,12 @@ trait CommitsService {
       repository: String,
       commitId: String,
       includePullRequest: Boolean)(implicit s: Session) =
-    CommitComments filter { t =>
-      t.byCommit(
-        owner,
-        repository,
-        commitId) && (t.issueId.isEmpty || includePullRequest)
+    CommitComments filter {
+      t =>
+        t.byCommit(
+          owner,
+          repository,
+          commitId) && (t.issueId.isEmpty || includePullRequest)
     } list
 
   def getCommitComment(owner: String, repository: String, commentId: String)(

@@ -133,8 +133,8 @@ object Member {
   /**
     * Sort members by age, i.e. using [[Member#isOlderThan]].
     */
-  val ageOrdering: Ordering[Member] = Ordering.fromLessThan[Member] { (a, b) ⇒
-    a.isOlderThan(b)
+  val ageOrdering: Ordering[Member] = Ordering.fromLessThan[Member] {
+    (a, b) ⇒ a.isOlderThan(b)
   }
 
   def pickHighestPriority(a: Set[Member], b: Set[Member]): Set[Member] = {

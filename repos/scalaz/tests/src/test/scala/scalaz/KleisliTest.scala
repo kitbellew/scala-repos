@@ -32,9 +32,10 @@ object KleisliTest extends SpecLite {
       }
     }
 
-  "mapK" ! forAll { (f: Int => Option[Int], a: Int) =>
-    Kleisli(f).mapK(_.toList.map(_.toString)).run(a) must_=== (f(a).toList
-      .map(_.toString))
+  "mapK" ! forAll {
+    (f: Int => Option[Int], a: Int) =>
+      Kleisli(f).mapK(_.toList.map(_.toString)).run(a) must_=== (f(a).toList
+        .map(_.toString))
   }
 
   checkAll(monoid.laws[KleisliOptInt[Int]])

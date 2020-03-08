@@ -250,8 +250,8 @@ class YahooDataSource(val params: YahooDataSource.Params)
       (e.entityType == params.entityType && tickerSet(e.entityId))
 
     val defaultTickerMap: Map[String, HistoricalData] =
-      params.windowParams.tickerList.map { ticker =>
-        (ticker -> HistoricalData(ticker, timeIndex))
+      params.windowParams.tickerList.map {
+        ticker => (ticker -> HistoricalData(ticker, timeIndex))
       }.toMap
 
     val tickerMap: Map[String, HistoricalData] = batchView.events

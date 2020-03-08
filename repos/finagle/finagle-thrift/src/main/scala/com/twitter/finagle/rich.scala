@@ -78,13 +78,14 @@ private[twitter] object ThriftUtil {
     val f = for {
       serviceSym <- findClass1("com.twitter.finagle.exp.swift.ServiceSym")
       meth <- findMethod(serviceSym, "isService", classOf[Class[_]])
-    } yield { k: Class[_] =>
-      try {
-        if (meth.invoke(null, k).asInstanceOf[Boolean]) Some(k)
-        else None
-      } catch {
-        case NonFatal(_) => None
-      }
+    } yield {
+      k: Class[_] =>
+        try {
+          if (meth.invoke(null, k).asInstanceOf[Boolean]) Some(k)
+          else None
+        } catch {
+          case NonFatal(_) => None
+        }
     }
 
     f getOrElse Function.const(None)

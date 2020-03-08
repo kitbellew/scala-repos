@@ -610,12 +610,13 @@ case class ScExistentialType(
 
     val quantDepth = quantified.typeDepth
     if (wildcards.nonEmpty) {
-      (wildcards.map { wildcard =>
-        val boundsDepth =
-          wildcard.lowerBound.typeDepth.max(wildcard.upperBound.typeDepth)
-        if (wildcard.args.nonEmpty) {
-          (typeParamsDepth(wildcard.args) + 1).max(boundsDepth)
-        } else boundsDepth
+      (wildcards.map {
+        wildcard =>
+          val boundsDepth =
+            wildcard.lowerBound.typeDepth.max(wildcard.upperBound.typeDepth)
+          if (wildcard.args.nonEmpty) {
+            (typeParamsDepth(wildcard.args) + 1).max(boundsDepth)
+          } else boundsDepth
       }.max + 1).max(quantDepth)
     } else quantDepth
   }

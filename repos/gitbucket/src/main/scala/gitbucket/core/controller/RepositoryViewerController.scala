@@ -391,22 +391,23 @@ trait RepositoryViewerControllerBase extends ControllerBase {
           "id" -> id,
           "path" -> path,
           "last" -> last,
-          "blame" -> JGitUtil.getBlame(git, id, path).map { blame =>
-            Map(
-              "id" -> blame.id,
-              "author" -> view.helpers
-                .user(blame.authorName, blame.authorEmailAddress)
-                .toString,
-              "avatar" -> view.helpers
-                .avatarLink(blame.authorName, 32, blame.authorEmailAddress)
-                .toString,
-              "authed" -> helper.html.datetimeago(blame.authorTime).toString,
-              "prev" -> blame.prev,
-              "prevPath" -> blame.prevPath,
-              "commited" -> blame.commitTime.getTime,
-              "message" -> blame.message,
-              "lines" -> blame.lines
-            )
+          "blame" -> JGitUtil.getBlame(git, id, path).map {
+            blame =>
+              Map(
+                "id" -> blame.id,
+                "author" -> view.helpers
+                  .user(blame.authorName, blame.authorEmailAddress)
+                  .toString,
+                "avatar" -> view.helpers
+                  .avatarLink(blame.authorName, 32, blame.authorEmailAddress)
+                  .toString,
+                "authed" -> helper.html.datetimeago(blame.authorTime).toString,
+                "prev" -> blame.prev,
+                "prevPath" -> blame.prevPath,
+                "commited" -> blame.commitTime.getTime,
+                "message" -> blame.message,
+                "lines" -> blame.lines
+              )
           }
         )
     }

@@ -205,14 +205,15 @@ object MultipleShapeDrawingDemo extends JFXApp {
     /** Update the shape using current `start` and `end` points. */
     def update()
 
-    override def handler: MouseEvent => Unit = { me: MouseEvent =>
-      {
-        me.eventType match {
-          case MouseEvent.MousePressed => start = new Point2D(me.x, me.y)
-          case MouseEvent.MouseDragged => end = new Point2D(me.x, me.y)
-          case _                       => {}
+    override def handler: MouseEvent => Unit = {
+      me: MouseEvent =>
+        {
+          me.eventType match {
+            case MouseEvent.MousePressed => start = new Point2D(me.x, me.y)
+            case MouseEvent.MouseDragged => end = new Point2D(me.x, me.y)
+            case _                       => {}
+          }
         }
-      }
     }
   }
 

@@ -60,25 +60,26 @@ case class Injection(expression: ScExpression, specifier: Option[Specifier])
     case _                  => false
   }
 
-  def problem: Option[InjectionProblem] = specifier.flatMap { it =>
-    val _type =
-      expressionType.map(ScType.expandAliases(_)).getOrElse(new Object())
-    _type match {
-      case Success(result, _) =>
-        result match {
-          case res: ScType =>
-            try {
-              val value = Types.valueOf(res)
-              value.formatted(it.format)
-              None
-            } catch {
-              case e: IllegalFormatConversionException => Some(Inapplicable)
-              case e: IllegalFormatException           => Some(Malformed)
-            }
-          case _ => Some(Malformed)
-        }
-      case _ => Some(Malformed)
-    }
+  def problem: Option[InjectionProblem] = specifier.flatMap {
+    it =>
+      val _type =
+        expressionType.map(ScType.expandAliases(_)).getOrElse(new Object())
+      _type match {
+        case Success(result, _) =>
+          result match {
+            case res: ScType =>
+              try {
+                val value = Types.valueOf(res)
+                value.formatted(it.format)
+                None
+              } catch {
+                case e: IllegalFormatConversionException => Some(Inapplicable)
+                case e: IllegalFormatException           => Some(Malformed)
+              }
+            case _ => Some(Malformed)
+          }
+        case _ => Some(Malformed)
+      }
   }
 }
 

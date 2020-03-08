@@ -165,13 +165,14 @@ class PromiseTests extends MinimalScalaTest {
     "not timeout" in { f((future, _) => Await.ready(future, 0 millis)) }
 
     "filter result" in {
-      f { (future, result) =>
-        Await.result(
-          (future filter (_ => true)),
-          defaultTimeout) mustBe (result)
-        intercept[NoSuchElementException] {
-          Await.result((future filter (_ => false)), defaultTimeout)
-        }
+      f {
+        (future, result) =>
+          Await.result(
+            (future filter (_ => true)),
+            defaultTimeout) mustBe (result)
+          intercept[NoSuchElementException] {
+            Await.result((future filter (_ => false)), defaultTimeout)
+          }
       }
     }
 
@@ -192,23 +193,25 @@ class PromiseTests extends MinimalScalaTest {
     }
 
     "perform action with foreach" in {
-      f { (future, result) =>
-        val p = Promise[Any]()
-        future foreach p.success
-        Await.result(p.future, defaultTimeout) mustBe (result)
+      f {
+        (future, result) =>
+          val p = Promise[Any]()
+          future foreach p.success
+          Await.result(p.future, defaultTimeout) mustBe (result)
       }
     }
 
     "zip properly" in {
-      f { (future, result) =>
-        Await.result(
-          future zip Promise.successful("foo").future,
-          defaultTimeout) mustBe ((result, "foo"))
-        intercept[RuntimeException] {
+      f {
+        (future, result) =>
           Await.result(
-            future zip Promise.failed(new RuntimeException("ohnoes")).future,
-            defaultTimeout)
-        }.getMessage mustBe ("ohnoes")
+            future zip Promise.successful("foo").future,
+            defaultTimeout) mustBe ((result, "foo"))
+          intercept[RuntimeException] {
+            Await.result(
+              future zip Promise.failed(new RuntimeException("ohnoes")).future,
+              defaultTimeout)
+          }.getMessage mustBe ("ohnoes")
       }
     }
 
@@ -220,26 +223,31 @@ class PromiseTests extends MinimalScalaTest {
     }
 
     "perform action on result" in {
-      f { (future, result) =>
-        val p = Promise[Any]()
-        future.onSuccess { case x => p.success(x) }
-        Await.result(p.future, defaultTimeout) mustBe (result)
+      f {
+        (future, result) =>
+          val p = Promise[Any]()
+          future.onSuccess { case x => p.success(x) }
+          Await.result(p.future, defaultTimeout) mustBe (result)
       }
     }
 
     "not project a failure" in {
-      f { (future, result) =>
-        intercept[NoSuchElementException] {
-          Await.result(future.failed, defaultTimeout)
-        }.getMessage mustBe ("Future.failed not completed with a throwable.")
+      f {
+        (future, result) =>
+          intercept[NoSuchElementException] {
+            Await.result(future.failed, defaultTimeout)
+          }.getMessage mustBe ("Future.failed not completed with a throwable.")
       }
     }
 
     "cast using mapTo" in {
-      f { (future, result) =>
-        Await.result(
-          future.mapTo[Boolean].recover({ case _: ClassCastException ⇒ false }),
-          defaultTimeout) mustBe (false)
+      f {
+        (future, result) =>
+          Await.result(
+            future
+              .mapTo[Boolean]
+              .recover({ case _: ClassCastException ⇒ false }),
+            defaultTimeout) mustBe (false)
       }
     }
 
@@ -259,63 +267,70 @@ class PromiseTests extends MinimalScalaTest {
     }
 
     "throw not throw exception with 'Await.ready'" in {
-      f { (future, message) =>
-        Await.ready(future, defaultTimeout).isCompleted mustBe (true)
+      f {
+        (future, message) =>
+          Await.ready(future, defaultTimeout).isCompleted mustBe (true)
       }
     }
 
     "throw exception with 'Await.result'" in {
-      f { (future, message) =>
-        intercept[E] {
-          Await.result(future, defaultTimeout)
-        }.getMessage mustBe (message)
+      f {
+        (future, message) =>
+          intercept[E] {
+            Await.result(future, defaultTimeout)
+          }.getMessage mustBe (message)
       }
     }
 
     "retain exception with filter" in {
-      f { (future, message) =>
-        intercept[E] {
-          Await.result(future filter (_ => true), defaultTimeout)
-        }.getMessage mustBe (message)
-        intercept[E] {
-          Await.result(future filter (_ => false), defaultTimeout)
-        }.getMessage mustBe (message)
+      f {
+        (future, message) =>
+          intercept[E] {
+            Await.result(future filter (_ => true), defaultTimeout)
+          }.getMessage mustBe (message)
+          intercept[E] {
+            Await.result(future filter (_ => false), defaultTimeout)
+          }.getMessage mustBe (message)
       }
     }
 
     "retain exception with map" in {
-      f { (future, message) =>
-        intercept[E] {
-          Await.result(future map (_.toString.length), defaultTimeout)
-        }.getMessage mustBe (message)
+      f {
+        (future, message) =>
+          intercept[E] {
+            Await.result(future map (_.toString.length), defaultTimeout)
+          }.getMessage mustBe (message)
       }
     }
 
     "retain exception with flatMap" in {
-      f { (future, message) =>
-        intercept[E] {
-          Await.result(
-            future flatMap (_ => Promise.successful("foo").future),
-            defaultTimeout)
-        }.getMessage mustBe (message)
+      f {
+        (future, message) =>
+          intercept[E] {
+            Await.result(
+              future flatMap (_ => Promise.successful("foo").future),
+              defaultTimeout)
+          }.getMessage mustBe (message)
       }
     }
 
     "zip properly" in {
-      f { (future, message) =>
-        intercept[E] {
-          Await.result(
-            future zip Promise.successful("foo").future,
-            defaultTimeout)
-        }.getMessage mustBe (message)
+      f {
+        (future, message) =>
+          intercept[E] {
+            Await.result(
+              future zip Promise.successful("foo").future,
+              defaultTimeout)
+          }.getMessage mustBe (message)
       }
     }
 
     "recover from exception" in {
-      f { (future, message) =>
-        Await.result(
-          future.recover({ case e if e.getMessage == message ⇒ "pigdog" }),
-          defaultTimeout) mustBe ("pigdog")
+      f {
+        (future, message) =>
+          Await.result(
+            future.recover({ case e if e.getMessage == message ⇒ "pigdog" }),
+            defaultTimeout) mustBe ("pigdog")
       }
     }
 
@@ -325,18 +340,20 @@ class PromiseTests extends MinimalScalaTest {
     }
 
     "perform action on exception" in {
-      f { (future, message) =>
-        val p = Promise[Any]()
-        future.onFailure { case _ => p.success(message) }
-        Await.result(p.future, defaultTimeout) mustBe (message)
+      f {
+        (future, message) =>
+          val p = Promise[Any]()
+          future.onFailure { case _ => p.success(message) }
+          Await.result(p.future, defaultTimeout) mustBe (message)
       }
     }
 
     "always cast successfully using mapTo" in {
-      f { (future, message) =>
-        intercept[E] {
-          Await.result(future.mapTo[java.lang.Thread], defaultTimeout)
-        }.getMessage mustBe (message)
+      f {
+        (future, message) =>
+          intercept[E] {
+            Await.result(future.mapTo[java.lang.Thread], defaultTimeout)
+          }.getMessage mustBe (message)
       }
     }
   }

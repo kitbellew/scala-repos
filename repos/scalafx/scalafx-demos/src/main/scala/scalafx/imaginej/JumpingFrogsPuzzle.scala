@@ -370,22 +370,23 @@ class Control {
     view.frogShapes.foreach {
       case `theDummyFrogShape` =>
       case frogShape =>
-        frogShape.onMouseClicked = { (_: MouseEvent) =>
-          val frog = frogShape.getFrog
-          if (model.canJumpOneRight(frog)) {
-            view.jumpOneRight(frogShape)
-            model.jumpOneRight(frog)
-          } else if (model.canJumpTwoRight(frog)) {
-            view.jumpTwoRight(frogShape)
-            model.jumpTwoRight(frog)
-          } else if (model.canJumpOneLeft(frog)) {
-            view.jumpOneLeft(frogShape)
-            model.jumpOneLeft(frog)
-          } else if (model.canJumpTwoLeft(frog)) {
-            view.jumpTwoLeft(frogShape)
-            model.jumpTwoLeft(frog)
-          }
-          update(model, view)
+        frogShape.onMouseClicked = {
+          (_: MouseEvent) =>
+            val frog = frogShape.getFrog
+            if (model.canJumpOneRight(frog)) {
+              view.jumpOneRight(frogShape)
+              model.jumpOneRight(frog)
+            } else if (model.canJumpTwoRight(frog)) {
+              view.jumpTwoRight(frogShape)
+              model.jumpTwoRight(frog)
+            } else if (model.canJumpOneLeft(frog)) {
+              view.jumpOneLeft(frogShape)
+              model.jumpOneLeft(frog)
+            } else if (model.canJumpTwoLeft(frog)) {
+              view.jumpTwoLeft(frogShape)
+              model.jumpTwoLeft(frog)
+            }
+            update(model, view)
         }
     }
   }

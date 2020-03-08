@@ -117,9 +117,10 @@ class FileJobManager[M[+_]] private[FileJobManager] (
           .bimap(Extractor.Thrown(_), j => j)
           .flatMap { jobV => jobV.validated[FileJobState] }
           .bimap(
-            { error =>
-              logger.error(
-                "Error loading job for %s: %s".format(jobId, error.message))
+            {
+              error =>
+                logger.error(
+                  "Error loading job for %s: %s".format(jobId, error.message))
             },
             j => j)
           .toOption

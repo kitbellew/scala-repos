@@ -520,15 +520,16 @@ private[collection] object HashTable {
       val sizemap: Array[Int]
   ) {
     import scala.collection.DebugUtils._
-    private[collection] def debugInformation = buildString { append =>
-      append("Hash table contents")
-      append("-------------------")
-      append("Table: [" + arrayString(table, 0, table.length) + "]")
-      append("Table size: " + tableSize)
-      append("Load factor: " + loadFactor)
-      append("Seedvalue: " + seedvalue)
-      append("Threshold: " + threshold)
-      append("Sizemap: [" + arrayString(sizemap, 0, sizemap.length) + "]")
+    private[collection] def debugInformation = buildString {
+      append =>
+        append("Hash table contents")
+        append("-------------------")
+        append("Table: [" + arrayString(table, 0, table.length) + "]")
+        append("Table size: " + tableSize)
+        append("Load factor: " + loadFactor)
+        append("Seedvalue: " + seedvalue)
+        append("Threshold: " + threshold)
+        append("Sizemap: [" + arrayString(sizemap, 0, sizemap.length) + "]")
     }
   }
 

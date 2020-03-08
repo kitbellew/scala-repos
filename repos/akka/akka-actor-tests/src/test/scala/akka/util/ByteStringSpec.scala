@@ -662,18 +662,20 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
       }
 
       "getting Bytes with a given length" in {
-        check { slice: ByteStringSlice ⇒
-          val (bytes, _, _) = slice
-          val input = bytes.iterator
-          (input.getBytes(bytes.length).toSeq == bytes) && input.isEmpty
+        check {
+          slice: ByteStringSlice ⇒
+            val (bytes, _, _) = slice
+            val input = bytes.iterator
+            (input.getBytes(bytes.length).toSeq == bytes) && input.isEmpty
         }
       }
 
       "getting ByteString with a given length" in {
-        check { slice: ByteStringSlice ⇒
-          val (bytes, _, _) = slice
-          val input = bytes.iterator
-          (input.getByteString(bytes.length) == bytes) && input.isEmpty
+        check {
+          slice: ByteStringSlice ⇒
+            val (bytes, _, _) = slice
+            val input = bytes.iterator
+            (input.getByteString(bytes.length) == bytes) && input.isEmpty
         }
       }
 

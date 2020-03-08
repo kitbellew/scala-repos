@@ -252,8 +252,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           }
       } { ws =>
         // #scalaws-process-json
-        val futureResult: Future[String] = ws.url(url).get().map { response =>
-          (response.json \ "person" \ "name").as[String]
+        val futureResult: Future[String] = ws.url(url).get().map {
+          response => (response.json \ "person" \ "name").as[String]
         }
         // #scalaws-process-json
 
@@ -279,9 +279,10 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         // #scalaws-process-json-with-implicit
 
         val actual = await(futureResult)
-        actual.asOpt must beSome[Person].which { person =>
-          person.age must beEqualTo(23)
-          person.name must beEqualTo("Steve")
+        actual.asOpt must beSome[Person].which {
+          person =>
+            person.age must beEqualTo(23)
+            person.name must beEqualTo("Steve")
         }
       }
 
@@ -294,8 +295,9 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           }
       } { ws =>
         // #scalaws-process-xml
-        val futureResult: Future[scala.xml.NodeSeq] =
-          ws.url(url).get().map { response => response.xml \ "message" }
+        val futureResult: Future[scala.xml.NodeSeq] = ws.url(url).get().map {
+          response => response.xml \ "message"
+        }
         // #scalaws-process-xml
         await(futureResult).text must_== "Hello"
       }
@@ -308,11 +310,12 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         val futureResponse: Future[StreamedResponse] =
           ws.url(url).withMethod("GET").stream()
 
-        val bytesReturned: Future[Long] = futureResponse.flatMap { res =>
-          // Count the number of bytes returned
-          res.body.runWith(Sink.fold[Long, ByteString](0L) { (total, bytes) =>
-            total + bytes.length
-          })
+        val bytesReturned: Future[Long] = futureResponse.flatMap {
+          res =>
+            // Count the number of bytes returned
+            res.body.runWith(Sink.fold[Long, ByteString](0L) { (total, bytes) =>
+              total + bytes.length
+            })
         }
         //#stream-count-bytes
         await(bytesReturned) must_== 10000L
@@ -328,25 +331,26 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           val futureResponse: Future[StreamedResponse] =
             ws.url(url).withMethod("GET").stream()
 
-          val downloadedFile: Future[File] = futureResponse.flatMap { res =>
-            val outputStream = new FileOutputStream(file)
+          val downloadedFile: Future[File] = futureResponse.flatMap {
+            res =>
+              val outputStream = new FileOutputStream(file)
 
-            // The sink that writes to the output stream
-            val sink = Sink.foreach[ByteString] { bytes =>
-              outputStream.write(bytes.toArray)
-            }
-
-            // materialize and run the stream
-            res.body
-              .runWith(sink)
-              .andThen {
-                case result =>
-                  // Close the output stream whether there was an error or not
-                  outputStream.close()
-                  // Get the result or rethrow the error
-                  result.get
+              // The sink that writes to the output stream
+              val sink = Sink.foreach[ByteString] { bytes =>
+                outputStream.write(bytes.toArray)
               }
-              .map(_ => file)
+
+              // materialize and run the stream
+              res.body
+                .runWith(sink)
+                .andThen {
+                  case result =>
+                    // Close the output stream whether there was an error or not
+                    outputStream.close()
+                    // Get the result or rethrow the error
+                    result.get
+                }
+                .map(_ => file)
           }
           //#stream-to-file
           await(downloadedFile) must_== file
@@ -404,10 +408,11 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           ws.url(url).withMethod("PUT").withBody("some body").stream()
         //#stream-put
 
-        val bytesReturned: Future[Long] = futureResponse.flatMap { res =>
-          res.body.runWith(Sink.fold[Long, ByteString](0L) { (total, bytes) =>
-            total + bytes.length
-          })
+        val bytesReturned: Future[Long] = futureResponse.flatMap {
+          res =>
+            res.body.runWith(Sink.fold[Long, ByteString](0L) { (total, bytes) =>
+              total + bytes.length
+            })
         }
         //#stream-count-bytes
         await(bytesReturned) must_== 10000L

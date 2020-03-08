@@ -74,16 +74,17 @@ trait ParFlatHashTable[T] extends scala.collection.mutable.FlatHashTable[T] {
         Seq(fstit, sndit)
       } else Seq(this)
 
-    override def debugInformation = buildString { append =>
-      append("Parallel flat hash table iterator")
-      append("---------------------------------")
-      append("Traversed/total: " + traversed + " / " + totalsize)
-      append("Table idx/until: " + idx + " / " + until)
-      append("Table length: " + itertable.length)
-      append("Table: ")
-      append(arrayString(itertable, 0, itertable.length))
-      append("Sizemap: ")
-      append(arrayString(sizemap, 0, sizemap.length))
+    override def debugInformation = buildString {
+      append =>
+        append("Parallel flat hash table iterator")
+        append("---------------------------------")
+        append("Traversed/total: " + traversed + " / " + totalsize)
+        append("Table idx/until: " + idx + " / " + until)
+        append("Table length: " + itertable.length)
+        append("Table: ")
+        append(arrayString(itertable, 0, itertable.length))
+        append("Sizemap: ")
+        append(arrayString(sizemap, 0, sizemap.length))
     }
 
     protected def countElems(from: Int, until: Int) = {

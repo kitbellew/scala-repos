@@ -19,8 +19,8 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("exponential with upper limit") {
     val backoffs =
       (Backoff.exponential(1.seconds, 2) take 5) ++ Backoff.const(32.seconds)
-    assert((backoffs take 10).force.toSeq == (0 until 10 map { i =>
-      math.min(1 << i, 32).seconds
+    assert((backoffs take 10).force.toSeq == (0 until 10 map {
+      i => math.min(1 << i, 32).seconds
     }))
   }
 

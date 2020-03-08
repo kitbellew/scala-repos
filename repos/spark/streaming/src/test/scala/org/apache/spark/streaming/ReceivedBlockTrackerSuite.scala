@@ -396,8 +396,8 @@ class ReceivedBlockTrackerSuite
   def getWrittenLogData(logFiles: Seq[String] = getWriteAheadLogFiles)
       : Seq[ReceivedBlockTrackerLogEvent] = {
     logFiles
-      .flatMap { file =>
-        new FileBasedWriteAheadLogReader(file, hadoopConf).toSeq
+      .flatMap {
+        file => new FileBasedWriteAheadLogReader(file, hadoopConf).toSeq
       }
       .flatMap { byteBuffer =>
         val validBuffer =

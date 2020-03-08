@@ -1800,15 +1800,16 @@ trait Implicits {
 
       def eligibleInfos(iss: Infoss, isLocalToCallsite: Boolean) = {
         val eligible = new ImplicitComputation(iss, isLocalToCallsite).eligible
-        eligible.toList.flatMap { (ii: ImplicitInfo) =>
-          // each ImplicitInfo contributes a distinct set of constraints (generated indirectly by typedImplicit)
-          // thus, start each type var off with a fresh for every typedImplicit
-          resetTVars()
-          // any previous errors should not affect us now
-          context.reporter.clearAllErrors()
-          val res = typedImplicit(ii, ptChecked = false, isLocalToCallsite)
-          if (res.tree ne EmptyTree) List((res, tvars map (_.constr)))
-          else Nil
+        eligible.toList.flatMap {
+          (ii: ImplicitInfo) =>
+            // each ImplicitInfo contributes a distinct set of constraints (generated indirectly by typedImplicit)
+            // thus, start each type var off with a fresh for every typedImplicit
+            resetTVars()
+            // any previous errors should not affect us now
+            context.reporter.clearAllErrors()
+            val res = typedImplicit(ii, ptChecked = false, isLocalToCallsite)
+            if (res.tree ne EmptyTree) List((res, tvars map (_.constr)))
+            else Nil
         }
       }
       eligibleInfos(context.implicitss, isLocalToCallsite = true) ++

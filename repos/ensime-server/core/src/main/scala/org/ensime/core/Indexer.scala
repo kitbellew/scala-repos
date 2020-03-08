@@ -32,8 +32,8 @@ class Indexer(
   def oldSearchTypes(query: String, max: Int) =
     index
       .searchClasses(query, max)
-      .filterNot { name =>
-        name.fqn.endsWith("$") || name.fqn.endsWith("$class")
+      .filterNot {
+        name => name.fqn.endsWith("$") || name.fqn.endsWith("$class")
       }
       .map(typeResult)
 

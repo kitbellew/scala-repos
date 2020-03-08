@@ -131,7 +131,9 @@ class ObservableSetSpec[T]
   it should "return changed set" in {
     // Preparation
     val set = ObservableSet(1, 2)
-    set onChange { (sourceSet, change) => sourceSet should be(set) }
+    set onChange {
+      (sourceSet, change) => sourceSet should be(set)
+    }
 
     // Execution
     set += 3
@@ -141,11 +143,12 @@ class ObservableSetSpec[T]
     // Preparation
     val set = ObservableSet.empty[Int]
     val addedValues = Buffer.empty[Int]
-    set onChange { (sourceSet, change) =>
-      change match {
-        case Add(value) => addedValues += value
-        case _          => fail("Unexpected change: " + change)
-      }
+    set onChange {
+      (sourceSet, change) =>
+        change match {
+          case Add(value) => addedValues += value
+          case _          => fail("Unexpected change: " + change)
+        }
     }
 
     // Execution
@@ -172,11 +175,12 @@ class ObservableSetSpec[T]
     // Preparation
     val set = ObservableSet((0 to 15))
     val removedValues = Buffer.empty[Int]
-    set onChange { (sourceSet, change) =>
-      change match {
-        case Remove(value) => removedValues += value
-        case _             => fail("Unexpected change: " + change)
-      }
+    set onChange {
+      (sourceSet, change) =>
+        change match {
+          case Remove(value) => removedValues += value
+          case _             => fail("Unexpected change: " + change)
+        }
     }
 
     // Execution
@@ -217,11 +221,12 @@ class ObservableSetSpec[T]
     val set = ObservableSet(new LinkedHashSet[Int])
     val addedValues = Buffer.empty[Int]
     val removedValues = Buffer.empty[Int]
-    set onChange { (sourceSet, change) =>
-      change match {
-        case Add(value)    => addedValues += value
-        case Remove(value) => removedValues += value
-      }
+    set onChange {
+      (sourceSet, change) =>
+        change match {
+          case Add(value)    => addedValues += value
+          case Remove(value) => removedValues += value
+        }
     }
 
     // Execution

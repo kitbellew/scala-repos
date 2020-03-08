@@ -45,24 +45,26 @@ class JavaxNetDebugBuilder(c: SSLDebugConfig) {
 
     val b = new StringBuilder()
 
-    record.map { r =>
-      b.append(" record")
-      if (r.packet) {
-        b.append(" packet")
-      }
-      if (r.plaintext) {
-        b.append(" plaintext")
-      }
+    record.map {
+      r =>
+        b.append(" record")
+        if (r.packet) {
+          b.append(" packet")
+        }
+        if (r.plaintext) {
+          b.append(" plaintext")
+        }
     }
 
-    handshake.map { h =>
-      b.append(" handshake")
-      if (h.data) {
-        b.append(" data")
-      }
-      if (h.verbose) {
-        b.append(" verbose")
-      }
+    handshake.map {
+      h =>
+        b.append(" handshake")
+        if (h.data) {
+          b.append(" data")
+        }
+        if (h.verbose) {
+          b.append(" verbose")
+        }
     }
 
     if (keygen) {

@@ -701,16 +701,16 @@ trait ParIterableLike[
         pred,
         combinerFactory,
         combinerFactory,
-        splitter) mapResult { p =>
-        (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
+        splitter) mapResult {
+        p => (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
       }
     )
   }
 
   def groupBy[K](f: T => K): immutable.ParMap[K, Repr] = {
     val r = tasksupport.executeAndWaitResult(
-      new GroupBy(f, () => HashMapCombiner[K, T], splitter) mapResult { rcb =>
-        rcb.groupByKey(() => combinerFactory())
+      new GroupBy(f, () => HashMapCombiner[K, T], splitter) mapResult {
+        rcb => rcb.groupByKey(() => combinerFactory())
       })
     setTaskSupport(r, tasksupport)
   }
@@ -807,15 +807,16 @@ trait ParIterableLike[
       if (tasksupport.parallelismLevel > 1) {
         if (size > 0)
           tasksupport.executeAndWaitResult(
-            new CreateScanTree(0, size, z, op, splitter) mapResult { tree =>
-              tasksupport.executeAndWaitResult(
-                new FromScanTree(
-                  tree,
-                  z,
-                  op,
-                  combinerFactory(() => bf(repr).asCombiner)) mapResult { cb =>
-                  cb.resultWithTaskSupport
-                })
+            new CreateScanTree(0, size, z, op, splitter) mapResult {
+              tree =>
+                tasksupport.executeAndWaitResult(
+                  new FromScanTree(
+                    tree,
+                    z,
+                    op,
+                    combinerFactory(() => bf(repr).asCombiner)) mapResult {
+                    cb => cb.resultWithTaskSupport
+                  })
             })
         else setTaskSupport((bf(repr) += z).result(), tasksupport)
       } else setTaskSupport(seq.scan(z)(op)(bf2seq(bf)), tasksupport)
@@ -878,7 +879,9 @@ trait ParIterableLike[
       val copyys = new Copy(combinerFactory, ys.splitter) mapResult {
         _.resultWithTaskSupport
       }
-      val copyall = (copyxs parallel copyys) { (xr, yr) => (xr, yr) }
+      val copyall = (copyxs parallel copyys) {
+        (xr, yr) => (xr, yr)
+      }
       tasksupport.executeAndWaitResult(copyall)
     } else {
       val cntx = new DefaultSignalling with AtomicIndexFlag
@@ -889,8 +892,8 @@ trait ParIterableLike[
           pred,
           combinerFactory,
           combinerFactory,
-          splitter assign cntx) mapResult { p =>
-          (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
+          splitter assign cntx) mapResult {
+          p => (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
         })
     }
   }
@@ -1566,12 +1569,11 @@ trait ParIterableLike[
         // val lst = pit.toList
         // val pa = mutable.ParArray(lst: _*)
         // val str = "At leaf we will iterate: " + pa.splitter.toList
-        result =
-          pit.span2combiners(
-            pred,
-            cbfBefore(),
-            cbfAfter()
-          ) // do NOT reuse old combiners here, lest ye be surprised
+        result = pit.span2combiners(
+          pred,
+          cbfBefore(),
+          cbfAfter()
+        ) // do NOT reuse old combiners here, lest ye be surprised
         // println("\nAt leaf result is: " + result)
         if (result._2.size > 0) pit.setIndexFlagIfLesser(pos)
       } else {
@@ -1892,9 +1894,10 @@ trait ParIterableLike[
 
   import scala.collection.DebugUtils._
   private[parallel] def printDebugBuffer() =
-    println(buildString { append =>
-      for (s <- debugBuffer) {
-        append(s)
-      }
+    println(buildString {
+      append =>
+        for (s <- debugBuffer) {
+          append(s)
+        }
     })
 }

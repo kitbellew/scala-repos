@@ -125,8 +125,8 @@ class ScConstructorPatternImpl(node: ASTNode)
               ScParameterizedType(
                 refType,
                 td.getTypeParameters
-                  .map({ tp =>
-                    newSubst.subst(ScalaPsiManager.typeVariable(tp))
+                  .map({
+                    tp => newSubst.subst(ScalaPsiManager.typeVariable(tp))
                   })
                   .toSeq),
               Some(this))

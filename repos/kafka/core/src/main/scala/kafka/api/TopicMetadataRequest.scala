@@ -69,8 +69,8 @@ case class TopicMetadataRequest(
       e: Throwable,
       requestChannel: RequestChannel,
       request: RequestChannel.Request): Unit = {
-    val topicMetadata = topics.map { topic =>
-      TopicMetadata(topic, Nil, Errors.forException(e).code)
+    val topicMetadata = topics.map {
+      topic => TopicMetadata(topic, Nil, Errors.forException(e).code)
     }
     val errorResponse =
       TopicMetadataResponse(Seq(), topicMetadata, correlationId)

@@ -494,8 +494,8 @@ object Finagle extends Build {
       libraryDependencies ++= Seq(
         util("logging")
       ),
-      testOptions in Test := Seq(Tests.Filter { name =>
-        !name.startsWith("com.twitter.finagle.redis.integration")
+      testOptions in Test := Seq(Tests.Filter {
+        name => !name.startsWith("com.twitter.finagle.redis.integration")
       })
     )
     .dependsOn(finagleCore)

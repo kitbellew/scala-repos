@@ -67,9 +67,10 @@ private[serverset2] object LocalServerSetService extends App {
     zkClient.start()
 
     // initialize each serverset to `initialMembers` members
-    (0 until numberOfServersets()).foreach { id =>
-      membersets(id) = Seq.empty[String]
-      addMembers(id, initialMembers())
+    (0 until numberOfServersets()).foreach {
+      id =>
+        membersets(id) = Seq.empty[String]
+        addMembers(id, initialMembers())
     }
 
     scheduleUpdate()

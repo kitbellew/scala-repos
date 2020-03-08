@@ -225,12 +225,13 @@ trait ScBlock
             case ex @ ScExistentialType(q, wildcards) =>
               new ScExistentialType(
                 existize(q, visitedWithT),
-                wildcards.map { ex =>
-                  new ScExistentialArgument(
-                    ex.name,
-                    ex.args,
-                    existize(ex.lowerBound, visitedWithT),
-                    existize(ex.upperBound, visitedWithT))
+                wildcards.map {
+                  ex =>
+                    new ScExistentialArgument(
+                      ex.name,
+                      ex.args,
+                      existize(ex.lowerBound, visitedWithT),
+                      existize(ex.upperBound, visitedWithT))
                 })
             case _ => t
           }

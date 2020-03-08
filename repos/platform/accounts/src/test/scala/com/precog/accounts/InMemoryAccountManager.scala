@@ -73,13 +73,14 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
       creationDate: DateTime,
       plan: AccountPlan,
       parentId: Option[AccountId]) = {
-    createAccount(email, password, creationDate, plan, parentId, None) { _ =>
-      M.point(java.util.UUID.randomUUID().toString.toLowerCase)
-    } map { account =>
-      {
-        accounts -= account.accountId
-        accounts += (accountId -> account.copy(accountId = accountId))
-      }
+    createAccount(email, password, creationDate, plan, parentId, None) {
+      _ => M.point(java.util.UUID.randomUUID().toString.toLowerCase)
+    } map {
+      account =>
+        {
+          accounts -= account.accountId
+          accounts += (accountId -> account.copy(accountId = accountId))
+        }
     }
   }
 
@@ -113,8 +114,9 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
   }
 
   def markResetTokenUsed(tokenId: ResetTokenId): M[PrecogUnit] = M.point {
-    resetTokens.get(tokenId).foreach { token =>
-      resetTokens += (tokenId -> token.copy(usedAt = Some(new DateTime)))
+    resetTokens.get(tokenId).foreach {
+      token =>
+        resetTokens += (tokenId -> token.copy(usedAt = Some(new DateTime)))
     }
     PrecogUnit
   }

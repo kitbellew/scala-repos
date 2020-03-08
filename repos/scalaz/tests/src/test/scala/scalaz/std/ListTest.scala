@@ -67,9 +67,10 @@ object ListTest extends SpecLite {
       }
   }
 
-  "groupBy1" ! forAll { (a: List[String]) =>
-    val strlen = (_: String).length
-    (a groupBy strlen) must_=== ((a groupBy1 strlen) mapValues (_.list.toList))
+  "groupBy1" ! forAll {
+    (a: List[String]) =>
+      val strlen = (_: String).length
+      (a groupBy strlen) must_=== ((a groupBy1 strlen) mapValues (_.list.toList))
   }
 
   "groupWhen.flatten is identity" ! forAll {
@@ -77,8 +78,8 @@ object ListTest extends SpecLite {
       a.groupWhen(p).map(_.list.toList).flatten must_=== (a)
   }
 
-  "filterM" ! forAll { (xs: List[Int]) =>
-    xs.filterM[Id](_ % 2 == 0) == xs.filter(_ % 2 == 0)
+  "filterM" ! forAll {
+    (xs: List[Int]) => xs.filterM[Id](_ % 2 == 0) == xs.filter(_ % 2 == 0)
   }
 
   "filter consistent with fiterM[Id]" ! forAll {
@@ -119,10 +120,11 @@ object ListTest extends SpecLite {
   "takeWhileM example" in {
     def takeWhileN[A](as: List[A], n: Int)(f: A => Boolean): List[A] =
       as.takeWhileM[State[Int, ?]](a =>
-          State { i =>
-            val j = i + (if (f(a)) 0 else 1)
-            val done = j >= n
-            (j, !done)
+          State {
+            i =>
+              val j = i + (if (f(a)) 0 else 1)
+              val done = j >= n
+              (j, !done)
           })
         .evalZero[Int]
 
@@ -151,18 +153,20 @@ object ListTest extends SpecLite {
     xs.groupWhen(f) must_=== xs.groupWhenM[Id.Id](f)
   }
 
-  "mapAccumLeft" ! forAll { (xs: List[Int]) =>
-    val f = (_: Int) + 1
-    xs.mapAccumLeft(
-      List[Int](),
-      (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs, xs.map(f))
+  "mapAccumLeft" ! forAll {
+    (xs: List[Int]) =>
+      val f = (_: Int) + 1
+      xs.mapAccumLeft(
+        List[Int](),
+        (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs, xs.map(f))
   }
 
-  "mapAccumRight" ! forAll { (xs: List[Int]) =>
-    val f = (_: Int) + 1
-    xs.mapAccumRight(
-      List[Int](),
-      (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs.reverse, xs.map(f))
+  "mapAccumRight" ! forAll {
+    (xs: List[Int]) =>
+      val f = (_: Int) + 1
+      xs.mapAccumRight(
+        List[Int](),
+        (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs.reverse, xs.map(f))
   }
 
   checkAll(FoldableTests.anyAndAllLazy[List])

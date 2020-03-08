@@ -7,8 +7,9 @@ import org.scalacheck.Prop.forAll
 
 object CaseInsensitiveTest extends SpecLite {
 
-  "map identity" ! forAll { (a: CaseInsensitive[String]) =>
-    Equal[CaseInsensitive[String]].equal(a.map(x => x), a)
+  "map identity" ! forAll {
+    (a: CaseInsensitive[String]) =>
+      Equal[CaseInsensitive[String]].equal(a.map(x => x), a)
   }
 
   "map associativity" ! forAll {

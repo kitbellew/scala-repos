@@ -164,15 +164,16 @@ object RequestChannel extends Logging {
                            RequestMetrics.metricsMap(
                              RequestMetrics.consumerFetchMetricName))
       }
-      metricsList.foreach { m =>
-        m.requestRate.mark()
-        m.requestQueueTimeHist.update(requestQueueTime)
-        m.localTimeHist.update(apiLocalTime)
-        m.remoteTimeHist.update(apiRemoteTime)
-        m.throttleTimeHist.update(apiThrottleTime)
-        m.responseQueueTimeHist.update(responseQueueTime)
-        m.responseSendTimeHist.update(responseSendTime)
-        m.totalTimeHist.update(totalTime)
+      metricsList.foreach {
+        m =>
+          m.requestRate.mark()
+          m.requestQueueTimeHist.update(requestQueueTime)
+          m.localTimeHist.update(apiLocalTime)
+          m.remoteTimeHist.update(apiRemoteTime)
+          m.throttleTimeHist.update(apiThrottleTime)
+          m.responseQueueTimeHist.update(responseQueueTime)
+          m.responseSendTimeHist.update(responseSendTime)
+          m.totalTimeHist.update(totalTime)
       }
 
       if (requestLogger.isTraceEnabled)

@@ -236,13 +236,14 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
 
     private object inSameClassOrAncestor {
       def unapply(elem: PsiElement): Option[(PsiMember, PsiClass)] = {
-        forMember(elem) { m =>
-          m.containingClass match {
-            case null                                   => None
-            case `clazz`                                => Some(m, clazz)
-            case c if clazz.isInheritor(c, deep = true) => Some(m, c)
-            case _                                      => None
-          }
+        forMember(elem) {
+          m =>
+            m.containingClass match {
+              case null                                   => None
+              case `clazz`                                => Some(m, clazz)
+              case c if clazz.isInheritor(c, deep = true) => Some(m, c)
+              case _                                      => None
+            }
         }
       }
     }
@@ -252,13 +253,14 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
         val selfTypeOfClazz = clazz.extendsBlock.selfType
         if (selfTypeOfClazz.isEmpty) return None
 
-        forMember(elem) { m =>
-          m.containingClass match {
-            case null => None
-            case c if selfTypeOfClazz.get.conforms(ScType.designator(c)) =>
-              Some(c)
-            case _ => None
-          }
+        forMember(elem) {
+          m =>
+            m.containingClass match {
+              case null => None
+              case c if selfTypeOfClazz.get.conforms(ScType.designator(c)) =>
+                Some(c)
+              case _ => None
+            }
         }
       }
     }

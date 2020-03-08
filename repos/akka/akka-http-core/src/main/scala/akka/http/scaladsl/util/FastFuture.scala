@@ -128,8 +128,9 @@ object FastFuture {
   def sequence[T, M[_] <: TraversableOnce[_]](in: M[Future[T]])(implicit
       cbf: CanBuildFrom[M[Future[T]], T, M[T]],
       executor: ExecutionContext): Future[M[T]] =
-    in.foldLeft(successful(cbf(in))) { (fr, fa) ⇒
-        for (r ← fr.fast; a ← fa.asInstanceOf[Future[T]].fast) yield r += a
+    in.foldLeft(successful(cbf(in))) {
+        (fr, fa) ⇒
+          for (r ← fr.fast; a ← fa.asInstanceOf[Future[T]].fast) yield r += a
       }
       .fast
       .map(_.result())

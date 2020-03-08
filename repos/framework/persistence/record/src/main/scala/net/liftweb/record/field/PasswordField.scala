@@ -97,8 +97,9 @@ trait PasswordTypedField extends TypedField[String] {
 
   override def formInputType = "password"
 
-  private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
-    <input type={formInputType}
+  private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) {
+    funcName =>
+      <input type={formInputType}
       name={funcName}
       value={valueBox openOr ""}
       tabindex={tabIndex.toString}/>

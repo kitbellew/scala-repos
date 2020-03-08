@@ -28,8 +28,8 @@ object VectorTest extends SpecLite {
 
   private def evenp(x: Int): Boolean = x % 2 == 0
 
-  "filterM" ! forAll { (xs: Vector[Int]) =>
-    xs.filterM[Id](evenp) == xs.filter(_ % 2 == 0)
+  "filterM" ! forAll {
+    (xs: Vector[Int]) => xs.filterM[Id](evenp) == xs.filter(_ % 2 == 0)
   }
 
   "filter consistent with fiterM[Id]" ! forAll {
@@ -37,58 +37,65 @@ object VectorTest extends SpecLite {
       MonadPlus[Vector].filter(xs)(p) must_=== xs.filterM[Id](p)
   }
 
-  "initz" ! forAll { (xs: Vector[Int]) =>
-    initz(xs) must_=== (xs.inits.toVector.reverse)
+  "initz" ! forAll {
+    (xs: Vector[Int]) => initz(xs) must_=== (xs.inits.toVector.reverse)
   }
 
-  "tailz" ! forAll { (xs: Vector[Int]) =>
-    tailz(xs) must_=== (xs.tails.toVector)
+  "tailz" ! forAll {
+    (xs: Vector[Int]) => tailz(xs) must_=== (xs.tails.toVector)
   }
 
-  "spanM" ! forAll { (xs: Vector[Int]) =>
-    (xs.spanM[Id](evenp)
-      must_=== (xs.takeWhile(evenp) -> xs.dropWhile(evenp)))
+  "spanM" ! forAll {
+    (xs: Vector[Int]) =>
+      (xs.spanM[Id](evenp)
+        must_=== (xs.takeWhile(evenp) -> xs.dropWhile(evenp)))
   }
 
-  "takeWhileM" ! forAll { (xs: Vector[Int]) =>
-    takeWhileM[Int, Id](xs)(evenp) must_=== (xs takeWhile evenp)
+  "takeWhileM" ! forAll {
+    (xs: Vector[Int]) =>
+      takeWhileM[Int, Id](xs)(evenp) must_=== (xs takeWhile evenp)
   }
 
-  "groupWhen" ! forAll { (xs: Vector[Int]) =>
-    (xs.groupWhen(_ < _)
-      must_=== (list
-        .groupWhen(xs.toList)(_ < _)
-        .map(_.toVector)
-        .toVector))
+  "groupWhen" ! forAll {
+    (xs: Vector[Int]) =>
+      (xs.groupWhen(_ < _)
+        must_=== (list
+          .groupWhen(xs.toList)(_ < _)
+          .map(_.toVector)
+          .toVector))
   }
 
-  "partitionM" ! forAll { (xs: Vector[Int]) =>
-    val (evens, odds) = xs.partitionM[Id](evenp)
-    (evens.toSet & odds.toSet) must_=== (Set[Int]())
-    (evens.filter(evenp) ++
-      odds.filter(i => !evenp(i))).toSet must_=== (xs.toSet)
+  "partitionM" ! forAll {
+    (xs: Vector[Int]) =>
+      val (evens, odds) = xs.partitionM[Id](evenp)
+      (evens.toSet & odds.toSet) must_=== (Set[Int]())
+      (evens.filter(evenp) ++
+        odds.filter(i => !evenp(i))).toSet must_=== (xs.toSet)
   }
 
-  "findM" ! forAll { (xs: Vector[Int]) =>
-    val i = xs indexWhere evenp
-    type W[A] = Writer[Vector[Int], A]
-    val wxs = findM[Int, W](xs)(x => WriterT.writer(Vector(x) -> evenp(x)))
-    (wxs.written, wxs.value) must_=== {
-      if (i < 0) (xs, None)
-      else (xs take (i + 1), Some(xs(i)))
-    }
+  "findM" ! forAll {
+    (xs: Vector[Int]) =>
+      val i = xs indexWhere evenp
+      type W[A] = Writer[Vector[Int], A]
+      val wxs = findM[Int, W](xs)(x => WriterT.writer(Vector(x) -> evenp(x)))
+      (wxs.written, wxs.value) must_=== {
+        if (i < 0) (xs, None)
+        else (xs take (i + 1), Some(xs(i)))
+      }
   }
 
-  "mapAccumLeft" ! forAll { (xs: Vector[Int]) =>
-    mapAccumLeft(xs)(
-      Vector[Int](),
-      (c: Vector[Int], a) => (c :+ a, a)) must_=== (xs, xs)
+  "mapAccumLeft" ! forAll {
+    (xs: Vector[Int]) =>
+      mapAccumLeft(xs)(
+        Vector[Int](),
+        (c: Vector[Int], a) => (c :+ a, a)) must_=== (xs, xs)
   }
 
-  "mapAccumRight" ! forAll { (xs: Vector[Int]) =>
-    mapAccumRight(xs)(
-      Vector[Int](),
-      (c: Vector[Int], a) => (c :+ a, a)) must_=== (xs.reverse, xs)
+  "mapAccumRight" ! forAll {
+    (xs: Vector[Int]) =>
+      mapAccumRight(xs)(
+        Vector[Int](),
+        (c: Vector[Int], a) => (c :+ a, a)) must_=== (xs.reverse, xs)
   }
 
   "Issue #266" in {

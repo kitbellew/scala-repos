@@ -101,14 +101,15 @@ object SphinxDoc {
         cacheDirectory,
         preprocessExts,
         preprocessVars,
-        streams) map { (src, target, cacheDir, exts, vars, s) =>
-        simplePreprocess(
-          src,
-          target,
-          cacheDir / "sphinx" / "preprocessed",
-          exts,
-          vars,
-          s.log)
+        streams) map {
+        (src, target, cacheDir, exts, vars, s) =>
+          simplePreprocess(
+            src,
+            target,
+            cacheDir / "sphinx" / "preprocessed",
+            exts,
+            vars,
+            s.log)
       },
       sphinxInputs <<= (sphinxInputs, preprocess) map {
         (inputs, preprocessed) => inputs.copy(src = preprocessed)

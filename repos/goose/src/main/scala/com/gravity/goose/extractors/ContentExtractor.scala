@@ -312,22 +312,23 @@ trait ContentExtractor {
     val minimumStopWordCount = 5
     val maxStepsAwayFromNode = 3
 
-    walkSiblings(node) { currentNode =>
-      {
-        if (currentNode.tagName == para) {
-          if (stepsAway >= maxStepsAwayFromNode) {
-            trace(logPrefix + "Next paragraph is too far away, not boosting")
-            return false
+    walkSiblings(node) {
+      currentNode =>
+        {
+          if (currentNode.tagName == para) {
+            if (stepsAway >= maxStepsAwayFromNode) {
+              trace(logPrefix + "Next paragraph is too far away, not boosting")
+              return false
+            }
+            val paraText: String = currentNode.text
+            val wordStats: WordStats = StopWords.getStopWordCount(paraText)
+            if (wordStats.getStopWordCount > minimumStopWordCount) {
+              trace(logPrefix + "We're gonna boost this node, seems contenty")
+              return true
+            }
+            stepsAway += 1
           }
-          val paraText: String = currentNode.text
-          val wordStats: WordStats = StopWords.getStopWordCount(paraText)
-          if (wordStats.getStopWordCount > minimumStopWordCount) {
-            trace(logPrefix + "We're gonna boost this node, seems contenty")
-            return true
-          }
-          stepsAway += 1
         }
-      }
     }
     false
   }
@@ -608,11 +609,12 @@ trait ContentExtractor {
 
     val baselineScoreForSiblingParagraphs: Int = getBaselineScoreForSiblings(
       topNode)
-    val results = walkSiblings(topNode) { currentNode =>
-      {
-        getSiblingContent(currentNode, baselineScoreForSiblingParagraphs)
+    val results = walkSiblings(topNode) {
+      currentNode =>
+        {
+          getSiblingContent(currentNode, baselineScoreForSiblingParagraphs)
 
-      }
+        }
     }.reverse.flatMap(itm => itm)
     topNode.child(0).before(results.mkString)
     topNode

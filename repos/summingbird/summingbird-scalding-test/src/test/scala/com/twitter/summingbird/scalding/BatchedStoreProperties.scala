@@ -59,14 +59,15 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
         StateWithError[
           (Interval[Timestamp], Mode),
           List[FailureReason],
-          FlowToPipe[Nothing]] { (timeMode: (Interval[Timestamp], Mode)) =>
-          {
-            val (time: Interval[Timestamp], mode: Mode) = timeMode
-            val a: FlowToPipe[Nothing] = Reader { (fdM: (FlowDef, Mode)) =>
-              TypedPipe.empty
+          FlowToPipe[Nothing]] {
+          (timeMode: (Interval[Timestamp], Mode)) =>
+            {
+              val (time: Interval[Timestamp], mode: Mode) = timeMode
+              val a: FlowToPipe[Nothing] = Reader { (fdM: (FlowDef, Mode)) =>
+                TypedPipe.empty
+              }
+              Right((timeMode, a))
             }
-            Right((timeMode, a))
-          }
         }
       }
     }
@@ -230,36 +231,37 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
           val diskPipeFactory = StateWithError[
             (Interval[Timestamp], Mode),
             List[FailureReason],
-            FlowToPipe[(Int, Int)]] { (timeMode: (Interval[Timestamp], Mode)) =>
-            {
-              val (time: Interval[Timestamp], mode: Mode) = timeMode
-              val Intersection(
-                InclusiveLower(startRequestedTime),
-                ExclusiveUpper(_)) = time
+            FlowToPipe[(Int, Int)]] {
+            (timeMode: (Interval[Timestamp], Mode)) =>
+              {
+                val (time: Interval[Timestamp], mode: Mode) = timeMode
+                val Intersection(
+                  InclusiveLower(startRequestedTime),
+                  ExclusiveUpper(_)) = time
 
-              //shrink the endTime so it does not cover a whole batch
-              val onDiskEndTime: Long = Gen
-                .choose(
-                  startRequestedTime.milliSinceEpoch,
-                  nextBatchEnding.milliSinceEpoch)
-                .sample
-                .get
+                //shrink the endTime so it does not cover a whole batch
+                val onDiskEndTime: Long = Gen
+                  .choose(
+                    startRequestedTime.milliSinceEpoch,
+                    nextBatchEnding.milliSinceEpoch)
+                  .sample
+                  .get
 
-              val readTime: Interval[Timestamp] =
-                if (startRequestedTime == nextBatchEnding)
-                  Empty()
-                else
-                  Intersection(
-                    InclusiveLower(startRequestedTime),
-                    ExclusiveUpper(nextBatchEnding))
+                val readTime: Interval[Timestamp] =
+                  if (startRequestedTime == nextBatchEnding)
+                    Empty()
+                  else
+                    Intersection(
+                      InclusiveLower(startRequestedTime),
+                      ExclusiveUpper(nextBatchEnding))
 
-              val flowToPipe: FlowToPipe[(Int, Int)] = Reader {
-                (fdM: (FlowDef, Mode)) =>
-                  TypedPipe
-                    .from[(Timestamp, (Int, Int))](Seq((Timestamp(10), (2, 3))))
+                val flowToPipe: FlowToPipe[(Int, Int)] = Reader {
+                  (fdM: (FlowDef, Mode)) =>
+                    TypedPipe.from[(Timestamp, (Int, Int))](
+                      Seq((Timestamp(10), (2, 3))))
+                }
+                Right(((readTime, mode), flowToPipe))
               }
-              Right(((readTime, mode), flowToPipe))
-            }
           }
 
           val mergeResult = testStore.merge(

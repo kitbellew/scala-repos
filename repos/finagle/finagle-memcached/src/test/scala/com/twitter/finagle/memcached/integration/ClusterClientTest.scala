@@ -163,17 +163,19 @@ class ClusterClientTest
             .build())
     }
 
-    (0 until count).foreach { n =>
-      {
-        var found = false
-        tmpClients foreach { c =>
-          if (Await.result(c.get("foo" + n), TimeOut) != None) {
-            assert(!found)
-            found = true
+    (0 until count).foreach {
+      n =>
+        {
+          var found = false
+          tmpClients foreach {
+            c =>
+              if (Await.result(c.get("foo" + n), TimeOut) != None) {
+                assert(!found)
+                found = true
+              }
           }
+          assert(found)
         }
-        assert(found)
-      }
     }
   }
 
@@ -401,12 +403,13 @@ class ClusterClientTest
         ),
         TimeOut)
 
-      (0 until count).foreach { n =>
-        {
-          val c = client.clientOf("foo" + n)
-          val Buf.Utf8(res) = Await.result(c.get("foo" + n), TimeOut).get
-          assert(res == "bar" + n)
-        }
+      (0 until count).foreach {
+        n =>
+          {
+            val c = client.clientOf("foo" + n)
+            val Buf.Utf8(res) = Await.result(c.get("foo" + n), TimeOut).get
+            assert(res == "bar" + n)
+          }
       }
     }
   }

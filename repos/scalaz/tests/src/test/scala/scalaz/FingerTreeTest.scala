@@ -82,10 +82,11 @@ object FingerTreeTest extends SpecLite {
     !tree.isEmpty ==> ((tree.last === tree.toStream.last) && (tree.init.toStream === tree.toStream.init))
   }
 
-  "foldLeft snoc is identity" ! forAll { (tree: SequenceTree[Int]) =>
-    tree
-      .foldLeft(FingerTree.empty(SizeReducer[Int]))(_ :+ _)
-      .toStream must_== (tree.toStream)
+  "foldLeft snoc is identity" ! forAll {
+    (tree: SequenceTree[Int]) =>
+      tree
+        .foldLeft(FingerTree.empty(SizeReducer[Int]))(_ :+ _)
+        .toStream must_== (tree.toStream)
   }
 
   "foldLeft cons is reverse" ! forAll { (tree: SequenceTree[Int]) =>

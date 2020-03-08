@@ -44,37 +44,40 @@ class LogDoubleTest extends FunSuite with Checkers {
 
   test("addition") {
     check {
-      Prop.forAll { (d: Double, e: Double) =>
-        (d.toLogDouble + e.toLogDouble).value =~= d + e
+      Prop.forAll {
+        (d: Double, e: Double) =>
+          (d.toLogDouble + e.toLogDouble).value =~= d + e
       }
     }
     check {
-      Prop.forAll { (d: Double, e: Double) =>
-        e <= 0 || (d.toLogDouble + e).value =~= d + e
+      Prop.forAll {
+        (d: Double, e: Double) => e <= 0 || (d.toLogDouble + e).value =~= d + e
       }
     }
   }
   test("multiplication") {
     check {
-      Prop.forAll { (d: Double, e: Double) =>
-        (d.toLogDouble * e.toLogDouble).value =~= d * e
+      Prop.forAll {
+        (d: Double, e: Double) =>
+          (d.toLogDouble * e.toLogDouble).value =~= d * e
       }
     }
     check {
-      Prop.forAll { (d: Double, e: Double) =>
-        e <= 0 || (d.toLogDouble * e).value =~= d * e
+      Prop.forAll {
+        (d: Double, e: Double) => e <= 0 || (d.toLogDouble * e).value =~= d * e
       }
     }
   }
   test("division") {
     check {
-      Prop.forAll { (d: Double, e: Double) =>
-        (d.toLogDouble / e.toLogDouble).value =~= d / e
+      Prop.forAll {
+        (d: Double, e: Double) =>
+          (d.toLogDouble / e.toLogDouble).value =~= d / e
       }
     }
     check {
-      Prop.forAll { (d: Double, e: Double) =>
-        e <= 0 || (d.toLogDouble / e).value =~= d / e
+      Prop.forAll {
+        (d: Double, e: Double) => e <= 0 || (d.toLogDouble / e).value =~= d / e
       }
     }
   }

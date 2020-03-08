@@ -119,7 +119,9 @@ object Templates {
         case e: Elem if e.label == "html" => df(e.attributes)
         case _                            => None
       }
-      .flatMap { md => Helpers.findId(in, md.value.text) }
+      .flatMap {
+        md => Helpers.findId(in, md.value.text)
+      }
       .headOption orElse
       in.flatMap {
           case e: Elem if e.label == "html" =>
@@ -128,17 +130,18 @@ object Templates {
                 e.attribute("data-lift-content-id")
                   .headOption
                   .map(_.text) orElse
-                  e.attribute("class").flatMap { ns =>
-                    {
-                      val clz = ns.text.charSplit(' ')
-                      clz.flatMap {
-                        case s if s.startsWith("lift:content_id=") =>
-                          Some(
-                            urlDecode(s.substring("lift:content_id=".length)))
-                        case _ => None
-                      }.headOption
+                  e.attribute("class").flatMap {
+                    ns =>
+                      {
+                        val clz = ns.text.charSplit(' ')
+                        clz.flatMap {
+                          case s if s.startsWith("lift:content_id=") =>
+                            Some(
+                              urlDecode(s.substring("lift:content_id=".length)))
+                          case _ => None
+                        }.headOption
 
-                    }
+                      }
                   }
               }
 
@@ -146,7 +149,9 @@ object Templates {
             }
           case _ => None
         }
-        .flatMap { id => Helpers.findId(in, id) }
+        .flatMap {
+          id => Helpers.findId(in, id)
+        }
         .headOption getOrElse in
   }
 
@@ -283,36 +288,38 @@ object Templates {
       (LiftRules.buildPackage("view") ::: ("lift.app.view" :: Nil))
         .map(_ + "." + f(controller)))
 
-    first(toTry) { clsName =>
-      try {
-        tryo(List(classOf[ClassNotFoundException]), Empty)(
-          Class.forName(clsName).asInstanceOf[Class[AnyRef]]).flatMap { c =>
-          (c.newInstance match {
-            case inst: InsecureLiftView => c.getMethod(action).invoke(inst)
-            case inst: LiftView if inst.dispatch.isDefinedAt(action) =>
-              inst.dispatch(action)()
-            case _ => Empty
-          }) match {
-            case null | Empty | None  => Empty
-            case n: Group             => Full(n)
-            case n: Elem              => Full(n)
-            case s: NodeSeq           => Full(s)
-            case Some(n: Group)       => Full(n)
-            case Some(n: Elem)        => Full(n)
-            case Some(n: NodeSeq)     => Full(n)
-            case Some(SafeNodeSeq(n)) => Full(n)
-            case Full(n: Group)       => Full(n)
-            case Full(n: Elem)        => Full(n)
-            case Full(n: NodeSeq)     => Full(n)
-            case Full(SafeNodeSeq(n)) => Full(n)
-            case _                    => Empty
+    first(toTry) {
+      clsName =>
+        try {
+          tryo(List(classOf[ClassNotFoundException]), Empty)(
+            Class.forName(clsName).asInstanceOf[Class[AnyRef]]).flatMap {
+            c =>
+              (c.newInstance match {
+                case inst: InsecureLiftView => c.getMethod(action).invoke(inst)
+                case inst: LiftView if inst.dispatch.isDefinedAt(action) =>
+                  inst.dispatch(action)()
+                case _ => Empty
+              }) match {
+                case null | Empty | None  => Empty
+                case n: Group             => Full(n)
+                case n: Elem              => Full(n)
+                case s: NodeSeq           => Full(s)
+                case Some(n: Group)       => Full(n)
+                case Some(n: Elem)        => Full(n)
+                case Some(n: NodeSeq)     => Full(n)
+                case Some(SafeNodeSeq(n)) => Full(n)
+                case Full(n: Group)       => Full(n)
+                case Full(n: Elem)        => Full(n)
+                case Full(n: NodeSeq)     => Full(n)
+                case Full(SafeNodeSeq(n)) => Full(n)
+                case _                    => Empty
+              }
           }
+        } catch {
+          case ite: java.lang.reflect.InvocationTargetException =>
+            throw ite.getCause
+          case e: NoClassDefFoundError => Empty
         }
-      } catch {
-        case ite: java.lang.reflect.InvocationTargetException =>
-          throw ite.getCause
-        case e: NoClassDefFoundError => Empty
-      }
     }
   }
 }
@@ -337,24 +344,28 @@ abstract class SnippetFailureException(msg: String)
 
   def buildStackTrace: NodeSeq =
     getStackTrace.toList
-      .dropWhile { e =>
-        {
-          val cn = e.getClassName
-          cn.startsWith("net.liftweb.http") ||
-          cn.startsWith("net.liftweb.common") ||
-          cn.startsWith("net.liftweb.util")
-        }
+      .dropWhile {
+        e =>
+          {
+            val cn = e.getClassName
+            cn.startsWith("net.liftweb.http") ||
+            cn.startsWith("net.liftweb.common") ||
+            cn.startsWith("net.liftweb.util")
+          }
       }
-      .filter { e =>
-        {
-          val cn = e.getClassName
-          !cn.startsWith("java.lang") &&
-          !cn.startsWith("sun.")
-        }
+      .filter {
+        e =>
+          {
+            val cn = e.getClassName
+            !cn.startsWith("java.lang") &&
+            !cn.startsWith("sun.")
+          }
       }
       .take(10)
       .toList
-      .map { e => <code><span><br/>{e.toString}</span></code> }
+      .map {
+        e => <code><span><br/>{e.toString}</span></code>
+      }
 }
 
 class StateInStatelessException(msg: String)

@@ -671,11 +671,12 @@ trait HttpHelpers {
     params match {
       case Nil => url
       case ps =>
-        splitAtHash(url) { to =>
-          to +
-            (if (to.indexOf("?") >= 0) "&" else "?") +
-            ps.map { case (n, v) => urlEncode(n) + "=" + urlEncode(v) }
-              .mkString("&")
+        splitAtHash(url) {
+          to =>
+            to +
+              (if (to.indexOf("?") >= 0) "&" else "?") +
+              ps.map { case (n, v) => urlEncode(n) + "=" + urlEncode(v) }
+                .mkString("&")
         }
     }
 

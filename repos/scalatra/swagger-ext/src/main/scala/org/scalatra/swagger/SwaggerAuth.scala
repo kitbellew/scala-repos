@@ -234,14 +234,15 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
           .filter(s =>
             s.apis.nonEmpty && s.apis.exists(
               _.operations.exists(_.allows(userOption))))
-          .toList map { doc =>
-          ("path" -> (url(
-            doc.resourcePath,
-            includeServletPath = false,
-            includeContextPath = false) + (if (includeFormatParameter)
-                                             ".{format}"
-                                           else ""))) ~
-            ("description" -> doc.description)
+          .toList map {
+          doc =>
+            ("path" -> (url(
+              doc.resourcePath,
+              includeServletPath = false,
+              includeContextPath = false) + (if (includeFormatParameter)
+                                               ".{format}"
+                                             else ""))) ~
+              ("description" -> doc.description)
         })) ~
       ("authorizations" -> swagger.authorizations.foldLeft(JObject(Nil)) {
         (acc, auth) =>

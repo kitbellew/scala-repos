@@ -59,8 +59,8 @@ class ArchiveServiceHandler[A](
           //FIXME: this should spawn a job
           val archiveInstance = Archive(apiKey, path, None, clock.instant())
           logger.trace("Archiving path: " + archiveInstance)
-          eventStore.save(archiveInstance, archiveTimeout) map { _ =>
-            HttpResponse[JValue](OK)
+          eventStore.save(archiveInstance, archiveTimeout) map {
+            _ => HttpResponse[JValue](OK)
           }
 
         case false =>

@@ -41,36 +41,37 @@ trait JxBase {
 
   def addAttrs(varName: String, attrs: List[MetaData]): JsCmd =
     attrs
-      .map { m =>
-        m.value
-          .map {
-            case exp: JsExp =>
-              JsRaw(varName + "." + m.key + " = " + exp.toJsCmd).cmd
+      .map {
+        m =>
+          m.value
+            .map {
+              case exp: JsExp =>
+                JsRaw(varName + "." + m.key + " = " + exp.toJsCmd).cmd
 
-            case cmd: JsCmd =>
-              val varName = "v" + Helpers.nextFuncName
-              JsCrVar(varName, AnonFunc(cmd)) &
-                JsRaw(varName + "." + m.key + " = " + varName + "()")
+              case cmd: JsCmd =>
+                val varName = "v" + Helpers.nextFuncName
+                JsCrVar(varName, AnonFunc(cmd)) &
+                  JsRaw(varName + "." + m.key + " = " + varName + "()")
 
-            case JxAttr(cmd) =>
-              JsRaw(varName + "." + m.key + " = " + cmd.toJsCmd).cmd
+              case JxAttr(cmd) =>
+                JsRaw(varName + "." + m.key + " = " + cmd.toJsCmd).cmd
 
-            case JxFuncAttr(cmd) =>
-              JsRaw(varName + "." + m.key + " = " + AnonFunc(cmd).toJsCmd).cmd
+              case JxFuncAttr(cmd) =>
+                JsRaw(varName + "." + m.key + " = " + AnonFunc(cmd).toJsCmd).cmd
 
-            case x =>
-              if (m.key == "class") {
-                // JsRaw(varName+".setAttribute('className',"+x.text.encJs+");").cmd
+              case x =>
+                if (m.key == "class") {
+                  // JsRaw(varName+".setAttribute('className',"+x.text.encJs+");").cmd
 
-                JsRaw(varName + ".className = " + x.text.encJs).cmd &
+                  JsRaw(varName + ".className = " + x.text.encJs).cmd &
+                    JsRaw(
+                      varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs + ");").cmd
+                } else {
                   JsRaw(
                     varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs + ");").cmd
-              } else {
-                JsRaw(
-                  varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs + ");").cmd
-              }
-          }
-          .foldLeft(Noop)(_ & _)
+                }
+            }
+            .foldLeft(Noop)(_ & _)
       }
       .foldLeft(Noop)(_ & _)
 
@@ -164,10 +165,11 @@ case class JxMatch(exp: JsExp, cases: JxCase*) extends Node with JxBase {
       JsRaw(
         "if (false) {\n} " +
           cases
-            .map { c =>
-              " else if (" + vn + " == " + c.toMatch.toJsCmd + ") {" +
-                addToDocFrag(parentName, c.toDo.toList).toJsCmd +
-                "\n}"
+            .map {
+              c =>
+                " else if (" + vn + " == " + c.toMatch.toJsCmd + ") {" +
+                  addToDocFrag(parentName, c.toDo.toList).toJsCmd +
+                  "\n}"
             }
             .mkString("") +
           " else {throw new Exception('Unmatched: '+" + vn + ");}")

@@ -185,8 +185,8 @@ final class Matcher private[regex] (
       val last = ensureLastMatch
       // not provided by JS RegExp, so we make up something that at least
       // will have some sound behavior from scala.util.matching.Regex
-      last(group).fold(-1) { groupStr =>
-        inputstr.indexOf(groupStr, last.index)
+      last(group).fold(-1) {
+        groupStr => inputstr.indexOf(groupStr, last.index)
       }
     }
   }
@@ -257,8 +257,8 @@ object Matcher {
 
         // not provided by JS RegExp, so we make up something that at least
         // will have some sound behavior from scala.util.matching.Regex
-        last(group).fold(-1) { groupStr =>
-          inputstr.indexOf(groupStr, last.index)
+        last(group).fold(-1) {
+          groupStr => inputstr.indexOf(groupStr, last.index)
         }
       }
     }

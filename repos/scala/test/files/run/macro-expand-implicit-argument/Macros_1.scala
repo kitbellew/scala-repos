@@ -48,8 +48,11 @@ object Macros {
     val arrtpe = TypeTree(implicitly[c.WeakTypeTag[Array[A]]].tpe)
     val valdef = ValDef(Modifiers(), arr, arrtpe, create)
 
-    val updates = (0 until n).map { i =>
-      Apply(Select(Ident(arr), TermName("update")), List(const(i), as(i).tree))
+    val updates = (0 until n).map {
+      i =>
+        Apply(
+          Select(Ident(arr), TermName("update")),
+          List(const(i), as(i).tree))
     }
 
     val exprs = (Seq(valdef) ++ updates ++ Seq(Ident(arr))).toList

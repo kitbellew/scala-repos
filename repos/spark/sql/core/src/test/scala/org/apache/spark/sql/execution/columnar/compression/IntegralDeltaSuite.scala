@@ -63,9 +63,10 @@ class IntegralDeltaSuite extends SparkFunSuite {
                                   0
                                 } else {
                                   val oneBoolean = columnType.defaultSize
-                                  1 + oneBoolean + deltas.map { d =>
-                                    if (math.abs(d) <= Byte.MaxValue) 1
-                                    else 1 + oneBoolean
+                                  1 + oneBoolean + deltas.map {
+                                    d =>
+                                      if (math.abs(d) <= Byte.MaxValue) 1
+                                      else 1 + oneBoolean
                                   }.sum
                                 })
 

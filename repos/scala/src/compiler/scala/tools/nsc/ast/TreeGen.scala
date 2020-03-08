@@ -328,8 +328,8 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
 
     val methSym = owner.newMethod(name, fun.pos, FINAL | additionalFlags)
 
-    val paramSyms = map2(formals, fun.vparams) { (tp, vparam) =>
-      methSym.newSyntheticValueParam(tp, vparam.name)
+    val paramSyms = map2(formals, fun.vparams) {
+      (tp, vparam) => methSym.newSyntheticValueParam(tp, vparam.name)
     }
 
     methSym setInfo MethodType(paramSyms, restpe.deconst)

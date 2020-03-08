@@ -29,21 +29,23 @@ class InjectorReviewDialog(
   val editors: Seq[Editor] = {
     val containingJar = manifest._1.jarPath
     val files = manifest._2
-      .flatMap { injectorDescriptor =>
-        injectorDescriptor.sources
-          .flatMap { source =>
-            val file = VirtualFileManager
-              .getInstance()
-              .findFileByUrl(s"jar://$containingJar!/$source")
-            if (file.isValid) {
-              if (file.isDirectory) file.getChildren
-              else Seq(file)
-            } else {
-              LOG.warn(
-                s"Source root '$source' is broken, check your library - $containingJar")
-              Seq.empty
+      .flatMap {
+        injectorDescriptor =>
+          injectorDescriptor.sources
+            .flatMap {
+              source =>
+                val file = VirtualFileManager
+                  .getInstance()
+                  .findFileByUrl(s"jar://$containingJar!/$source")
+                if (file.isValid) {
+                  if (file.isDirectory) file.getChildren
+                  else Seq(file)
+                } else {
+                  LOG.warn(
+                    s"Source root '$source' is broken, check your library - $containingJar")
+                  Seq.empty
+                }
             }
-          }
       }
     val psiManager = PsiManager.getInstance(project)
     val psiDocumentManager = PsiDocumentManager.getInstance(project)

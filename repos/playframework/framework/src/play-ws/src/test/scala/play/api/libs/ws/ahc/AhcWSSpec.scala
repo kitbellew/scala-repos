@@ -481,13 +481,14 @@ object AhcWSSpec extends PlaySpecification with Mockito {
       val response = AhcWSResponse(ahcResponse)
 
       val optionCookie = response.cookie("someName")
-      optionCookie must beSome[WSCookie].which { cookie =>
-        cookie.name must beSome(name)
-        cookie.value must beSome(value)
-        cookie.domain must ===(domain)
-        cookie.path must ===(path)
-        cookie.maxAge must beSome(maxAge)
-        cookie.secure must beFalse
+      optionCookie must beSome[WSCookie].which {
+        cookie =>
+          cookie.name must beSome(name)
+          cookie.value must beSome(value)
+          cookie.domain must ===(domain)
+          cookie.path must ===(path)
+          cookie.maxAge must beSome(maxAge)
+          cookie.secure must beFalse
       }
     }
 

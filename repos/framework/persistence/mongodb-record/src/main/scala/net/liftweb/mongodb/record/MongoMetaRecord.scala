@@ -389,8 +389,8 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
           dbo.add(
             "$set",
             fieldsToSet
-              .foldLeft(BasicDBObjectBuilder.start) { (builder, pair) =>
-                builder.add(pair._1, pair._2)
+              .foldLeft(BasicDBObjectBuilder.start) {
+                (builder, pair) => builder.add(pair._1, pair._2)
               }
               .get
           )
@@ -400,8 +400,8 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
           dbo.add(
             "$unset",
             fieldsToUnset
-              .foldLeft(BasicDBObjectBuilder.start) { (builder, fieldName) =>
-                builder.add(fieldName, 1)
+              .foldLeft(BasicDBObjectBuilder.start) {
+                (builder, fieldName) => builder.add(fieldName, 1)
               }
               .get
           )

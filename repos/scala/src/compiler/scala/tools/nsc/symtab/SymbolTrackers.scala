@@ -52,8 +52,9 @@ trait SymbolTrackers {
       else
         unit.body filter containsSymbol groupBy (_.symbol) mapValues (_.toSet) toMap
     }
-    def apply(unit: CompilationUnit) = new SymbolTracker(() =>
-      symbolSnapshot(unit) filterNot { case (k, _) => dropSymbol(k) })
+    def apply(unit: CompilationUnit) =
+      new SymbolTracker(() =>
+        symbolSnapshot(unit) filterNot { case (k, _) => dropSymbol(k) })
   }
 
   class SymbolTracker(snapshotFn: () => Map[Symbol, Set[Tree]]) {

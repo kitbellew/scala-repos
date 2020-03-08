@@ -319,13 +319,16 @@ class ScalaJsonSpec extends Specification {
 
       // fold
       val nameOption: Option[String] = nameResult.fold(
-        invalid = { fieldErrors =>
-          fieldErrors.foreach(x => {
-            println("field: " + x._1 + ", errors: " + x._2)
-          })
-          None
+        invalid = {
+          fieldErrors =>
+            fieldErrors.foreach(x => {
+              println("field: " + x._1 + ", errors: " + x._2)
+            })
+            None
         },
-        valid = { name => Some(name) }
+        valid = {
+          name => Some(name)
+        }
       )
       //#convert-to-type-validate
       nameResult must beLike {

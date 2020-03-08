@@ -712,8 +712,8 @@ object Enumeratee {
       def step[A](k: K[E, A]): K[E, Iteratee[E, A]] = {
 
         case in @ Input.El(e) =>
-          Iteratee.flatten(Future(p(e))(pec).map { b =>
-            if (b) Cont(step(k)) else (passAlong[E] &> k(in))
+          Iteratee.flatten(Future(p(e))(pec).map {
+            b => if (b) Cont(step(k)) else (passAlong[E] &> k(in))
           }(dec))
 
         case Input.Empty => Cont(step(k))
@@ -742,11 +742,12 @@ object Enumeratee {
       def step[A](k: K[E, A]): K[E, Iteratee[E, A]] = {
 
         case in @ Input.El(e) =>
-          Iteratee.flatten(Future(p(e))(pec).map { b =>
-            if (b) (new CheckDone[E, E] {
-              def continue[A](k: K[E, A]) = Cont(step(k))
-            } &> k(in))
-            else Done(Cont(k), in)
+          Iteratee.flatten(Future(p(e))(pec).map {
+            b =>
+              if (b) (new CheckDone[E, E] {
+                def continue[A](k: K[E, A]) = Cont(step(k))
+              } &> k(in))
+              else Done(Cont(k), in)
           }(dec))
 
         case Input.Empty =>

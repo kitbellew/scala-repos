@@ -124,8 +124,8 @@ object ConsumerOffsetChecker extends Logging {
   private def processTopic(zkUtils: ZkUtils, group: String, topic: String) {
     topicPidMap.get(topic) match {
       case Some(pids) =>
-        pids.sorted.foreach { pid =>
-          processPartition(zkUtils, group, topic, pid)
+        pids.sorted.foreach {
+          pid => processPartition(zkUtils, group, topic, pid)
         }
       case None => // ignore
     }
@@ -274,7 +274,9 @@ object ConsumerOffsetChecker extends Logging {
       println(
         "%-15s %-30s %-3s %-15s %-15s %-15s %s"
           .format("Group", "Topic", "Pid", "Offset", "logSize", "Lag", "Owner"))
-      topicList.sorted.foreach { topic => processTopic(zkUtils, group, topic) }
+      topicList.sorted.foreach {
+        topic => processTopic(zkUtils, group, topic)
+      }
 
       if (options.has("broker-info"))
         printBrokerInfo()

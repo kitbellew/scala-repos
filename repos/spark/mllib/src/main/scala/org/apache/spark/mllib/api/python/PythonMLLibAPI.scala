@@ -452,8 +452,8 @@ private[python] class PythonMLLibAPI extends Serializable {
     val weight = wt.toArray
     val mean = mu.map(_.asInstanceOf[DenseVector])
     val sigma = si.map(_.asInstanceOf[DenseMatrix])
-    val gaussians = Array.tabulate(weight.length) { i =>
-      new MultivariateGaussian(mean(i), sigma(i))
+    val gaussians = Array.tabulate(weight.length) {
+      i => new MultivariateGaussian(mean(i), sigma(i))
     }
     val model = new GaussianMixtureModel(weight, gaussians)
     model.predictSoft(data).map(Vectors.dense)

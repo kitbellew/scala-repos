@@ -562,19 +562,24 @@ protected[kestrel] class ThriftConnectedClient(
   }
 
   private def withClient[T](f: (FinagledClient) => Future[T]) =
-    underlying() flatMap { client =>
-      f(client) ensure {
-        client.service.close()
-      }
+    underlying() flatMap {
+      client =>
+        f(client) ensure {
+          client.service.close()
+        }
     }
 
   def flush(queueName: String): Future[Response] =
     withClient[Values](client =>
-      client.flushQueue(queueName).map { _ => Values(Nil) })
+      client.flushQueue(queueName).map {
+        _ => Values(Nil)
+      })
 
   def delete(queueName: String): Future[Response] =
     withClient[Response](client =>
-      client.deleteQueue(queueName).map { _ => Deleted() })
+      client.deleteQueue(queueName).map {
+        _ => Deleted()
+      })
 
   def set(
       queueName: String,
@@ -584,7 +589,9 @@ protected[kestrel] class ThriftConnectedClient(
     withClient[Response](client =>
       client
         .put(queueName, List(Buf.ByteBuffer.Owned.extract(value)), timeout)
-        .map { _ => Stored() })
+        .map {
+          _ => Stored()
+        })
   }
 
   def get(
@@ -609,14 +616,14 @@ protected[kestrel] class ThriftConnectedClient(
 
   private def confirmAndOpenRead(queueName: String)(id: Long)(
       client: FinagledClosableClient): Future[Seq[Item]] =
-    client.confirm(queueName, collection.Set(id)) flatMap { _ =>
-      openRead(queueName)(client)
+    client.confirm(queueName, collection.Set(id)) flatMap {
+      _ => openRead(queueName)(client)
     }
 
   private def abortReadCommand(queueName: String)(id: Long)(
       client: FinagledClosableClient): Future[Seq[Item]] =
-    client.abort(queueName, collection.Set(id)).map { _ =>
-      collection.Seq[Item]()
+    client.abort(queueName, collection.Set(id)).map {
+      _ => collection.Seq[Item]()
     }
 
   def read(queueName: String): ReadHandle =

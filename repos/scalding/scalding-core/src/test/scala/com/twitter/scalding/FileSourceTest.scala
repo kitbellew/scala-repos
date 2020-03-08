@@ -58,11 +58,12 @@ class FileSourceTest extends WordSpec with Matchers {
       .source(
         MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats)),
         List(("foobar", 1), ("helloworld", 2)))
-      .sink[(String, Int)](Tsv("output0")) { outBuf =>
-        "take multiple Tsv files as input sources" in {
-          outBuf should have length 2
-          outBuf.toList shouldBe List(("foobar", 1), ("helloworld", 2))
-        }
+      .sink[(String, Int)](Tsv("output0")) {
+        outBuf =>
+          "take multiple Tsv files as input sources" in {
+            outBuf should have length 2
+            outBuf.toList shouldBe List(("foobar", 1), ("helloworld", 2))
+          }
       }
       .run
       .finish
@@ -74,18 +75,20 @@ class FileSourceTest extends WordSpec with Matchers {
       .source(
         WritableSequenceFile("input1", ('query, 'queryStats)),
         List(("foobar1", 1), ("helloworld1", 2)))
-      .sink[(String, Int)](SequenceFile("output0")) { outBuf =>
-        "sequence file input" in {
-          outBuf should have length 2
-          outBuf.toList shouldBe List(("foobar0", 1), ("helloworld0", 2))
-        }
+      .sink[(String, Int)](SequenceFile("output0")) {
+        outBuf =>
+          "sequence file input" in {
+            outBuf should have length 2
+            outBuf.toList shouldBe List(("foobar0", 1), ("helloworld0", 2))
+          }
       }
       .sink[(String, Int)](
-        WritableSequenceFile("output1", ('query, 'queryStats))) { outBuf =>
-        "writable sequence file input" in {
-          outBuf should have length 2
-          outBuf.toList shouldBe List(("foobar1", 1), ("helloworld1", 2))
-        }
+        WritableSequenceFile("output1", ('query, 'queryStats))) {
+        outBuf =>
+          "writable sequence file input" in {
+            outBuf should have length 2
+            outBuf.toList shouldBe List(("foobar1", 1), ("helloworld1", 2))
+          }
       }
       .run
       .finish

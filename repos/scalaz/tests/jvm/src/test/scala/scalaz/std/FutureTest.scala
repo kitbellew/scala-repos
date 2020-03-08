@@ -31,10 +31,11 @@ class FutureTest extends SpecLite {
     }
 
     implicit def futureShow[A: Show]: Show[Future[A]] =
-      Contravariant[Show].contramap(Show[String \/ A]) { future: Future[A] =>
-        val futureWithError =
-          future.map(\/-(_)).recover { case e => -\/(e.toString) }
-        Await.result(futureWithError, duration)
+      Contravariant[Show].contramap(Show[String \/ A]) {
+        future: Future[A] =>
+          val futureWithError =
+            future.map(\/-(_)).recover { case e => -\/(e.toString) }
+          Await.result(futureWithError, duration)
       }
 
     case class SomeFailure(n: Int) extends Exception {

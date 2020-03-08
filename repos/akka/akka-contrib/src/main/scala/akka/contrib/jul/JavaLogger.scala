@@ -111,12 +111,13 @@ trait JavaLoggingAdapter extends LoggingAdapter {
   // it is unfortunate that this workaround is needed
   private def updateSource(record: logging.LogRecord) {
     val stack = Thread.currentThread.getStackTrace
-    val source = stack.find { frame ⇒
-      val cname = frame.getClassName
-      !cname.startsWith("akka.contrib.jul.") &&
-      !cname.startsWith("akka.event.LoggingAdapter") &&
-      !cname.startsWith("java.lang.reflect.") &&
-      !cname.startsWith("sun.reflect.")
+    val source = stack.find {
+      frame ⇒
+        val cname = frame.getClassName
+        !cname.startsWith("akka.contrib.jul.") &&
+        !cname.startsWith("akka.event.LoggingAdapter") &&
+        !cname.startsWith("java.lang.reflect.") &&
+        !cname.startsWith("sun.reflect.")
     }
     if (source.isDefined) {
       record.setSourceClassName(source.get.getClassName)

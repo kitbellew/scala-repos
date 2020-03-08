@@ -66,8 +66,11 @@ object XmlApiSpec extends Specification {
     // ===== Handler methods =====
     def reduceOp(operation: (Int, Int) => Int)(r: Req): Box[Elem] =
       tryo {
-        (r.param("args").map { args =>
-          <result>{args.split(",").map(_.toInt).reduceLeft(operation)}</result>
+        (r.param("args").map {
+          args =>
+            <result>{
+              args.split(",").map(_.toInt).reduceLeft(operation)
+            }</result>
         }) ?~ "Missing args"
       } match {
         case Full(x)    => x

@@ -251,8 +251,8 @@ abstract class Delambdafy
         val methSym = newClass.newMethod(nme.apply, fun.pos, FINAL | SYNTHETIC)
         val params = fun.vparams map (_.duplicate)
 
-        val paramSyms = map2(formals, params) { (tp, vparam) =>
-          methSym.newSyntheticValueParam(tp, vparam.name)
+        val paramSyms = map2(formals, params) {
+          (tp, vparam) => methSym.newSyntheticValueParam(tp, vparam.name)
         }
         params zip paramSyms foreach {
           case (valdef, sym) => valdef.symbol = sym

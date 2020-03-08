@@ -28,14 +28,17 @@ object ScaloidBuild extends Build {
     crossScalaVersions := Seq("2.11.7"), // only 2.11.x for now
     version := scaloidVersion,
     publishMavenStyle := true,
-    publishTo <<= version { (v: String) =>
-      val nexus = "https://oss.sonatype.org/"
-      if (v.trim.endsWith("SNAPSHOT"))
-        Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases" at nexus + "service/local/staging/deploy/maven2")
+    publishTo <<= version {
+      (v: String) =>
+        val nexus = "https://oss.sonatype.org/"
+        if (v.trim.endsWith("SNAPSHOT"))
+          Some("snapshots" at nexus + "content/repositories/snapshots")
+        else
+          Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
-    pomIncludeRepository := { _ => false },
+    pomIncludeRepository := {
+      _ => false
+    },
     pomExtra :=
       <url>http://scaloid.org</url>
         <licenses>
@@ -71,7 +74,9 @@ object ScaloidBuild extends Build {
 
   // configure prompt to show current project
   override lazy val settings = super.settings :+ {
-    shellPrompt := { s => Project.extract(s).currentProject.id + "> " }
+    shellPrompt := {
+      s => Project.extract(s).currentProject.id + "> "
+    }
   }
 
   //  root project

@@ -330,11 +330,10 @@ object Conformance {
                   ScalaPsiManager.ClassCategory.TYPE)
               if (notNullClass != null) {
                 val notNullType = ScDesignatorType(notNullClass)
-                result =
-                  (
-                    !conforms(notNullType, l),
-                    undefinedSubst
-                  ) //todo: think about undefinedSubst
+                result = (
+                  !conforms(notNullType, l),
+                  undefinedSubst
+                ) //todo: think about undefinedSubst
               } else {
                 result = (true, undefinedSubst)
               }
@@ -2189,21 +2188,22 @@ object Conformance {
               (String, PsiElement),
               ScType] ++ typeParameters1
               .zip(typeParameters2)
-              .map({ tuple =>
-                (
-                  (tuple._1.name, ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
-                  new ScTypeParameterType(
-                    tuple._2.name,
-                    tuple._2.ptp match {
-                      case p: ScTypeParam =>
-                        p.typeParameters.toList.map {
-                          new ScTypeParameterType(_, ScSubstitutor.empty)
-                        }
-                      case _ => Nil
-                    },
-                    new Suspension(tuple._2.lowerType),
-                    new Suspension(tuple._2.upperType),
-                    tuple._2.ptp))
+              .map({
+                tuple =>
+                  (
+                    (tuple._1.name, ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
+                    new ScTypeParameterType(
+                      tuple._2.name,
+                      tuple._2.ptp match {
+                        case p: ScTypeParam =>
+                          p.typeParameters.toList.map {
+                            new ScTypeParameterType(_, ScSubstitutor.empty)
+                          }
+                        case _ => Nil
+                      },
+                      new Suspension(tuple._2.lowerType),
+                      new Suspension(tuple._2.upperType),
+                      tuple._2.ptp))
               }),
             Map.empty,
             None)

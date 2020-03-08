@@ -108,8 +108,8 @@ class ALSAlgorithm(val ap: AlgorithmParams)
 
     val prediction: RDD[Rating] = model.predict(indexlessFeature)
 
-    val p: RDD[((Int, Int), Double)] = prediction.map { r =>
-      ((r.user, r.product), r.rating)
+    val p: RDD[((Int, Int), Double)] = prediction.map {
+      r => ((r.user, r.product), r.rating)
     }
 
     feature

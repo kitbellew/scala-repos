@@ -47,8 +47,8 @@ trait IdSourceScannerModule extends YggConfigComponent {
         cols: Map[ColumnRef, Column],
         range: Range): (A, Map[ColumnRef, Column]) = {
       val rawCols = cols.values.toArray
-      val defined = BitSetUtil.filteredRange(range.start, range.end) { i =>
-        Column.isDefinedAt(rawCols, i)
+      val defined = BitSetUtil.filteredRange(range.start, range.end) {
+        i => Column.isDefinedAt(rawCols, i)
       }
 
       val idCol = new LongColumn {

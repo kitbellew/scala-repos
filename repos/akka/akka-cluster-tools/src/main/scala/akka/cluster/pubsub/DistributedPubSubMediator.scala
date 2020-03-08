@@ -770,10 +770,11 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     } yield (key, ref)).groupBy(_._1).values
 
     val wrappedMsg = SendToOneSubscriber(msg)
-    groups foreach { group ⇒
-      val routees = group.map(_._2).toVector
-      if (routees.nonEmpty)
-        Router(routingLogic, routees).route(wrappedMsg, sender())
+    groups foreach {
+      group ⇒
+        val routees = group.map(_._2).toVector
+        if (routees.nonEmpty)
+          Router(routingLogic, routees).route(wrappedMsg, sender())
     }
   }
 

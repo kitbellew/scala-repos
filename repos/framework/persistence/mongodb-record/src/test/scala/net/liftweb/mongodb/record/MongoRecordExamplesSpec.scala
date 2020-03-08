@@ -131,16 +131,17 @@ package mongotestrecords {
       override def asDBObject: DBObject = {
         val dbl = new BasicDBList
 
-        value.foreach { m =>
-          {
-            val dbo = new BasicDBObject
+        value.foreach {
+          m =>
+            {
+              val dbo = new BasicDBObject
 
-            m.keys.foreach(k => {
-              dbo.put(k.toString, m.getOrElse(k, ""))
-            })
+              m.keys.foreach(k => {
+                dbo.put(k.toString, m.getOrElse(k, ""))
+              })
 
-            dbl.add(dbo)
-          }
+              dbl.add(dbo)
+            }
         }
 
         dbl
@@ -522,8 +523,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     od1.stringbox.valueBox must_== Empty
     od1.save() must_== od1
 
-    OptionalDoc.find(od1.id.get).foreach { od1FromDB =>
-      od1FromDB.stringbox.valueBox must_== od1.stringbox.valueBox
+    OptionalDoc.find(od1.id.get).foreach {
+      od1FromDB => od1FromDB.stringbox.valueBox must_== od1.stringbox.valueBox
     }
 
     val od2 = OptionalDoc.createRecord
@@ -531,8 +532,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     od2.stringbox.set("aloha")
     od2.save() must_== od2
 
-    OptionalDoc.find(od2.id.get).foreach { od2FromDB =>
-      od2FromDB.stringbox.valueBox must_== od2.stringbox.valueBox
+    OptionalDoc.find(od2.id.get).foreach {
+      od2FromDB => od2FromDB.stringbox.valueBox must_== od2.stringbox.valueBox
     }
 
     if (!debug) OptionalDoc.drop

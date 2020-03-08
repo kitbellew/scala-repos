@@ -814,8 +814,8 @@ abstract class Erasure
         case Ident(_) | Select(_, _) =>
           if (tree1.symbol.isOverloaded) {
             val first = tree1.symbol.alternatives.head
-            val sym1 = tree1.symbol.filter { alt =>
-              alt == first || !(first.tpe looselyMatches alt.tpe)
+            val sym1 = tree1.symbol.filter {
+              alt => alt == first || !(first.tpe looselyMatches alt.tpe)
             }
             if (tree.symbol ne sym1) {
               tree1 setSymbol sym1 setType sym1.tpe

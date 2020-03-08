@@ -438,7 +438,9 @@ abstract class RequestVar[T](dflt: => T)
     if (set_?) {
       val v = this.get
       () => this.set(v)
-    } else { () => this.remove() }
+    } else {
+      () => this.remove()
+    }
   }
 
   override protected def findFunc(name: String): Box[T] =
@@ -550,7 +552,9 @@ abstract class TransientRequestVar[T](dflt: => T)
   def logUnreadVal = false
 }
 
-trait CleanRequestVarOnSessionTransition { self: RequestVar[_] => }
+trait CleanRequestVarOnSessionTransition {
+  self: RequestVar[_] =>
+}
 
 private[http] object RequestVarHandler extends CoreRequestVarHandler {
   type MyType = RequestVar[_]

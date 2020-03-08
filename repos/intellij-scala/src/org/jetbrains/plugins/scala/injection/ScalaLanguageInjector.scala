@@ -335,20 +335,21 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       if (index == -1) None
       else
         methodInv.getEffectiveInvokedExpr
-          .asOptionOf[ScReferenceExpression] flatMap { ref =>
-          ref.resolve().toOption match {
-            case Some(f: ScFunction) =>
-              val parameters = f.parameters
-              if (parameters.isEmpty) None
-              else Some(parameters.get(index.min(parameters.size - 1)))
-            case Some(m: PsiMethod) =>
-              val parameters = m.getParameterList.getParameters
-              if (parameters.isEmpty) None
-              else
-                parameters(
-                  index.min(parameters.size - 1)).getModifierList.toOption
-            case _ => None
-          }
+          .asOptionOf[ScReferenceExpression] flatMap {
+          ref =>
+            ref.resolve().toOption match {
+              case Some(f: ScFunction) =>
+                val parameters = f.parameters
+                if (parameters.isEmpty) None
+                else Some(parameters.get(index.min(parameters.size - 1)))
+              case Some(m: PsiMethod) =>
+                val parameters = m.getParameterList.getParameters
+                if (parameters.isEmpty) None
+                else
+                  parameters(
+                    index.min(parameters.size - 1)).getModifierList.toOption
+              case _ => None
+            }
         }
     }
 
@@ -421,12 +422,12 @@ object ScalaLanguageInjector {
         Trinity[PsiLanguageInjectionHost, InjectedLanguage, TextRange]]) {
     literal match {
       case multiLineString: ScLiteral if multiLineString.isMultiLineString =>
-        extractMultiLineStringRanges(multiLineString) foreach { range =>
-          list add Trinity.create(multiLineString, language, range)
+        extractMultiLineStringRanges(multiLineString) foreach {
+          range => list add Trinity.create(multiLineString, language, range)
         }
       case scLiteral =>
-        currentInjection getInjectedArea scLiteral foreach { range =>
-          list add Trinity.create(scLiteral, language, range)
+        currentInjection getInjectedArea scLiteral foreach {
+          range => list add Trinity.create(scLiteral, language, range)
         }
     }
   }

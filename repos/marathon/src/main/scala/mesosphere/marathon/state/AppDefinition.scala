@@ -168,13 +168,13 @@ case class AppDefinition(
   //scalastyle:off cyclomatic.complexity method.length
   def mergeFromProto(proto: Protos.ServiceDefinition): AppDefinition = {
     val envMap: Map[String, String] =
-      proto.getCmd.getEnvironment.getVariablesList.asScala.map { v =>
-        v.getName -> v.getValue
+      proto.getCmd.getEnvironment.getVariablesList.asScala.map {
+        v => v.getName -> v.getValue
       }.toMap
 
     val resourcesMap: Map[String, Double] =
-      proto.getResourcesList.asScala.map { r =>
-        r.getName -> (r.getScalar.getValue: Double)
+      proto.getResourcesList.asScala.map {
+        r => r.getName -> (r.getScalar.getValue: Double)
       }.toMap
 
     val argsOption =

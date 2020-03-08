@@ -173,11 +173,12 @@ class TestRunner(
         waitAll(threads)
       }
 
-      what.foreach { testItem =>
-        testItem.forkCnt match {
-          case 0 => runASingleTest(testItem)
-          case n => runForkTest(testItem, n)
-        }
+      what.foreach {
+        testItem =>
+          testItem.forkCnt match {
+            case 0 => runASingleTest(testItem)
+            case n => runForkTest(testItem, n)
+          }
 
       }
       TestResults(log.toList)

@@ -161,13 +161,15 @@ class LightArrayRevolverScheduler(
     }
 
   override def close(): Unit =
-    Await.result(stop(), getShutdownTimeout) foreach { task ⇒
-      try task.run()
-      catch {
-        case e: InterruptedException ⇒ throw e
-        case _: SchedulerException ⇒ // ignore terminated actors
-        case NonFatal(e) ⇒ log.error(e, "exception while executing timer task")
-      }
+    Await.result(stop(), getShutdownTimeout) foreach {
+      task ⇒
+        try task.run()
+        catch {
+          case e: InterruptedException ⇒ throw e
+          case _: SchedulerException ⇒ // ignore terminated actors
+          case NonFatal(e) ⇒
+            log.error(e, "exception while executing timer task")
+        }
     }
 
   override val maxFrequency: Double = 1.second / TickDuration

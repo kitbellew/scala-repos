@@ -165,10 +165,11 @@ abstract class SuperAccessors
         intermediateClasses
           .map(sym.overridingSymbol)
           .find(s => s.isDeferred && !s.isAbstractOverride && !s.owner.isTrait)
-          .foreach { absSym =>
-            reporter.error(
-              sel.pos,
-              s"${sym.fullLocationString} cannot be directly accessed from ${clazz} because ${absSym.owner} redeclares it as abstract")
+          .foreach {
+            absSym =>
+              reporter.error(
+                sel.pos,
+                s"${sym.fullLocationString} cannot be directly accessed from ${clazz} because ${absSym.owner} redeclares it as abstract")
           }
       }
 

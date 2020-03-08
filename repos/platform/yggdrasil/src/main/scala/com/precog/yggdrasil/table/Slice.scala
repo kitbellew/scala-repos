@@ -491,19 +491,21 @@ trait Slice { source =>
       case _ => false
     }
 
-    private val becomeEmpty = BitSetUtil.filteredRange(0, source.size) { i =>
-      Column.isDefinedAt(removed.values.toArray, i) && !Column
-        .isDefinedAt(withoutPrefixes.values.toArray, i)
+    private val becomeEmpty = BitSetUtil.filteredRange(0, source.size) {
+      i =>
+        Column.isDefinedAt(removed.values.toArray, i) && !Column
+          .isDefinedAt(withoutPrefixes.values.toArray, i)
     }
 
     private val ref = ColumnRef(CPath.Identity, CEmptyObject)
 
     // The object might have become empty. Make the
     // EmptyObjectColumn defined at the row position.
-    private lazy val emptyObjectColumn = withoutPrefixes get ref map { c =>
-      new EmptyObjectColumn {
-        def isDefinedAt(row: Int) = c.isDefinedAt(row) || becomeEmpty(row)
-      }
+    private lazy val emptyObjectColumn = withoutPrefixes get ref map {
+      c =>
+        new EmptyObjectColumn {
+          def isDefinedAt(row: Int) = c.isDefinedAt(row) || becomeEmpty(row)
+        }
     } getOrElse {
       new EmptyObjectColumn {
         def isDefinedAt(row: Int) = becomeEmpty(row)
@@ -695,16 +697,16 @@ trait Slice { source =>
       private val colValues = filter.columns.values.toArray
       lazy val defined = definedness match {
         case AnyDefined =>
-          BitSetUtil.filteredRange(0, source.size) { i =>
-            colValues.exists(_.isDefinedAt(i))
+          BitSetUtil.filteredRange(0, source.size) {
+            i => colValues.exists(_.isDefinedAt(i))
           }
 
         case AllDefined =>
           if (colValues.isEmpty)
             new BitSet
           else
-            BitSetUtil.filteredRange(0, source.size) { i =>
-              colValues.forall(_.isDefinedAt(i))
+            BitSetUtil.filteredRange(0, source.size) {
+              i => colValues.forall(_.isDefinedAt(i))
             }
       }
 
@@ -970,8 +972,8 @@ trait Slice { source =>
     else {
       new Slice {
         val size = sz
-        val columns = source.columns lazyMapValues { col =>
-          (col |> cf.util.RemapFilter(_ < sz, 0)).get
+        val columns = source.columns lazyMapValues {
+          col => (col |> cf.util.RemapFilter(_ < sz, 0)).get
         }
       }
     }
@@ -981,8 +983,8 @@ trait Slice { source =>
     else {
       new Slice {
         val size = source.size - sz
-        val columns = source.columns lazyMapValues { col =>
-          (col |> cf.util.RemapFilter(_ < size, sz)).get
+        val columns = source.columns lazyMapValues {
+          col => (col |> cf.util.RemapFilter(_ < size, sz)).get
         }
       }
     }
@@ -991,8 +993,8 @@ trait Slice { source =>
     val take2 = math.min(this.size, startIndex + numberToTake) - startIndex
     new Slice {
       val size = take2
-      val columns = source.columns lazyMapValues { col =>
-        (col |> cf.util.RemapFilter(_ < take2, startIndex)).get
+      val columns = source.columns lazyMapValues {
+        col => (col |> cf.util.RemapFilter(_ < take2, startIndex)).get
       }
     }
   }

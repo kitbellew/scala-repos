@@ -136,8 +136,8 @@ object ReachingDefintionsCollector {
 
   private def filterByFragment(
       cfg: Seq[Instruction],
-      fragment: Seq[PsiElement]) = cfg.filter { i =>
-    i.element.exists(isInFragment(_, fragment))
+      fragment: Seq[PsiElement]) = cfg.filter {
+    i => i.element.exists(isInFragment(_, fragment))
   }
 
   def computeOutputVariables(

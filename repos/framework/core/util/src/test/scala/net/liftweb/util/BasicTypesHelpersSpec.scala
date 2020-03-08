@@ -67,8 +67,8 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
         Empty !! false |
         Full("t") !! true |
         failure !! false |
-        List("t", "f") !! true |> { (o: Any, result: Boolean) =>
-        toBoolean(o) must_== result
+        List("t", "f") !! true |> {
+        (o: Any, result: Boolean) => toBoolean(o) must_== result
       }
     }
 
@@ -80,24 +80,25 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
         "total" !! None |
         "T" !! Some(true) |
         "This" !! None |
-        "0" !! Some(false) | { (o: String, result: Option[Boolean]) =>
-        AsBoolean.unapply(o) must_== result
+        "0" !! Some(false) | {
+        (o: String, result: Option[Boolean]) =>
+          AsBoolean.unapply(o) must_== result
       }
     }
 
     "have an AsInt extractor converting any String to a reasonable Int value" in {
       "object value" || "int value" |>
         "3" !! Some(3) |
-        "n" !! None | { (o: String, result: Option[Int]) =>
-        AsInt.unapply(o) must_== result
+        "n" !! None | {
+        (o: String, result: Option[Int]) => AsInt.unapply(o) must_== result
       }
     }
 
     "have an AsLong extractor converting any String to a reasonable Long value" in {
       "object value" || "long value" |>
         "3" !! Some(3L) |
-        "n" !! None | { (o: String, result: Option[Long]) =>
-        AsLong.unapply(o) must_== result
+        "n" !! None | {
+        (o: String, result: Option[Long]) => AsLong.unapply(o) must_== result
       }
     }
 
@@ -115,7 +116,9 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
         failure !! 0 |
         "3" !! 3 |
         "n" !! 0 |
-        date(3000) !! 3 | { (o: Any, result: Int) => toInt(o) must_== result }
+        date(3000) !! 3 | {
+        (o: Any, result: Int) => toInt(o) must_== result
+      }
     }
 
     "have a toLong method converting any object to a reasonable Long value" in {
@@ -132,8 +135,8 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
         failure !! 0L |
         "3" !! 3L |
         "n" !! 0L |
-        date(3000) !! 3000L | { (o: Any, result: Long) =>
-        toLong(o) must_== result
+        date(3000) !! 3000L | {
+        (o: Any, result: Long) => toLong(o) must_== result
       }
     }
 

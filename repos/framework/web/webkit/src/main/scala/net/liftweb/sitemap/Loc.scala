@@ -184,21 +184,22 @@ trait Loc[T] {
 
   def rewrite: LocRewrite = Empty
 
-  def rewritePF: Box[LiftRules.RewritePF] = rewrite.map(rw =>
-    new NamedPartialFunction[RewriteRequest, RewriteResponse] {
-      def functionName = rw match {
-        case rw: NamedPartialFunction[_, _] => rw.functionName
-        case _                              => "Unnamed"
-      }
+  def rewritePF: Box[LiftRules.RewritePF] =
+    rewrite.map(rw =>
+      new NamedPartialFunction[RewriteRequest, RewriteResponse] {
+        def functionName = rw match {
+          case rw: NamedPartialFunction[_, _] => rw.functionName
+          case _                              => "Unnamed"
+        }
 
-      def isDefinedAt(in: RewriteRequest) = rw.isDefinedAt(in)
+        def isDefinedAt(in: RewriteRequest) = rw.isDefinedAt(in)
 
-      def apply(in: RewriteRequest): RewriteResponse = {
-        val (ret, param) = rw.apply(in)
-        requestValue.set(param)
-        ret
-      }
-    })
+        def apply(in: RewriteRequest): RewriteResponse = {
+          val (ret, param) = rw.apply(in)
+          requestValue.set(param)
+          ret
+        }
+      })
 
   /**
     * A `PartialFunction` that maps a snippet name, and an optional `Loc` value, in a `Tuple2`,

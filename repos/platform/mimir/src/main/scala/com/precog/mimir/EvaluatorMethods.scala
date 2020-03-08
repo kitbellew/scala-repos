@@ -60,8 +60,8 @@ trait EvaluatorMethodsModule[M[+_]]
       } getOrElse {
         rvalue match {
           case RArray(elements) =>
-            InnerArrayConcat(elements map { element =>
-              trans.WrapArray(transRValue(element, target))
+            InnerArrayConcat(elements map {
+              element => trans.WrapArray(transRValue(element, target))
             }: _*)
           case RObject(fields) =>
             InnerObjectConcat(fields.toSeq map {

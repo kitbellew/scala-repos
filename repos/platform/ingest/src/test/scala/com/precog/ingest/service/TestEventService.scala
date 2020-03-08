@@ -98,8 +98,9 @@ trait TestEventService
       new DateTime,
       AccountPlan.Free,
       None,
-      None) { accountId =>
-      apiKeyManager.newStandardAPIKeyRecord(accountId).map(_.apiKey)
+      None) {
+      accountId =>
+        apiKeyManager.newStandardAPIKeyRecord(accountId).map(_.apiKey)
   } copoint
 
   private val accountFinder = new TestAccountFinder[Future](
@@ -124,19 +125,20 @@ trait TestEventService
       new DateTime,
       AccountPlan.Free,
       None,
-      None) { accountId =>
-      apiKeyManager.newStandardAPIKeyRecord(accountId).map(_.apiKey).flatMap {
-        expiredAPIKey =>
-          apiKeyManager
-            .deriveAndAddGrant(
-              None,
-              None,
-              testAccount.apiKey,
-              accessTest,
-              expiredAPIKey,
-              Some(new DateTime().minusYears(1000)))
-            .map(_ => expiredAPIKey)
-    }
+      None) {
+      accountId =>
+        apiKeyManager.newStandardAPIKeyRecord(accountId).map(_.apiKey).flatMap {
+          expiredAPIKey =>
+            apiKeyManager
+              .deriveAndAddGrant(
+                None,
+                None,
+                testAccount.apiKey,
+                accessTest,
+                expiredAPIKey,
+                Some(new DateTime().minusYears(1000)))
+              .map(_ => expiredAPIKey)
+      }
   } copoint
 
   private val stored = scala.collection.mutable.ArrayBuffer.empty[Event]

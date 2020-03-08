@@ -252,8 +252,9 @@ abstract class Storm(
     val registerAllMetrics = new Function1[TopologyContext, Unit] {
       def apply(context: TopologyContext) = {
         // Register metrics passed in SpoutStormMetrics option.
-        metrics.metrics().foreach { x: StormMetric[IMetric] =>
-          context.registerMetric(x.name, x.metric, x.interval.inSeconds)
+        metrics.metrics().foreach {
+          x: StormMetric[IMetric] =>
+            context.registerMetric(x.name, x.metric, x.interval.inSeconds)
         }
         // Register summingbird counter metrics.
         StormStatProvider.registerMetrics(jobID, context, countersForSpout)

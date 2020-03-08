@@ -308,7 +308,9 @@ object ScalaJSPluginInternal {
       token(
         OptSpace ~> (
           (literal("-i") | "--infos") ^^^ ((_: Options).copy(infos = true))
-        )).* map { fns => Function.chain(fns)(Options()) }
+        )).* map {
+        fns => Function.chain(fns)(Options())
+      }
     }
 
     def sjsirFileOnClasspathParser(relPaths: Seq[String]): Parser[String] = {

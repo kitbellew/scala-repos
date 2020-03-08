@@ -65,11 +65,12 @@ class CommandClient(
     val response = appClient.getByName(req.name) map { app =>
       GeneralResponse(0, s"App ${req.name} already exists. Aborting.")
     } getOrElse {
-      appClient.get(req.id) map { app2 =>
-        GeneralResponse(
-          0,
-          s"App ID ${app2.id} already exists and maps to the app '${app2.name}'. " +
-            "Aborting.")
+      appClient.get(req.id) map {
+        app2 =>
+          GeneralResponse(
+            0,
+            s"App ID ${app2.id} already exists and maps to the app '${app2.name}'. " +
+              "Aborting.")
       } getOrElse {
         val appid = appClient.insert(
           App(
@@ -109,10 +110,14 @@ class CommandClient(
   def futureAppList()(implicit ec: ExecutionContext): Future[AppListResponse] =
     Future {
       val apps = appClient.getAll().sortBy(_.name)
-      val appsRes = apps.map { app =>
-        {
-          new AppResponse(app.id, app.name, accessKeyClient.getByAppid(app.id))
-        }
+      val appsRes = apps.map {
+        app =>
+          {
+            new AppResponse(
+              app.id,
+              app.name,
+              accessKeyClient.getByAppid(app.id))
+          }
       }
       new AppListResponse(1, "Successful retrieved app list.", appsRes)
     }

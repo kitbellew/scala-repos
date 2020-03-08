@@ -122,51 +122,53 @@ class Extra(val activity: SActivity) extends AnyVal with Dynamic {
   def updateDynamic(name: String)(value: Any) {
     // TODO inline after https://github.com/daniel-trinh/scalariform/issues/44 is fixed
     import android.os.Parcelable
-    activity.intent.foreach { i =>
-      value match {
-        // primitives
-        case v: Boolean => i.putExtra(name, v)
-        case v: Byte    => i.putExtra(name, v)
-        case v: Char    => i.putExtra(name, v)
-        case v: Short   => i.putExtra(name, v)
-        case v: Int     => i.putExtra(name, v)
-        case v: Long    => i.putExtra(name, v)
-        case v: Float   => i.putExtra(name, v)
-        case v: Double  => i.putExtra(name, v)
+    activity.intent.foreach {
+      i =>
+        value match {
+          // primitives
+          case v: Boolean => i.putExtra(name, v)
+          case v: Byte    => i.putExtra(name, v)
+          case v: Char    => i.putExtra(name, v)
+          case v: Short   => i.putExtra(name, v)
+          case v: Int     => i.putExtra(name, v)
+          case v: Long    => i.putExtra(name, v)
+          case v: Float   => i.putExtra(name, v)
+          case v: Double  => i.putExtra(name, v)
 
-        // simple types
-        case v: String                => i.putExtra(name, v)
-        case v: CharSequence          => i.putExtra(name, v)
-        case v: android.os.Bundle     => i.putExtra(name, v)
-        case v: android.os.Parcelable => i.putExtra(name, v)
+          // simple types
+          case v: String                => i.putExtra(name, v)
+          case v: CharSequence          => i.putExtra(name, v)
+          case v: android.os.Bundle     => i.putExtra(name, v)
+          case v: android.os.Parcelable => i.putExtra(name, v)
 
-        // array types
-        case v: Array[Boolean]      => i.putExtra(name, v)
-        case v: Array[Byte]         => i.putExtra(name, v)
-        case v: Array[Char]         => i.putExtra(name, v)
-        case v: Array[Short]        => i.putExtra(name, v)
-        case v: Array[Int]          => i.putExtra(name, v)
-        case v: Array[Long]         => i.putExtra(name, v)
-        case v: Array[Float]        => i.putExtra(name, v)
-        case v: Array[Double]       => i.putExtra(name, v)
-        case v: Array[String]       => i.putExtra(name, v)
-        case v: Array[CharSequence] => i.putExtra(name, v)
-        case v: Array[Parcelable]   => i.putExtra(name, v)
+          // array types
+          case v: Array[Boolean]      => i.putExtra(name, v)
+          case v: Array[Byte]         => i.putExtra(name, v)
+          case v: Array[Char]         => i.putExtra(name, v)
+          case v: Array[Short]        => i.putExtra(name, v)
+          case v: Array[Int]          => i.putExtra(name, v)
+          case v: Array[Long]         => i.putExtra(name, v)
+          case v: Array[Float]        => i.putExtra(name, v)
+          case v: Array[Double]       => i.putExtra(name, v)
+          case v: Array[String]       => i.putExtra(name, v)
+          case v: Array[CharSequence] => i.putExtra(name, v)
+          case v: Array[Parcelable]   => i.putExtra(name, v)
 
-        // other types
-        case v: Serializable => i.putExtra(name, v) // must be after arrays
-      }
+          // other types
+          case v: Serializable => i.putExtra(name, v) // must be after arrays
+        }
     }
   }
 
   def selectDynamic[T](name: String): Option[T] =
-    activity.intent.flatMap { i =>
-      i.getExtras match {
-        case x: android.os.Bundle if x.containsKey(name) =>
-          Some(x.get(name).asInstanceOf[T])
+    activity.intent.flatMap {
+      i =>
+        i.getExtras match {
+          case x: android.os.Bundle if x.containsKey(name) =>
+            Some(x.get(name).asInstanceOf[T])
 
-        case _ => None
-      }
+          case _ => None
+        }
     }
 
   def remove(name: String) = activity.intent.foreach { _.removeExtra(name) }

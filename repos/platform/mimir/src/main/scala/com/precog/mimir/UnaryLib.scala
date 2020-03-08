@@ -54,8 +54,8 @@ trait UnaryLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
 
         def spec[A <: SourceType](
-            ctx: MorphContext): TransSpec[A] => TransSpec[A] = { transSpec =>
-          trans.Map1(transSpec, f1(ctx))
+            ctx: MorphContext): TransSpec[A] => TransSpec[A] = {
+          transSpec => trans.Map1(transSpec, f1(ctx))
         }
       }
 
@@ -68,8 +68,8 @@ trait UnaryLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
 
         def spec[A <: SourceType](
-            ctx: MorphContext): TransSpec[A] => TransSpec[A] = { transSpec =>
-          trans.Map1(transSpec, f1(ctx))
+            ctx: MorphContext): TransSpec[A] => TransSpec[A] = {
+          transSpec => trans.Map1(transSpec, f1(ctx))
         }
       }
     }

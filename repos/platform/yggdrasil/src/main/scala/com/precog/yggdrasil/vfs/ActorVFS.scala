@@ -936,7 +936,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
         case (offset, ArchiveMessage(apiKey, path, jobId, _, timestamp)) =>
           versionLog.clearHead >> IO(requestor ! UpdateSuccess(path))
-      } map { _ => PrecogUnit }
+      } map {
+        _ => PrecogUnit
+      }
     }
 
     def versionOpt(version: Version) = version match {

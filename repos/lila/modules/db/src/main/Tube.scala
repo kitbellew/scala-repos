@@ -130,13 +130,13 @@ object JsTube {
     def readDateOpt(field: Symbol) = readDate(field) orElse json.reader
 
     def writeDate(field: Symbol) =
-      (__ \ field).json.update(of[JsNumber] map { millis =>
-        Json.obj("$date" -> millis)
+      (__ \ field).json.update(of[JsNumber] map {
+        millis => Json.obj("$date" -> millis)
       })
 
     def writeDateOpt(field: Symbol) =
-      (__ \ field).json.update(of[JsNumber] map { millis =>
-        Json.obj("$date" -> millis)
+      (__ \ field).json.update(of[JsNumber] map {
+        millis => Json.obj("$date" -> millis)
       }) orElse json.reader
 
     def merge(obj: JsObject) = __.read[JsObject] map (obj ++)

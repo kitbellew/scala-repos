@@ -34,23 +34,24 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
     "find an id" in {
       val xml = <foo><bar/>Dog<b><woof id="3"/></b></foo>
 
-      findBox(xml) { e => e.attribute("id").filter(_.text == "3").map(i => e) }
-        .openOrThrowException("Test") must ==/(<woof id="3"/>)
+      findBox(xml) {
+        e => e.attribute("id").filter(_.text == "3").map(i => e)
+      }.openOrThrowException("Test") must ==/(<woof id="3"/>)
     }
 
     "not find an ide" in {
       val xml = <foo><bar/>Dog<b><woof ide="3"/></b></foo>
 
-      findBox(xml) { e =>
-        e.attribute("id").filter(_.text == "3").map(i => e)
+      findBox(xml) {
+        e => e.attribute("id").filter(_.text == "3").map(i => e)
       } must_== Empty
     }
 
     "not find a the wrong id" in {
       val xml = <foo><bar/>Dog<b><woof ide="4"/></b></foo>
 
-      findBox(xml) { e =>
-        e.attribute("id").filter(_.text == "3").map(i => e)
+      findBox(xml) {
+        e => e.attribute("id").filter(_.text == "3").map(i => e)
       } must_== Empty
     }
   }
@@ -59,24 +60,24 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
     "find an id" in {
       val xml = <foo><bar/>Dog<b><woof id="3"/></b></foo>
 
-      findOption(xml) { e =>
-        e.attribute("id").filter(_.text == "3").map(i => e)
+      findOption(xml) {
+        e => e.attribute("id").filter(_.text == "3").map(i => e)
       }.get must ==/(<woof id="3"/>)
     }
 
     "not find an ide" in {
       val xml = <foo><bar/>Dog<b><woof ide="3"/></b></foo>
 
-      findOption(xml) { e =>
-        e.attribute("id").filter(_.text == "3").map(i => e)
+      findOption(xml) {
+        e => e.attribute("id").filter(_.text == "3").map(i => e)
       } must_== None
     }
 
     "not find a the wrong id" in {
       val xml = <foo><bar/>Dog<b><woof ide="4"/></b></foo>
 
-      findOption(xml) { e =>
-        e.attribute("id").filter(_.text == "3").map(i => e)
+      findOption(xml) {
+        e => e.attribute("id").filter(_.text == "3").map(i => e)
       } must_== None
     }
   }

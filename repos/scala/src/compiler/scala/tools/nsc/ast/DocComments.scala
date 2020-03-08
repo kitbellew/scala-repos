@@ -463,12 +463,13 @@ trait DocComments { self: Global =>
     def defineVariables(sym: Symbol) = {
       val Trim = "(?s)^[\\s&&[^\n\r]]*(.*?)\\s*$".r
 
-      defs(sym) ++= defines.map { str =>
-        {
-          val start = skipWhitespace(str, "@define".length)
-          val (key, value) = str.splitAt(skipVariable(str, start))
-          key.drop(start) -> value
-        }
+      defs(sym) ++= defines.map {
+        str =>
+          {
+            val start = skipWhitespace(str, "@define".length)
+            val (key, value) = str.splitAt(skipVariable(str, start))
+            key.drop(start) -> value
+          }
       } map {
         case (key, Trim(value)) =>
           variableName(key) -> value.replaceAll("\\s+\\*+$", "")
